@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
     Copyright (C) 2017 Fabian Franz
     All rights reserved.
 
@@ -44,14 +44,11 @@ def unbound_control_reader(action):
 
 def unbound_control_do(action, bulk_input):
     p = subprocess.Popen(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                         text=True)
+                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for input in bulk_input:
-        input += "\n"
-        p.stdin.write(input)
+        p.stdin.write("%s\n" % input)
 
-    stdout = p.communicate()[0]
-    return stdout
+    return p.communicate()[0]
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -62,7 +59,6 @@ parser.add_argument('-s', '--stats', help='Dump stats', action="store_true", def
 parser.add_argument('-l', '--list-local-zones', help='List local Zones', action="store_true", default=False)
 parser.add_argument('-I', '--list-insecure', help='List Domain-Insecure Zones', action="store_true", default=False)
 parser.add_argument('-d', '--list-local-data', help='List local data', action="store_true", default=False)
-parser.add_argument('-f', '--format', help='output format', action='store', choices=['json'], default='json')
 args = parser.parse_args()
 
 #
@@ -74,42 +70,32 @@ except:
 
 output = None
 if args.dnsbl:
-    dnsbl_new = '/usr/local/etc/unbound.opnsense.d/dnsbl.conf'
-    dnsbl_cache = '/tmp/unbound_dnsbl.cache'
+    dnsbl_files = {'new': '/usr/local/etc/unbound.opnsense.d/dnsbl.conf', 'cache': '/tmp/unbound_dnsbl.cache'}
+    dnsbl_contents = {}
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
-    output = {'additions': 0, 'removals': 0}
-    if os.path.exists(dnsbl_cache) and os.path.getsize(dnsbl_cache) > 0:
-        # since a cache exists, we assume a new list has been added to unbound.opnsense.d.
-        new = set()
-        cache = set()
-        # remove 'local-data: ' and the quotation marks, as unbounc-control won't accept these
-        with open(dnsbl_new, 'r') as current_f:
-            new = {line.split(':', 1)[1].strip().replace('"', '') for line in current_f}
-        with open(dnsbl_cache, 'r') as cache_f:
-            cache = {line.split(':', 1)[1].strip().replace('"', '') for line in cache_f}
-        # diff it to filter additions and removals
-        additions = new - cache
-        removals = cache - new
-        if additions:
-            uc = unbound_control_do('local_datas', additions)
-            syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
-        if removals:
-            # RR removals only accept domain names, so strip it again
-            removals = {line.split(' ')[0].strip() for line in removals}
-            uc = unbound_control_do('local_datas_remove', removals)
-            syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
-        output['additions'] = len(additions)
-        output['removals'] = len(removals)
-    else:
-        # a cache doesn't exist, we assume a full new list must be piped into unbound
-        with open(dnsbl_new, 'r') as current_f:
-            new = {line.split(':', 1)[1].strip().replace('"', '') for line in current_f}
-            uc = unbound_control_do('local_datas', new)
-            output['additions'] = len(new)
-            syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+    for filetype in dnsbl_files:
+        dnsbl_contents[filetype] = set()
+        if os.path.exists(dnsbl_files[filetype]):
+            with open(dnsbl_files[filetype], 'r') as current_f:
+                for line in current_f:
+                    if line.startswith('local-data:'):
+                        dnsbl_contents[filetype].add(line[11:].strip('" '))
+
+    additions = dnsbl_contents['new'] - dnsbl_contents['cache']
+    removals = dnsbl_contents['cache'] - dnsbl_contents['new']
+    if additions:
+        uc = unbound_control_do('local_datas', additions)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+    if removals:
+        # RR removals only accept domain names, so strip it again (xxx.xx 0.0.0.0 --> xxx.xx)
+        removals = {line.split(' ')[0].strip() for line in removals}
+        uc = unbound_control_do('local_datas_remove', removals)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+
+    output = {'additions': len(additions), 'removals': len(removals)}
 
     # finally, always save a cache to keep the current state
-    shutil.copyfile(dnsbl_new, dnsbl_cache)
+    shutil.copyfile(dnsbl_files['new'], dnsbl_files['cache'])
     syslog.syslog(syslog.LOG_NOTICE, 'got %d RR additions and %d RR removals' % (output['additions'], output['removals']))
 elif args.cache:
     output = list()
@@ -176,5 +162,4 @@ else:
     sys.exit(1)
 
 # flush output
-if args.format == 'json':
-    print (json.dumps(output))
+print (json.dumps(output))

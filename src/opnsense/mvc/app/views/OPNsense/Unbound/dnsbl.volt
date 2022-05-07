@@ -42,8 +42,7 @@
               return dfObj;
           },
           onAction: function(data, status) {
-              $("#responseMsg").removeClass("hidden");
-              $("#responseMsg").html('Added ' + data['additions'] + ' and removed ' + data['removals'] + ' resource records.');
+              $("#responseMsg").removeClass("hidden").html(data['status_msg']);
           }
       });
 
