@@ -195,7 +195,11 @@ class Config extends Singleton
             set_error_handler(
                 function ($errno, $errstr, $errfile, $errline) {
                     syslog(LOG_ERR, sprintf(
-                        "Config serialize error [%d] %s @ %s : %s", $errno, $errstr, $errfile, $errline
+                        "Config serialize error [%d] %s @ %s : %s",
+                        $errno,
+                        $errstr,
+                        $errfile,
+                        $errline
                     ));
                     $this->statusIsValid = false;
                 }

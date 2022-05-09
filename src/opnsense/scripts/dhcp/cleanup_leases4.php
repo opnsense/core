@@ -66,7 +66,7 @@ if (!empty($opts['d'])) {
     $addresses[] = $opts['d'];
 }
 
-if (isset($opts['s'])){
+if (isset($opts['s'])) {
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 } elseif (isvalidpid('/var/dhcpd/var/run/dhcpd.pid')) {
     echo "dhcpd active, can't update lease file";
@@ -77,7 +77,7 @@ if (isset($opts['s'])){
 
 $removed_leases = 0;
 $fin = @fopen($dhcp_lease_file, 'r+');
-$fout = @fopen($dhcp_lease_file.'.new', 'w');
+$fout = @fopen($dhcp_lease_file . '.new', 'w');
 if ($fin && flock($fin, LOCK_EX)) {
     $lease = '';
     $lease_ip = '';
@@ -108,9 +108,9 @@ if ($fin && flock($fin, LOCK_EX)) {
     fclose($fin);
     fclose($fout);
     @unlink($dhcp_lease_file);
-    @rename($dhcp_lease_file.'.new', $dhcp_lease_file);
+    @rename($dhcp_lease_file . '.new', $dhcp_lease_file);
 }
-if (isset($opts['s'])){
+if (isset($opts['s'])) {
     dhcpd_dhcp4_configure();
 }
 
