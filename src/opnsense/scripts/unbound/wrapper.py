@@ -90,12 +90,12 @@ if args.dnsbl:
         removals = {line.split(' ')[0].strip() for line in removals}
         uc = unbound_control_do('local_datas_remove', removals)
         syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
-        if uc[1] > 0:
+        if uc[1] is not 0:
             sys.exit(1)
     if additions:
         uc = unbound_control_do('local_datas', additions)
         syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
-        if uc[1] > 0:
+        if uc[1] is not 0:
             sys.exit(1)
 
     output = {'additions': len(additions), 'removals': len(removals)}
