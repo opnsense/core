@@ -40,6 +40,9 @@
                   dfObj.resolve();
               });
               return dfObj;
+          },
+          onAction: function(data, status) {
+              $("#responseMsg").removeClass("hidden").html(data['status_msg']);
           }
       });
 
@@ -47,14 +50,16 @@
    });
 </script>
 
+<div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
+
 <div class="content-box" style="padding-bottom: 1.5em;">
     {{ partial("layout_partials/base_form",['fields':dnsblForm,'id':'frm_dnsbl_settings'])}}
     <div class="col-md-12">
         <hr />
         <button class="btn btn-primary" id="saveAct"
                 data-endpoint='/api/unbound/service/dnsbl'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reloading unbound') }}"
+                data-label="{{ lang._('Download & Apply') }}"
+                data-error-title="{{ lang._('Error updating blocklists') }}"
                 type="button">
         </button>
     </div>

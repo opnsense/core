@@ -44,7 +44,16 @@ class ServiceController extends ApiMutableServiceControllerBase
         $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
-        return array('status' => $response);
+        $response = json_decode(trim($backend->configdRun(static::$internalServiceName . ' dnsbl')), true);
+        if ($response !== null) {
+            $response['status'] = "OK";
+            $response['status_msg'] = sprintf(
+              gettext("Added %d and removed %d  resource records."),
+              $response['additions'],
+              $response['removals']
+            );
+            return $response;
+        }
+        return array('message' => 'unable to run configd action');
     }
 }
