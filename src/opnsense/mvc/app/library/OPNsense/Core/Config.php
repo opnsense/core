@@ -516,7 +516,7 @@ class Config extends Singleton
      */
     public function backup($timestamp = null)
     {
-	$timestamp = $timestamp ? $timestamp : microtime(true);
+        $timestamp = $timestamp ? $timestamp : microtime(true);
         $target_dir = dirname($this->config_file) . "/backup/";
 
         if (!file_exists($target_dir)) {
