@@ -42,7 +42,9 @@
               return dfObj;
           },
           onAction: function(data, status) {
-              $("#responseMsg").removeClass("hidden").html(data['status_msg']);
+              if (data['status'].toLowerCase().trim() == 'ok') {
+                  $("#responseMsg").removeClass("hidden").html(data['status_msg']);
+              }
           }
       });
 

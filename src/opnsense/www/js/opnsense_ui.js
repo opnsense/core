@@ -575,7 +575,7 @@ $.fn.SimpleActionButton = function (params) {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
-                              message: data['status'],
+                              message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
                     }

@@ -48,7 +48,9 @@ def unbound_control_do(action, bulk_input):
     for input in bulk_input:
         p.stdin.write("%s\n" % input)
 
-    return p.communicate()[0]
+    result = p.communicate()[0]
+    # return code is only available after communicate()
+    return (result, p.returncode)
 
 # parse arguments
 parser = argparse.ArgumentParser()
@@ -87,10 +89,14 @@ if args.dnsbl:
         # RR removals only accept domain names, so strip it again (xxx.xx 0.0.0.0 --> xxx.xx)
         removals = {line.split(' ')[0].strip() for line in removals}
         uc = unbound_control_do('local_datas_remove', removals)
-        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
+        if uc[1] > 0:
+            sys.exit(1)
     if additions:
         uc = unbound_control_do('local_datas', additions)
-        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
+        if uc[1] > 0:
+            sys.exit(1)
 
     output = {'additions': len(additions), 'removals': len(removals)}
 
