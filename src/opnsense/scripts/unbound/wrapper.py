@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
     Copyright (C) 2017 Fabian Franz
     All rights reserved.
 
@@ -33,6 +33,8 @@ import tempfile
 import subprocess
 import argparse
 import json
+import shutil
+import syslog
 
 def unbound_control_reader(action):
     sp = subprocess.run(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
@@ -40,15 +42,25 @@ def unbound_control_reader(action):
     for line in sp.stdout.strip().split("\n"):
         yield line
 
+def unbound_control_do(action, bulk_input):
+    p = subprocess.Popen(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
+                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    for input in bulk_input:
+        p.stdin.write("%s\n" % input)
+
+    result = p.communicate()[0]
+    # return code is only available after communicate()
+    return (result, p.returncode)
+
 # parse arguments
 parser = argparse.ArgumentParser()
+parser.add_argument('-b', '--dnsbl', help='Update DNS blocklists', action="store_true", default=False)
 parser.add_argument('-c', '--cache', help='Dump cache', action="store_true", default=False)
 parser.add_argument('-i', '--infra', help='Dump infrastructure cache', action="store_true", default=False)
 parser.add_argument('-s', '--stats', help='Dump stats', action="store_true", default=False)
 parser.add_argument('-l', '--list-local-zones', help='List local Zones', action="store_true", default=False)
 parser.add_argument('-I', '--list-insecure', help='List Domain-Insecure Zones', action="store_true", default=False)
 parser.add_argument('-d', '--list-local-data', help='List local data', action="store_true", default=False)
-parser.add_argument('-f', '--format', help='output format', action='store', choices=['json'], default='json')
 args = parser.parse_args()
 
 #
@@ -59,7 +71,39 @@ except:
     sys.exit(1)
 
 output = None
-if args.cache:
+if args.dnsbl:
+    dnsbl_files = {'new': '/usr/local/etc/unbound.opnsense.d/dnsbl.conf', 'cache': '/tmp/unbound_dnsbl.cache'}
+    dnsbl_contents = {}
+    syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+    for filetype in dnsbl_files:
+        dnsbl_contents[filetype] = set()
+        if os.path.exists(dnsbl_files[filetype]):
+            with open(dnsbl_files[filetype], 'r') as current_f:
+                for line in current_f:
+                    if line.startswith('local-data:'):
+                        dnsbl_contents[filetype].add(line[11:].strip(' "\'\t\r\n'))
+
+    additions = dnsbl_contents['new'] - dnsbl_contents['cache']
+    removals = dnsbl_contents['cache'] - dnsbl_contents['new']
+    if removals:
+        # RR removals only accept domain names, so strip it again (xxx.xx 0.0.0.0 --> xxx.xx)
+        removals = {line.split(' ')[0].strip() for line in removals}
+        uc = unbound_control_do('local_datas_remove', removals)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
+        if uc[1] != 0:
+            sys.exit(1)
+    if additions:
+        uc = unbound_control_do('local_datas', additions)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
+        if uc[1] != 0:
+            sys.exit(1)
+
+    output = {'additions': len(additions), 'removals': len(removals)}
+
+    # finally, always save a cache to keep the current state
+    shutil.copyfile(dnsbl_files['new'], dnsbl_files['cache'])
+    syslog.syslog(syslog.LOG_NOTICE, 'got %d RR additions and %d RR removals' % (output['additions'], output['removals']))
+elif args.cache:
     output = list()
     for line in unbound_control_reader('dump_cache'):
         parts = re.split('^(\S+)\s+(?:([\d]*)\s+)?(IN)\s+(\S+)\s+(.*)$', line)
@@ -124,5 +168,4 @@ else:
     sys.exit(1)
 
 # flush output
-if args.format == 'json':
-    print (json.dumps(output))
+print (json.dumps(output))
