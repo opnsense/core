@@ -79,17 +79,17 @@ if args.dnsbl:
             with open(dnsbl_files[filetype], 'r') as current_f:
                 for line in current_f:
                     if line.startswith('local-data:'):
-                        dnsbl_contents[filetype].add(line[11:].strip('" '))
+                        dnsbl_contents[filetype].add(line[11:].strip(' "\'\t\r\n'))
 
     additions = dnsbl_contents['new'] - dnsbl_contents['cache']
     removals = dnsbl_contents['cache'] - dnsbl_contents['new']
-    if additions:
-        uc = unbound_control_do('local_datas', additions)
-        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
     if removals:
         # RR removals only accept domain names, so strip it again (xxx.xx 0.0.0.0 --> xxx.xx)
         removals = {line.split(' ')[0].strip() for line in removals}
         uc = unbound_control_do('local_datas_remove', removals)
+        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
+    if additions:
+        uc = unbound_control_do('local_datas', additions)
         syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc)
 
     output = {'additions': len(additions), 'removals': len(removals)}
