@@ -446,6 +446,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/Numericality.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/PresenceOf.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/Regex.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/Url.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Logger/Logger.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
