@@ -260,7 +260,9 @@
     }
 
     function trackStatus() {
-        ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+        // append Date.now() (epoch time in millisecods) to the end of the URL to force browsers to
+        // bypass aggressive caching. The use of the "_" param is to mimic jQuery's cache: false.
+        ajaxGet('/api/core/firmware/upgradestatus', { _: Date.now() }, function(data, status) {
             if (status != 'success') {
                 // recover from temporary errors
                 setTimeout(trackStatus, 1000);
