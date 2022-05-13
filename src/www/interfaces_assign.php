@@ -426,7 +426,12 @@ include("head.inc");
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th><?=gettext("Interface"); ?></th>
+                      <th><?=gettext("Interface"); ?>
+                          (<?=gettext("ID"); ?>
+                          <span data-toggle="tooltip" title="<?=gettext("Technical identifier of the interface, used by hasync for example");?>">
+                            <i  style="cursor: pointer;" class="fa fa-question-circle" data-toggle="collapse" ></i>
+                          </span>)
+                      </th>
                       <th><?=gettext("Network port"); ?></th>
                       <th></th>
                     </tr>
@@ -438,6 +443,7 @@ include("head.inc");
                       <tr>
                         <td>
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
+                          (<?=$ifname;?>)
                         </td>
                         <td>
                           <select name="<?=$ifname;?>" id="<?=$ifname;?>"  class="selectpicker" data-size="10">
