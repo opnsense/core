@@ -365,7 +365,7 @@ $( document ).ready(function() {
                                      break;
                              } ?>
                         </td>
-                      <td><?=$priv_list[$priv]['name'];?></td>
+                      <td><?=gettext($priv_list[$priv]['name']);?></td>
                     </tr>
 <?php
                         endforeach;

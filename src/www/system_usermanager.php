@@ -780,7 +780,7 @@ $( document ).ready(function() {
                                      break;
                              } ?>
                           </td>
-                          <td><?=$priv['name']?></td>
+                          <td><?=gettext($priv['name'])?></td>
                         </tr>
 <?php
                         endforeach;?>

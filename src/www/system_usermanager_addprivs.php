@@ -234,7 +234,7 @@ include("head.inc");
                                         <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
                                     </td>
                                     <td><?= $pdesc ?></td>
-                                    <td><?= $pnamesafe ?>
+                                    <td><?= gettext($pnamesafe) ?>
 <?php
                                       if (!empty($pdata['match'])):?>
                                       <i class="fa fa-info-circle" style="cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
