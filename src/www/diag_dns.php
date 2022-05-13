@@ -47,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields = array("host");
     $reqdfieldsn = array(gettext("Host"));
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-    if (!is_hostname($pconfig['host']) && !is_ipaddr($pconfig['host'])) {
+    $host = trim($pconfig['host'], " \t\n\r\0\x0B[];\"'");
+    if (!is_hostname($host) && !is_ipaddr($host)) {
         $input_errors[] = gettext("Host must be a valid hostname or IP address.");
     }
     if (count($input_errors) == 0) {
@@ -56,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($ifaddr)) {
             $command_args .= exec_safe(' -I %s ', $ifaddr);
         }
-        if (is_ipaddr($pconfig['host'])) {
+        if (is_ipaddr($host)) {
             $command_args .= ' -x ';
         }
         $dns_servers = array();
@@ -65,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             exec("/usr/bin/grep nameserver /etc/resolv.conf | /usr/bin/cut -f2 -d' '", $dns_servers);
         }
-        foreach ($dns_servers as $dns_server) {
+        foreach ($dns_servers as $dnsserver) {
+            $dns_server = trim($dnsserver, " \t\n\r\0\x0B[];\"'");
             if (!is_hostname($dns_server) && !is_ipaddr($dns_server)) {
                 $input_errors[] = gettext("DNS Server must be a valid hostname or IP address.") . " " . $dns_server;
             }
@@ -74,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $dnsrcode = "";
             $dnsanswer = "";
             $dnssoa = "";
-            exec("/usr/bin/drill " . $command_args . " " . $pconfig['host'] . " " . escapeshellarg("@" . trim($dns_server)) . " 2>&1", $queryoutput, $retval);
+            exec("/usr/bin/drill " . $command_args . " " . escapeshellarg($host) . " " . escapeshellarg("@" . trim($dns_server)) . " 2>&1", $queryoutput, $retval);
             if ($retval > 0) {
                 $input_errors[] = "command exit code: $retval for server $dns_server : " . join(' ', $queryoutput);
                 continue;
