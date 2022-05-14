@@ -330,7 +330,8 @@
             $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (reset === true) {
-                ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+                // bust aggressive caching with adding a timestamp to the request.
+                ajaxGet('/api/core/firmware/upgradestatus', { _: Date.now() }, function(data, status) {
                     if (data['log'] != undefined && data['log'] != '') {
                         $('#update_status').html(data['log']);
                     } else {
