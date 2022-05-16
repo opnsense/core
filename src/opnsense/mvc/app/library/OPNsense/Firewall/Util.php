@@ -127,7 +127,7 @@ class Util
                 if ($alias['name'] == $name) {
                     if ($valid) {
                         // check validity for port type aliases
-                        if (preg_match("/port/i", $alias['type']) && trim($alias['content']) == "") {
+                        if (preg_match("/port/i", $alias['type']) && empty($alias['content'])) {
                             return false;
                         }
                     }
@@ -156,8 +156,7 @@ class Util
                     }
 
                     if (!empty($alias['content'])) {
-                        $content = explode("\n", $alias['content']);
-                        $tmp = array_slice($content, 0, 10);
+                        $tmp = array_slice($alias['content'], 0, 10);
                         asort($tmp, SORT_NATURAL);
                         if (count($content) > 10) {
                             $tmp[] = '[...]';
@@ -191,7 +190,7 @@ class Util
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
-                foreach (explode("\n", $node['content']) as $address) {
+                foreach ($node['content'] as $address) {
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
                             foreach (Util::getPortAlias($address, $aliases) as $port) {
