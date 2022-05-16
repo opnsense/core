@@ -41,6 +41,11 @@ use OPNsense\Firewall\Util;
 class Alias extends BaseModel
 {
     /**
+     * cache iteration items
+     */
+    private $aliasIteratorCache = [];
+
+    /**
      * return locations where aliases can be used inside the configuration
      * @return array alias source map
      */
@@ -158,16 +163,29 @@ class Alias extends BaseModel
 
     /**
      * return aliases as array
+     * @param $flush flush cached objects from previous call
      * @return Generator with aliases
      */
-    public function aliasIterator()
+    public function aliasIterator($flush = false)
     {
-        foreach ($this->aliases->alias->iterateItems() as $alias) {
-            $record = array();
-            foreach ($alias->iterateItems() as $key => $value) {
-                $record[$key] = (string)$value;
+        if ($flush) {
+            // flush cache
+            $this->aliasIteratorCache = [];
+        }
+        foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
+            if (empty($this->aliasIteratorCache[$uuid])) {
+                $this->aliasIteratorCache[$uuid] = [];
+                foreach ($alias->iterateItems() as $key => $value) {
+                    $this->aliasIteratorCache[$uuid][$key] = (string)$value;
+                }
+                // parse content into separate items for easier reading. items are separated by \n
+                if ((string)$alias->content == "") {
+                    $this->aliasIteratorCache[$uuid]['content'] = [];
+                } else {
+                    $this->aliasIteratorCache[$uuid]['content'] = explode("\n", (string)$alias->content);
+                }
             }
-            yield $record;
+            yield $this->aliasIteratorCache[$uuid];
         }
     }
 

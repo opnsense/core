@@ -660,6 +660,11 @@ function filter_generate_aliases()
 
     $aliases .= "\n# User Aliases\n";
     $aliasObject = new \OPNsense\Firewall\Alias();
+    // list of registered aliases for faster is_alias() lookup
+    $all_aliases = [];
+    foreach ($aliasObject->aliasIterator() as $aliased) {
+        $all_aliases[] = $aliased['name'];
+    }
     foreach ($aliasObject->aliasIterator() as $aliased) {
         switch ($aliased['type']) {
             case "urltable_ports":
@@ -671,7 +676,7 @@ function filter_generate_aliases()
                 file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
                 break;
             case "port":
-                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], [], $aliasObject));
+                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], [], $aliasObject, $all_aliases));
                 if (empty($tmp_ports)) {
                     // we can't create empty port tables, so when it's empty we should make sure it can't match
                     $tmp_ports = "0 <> 65535";

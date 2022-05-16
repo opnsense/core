@@ -147,20 +147,21 @@ function filter_core_get_antilockout()
  * recursively collect port alias(es) contents
  * @param string|null $aliasname alias name, or null to fetch all aliases
  * @param array $aliases aliases already parsed (prevent deadlock)
+ * @param array $all_aliases all known alias names
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject = null)
+function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = null, $all_aliases = [])
 {
-    $response = array();
+    $response = [];
     $aliases[] = $aliasname;
     $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
         if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
-            foreach (explode("\n", $aliased['content']) as $address) {
-                if (is_alias($address)) {
+            foreach ($aliased['content'] as $address) {
+                if (in_array($address, $all_aliases)) {
                     if (!in_array($address, $aliases)) {
-                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject) as $port) {
+                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject, $all_aliases) as $port) {
                             if (!in_array($port, $response)) {
                                 $response[] = $port;
                             }
