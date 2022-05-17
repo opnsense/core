@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -130,14 +130,18 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
          */
         if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
             $gwifip = null;
-            if (!empty($ifconfig_details[$gateway['if']]['ipv4'][0]) && !empty($gateway['gateway'])) {
-                $ifdetails = $ifconfig_details[$gateway['if']];
-                $match = ip2ulong($gateway['gateway']);
-                foreach ($ifdetails['ipv4'] as $ipv4) {
-                    $ip_min = gen_subnet($ipv4['ipaddr'], $ipv4['subnetbits']);
-                    $ip_max = gen_subnet_max($ipv4['ipaddr'], $ipv4['subnetbits']);
-                    if ($match >= ip2ulong($ip_min) && $match <= ip2ulong($ip_max)) {
-                        $gwifip = $ipv4['ipaddr'];
+
+            if (is_ipaddrv4($gateway['gateway'])) {
+                foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
+                    /* explictly do not require $addr['alias'] to be true here */
+                    if ($addr['family'] != 'inet') {
+                        continue;
+                    }
+
+                    $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+
+                    if (ip_in_subnet($gateway['gateway'], $network)) {
+                        $gwifip = $addr['address'];
                         break;
                     }
                 }
@@ -145,11 +149,13 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
             if ($gwifip == null) {
                 list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
-                log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+                if (!empty($gwifip) && is_ipaddrv4($gateway['gateway'])) {
+                    log_error(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+                }
             }
 
-            if (!is_ipaddrv4($gwifip)) {
-                log_error(sprintf('The %s IPv4 interface address is invalid, skipping.', $name));
+            if (empty($gwifip)) {
+                log_error(sprintf('The required %s IPv4 interface address could not be found, skipping.', $name));
                 continue;
             }
 
@@ -175,15 +181,34 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
-            if (is_linklocal($gateway['monitor'])) {
-                /* link local monitor needs a link local address for the "src" part */
-                list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
-            } else {
-                list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
+            $gwifip = null;
+
+            if (is_ipaddrv6($gateway['gateway'])) {
+                foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
+                    if ($addr['family'] != 'inet6' || !$addr['alias']) {
+                        continue;
+                    }
+
+                    $networkv6 = gen_subnetv6($addr['address'], $addr['bits']) . "/{$addr['bits']}";
+
+                    if (ip_in_subnet($gateway['gateway'], $networkv6)) {
+                        $gwifip = $addr['address'];
+                        break;
+                    }
+                }
+            }
+
+            if ($gwifip == null) {
+                if (is_linklocal($gateway['monitor'])) {
+                    /* link local monitor needs a link local address for the "src" part */
+                    list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
+                } else {
+                    list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
+                }
             }
 
             if (empty($gwifip)) {
-                log_error(sprintf('The %s IPv6 interface address could not be found, skipping.', $name));
+                log_error(sprintf('The required %s IPv6 interface address could not be found, skipping.', $name));
                 continue;
             }
 
