@@ -731,11 +731,6 @@ function interfaces_configure($verbose = false)
     $dhcp6c = []; /* dhcp6c interfaces load last */
 
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
-        if (strstr($ifcfg['if'], 'vxlan')) {
-            // XXX device configuration is responsible for interface setup too when trying to init all.
-            continue;
-        }
-
         /* XXX use this to figure out when bridges can be configured */
         $interfaces[$if] = $ifcfg['if'];
 
@@ -770,7 +765,6 @@ function interfaces_configure($verbose = false)
     /* XXX: temporary plugin spot for device creation (independent of other devices) */
     plugins_configure('loopback_prepare', $verbose);
     plugins_configure('openvpn_prepare', $verbose);
-    plugins_configure('vxlan_prepare', $verbose);
 
     /* run through priority lists */
     foreach ([$hardware, $virtual, $track6, $bridge, $dhcp6c] as $list) {
