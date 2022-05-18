@@ -158,7 +158,7 @@ class Util
                     if (!empty($alias['content'])) {
                         $tmp = array_slice($alias['content'], 0, 10);
                         asort($tmp, SORT_NATURAL);
-                        if (count($content) > 10) {
+                        if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
                         self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
