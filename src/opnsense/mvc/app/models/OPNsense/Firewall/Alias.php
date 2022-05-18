@@ -166,7 +166,7 @@ class Alias extends BaseModel
      * @param $flush flush cached objects from previous call
      * @return Generator with aliases
      */
-    public function aliasIterator($flush=false)
+    public function aliasIterator($flush = false)
     {
         if ($flush) {
             // flush cache
