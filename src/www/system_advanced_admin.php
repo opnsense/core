@@ -899,12 +899,13 @@ $(document).ready(function() {
                 <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                 <td>
                   <select name="serialspeed" id="serialspeed" class="selectpicker">
-                    <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
-                    <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
-                    <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
-                    <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
-                    <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
-                    <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
+                    <option value="1500000" <?= $pconfig['serialspeed'] == '1500000' ? 'selected="selected"' : '' ?>>1500000</option>
+                    <option value="115200" <?= $pconfig['serialspeed'] == '115200' || empty($pconfig['serialspeed']) ? 'selected="selected"' : '' ?>>115200</option>
+                    <option value="57600" <?= $pconfig['serialspeed'] == '57600' ? 'selected="selected"' : '' ?>>57600</option>
+                    <option value="38400" <?= $pconfig['serialspeed'] == '38400' ? 'selected="selected"' : '' ?>>38400</option>
+                    <option value="19200" <?= $pconfig['serialspeed'] == '19200' ? 'selected="selected"' : '' ?>>19200</option>
+                    <option value="14400" <?= $pconfig['serialspeed'] == '14400' ? 'selected="selected"' : '' ?>>14400</option>
+                    <option value="9600" <?= $pconfig['serialspeed'] == '9600' ? 'selected="selected"' : '' ?>>9600</option>
                   </select>
                   <div class="hidden" data-for="help_for_serialspeed">
                     <?=gettext("Allows selection of different speeds for the serial console port."); ?>
