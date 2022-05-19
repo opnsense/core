@@ -69,11 +69,11 @@ $args = array_slice($argv, $optind);
 if (isset($opts['h'])) {
     echo "Usage: pluginctl [-c | -d | -g | -h | -r | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
-    echo "\t-d device mode (default), lists registered devices\n";
-    echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n\n";
+    echo "\t-d device mode, lists registered devices\n";
+    echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-r run mode (e.g. command)\n";
-    echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\t-s service mode (e.g. myservice restart)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (isset($opts['d'])) {
     foreach (plugins_devices() as $device) {
@@ -83,9 +83,11 @@ if (isset($opts['h'])) {
         if (empty($args[0])) {
             echo $device['type'] . PHP_EOL;
         } elseif ($args[0] == $device['type']) {
-            echo implode(PHP_EOL, $device['names']) . PHP_EOL;
+            foreach ($device['names'] as $name) {
+                echo $name . PHP_EOL;
+            }
         } elseif (in_array($args[0], $device['names'])) {
-	    echo "Reconfiguring {$args[0]}...";
+            echo "Reconfiguring {$args[0]}...";
             flush();
             call_user_func_array($device['function'], [$args[0]]);
             echo "done.\n";
