@@ -59,7 +59,6 @@ function vxlan_configure_do($verbose = false, $device = null)
     $configured_devices = array();
     $changed_devices = array();
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems());
-    $verbose = $device === null ? $verbose : false;
 
     if ($verbose && !empty($vxlans)) {
         echo 'Configuring VXLAN interfaces...';

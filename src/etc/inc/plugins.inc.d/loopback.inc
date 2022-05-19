@@ -28,26 +28,36 @@
 
 function loopback_configure()
 {
-    return array(
-        'loopback_prepare' => array('loopback_configure_interface')
-    );
+    return [
+        'loopback' => ['loopback_configure_do']
+    ];
 }
 
 function loopback_devices()
 {
-    $devices = array();
+    $names = [];
 
-    $devices[] = array('pattern' => '^lo', 'volatile' => true, 'configurable' => true);
+    foreach (iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems()) as $loopback) {
+        $names[] = "lo{$loopback->deviceId}";
+    }
 
-    return $devices;
+    return [[
+        'function' => 'loopback_configure_device',
+        'configurable' => true,
+        'pattern' => '^lo',
+        'volatile' => true,
+        'type' => 'loopback',
+        'names' => $names,
+    ]];
 }
 
-function loopback_configure_interface($verbose = false)
+function loopback_configure_do($verbose = false, $device = null)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $configured_interfaces = legacy_interface_listget();
     $configured_devices = ['lo0']; // lo0 should always be configured
     $loopbacks = iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems());
+
     if ($verbose && !empty($loopbacks)) {
         echo 'Configuring Loopback interfaces...';
         flush();
@@ -56,21 +66,32 @@ function loopback_configure_interface($verbose = false)
     // (re)configure loopback devices
     foreach ($loopbacks as $loopback) {
         $device_name = "lo{$loopback->deviceId}";
+
+        if ($device !== null && $device != $device_name) {
+            continue;
+        }
+
         $configured_devices[] = $device_name;
         if (!in_array($device_name, $configured_interfaces)) {
-            echo $device_name;
-            mwexecf('/sbin/ifconfig %s create', array($device_name));
+            mwexecf('/sbin/ifconfig %s create', [$device_name]);
         }
     }
+
     // destroy non existing interfaces
     foreach ($configured_interfaces as $intf) {
         if (strpos($intf, "lo") === 0) {
             if (!in_array($intf, $configured_devices)) {
-                mwexecf('/sbin/ifconfig %s destroy', array($intf));
+                mwexecf('/sbin/ifconfig %s destroy', [$intf]);
             }
         }
     }
+
     if ($verbose && !empty($loopbacks)) {
         echo "done.\n";
     }
+}
+
+function loopback_configure_device($device)
+{
+    loopback_configure_do(false, $device);
 }
