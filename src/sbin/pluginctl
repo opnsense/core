@@ -69,7 +69,7 @@ $args = array_slice($argv, $optind);
 if (isset($opts['h'])) {
     echo "Usage: pluginctl [-c | -d | -g | -h | -r | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
-    echo "\t-d device mode (default), lists registered devices\n";
+    echo "\t-d device mode, lists registered devices\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-r run mode (e.g. command)\n";
