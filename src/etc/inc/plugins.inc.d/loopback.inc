@@ -53,12 +53,11 @@ function loopback_configure_interface($verbose = false)
         flush();
     }
 
-    // (re)configure vxlan devices
+    // (re)configure loopback devices
     foreach ($loopbacks as $loopback) {
         $device_name = "lo{$loopback->deviceId}";
         $configured_devices[] = $device_name;
         if (!in_array($device_name, $configured_interfaces)) {
-            echo $device_name;
             mwexecf('/sbin/ifconfig %s create', array($device_name));
         }
     }
@@ -70,7 +69,7 @@ function loopback_configure_interface($verbose = false)
             }
         }
     }
-    if ($verbose && !empty($vxlans)) {
+    if ($verbose && !empty($loopbacks)) {
         echo "done.\n";
     }
 }
