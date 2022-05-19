@@ -1528,7 +1528,7 @@ function interface_wireless_clone($realif, $wlcfg)
     $baseif = interface_get_wireless_base($wlcfg['if']);
     if (does_interface_exist($realif)) {
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
-        $ifconfig_str = implode($output);
+        $ifconfig_str = implode(PHP_EOL, $output);
         if (($wlcfg_mode == "hostap") && (! preg_match("/hostap/si", $ifconfig_str))) {
             log_error("Interface {$realif} changed to hostap mode");
             $needs_clone = true;
@@ -1966,7 +1966,7 @@ EOD;
      * down all wireless networks on the interface.
      */
     exec("{$ifconfig} " . escapeshellarg($if), $output);
-    $ifconfig_str = implode($output);
+    $ifconfig_str = implode(PHP_EOL, $output);
     unset($output);
     $reg_changing = false;
 
