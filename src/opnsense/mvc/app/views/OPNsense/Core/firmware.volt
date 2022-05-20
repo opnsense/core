@@ -28,9 +28,12 @@
 <script>
 
     function generic_search(that, entries) {
-        let search = $(that).val();
+        let search = $(that).val().toLowerCase();
         $('.' + entries).each(function () {
-            let name = $(this).text();
+            let row_by_col = $(this).find('td').map(function () {
+                return $(this).text();
+            }).get();
+            let name = row_by_col.join(',').toLowerCase();
             if (search.length != 0 && name.indexOf(search) == -1) {
                 $(this).hide();
             } else {
