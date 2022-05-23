@@ -2301,18 +2301,21 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_vips_configure($interface);
     interfaces_bring_up($realif);
 
+    /* XXX device plugin hook */
     $gres = link_interface_to_gre($interface);
     foreach ($gres as $gre) {
         _interfaces_gre_configure($gre);
         $loaded[] = $gre['greif'];
     }
 
+    /* XXX device plugin hook */
     $gifs = link_interface_to_gif($interface);
     foreach ($gifs as $gif) {
         _interfaces_gif_configure($gif);
         $loaded[] = $gif['gifif'];
     }
 
+    /* XXX device plugin hook */
     $bridge = link_interface_to_bridge($interface);
     if (!empty($bridge)) {
         /* XXX _interfaces_bridge_configure() is probably cleaner */
