@@ -227,6 +227,8 @@ function ipsec_devices()
         'type' => 'ipsec',
     ];
 
+    $devices[] = ['pattern' => '^enc', 'volatile' => true];
+
     return $devices;
 }
 
