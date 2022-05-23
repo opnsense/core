@@ -175,7 +175,6 @@ function core_devices()
     # XXX is a plugin collection...
     $devices[] = array('pattern' => '^cua', 'volatile' => true);
     $devices[] = array('pattern' => '^enc', 'volatile' => true);
-    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
     $devices[] = array('pattern' => '^lagg', 'volatile' => true);
     $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);

@@ -789,9 +789,6 @@ function interfaces_configure($verbose = false)
         }
     }
 
-    /* XXX temporary plugin spot for device configuration, see plugins_devices() */
-    plugins_configure('ipsec_prepare', $verbose);
-
     /* last but not least start all unconfigured devices */
     foreach ($devices as $name => $function) {
         /* XXX devices could depend on other devices */

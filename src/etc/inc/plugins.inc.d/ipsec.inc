@@ -138,11 +138,10 @@ function ipsec_p2_halgos()
 
 function ipsec_configure()
 {
-    return array(
-        'ipsec' => array('ipsec_configure_do:2'),
-        'ipsec_prepare' => array('ipsec_configure_vti'),
-        'vpn' => array('ipsec_configure_do:2'),
-    );
+    return [
+        'ipsec' => ['ipsec_configure_do:2'],
+        'vpn' => ['ipsec_configure_do:2'],
+    ];
 }
 
 function ipsec_syslog()
@@ -196,7 +195,7 @@ function ipsec_interfaces()
                 break;
             }
         }
-        // automatically register VTI's in the interfaces list
+
         foreach (ipsec_get_configured_vtis() as $intf => $details) {
             $interfaces[$intf] = [
                 'enable' => true,
@@ -208,6 +207,27 @@ function ipsec_interfaces()
     }
 
     return $interfaces;
+}
+
+function ipsec_devices()
+{
+    $devices = [];
+    $names = [];
+
+    foreach (array_keys(ipsec_get_configured_vtis()) as $device) {
+        $names[] = $device;
+    }
+
+    $devices[] = [
+        'function' => 'ipsec_configure_device',
+        'configurable' => false,
+        'pattern' => '^ipsec',
+        'volatile' => true,
+        'names' => $names,
+        'type' => 'ipsec',
+    ];
+
+    return $devices;
 }
 
 function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
@@ -948,7 +968,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
             return;
         }
     }
-    // configure VTI if needed
+
+    /* configure VTI if needed */
     ipsec_configure_vti();
 
     /* get the automatic ping_hosts.sh ready */
@@ -1857,11 +1878,11 @@ function ipsec_get_configured_vtis()
 /**
  * Configure required Virtual Terminal Interfaces (synchronizes configuration with local interfaces named ipsec%)
  */
-function ipsec_configure_vti($verbose = false)
+function ipsec_configure_vti($verbose = false, $device = null)
 {
     // query planned and configured interfaces
     $configured_intf = ipsec_get_configured_vtis();
-    $current_interfaces = array();
+    $current_interfaces = [];
 
     foreach (legacy_interfaces_details() as $intf => $intf_details) {
         if (strpos($intf, 'ipsec') === 0) {
@@ -1876,6 +1897,10 @@ function ipsec_configure_vti($verbose = false)
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
+        if ($device !== null && $device != $intf) {
+            continue;
+        }
+
         $local_configured = $configured_intf[$intf]['local'];
         $remote_configured = $configured_intf[$intf]['remote'];
         if (!empty($configured_intf[$intf])) {
@@ -1895,7 +1920,7 @@ function ipsec_configure_vti($verbose = false)
             legacy_interface_destroy($intf);
             unset($current_interfaces[$intf]);
         } else {
-            foreach (array('ipv4', 'ipv6') as $proto) {
+            foreach (['ipv4', 'ipv6'] as $proto) {
                 foreach ($intf_details[$proto] as $addr) {
                     if (!empty($addr['endpoint'])) {
                         $isfound = false;
@@ -1915,9 +1940,9 @@ function ipsec_configure_vti($verbose = false)
                                 $addr['endpoint'],
                                 $intf
                             ));
-                            mwexecf('/sbin/ifconfig %s %s %s delete', array(
-                            $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
-                            ));
+                            mwexecf('/sbin/ifconfig %s %s %s delete', [
+                                $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
+                            ]);
                         }
                     }
                 }
@@ -1927,24 +1952,30 @@ function ipsec_configure_vti($verbose = false)
 
     // configure new interfaces and tunnels
     foreach ($configured_intf as $intf => $intf_details) {
+        if ($device !== null && $device != $intf) {
+            continue;
+        }
+
         // create required interfaces
-        $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
         if (empty($current_interfaces[$intf])) {
             // prevent ipsec vti interface to hit 32768 limit (create numbered, rename and attach afterwards)
-            if (legacy_interface_create("ipsec", $intf) != null) {
-                mwexecf('/sbin/ifconfig %s reqid %s', array($intf, $intf_details['reqid']));
-                mwexecf(
-                    '/sbin/ifconfig %s %s tunnel %s %s up',
-                    array($intf, $inet, $intf_details['local'], $intf_details['remote'])
-                );
+            if (legacy_interface_create('ipsec', $intf) === null) {
+                break;
             }
+            mwexecf('/sbin/ifconfig %s reqid %s', [$intf, $intf_details['reqid']]);
+            mwexecf('/sbin/ifconfig %s %s tunnel %s %s up', [
+                $intf,
+                is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet',
+                $intf_details['local'],
+                $intf_details['remote']
+            ]);
         }
         // create new tunnel endpoints
         foreach ($intf_details['networks'] as $endpoint) {
             if (!empty($current_interfaces[$intf])) {
                 $already_configured = $current_interfaces[$intf][$endpoint['inet'] == 'inet6' ? 'ipv6' : 'ipv4'];
             } else {
-                $already_configured = array();
+                $already_configured = [];
             }
             $isfound = false;
             foreach ($already_configured as $addr) {
@@ -1959,16 +1990,16 @@ function ipsec_configure_vti($verbose = false)
             }
             if (!$isfound) {
                 if ($endpoint['inet'] == 'inet') {
-                    mwexecf('/sbin/ifconfig %s %s %s %s', array(
+                    mwexecf('/sbin/ifconfig %s %s %s %s', [
                         $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask']),
                         $endpoint['tunnel_remote']
-                    ));
+                    ]);
                 } else {
                     // XXX: don't specify a tunnel endpoint for ipv6, although this looks like an illogical
                     //      construction, a netmask seems to be a requirement for some ipv6 consumers (frr)
-                    mwexecf('/sbin/ifconfig %s %s %s', array(
+                    mwexecf('/sbin/ifconfig %s %s %s', [
                         $intf, $endpoint['inet'],  sprintf("%s/%s", $endpoint['tunnel_local'], $endpoint['mask'])
-                    ));
+                    ]);
                 }
             }
         }
@@ -1977,4 +2008,9 @@ function ipsec_configure_vti($verbose = false)
     if ($verbose) {
         echo "done.\n";
     }
+}
+
+function ipsec_configure_device($device)
+{
+    ipsec_configure_vti(false, $device);
 }
