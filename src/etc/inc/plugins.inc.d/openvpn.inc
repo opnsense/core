@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2006 Fernando Lemos
@@ -33,13 +33,12 @@
 
 function openvpn_configure()
 {
-    return array(
-        'crl' => array('openvpn_refresh_crls:0'),
-        'openvpn_prepare' => array('openvpn_prepare:2'),
-        'remote' => array('openvpn_configure_do'),
-        'openvpn' => array('openvpn_configure_do:2'),
-        'vpn' => array('openvpn_configure_do:2'),
-    );
+    return [
+        'crl' => ['openvpn_refresh_crls:0'],
+        'remote' => ['openvpn_configure_do'],
+        'openvpn' => ['openvpn_configure_do:2'],
+        'vpn' => ['openvpn_configure_do:2'],
+    ];
 }
 
 function openvpn_syslog()
@@ -84,7 +83,7 @@ function openvpn_interfaces()
 
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if (empty($settings['disable'])) {
                     $oic = array('enable' => true);
                     $oic['if'] = 'openvpn';
@@ -100,6 +99,30 @@ function openvpn_interfaces()
     }
 
     return $interfaces;
+}
+
+function openvpn_devices()
+{
+    global $config;
+
+    $names = [];
+
+    foreach (['server', 'client'] as $mode) {
+        if (!empty($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
+                $names[] = "ovpn{$mode[0]}{$settings['vpnid']}";
+            }
+        }
+    }
+
+    return [[
+        'function' => 'openvpn_prepare', /* XXX not the same as real configuration */
+        'configurable' => false,
+        'pattern' => '^ovpn',
+        'type' => 'openvpn',
+        'volatile' => true,
+        'names' => $names,
+    ]];
 }
 
 function openvpn_xmlrpc_sync()
@@ -172,7 +195,7 @@ function openvpn_vpnid_used($vpnid)
     global $config;
 
     if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as &$settings) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if ($vpnid == $settings['vpnid']) {
                 return true;
             }
@@ -180,7 +203,7 @@ function openvpn_vpnid_used($vpnid)
     }
 
     if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as &$settings) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
             if ($vpnid == $settings['vpnid']) {
                 return true;
             }
@@ -1058,31 +1081,19 @@ function openvpn_fetch_csc_list()
     return $result;
 }
 
-function openvpn_prepare($verbose = false, $interface = null)
+function openvpn_prepare($device)
 {
     global $config;
 
-    if (!isset($config['openvpn'])) {
-        return;
-    }
-
-    if ($verbose) {
-        echo 'Creating OpenVPN instances...';
-        flush();
-    }
-
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
-                if (empty($interface) || $interface == "ovpn${mode[0]}{$settings['vpnid']}") {
+    foreach (['server', 'client'] as $mode) {
+        if (!empty($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
+                if ($device == "ovpn{$mode[0]}{$settings['vpnid']}") {
                     openvpn_reconfigure($mode, $settings, true);
+                    return;
                 }
             }
         }
-    }
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
@@ -1092,7 +1103,7 @@ function openvpn_configure_single($id)
 
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if ($id != $settings['vpnid']) {
                     continue;
                 }
@@ -1131,7 +1142,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
 
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if (empty($interface) || $interface == $settings['interface']) {
                     openvpn_reconfigure($mode, $settings, $carp_event);
                     openvpn_restart($mode, $settings, $carp_event);
@@ -1154,7 +1165,7 @@ function openvpn_get_active_servers($type = 'multipoint')
     $servers = array();
 
     if (!empty($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as &$settings) {
+        foreach ($config['openvpn']['openvpn-server'] as $settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
             }
@@ -1259,7 +1270,7 @@ function openvpn_get_active_clients()
     $clients = array();
 
     if (!empty($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as &$settings) {
+        foreach ($config['openvpn']['openvpn-client'] as $settings) {
             if (empty($settings) || isset($settings['disable'])) {
                 continue;
             }

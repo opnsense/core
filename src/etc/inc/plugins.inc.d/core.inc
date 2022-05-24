@@ -177,7 +177,6 @@ function core_devices()
     $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
     $devices[] = array('pattern' => '^lagg', 'volatile' => true);
     $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
-    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^ppp', 'volatile' => true);
     $devices[] = array('pattern' => '^pptp', 'volatile' => true);
     $devices[] = array('pattern' => '^tinc', 'volatile' => true);

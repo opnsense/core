@@ -762,9 +762,6 @@ function interfaces_configure($verbose = false)
     interfaces_lagg_configure($verbose);
     interfaces_vlan_configure($verbose);
 
-    /* XXX: temporary plugin spot for device creation (independent of other devices) */
-    plugins_configure('openvpn_prepare', $verbose);
-
     /* run through priority lists */
     foreach ([$hardware, $virtual, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $device => $if) {
