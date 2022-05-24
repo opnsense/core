@@ -43,7 +43,8 @@ define("OCSP_REVOKED_STATUS_SUPERSEDED", 4);
 define("OCSP_REVOKED_STATUS_CESSATIONOFOPERATION", 5);
 define("OCSP_REVOKED_STATUS_CERTIFICATEHOLD", 6);
 
-function crl_status_code() {
+function crl_status_code()
+{
     /* Array index 0 is a description, index 1 is the key used by phpseclib */
     return array(
         OCSP_REVOKED_STATUS_NOSTATUS              => ["No Status (default)", "unused"],
