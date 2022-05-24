@@ -36,7 +36,7 @@ require_once("config.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
-require_once("XMLRPC_Client.inc") ;
+require_once("XMLRPC_Client.inc");
 
 /**
  * fetch carp vips from config with modified advskew for the backup host to use
@@ -79,18 +79,16 @@ function carp_check_version($url, $username, $password, $debug = false)
         $remote_version = $client->getResponse();
     } else {
         // propagate error to log
-        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error;
         log_error($error);
-        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
-        return false ;
+        return false;
     }
 
     if (!is_array($remote_version) && trim($remote_version) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url} (opnsense.firmware_version).";
         log_error($error);
-        file_notice($error);
         return false;
     }
 
@@ -208,18 +206,16 @@ function carp_sync_xml($url, $username, $password, $sections, $debug)
         $response = $client->getResponse();
     } else {
         // propagate error to log
-        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error;
         log_error($error);
-        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
-        return false ;
+        return false;
     }
 
     if (!is_array($response) && trim($response) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url} (opnsense.restore_config_section).";
         log_error($error);
-        file_notice($error);
         exit;
     }
 
@@ -279,7 +275,7 @@ if (!empty($config['hasync'])) {
         if (!empty($port)) {
             $synchronizeto = $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
         } else {
-            $synchronizeto = $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php" ;
+            $synchronizeto = $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip']."/xmlrpc.php";
         }
     }
 
@@ -316,18 +312,16 @@ if (!empty($config['hasync'])) {
         $response = $client->getResponse();
     } else {
         // propagate error to log
-        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error ;
+        $error = "An error occurred while attempting XMLRPC sync with username {$username} and {$url} " .  $client->error;
         log_error($error);
-        file_notice($error);
         // print communication details on failure
         echo $client->getDetails();
-        return false ;
+        return false;
     }
 
     if (!is_array($response) && trim($response) == "Authentication failed") {
         $error = "An authentication failure occurred while trying to access {$url}.";
         log_error($error);
-        file_notice($error);
         exit;
     }
 
