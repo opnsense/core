@@ -158,8 +158,10 @@ if __name__ == '__main__':
         if alias.get_parser():
             # only try to replace the contents of this alias if we're responsible for it (know how to parse)
             sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
-            for line in sp.stdout.strip().split('\n'):
-                alias_pf_content.append(line.strip())
+            tmp = sp.stdout.strip()
+            if len(tmp) > 0:
+                for line in tmp.split('\n'):
+                    alias_pf_content.append(line.strip())
 
             if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired):
                 # if the alias is changed, expired or the one in memory has a different number of items, load table
