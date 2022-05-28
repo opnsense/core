@@ -398,7 +398,7 @@ $( document ).ready(function() {
                 <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
                 <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-                                      "IPv6 will be used, if you check this option, IPv4 will be " .
+                                      "IPv6 will be used. If you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
                 </div>
               </td>
