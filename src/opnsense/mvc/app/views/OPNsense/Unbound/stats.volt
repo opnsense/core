@@ -40,9 +40,19 @@
             'recursivereplies': "{{ lang._('Recursive replies') }}",
             'cachemiss': "{{ lang._('Cache misses') }}",
             'cachehits': "{{ lang._('Cache hits') }}",
-            'zero_ttl': "{{ lang._('Zero TTL') }}",
+            'expired': "{{ lang._('Serve expired') }}",
             'prefetch': "{{ lang._('Prefetch') }}",
             'queries': "{{ lang._('Queries') }}",
+        },
+        'requestlist': {
+            'avg': "{{ lang._('Request queue avg') }}",
+            'max': "{{ lang._('Request queue max') }}",
+            'overwritten': "{{ lang._('Request queue overwritten') }}",
+            'exceeded': "{{ lang._('Request queue exceeded') }}",
+            'current': {
+                'all': "{{ lang._('Request queue size (all)') }}",
+                'user': "{{ lang._('Request queue size (client)') }}"
+            }
         }
     };
 
