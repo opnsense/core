@@ -91,9 +91,16 @@
                     let statsView = $("#statsView");
                     statsView.html('');
 
-                    // Sort the keys in order to ensure that Thread 0 will come before Thread 1.
+                    // Sort the keys - ensure total and time is listed first.
                     let dataKeys = Object.keys(data['data']);
-                    dataKeys.sort();
+                    let sortOrder = ['total', 'time'];
+
+                    dataKeys.sort(function(a, b) {
+                        var indA = sortOrder.indexOf(a);
+                        var indB = sortOrder.indexOf(b);
+                        return (indA > -1 ? indA : 999) - (indB > -1 ? indB : 999);
+                    });
+
                     dataKeys.forEach(function(key) {
                         let value = data['data'][key];
                         if (key === 'total' || key.substr(0, 6) === 'thread') {
