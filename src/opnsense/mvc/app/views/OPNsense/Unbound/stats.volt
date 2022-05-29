@@ -40,9 +40,19 @@
             'recursivereplies': "{{ lang._('Recursive replies') }}",
             'cachemiss': "{{ lang._('Cache misses') }}",
             'cachehits': "{{ lang._('Cache hits') }}",
-            'zero_ttl': "{{ lang._('Zero TTL') }}",
+            'expired': "{{ lang._('Serve expired') }}",
             'prefetch': "{{ lang._('Prefetch') }}",
             'queries': "{{ lang._('Queries') }}",
+        },
+        'requestlist': {
+            'avg': "{{ lang._('Request queue avg') }}",
+            'max': "{{ lang._('Request queue max') }}",
+            'overwritten': "{{ lang._('Request queue overwritten') }}",
+            'exceeded': "{{ lang._('Request queue exceeded') }}",
+            'current': {
+                'all': "{{ lang._('Request queue size (all)') }}",
+                'user': "{{ lang._('Request queue size (client)') }}"
+            }
         }
     };
 
@@ -81,9 +91,16 @@
                     let statsView = $("#statsView");
                     statsView.html('');
 
-                    // Sort the keys in order to ensure that Thread 0 will come before Thread 1.
+                    // Sort the keys - ensure total and time is listed first.
                     let dataKeys = Object.keys(data['data']);
-                    dataKeys.sort();
+                    let sortOrder = ['total', 'time'];
+
+                    dataKeys.sort(function(a, b) {
+                        var indA = sortOrder.indexOf(a);
+                        var indB = sortOrder.indexOf(b);
+                        return (indA > -1 ? indA : 999) - (indB > -1 ? indB : 999);
+                    });
+
                     dataKeys.forEach(function(key) {
                         let value = data['data'][key];
                         if (key === 'total' || key.substr(0, 6) === 'thread') {
