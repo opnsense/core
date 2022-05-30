@@ -45,6 +45,9 @@ $copy_fields = array(
     'num_queries_per_thread',
     'outgoing_num_tcp',
     'unwanted_reply_threshold',
+    'serveexpiredtimelimit',
+    'serveexpiredclienttimeout',
+    'serveexpiredreplyttl',
 );
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -181,6 +184,33 @@ include_once("head.inc");
                           <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" data-for="help_for_serveexpired">
                             <?= gettext('Serve expired responses from the cache with a TTL of 0 without waiting for the actual resolution to finish.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_serveexpiredtimelimit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Serve expired responses time limit') ?></td>
+                        <td>
+                          <input name="serveexpiredtimelimit" type="text" id="serveexpiredtimelimit" size="5" value="<?= $pconfig['serveexpiredtimelimit'] ?>" />
+                          <div class="hidden" data-for="help_for_serveexpiredtimelimit">
+                            <?= gettext('Limit serving of expired responses to configured seconds after expiration. 0 disables the limit. This option only applies when serve-expired is enabled. A suggested value per RFC 8767 is between 86400 (1 day) and 259200 (3 days). The default is 0.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_serveexpiredclienttimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Serve expired responses client timeout') ?></td>
+                        <td>
+                          <input name="serveexpiredclienttimeout" type="text" id="serveexpiredclienttimeout" size="5" value="<?= $pconfig['serveexpiredclienttimeout'] ?>" />
+                          <div class="hidden" data-for="help_for_serveexpiredclienttimeout">
+                            <?= gettext('Time in milliseconds before replying to the client with expired data. This essentially enables the serve-stale behavior as specified in RFC 8767 that first tries to resolve before immediately responding with expired data. A recommended value per RFC 8767 is 1800. Setting this to 0 will disable this behavior. Default is 0.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_serveexpiredreplyttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Serve expired responses ttl') ?></td>
+                        <td>
+                          <input name="serveexpiredreplyttl" type="text" id="serveexpiredreplyttl" size="5" value="<?= $pconfig['serveexpiredreplyttl'] ?>" />
+                          <div class="hidden" data-for="help_for_serveexpiredreplyttl">
+                            <?= gettext('TTL value to use when replying with expired data. If serve-expired-client-timeout is also used, then it is RECOMMENDED to use 30 as the value (RFC 8767). The default is 30.') ?>
                           </div>
                         </td>
                       </tr>

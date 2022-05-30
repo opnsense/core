@@ -244,6 +244,9 @@ EOF;
     $rrsetcachesize = $msgcachesize * 2;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
     $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
+    $serveexpiredtimelimit = !empty($config['unbound']['serveexpiredtimelimit']) ? $config['unbound']['serveexpiredtimelimit'] : "0";
+    $serveexpiredclienttimeout = !empty($config['unbound']['serveexpiredclienttimeout']) ? $config['unbound']['serveexpiredclienttimeout'] : "0";
+    $serveexpiredreplyttl = !empty($config['unbound']['serveexpiredreplyttl']) ? $config['unbound']['serveexpiredreplyttl'] : "30";
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -323,6 +326,9 @@ cache-max-ttl: {$cache_max_ttl}
 cache-min-ttl: {$cache_min_ttl}
 harden-dnssec-stripped: {$dnssecstripped}
 serve-expired: {$serveexpired}
+serve-expired-ttl: {$serveexpiredtimelimit}
+serve-expired-client-timeout: {$serveexpiredclienttimeout}
+serve-expired-reply-ttl: {$serveexpiredreplyttl}
 outgoing-num-tcp: {$outgoing_num_tcp}
 incoming-num-tcp: {$incoming_num_tcp}
 num-queries-per-thread: {$num_queries_per_thread}
