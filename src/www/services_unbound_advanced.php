@@ -183,7 +183,7 @@ include_once("head.inc");
                         <td>
                           <input name="serveexpired" type="checkbox" id="serveexpired" value="yes" <?= empty($pconfig['serveexpired']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" data-for="help_for_serveexpired">
-                            <?= gettext('Serve expired responses from the cache with a TTL of 0 without waiting for the actual resolution to finish.') ?>
+                            <?= gettext('Serve expired responses from the cache with a TTL of (Serve expired responses ttl) in the response without waiting for the actual resolution to finish.') ?>
                           </div>
                         </td>
                       </tr>
