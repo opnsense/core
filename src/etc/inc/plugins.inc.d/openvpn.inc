@@ -1140,18 +1140,22 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
         flush();
     }
 
+    $reconfigure_count = 0;
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 if (empty($interface) || $interface == $settings['interface']) {
                     openvpn_reconfigure($mode, $settings, $carp_event);
                     openvpn_restart($mode, $settings, $carp_event);
+                    $reconfigure_count++;
                 }
             }
         }
     }
 
-    configd_run('filter reload'); /* XXX really needed? */
+    if ($reconfigure_count > 0) {
+        configd_run('filter reload'); /* XXX really needed? */
+    }
 
     if ($verbose) {
         echo "done.\n";
