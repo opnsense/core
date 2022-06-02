@@ -55,7 +55,7 @@ abstract class Singleton
      * Do not clone
      * @throws \Exception
      */
-    final private function __clone()
+    private function __clone()
     {
         throw new \Exception("An instance of " . get_called_class() . " cannot be cloned.");
     }
