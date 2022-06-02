@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
     $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
+    $pconfig['deployment'] = $config['system']['deployment'] ?? "production";
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -145,7 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
-            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
+            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
+            ($config['system']['deployment'] ?? null) != $pconfig['deployment'];
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -153,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+        $config['system']['deployment'] = $pconfig['deployment'];
 
         if (!empty($pconfig['ssl-hsts'])) {
             $config['system']['webgui']['ssl-hsts'] = true;
@@ -1019,6 +1022,34 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_user_allow_gen_token">
                     <?= gettext('Permit users to generate their own OTP seed in the password page.') ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Deployment') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_deployment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deployment type")?></td>
+                <td>
+                  <select name="deployment" class="selectpicker">
+                    <option value="production" <?=$pconfig['deployment'] == "production" ? 'selected="selected"' : '';?>>
+                      <?=gettext("Production");?>
+                    </option>
+                    <option value="development" <?=$pconfig['deployment'] == "development" ? 'selected="selected"' : '';?>>
+                      <?=gettext("Development");?>
+                    </option>
+                    <option value="debug" <?=$pconfig['deployment'] == "debug" ? 'selected="selected"' : '';?>>
+                      <?=gettext("Debug");?>
+                    </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_deployment">
+                    <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
+                    <?=gettext("Warning: enabling debug mode will affect the GUI's layout and may break usability.");?>
                   </div>
                 </td>
               </tr>
