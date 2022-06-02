@@ -95,7 +95,8 @@ class ControllerRoot extends Controller
         $this->translator = new ViewTranslator($interpolator, array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
-            'locale' => $locale,
+            /* XXX: Phalcon version check, to be removed */
+            'locale' => explode('.', phpversion("phalcon"))[0] < 5 ? $locale : [$locale]
         ));
 
         /* somehow this is not done by Phalcon */
