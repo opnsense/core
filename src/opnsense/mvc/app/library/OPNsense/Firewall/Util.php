@@ -45,7 +45,12 @@ class Util
     /**
      * @var null|array cached alias descriptions
      */
-    private static $aliasDescriptions = array();
+    private static $aliasDescriptions = [];
+
+    /**
+     * @var array cached getservbyname results
+     */
+    private static $servbynames = [];
 
     /**
      * is provided address an ip address.
@@ -107,6 +112,9 @@ class Util
     public static function attachAliasObject($alias)
     {
         self::$aliasObject = $alias;
+        if ($alias != null) {
+            $alias->flushCache();
+        }
     }
 
     /**
@@ -121,18 +129,18 @@ class Util
         if (self::$aliasObject == null) {
             // Cache the alias object to avoid object creation overhead.
             self::$aliasObject = new Alias();
+            self::$aliasObject->flushCache();
         }
         if (!empty($name)) {
-            foreach (self::$aliasObject->aliasIterator() as $alias) {
-                if ($alias['name'] == $name) {
-                    if ($valid) {
-                        // check validity for port type aliases
-                        if (preg_match("/port/i", $alias['type']) && empty($alias['content'])) {
-                            return false;
-                        }
+            $alias = self::$aliasObject->getByName($name);
+            if ($alias != null) {
+                if ($valid) {
+                    // check validity for port type aliases
+                    if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
+                        return false;
                     }
-                    return true;
                 }
+                return true;
             }
         }
         return false;
@@ -210,6 +218,23 @@ class Util
     }
 
     /**
+     * cached version of getservbyname()
+     * @param string $service service name
+     * @param string $protocol protocol name
+     * @return boolean
+     */
+    private static function getservbyname($service, $protocol)
+    {
+        if (!isset(self::$servbynames[$protocol])){
+            self::$servbynames[$protocol] = [];
+        }
+        if (!isset(self::$servbynames[$protocol][$service])) {
+           self::$servbynames[$protocol][$service] = getservbyname($service, $protocol);
+        }
+        return self::$servbynames[$protocol][$service];
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $number port number or range
      * @param boolean $allow_range ranges allowed
@@ -219,10 +244,9 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if (
-                !getservbyname($port, "tcp") && !getservbyname($port, "udp")
-                && (filter_var($port, FILTER_VALIDATE_INT, array(
-                    "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port))
+            if ((filter_var($port, FILTER_VALIDATE_INT, array(
+                  "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port)) &&
+                !self::getservbyname($port, "tcp") && !self::getservbyname($port, "udp")
             ) {
                 return false;
             }

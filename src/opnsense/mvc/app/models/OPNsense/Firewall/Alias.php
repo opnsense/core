@@ -46,6 +46,11 @@ class Alias extends BaseModel
     private $aliasIteratorCache = [];
 
     /**
+     * alias name cache
+     */
+    private $aliasReferenceCache = [];
+
+    /**
      * return locations where aliases can be used inside the configuration
      * @return array alias source map
      */
@@ -105,6 +110,15 @@ class Alias extends BaseModel
                 }
             }
         }
+    }
+
+    /**
+     * flush cached objects and references
+     */
+    public function flushCache()
+    {
+        $this->aliasIteratorCache = [];
+        $this->aliasReferenceCache = [];
     }
 
     /**
@@ -189,13 +203,31 @@ class Alias extends BaseModel
         }
     }
 
-    public function getByName($name)
+    public function getByName($name, $flush = false)
     {
-        foreach ($this->aliases->alias->iterateItems() as $alias) {
-            if ((string)$alias->name == $name) {
+        if ($flush) {
+            // Flush false negative results (searched earlier, didn't exist at the time) as positive matches will
+            // always be resolved.
+            $this->aliasReferenceCache = [];
+        }
+        // cache alias uuid references, but always validate existence before return.
+        if (isset($this->aliasReferenceCache[$name])) {
+            $uuid = $this->aliasReferenceCache[$name];
+            if ($uuid === false) {
+                return null;
+            }
+            $alias = $this->getNodeByReference("aliases.alias.".$uuid);
+            if ($alias != null && (string)$alias->name == $name) {
                 return $alias;
             }
         }
+        foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
+            if ((string)$alias->name == $name) {
+                $this->aliasReferenceCache[$name] = $uuid;
+                return $alias;
+            }
+        }
+        $this->aliasReferenceCache[$name] = false;
         return null;
     }
 }

@@ -702,15 +702,7 @@ function is_macaddr($macaddr, $partial = false)
 /* returns true if $port is a valid TCP/UDP port */
 function is_port($port)
 {
-    if (getservbyname($port, "tcp") || getservbyname($port, "udp")) {
-        return true;
-    }
-    if (!ctype_digit($port)) {
-        return false;
-    } elseif ((intval($port) < 1) || (intval($port) > 65535)) {
-        return false;
-    }
-    return true;
+    return OPNsense\Firewall\Util::isPort($port, false);
 }
 
 /* returns true if $portrange is a valid TCP/UDP portrange ("<port>:<port>") */
