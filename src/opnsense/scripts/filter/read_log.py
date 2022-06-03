@@ -87,19 +87,8 @@ def fetch_rule_details():
                         if len(rule_md5) == 32 and set(rule_md5).issubset(HEX_DIGITS):
                             rule_map[rule_md5] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
-        # use pfctl to create a list per rule number with the details found
-        sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
-        for line in sp.stdout.strip().split('\n'):
-            if line.startswith('@'):
-                line_id = line.split()[0][1:]
-                if line.find(' label ') > -1:
-                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
-                    if rid in rule_map:
-                        line_id_map[line_id] = {'rid': rid, 'label': rule_map[rid]}
-                    else:
-                        line_id_map[line_id] = {'rid': None, 'label': rid}
 
-    return {'line_ids': line_id_map, 'rule_map': rule_map}
+    return rule_map
 
 
 if __name__ == '__main__':
@@ -172,8 +161,8 @@ if __name__ == '__main__':
                 rule.update(metadata)
                 if rule['rid'] != '0':
                     # rule id in latest record format, don't use rule sequence number in that case
-                    if rule['rid'] in running_conf_descr['rule_map']:
-                        rule['label'] = running_conf_descr['rule_map'][rule['rid']]
+                    if rule['rid'] in running_conf_descr:
+                        rule['label'] = running_conf_descr[rule['rid']]
                     # obsolete md5 in log record
                     else:
                         rule['label'] = ''
@@ -183,14 +172,11 @@ if __name__ == '__main__':
                 elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
                     # rule id apended in record format, don't use rule sequence number in that case either
                     rule['rid'] = rulep[-1]
-                    if rulep[-1] in running_conf_descr['rule_map']:
-                        rule['label'] = running_conf_descr['rule_map'][rulep[-1]]
+                    if rulep[-1] in running_conf_descr:
+                        rule['label'] = running_conf_descr[rulep[-1]]
                     # obsolete md5 in log record
                     else:
                         rule['label'] = ''
-                elif 'rulenr' in rule and rule['rulenr'] in running_conf_descr['line_ids']:
-                    rule['label'] = running_conf_descr['line_ids'][rule['rulenr']]['label']
-                    rule['rid'] = running_conf_descr['line_ids'][rule['rulenr']]['rid']
 
                 result.append(rule)
 
