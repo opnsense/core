@@ -282,23 +282,6 @@ function core_syslog()
     return $logfacilities;
 }
 
-function core_interfaces()
-{
-    return [
-        'lo0' => [
-            'descr' => gettext('Loopback'),
-            'enable' => true,
-            'if' => 'lo0',
-            'ipaddr' => '127.0.0.1',
-            'ipaddrv6' => '::1',
-            'subnet' => '8',
-            'subnetv6' => '128',
-            'type' => 'none',
-            'virtual' => true,
-        ]
-    ];
-}
-
 /**
  *  sync configuration via xmlrpc
  * @return array
