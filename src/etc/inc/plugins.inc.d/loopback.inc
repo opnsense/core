@@ -33,6 +33,23 @@ function loopback_configure()
     );
 }
 
+function loopback_interfaces()
+{
+    return [
+        'lo0' => [
+            'descr' => gettext('Loopback'),
+            'enable' => true,
+            'if' => 'lo0',
+            'ipaddr' => '127.0.0.1',
+            'ipaddrv6' => '::1',
+            'subnet' => '8',
+            'subnetv6' => '128',
+            'type' => 'none',
+            'virtual' => true,
+        ]
+    ];
+}
+
 function loopback_devices()
 {
     $devices = array();
