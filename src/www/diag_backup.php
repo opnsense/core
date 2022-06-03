@@ -63,8 +63,6 @@ function restore_config_section($section_name, $new_contents)
     write_config(sprintf('Restored section %s of config file', $section_name));
     convert_config();
 
-    disable_security_checks();
-
     return true;
 }
 
@@ -209,11 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($data)) {
                 $input_errors[] = gettext('The uploaded file could not be decrypted.');
             }
-        }
-
-        if(!empty($_POST['restorearea']) && !stristr($data, "<" . $_POST['restorearea'] . ">")) {
-            /* restore a specific area of the configuration */
-            $input_errors[] = gettext("You have selected to restore an area but we could not locate the correct xml tag.");
         }
 
         if (count($input_errors) == 0) {

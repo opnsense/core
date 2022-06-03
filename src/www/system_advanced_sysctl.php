@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2005-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -32,6 +32,8 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
+$a_defaults = system_sysctl_defaults();
+$a_system = []; /* to be filled from defaults */
 $a_tunable = &config_read_array('sysctl', 'item');
 $a_sysctl = json_decode(configd_run('system sysctl'), true);
 
@@ -44,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $act = null;
     }
-    $pconfig = array();
+    $pconfig = [];
     if (isset($id)) {
         $pconfig['tunable'] = $a_tunable[$id]['tunable'];
         $pconfig['value'] = $a_tunable[$id]['value'];
         $pconfig['descr'] = $a_tunable[$id]['descr'];
     } else {
-        $pconfig['tunable'] = null;
+        $pconfig['tunable'] = isset($_GET['tunable']) ? $_GET['tunable'] : null;
         $pconfig['value'] = null;
         $pconfig['descr'] = null;
     }
@@ -90,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     } elseif (!empty($pconfig['Submit'])) {
-        $tunableent = array();
+        $tunableent = [];
         $tunableent['tunable'] = $pconfig['tunable'];
         $tunableent['value'] = $pconfig['value'];
         $tunableent['descr'] = $pconfig['descr'];
@@ -108,11 +110,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-/* translate hidden strings before HTML escape */
-foreach ($a_tunable as &$tunable) {
+foreach ($a_defaults as $name => $info) {
+    if (!empty($info['required'])) {
+        $a_system[] = $name;
+    }
+}
+
+foreach ($a_tunable as $key => &$tunable) {
+    /* translate hidden strings before HTML escape */
     if (!empty($tunable['descr'])) {
         $tunable['descr'] = gettext($tunable['descr']);
+    } elseif (!empty($a_sysctl[$tunable['tunable']]['description'])) {
+        $tunable['descr'] = $a_sysctl[$tunable['tunable']]['description'];
     }
+
+    if (!empty($a_defaults[$tunable['tunable']]['type'])) {
+        $tunable['type'] = $a_defaults[$tunable['tunable']]['type'];
+    } elseif (!empty($a_sysctl[$tunable['tunable']]['type'])) {
+        $tunable['type'] = $a_sysctl[$tunable['tunable']]['type'];
+    }
+
+    /* add the key for config-bound tunables */
+    $tunable['key'] = $key;
+
+    /* remove system defaults in config items */
+    $pos = array_search($tunable['tunable'], $a_system);
+    if ($pos !== false) {
+        unset($a_system[$pos]);
+    }
+}
+
+foreach ($a_system as $default) {
+    /* display system defaults as well */
+    $next = [ 'tunable' => $default, 'value' => 'default', 'descr' => $a_sysctl[$default]['description'] ];
+    if (!empty($a_defaults[$default]['type'])) {
+        $next['type'] = $a_defaults[$default]['type'];
+    } elseif (!empty($a_sysctl[$default]['type'])) {
+        $next['type'] = $a_sysctl[$default]['type'];
+    }
+    $a_tunable[] = $next;
 }
 
 uasort($a_tunable, function($a, $b) {
@@ -205,41 +241,39 @@ $( document ).ready(function() {
               <th><?= gettext('Type') ?></th>
               <th><?= gettext('Value') ?></th>
               <th class="text-nowrap">
-<?php if ($act != 'edit'): ?>
                 <a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
                   <i class="fa fa-plus fa-fw"></i>
                 </a>
                 <a href="#set_defaults" class="btn btn-danger btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Default')) ?>">
                   <i class="fa fa-trash-o fa-fw"></i>
                 </a>
-<?php endif ?>
               </th>
             </tr>
-<?php foreach ($a_tunable as $i => &$tunable): ?>
+<?php foreach ($a_tunable as &$tunable): ?>
               <tr>
                 <td><?= $tunable['tunable'] ?></td>
                 <td>
-<?php if (!empty($tunable['descr'])): ?>
+<?php if (isset($tunable['descr'])): ?>
                   <?= $tunable['descr'] ?>
-<?php else: ?>
-                  <?= $a_sysctl[$tunable['tunable']]['description'] ?>
 <?php endif ?>
                 </td>
                 <td>
-<?php if (empty($a_sysctl[$tunable['tunable']]['type'])): ?>
+<?php if (empty($tunable['type']) && strpos($tunable['tunable'], '.') !== false): ?>
                   <span class="text-danger"><?= gettext('unsupported') ?></span>
-<?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 'w'): ?>
+<?php elseif ($tunable['type'] === 'w'): ?>
                   <?= gettext('runtime') ?>
-<?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 't'): ?>
+<?php elseif ($tunable['type'] === 't'): ?>
                   <?= gettext('boot-time') ?>
-<?php elseif ($a_sysctl[$tunable['tunable']]['type'] == 'r'): ?>
+<?php elseif ($tunable['type'] === 'r'): ?>
                   <span class="text-danger"><?= gettext('read-only') ?></span>
+<?php else: ?>
+                  <?= gettext('environment') ?>
 <?php endif ?>
                 </td>
                 <td>
 <?php if ($tunable['value'] == 'default'): ?>
-<?php if (($default = get_default_sysctl_value($tunable['tunable'])) !== null): ?>
-                  <?= gettext('default') . ' (' . $default . ')' ?>
+<?php if (!empty($a_defaults[$tunable['tunable']])): ?>
+                  <?= gettext('default') . ' (' . $a_defaults[$tunable['tunable']]['default'] . ')' ?>
 <?php else: ?>
                   <span class="text-danger"><?= gettext('unknown') ?></span>
 <?php endif ?>
@@ -248,12 +282,18 @@ $( document ).ready(function() {
 <?php endif ?>
                 </td>
                 <td class="text-nowrap">
-                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>">
+<?php if (array_key_exists('key', $tunable)): ?>
+                  <a href="system_advanced_sysctl.php?act=edit&amp;id=<?= $tunable['key'] ?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                     <i class="fa fa-pencil fa-fw"></i>
                   </a>
-                  <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                  <a id="del_<?= $tunable['key'] ?>" data-id="<?= $tunable['key'] ?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                     <span class="fa fa-trash fa-fw"></span>
                   </a>
+<?php else: ?>
+                  <a href="system_advanced_sysctl.php?act=edit&amp;tunable=<?= $tunable['tunable'] ?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
+                    <i class="fa fa-pencil fa-fw"></i>
+                  </a>
+<?php endif ?>
                 </td>
               </tr>
 <?php endforeach ?>

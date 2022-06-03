@@ -97,40 +97,40 @@ if __name__ == '__main__':
                 for rec in reverse_log_reader(filename):
                     row_number += 1
                     if rec['line'] != "" and filter_regexp.match(('%s' % rec['line']).lower()):
-                        result['total_rows'] += 1
-                        if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                            record = {
-                                'timestamp': None,
-                                'parser': None,
-                                'facility': 1,
-                                'severity': 3,
-                                'process_name': '',
-                                'pid': None,
-                                'rnum': row_number
-                            }
-                            frmt = format_container.get_format(rec['line'])
-                            if frmt:
-                                if issubclass(frmt.__class__, BaseLogFormat):
-                                    # backwards compatibility, old style log handler
-                                    record['timestamp'] = frmt.timestamp(rec['line'])
-                                    record['process_name'] = frmt.process_name(rec['line'])
-                                    record['line'] = frmt.line(rec['line'])
-                                    record['parser'] = frmt.name
-                                else:
-                                    record['timestamp'] = frmt.timestamp
-                                    record['process_name'] = frmt.process_name
-                                    record['pid'] = frmt.pid
-                                    record['facility'] = frmt.facility
-                                    record['severity'] = frmt.severity_str
-                                    record['line'] = frmt.line
-                                    record['parser'] = frmt.name
+                        frmt = format_container.get_format(rec['line'])
+                        record = {
+                            'timestamp': None,
+                            'parser': None,
+                            'facility': 1,
+                            'severity': None,
+                            'process_name': '',
+                            'pid': None,
+                            'rnum': row_number
+                        }
+                        if frmt:
+                            if issubclass(frmt.__class__, BaseLogFormat):
+                                # backwards compatibility, old style log handler
+                                record['timestamp'] = frmt.timestamp(rec['line'])
+                                record['process_name'] = frmt.process_name(rec['line'])
+                                record['line'] = frmt.line(rec['line'])
+                                record['parser'] = frmt.name
                             else:
-                                record['line'] = rec['line']
-                            if len(severity) == 0 or record['severity'] in severity:
+                                record['timestamp'] = frmt.timestamp
+                                record['process_name'] = frmt.process_name
+                                record['pid'] = frmt.pid
+                                record['facility'] = frmt.facility
+                                record['severity'] = frmt.severity_str
+                                record['line'] = frmt.line
+                                record['parser'] = frmt.name
+                        else:
+                            record['line'] = rec['line']
+                        if len(severity) == 0 or record['severity'] is None or record['severity'] in severity:
+                            result['total_rows'] += 1
+                            if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
                                 result['rows'].append(record)
-                        elif limit > 0 and result['total_rows'] > offset + limit:
-                            # do not fetch data until end of file...
-                            break
+                            elif limit > 0 and result['total_rows'] > offset + limit:
+                                # do not fetch data until end of file...
+                                break
             if limit > 0 and result['total_rows'] > offset + limit:
                 break
 

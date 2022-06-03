@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014-2016 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
@@ -37,7 +37,18 @@ function val_int_in_range($value, $min, $max) {
     return (((string)(int)$value) == $value) && $value >= $min && $value <= $max;
 }
 
-$advanced_options = array('AdvDefaultLifetime', 'AdvValidLifetime', 'AdvPreferredLifetime', 'AdvRDNSSLifetime', 'AdvDNSSLLifetime', 'AdvRouteLifetime', 'AdvLinkMTU');
+$advanced_options = [
+    'AdvDefaultLifetime',
+    'AdvValidLifetime',
+    'AdvPreferredLifetime',
+    'AdvRDNSSLifetime',
+    'AdvDNSSLLifetime',
+    'AdvRouteLifetime',
+    'AdvLinkMTU',
+    'AdvDeprecatePrefix',
+    'AdvRemoveRoute',
+];
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
@@ -62,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
     $pconfig['radisablerdnss'] = isset($config['dhcpdv6'][$if]['radisablerdnss']);
     $pconfig['radefault'] = empty($config['dhcpdv6'][$if]['ranodefault']) ? true : null;
-    $pconfig['rastatic'] = !empty($config['dhcpdv6'][$if]['rastatic']);
 
     // defaults
     if (empty($pconfig['ramininterval'])) {
@@ -179,7 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $config['dhcpdv6'][$if]['rasamednsasdhcp6'] = !empty($pconfig['rasamednsasdhcp6']);
         $config['dhcpdv6'][$if]['radisablerdnss'] = !empty($pconfig['radisablerdnss']);
-        $config['dhcpdv6'][$if]['rastatic'] = !empty($pconfig['rastatic']);
 
         if (count($pconfig['raroutes'])) {
             $config['dhcpdv6'][$if]['raroutes'] = implode(',', $pconfig['raroutes']);
@@ -310,42 +319,31 @@ include("head.inc");
                     </td>
                   </tr>
 <?php
-                    $carplist = get_configured_carp_interface_list();
-                    $aliaslist = get_configured_ip_aliases_list();
-                    $carplistif = [];
-                    $ailiaslistif = [];
-                    foreach ($carplist as $ifname => $vip) {
+                    $carplist = [];
+                    $aliaslist = [];
+                    foreach (get_configured_carp_interface_list() as $ifname => $vip) {
                       if ((preg_match("/^{$if}_/", $ifname)) && (is_linklocal($vip))) {
-                        $carplistif[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
+                        $carplist[$ifname] = convert_friendly_interface_to_friendly_descr($ifname);
                       }
                     }
-                    foreach ($aliaslist as $vip => $ifname) {
+                    foreach (get_configured_ip_aliases_list() as $vip => $ifname) {
                       if ($ifname == $if && (is_linklocal($vip)))
-                        $aliaslistif[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
+                        $aliaslist[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
                         <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('Automatic') ?></option>
-<?php foreach ($carplistif as $ifname => $descr): ?>
+<?php foreach ($carplist as $ifname => $descr): ?>
                         <option value="<?= html_safe($ifname) ?>" <?= $pconfig['rainterface'] == $ifname ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
-<?php foreach ($aliaslistif as $vip => $descr): ?>
+<?php foreach ($aliaslist as $vip => $descr): ?>
                         <option value="<?= html_safe($vip) ?>" <?= $pconfig['rainterface'] == $vip ? 'selected="selected"' : '' ?>><?= $descr ?></option>
 <?php endforeach ?>
                       </select>
                       <div class="hidden" data-for="help_for_rainterface">
-                        <?= gettext('Select the source address embedded in the RA messages. If a CARP address is used static mode is assumed.') ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_rastatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Static Mode') ?></td>
-                    <td>
-                      <input id="rastatic" name="rastatic" type="checkbox" value="yes" <?= !empty($pconfig['rastatic']) ? 'checked="checked"' : '' ?>/>
-                      <div class="hidden" data-for="help_for_rastatic">
-                        <?= gettext('When a CARP address is not configured using the source address setting the adverisement behaviour can still be made static with this option.') ?>
+                        <?= gettext('Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.') ?>
                       </div>
                     </td>
                   </tr>

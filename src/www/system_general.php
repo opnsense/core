@@ -44,11 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
     if (!empty($config['system']['dnsallowoverride_exclude'])) {
-        $pconfig['dnsallowoverride_exclude'] = explode(",", $config['system']['dnsallowoverride_exclude']);
+        $pconfig['dnsallowoverride_exclude'] = explode(',', $config['system']['dnsallowoverride_exclude']);
     } else {
-        $pconfig['dnsallowoverride_exclude'] = array();
+        $pconfig['dnsallowoverride_exclude'] = [];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
+    $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'];
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
@@ -74,6 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields = explode(" ", "hostname domain");
     $reqdfieldsn = array(gettext("Hostname"),gettext("Domain"));
 
+    if (empty($pconfig['dnsallowoverride_exclude'])) {
+        $pconfig['dnsallowoverride_exclude'] = [];
+    }
+
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     if (!empty($pconfig['hostname']) && !is_hostname($pconfig['hostname'])) {
@@ -81,6 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
+    }
+    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'])) {
+        $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
     /* collect direct attached networks and static routes */
@@ -154,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($pconfig['dnsallowoverride'])) {
             $config['system']['dnsallowoverride'] = true;
-            $config['system']['dnsallowoverride_exclude'] = empty($pconfig['dnsallowoverride_exclude']) ? "" : implode(",", $pconfig['dnsallowoverride_exclude']);
+            $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
         } elseif (isset($config['system']['dnsallowoverride'])) {
             unset($config['system']['dnsallowoverride']);
             if (isset($config['system']['dnsallowoverride_exclude'])) {
@@ -166,6 +174,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
+        }
+
+        if (!empty($pconfig['dnssearchdomain'])) {
+            $config['system']['dnssearchdomain'] = $pconfig['dnssearchdomain'];
+        } elseif (isset($config['system']['dnssearchdomain'])) {
+            unset($config['system']['dnssearchdomain']);
         }
 
         if (!empty($pconfig['gw_switch_default'])) {
@@ -214,7 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_timezone_configure();
         system_trust_configure();
 
-        prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();
@@ -385,7 +398,7 @@ $( document ).ready(function() {
                 <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
                 <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-                                      "IPv6 will be used, if you check this option, IPv4 will be " .
+                                      "IPv6 will be used. If you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
                 </div>
               </td>
@@ -439,6 +452,16 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
+              <td><a id="help_for_dnssearchdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS search domain') ?></td>
+              <td>
+                <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
+                <div class="hidden" data-for="help_for_dnssearchdomain">
+                  <?= gettext('Enter an additional domain to add to the local list of search domains.') ?>
+                </div>
+              </td>
+            </tr>
+            <tr>
+            <tr>
               <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
               <td>
                 <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
@@ -456,13 +479,11 @@ $( document ).ready(function() {
                   <strong><?=gettext("Exclude interfaces");?></strong>
                   <br/>
                   <select name="dnsallowoverride_exclude[]" class="selectpicker" data-style="btn-default" data-live-search="true"  multiple="multiple">
-<?php
-                  foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg):?>
+<?php foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $iface => $ifcfg): ?>
                     <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['dnsallowoverride_exclude']) ? "selected='selected'" : "";?>>
                       <?= $ifcfg['descr'] ?>
                     </option>
-<?php
-                  endforeach;?>
+<?php endforeach ?>
                   </select>
                 </div>
               </td>

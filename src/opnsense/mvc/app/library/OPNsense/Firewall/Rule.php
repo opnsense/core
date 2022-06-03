@@ -280,6 +280,8 @@ abstract class Rule
                     if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
                         // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
                         $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
+                    } elseif ($port == 'any') {
+                        $port = null;
                     }
                     if (Util::isPort($port)) {
                         $rule[$target . "_port"] = $port;

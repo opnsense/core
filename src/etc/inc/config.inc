@@ -63,22 +63,10 @@ function load_config_from_file($filename)
  ******/
 function parse_config()
 {
-    global $aliastable;
-
     $cnf = OPNsense\Core\Config::getInstance();
 
     // return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
     $config = $cnf->toArray(listtags());
-
-    $aliastable = array();
-
-    foreach ((new \OPNsense\Firewall\Alias())->aliasIterator() as $alias) {
-        if (strncmp($alias['type'], 'url', 3) !== 0) {
-            $aliastable[$alias['name']] = implode(" ", explode("\n", $alias['content']));
-        } else {
-            $aliastable[$alias['name']] = "";
-        }
-    }
 
     return $config;
 }
@@ -147,7 +135,7 @@ function write_config($desc = '', $backup = true)
             $user = getUserEntry($_SESSION['Username']);
             if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
                 // okay, it's not very nice to check permissions here, but let's make it explicit while we do...
-                log_error("WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
+                syslog(LOG_ERR, "WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
                 return false;
             }
         }
@@ -185,38 +173,11 @@ function config_restore($conffile)
     $cnf->backup();
     $cnf->restoreBackup($conffile);
 
-    disable_security_checks();
-
     $config = parse_config();
 
     write_config(sprintf('Reverted to %s', array_pop(explode('/', $conffile))), false);
 
     return 0;
-}
-
-/*
- * Disable security checks for DNS rebind and HTTP referrer until next time
- * they pass (or reboot), to aid in preventing accidental lockout when
- * restoring settings like hostname, domain, IP addresses, and settings
- * related to the DNS rebind and HTTP referrer checks.
- * Intended for use when restoring a configuration or directly
- * modifying config.xml without an unconditional reboot.
- */
-function disable_security_checks()
-{
-    touch('/tmp/disable_security_checks');
-}
-
-/* Restores security checks.  Should be called after all succeed. */
-function restore_security_checks()
-{
-    @unlink('/tmp/disable_security_checks');
-}
-
-/* Returns status of security check temporary disable. */
-function security_checks_disabled()
-{
-    return file_exists('/tmp/disable_security_checks');
 }
 
 function &config_read_array()

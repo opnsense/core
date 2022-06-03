@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
+    Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,12 +29,21 @@
     return current sysctl(8) information
 """
 
+import os
 import subprocess
+import sys
 import ujson
 
 # type mapping: r => read-only, t => boot-time, w => runtime
 
 if __name__ == '__main__':
+    _cache_filename = "/tmp/sysctl_map.cache"
+
+    if os.path.exists(_cache_filename):
+        f = open(_cache_filename, "r")
+        print(f.read())
+        sys.exit(0)
+
     result = {}
     sp = subprocess.run(['/sbin/sysctl', '-a'], capture_output=True, text=True)
     for line in sp.stdout.split("\n"):
@@ -62,4 +71,11 @@ if __name__ == '__main__':
         part = line.strip()
         if part in result:
             result[part].update({'type': 'w'})
-    print (ujson.dumps(result))
+
+    output = ujson.dumps(result)
+
+    f = open(_cache_filename, "w")
+    f.write(output)
+    f.close()
+
+    print (output)

@@ -30,7 +30,20 @@ set -e
 
 # prepare and startup unbound, so we can easily background it
 
-chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key
+# if the root.key file is missing or damaged, run unbound-anchor
+if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
+	# unbound-anchor has undefined behaviour if file is corrupted, start clean
+	rm -f /var/unbound/root.key
+
+	# if we are in forwarding mode, prefer to use the configured system nameservers
+	if [ -s /var/unbound/resolv.conf.root ]; then
+		OPT_RESOLVE="-Rf /var/unbound/resolv.conf.root"
+	fi
+
+	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
+	# always let this succeed
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE} || true
+fi
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
     chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound

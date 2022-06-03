@@ -31,6 +31,8 @@ PACKAGE=${1}
 : > ${LOCKFILE}
 
 echo "***GOT REQUEST TO LOCK***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
 if [ "${PACKAGE}" = "base" ]; then
 	echo "Locking base set" >> ${LOCKFILE}
 	opnsense-update -bL >> ${LOCKFILE} 2>&1
@@ -40,4 +42,5 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 else
 	pkg lock -y ${PACKAGE} >> ${LOCKFILE} 2>&1
 fi
+
 echo '***DONE***' >> ${LOCKFILE}

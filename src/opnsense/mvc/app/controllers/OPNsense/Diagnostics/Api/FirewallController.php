@@ -28,7 +28,7 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use Phalcon\Filter;
+use OPNsense\Phalcon\Filter\Filter;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -39,7 +39,6 @@ use OPNsense\Core\Config;
  */
 class FirewallController extends ApiControllerBase
 {
-
     /**
      * retrieve firewall log
      * @return array

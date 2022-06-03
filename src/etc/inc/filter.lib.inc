@@ -147,20 +147,21 @@ function filter_core_get_antilockout()
  * recursively collect port alias(es) contents
  * @param string|null $aliasname alias name, or null to fetch all aliases
  * @param array $aliases aliases already parsed (prevent deadlock)
+ * @param array $all_aliases all known alias names
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject = null)
+function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = null, $all_aliases = [])
 {
-    $response = array();
+    $response = [];
     $aliases[] = $aliasname;
     $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
-        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
-            foreach (explode("\n", $aliased['content']) as $address) {
-                if (is_alias($address)) {
+        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
+            foreach ($aliased['content'] as $address) {
+                if (in_array($address, $all_aliases)) {
                     if (!in_array($address, $aliases)) {
-                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject) as $port) {
+                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject, $all_aliases) as $port) {
                             if (!in_array($port, $response)) {
                                 $response[] = $port;
                             }
@@ -225,7 +226,7 @@ function filter_core_rules_system($fw, $defaults)
     // default Deny rule (when no other rules match)
     $fw->registerFilterRule(
         1,
-        array('ipprotocol' => 'inet46', 'descr' => 'Default deny rule', 'quick' => false),
+        array('ipprotocol' => 'inet46', 'descr' => 'Default deny / state violation rule', 'quick' => false),
         $defaults['block']
     );
 
@@ -275,11 +276,14 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
     // CARP defaults
-    $fw->registerFilterRule(
-        1,
-        array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
-        $defaults['pass']
-    );
+    foreach (['ff02::12', '224.0.0.18'] as $to) {
+        $fw->registerFilterRule(
+            1,
+            ['protocol' => 'carp', 'direction' => 'any', 'to' => $to, 'descr' => 'CARP defaults',
+                '#ref' => 'firewall_virtual_ip.php'],
+            $defaults['pass']
+        );
+    }
 
     // Lockout rules
     $fw->registerFilterRule(
@@ -527,8 +531,8 @@ function filter_core_rules_system($fw, $defaults)
                 break;
         }
     }
-    // loopback
-    $fw->registerFilterRule(5, array('interface' => 'lo0', 'descr' => 'pass loopback'), $defaults['pass']);
+    // loopback. dont log internal communications
+    $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
     // out from this Firewall
     $fw->registerFilterRule(
         5,

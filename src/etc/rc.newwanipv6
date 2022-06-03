@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -75,14 +75,17 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-interfaces_vips_configure(false, $interface);
-
-if (count(link_interface_to_track6($interface, true))) {
-    plugins_configure('dhcp', false, array('inet6'));
-}
+interfaces_vips_configure($interface, 6);
 
 system_resolvconf_generate();
 system_hosts_generate();
+
+if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
+    /* require immediate recofiguration before reconfiguring clients */
+    plugins_configure('dhcp', false, ['inet6']);
+}
+
+link_interface_to_track6($interface, true);
 
 $cacheip_file = "/tmp/{$interface_real}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));

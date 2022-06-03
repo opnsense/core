@@ -138,9 +138,6 @@
             <LAGG url="/interfaces_lagg.php">
                 <Edit url="/interfaces_lagg_edit.php*" visibility="hidden"/>
             </LAGG>
-            <VLAN url="/interfaces_vlan.php">
-                <Edit url="/interfaces_vlan_edit.php*" visibility="hidden"/>
-            </VLAN>
         </Types>
         <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php">

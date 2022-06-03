@@ -35,8 +35,8 @@ require_once("filter.inc");
 $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
-$ifacelist = array();
-foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+$ifacelist = [];
+foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $intf => $intfdata) {
     if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
         $ifacelist[$intf] = $intfdata['descr'];
     }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     // copy fields 1-on-1
-    $copy_fields = array('descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span');
+    $copy_fields = ['descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span'];
     foreach ($copy_fields as $fieldname) {
         if (isset($a_bridges[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_bridges[$id][$fieldname];
@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['linklocal'] = !empty($a_bridges[$id]['linklocal']);
 
     // simple array fields
-    $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
+    $array_fields = ['members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'];
     foreach ($array_fields as $fieldname) {
         if (!empty($a_bridges[$id][$fieldname])) {
             $pconfig[$fieldname] = explode(',', $a_bridges[$id][$fieldname]);
         } else {
-            $pconfig[$fieldname] = array();
+            $pconfig[$fieldname] = [];
         }
     }
 
@@ -90,41 +90,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "members");
-    $reqdfieldsn = array(gettext("Member Interfaces"));
+    $reqdfieldsn = [gettext('Member Interfaces')];
 
-    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (!empty($pconfig['maxage']) && !is_numeric($pconfig['maxage'])) {
+    $not_between_int = function($val, $min, $max) {
+        return !is_numeric($val) || $val < $min || $val > $max;
+    };
+
+    if (!empty($pconfig['maxage']) && $not_between_int($pconfig['maxage'], 6, 40)) {
         $input_errors[] = gettext("Maxage needs to be an integer between 6 and 40.");
     }
-    if (!empty($pconfig['maxaddr']) && !is_numeric($pconfig['maxaddr'])) {
+    if ($pconfig['maxaddr'] != "" && $not_between_int($pconfig['maxaddr'], 0, PHP_INT_MAX)) {
         $input_errors[] = gettext("Maxaddr needs to be an integer.");
     }
-    if (!empty($pconfig['timeout']) && !is_numeric($pconfig['timeout'])) {
+    if ($pconfig['timeout'] != "" && $not_between_int($pconfig['timeout'], 0, PHP_INT_MAX)) {
         $input_errors[] = gettext("Timeout needs to be an integer.");
     }
-    if (!empty($pconfig['fwdelay']) && !is_numeric($pconfig['fwdelay'])) {
+    if (!empty($pconfig['fwdelay']) && $not_between_int($pconfig['fwdelay'], 4, 30)) {
         $input_errors[] = gettext("Forward Delay needs to be an integer between 4 and 30.");
     }
-    if (!empty($pconfig['hellotime']) && !is_numeric($pconfig['hellotime'])) {
+    if (!empty($pconfig['hellotime']) && $not_between_int($pconfig['hellotime'], 1, 2)) {
         $input_errors[] = gettext("Hello time for STP needs to be an integer between 1 and 2.");
     }
-    if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
+    if ($pconfig['priority'] != "" && $not_between_int($pconfig['priority'], 0, 61440)) {
         $input_errors[] = gettext("Priority for STP needs to be an integer between 0 and 61440.");
     }
-    if (!empty($pconfig['holdcnt']) && !is_numeric($pconfig['holdcnt'])) {
+    if (!empty($pconfig['holdcnt']) && $not_between_int($pconfig['holdcnt'], 1, 10)) {
         $input_errors[] = gettext("Transmit Hold Count for STP needs to be an integer between 1 and 10.");
     }
     foreach ($ifacelist as $ifn => $ifdescr) {
-        if (!empty($pconfig['ifpriority_'.$ifn]) && !is_numeric($pconfig['ifpriority_'.$ifn])) {
+        if ($pconfig['ifpriority_'.$ifn] != "" && $not_between_int($pconfig['ifpriority_'.$ifn], 0, 240)) {
             $input_errors[] = sprintf(gettext("%s interface priority for STP needs to be an integer between 0 and 240."), $ifdescr);
         }
-        if (!empty($pconfig['ifpathcost_'.$ifn]) && !is_numeric($pconfig['ifpathcost_'.$ifn])) {
+        if (!empty($pconfig['ifpathcost_'.$ifn]) && $not_between_int($pconfig['ifpathcost_'.$ifn], 1, 200000000)) {
             $input_errors[] = sprintf(gettext("%s interface path cost for STP needs to be an integer between 1 and 200000000."), $ifdescr);
         }
     }
@@ -143,6 +147,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    $members = !empty($pconfig['members']) ? $pconfig['members'] : [];
+    foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'] as $section) {
+        if (!empty($pconfig[$section])) {
+            foreach ($pconfig[$section] as $if) {
+                if (!in_array($if, $members)) {
+                    $ifname = !empty($ifacelist[$if]) ? $ifacelist[$if] : $if;
+                    $input_errors[] = gettext(sprintf("Option %s contains non bridge member interface %s", $section, $ifname));
+                }
+            }
+        }
+    }
+
     if (count($input_errors) == 0) {
         $bridge = [];
 
@@ -154,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // 1 on 1 copy
-        $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
+        $copy_fields = ['descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt'];
         foreach ($copy_fields as $fieldname) {
             if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != '') {
                 $bridge[$fieldname] = $pconfig[$fieldname];
@@ -167,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // simple array fields
-        $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
+        $array_fields = ['members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'];
         foreach ($array_fields as $fieldname) {
             if(!empty($pconfig[$fieldname])) {
                 $bridge[$fieldname] = implode(',', $pconfig[$fieldname]);
@@ -192,9 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        interface_bridge_configure($bridge);
-        ifgroup_setup();
-        if ($bridge['bridgeif'] == "" || !stristr($bridge['bridgeif'], "bridge")) {
+        if (empty($bridge['bridgeif'])) {
+            $bridge['bridgeif'] = legacy_interface_create('bridge'); /* XXX find another strategy */
+        }
+
+        if (empty($bridge['bridgeif']) || strpos($bridge['bridgeif'], 'bridge') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -203,6 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_bridges[] = $bridge;
             }
             write_config();
+            interfaces_bridge_configure($bridge['bridgeif']);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
@@ -254,7 +274,7 @@ $(document).ready(function() {
                       <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-                        $bridge_interfaces = array();
+                        $bridge_interfaces = [];
                         foreach ($a_bridges as $idx => $bridge_item) {
                             if (!isset($id) || $idx != $id) {
                                 $bridge_interfaces = array_merge(explode(',', $bridge_item['members']), $bridge_interfaces);
@@ -474,7 +494,7 @@ $(document).ready(function() {
                       <td style="width:78%">
                         <input name="maxaddr" type="text" value="<?=$pconfig['maxaddr'];?>" />
                       <div class="hidden" data-for="help_for_maxaddr">
-                        <?=gettext("Set the size of the bridge address cache to size. The default is .100 entries."); ?>
+                        <?=gettext("Set the size of the bridge address cache to size. The default is 2000 entries."); ?>
                       </div>
                       </td>
                     </tr>
@@ -485,7 +505,7 @@ $(document).ready(function() {
                         <div class="hidden" data-for="help_for_timeout">
                          <?=gettext("Set the timeout of address cache entries to this number of seconds. If " .
                          "seconds is zero, then address cache entries will not be expired. " .
-                         "The default is 240 seconds."); ?>
+                         "The default is 1200 seconds."); ?>
                         </div>
                       </td>
                     </tr>

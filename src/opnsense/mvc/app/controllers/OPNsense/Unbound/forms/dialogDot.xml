@@ -6,6 +6,15 @@
         <help>Enable or disable this server.</help>
     </field>
     <field>
+        <id>dot.domain</id>
+        <label>Domain</label>
+        <type>text</type>
+        <help>
+            If a domain is entered here, queries for this specific domain will be forwarded to the specified server.
+            Leave blank to forward all queries to the specified server (default).
+        </help>
+    </field>
+    <field>
         <id>dot.server</id>
         <label>Server IP</label>
         <type>text</type>
@@ -21,6 +30,9 @@
         <id>dot.verify</id>
         <label>Verify CN</label>
         <type>text</type>
-        <help>Verify if CN in certificate matches this value.</help>
+        <help>
+            Verify if CN in certificate matches this value. Please note that if this field is omitted,
+            Unbound will not perform any certificate verification. Therefore, man-in-the-middle attacks are still possible.
+        </help>
     </field>
 </form>

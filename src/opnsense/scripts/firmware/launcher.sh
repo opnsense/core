@@ -60,7 +60,7 @@ while getopts r:s: OPT; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
 
 if [ -n "${DO_SCRIPT}" ]; then
 	COMMAND=${DO_SCRIPT#"-s "}

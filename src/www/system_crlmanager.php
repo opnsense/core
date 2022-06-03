@@ -43,10 +43,8 @@ function cert_unrevoke($cert, &$crl)
                 if (!isset($crl['method'])) {
                     $crl['method'] = "internal";
                 }
-                crl_update($crl);
-            } else {
-                crl_update($crl);
             }
+            crl_update($crl);
             return true;
         }
     }
@@ -75,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($act == "exp") {
-        crl_update($thiscrl);
+        crl_update($thiscrl); // XXX: is this necessary?
         $exp_name = urlencode("{$thiscrl['descr']}.crl");
         $exp_data = base64_decode($thiscrl['text']);
         $exp_size = strlen($exp_data);
@@ -486,7 +484,7 @@ include("head.inc");
                 foreach ($thiscrl['cert'] as $cert) :?>
                 <tr>
                   <td><?=$cert['descr']; ?></td>
-                  <td><?=$openssl_crl_status[$cert["reason"]]; ?></td>
+                  <td><?=crl_status_code()[$cert["reason"]][0]; ?></td>
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
                     <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
@@ -544,8 +542,8 @@ include("head.inc");
                   <td colspan="3" style="text-align:left">
                     <select name='crlreason' id='crlreason' class="selectpicker" data-style="btn-default">
 <?php
-                  foreach ($openssl_crl_status as $code => $reason) :?>
-                    <option value="<?= $code ?>"><?=$reason?></option>
+                  foreach (crl_status_code() as $code => $reason) :?>
+                    <option value="<?= $code ?>"><?=$reason[0]?></option>
 <?php
                   endforeach;?>
                     </select>

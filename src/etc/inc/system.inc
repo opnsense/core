@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -70,82 +70,78 @@ function system_powerd_configure($verbose = false)
     }
 }
 
-function get_default_sysctl_value($id)
+function system_sysctl_defaults()
 {
     global $config;
 
-    $sysctls = array(
-        'hw.ibrs_disable' => '0',
-        'hw.ixl.enable_head_writeback' => '0',
-        'hw.syscons.kbd_reboot' => '0',
-        'hw.uart.console' => 'io:0x3f8,br:' . system_console_speed(), /* XXX support comconsole_port if needed */
-        'kern.ipc.maxsockbuf' => '4262144',
-        'kern.randompid' => '1',
-        'net.enc.in.ipsec_bpf_mask' => '2', /* after processing */
-        'net.enc.in.ipsec_filter_mask' => '2', /* after processing */
-        'net.enc.out.ipsec_bpf_mask' => '1', /* before processing */
-        'net.enc.out.ipsec_filter_mask' => '1', /* before processing */
-        'net.inet.icmp.drop_redirect' => '0',
-        'net.inet.icmp.icmplim' => '0',
-        'net.inet.icmp.log_redirect' => '0',
-        'net.inet.icmp.reply_from_interface' => '1',
-        'net.inet.ip.accept_sourceroute' => '0',
-        'net.inet.ip.forwarding' => '1',
-        'net.inet.ip.intr_queue_maxlen' => '1000',
-        'net.inet.ip.portrange.first' => '1024',
-        'net.inet.ip.random_id' => '1',
-        'net.inet.ip.redirect' => '1',
-        'net.inet.ip.sourceroute' => '0',
-        'net.inet.tcp.blackhole' => '2',
-        'net.inet.tcp.delayed_ack' => '0',
-        'net.inet.tcp.drop_synfin' => '1',
-        'net.inet.tcp.log_debug' => '0',
-        'net.inet.tcp.recvspace' => '65228',
-        'net.inet.tcp.sendspace' => '65228',
-        'net.inet.tcp.syncookies' => '1',
-        'net.inet.tcp.tso' => '1',
-        'net.inet.udp.blackhole' => '1',
-        'net.inet.udp.checksum' => 1,
-        'net.inet.udp.maxdgram' => '57344',
-        'net.inet6.ip6.forwarding' => '1',
-        'net.inet6.ip6.prefer_tempaddr' => '0',
-        'net.inet6.ip6.redirect' => '1',
-        'net.inet6.ip6.use_tempaddr' => '0',
-        'net.link.bridge.pfil_bridge' => '0',
-        'net.link.bridge.pfil_local_phys' => '0',
-        'net.link.bridge.pfil_member' => '1',
-        'net.link.bridge.pfil_onlyip' => '0',
-        'net.link.tap.user_open' => '1',
-        'net.link.vlan.mtag_pcp' => '1',
-        'net.local.dgram.maxdgram' => '8192',
-        'security.bsd.see_other_gids' => '0',
-        'security.bsd.see_other_uids' => '0',
-        'vfs.read_max' => '32',
-        'vm.pmap.pti' => '1',
-    );
-
-    if (isset($sysctls[$id])) {
-        return $sysctls[$id];
-    }
-
-    return null;
+    return [
+        'hw.ibrs_disable' => [ 'default' => '0' ],
+        'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
+        'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
+        'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
+        'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
+        'kern.randompid' => [ 'default' => '1' ],
+        'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
+        'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
+        'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
+        'net.enc.out.ipsec_filter_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
+        'net.inet.icmp.drop_redirect' => [ 'default' => '0' ],
+        'net.inet.icmp.icmplim' => [ 'default' => '0' ],
+        'net.inet.icmp.log_redirect' => [ 'default' => '0' ],
+        'net.inet.icmp.reply_from_interface' => [ 'default' => '1', 'required' => true ],
+        'net.inet.ip.accept_sourceroute' => [ 'default' => '0' ],
+        'net.inet.ip.forwarding' => [ 'default' => '1', 'required' => true ],
+        'net.inet.ip.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet.ip.portrange.first' => [ 'default' => '1024' ],
+        'net.inet.ip.random_id' => [ 'default' => '1' ],
+        'net.inet.ip.redirect' => [ 'default' => '0' ],
+        'net.inet.ip.sourceroute' => [ 'default' => '0' ],
+        'net.inet.tcp.blackhole' => [ 'default' => '2' ],
+        'net.inet.tcp.delayed_ack' => [ 'default' => '0' ],
+        'net.inet.tcp.drop_synfin' => [ 'default' => '1' ],
+        'net.inet.tcp.log_debug' => [ 'default' => '0' ],
+        'net.inet.tcp.recvspace' => [ 'default' => '65228' ],
+        'net.inet.tcp.sendspace' => [ 'default' => '65228' ],
+        'net.inet.tcp.syncookies' => [ 'default' => '1' ],
+        'net.inet.tcp.tso' => [ 'default' => '1' ],
+        'net.inet.udp.blackhole' => [ 'default' => '1' ],
+        'net.inet.udp.checksum' => [ 'default' => 1 ],
+        'net.inet.udp.maxdgram' => [ 'default' => '57344' ],
+        'net.inet6.ip6.forwarding' => [ 'default' => '1', 'required' => true ],
+        'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
+        'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
+        'net.inet6.ip6.redirect' => [ 'default' => '0' ],
+        'net.inet6.ip6.use_tempaddr' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_bridge' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],
+        'net.link.bridge.pfil_member' => [ 'default' => '1' ],
+        'net.link.bridge.pfil_onlyip' => [ 'default' => '0' ],
+        'net.link.ether.inet.log_arp_movements' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.tap.user_open' => [ 'default' => '1' ],
+        'net.link.vlan.mtag_pcp' => [ 'default' => '1', 'required' => true ],
+        'net.local.dgram.maxdgram' => [ 'default' => '8192', 'required' => true ],
+        'net.pf.share_forward' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
+        'net.pf.share_forward6' => [ 'default' => !empty($config['system']['pf_share_forward']) ? '1' : '0', 'required' => true ],
+        'net.route.multipath' => [ 'default' => '0', 'required' => true ],
+        'security.bsd.see_other_gids' => [ 'default' => '0' ],
+        'security.bsd.see_other_uids' => [ 'default' => '0' ],
+        'vfs.read_max' => [ 'default' => '32' ],
+        'vm.pmap.pti' => [ 'default' => '1' ],
+    ];
 }
 
 function system_sysctl_get()
 {
-    /* list of unconditional sysctls not necessarily present in config */
-    $sysctls = array(
-        'hw.ixl.enable_head_writeback' => 'default',
-        'net.enc.in.ipsec_bpf_mask' => 'default',
-        'net.enc.in.ipsec_filter_mask' => 'default',
-        'net.enc.out.ipsec_bpf_mask' => 'default',
-        'net.enc.out.ipsec_filter_mask' => 'default',
-        'net.inet.icmp.reply_from_interface' => 'default',
-        'net.inet.ip.forwarding' => 'default',
-        'net.inet6.ip6.forwarding' => 'default',
-        'net.link.vlan.mtag_pcp' => 'default',
-        'net.local.dgram.maxdgram' => 'default',
-    );
+    $defaults = system_sysctl_defaults();
+    $sysctls = [];
+
+    foreach ($defaults as $name => $info) {
+        /* compile list of required sysctls not necessarily present in config */
+        if (!empty($info['required'])) {
+            $sysctls[$name] = 'default';
+        }
+    }
 
     foreach (config_read_array('sysctl', 'item') as $tunable) {
         $sysctls[$tunable['tunable']] = $tunable['value'];
@@ -156,9 +152,9 @@ function system_sysctl_get()
             continue;
         }
 
-        $value = get_default_sysctl_value($key);
-
-        if ($value === null) {
+        if (!empty($defaults[$key])) {
+            $value = $defaults[$key]['default'];
+        } else {
             log_error('warning: ignoring missing default tunable request: ' . $key);
             unset($sysctls[$key]);
         }
@@ -181,27 +177,33 @@ function system_resolvconf_generate($verbose = false)
     $syscfg = config_read_array('system');
     $resolvconf = '';
     $search = [];
+    $routes = [];
+
+    mwexecf(
+        '/etc/rc.d/ip6addrctl %s',
+        isset($syscfg['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
+    );
 
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
         $search[] = $syscfg['domain'];
     }
 
+    if (!empty($syscfg['dnssearchdomain'])) {
+        /* add custom search entries after default domain before potential provider entries */
+        $search[] = $syscfg['dnssearchdomain'];
+    }
+
     if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable']))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
-    if (isset($syscfg['dnsallowoverride'])) {
-        $search = array_merge($search, get_searchdomains());
-        foreach (get_nameservers() as $nameserver) {
-            $resolvconf .= "nameserver $nameserver\n";
-        }
-    }
+    $search = array_merge($search, get_searchdomains());
 
-    if (isset($syscfg['dnsserver'][0])) {
-        foreach ($syscfg['dnsserver'] as $ns) {
-            $resolvconf .= "nameserver $ns\n";
-        }
+    foreach (get_nameservers(null, true) as $dnsserver) {
+        $host = !empty($dnsserver['host']) ? $dnsserver['host'] : $dnsserver;
+        $resolvconf .= "nameserver {$host}\n";
+        $routes[] = $dnsserver;
     }
 
     if (count($search)) {
@@ -226,27 +228,9 @@ function system_resolvconf_generate($verbose = false)
 
     rename($tempfile, '/etc/resolv.conf');
 
-    /* setup static routes for DNS servers. */
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
-        /* setup static routes for dns servers */
-        $dnsgw = "dns{$dnscounter}gw";
-        if (isset($syscfg[$dnsgw])) {
-            $gwname = $syscfg[$dnsgw];
-            if (($gwname != '') && ($gwname != 'none')) {
-                $gatewayip = $gateways->getAddress($gwname);
-                if (is_ipaddrv4($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
-                if (is_ipaddrv6($gatewayip)) {
-                    /* dns server array starts at 0 */
-                    $dnscountermo = $dnscounter - 1;
-                    system_host_route($syscfg['dnsserver'][$dnscountermo], $gatewayip);
-                }
-            }
-        }
+    /* setup static routes for DNS servers as configured */
+    foreach ($routes as $route) {
+        system_host_route($route['host'], $route['gateway']);
     }
 
     if ($verbose) {
@@ -264,15 +248,16 @@ function get_locale_list()
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
-    $locales['it_IT'] = gettext('Italian');
+    $locales['it_IT'] = gettext('Italian'); /* development only */
     $locales['ja_JP'] = gettext('Japanese');
     $locales['no_NO'] = gettext('Norwegian');
+    $locales['po_PL'] = gettext('Polish'); /* development only */
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
-    $locales['vi_VN'] = gettext('Vietnamese');
+    $locales['vi_VN'] = gettext('Vietnamese'); /* development only */
 
     return $locales;
 }
@@ -309,9 +294,14 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    $master_list = array();
-
     $search_list = glob('/tmp/*_searchdomain*');
+    $syscfg = config_read_array('system');
+    $master_list = [];
+
+    if (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return domains as required by configuration */
+        $search_list = [];
+    }
 
     if (is_array($search_list)) {
         foreach ($search_list as $fdns) {
@@ -330,13 +320,15 @@ function get_searchdomains()
     return array_unique($master_list);
 }
 
-function get_nameservers($interface = null)
+function get_nameservers($interface = null, $with_gateway = false)
 {
     global $config;
-    $master_list = array();
 
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $dns_lists = glob('/tmp/*_nameserver*');
+    $syscfg = config_read_array('system');
     $exclude_interfaces = [];
+    $master_list = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
@@ -346,10 +338,14 @@ function get_nameservers($interface = null)
             "/tmp/{$realif}_nameserver",
             "/tmp/{$realifv6}_nameserverv6",
         ];
+    } elseif (!isset($syscfg['dnsallowoverride'])) {
+        /* do not return dynamic servers as required by configuration */
+        $dns_lists = [];
     }
 
-    if (isset($config['system']['dnsallowoverride_exclude'])) {
-        foreach (explode(',', $config['system']['dnsallowoverride_exclude']) as $intf) {
+    if (isset($syscfg['dnsallowoverride_exclude'])) {
+        /* by design this only works on dynamic servers, not static ones */
+        foreach (explode(',', $syscfg['dnsallowoverride_exclude']) as $intf) {
             if (isset($config['interfaces'][$intf])) {
                 $exclude_interfaces[] = get_real_interface($intf);
                 $exclude_interfaces[] = get_real_interface($intf, 'inet6');
@@ -358,6 +354,7 @@ function get_nameservers($interface = null)
     }
 
     foreach ($dns_lists as $fdns) {
+        /* inspect dynamic servers registered in the system files */
         $intf = explode('_', basename($fdns))[0];
         if (in_array($intf, $exclude_interfaces)) {
             continue;
@@ -367,20 +364,71 @@ function get_nameservers($interface = null)
         if (!is_array($contents)) {
             continue;
         }
+
+        /* router file is available for connectivity creating nameserver files */
+        $gw = trim(@file_get_contents(str_replace('_nameserver', '_router', $fdns)));
+        if (is_linklocal($gw) && strpos($gw, '%') === false) {
+            $gw .= "%{$intf}";
+        }
+
         foreach ($contents as $dns) {
-            if (!empty($dns) && is_ipaddr($dns)) {
+            if (empty($dns) || !is_ipaddr($dns)) {
+                continue;
+            }
+
+            if ($with_gateway) {
+                $master_list[] = ['host' => $dns, 'gateway' => $gw];
+            } else {
                 $master_list[] = $dns;
             }
         }
     }
 
-    return array_unique($master_list);
+    for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
+        /* inspect static servers and optional gateway assignment */
+        $dns = $syscfg['dnsserver'][$dnscounter - 1];
+        if (empty($dns) || !is_ipaddr($dns)) {
+            continue;
+        }
+
+        $gwkey = "dns{$dnscounter}gw";
+        $gateway = null;
+
+        if (!empty($syscfg[$gwkey]) && $syscfg[$gwkey] != 'none') {
+            /* if a gateway is attached figure out the interface and address */
+            $dnsif = $gateways->getInterfaceName($syscfg[$gwkey]);
+            $dnsgw = $gateways->getAddress($syscfg[$gwkey]);
+
+            if (empty($dnsif) || empty($dnsgw)) {
+                /* do not present servers for defunct gateways */
+                continue;
+            }
+
+            if (!empty($interface) && $interface != $dnsif) {
+                /* not looking for this one */
+                continue;
+            }
+
+            $gateway = $dnsgw;
+        } elseif (!empty($interface)) {
+            /* discard because not attached to any interface */
+            continue;
+        }
+
+        if ($with_gateway) {
+            $master_list[] = ['host' => $dns, 'gateway' => $gateway];
+        } else {
+            $master_list[] = $dns;
+        }
+    }
+
+    /* XXX check for overlapping host routes in gateway mode? */
+
+    return array_unique($master_list, SORT_REGULAR);
 }
 
 function system_hosts_generate($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Generating /etc/hosts...';
         flush();
@@ -481,7 +529,12 @@ function system_default_route($gateway, $family, $interface, $far = false)
         @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
 
         if (!$far) {
-            $realif = null;
+            list (, $network) = interfaces_primary_address($interface);
+            if (ip_in_subnet($gateway, $network)) {
+                $realif = null;
+            } else {
+                log_error("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+            }
         }
     } else {
         foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
@@ -543,7 +596,7 @@ function system_routing_configure($verbose = false, $interface = '')
 
 function system_staticroutes_configure($interface = '')
 {
-    $static_routes = get_staticroutes(false, true);
+    $static_routes = get_staticroutes(false);
     if (count($static_routes)) {
         $ifdetails = legacy_interfaces_details();
         $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
@@ -578,12 +631,12 @@ function system_staticroutes_configure($interface = '')
             $ip = $rtent['network'];
             if (!empty($rtent['disabled'])) {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip), true);
+                mwexec("/sbin/route delete {$inet}", true);
             } else {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
                 if (is_ipaddr($gatewayip)) {
-                    mwexec("/sbin/route delete" . $cmd . escapeshellarg($gatewayip), true);
+                    mwexec("/sbin/route delete {$cmd}", true);
                     if ($fargw) {
                         mwexecf('/sbin/route delete %s %s -interface %s ', array($inet, $gatewayip, $interfacegw), true);
                         mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw), true);
@@ -602,8 +655,6 @@ function system_staticroutes_configure($interface = '')
 
 function system_syslog_start($verbose = false)
 {
-    global $config;
-
     if ($verbose) {
         echo 'Configuring system logging...';
         flush();
@@ -612,11 +663,16 @@ function system_syslog_start($verbose = false)
     configd_run('template reload OPNsense/Syslog');
     mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
 
-    if (isvalidpid('/var/run/syslog-ng.pid')) {
+    $last_version = @file_get_contents('/var/run/syslog-ng.version');
+    $this_version = shell_exec('syslog-ng -V | sha256');
+
+    if (isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
         mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
     } else {
         mwexecf('/usr/sbin/service syslog-ng restart');
     }
+
+    file_put_contents('/var/run/syslog-ng.version', $this_version);
 
     if ($verbose) {
         echo "done.\n";
@@ -785,21 +841,10 @@ function system_sysctl_configure($verbose = false)
     }
 
     set_sysctl(system_sysctl_get());
-    system_arp_wrong_if();
 
     if ($verbose) {
         echo "done.\n";
     }
-}
-
-function system_arp_wrong_if()
-{
-    global $config;
-
-    set_sysctl(array(
-        'net.link.ether.inet.log_arp_wrong_iface' => isset($config['system']['sharednet']) ? '0' : '1',
-        'net.link.ether.inet.log_arp_movements' => isset($config['system']['sharednet']) ? '0' : '1',
-    ));
 }
 
 function system_kernel_configure($verbose = false)
@@ -835,8 +880,10 @@ function system_kernel_configure($verbose = false)
     );
 
     if (!empty($config['system']['crypto_hardware'])) {
-        log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
-        $mods[] = $config['system']['crypto_hardware'];
+        foreach (explode(',', $config['system']['crypto_hardware']) as $crypto) {
+            log_error(sprintf('Loading %s cryptographic accelerator module.', $crypto));
+            $mods[] = $crypto;
+        }
     }
 
     if (!empty($config['system']['thermal_hardware'])) {
@@ -936,31 +983,6 @@ function system_cron_configure($verbose = false)
 
     if ($verbose) {
         echo "done.\n";
-    }
-}
-
-function system_console_mutable()
-{
-    /* this function name is a pun :) */
-
-    global $config;
-
-    return isset($config['system']['primaryconsole']) &&
-        ($config['system']['primaryconsole'] == 'serial' ||
-        $config['system']['primaryconsole'] == 'null');
-}
-
-function system_console_mute()
-{
-    if (system_console_mutable()) {
-        exec('/sbin/conscontrol mute on');
-    }
-}
-
-function system_console_unmute()
-{
-    if (system_console_mutable()) {
-        exec('/sbin/conscontrol mute off');
     }
 }
 
@@ -1133,8 +1155,6 @@ function system_login_configure($verbose = false)
 function reset_factory_defaults($sync = true)
 {
     mwexec('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    disable_security_checks();
-
     mwexec('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */

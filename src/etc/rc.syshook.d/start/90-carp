@@ -27,9 +27,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("util.inc");
-require_once("config.inc");
+require_once 'util.inc';
+require_once 'config.inc';
 
 if (empty($config['hasync']) || empty($config['hasync']['disablepreempt'])) {
-    set_single_sysctl("net.inet.carp.preempt", "1");
+    set_single_sysctl('net.inet.carp.preempt', '1');
 }

@@ -45,7 +45,6 @@ class Downloader(object):
         self._target_dir = target_dir
         self._download_cache = dict()
 
-
     @staticmethod
     def _unpack(src, source_filename, filename=None):
         """ unpack data if archived
@@ -55,7 +54,7 @@ class Downloader(object):
             :return: string
         """
         src.seek(0)
-        unpack_type=None
+        unpack_type = None
         if source_filename.endswith('.tar.gz') or source_filename.endswith('.tgz'):
             unpack_type = 'tar'
         elif source_filename.endswith('.gz'):
@@ -84,7 +83,7 @@ class Downloader(object):
                             rule_content.append(zf.open(item).read())
                         elif filename is None and item.file_size > 0 and item.filename.lower().endswith('.rules'):
                             rule_content.append(zf.open(item).read())
-            return '\n'.join([x.decode() for x in rule_content])
+            return '\n'.join(x.decode() for x in rule_content)
         else:
             return src.read().decode()
 
@@ -100,9 +99,11 @@ class Downloader(object):
             frm_url = url.replace('//', '/').replace(':/', '://')
             # stream to temp file
             if frm_url not in self._download_cache:
-                req_opts = dict()
-                req_opts['url'] = frm_url
-                req_opts['stream'] = True
+                req_opts = {
+                    'url': frm_url,
+                    'stream': True
+                }
+
                 if auth is not None:
                     req_opts['auth'] = auth
                 if headers is not None:
@@ -126,7 +127,7 @@ class Downloader(object):
                         if not data:
                             break
                         else:
-                             src.write(data)
+                            src.write(data)
                     self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
                 else:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
@@ -208,12 +209,9 @@ class Downloader(object):
                 syslog.syslog(syslog.LOG_NOTICE, 'download completed for %s' % frm_url)
 
     @staticmethod
-    def is_supported(url):
+    def is_supported(url: str) -> bool:
         """ check if protocol is supported
         :param url: uri to request resource from
         :return: bool
         """
-        if str(url).split(':')[0].lower() in ['http', 'https']:
-            return True
-        else:
-            return False
+        return str(url).split(':')[0].lower() in ('http', 'https')

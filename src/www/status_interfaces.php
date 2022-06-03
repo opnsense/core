@@ -224,62 +224,6 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['cell_rssi'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Signal (RSSI)") ?></td>
-                      <td><?= $ifinfo['cell_rssi'] ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_mode'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Mode") ?></td>
-                      <td><?= $ifinfo['cell_mode'] ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_simstate'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell SIM State") ?></td>
-                      <td><?= $ifinfo['cell_simstate'] ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_service'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Service") ?></td>
-                      <td><?= $ifinfo['cell_service'] ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_bwupstream'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Upstream");?></td>
-                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_bwupstream']) ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_bwdownstream'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Downstream") ?></td>
-                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_bwdownstream']) ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_upstream'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Current Up");?></td>
-                      <td><?= sprintf(gettext("%s kbit/s"), $ifinfo['cell_upstream']) ?></td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['cell_downstream'])): ?>
-                    <tr>
-                      <td><?= gettext("Cell Current Down") ?></td>
-                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_downstream']) ?></td>
-                    </tr>
-<?php
-                    endif;
                     if ($ifinfo['macaddr']): ?>
                     <tr>
                       <td><?=gettext("MAC address");?></td>
@@ -352,10 +296,10 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<?php if (array_key_exists('pdinfo', $ifinfo)): ?>
+<?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
                       <td><?= gettext('IPv6 delegated prefix') ?></td>
-                      <td><?= $ifinfo['pdinfo'] ?></td>
+                      <td><?= $ifinfo['prefixv6'] ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>

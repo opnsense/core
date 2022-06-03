@@ -29,12 +29,6 @@
 
 require_once('guiconfig.inc');
 require_once('system.inc');
-require_once('phpseclib/File/X509.php');
-require_once('phpseclib/File/ASN1.php');
-require_once('phpseclib/Math/BigInteger.php');
-require_once('phpseclib/File/ASN1/Element.php');
-require_once('phpseclib/Crypt/RSA.php');
-require_once('phpseclib/Crypt/Hash.php');
 
 function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg, $extns)
 {

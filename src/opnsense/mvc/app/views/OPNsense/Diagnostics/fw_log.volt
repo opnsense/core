@@ -264,6 +264,10 @@
                                     case 'info':
                                         log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
                                         break;
+                                    case 'label':
+                                        // record data is always html-escaped. no special protection required
+                                        log_td.html(record[column_name]);
+                                        break;
                                     default:
                                         if (record[column_name] != undefined) {
                                             log_td.text(record[column_name]);
@@ -325,16 +329,17 @@
                                 row.append($("<td/>").text(sorted_keys[i]));
                                 if (sorted_keys[i] == 'rid') {
                                   // rid field, links to rule origin
-                                  var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
                                   var rid = sender_details[sorted_keys[i]];
-
-                                  var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
-                                  rid_link.text(rid);
-                                  rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
-                                  rid_td.append(rid_link);
+                                  var rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
+                                  if (rid.length == 32) {
+                                      var rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
+                                      rid_link.text(rid);
+                                      rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
+                                      rid_td.append(rid_link);
+                                  }
                                   row.append(rid_td);
                                 } else if (icon === null) {
-                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).text(
+                                  row.append($("<td/>").addClass("act_info_fld_"+sorted_keys[i]).html(
                                     sender_details[sorted_keys[i]]
                                   ));
                                 } else {
@@ -802,7 +807,7 @@
                               <th data-column-id="src" data-type="address">{{ lang._('Source') }}</th>
                               <th data-column-id="dst" data-type="address">{{ lang._('Destination') }}</th>
                               <th data-column-id="protoname" data-type="string">{{ lang._('Proto') }}</th>
-                              <th data-column-id="label" data-type="string">{{ lang._('Label') }}</th>
+                              <th data-column-id="label" data-type="label">{{ lang._('Label') }}</th>
                               <th data-column-id="" data-type="info" style="width:20px;"></th>
                           </tr>
                         </thead>

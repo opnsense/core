@@ -28,8 +28,8 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Logger;
+use Phalcon\Di\FactoryDefault;
+use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 
 /**
@@ -38,7 +38,6 @@ use Phalcon\Logger\Adapter\Syslog;
  */
 class Config extends Singleton
 {
-
     /**
      * config file location ( path + name )
      * @var string
@@ -194,7 +193,14 @@ class Config extends Singleton
             $node = $this->simplexml;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
-                function () {
+                function ($errno, $errstr, $errfile, $errline) {
+                    syslog(LOG_ERR, sprintf(
+                        "Config serialize error [%d] %s @ %s : %s",
+                        $errno,
+                        $errstr,
+                        $errfile,
+                        $errline
+                    ));
                     $this->statusIsValid = false;
                 }
             );
@@ -210,7 +216,11 @@ class Config extends Singleton
             if ($itemKey === '@attributes') {
                 // copy xml attributes
                 foreach ($itemValue as $attrKey => $attrValue) {
-                    $node->addAttribute($attrKey, $attrValue);
+                    if (isset($node->attributes()[$attrKey])) {
+                        $node->attributes()->$attrKey = $attrValue;
+                    } else {
+                        $node->addAttribute($attrKey, $attrValue);
+                    }
                 }
                 continue;
             } elseif (strstr($itemKey, '@attributes') !== false) {
@@ -218,7 +228,11 @@ class Config extends Singleton
                 if (count($node->$origname)) {
                     // copy xml attributes
                     foreach ($itemValue as $attrKey => $attrValue) {
-                        $node->$origname->addAttribute($attrKey, $attrValue);
+                        if (isset($node->$origname->attributes()[$attrKey])) {
+                            $node->$origname->attributes()->$attrKey = $attrValue;
+                        } else {
+                            $node->$origname->addAttribute($attrKey, $attrValue);
+                        }
                     }
                 }
                 continue;
@@ -504,9 +518,9 @@ class Config extends Singleton
      * backup current config
      * @return string target filename
      */
-    public function backup()
+    public function backup($timestamp = null)
     {
-        $timestamp = microtime(true);
+        $timestamp = $timestamp ? $timestamp : microtime(true);
         $target_dir = dirname($this->config_file) . "/backup/";
 
         if (!file_exists($target_dir)) {
@@ -650,9 +664,9 @@ class Config extends Singleton
     public function save($revision = null, $backup = true)
     {
         $this->checkvalid();
-
+        $time = microtime(true);
         // update revision information ROOT.revision tag, align timestamp to backup output
-        $this->updateRevision($revision, null, microtime(true));
+        $this->updateRevision($revision, null, $time);
 
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
@@ -661,7 +675,7 @@ class Config extends Singleton
                 fwrite($this->config_file_handle, (string)$this);
                 // flush, unlock, but keep the handle open
                 fflush($this->config_file_handle);
-                $backup_filename = $backup ? $this->backup() : null;
+                $backup_filename = $backup ? $this->backup($time) : null;
                 if ($backup_filename) {
                     $this->auditLogChange($backup_filename, $revision);
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).

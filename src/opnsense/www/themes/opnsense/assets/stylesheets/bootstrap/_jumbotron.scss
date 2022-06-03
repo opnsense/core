@@ -14,7 +14,7 @@
     color: $jumbotron-heading-color;
   }
   p {
-    margin-bottom: ($jumbotron-padding / 2);
+    margin-bottom: calc($jumbotron-padding / 2);
     font-size: $jumbotron-font-size;
     font-weight: 200;
   }

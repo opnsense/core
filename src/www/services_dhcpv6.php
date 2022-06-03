@@ -70,8 +70,7 @@ $ifcfgip = $config['interfaces'][$if]['ipaddrv6'];
 $ifcfgsn = $config['interfaces'][$if]['subnetv6'];
 
 if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
-    list ($ifcfgip, $networkv6) = interfaces_primary_address6($if);
-    $ifcfgsn = explode('/', $networkv6)[1];
+    list ($ifcfgip,, $ifcfgsn) = interfaces_primary_address6($if);
     $prefix_array = array();
     $prefix_array = explode(':', $ifcfgip);
     $prefix_array[4] = '0';

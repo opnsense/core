@@ -58,8 +58,9 @@ function system_api_cpu_stats()
     }
 
     // cpu model and count
-    $cpustats['model'] = get_single_sysctl("hw.model");
+    $cpustats['model'] = get_single_sysctl('hw.model');
     $cpustats['cpus'] = get_single_sysctl('kern.smp.cpus');
+    $cpustats['cores'] = get_single_sysctl('kern.smp.cores');
 
     // cpu frequency
     $tmp = get_single_sysctl('dev.cpu.0.freq_levels');
@@ -129,12 +130,13 @@ function system_api_disk()
         }
     }
 
-    $result['devices'] = array();
-    exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660", $disk_info);
+    $types = [ 'cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs' ];
+    $result['devices'] = [];
+    exec('/bin/df -ahT', $disk_info);
     foreach ($disk_info as $line) {
-        if (strpos($line,'Mounted on') === false) {
+        if (strpos($line, 'Filesystem') !== 0) {
             $parts = preg_split('/\s+/', $line);
-            $diskItem = array();
+            $diskItem = [];
             $diskItem['device'] = $parts[0];
             $diskItem['type'] = $parts[1];
             $diskItem['size'] = $parts[2];
@@ -142,7 +144,9 @@ function system_api_disk()
             $diskItem['available'] = $parts[4];
             $diskItem['capacity'] = $parts[5];
             $diskItem['mountpoint'] = $parts[6];
-            $result['devices'][] = $diskItem;
+            if (in_array($diskItem['type'], $types)) {
+                $result['devices'][] = $diskItem;
+            }
         }
     }
 
@@ -167,10 +171,11 @@ function system_api_firmware()
     $ret = gettext('Click to check for updates.');
 
     $product = json_decode(configd_run('firmware product'), true);
+    $current = explode('_', $product['product_version'])[0];
 
     /* information from changelog, more accurate for production release */
     $from_changelog = !empty($product['product_latest']) &&
-        $product['product_latest'] != $product['product_version'];
+        $product['product_latest'] != $current;
 
     /* update status from last check, also includes major releases */
     $from_check = !empty($product['product_check']['upgrade_sets']) ||

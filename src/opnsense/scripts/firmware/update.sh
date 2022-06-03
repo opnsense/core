@@ -37,6 +37,7 @@ rm -f ${PIPEFILE}
 mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPDATE***" >> ${LOCKFILE}
+echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # figure out if we are crossing ABIs
 if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then

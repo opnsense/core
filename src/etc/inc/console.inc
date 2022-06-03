@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -84,6 +84,15 @@ function is_interface_mismatch()
 
 function set_networking_interfaces_ports($probe = false)
 {
+    exec('/sbin/conscontrol mute on');
+    $ret = _set_networking_interfaces_ports($probe);
+    exec('/sbin/conscontrol mute off');
+
+    return $ret;
+}
+
+function _set_networking_interfaces_ports($probe = false)
+{
     global $config;
 
     $fp = fopen('php://stdin', 'r');
@@ -92,13 +101,10 @@ function set_networking_interfaces_ports($probe = false)
     $key = null;
 
     $iflist_all = get_interface_list(false, true);
-    $iflist = array();
+    $iflist_lagg = [];
+    $iflist = [];
 
     foreach ($iflist_all as $iface => $ifa) {
-        $iftype = preg_split('/\d/', $iface);
-        if (isset($iftype[1]) && $iftype[1] == '_vlan') {
-            continue;
-        }
         $iflist[$iface] = $ifa;
         interfaces_bring_up($iface);
     }
@@ -116,75 +122,73 @@ function set_networking_interfaces_ports($probe = false)
         }
     }
 
+    $ifnames = array_keys($iflist);
+
+    if (!empty($iflist)) {
+        echo <<<EOD
+Do you want to configure LAGGs now? ${yes_no_prompt}
+EOD;
+        if ($interactive) {
+            $key = chop(fgets($fp));
+        } else {
+            $key = 'n';
+            echo $key . PHP_EOL;
+        }
+
+        if (in_array($key, array('y', 'Y'))) {
+            lagg_setup($iflist, $fp);
+            echo "\n";
+        }
+
+        if (isset($config['laggs']['lagg'][0])) {
+            foreach ($config['laggs']['lagg'] as $lagg) {
+                $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
+                    'dmesg' => "Link aggregation, member interfaces {$lagg['members']}",
+                    'mac' => '00:00:00:00:00:00',
+                ];
+            }
+        }
+
+        echo <<<EOD
+Do you want to configure VLANs now? ${yes_no_prompt}
+EOD;
+        if ($interactive) {
+            $key = chop(fgets($fp));
+        } else {
+            $key = 'n';
+            echo $key . PHP_EOL;
+        }
+
+        if (in_array($key, array('y', 'Y'))) {
+            vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
+        }
+
+        if (isset($config['vlans']['vlan'][0])) {
+            foreach ($config['vlans']['vlan'] as $vlan) {
+                $iflist_all[$vlan['vlanif']] = [
+                    'dmesg' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
+                    'mac' => '00:00:00:00:00:00',
+                ];
+            }
+        }
+    }
+
     echo <<<EOD
 
 Valid interfaces are:
 
+
 EOD;
 
-    if (count($iflist)) {
-        foreach ($iflist as $iface => $ifa) {
-            echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
-        }
-    } else {
+    /*
+     * We are checking $iflist here for physical members only, but
+     * iterate over $iflist_all when that sanity check succeeded.
+     */
+    if (empty($iflist)) {
         echo "No interfaces found!\n";
-    }
-
-    $ifnames = array_keys($iflist);
-
-    echo <<<EOD
-
-Do you want to configure LAGGs now? ${yes_no_prompt}
-EOD;
-    if ($interactive) {
-        $key = chop(fgets($fp));
     } else {
-        $key = 'n';
-        echo $key . PHP_EOL;
-    }
-
-    if (in_array($key, array('y', 'Y'))) {
-        lagg_setup($iflist, $fp);
-    }
-
-    if (isset($config['laggs']['lagg'][0])) {
-        echo "\nLAGG interfaces:\n\n";
-        foreach ($config['laggs']['lagg'] as $lagg) {
-            echo sprintf(
-                "% -16s%s\n",
-                "{$lagg['laggif']}",
-                "member interfaces {$lagg['members']}"
-            );
-            $iflist_all[$lagg['laggif']] = array();
-            // XXX: get_interface_list() doesn't return lagg interfaces.
-            $iflist[$lagg['laggif']] = ["up" => 1, "mac" => ""];
-        }
-    }
-
-    echo <<<EOD
-
-Do you want to configure VLANs now? ${yes_no_prompt}
-EOD;
-    if ($interactive) {
-        $key = chop(fgets($fp));
-    } else {
-        $key = 'n';
-        echo $key . PHP_EOL;
-    }
-
-    if (in_array($key, array('y', 'Y'))) {
-        vlan_setup($iflist, $fp);
-    }
-
-    if (isset($config['vlans']['vlan'][0])) {
-        echo "\nVLAN interfaces:\n\n";
-        foreach ($config['vlans']['vlan'] as $vlan) {
-            echo sprintf(
-                "% -16s%s\n",
-                "{$vlan['if']}_vlan{$vlan['tag']}",
-                "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}"
-            );
-            $iflist_all[$vlan['if'] . '_vlan' . $vlan['tag']] = array();
+        foreach ($iflist_all as $iface => $ifa) {
+            echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
     }
 
@@ -266,7 +270,7 @@ EOD;
     $done = false;
     while (!$done) {
         /* optional interfaces */
-        $optif = array();
+        $optif = [];
         $i = 0;
 
         while (1) {
@@ -525,29 +529,21 @@ EOD;
         }
     }
 
-    $laggcfg = array();
+    $laggcfg = [];
     $laggif = 0;
 
-    $unused_ifs = array();
+    $unused_ifs = [];
     foreach ($iflist as $iface => $ifa) {
         $unused_ifs[$iface] = $ifa;
     }
 
     while (1) {
-        $lagg = array();
+        $lagg = [];
 
         echo "\nLAGG-capable interfaces:\n\n";
-        if (!is_array($iflist)) {
-            echo "No interfaces found!\n";
-        } else {
-            foreach ($unused_ifs as $iface => $ifa) {
-                echo sprintf(
-                    "% -8s%s%s\n",
-                    $iface,
-                    $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : ""
-                );
-            }
+
+        foreach ($unused_ifs as $iface => $ifa) {
+            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
 
         if (empty($unused_ifs)) {
@@ -555,11 +551,12 @@ EOD;
             return;
         }
 
-        echo "\nEnter the member interface names for the new LAGG seperated by commas (or nothing if finished): ";
+        echo "\nEnter the LAGG members to aggregate (or nothing if finished): ";
         $members_str = chop(fgets($fp));
 
         if ($members_str) {
-            $members = explode(",", str_replace(" ", "", $members_str));
+            $members = preg_split('/[\s\t,;]+/', $members_str);
+            $members = array_unique($members);
             $unused_ifnames = array_keys($unused_ifs);
             $valid_ifs = array_intersect($unused_ifnames, $members);
             if (count($members) != count($valid_ifs)) {
@@ -567,8 +564,7 @@ EOD;
                 printf("\nInvalid interfaces: %s\n", implode(", ", $invalid_ifs));
                 continue;
             }
-            $lagg['members'] = str_replace(" ", "", $members_str);
-
+            $lagg['members'] = implode(',', $members);
             foreach ($members as $member) {
                 unset($unused_ifs[$member]);
             }
@@ -576,11 +572,10 @@ EOD;
             break;
         }
 
-        echo 'Enter the LAGG protocol (none,lacp,failover,fec,loadbalance,roundrobin): ';
+        echo 'Enter the LAGG protocol (default:none,lacp,failover,fec,loadbalance,roundrobin): ';
         $lagg['proto'] = strtolower(chop(fgets($fp)));
         if (!in_array($lagg['proto'], ['none', 'lacp', 'failover', 'fec', 'loadbalance', 'roundrobin'])) {
-            printf("\nInvalid LAGG protocol '%s'\n", $lagg['proto']);
-            continue;
+            $lagg['proto'] = 'none';
         }
 
         if ($lagg['proto'] == "lacp") {
@@ -622,31 +617,16 @@ EOD;
         }
     }
 
-    $vlancfg = array();
+    $vlancfg = [];
     $vlanif = 0;
 
     while (1) {
-        $vlan = array();
+        $vlan = [];
 
         echo "\nVLAN-capable interfaces:\n\n";
-        if (!is_array($iflist)) {
-            echo "No interfaces found!\n";
-        } else {
-            $vlan_capable = 0;
-            foreach ($iflist as $iface => $ifa) {
-                echo sprintf(
-                    "% -8s%s%s\n",
-                    $iface,
-                    $ifa['mac'],
-                    $ifa['up'] ? "   (up)" : ""
-                );
-                $vlan_capable++;
-            }
-        }
 
-        if ($vlan_capable == 0) {
-            echo "No VLAN-capable interfaces detected.\n";
-            return;
+        foreach ($iflist as $iface => $ifa) {
+            echo sprintf("%-8s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
         }
 
         echo "\nEnter the parent interface name for the new VLAN (or nothing if finished): ";

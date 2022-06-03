@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -32,13 +32,21 @@
 
 require_once("IPv6.inc");
 
-function killbyname($procname, $sig = 'TERM')
+function killbyname($procname, $sig = 'TERM', $waitforit = false)
 {
     if (!is_process_running($procname)) {
         return;
     }
 
     mwexecf('/bin/pkill -%s %s', array($sig, $procname));
+
+    if (!$waitforit) {
+        return;
+    }
+
+    while (is_process_running($procname)) {
+        usleep(200 * 1000);
+    }
 }
 
 function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
@@ -694,15 +702,7 @@ function is_macaddr($macaddr, $partial = false)
 /* returns true if $port is a valid TCP/UDP port */
 function is_port($port)
 {
-    if (getservbyname($port, "tcp") || getservbyname($port, "udp")) {
-        return true;
-    }
-    if (!ctype_digit($port)) {
-        return false;
-    } elseif ((intval($port) < 1) || (intval($port) > 65535)) {
-        return false;
-    }
-    return true;
+    return OPNsense\Firewall\Util::isPort($port, false);
 }
 
 /* returns true if $portrange is a valid TCP/UDP portrange ("<port>:<port>") */
@@ -829,15 +829,17 @@ function get_configured_ip_addresses()
  */
 function get_interface_list($only_active = false, $include_dmesg = false)
 {
-    $dmesg_arr = array();
-    $iflist = array();
+    $dmesg_arr = [];
+    $iflist = [];
 
     if ($include_dmesg) {
         exec('/sbin/dmesg', $dmesg_arr);
     }
 
     /* list of virtual interface types */
-    $vfaces = array(
+    $vfaces = [
+      '_stf',
+      '_vip',
       '_vlan',
       '_wlan',
       'bridge',
@@ -851,24 +853,28 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'lagg',
       'lo',
       'ng',
+      'ovpnc',
+      'ovpns',
       'pflog',
+      'pfsync',
       'plip',
       'ppp',
       'pppoe',
       'pptp',
-      'pfsync',
+      'qinq',
       'sl',
+      'tap',
       'tun',
-      'vip'
-    );
+      'vlan',
+    ];
 
     $ifnames_up = legacy_interface_listget('up');
     $ifnames = legacy_interface_listget();
-    $all_interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
     $all_interface_data = legacy_interfaces_details();
 
     if ($only_active) {
-        $_ifnames = array();
+        $_ifnames = [];
         $all_stats = legacy_interface_stats();
         foreach ($ifnames as $ifname) {
             $ifinfo = $all_stats[$ifname];
@@ -880,18 +886,18 @@ function get_interface_list($only_active = false, $include_dmesg = false)
     }
 
     foreach ($ifnames as $ifname) {
-        $tmp_ifnames = preg_split('/\d/', $ifname);
-        if (in_array(array_shift($tmp_ifnames), $vfaces)) {
+        $tmp_ifnames = preg_split('/\d+/', $ifname);
+        if (count(array_intersect($tmp_ifnames, $vfaces))) {
             continue;
         }
 
-        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : array();
-        $toput = array(
+        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : [];
+        $toput = [
           'up' => in_array($ifname, $ifnames_up),
           'ipaddr' => !empty($ifdata['ipv4'][0]['ipaddr']) ? $ifdata['ipv4'][0]['ipaddr'] : null,
           'mac' => !empty($ifdata['macaddr']) ? $ifdata['macaddr'] : null,
           'dmesg' => '',
-        );
+        ];
 
         foreach ($all_interfaces as $name => $int) {
             if ($int['if'] == $ifname) {
@@ -901,7 +907,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         }
 
         foreach ($dmesg_arr as $dmesg_line) {
-            $dmesg = array();
+            $dmesg = [];
             if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
                 $toput['dmesg'] = $dmesg[1];
                 break;
@@ -916,7 +922,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 
 /****f* util/log_error
 * NAME
-*   log_error  - Sends a string to syslog.
+*   log_error  - Sends a string to syslog with LOG_ERR severity.
 * INPUTS
 *   $error     - string containing the syslog message.
 * RESULT
@@ -924,13 +930,27 @@ function get_interface_list($only_active = false, $include_dmesg = false)
 ******/
 function log_error($error)
 {
+    log_msg($error, LOG_ERR);
+}
+
+/****f* util/log_msg
+* NAME
+*   log_msg  - Sends a string to syslog with the required severity level.
+* INPUTS
+*   $msg     - string containing the syslog message.
+*   $prio    - syslog severity level.
+* RESULT
+*   null
+******/
+function log_msg($msg, $prio = LOG_WARNING)
+{
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
         $files = get_included_files();
         $page = basename($files[0]);
     }
 
-    syslog(LOG_ERR, "$page: $error");
+    syslog($prio, "$page: $msg");
 }
 
 function url_safe($format, $args = array())
@@ -1027,8 +1047,7 @@ function mwexecf_bg($format, $args = array(), $mute = false)
 /* check if an alias exists */
 function is_alias($name)
 {
-    global $aliastable;
-    return array_key_exists($name, $aliastable);
+    return \OPNsense\Firewall\Util::isAlias($name);
 }
 
 function subnet_size($subnet)
@@ -1107,10 +1126,14 @@ function is_private_ip($iptocheck)
 
 function format_bytes($bytes)
 {
-    if ($bytes >= (1024 * 1024 * 1024)) {
-        return sprintf("%.2f GB", $bytes / (1024 * 1024 * 1024));
-    } elseif ($bytes >= 1024 * 1024) {
-        return sprintf("%.2f MB", $bytes / (1024 * 1024));
+    if ($bytes >= 1024 ** 5) {
+        return sprintf("%.2f PB", $bytes / (1024 ** 5));
+    } elseif ($bytes >= 1024 ** 4) {
+        return sprintf("%.2f TB", $bytes / (1024 ** 4));
+    } elseif ($bytes >= 1024 ** 3) {
+        return sprintf("%.2f GB", $bytes / (1024 ** 3));
+    } elseif ($bytes >= 1024 ** 2) {
+        return sprintf("%.2f MB", $bytes / (1024 ** 2));
     } elseif ($bytes >= 1024) {
         return sprintf("%.0f KB", $bytes / 1024);
     } else {
@@ -1241,36 +1264,14 @@ function is_URL($url)
     return false;
 }
 
-function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
+function get_staticroutes($returnsubnetsonly = false)
 {
     global $aliastable;
 
-    $allstaticroutes = array();
-    $allsubnets = array();
-
-    /* Loop through routes and expand aliases as we find them. */
+    $allstaticroutes = [];
+    $allsubnets = [];
     foreach (config_read_array('staticroutes', 'route') as $route) {
-        if (is_alias($route['network'])) {
-            if (!isset($aliastable[$route['network']])) {
-                continue;
-            }
-            $subnets = preg_split('/\s+/', $aliastable[$route['network']]);
-            foreach ($subnets as $net) {
-                if (!is_subnet($net)) {
-                    if (is_ipaddrv4($net)) {
-                        $net .= "/32";
-                    } elseif (is_ipaddrv6($net)) {
-                        $net .= "/128";
-                    } elseif ($returnhostnames === false || !is_fqdn($net)) {
-                        continue;
-                    }
-                }
-                $temproute = $route;
-                $temproute['network'] = $net;
-                $allstaticroutes[] = $temproute;
-                $allsubnets[] = $net;
-            }
-        } elseif (is_subnet($route['network'])) {
+        if (is_subnet($route['network'])) {
             $allstaticroutes[] = $route;
             $allsubnets[] = $route['network'];
         }
@@ -1281,16 +1282,6 @@ function get_staticroutes($returnsubnetsonly = false, $returnhostnames = false)
     }
 
     return $allstaticroutes;
-}
-
-function prefer_ipv4_or_ipv6()
-{
-    global $config;
-
-    mwexecf(
-        '/etc/rc.d/ip6addrctl %s',
-        isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
-    );
 }
 
 function is_fqdn($fqdn)
@@ -1319,7 +1310,7 @@ function is_install_media()
      * Despite unionfs underneath, / is still not writeable,
      * making the following the perfect test for install media.
      */
-    $file = '/.probe.for.install.media';
+    $file = '/.probe.for.readonly';
 
     if (file_exists($file)) {
         return false;
@@ -1377,45 +1368,6 @@ function dhcp6c_duid_clear()
     /* clear the backup so that it will not be restored: */
     @unlink('/conf/dhcp6c_duid');
 }
-
-function get_dyndns_ip($int, $ipver = 4)
-{
-    $ip_address = $ipver == 6 ? get_interface_ipv6($int) : get_interface_ip($int);
-    if (empty($ip_address)) {
-        log_error("Aborted IPv{$ipver} detection: no address for {$int}");
-        return 'down';
-    }
-
-    if ($ipver != 6 && is_private_ip($ip_address)) {
-        /* Chinese alternative is http://ip.3322.net/ */
-        $hosttocheck = 'http://checkip.dyndns.org';
-        $ip_ch = curl_init($hosttocheck);
-        curl_setopt($ip_ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ip_ch, CURLOPT_INTERFACE, $ip_address);
-        curl_setopt($ip_ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ip_ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ip_ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        $ip_result = curl_exec($ip_ch);
-        if ($ip_result !== false) {
-            preg_match('=<body>Current IP Address: (.*)</body>=siU', $ip_result, $matches);
-            $ip_address = trim($matches[1]);
-        } else {
-            log_error('Aborted IPv4 detection: ' . curl_error($ip_ch));
-            $ip_address = '';
-        }
-        curl_close($ip_ch);
-    } elseif ($ipver == 6 && is_linklocal($ip_address)) {
-        log_error('Aborted IPv6 detection: cannot bind to link-local address');
-        $ip_address = '';
-    }
-
-    if (($ipver == 6 && !is_ipaddrv6($ip_address)) || ($ipver != 6 && !is_ipaddrv4($ip_address))) {
-        return 'down';
-    }
-
-    return $ip_address;
-}
-
 
 /**
  * check if interface is assigned

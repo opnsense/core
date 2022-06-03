@@ -151,7 +151,8 @@
         <name>Diagnostics: Firewall sessions</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/pf_top*</pattern>
-            <pattern>api/diagnostics/firewall/pf_top*</pattern>
+            <pattern>api/diagnostics/firewall/query_pf_top</pattern>
+            <pattern>api/diagnostics/firewall/list_rule_ids</pattern>
         </patterns>
     </page-diagnostics-system-pftop>
     <page-diagnostics-ping>
@@ -410,18 +411,6 @@
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
-    <page-interfaces-vlan>
-        <name>Interfaces: VLAN</name>
-        <patterns>
-            <pattern>interfaces_vlan.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan>
-    <page-interfaces-vlan-edit>
-        <name>Interfaces: VLAN: Edit</name>
-        <patterns>
-            <pattern>interfaces_vlan_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan-edit>
     <page-interfaces>
         <name>Interfaces: WAN</name>
         <patterns>

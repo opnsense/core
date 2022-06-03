@@ -99,6 +99,13 @@
         <allownew>true</allownew>
     </field>
     <field>
+        <id>zone.extendedPreAuthData</id>
+        <type>checkbox</type>
+        <label>Extended pre auth data</label>
+        <advanced>true</advanced>
+        <help><![CDATA[Offer extended data to the login template before authentication  (mac addresses for upstream use).]]></help>
+    </field>
+    <field>
         <id>zone.template</id>
         <label>Custom template</label>
         <type>dropdown</type>

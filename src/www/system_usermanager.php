@@ -342,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
             if (!empty($pconfig['gen_otp_seed'])) {
                 // generate 160bit base32 encoded secret
-                $userent['otp_seed'] = Base32\Base32::encode(openssl_random_pseudo_bytes(20));
+                $userent['otp_seed'] = Base32\Base32::encode(random_bytes(20));
             } else {
                 $userent['otp_seed'] = trim($pconfig['otp_seed']);
             }

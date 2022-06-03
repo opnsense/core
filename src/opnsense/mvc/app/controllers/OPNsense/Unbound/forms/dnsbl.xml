@@ -29,6 +29,13 @@
         <help>List of domains to whitelist. You can use regular expressions.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.address</id>
+        <label>Destination Address</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0)</help>
+    </field>
+    <field>
         <id>unbound.miscellaneous.privatedomain</id>
         <label>Private Domains</label>
         <type>select_multiple</type>

@@ -44,8 +44,6 @@ from modules import syslog_error, syslog_notice
 __author__ = 'Ad Schellevis'
 
 configd_socket_name = '/var/run/configd.socket'
-configd_socket_wait = 20
-
 
 def exec_config_cmd(exec_command):
     """ execute command using configd socket
@@ -84,6 +82,7 @@ parser.add_argument("-m", help="execute multiple arguments at once", action="sto
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
 parser.add_argument("-q", help="run quietly by muting standard output", action="store_true")
+parser.add_argument("-w", help="wait specified amount of seconds for socket to become available", type=int, default=0)
 parser.add_argument(
     "-t",
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
@@ -92,16 +91,15 @@ parser.add_argument(
 parser.add_argument("command", help="command(s) to execute", nargs="+")
 args = parser.parse_args()
 
-syslog.openlog("configctl")
+syslog.openlog(os.path.basename(sys.argv[0]))
 
 # set a timeout to the socket
 socket.setdefaulttimeout(120)
 
-# check if configd socket exists
-# (wait for a maximum of "configd_socket_wait" seconds for configd to start)
+# check if configd socket exists (wait for a maximum of specified seconds for configd to start)
 i=0
 while not os.path.exists(configd_socket_name):
-    if i >= configd_socket_wait:
+    if i >= args.w:
         break
     time.sleep(1)
     i += 1
@@ -109,7 +107,6 @@ while not os.path.exists(configd_socket_name):
 if not os.path.exists(configd_socket_name):
     print('configd socket missing (@%s)'%configd_socket_name, file=sys.stderr)
     sys.exit(-1)
-
 
 # command(s) to execute
 if args.m:

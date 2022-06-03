@@ -131,7 +131,7 @@ delete_old_routes() {
 	# one here.  We don't so just delete the default route if it's
 	# through our interface.
 	if is_default_interface; then
-		route delete default >/dev/null 2>&1
+		#route delete default >/dev/null 2>&1
 		rm -f /tmp/${interface}_router
 	fi
 
@@ -178,7 +178,7 @@ add_new_routes() {
 	EXISTSGW=`/bin/ls -l /tmp/*_defaultgw | /usr/bin/wc -l`
 	# Only allow the default route to be overridden if it's on our own interface
 	if [ -f "/tmp/${interface}_defaultgw" -o $EXISTSGW -eq 0 ]; then
-		route delete default
+		#route delete default
 		for router in $new_routers; do
 			if [ "$new_ip_address" = "$router" -o "$router" = "255.255.255.255" ]; then
 				route add default -iface $interface
@@ -215,30 +215,13 @@ add_new_routes() {
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
 
-	if [ -f "/tmp/${interface}_nameserver" ]; then
-		# Remove old entries
-		for nameserver in $(cat /tmp/${interface}_nameserver); do
-			route delete $nameserver >/dev/null 2>&1
-		done
-	fi
+	ARGS="-i ${interface} -4nd"
+	for nameserver in ${new_domain_name_servers}; do
+		ARGS="${ARGS} -a ${nameserver}"
+	done
+	/usr/local/sbin/ifctl ${ARGS}
 
-        rm -f /tmp/${interface}_nameserver
-
-	if [ -n "$new_domain_name_servers" ]; then
-		for nameserver in $new_domain_name_servers; do
-			# Add a route to the nameserver out the correct interface
-			# so that mulitple wans work correctly with multiple dns
-			# also backup the nameserver for later route removal
-			echo $nameserver >> /tmp/${interface}_nameserver
-			route add $nameserver -iface $interface
-		done
-	fi
-
-        rm -f /tmp/${interface}_searchdomain
-
-	if [ -n "$new_domain_name" ]; then
-		echo $new_domain_name > /tmp/${interface}_searchdomain
-	fi
+	/usr/local/sbin/ifctl -i ${interface} -4sd ${new_domain_name:+"-a ${new_domain_name}"}
 
 	return 0
 }
@@ -313,16 +296,13 @@ ARPCHECK|ARPSEND)
 
 BOUND|RENEW|REBIND|REBOOT)
 	check_hostname
-	changes="no"
 	if [ -n "$old_ip_address" ]; then
 		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
-			changes="yes"
 		fi
 		if [ "$old_ip_address" != "$new_ip_address" ]; then
 			delete_old_address
 			delete_old_routes
-			changes="yes"
 		fi
 	fi
 	if [ "$reason" = BOUND ] || \
@@ -331,18 +311,14 @@ BOUND|RENEW|REBIND|REBOOT)
 	   [ "$old_ip_address" != "$new_ip_address" ]; then
 		add_new_address
 		add_new_routes
-		changes="yes"
 	fi
 	if [ -n "$alias_ip_address" -a "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
-		changes="yes"
 	fi
 	#if is_default_interface; then
 		add_new_resolv_conf
 	#fi
-	if [ "$changes" = "yes" ] ; then
-		/usr/local/etc/rc.newwanip $interface
-	fi
+	/usr/local/sbin/configctl -d interface newip $interface
 	;;
 
 EXPIRE|FAIL)
@@ -384,11 +360,11 @@ TIMEOUT)
 			fi
 			add_new_routes
 			if ! is_default_interface; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 			if add_new_resolv_conf; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 		fi

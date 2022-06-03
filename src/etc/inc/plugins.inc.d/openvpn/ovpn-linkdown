@@ -2,9 +2,5 @@
 
 /sbin/pfctl -i ${1} -Fs
 
-/bin/rm -f /tmp/${1}_nameserver
-/bin/rm -f /tmp/${1}_nameserverv6
 /bin/rm -f /tmp/${1}_router
 /bin/rm -f /tmp/${1}_routerv6
-/bin/rm -f /tmp/${1}_searchdomain
-/bin/rm -f /tmp/${1}_searchdomainv6

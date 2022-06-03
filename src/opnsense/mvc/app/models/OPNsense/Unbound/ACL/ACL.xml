@@ -17,20 +17,30 @@
             <pattern>services_unbound_advanced.php*</pattern>
         </patterns>
     </page-services-dnsresolver-advanced>
-    <page-services-dnsresolver-editdomainoverride>
-        <name>Services: Unbound DNS: Edit Domain Override</name>
+    <page-services-dnsresolver-overrides>
+        <name>Services: Unbound DNS: Edit Host and Domain Override</name>
         <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_domainoverride_edit.php*</pattern>
+            <pattern>ui/unbound/overrides/*</pattern>
+            <pattern>api/unbound/settings/searchHostOverride/*</pattern>
+            <pattern>api/unbound/settings/getHostOverride/*</pattern>
+            <pattern>api/unbound/settings/setHostOverride/*</pattern>
+            <pattern>api/unbound/settings/addHostOverride/*</pattern>
+            <pattern>api/unbound/settings/delHostOverride/*</pattern>
+            <pattern>api/unbound/settings/toggleHostOverride/*</pattern>
+            <pattern>api/unbound/settings/searchHostAlias/*</pattern>
+            <pattern>api/unbound/settings/getHostAlias/*</pattern>
+            <pattern>api/unbound/settings/setHostAlias/*</pattern>
+            <pattern>api/unbound/settings/addHostAlias/*</pattern>
+            <pattern>api/unbound/settings/delHostAlias/*</pattern>
+            <pattern>api/unbound/settings/toggleHostAlias/*</pattern>
+            <pattern>api/unbound/settings/searchDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/getDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/setDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/addDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/delDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/toggleDomainOverride/*</pattern>
         </patterns>
-    </page-services-dnsresolver-editdomainoverride>
-    <page-services-dnsresolver-edithost>
-        <name>Services: Unbound DNS: Edit Host Override</name>
-        <patterns>
-            <pattern>services_unbound_overrides.php</pattern>
-            <pattern>services_unbound_host_edit.php*</pattern>
-        </patterns>
-    </page-services-dnsresolver-edithost>
+    </page-services-dnsresolver-overrides>
     <page-diagnostics-logs-resolver>
         <name>Services: Unbound DNS: Log File</name>
         <patterns>

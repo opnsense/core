@@ -95,12 +95,11 @@ function filter_rules_sort()
 function filter_configure()
 {
     /*
-     * NOTE: Check here for bootup status since this should not be triggered during bootup.
-     *   The reason is that rc.bootup calls filter_configure_sync directly which does this too.
+     * Defer this to configd which will avoid this call on bootup when
+     * this should not be triggered.  The reason is that rc.bootup calls
+     * filter_configure_sync() directly which does this too.
      */
-    if (!file_exists("/var/run/booting")) {
-        configd_run('filter reload');
-    }
+    configd_run('filter reload');
 }
 
 /**
@@ -387,12 +386,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['system']['rulesetoptimization'])) {
-        $limitrules .= "set ruleset-optimization {$config['system']['rulesetoptimization']}\n";
-    } else {
-        $limitrules .= "set ruleset-optimization basic\n";
-    }
-
     if ($config['system']['optimization'] != '') {
         $limitrules .= "set optimization {$config['system']['optimization']}\n";
         if ($config['system']['optimization'] == "conservative") {
@@ -427,6 +420,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
     }
 
+    if (!empty($config['system']['syncookies'])) {
+        $arange = "";
+        if ($config['system']['syncookies'] == "adaptive") {
+            $arange = "(start {$config['system']['syncookies_adaptstart']}%, end {$config['system']['syncookies_adaptend']}%)";
+        }
+        $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
+    }
+
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
@@ -459,7 +460,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     @file_put_contents('/tmp/rules.limits', $limitrules);
     mwexec('/sbin/pfctl -Of /tmp/rules.limits');
-    exec('/sbin/pfctl -o basic -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
+    exec('/sbin/pfctl -f /tmp/rules.debug 2>&1', $rules_error, $rules_loading);
 
     foreach ($sched_kill_states as $label) {
         mwexecf('/sbin/pfctl -k label -k %s', $label);
@@ -488,7 +489,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             log_error('PF was wedged/busy and has been reset.');
             file_notice(gettext('PF was wedged/busy and has been reset.'));
         } else {
-            exec('/sbin/pfctl -o basic -f /tmp/rules.debug.old 2>&1');
+            exec('/sbin/pfctl -f /tmp/rules.debug.old 2>&1');
         }
 
         log_error(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
@@ -501,10 +502,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         return;
     }
-
-    /* set shared forwarding according to config option */
-    set_single_sysctl('net.pf.share_forward', !empty($config['system']['pf_share_forward']) ? '1' : '0');
-    set_single_sysctl('net.pf.share_forward6', !empty($config['system']['pf_share_forward']) ? '1' : '0');
 
     /*
      * If we are not using bogonsv6 then we can remove any
@@ -554,7 +551,8 @@ function filter_generate_scrubing(&$FilterIflist)
     if (!empty($config['filter']['scrub']['rule'])) {
         foreach ($config['filter']['scrub']['rule'] as $scrub_rule) {
             if (!isset($scrub_rule['disabled'])) {
-                $scrub_rule_out = "scrub";
+                $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
+                $scrub_rule_out .= "scrub";
                 $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
                 $scrub_rule_out .= " on ";
                 $interfaces = array();
@@ -604,11 +602,13 @@ function filter_generate_scrubing(&$FilterIflist)
                 } else {
                     $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
                 }
-                $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
-                $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
-                $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
-                $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
-                $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
+                if (empty($scrub_rule['noscrub'])) {
+                    $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
+                    $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
+                }
                 $scrub_rule_out .= "\n";
                 if (count($interfaces) == 0) {
                     # unknown interface, skip rule
@@ -659,6 +659,11 @@ function filter_generate_aliases()
 
     $aliases .= "\n# User Aliases\n";
     $aliasObject = new \OPNsense\Firewall\Alias();
+    // list of registered aliases for faster is_alias() lookup
+    $all_aliases = [];
+    foreach ($aliasObject->aliasIterator() as $aliased) {
+        $all_aliases[] = $aliased['name'];
+    }
     foreach ($aliasObject->aliasIterator() as $aliased) {
         switch ($aliased['type']) {
             case "urltable_ports":
@@ -670,7 +675,11 @@ function filter_generate_aliases()
                 file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
                 break;
             case "port":
-                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], array(), $aliasObject));
+                $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], [], $aliasObject, $all_aliases));
+                if (empty($tmp_ports)) {
+                    // we can't create empty port tables, so when it's empty we should make sure it can't match
+                    $tmp_ports = "0 <> 65535";
+                }
                 $aliases .= "{$aliased['name']} = \"{ {$tmp_ports} }\"\n";
                 break;
             default:

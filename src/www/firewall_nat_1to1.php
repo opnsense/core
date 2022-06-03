@@ -211,7 +211,7 @@ include("head.inc");
     });
     // select All
     $("#selectAll").click(function(){
-        $(".rule_select").prop("checked", $(this).prop("checked"));
+        $(".rule_select:not(:disabled)").prop("checked", $(this).prop("checked"));
     });
 
     // watch scroll position and set to last known on page load

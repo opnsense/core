@@ -57,10 +57,7 @@ function available_interfaces($selected_id = null)
 
     $interfaces = array();
     foreach (get_interface_list() as $intf => $intf_info) {
-        if (strpos($intf, '_vlan')) {
-            // skip vlans
-            continue;
-        } elseif (in_array($intf, $lagg_member_interfaces)) {
+        if (in_array($intf, $lagg_member_interfaces)) {
             // skip members of other lagg interfaces
             continue;
         } elseif (in_array($intf, $configured_interfaces)) {
@@ -156,8 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
         }
 
-        $lagg['laggif'] = interface_lagg_configure($lagg);
-        if ($lagg['laggif'] == "" || !stristr($lagg['laggif'], "lagg")) {
+        if (empty($lagg['laggif'])) {
+            $lagg['laggif'] = legacy_interface_create('lagg'); /* XXX find another strategy */
+        }
+
+        if (empty($lagg['laggif']) || strpos($lagg['laggif'], 'lagg') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -165,8 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $a_laggs[] = $lagg;
             }
-
             write_config();
+            _interfaces_lagg_configure($lagg);
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
@@ -331,7 +331,7 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_lagghash" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash Layers"); ?>
                     <td>
                         <select name="lagghash[]" title="<?=gettext("Default");?>" multiple="multiple" class="selectpicker proto proto_lacp proto_loadbalance">
-                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst mac address and optional vlan number."); ?></option>
+                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst MAC address and optional VLAN number."); ?></option>
                             <option value="l3" <?=in_array('l3', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L3: src/dst address for IPv4 or IPv6."); ?></option>
                             <option value="l4" <?=in_array('l4', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L4: src/dst port for TCP/UDP/SCTP."); ?></option>
                         </select>

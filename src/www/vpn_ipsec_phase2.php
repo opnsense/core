@@ -37,33 +37,31 @@ require_once("plugins.inc.d/ipsec.inc");
  */
 function pconfig_to_ealgos($pconfig)
 {
-    $p2_ealgos = ipsec_p2_ealgos();
-
-    $ealgos = array();
+    $ealgos = [];
     if (isset($pconfig['ealgos'])) {
-        foreach ($p2_ealgos as $algo_name => $algo_data) {
+        foreach (ipsec_p2_ealgos() as $algo_name => $algo_data) {
             if (in_array($algo_name, $pconfig['ealgos'])) {
-                $ealg = array();
-                $ealg['name'] = $algo_name;
-                if (isset($algo_data['keysel'])) {
-                    $ealg['keylen'] = $pconfig["keylen_".$algo_name];
-                }
-                $ealgos[] = $ealg;
+                $ealgos[] = ['name' => $algo_name];
             }
         }
     }
-
     return $ealgos;
 }
 
 function ealgos_to_pconfig(& $ealgos, & $pconfig)
 {
-
-    $pconfig['ealgos'] = array();
-    foreach ($ealgos as $algo_data) {
-        $pconfig['ealgos'][] = $algo_data['name'];
-        if (isset($algo_data['keylen'])) {
-            $pconfig["keylen_".$algo_data['name']] = $algo_data['keylen'];
+    $p2_ealgos = ipsec_p2_ealgos();
+    $pconfig['ealgos'] = [];
+    foreach ($ealgos as $cnf_algo_data) {
+        foreach ($p2_ealgos as $algo_name => $algo_data) {
+            if ($algo_name == $cnf_algo_data['name']) {
+                $pconfig['ealgos'][] = $algo_name;
+            } elseif ($algo_data['name'] == $cnf_algo_data['name']) {
+                // XXX: extract and convert legacy encryption-algorithm-option setting
+                if ($cnf_algo_data['keylen'] == $algo_data['keylen'] || $cnf_algo_data['keylen'] == "auto") {
+                    $pconfig['ealgos'][] = $algo_name;
+                }
+            }
         }
     }
 
@@ -165,11 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'])) {
             ealgos_to_pconfig($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'], $pconfig);
         } else {
-            $pconfig['ealgos'] = array();
-        }
-
-        if (isset($config['ipsec']['phase2'][$p2index]['mobile'])) {
-            $pconfig['mobile'] = true;
+            $pconfig['ealgos'] = [];
         }
 
         if (!empty($_GET['dup'])) {
@@ -183,22 +177,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['localid_type'] = "lan";
         $pconfig['remoteid_type'] = "network";
         $pconfig['protocol'] = "esp";
-        $pconfig['ealgos'] = explode(",", "3des,blowfish,cast128,aes");
-        $pconfig['hash-algorithm-option'] = explode(",", "hmac_sha1,hmac_md5");
+        $pconfig['ealgos'] = ['aes256gcm16'];
+        $pconfig['hash-algorithm-option'] = ['hmac_sha256'];
         $pconfig['pfsgroup'] = "0";
         $pconfig['lifetime'] = "3600";
         $pconfig['uniqid'] = uniqid();
 
-        /* mobile client */
-        if (isset($_GET['mobile'])) {
-            $pconfig['mobile'] = true;
-        }
         // init empty
         foreach (explode(",", $phase2_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
                 $pconfig[$fieldname] = null;
             }
+        }
+    }
+    /* mobile client */
+    foreach ($config['ipsec']['phase1'] as $phase1ent) {
+        if ($phase1ent['ikeid'] == $pconfig['ikeid'] && isset($phase1ent['mobile'])) {
+            $pconfig['mobile'] = true;
+            break;
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -239,16 +236,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             default:
-                if ($pconfig['mode'] == 'tunnel' && !is_subnetv4(find_interface_network(get_real_interface($pconfig['localid_type'])))) {
-                    $input_errors[] = sprintf(
-                        gettext('Invalid local network: %s has no valid IPv4 network.'),
-                        convert_friendly_interface_to_friendly_descr($pconfig['localid_type'])
-                    );
-                } elseif ($pconfig['mode'] == 'tunnel6' && !is_subnetv6(find_interface_networkv6(get_real_interface($pconfig['localid_type']), 'inet6'))) {
-                    $input_errors[] = sprintf(
-                        gettext('Invalid local network: %s has no valid IPv6 network.'),
-                        convert_friendly_interface_to_friendly_descr($pconfig['localid_type'])
-                    );
+                if ($pconfig['mode'] == 'tunnel') {
+                    list (, $subnet) = interfaces_primary_address($pconfig['localid_type']);
+                    if (!is_subnetv4($subnet)) {
+                        $input_errors[] = sprintf(
+                            gettext('Invalid local network: %s has no valid IPv4 network.'),
+                            convert_friendly_interface_to_friendly_descr($pconfig['localid_type'])
+                        );
+                    }
+                } elseif ($pconfig['mode'] == 'tunnel6') {
+                    list (, $subnet) = interfaces_primary_address6($pconfig['localid_type']);
+                    if (!is_subnetv6($subnet)) {
+                        $input_errors[] = sprintf(
+                            gettext('Invalid local network: %s has no valid IPv6 network.'),
+                            convert_friendly_interface_to_friendly_descr($pconfig['localid_type'])
+                        );
+                    }
                 }
                 break;
         }
@@ -412,16 +415,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $ph2ent['encryption-algorithm-option'] = pconfig_to_ealgos($pconfig);
-        ;
+
         if (!empty($pconfig['hash-algorithm-option'])) {
             $ph2ent['hash-algorithm-option'] = $pconfig['hash-algorithm-option'];
         } else {
             unset($ph2ent['hash-algorithm-option']);
         }
 
-        if (isset($pconfig['mobile'])) {
-            $ph2ent['mobile'] = true;
-        }
         // attach or generate reqid
         if ($p2index !== null && !empty($config['ipsec']['phase2'][$p2index]['reqid'])) {
             $ph2ent['reqid'] = $config['ipsec']['phase2'][$p2index]['reqid'];
@@ -702,42 +702,22 @@ endif; ?>
                   </td>
                 </tr>
                 <tr id="opt_enc">
-                  <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
+                      <select name="ealgos[]" class="selectpicker" multiple="multiple">
 <?php
-                  foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
-                    <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=$algodata['name'];?>
+                      foreach (ipsec_p2_ealgos() as $algo => $algodata) :?>
+                          <option value="<?=$algo;?>" <?= (is_array($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos'])) ? 'selected="selected"' : '' ?> >
+                            <?=$algodata['descr'];?>
+                          </option>
 <?php
-                      if (isset($algodata['keysel'])) :?>
-                      <select name="keylen_<?=$algo;?>">
-                        <option value="auto"><?=gettext("auto"); ?></option>
-<?php
-                        for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :?>
-                        <option value="<?=$keylen;?>" <?=$keylen == $pconfig["keylen_".$algo] ? "selected=\"selected\"" : "";?>>
-                          <?=$keylen;?> <?=gettext("bits"); ?>
-                        </option>
-<?php
-                        endfor; ?>
+                      endforeach;?>
+
                       </select>
-<?php
-                      else :?>
-                      <br/>
-<?php
-                      endif; ?>
-
-<?php
-                      endforeach; ?>
-
-                      <div class="hidden" data-for="help_for_encalg">
-                          <?=gettext("Hint: use 3DES for best compatibility or if you have a hardware " .
-                                                  "crypto accelerator card. Blowfish is usually the fastest in " .
-                                                  "software encryption"); ?>.
-                      </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
+                  <td><a id="help_for_hashalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
 <?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
@@ -746,6 +726,9 @@ endif; ?>
                       </option>
 <?php endforeach ?>
                     </select>
+                    <div class="hidden" data-for="help_for_hashalg">
+                        <?=gettext("Note: For security reasons avoid the use of the SHA1 algorithm."); ?>
+                    </div>
                   </td>
                 </tr>
                 <tr>

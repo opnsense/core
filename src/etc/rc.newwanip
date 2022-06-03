@@ -75,17 +75,22 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     return;
 }
 
-interfaces_vips_configure(false, $interface);
+interfaces_vips_configure($interface, 4);
 
 $gres = link_interface_to_gre($interface);
-array_walk($gres, 'interface_gre_configure');
+foreach ($gres as $gre) {
+    _interfaces_gre_configure($gre);
+}
 
 $gifs = link_interface_to_gif($interface);
-array_walk($gifs, 'interface_gif_configure');
+foreach ($gifs as $gif) {
+    _interfaces_gif_configure($gif);
+}
 
-$bridgetmp = link_interface_to_bridge($interface);
-if (!empty($bridgetmp)) {
-    interface_bridge_add_member($bridgetmp, $interface_real);
+$bridge = link_interface_to_bridge($interface);
+if (!empty($bridge)) {
+    /* XXX _interfaces_bridge_configure() is probably cleaner */
+    interface_bridge_add_member($bridge, $interface_real);
 }
 
 system_resolvconf_generate();
@@ -94,10 +99,10 @@ system_hosts_generate();
 if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     switch ($config['interfaces'][$interface]['ipaddrv6']) {
         case '6to4':
-            interface_6to4_configure($interface, $config['interfaces'][$interface]);
+            interface_6to4_configure($interface, $config['interfaces'][$interface], true);
             break;
         case '6rd':
-            interface_6rd_configure($interface, $config['interfaces'][$interface]);
+            interface_6rd_configure($interface, $config['interfaces'][$interface], true);
             break;
         case 'dhcp6':
         case 'slaac':
@@ -143,8 +148,9 @@ ifgroup_setup();
 
 $cacheip_file = "/tmp/{$interface_real}_oldip";
 $cacheip = trim(@file_get_contents($cacheip_file));
+$intf_ipaddr = $config['interfaces'][$interface]['ipaddr'];
 
-if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddr'])) {
+if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
     filter_configure_sync();

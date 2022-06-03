@@ -298,7 +298,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update ruleset properties
      * @return array result status
      * @throws \Exception when config action fails
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setRulesetpropertiesAction()
@@ -387,7 +387,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $filename rule filename (key)
      * @return array result status
      * @throws \Exception when configd action fails
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setRulesetAction($filename)
@@ -424,7 +424,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status 0/1 or error
      * @throws \Exception
-     * @throws \Phalcon\Validation\Exception
+     * @throws \Phalcon\Filter\Validation\Exception
      */
     public function toggleRulesetAction($filenames, $enabled = null)
     {
@@ -467,7 +467,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param string|int $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array empty
      * @throws \Exception when configd action fails
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleRuleAction($sids, $enabled = null)
@@ -522,7 +522,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $sid item unique id
      * @return array result status
      * @throws \Exception when configd action fails
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setRuleAction($sid)
@@ -563,7 +563,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update user defined rules
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setUserRuleAction($uuid)
@@ -574,7 +574,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /**
      * Add new user defined rule
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addUserRuleAction()
@@ -597,7 +597,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete user rule item
      * @param string $uuid user rule internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delUserRuleAction($uuid)
@@ -610,7 +610,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleUserRuleAction($uuid, $enabled = null)
@@ -632,7 +632,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update policy
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setPolicyAction($uuid)
@@ -643,7 +643,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /**
      * Add new policy
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addPolicyAction()
@@ -666,7 +666,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete policy item
      * @param string $uuid user rule internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delPolicyAction($uuid)
@@ -679,7 +679,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function togglePolicyAction($uuid, $enabled = null)
@@ -701,7 +701,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update policy rule adjustment
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setPolicyRuleAction($uuid)
@@ -712,7 +712,7 @@ class SettingsController extends ApiMutableModelControllerBase
     /**
      * Add new policy rule adjustment
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addPolicyRuleAction()
@@ -735,7 +735,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete policy rule adjustment item
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delPolicyRuleAction($uuid)
@@ -748,7 +748,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function togglePolicyRuleAction($uuid, $enabled = null)

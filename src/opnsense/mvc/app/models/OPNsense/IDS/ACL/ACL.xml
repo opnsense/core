@@ -4,8 +4,8 @@
         <patterns>
             <pattern>ui/ids/*</pattern>
             <pattern>api/ids/*</pattern>
-            <pattern>ui/diagnostics/log/suricata/*</pattern>
-            <pattern>api/diagnostics/log/suricata/*</pattern>
+            <pattern>ui/diagnostics/log/core/suricata/*</pattern>
+            <pattern>api/diagnostics/log/core/suricata/*</pattern>
         </patterns>
     </page-services-ids>
 </acl>

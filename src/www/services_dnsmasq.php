@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['strictbind'] = isset($a_dnsmasq['strictbind']);
     $pconfig['dnssec'] = isset($a_dnsmasq['dnssec']);
     $pconfig['log_queries'] = isset($a_dnsmasq['log_queries']);
+    $pconfig['no_hosts'] = isset($a_dnsmasq['no_hosts']);
     // simple text types
     $pconfig['port'] = !empty($a_dnsmasq['port']) ? $a_dnsmasq['port'] : "";
     // arrays
@@ -81,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_dnsmasq['domain_needed'] = !empty($pconfig['domain_needed']);
             $a_dnsmasq['no_private_reverse'] = !empty($pconfig['no_private_reverse']);
             $a_dnsmasq['log_queries'] = !empty($pconfig['log_queries']);
+            $a_dnsmasq['no_hosts'] = !empty($pconfig['no_hosts']);
             $a_dnsmasq['strictbind'] = !empty($pconfig['strictbind']);
             $a_dnsmasq['dnssec'] = !empty($pconfig['dnssec']);
             if (!empty($pconfig['regdhcpdomain'])) {
@@ -353,6 +355,13 @@ $( document ).ready(function() {
                         'not known from /etc/hosts, DHCP or a specific domain override ' .
                         'then a "not found" answer is immediately returned.') ?>
                     </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('No Hosts Lookup') ?></td>
+                  <td>
+                    <input name="no_hosts" type="checkbox" id="no_hosts" value="yes" <?= !empty($pconfig['no_hosts']) ? 'checked="checked"' : '' ?> />
+                    <?= gettext('Don\'t read the hostnames in /etc/hosts.') ?>
                   </td>
                 </tr>
                 <tr>

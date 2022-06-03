@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -28,9 +28,12 @@
 <script>
 
     function generic_search(that, entries) {
-        let search = $(that).val();
+        let search = $(that).val().toLowerCase();
         $('.' + entries).each(function () {
-            let name = $(this).text();
+            let row_by_col = $(this).find('td').map(function () {
+                return $(this).text();
+            }).get();
+            let name = row_by_col.join(',').toLowerCase();
             if (search.length != 0 && name.indexOf(search) == -1) {
                 $(this).hide();
             } else {
@@ -260,7 +263,7 @@
     }
 
     function trackStatus() {
-        ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+        ajaxGet('/api/core/firmware/upgradestatus', { v: Date.now() }, function(data, status) {
             if (status != 'success') {
                 // recover from temporary errors
                 setTimeout(trackStatus, 1000);
@@ -328,7 +331,7 @@
             $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (reset === true) {
-                ajaxGet('/api/core/firmware/upgradestatus', {}, function(data, status) {
+                ajaxGet('/api/core/firmware/upgradestatus', { v: Date.now() }, function(data, status) {
                     if (data['log'] != undefined && data['log'] != '') {
                         $('#update_status').html(data['log']);
                     } else {
@@ -403,17 +406,17 @@
                     misconfigured_plugins = 1;
                 } else if (row['installed'] == "0" && row['configured'] == "1") {
                     status_text = ' ({{ lang._('missing') }})';
-                    bold_on = '<span class="text-danger plugin_missing"><b>';
+                    bold_on = '<span class="text-danger"><b>';
                     bold_off = '</b></span>';
                     missing_plugins = 1;
                 } else if (row['installed'] == "1") {
-                    status_text = ' ({{ lang._('installed') }})';
+                    if (row['provided'] == "0") {
+                        status_text = ' ({{ lang._('orphaned') }})';
+                    } else {
+                        status_text = ' ({{ lang._('installed') }})';
+                    }
                     bold_on = '<b>';
                     bold_off = '</b>';
-                }
-                if (row['provided'] == "0" && row['installed'] == "1") {
-                    // this state overwrites installed on purpose
-                    status_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist > tbody').append(
                     '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +

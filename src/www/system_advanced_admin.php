@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
+    $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -268,6 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
         $config['system']['ssh']['keys'] = !empty($pconfig['ssh-keys']) ? implode(',', $pconfig['ssh-keys']) : null;
+        $config['system']['ssh']['keysig'] = !empty($pconfig['ssh-keysig']) ? implode(',', $pconfig['ssh-keysig']) : null;
 
         if (!empty($pconfig['enablesshd'])) {
             $config['system']['ssh']['enabled'] = 'enabled';
@@ -364,6 +366,8 @@ if (empty($pconfig['webguiproto']) || !$certs_available) {
     $pconfig['webguiproto'] = "http";
 }
 
+$sshoptions = json_decode(configd_run('openssh query'), true);
+
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_group);
 
@@ -371,6 +375,22 @@ include("head.inc");
 
 ?>
 <body>
+<script>
+    $( document ).ready(function() {
+        $("#show-advanced-cryptocryptobtn").click(function (event) {
+            event.preventDefault();
+            $(this).parent().parent().hide();
+            $(".show-advanced-crypto").show();
+            $(window).trigger('resize');
+        });
+        // show advanced when at least one option is set
+        $(".advanced-crypto").each(function () {
+            if ($(this).val() != '') {
+                $("#show-advanced-cryptocryptobtn").click();
+            }
+        });
+    });
+</script>
 <?php include("fbegin.inc"); ?>
 <script>
 
@@ -750,48 +770,46 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                <td>
+                  <button id="show-advanced-cryptocryptobtn" class="btn btn-xs btn-default" value="yes"><?= gettext('Show cryptographic overrides') ?></button>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshkex" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key exchange algorithms"); ?></td>
                 <td>
-                    <select name="ssh-kex[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
-<?php
-                    $options = json_decode(configd_run("openssh query kex"), true);
-                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                    <select name="ssh-kex[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php foreach ($options = empty($sshoptions['kex']) ? [] : $sshoptions['kex'] as $option): ?>
                       <option value="<?=$option;?>" <?= !empty($pconfig['ssh-kex']) && in_array($option, $pconfig['ssh-kex']) ? 'selected="selected"' : '' ?>>
                         <?=$option;?>
                       </option>
-<?php
-                    endforeach;?>
+<?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_sshkex">
                       <?=gettext("The key exchange methods that are used to generate per-connection keys");?>
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ciphers"); ?></td>
                 <td>
-                    <select name="ssh-ciphers[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
-<?php
-                    $options = json_decode(configd_run("openssh query cipher"), true);
-                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                    <select name="ssh-ciphers[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php foreach ($options = empty($sshoptions['cipher']) ? [] : $sshoptions['cipher'] as $option): ?>
                       <option value="<?=$option;?>" <?= !empty($pconfig['ssh-ciphers']) && in_array($option, $pconfig['ssh-ciphers']) ? 'selected="selected"' : '' ?>>
                         <?=$option;?>
                       </option>
-<?php
-                    endforeach;?>
+<?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_sshciphers">
                       <?=gettext("The ciphers to encrypt the connection");?>
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshmacs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MACs"); ?></td>
                 <td>
-                    <select name="ssh-macs[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
-<?php
-                    $options = json_decode(configd_run("openssh query mac"), true);
-                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                    <select name="ssh-macs[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php foreach ($options = empty($sshoptions['mac']) ? [] : $sshoptions['mac'] as $option): ?>
                       <option value="<?=$option;?>" <?= !empty($pconfig['ssh-macs']) && in_array($option, $pconfig['ssh-macs']) ? 'selected="selected"' : '' ?>>
                         <?=$option;?>
                       </option>
@@ -803,21 +821,33 @@ $(document).ready(function() {
                     </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="show-advanced-crypto" style="display:none">
                 <td><a id="help_for_sshkeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host key algorithms"); ?></td>
                 <td>
-                    <select name="ssh-keys[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
-<?php
-                    $options = json_decode(configd_run("openssh query key"), true);
-                    foreach ($options = empty($options) ? array() : $options as $option):?>
+                    <select name="ssh-keys[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php foreach ($options = empty($sshoptions['key']) ? [] : $sshoptions['key'] as $option): ?>
                       <option value="<?=$option;?>" <?= !empty($pconfig['ssh-keys']) && in_array($option, $pconfig['ssh-keys']) ? 'selected="selected"' : '' ?>>
                         <?=$option;?>
                       </option>
-<?php
-                    endforeach;?>
+<?php endforeach ?>
                     </select>
                     <div class="hidden" data-for="help_for_sshkeys">
-                      <?=gettext("Specifies the host	key algorithms that the	server offers");?>
+                      <?= gettext('Specifies the host key algorithms that the server offers') ?>
+                    </div>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
+                <td><a id="help_for_sshkeysig" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Public key signature algorithms"); ?></td>
+                <td>
+                    <select name="ssh-keysig[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
+<?php foreach ($options = empty($sshoptions['key-sig']) ? [] : $sshoptions['key-sig'] as $option): ?>
+                      <option value="<?=$option;?>" <?= !empty($pconfig['ssh-keysig']) && in_array($option, $pconfig['ssh-keysig']) ? 'selected="selected"' : '' ?>>
+                        <?=$option;?>
+                      </option>
+<?php endforeach ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sshkeysig">
+                      <?=gettext("The signature algorithms that are used for public key authentication");?>
                     </div>
                 </td>
               </tr>
@@ -869,12 +899,13 @@ $(document).ready(function() {
                 <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                 <td>
                   <select name="serialspeed" id="serialspeed" class="selectpicker">
-                    <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
-                    <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
-                    <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
-                    <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
-                    <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
-                    <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
+                    <option value="1500000" <?= $pconfig['serialspeed'] == '1500000' ? 'selected="selected"' : '' ?>>1500000</option>
+                    <option value="115200" <?= $pconfig['serialspeed'] == '115200' || empty($pconfig['serialspeed']) ? 'selected="selected"' : '' ?>>115200</option>
+                    <option value="57600" <?= $pconfig['serialspeed'] == '57600' ? 'selected="selected"' : '' ?>>57600</option>
+                    <option value="38400" <?= $pconfig['serialspeed'] == '38400' ? 'selected="selected"' : '' ?>>38400</option>
+                    <option value="19200" <?= $pconfig['serialspeed'] == '19200' ? 'selected="selected"' : '' ?>>19200</option>
+                    <option value="14400" <?= $pconfig['serialspeed'] == '14400' ? 'selected="selected"' : '' ?>>14400</option>
+                    <option value="9600" <?= $pconfig['serialspeed'] == '9600' ? 'selected="selected"' : '' ?>>9600</option>
                   </select>
                   <div class="hidden" data-for="help_for_serialspeed">
                     <?=gettext("Allows selection of different speeds for the serial console port."); ?>

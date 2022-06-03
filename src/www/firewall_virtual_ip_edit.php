@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2005 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     foreach ($form_fields as $fieldname) {
         $pconfig[$fieldname] = null;
     }
-    $pconfig['bind'] = null;
+    $pconfig['bind'] = 'yes';
 
     if (isset($configId)) {
         // 1-on-1 copy of config data
@@ -88,12 +88,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig[$fieldname] = $a_vip[$configId][$fieldname];
             }
         }
-        if (empty($a_vip[$configId]['nobind'])) {
-            $pconfig['bind'] = 'yes';
+        if (!empty($a_vip[$configId]['nobind'])) {
+            $pconfig['bind'] = null;
         }
     }
 }  elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     // input record id, if valid
@@ -103,11 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($config['interfaces'][$pconfig['interface']]) && !empty($config['interfaces'][$pconfig['interface']]['if'])) {
         $selected_interface = $config['interfaces'][$pconfig['interface']]['if'];
     } else {
-        $selected_interface = array();
+        $selected_interface = [];
     }
     // perform form validations
-    $reqdfields = array("mode");
-    $reqdfieldsn = array(gettext("Type"));
+    $reqdfields = ['mode'];
+    $reqdfieldsn = [gettext('Type')];
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     if (isset($id) && $pconfig['mode'] != $a_vip[$id]['mode']) {
@@ -192,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // noexpand, only used for proxyarp
             $vipent['noexpand'] = true;
         }
-        if (empty($pconfig['bind'])) {
-            // noexpand, only used for proxyarp
+        if (empty($pconfig['bind']) && ($pconfig['mode'] == 'ipalias' || $pconfig['mode'] == 'carp')) {
+            // nobind, only used for ipalias/carp
             $vipent['nobind'] = true;
         }
 
@@ -204,14 +204,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (file_exists('/tmp/.firewall_virtual_ip.apply')) {
             $toapplylist = unserialize(file_get_contents('/tmp/.firewall_virtual_ip.apply'));
         } else {
-            $toapplylist = array();
+            $toapplylist = [];
         }
         if (isset($id)) {
             // save existing content before changing it
             $toapplylist[$id] = $a_vip[$id];
         } else {
             // new entry, no old data
-            $toapplylist[count($a_vip)] = array();
+            $toapplylist[count($a_vip)] = [];
         }
 
         if (isset($id)) {
@@ -277,6 +277,8 @@ $( document ).ready(function() {
             case "carp":
               $("#type").prop("selectedIndex",0);
               $("#subnet_bits").attr('disabled', false);
+              $("#bind").attr('disabled', false);
+              $("#bindrow").removeClass("hidden");
               $("#password").attr('disabled', false);
               $("#vhid").attr('disabled', false);
               $("#advskew").attr('disabled', false);
@@ -355,8 +357,8 @@ $( document ).ready(function() {
                     <td>
                       <select name="interface" class="selectpicker" data-width="auto">
 <?php
-                      $interfaces = legacy_config_get_interfaces(array('virtual' => false));
-                      $interfaces['lo0'] = array('descr' => 'Loopback');
+                      $interfaces = legacy_config_get_interfaces(['virtual' => false]);
+                      $interfaces['lo0'] = ['descr' => 'Loopback'];
                       foreach ($interfaces as $iface => $ifcfg): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? 'selected="selected"' : '' ?>>
                           <?= htmlspecialchars($ifcfg['descr']) ?>

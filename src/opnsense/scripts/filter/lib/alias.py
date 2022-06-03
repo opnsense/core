@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2017-2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,9 @@ import requests
 import ipaddress
 import dns.resolver
 import syslog
+import subprocess
 from hashlib import md5
+from dns.exception import DNSException
 from . import geoip
 from . import net_wildcard_iterator, AsyncDNSResolver
 from .arpcache import ArpCache
@@ -173,7 +175,7 @@ class Alias(object):
             if (time.time() - fstat.st_mtime) < (86400 - 90):
                 do_update = False
         if do_update:
-            syslog.syslog(syslog.LOG_ERR, 'geoip updated (files: %(file_count)d lines: %(address_count)d)' % geoip.download_geolite())
+            syslog.syslog(syslog.LOG_NOTICE, 'geoip updated (files: %(file_count)d lines: %(address_count)d)' % geoip.download_geolite())
 
         for proto in self._proto.split(','):
             geoip_filename = "/usr/local/share/GeoIP/alias/%s-%s" % (geoitem, proto)
@@ -232,20 +234,25 @@ class Alias(object):
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
                 if os.path.isfile(self._filename_alias_content):
-                    undo_content = open(self._filename_alias_content, 'r').read()
+                    try:
+                        undo_content = open(self._filename_alias_content, 'r').read()
+                    except UnicodeDecodeError:
+                        undo_content = ""
                 else:
                     undo_content = ""
                 try:
+                    self._resolve_content = self.pre_process()
                     address_parser = self.get_parser()
-                    for item in self.items():
-                        if address_parser:
+                    if address_parser:
+                        for item in self.items():
                             for address in address_parser(item):
                                 self._resolve_content.add(address)
                     # resolve hostnames (async) if there are any in the collected set
                     self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write('\n'.join(self._resolve_content))
-                except IOError:
+                except (IOError, DNSException) as e:
+                    syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(undo_content)
@@ -258,7 +265,7 @@ class Alias(object):
         return list(self._resolve_content)
 
     def get_parser(self):
-        """ fetch address parser to use, None if alias type is not handled here
+        """ fetch address parser to use, None if alias type is not handled here or only during pre processing
             :return: function or None
         """
         if self._type in ['host', 'network', 'networkgroup']:
@@ -273,6 +280,24 @@ class Alias(object):
             return ArpCache().iter_addresses
         else:
             return None
+
+    def pre_process(self):
+        """ alias type pre processors
+            :return: set initial alias content
+        """
+        result = set()
+        if self.get_type() == 'interface_net':
+            subprocess.run(
+                ['/sbin/pfctl', '-t', self.get_name(), '-T', 'replace', '%s:network' % self._interface],
+                capture_output=True
+            )
+        # collect current table contents for selected types
+        if self.get_type() in ['interface_net', 'external']:
+            pfctl_cmd = ['/sbin/pfctl', '-t', self.get_name(), '-T', 'show']
+            for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
+                result.add(line.strip())
+
+        return result
 
     def get_type(self):
         """ get type of alias

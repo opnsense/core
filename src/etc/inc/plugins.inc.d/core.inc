@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2021 Deciso B.V.
+ * Copyright (C) 2018-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -131,21 +131,52 @@ function core_services()
     return $services;
 }
 
+function core_device_names($key, $sections)
+{
+    $names = [];
+
+    foreach (call_user_func_array('config_read_array', $sections) as $dev) {
+        $names[] = $dev[$key];
+    }
+
+    return $names;
+}
+
 function core_devices()
 {
-    $devices = array();
+    $devices = [];
+
+    $devices[] = [
+        'names' => core_device_names('bridgeif', ['bridges', 'bridged']),
+        'function' => 'interfaces_bridge_configure',
+        'pattern' => '^bridge',
+        'volatile' => true,
+        'type' => 'bridge',
+    ];
+
+    $devices[] = [
+        'names' => core_device_names('gifif', ['gifs', 'gif']),
+        'function' => 'interfaces_gif_configure',
+        'configurable' => false,
+        'pattern' => '^gif',
+        'volatile' => true,
+        'type' => 'gif',
+    ];
+
+    $devices[] = [
+        'names' => core_device_names('greif', ['gres', 'gre']),
+        'function' => 'interfaces_gre_configure',
+        'configurable' => false,
+        'pattern' => '^gre',
+        'volatile' => true,
+        'type' => 'gre',
+    ];
 
     # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
     $devices[] = array('pattern' => '^cua', 'volatile' => true);
-    $devices[] = array('pattern' => '^enc', 'volatile' => true);
-    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
     $devices[] = array('pattern' => '^lagg', 'volatile' => true);
     $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
-    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
     $devices[] = array('pattern' => '^ppp', 'volatile' => true);
     $devices[] = array('pattern' => '^pptp', 'volatile' => true);
     $devices[] = array('pattern' => '^tinc', 'volatile' => true);
@@ -154,8 +185,8 @@ function core_devices()
     $devices[] = array('pattern' => '^wg', 'volatile' => true);
     $devices[] = array('pattern' => '^zt', 'volatile' => true);
     $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    $devices[] = array('pattern' => '_vlan|^vlan|^qinq', 'volatile' => true);
     $devices[] = array('pattern' => '_wlan', 'volatile' => true);
-    $devices[] = array('pattern' => 'vlan', 'volatile' => true);
 
     return $devices;
 }
@@ -166,7 +197,7 @@ function core_cron()
 
     $jobs = array();
 
-    $jobs[]['autocron'] = array('/usr/local/opnsense/scripts/syslog/log_archive', '1');
+    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
     $jobs[]['autocron'] = array('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
     $jobs[]['autocron'] = array('/usr/local/etc/rc.expireaccounts', '4');

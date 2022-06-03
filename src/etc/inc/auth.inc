@@ -34,163 +34,8 @@
 require_once("interfaces.inc");
 require_once("util.inc");
 
-// Will be changed to false if security checks fail
-$security_passed = true;
-
-/* If this function doesn't exist, we're being called from Captive Portal or
-   another internal subsystem which does not include authgui.inc */
-if (function_exists("display_error_form") && !isset($config['system']['webgui']['nodnsrebindcheck'])) {
-    /* DNS ReBinding attack prevention */
-    $found_host = false;
-
-    /* either an IPv6 address with or without an alternate port */
-    if (strstr($_SERVER['HTTP_HOST'], "]")) {
-        $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
-        /* v6 address has more parts, drop the last part */
-        if (count($http_host_port) > 1) {
-            array_pop($http_host_port);
-            $http_host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
-        } else {
-            $http_host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
-        }
-    } else {
-        $http_host = explode(":", $_SERVER['HTTP_HOST']);
-        $http_host = $http_host[0];
-    }
-    if (
-        is_ipaddr($http_host) || $_SERVER['SERVER_ADDR'] == "127.0.0.1" ||
-        strcasecmp($http_host, "localhost") == 0 or $_SERVER['SERVER_ADDR'] == "::1"
-    ) {
-        $found_host = true;
-    }
-    if (
-        strcasecmp($http_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
-        strcasecmp($http_host, $config['system']['hostname']) == 0
-    ) {
-        $found_host = true;
-    }
-
-    if (isset($config['dyndnses']['dyndns']) && !$found_host) {
-        foreach ($config['dyndnses']['dyndns'] as $dyndns) {
-            if (strcasecmp($dyndns['host'], $http_host) == 0) {
-                $found_host = true;
-                break;
-            }
-        }
-    }
-
-    if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
-        foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
-            if (strcasecmp($rfc2136['host'], $http_host) == 0) {
-                $found_host = true;
-                break;
-            }
-        }
-    }
-
-    if (!empty($config['system']['webgui']['althostnames']) && !$found_host) {
-        $althosts = explode(" ", $config['system']['webgui']['althostnames']);
-        foreach ($althosts as $ah) {
-            if (strcasecmp($ah, $http_host) == 0 or strcasecmp($ah, $_SERVER['SERVER_ADDR']) == 0) {
-                $found_host = true;
-                break;
-            }
-        }
-    }
-
-    if ($found_host == false) {
-        if (!security_checks_disabled()) {
-            display_error_form(sprintf(gettext("A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname."), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
-            exit;
-        }
-        $security_passed = false;
-    }
-}
-
-// If the HTTP_REFERER is something other than ourselves then disallow.
-if (function_exists("display_error_form") && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        if (file_exists('/tmp/setupwizard_lastreferrer')) {
-            if ($_SERVER['HTTP_REFERER'] == file_get_contents('/tmp/setupwizard_lastreferrer')) {
-                unlink('/tmp/setupwizard_lastreferrer');
-                header("Refresh: 1; url=index.php");
-                echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-                echo "<html><head><title>" . gettext("Redirecting...") . "</title></head><body>" . gettext("Redirecting to the dashboard...") . "</body></html>";
-                exit;
-            }
-        }
-        $found_host = false;
-        $referrer_host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-        $referrer_host = str_replace(array("[", "]"), "", $referrer_host);
-        if ($referrer_host) {
-            if (
-                strcasecmp($referrer_host, $config['system']['hostname'] . "." . $config['system']['domain']) == 0 ||
-                strcasecmp($referrer_host, $config['system']['hostname']) == 0
-            ) {
-                $found_host = true;
-            }
-
-
-            if (!empty($config['system']['webgui']['althostnames']) && !$found_host) {
-                $althosts = explode(" ", $config['system']['webgui']['althostnames']);
-                foreach ($althosts as $ah) {
-                    if (strcasecmp($referrer_host, $ah) == 0) {
-                        $found_host = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isset($config['dyndnses']['dyndns']) && !$found_host) {
-                foreach ($config['dyndnses']['dyndns'] as $dyndns) {
-                    if (strcasecmp($dyndns['host'], $referrer_host) == 0) {
-                        $found_host = true;
-                        break;
-                    }
-                }
-            }
-
-            if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
-                foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
-                    if (strcasecmp($rfc2136['host'], $referrer_host) == 0) {
-                        $found_host = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!$found_host) {
-                $found_host = isAuthLocalIP($referrer_host);
-                if ($referrer_host == "127.0.0.1" || $referrer_host == "localhost") {
-                    // allow SSH port forwarded connections and links from localhost
-                    $found_host = true;
-                }
-            }
-        }
-        if ($found_host == false) {
-            if (!security_checks_disabled()) {
-                display_error_form(sprintf(
-                    gettext('The HTTP_REFERER "%s" does not match the predefined settings. You can disable this check if needed under System: Settings: Administration.'),
-                    html_safe($_SERVER['HTTP_REFERER'])
-                ));
-                exit;
-            }
-            $security_passed = false;
-        }
-    } else {
-        $security_passed = false;
-    }
-}
-
-if (function_exists("display_error_form") && $security_passed) {
-    /* Security checks passed, so it should be OK to turn them back on */
-    restore_security_checks();
-}
-unset($security_passed);
-
 $groupindex = index_groups();
 $userindex = index_users();
-
 
 /**
  * check if $http_host is a local configured ip address
@@ -314,21 +159,6 @@ function &getGroupEntry($name)
     return array();
 }
 
-function &getGroupEntryByGID($gid)
-{
-    global $config;
-
-    if (isset($config['system']['group'])) {
-        foreach ($config['system']['group'] as & $group) {
-            if ($group['gid'] == $gid) {
-                return $group;
-            }
-        }
-    }
-
-    return false;
-}
-
 function get_user_privileges(&$user)
 {
     if (!isset($user['priv']) || !is_array($user['priv'])) {
@@ -447,10 +277,6 @@ function local_sync_accounts()
             }
         }
     }
-
-    /* make sure the all group exists */
-    $allgrp = getGroupEntryByGID(1998);
-    local_group_set($allgrp, true);
 
     /* sync all local users */
     if (is_array($config['system']['user'])) {
@@ -607,8 +433,7 @@ function local_user_set_password(&$user, $password = null)
 {
     if ($password == null) {
         /* generate a random password */
-        $bytes = openssl_random_pseudo_bytes(50);
-        $password = pack('H*', bin2hex($bytes));
+        $password = random_bytes(50);
     }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 10 ]);
@@ -711,7 +536,7 @@ function local_group_del_user($user)
     }
 }
 
-function local_group_set($group, $reset = false)
+function local_group_set($group)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
         return;
@@ -721,7 +546,7 @@ function local_group_set($group, $reset = false)
     $group_gid = $group['gid'];
     $group_members = '';
 
-    if (!$reset && !empty($group['member']) && count($group['member']) > 0) {
+    if (!empty($group['member']) && count($group['member']) > 0) {
         $group_members = implode(',', $group['member']);
     }
 

@@ -28,7 +28,7 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 
 /**
  * Class Shell shell/command handling routines
@@ -36,7 +36,6 @@ use Phalcon\DI\FactoryDefault;
  */
 class Shell
 {
-
     /**
      * simulation mode, only print commands, dom not execute
      * @var bool

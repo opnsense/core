@@ -69,6 +69,9 @@ class Template(object):
         self._j2_env.filters['shlex_split'] = shlex.split
         self._j2_env.filters['regex_replace'] = lambda value, pattern, replacement: re.sub(pattern, replacement, value)
 
+        # register additional tests
+        self._j2_env.tests['regex_match'] = lambda value, pattern: bool(re.match(pattern, value))
+
     @staticmethod
     def _encode_idna(x):
         """ encode string to idna, preserve leading dots

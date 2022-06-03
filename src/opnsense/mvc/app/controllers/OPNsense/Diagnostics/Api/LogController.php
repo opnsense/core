@@ -30,7 +30,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use Phalcon\Filter;
+use OPNsense\Phalcon\Filter\Filter;
 
 /**
  * @inherit
@@ -59,7 +59,7 @@ class LogController extends ApiControllerBase
                 return ["status" => "ok"];
             } else {
                 // fetch query parameters (limit results to prevent out of memory issues)
-                $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+                $itemsPerPage = $this->request->getPost('rowCount') == -1 ? 5000 : $this->request->getPost('rowCount', 'int', 9999);
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {
@@ -103,7 +103,7 @@ class LogController extends ApiControllerBase
                 $this->response->setRawHeader("Content-Type: text/csv");
                 $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
                 foreach (json_decode($response, true)['rows'] as $row) {
-                    printf("%s\t%s\t%s\n", $row['timestamp'], $row['process_name'], $row['line']);
+                    printf("%s\t%s\t%s\t%s\n", $row['timestamp'], $row['severity'], $row['process_name'], $row['line']);
                 }
                 return;
             }

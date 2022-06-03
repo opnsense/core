@@ -39,28 +39,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($a_gres[$_GET['id']])) {
         $id = $_GET['id'];
     }
-    $pconfig = array();
+    $pconfig = [];
     // copy fields
-    $copy_fields = array('if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr');
+    $copy_fields = ['if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr'];
     foreach ($copy_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_gres[$id][$fieldname]) ? $a_gres[$id][$fieldname] : null;
     }
-    // bool fields
-    $pconfig['link1'] = isset($a_gres[$id]['link1']);
-    $pconfig['link2'] = isset($a_gres[$id]['link2']);
-    $pconfig['link0'] = isset($a_gres[$id]['link0']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
     if (!empty($a_gres[$_POST['id']])) {
         $id = $_POST['id'];
     }
 
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "if tunnel-remote-addr tunnel-remote-net tunnel-local-addr");
-    $reqdfieldsn = array(gettext("Parent interface"),gettext("Local address"),gettext("Remote tunnel address"),gettext("Remote tunnel network"), gettext("Local tunnel address"));
+    $reqdfieldsn = [gettext('Parent interface'),gettext('Local address'),gettext('Remote tunnel address'),gettext('Remote tunnel network'), gettext('Local tunnel address')];
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -79,19 +75,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $gre = array();
-        $copy_fields = array('if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr');
+        $gre = [];
+        $copy_fields = ['if', 'greif', 'remote-addr', 'tunnel-remote-net', 'tunnel-local-addr', 'tunnel-remote-addr', 'descr'];
         foreach ($copy_fields as $fieldname) {
             $gre[$fieldname] = isset($pconfig[$fieldname]) ? $pconfig[$fieldname] : null;
         }
-        $gre['link1'] = isset($pconfig['link1']);
-        $gre['link2'] = isset($pconfig['link2']);
-        $gre['link0'] = isset($pconfig['link0']);
 
+        if (empty($gre['greif'])) {
+            $gre['greif'] = legacy_interface_create('gre'); /* XXX find another strategy */
+        }
 
-        $gre['greif'] = interface_gre_configure($gre);
-        ifgroup_setup();
-        if ($gre['greif'] == "" || !stristr($gre['greif'], "gre")) {
+        if (empty($gre['greif']) || strpos($gre['greif'], 'gre') !== 0) {
             $input_errors[] = gettext("Error occurred creating interface, please retry.");
         } else {
             if (isset($id)) {
@@ -100,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gres[] = $gre;
             }
             write_config();
+            interfaces_gre_configure($gre['greif']);
+            ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
@@ -211,36 +207,6 @@ include("head.inc");
                       </table>
                       <div class="hidden" data-for="help_for_tunnel-remote-addr">
                         <?=gettext("Remote GRE address endpoint. The subnet part is used for the determining the network that is tunneled.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mobile tunnel");?></td>
-                    <td>
-                      <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link0">
-                        <?=gettext("Specify which encapsulation method the tunnel should use.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route search type");?></td>
-                    <td>
-                      <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link1">
-                        <?=gettext("For correct operation, the GRE device needs a route to the destination ".
-                       "that is less specific than the one over the tunnel. (Basically, there ".
-                       "needs to be a route to the decapsulating host that does not run over the ".
-                       "tunnel, as this would be a loop.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WCCP version");?></td>
-                    <td>
-                      <input name="link2" type="checkbox" id="link2" <?= !empty($pconfig['link2']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_link2">
-                        <?=gettext("Check this box for WCCP encapsulation version 2, or leave unchecked for version 1.");?>
                       </div>
                     </td>
                   </tr>

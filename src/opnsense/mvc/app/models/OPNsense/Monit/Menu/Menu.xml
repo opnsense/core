@@ -3,6 +3,7 @@
       <Monit cssClass="fa fa-heartbeat fa-fw">
          <Settings url="/ui/monit"/>
          <Status url="/ui/monit/status"/>
+         <Log order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/monit" />
       </Monit>
    </Services>
 </menu>

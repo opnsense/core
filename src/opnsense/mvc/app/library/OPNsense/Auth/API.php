@@ -88,8 +88,8 @@ class API extends Base implements IAuthConnector
                 }
                 $item = $apikeys->addChild('item');
 
-                $newKey = base64_encode(openssl_random_pseudo_bytes(60));
-                $newSecret = base64_encode(openssl_random_pseudo_bytes(60));
+                $newKey = base64_encode(random_bytes(60));
+                $newSecret = base64_encode(random_bytes(60));
 
                 $item->addChild('key', $newKey);
                 $item->addChild('secret', crypt($newSecret, '$6$'));
@@ -171,8 +171,7 @@ class API extends Base implements IAuthConnector
                 // expired user
                 return false;
             }
-            $passwd = crypt($password, $apiSecret);
-            if ($passwd == $apiSecret) {
+            if (password_verify($password, $apiSecret)) {
                 // password ok, return successfully authentication
                 $this->lastAuthProperties['username'] = (string)$userObject->name;
                 return true;

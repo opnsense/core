@@ -26,14 +26,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Loader;
+use Phalcon\Di\FactoryDefault;
 
 $di = new FactoryDefault();
 $phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
 
-$loader = new Loader();
-$loader->registerDirs(
+$loader = new OPNsense\Phalcon\Autoload\Loader();
+$loader->setDirectories(
     array(
         $phalcon_config->application->controllersDir,
         $phalcon_config->application->modelsDir,

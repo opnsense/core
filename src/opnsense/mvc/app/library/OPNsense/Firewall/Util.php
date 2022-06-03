@@ -45,7 +45,12 @@ class Util
     /**
      * @var null|array cached alias descriptions
      */
-    private static $aliasDescriptions = array();
+    private static $aliasDescriptions = [];
+
+    /**
+     * @var array cached getservbyname results
+     */
+    private static $servbynames = [];
 
     /**
      * is provided address an ip address.
@@ -107,6 +112,9 @@ class Util
     public static function attachAliasObject($alias)
     {
         self::$aliasObject = $alias;
+        if ($alias != null) {
+            $alias->flushCache();
+        }
     }
 
     /**
@@ -121,18 +129,18 @@ class Util
         if (self::$aliasObject == null) {
             // Cache the alias object to avoid object creation overhead.
             self::$aliasObject = new Alias();
+            self::$aliasObject->flushCache();
         }
         if (!empty($name)) {
-            foreach (self::$aliasObject->aliasIterator() as $alias) {
-                if ($alias['name'] == $name) {
-                    if ($valid) {
-                        // check validity for port type aliases
-                        if (preg_match("/port/i", $alias['type']) && trim($alias['content']) == "") {
-                            return false;
-                        }
+            $alias = self::$aliasObject->getByName($name);
+            if ($alias != null) {
+                if ($valid) {
+                    // check validity for port type aliases
+                    if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
+                        return false;
                     }
-                    return true;
                 }
+                return true;
             }
         }
         return false;
@@ -156,10 +164,9 @@ class Util
                     }
 
                     if (!empty($alias['content'])) {
-                        $content = explode("\n", $alias['content']);
-                        $tmp = array_slice($content, 0, 10);
+                        $tmp = array_slice($alias['content'], 0, 10);
                         asort($tmp, SORT_NATURAL);
-                        if (count($content) > 10) {
+                        if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
                         self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
@@ -191,7 +198,7 @@ class Util
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
-                foreach (explode("\n", $node['content']) as $address) {
+                foreach ($node['content'] as $address) {
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
                             foreach (Util::getPortAlias($address, $aliases) as $port) {
@@ -211,6 +218,23 @@ class Util
     }
 
     /**
+     * cached version of getservbyname()
+     * @param string $service service name
+     * @param string $protocol protocol name
+     * @return boolean
+     */
+    private static function getservbyname($service, $protocol)
+    {
+        if (!isset(self::$servbynames[$protocol])){
+            self::$servbynames[$protocol] = [];
+        }
+        if (!isset(self::$servbynames[$protocol][$service])) {
+           self::$servbynames[$protocol][$service] = getservbyname($service, $protocol);
+        }
+        return self::$servbynames[$protocol][$service];
+    }
+
+    /**
      * check if name exists in alias config section
      * @param string $number port number or range
      * @param boolean $allow_range ranges allowed
@@ -220,10 +244,9 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if (
-                !getservbyname($port, "tcp") && !getservbyname($port, "udp")
-                && (filter_var($port, FILTER_VALIDATE_INT, array(
-                    "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port))
+            if ((filter_var($port, FILTER_VALIDATE_INT, array(
+                  "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port)) &&
+                !self::getservbyname($port, "tcp") && !self::getservbyname($port, "udp")
             ) {
                 return false;
             }
@@ -242,7 +265,13 @@ class Util
     public static function isDomain($domain)
     {
         $pattern = '/^(?:(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])\.)*(?:[a-z\pL0-9]|[a-z\pL0-9][a-z\pL0-9\-]*[a-z\pL0-9])$/iu';
-        if (preg_match($pattern, $domain)) {
+        $parts = explode(".", $domain);
+        if (ctype_digit($parts[0]) && ctype_digit($parts[count($parts) - 1])) {
+            // according to rfc1123 2.1
+            //   a valid host name can never have the dotted-decimal form #.#.#.#, since at least the highest-level
+            //   component label will be alphabetic.
+            return false;
+        } elseif (preg_match($pattern, $domain)) {
             return true;
         }
         return false;

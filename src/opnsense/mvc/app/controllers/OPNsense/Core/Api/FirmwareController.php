@@ -50,10 +50,14 @@ class FirmwareController extends ApiControllerBase
             /* already processed */
             return $bytes;
         }
-        if ($bytes >= (1024 * 1024 * 1024)) {
-            return sprintf('%.1F%s', $bytes / (1024 * 1024 * 1024), 'GiB');
-        } elseif ($bytes >= 1024 * 1024) {
-            return sprintf('%.1F%s', $bytes / (1024 * 1024), 'MiB');
+        if ($bytes >= 1024 ** 5) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 5), 'PiB');
+        } elseif ($bytes >= 1024 ** 4) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 4), 'TiB');
+        } elseif ($bytes >= 1024 ** 3) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 3), 'GiB');
+        } elseif ($bytes >= 1024 ** 2) {
+            return sprintf('%.1F%s', $bytes / (1024 ** 2), 'MiB');
         } elseif ($bytes >= 1024) {
             return sprintf('%.1F%s', $bytes / 1024, 'KiB');
         } else {
@@ -133,6 +137,12 @@ class FirmwareController extends ApiControllerBase
                 if (preg_match('/\s*(\d+)\s*([a-z])/i', $size, $matches)) {
                     $factor = 1;
                     switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
+                        case 'p':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
+                        case 't':
+                            $factor *= 1024;
+                            /* FALLTROUGH */
                         case 'g':
                             $factor *= 1024;
                             /* FALLTROUGH */
@@ -341,7 +351,7 @@ class FirmwareController extends ApiControllerBase
 
         $this->sessionClose(); // long running action, close session
 
-        $filter = new \Phalcon\Filter([
+        $filter = new \OPNsense\Phalcon\Filter\Filter([
             'version' => function ($value) {
                 return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
             }
@@ -373,7 +383,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -544,7 +554,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -614,7 +624,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -644,7 +654,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -672,7 +682,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -705,7 +715,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -776,7 +786,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }

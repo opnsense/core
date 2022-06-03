@@ -40,7 +40,6 @@ use OPNsense\Core\Config;
  */
 class CategoryController extends ApiMutableModelControllerBase
 {
-
     protected static $internalModelName = 'category';
     protected static $internalModelClass = 'OPNsense\Firewall\Category';
 
@@ -70,7 +69,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Update category with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setItemAction($uuid)
@@ -91,7 +90,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Add new category and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addItemAction()
@@ -114,7 +113,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * Delete alias by uuid, save contents to tmp for removal on apply
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\UserException when unable to delete
      */

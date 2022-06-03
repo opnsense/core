@@ -43,6 +43,16 @@
                         request['type'] = $('#type_filter').val();
                     }
                     return request;
+                },
+                formatters: {
+                    "commands": function (column, row) {
+                        if (row.uuid.includes('-') === true) {
+                            // exclude buttons for internal aliases (which uses names instead of valid uuid's)
+                            return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                        }
+                    },
                 }
             }
         });
@@ -57,7 +67,9 @@
             ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
-                    $("#network_content").append($("<option/>").val(alias).text(value));
+                    let $opt = $("<option/>").val(alias).text(value.name);
+                    $opt.data('subtext', value.description);
+                    $("#network_content").append($opt);
                 });
                 $("#network_content").selectpicker('refresh');
             });
@@ -500,18 +512,19 @@
                             <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
-                                <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
                                 <option value="url">{{ lang._('URL (IPs)') }}</option>
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
+                                <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
+                                <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
                         </div>
                     </div>
-                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage" data-store-selection="true">
+                    <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage">
                         <thead>
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -576,7 +589,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="formDialogAliasLabel">{{lang._('Edit Alias')}}</h4>
             </div>
             <div class="modal-body">

@@ -108,7 +108,8 @@ function legacy_interface_destroy($ifs)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        /* disable error reporting to avoid spurious errors on first configuration */
+        //log_error('The command `' . $cmd . '\' failed to execute');
     }
 }
 
@@ -155,6 +156,26 @@ function legacy_bridge_member($ifs, $member)
 function legacy_vlan_tag($ifs, $member, $tag, $pcp)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp ' . escapeshellarg($pcp);
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
+function legacy_vlan_remove_tag($ifs)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' -vlandev';
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
+function legacy_vlan_pcp($ifs, $pcp)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlanpcp ' . escapeshellarg($pcp);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
@@ -366,6 +387,13 @@ function legacy_interfaces_details($intf = null)
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
             $result[$current_interface]['groups'] = $line_parts;
+        } elseif (preg_match("/vlan: (.*)\Wvlanproto:\W(.*) vlanpcp:\W(.*) parent interface:\W(.*)$/", $line, $matches)) {
+            $result[$current_interface]['vlan'] = [
+                "tag" => $matches[1],
+                "proto" => $matches[2],
+                "pcp" => $matches[3],
+                "parent" => $matches[4],
+            ];
         } elseif (strpos($line, "\tcarp: ") !== false) {
             if (empty($result[$current_interface]["carp"])) {
                 $result[$current_interface]["carp"] = [];
@@ -420,7 +448,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
 
     $hwsettings = $config['system'];
 
-    if (strstr($ifs, '_vlan') || strpos($ifs, '/') === 0) {
+    if (strstr($ifs, 'vlan') || strstr($ifs, 'qinq') || strpos($ifs, '/') === 0) {
         /* skip checksumming  */
         return;
     }
@@ -474,7 +502,7 @@ function configure_interface_hardware($ifs, $intf_details = null)
             legacy_interface_flags($ifs, 'lro', false);
         }
 
-        // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
+        // disable/enable hardware VLAN tags, will be skipped when "Leave default" (option 2) is selected
         if (!isset($hwsettings['disablevlanhwfilter']) || $hwsettings['disablevlanhwfilter'] == 1) {
             // probe already selected options
             $selected_opts = [];
@@ -497,32 +525,4 @@ function configure_interface_hardware($ifs, $intf_details = null)
             }
         }
     }
-}
-
-function legacy_get_interface_addresses($ifs, $ifconfig_details = null)
-{
-    $intf_details = [];
-    if (empty($ifconfig_details)) {
-        $intf_details = legacy_interface_details($ifs);
-    } elseif (!empty($ifconfig_details[$ifs])) {
-        $intf_details = $ifconfig_details[$ifs];
-    }
-
-    $addrs = array("macaddr" => $intf_details['macaddr']);
-    if (!empty($intf_details['ipv4'][0])) {
-        $addrs['ipaddr'] = $intf_details['ipv4'][0]['ipaddr'];
-        $addrs['subnetbits'] = $intf_details['ipv4'][0]['subnetbits'];
-    }
-    if (isset($intf_details['ipv6'])) {
-        foreach ($intf_details['ipv6'] as $ipv6) {
-            if (empty($addrs['ipaddr6']) && empty($ipv6['link-local'])) {
-                $addrs['ipaddr6'] = $ipv6['ipaddr'];
-                $addrs['subnetbits6'] = $ipv6['subnetbits'];
-            } elseif (empty($addrs['ipaddr6_ll']) && !empty($ipv6['link-local'])) {
-                $addrs['ipaddr6_ll'] = $ipv6['ipaddr'];
-                $addrs['subnetbits6_ll'] = $ipv6['subnetbits'];
-            }
-        }
-    }
-    return $addrs;
 }

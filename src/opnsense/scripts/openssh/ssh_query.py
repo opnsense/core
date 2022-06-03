@@ -30,14 +30,18 @@ import subprocess
 import ujson
 import argparse
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('option', help='query option',  choices=['kex', 'mac', 'cipher' ,'key'])
-    args = parser.parse_args()
+opts = ['kex', 'mac', 'cipher' ,'key', 'key-sig']
 
-    result = list()
-    for l in subprocess.run(['/usr/local/bin/ssh', '-Q', args.option], capture_output=True).stdout.decode().split('\n'):
-        if len(l.strip()) > 1:
-            result.append(l.strip())
+if __name__ == '__main__':
+    result = dict()
+
+    for opt in opts:
+        partial = list()
+        for l in subprocess.run(['/usr/local/bin/ssh', '-Q', opt], capture_output=True).stdout.decode().split('\n'):
+            if len(l.strip()) > 1:
+                partial.append(l.strip())
+        sorted(partial)
+        result[opt] = partial
+
     sorted(result)
     print(ujson.dumps(result))

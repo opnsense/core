@@ -181,7 +181,7 @@ include("head.inc");
                     <td>
                       <input name="duid" type="text" value="<?=$pconfig['duid'];?>" />
                       <div class="hidden" data-for="help_for_duid">
-                        <?=gettext("Enter a DUID Identifier in the following format: ");?><br />
+                        <?= gettext('Enter a DUID Identifier in the following format:') ?><br />
                         "<?= gettext('DUID-LLT - ETH -- TIME --- ---- ADDR ----') ?>" <br />
                         "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
                       </div>
@@ -207,6 +207,7 @@ include("head.inc");
                       <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                       <div class="hidden" data-for="help_for_hostname">
                         <?=gettext("Name of the host, without domain part.");?>
+                        <?=gettext("If no IP address is given above, hostname will not be visible to DNS services with lease registration enabled.");?>
                       </div>
                     </td>
                   </tr>

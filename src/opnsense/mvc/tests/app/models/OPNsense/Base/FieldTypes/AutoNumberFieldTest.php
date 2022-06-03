@@ -40,7 +40,6 @@ use OPNsense\Base\FieldTypes\ArrayField;
 
 class AutoNumberFieldTest extends Field_Framework_TestCase
 {
-
     /**
      * test construct
      */

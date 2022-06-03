@@ -27,10 +27,9 @@
  */
 
 // Service definition for API
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use OPNsense\Core\Config;

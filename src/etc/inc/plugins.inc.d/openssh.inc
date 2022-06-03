@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2004 Fred Mol <fredmol@xs4all.nl>
- * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -191,18 +191,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         $sshconf .= "ChallengeResponseAuthentication no\n";
         $sshconf .= "PasswordAuthentication no\n";
     }
-    if (!empty($sshcfg['kex'])) {
-        $sshconf .= "KexAlgorithms {$sshcfg['kex']}\n";
-    }
-    if (!empty($sshcfg['ciphers'])) {
-        $sshconf .= "Ciphers {$sshcfg['ciphers']}\n";
-    }
-    if (!empty($sshcfg['macs'])) {
-        $sshconf .= "MACs {$sshcfg['macs']}\n";
-    }
-    if (!empty($sshcfg['keys'])) {
-        $sshconf .= "HostKeyAlgorithms {$sshcfg['keys']}\n";
-    }
+
     foreach ($keys_all as $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file)) {
@@ -233,6 +222,42 @@ function openssh_configure_do($verbose = false, $interface = '')
 
     foreach ($listeners as $listener) {
         $sshconf .= "ListenAddress {$listener}\n";
+    }
+
+    $supported = null;
+    $advanced = [
+        [ 'config' => 'Ciphers', 'node' => 'ciphers', 'key' => 'cipher'],
+        [ 'config' => 'HostKeyAlgorithms', 'node' => 'keys', 'key' => 'key'],
+        [ 'config' => 'KexAlgorithms', 'node' => 'kex', 'key' => 'kex'],
+        [ 'config' => 'MACs', 'node' => 'macs', 'key' => 'mac'],
+        [ 'config' => 'PubkeyAcceptedAlgorithms', 'node' => 'keysig', 'key' => 'key-sig'],
+    ];
+
+    foreach ($advanced as $adv) {
+        if (empty($sshcfg[$adv['node']])) {
+            continue;
+        }
+
+        if ($supported === null) {
+            /* cache return as it includes all probable values */
+            $supported = json_decode(configd_run('openssh query'), true);
+        }
+
+        $selected = [];
+
+        foreach (explode(',', $sshcfg[$adv['node']]) as $elem) {
+            if (in_array($elem, $supported[$adv['key']])) {
+                $selected[] = $elem;
+            } else {
+                syslog(LOG_WARNING, "OpenSSH: Configured {$adv['node']} value '{$elem}' is not supported.");
+            }
+        }
+
+        if (count($selected) == 0) {
+            syslog(LOG_WARNING, "OpenSSH: No configured {$adv['node']} value is supported - using defaults.");
+        } else {
+            $sshconf .= $adv['config'] . ' ' . implode(',', $selected) . PHP_EOL;
+        }
     }
 
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);

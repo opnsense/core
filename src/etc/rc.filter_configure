@@ -33,6 +33,10 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+if (file_exists('/var/run/booting')) {
+    return;
+}
+
 $event_arg = count($argv) >= 1 ? $argv[1] : '';
 
 filter_configure_sync(true, $event_arg != 'skip_alias');
