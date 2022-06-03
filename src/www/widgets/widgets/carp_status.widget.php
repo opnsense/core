@@ -72,6 +72,8 @@ config_read_array('virtualip', 'vip');
       } elseif ($status == "INIT") {
           $status_i18n = gettext("INIT");
           echo "<span class=\"fa fa-info-circle fa-fw\" title=\"$status_i18n\" ></span>";
+      } else {
+          $status_i18n = "";
       }
       if (!empty($carp['subnet'])):?>
         &nbsp;
