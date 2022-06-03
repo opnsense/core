@@ -29,6 +29,18 @@
       function attach_legacy_actions() {
           $(".legacy_action").unbind('click').click(function(e){
               e.stopPropagation();
+              // remember phase 1 settings so we can go back to the same selection on next page load
+              if (sessionStorage) {
+                  sessionStorage.setItem('ipsec-tunnels-phase1-page', $("#grid-phase1").bootgrid("getCurrentPage"));
+                  if ($(this).data('scope') === 'phase1') {
+                      sessionStorage.setItem('ipsec-tunnels-phase1-id', $(this).data('row-ikeid'));
+                  } else {
+                      let ids = $("#grid-phase1").bootgrid("getSelectedRows");
+                      if (ids.length > 0) {
+                          sessionStorage.setItem('ipsec-tunnels-phase1-id', ids[0]);
+                      }
+                  }
+              }
               if ($(this).data('scope') === 'phase1') {
                   if ($(this).hasClass('command-add')) {
                       window.location = '/vpn_ipsec_phase1.php';
@@ -144,9 +156,15 @@
       }).on("deselected.rs.jquery.bootgrid", function(e, rows) {
           $("#grid-phase2").bootgrid('reload');
       }).on("loaded.rs.jquery.bootgrid", function (e) {
-          let ids = $("#grid-phase1").bootgrid("getCurrentRows");
-          if (ids.length > 0) {
-              $("#grid-phase1").bootgrid('select', [ids[0].id]);
+          let phase1_id = sessionStorage ? sessionStorage.getItem('ipsec-tunnels-phase1-id') : null;
+          if (phase1_id == null) {
+              let ids = $("#grid-phase1").bootgrid("getCurrentRows");
+              if (ids.length > 0) {
+                  phase1_id = ids[0].id;
+              }
+          }
+          if (phase1_id != null) {
+              $("#grid-phase1").bootgrid('select', [parseInt(phase1_id)]);
           }
           attach_legacy_actions();
           updateLegacyStatus();
@@ -177,6 +195,15 @@
               });
           }
       });
+      // previous settings, since we miss callbacks we do use setTimeout() to chain events here.
+      if (sessionStorage) {
+          setTimeout(function(){
+              let phase1_page = sessionStorage.getItem('ipsec-tunnels-phase1-page');
+              if (phase1_page != null) {
+                $('#grid-phase1-footer  a[data-page="'+phase1_page+'"]').click();
+              }
+          }, 500);
+      }
       updateServiceControlUI('ipsec');
       // reformat bootgrid headers to show type of content (phase 1 or 2)
       $("div.actionBar").each(function(){
