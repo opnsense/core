@@ -25,14 +25,16 @@
 
 DEFAULTS="\${product_name} \${product_version}"
 VERSIONDIR="/usr/local/opnsense/version"
+PLUGINCTL="/usr/local/sbin/pluginctl"
 OPENSSL="/usr/local/bin/openssl"
 PKG="/usr/local/sbin/pkg-static"
 TARGET="core"
 OUTPUT=
 
 DO_CHECK=
+DO_ORIGIN=
 
-while getopts AacefHiNnsVvw OPT; do
+while getopts AacefHiNnOsVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -61,6 +63,9 @@ while getopts AacefHiNnsVvw OPT; do
 	n)
 		OUTPUT="${OUTPUT} \${product_id}"
 		;;
+	O)
+		DO_ORIGIN="-O"
+		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
 		;;
@@ -72,6 +77,9 @@ while getopts AacefHiNnsVvw OPT; do
 		;;
 	w)
 		OUTPUT="${OUTPUT} \${product_website}"
+		;;
+	x)
+		OUTPUT="${OUTPUT} \${target_abi_major}.\${target_abi_minor}"
 		;;
 	*)
 		echo "Usage: man ${0##*/}" >&2
@@ -89,6 +97,11 @@ fi
 
 VERSION="${VERSIONDIR}/${TARGET}"
 
+if [ -n "${*}" ]; then
+	echo "Additional arguments are not supported" >&2
+	exit 1
+fi
+
 if [ -n "${DO_CHECK}" ]; then
 	RET=0
 	if [ ! -f ${VERSION} ]; then
@@ -97,14 +110,14 @@ if [ -n "${DO_CHECK}" ]; then
 	exit ${RET}
 fi
 
-if [ -n "${*}" ]; then
-	echo "Additional arguments are not supported" >&2
-	exit 1
-fi
-
 if [ ! -f ${VERSION} ]; then
 	echo "Missing ${VERSION}" >&2
 	exit 1
+fi
+
+if [ -n "${DO_ORIGIN}" ]; then
+	cat ${VERSION}
+	exit 0
 fi
 
 if grep -q '[{}]' ${VERSION}; then
@@ -124,6 +137,36 @@ core)
 	if [ -z "${OUTPUT%%*product_size*}" -a -f ${PKG} ]; then
 		RESULT=$(${PKG} info -s ${product_id})
 		product_size=${RESULT##* }
+	fi
+	if [ -z "${OUTPUT%%*target_abi*}" -a -f ${PLUGINCTL} ]; then
+		target_abi_major=${product_abi%%.*}
+		target_abi_minor=${product_abi#*.}
+
+		IS_BUSINESS=$(echo ${product_name} | grep -c -- '-business')
+		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.mirror | \
+		    grep -c 'opnsense-update\.deciso\.com')
+
+		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" -o ]; then
+			case ${target_abi_minor} in
+			1[0-2])
+				target_abi_major=$((target_abi_major + 1))
+				target_abi_minor=$((target_abi_minor - 9))
+				;;
+			*)
+				target_abi_minor=$((target_abi_minor + 3))
+				;;
+			esac
+		elif [ "${IS_BUSINESS}${WANT_BUSINESS}" = "10" ]; then
+			case ${target_abi_minor} in
+			[1-3])
+				target_abi_major=$((target_abi_major - 1))
+				target_abi_minor=$((target_abi_minor + 9))
+				;;
+			*)
+				target_abi_minor=$((target_abi_minor - 3))
+				;;
+			esac
+		fi
 	fi
 	;;
 *)

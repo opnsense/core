@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'max-src-conn',
         'max-src-conn-rate',
         'max-src-conn-rates',
+        'overload',
         'max-src-nodes',
         'max-src-states',
         'nopfsync',
@@ -334,13 +335,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['floating']) && !empty($pconfig['gateway']) && (empty($pconfig['direction']) || $pconfig['direction'] == "any")) {
         $input_errors[] = gettext("You can not use gateways in Floating rules without choosing a direction.");
-    } elseif (empty($pconfig['floating']) && $pconfig['direction'] != "in" && !empty($pconfig['gateway'])) {
-        // XXX: Technically this is not completely true, but since you can only send to other destinations reachable
-        //      from the selected interface in this case, it will likely be confusing for our users.
-        //      Policy based routing rules on inbound traffic can use the correct outbound interface, which is the
-        //      scenario that is most commonly used .
-        //      For compatibilty reasons, we only apply this on non-floating rules.
-        $input_errors[] = gettext("Policy based routing (gateway setting) is only supported on inbound rules.");
     }
 
     if (!in_array($pconfig['protocol'], array("tcp","tcp/udp"))) {
@@ -433,6 +427,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
     }
 
+    if (!empty($pconfig['overload']) && !is_alias($pconfig['overload'])) {
+        $input_errors[] = gettext('Max new connections overload table should be a valid alias.');
+    }
+
     if (count($input_errors) == 0) {
         $filterent = array();
         // 1-on-1 copy of form values
@@ -449,6 +447,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $filterent[$fieldname] = trim($pconfig[$fieldname]);
                 }
             }
+        }
+
+        // only flush non default max new connection overload table
+        if (!empty($pconfig['overload']) && $pconfig['overload'] != 'virusprot') {
+            $filterent['overload'] = $pconfig['overload'];
         }
 
         // attributes with some kind of logic
@@ -601,7 +604,7 @@ include("head.inc");
           var refObj = $("#"+$(this).attr("for"));
           if (refObj.is("select")) {
               // connect on change event to select box (show/hide)
-              refObj.change(function(){
+              refObj.on('change refreshed.bs.select', function(){
                 if ($(this).find(":selected").attr("data-other") == "true") {
                     // show related controls
                     $('*[for="'+$(this).attr("id")+'"]').each(function(){
@@ -657,7 +660,6 @@ include("head.inc");
             }
             $("#"+field).prop('disabled', port_disabled);
             $("#"+field).selectpicker('refresh');
-            $("#"+field).change();
           });
           if ($("#proto").val() == 'tcp') {
               $(".input_tcpflags_any,.input_flags").prop('disabled', false);
@@ -674,13 +676,11 @@ include("head.inc");
       $("#srcbeginport").change(function(){
           $('#srcendport').prop('selectedIndex', $("#srcbeginport").prop('selectedIndex') );
           $('#srcendport').selectpicker('refresh');
-          $('#srcendport').change();
       });
       // align dropdown destination from/to port
       $("#dstbeginport").change(function(){
           $('#dstendport').prop('selectedIndex', $("#dstbeginport").prop('selectedIndex') );
           $('#dstendport').selectpicker('refresh');
-          $('#dstendport').change();
       });
 
       $(".input_tcpflags_any").click(function(){
@@ -1490,13 +1490,13 @@ endforeach;?>
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_max-src-conn-rate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max new connections");?> </td>
                       <td>
-                        <table style="border:0;">
+                        <table style="border:0; width: 600px;">
                           <tbody>
                             <tr>
                               <td>
-                                <input name="max-src-conn-rate" type="text" value="<?=$pconfig['max-src-conn-rate'];?>" />
+                                <input name="max-src-conn-rate" style="width:152px" type="text" value="<?=$pconfig['max-src-conn-rate'];?>" />
                               </td>
-                              <td> / </td>
+                              <td style="width:18px" > /&nbsp;</td>
                               <td>
                                 <select name="max-src-conn-rates" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                   <option value="" <?=intval($pconfig['max-src-conn-rates']) < 1 ? "selected=\"selected\"" : "";?>><?=gettext("none");?></option>
@@ -1509,11 +1509,21 @@ endforeach;?>
                                  endfor;?>
                                 </select>
                               </td>
+                              <td style="width:18px;"> <i class="fa fa-fw fa-share" aria-hidden="true"></i> </td>
+                              <td>
+                                <select name="overload" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+<?php
+                                foreach (legacy_list_aliases("network") as $alias):?>
+                                  <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['overload'] || empty($pconfig['overload']) && $alias['name'] == 'virusprot' ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
+<?php
+                                endforeach; ?>
+                                </select>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
                         <div class="hidden" data-for="help_for_max-src-conn-rate">
-                            <?=gettext("Maximum new connections per host / per second(s) (TCP only)");?>
+                            <?=gettext("Maximum new connections per host / per second(s) and overload table to use (TCP only), the default virusprot table comes with a default block rule in floating rules.");?>
                         </div>
                       </td>
                   </tr>

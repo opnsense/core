@@ -35,7 +35,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-function kill_client($port, $remipp)
+function kill_client($port, $client=null)
 {
     $tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
     $errval = '';
@@ -46,7 +46,7 @@ function kill_client($port, $remipp)
     $killed = -1;
     if ($fp) {
         stream_set_timeout($fp, 1);
-        fputs($fp, "kill {$remipp}\n");
+        fputs($fp, "kill {$client}\n");
         while (!feof($fp)) {
             $line = fgets($fp, 1024);
 
@@ -74,9 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_POST['action']) && $_POST['action'] == 'kill') {
         $port = $_POST['port'];
         $remipp = $_POST['remipp'];
+        $common_name = $_POST['common_name'];
         if (!empty($port) && !empty($remipp)) {
             $retval = kill_client($port, $remipp);
-            echo html_safe("|{$port}|{$remipp}|{$retval}|");
+            if ($retval == -1 && !empty($common_name)) {
+                // kill by common name when the address couldn't be killed
+                $retval = kill_client($port, $common_name);
+                echo html_safe("|{$port}|{$common_name}|{$retval}|");
+            } else {
+                echo html_safe("|{$port}|{$remipp}|{$retval}|");
+            }
         } else {
             echo gettext("invalid input");
         }
@@ -105,7 +112,8 @@ include("head.inc"); ?>
             event.preventDefault();
             var port = $(this).data("client-port");
             var ip = $(this).data("client-ip");
-            $.post(window.location, {action: 'kill', port: port, remipp: ip}, function (data) {
+            let common_name = $(this).data("common_name");
+            $.post(window.location, {action: 'kill', port: port, remipp: ip, common_name:common_name}, function (data) {
                 location.reload();
             });
         });
@@ -169,6 +177,7 @@ include("head.inc"); ?>
 <?php if (count($server['conns']) != 1 || $conn['common_name'] != '[error]'): ?>
                       <button data-client-port="<?= $server['mgmt']; ?>"
                         data-client-ip="<?= $conn['remote_host']; ?>"
+                        data-common_name="<?= $conn['common_name']; ?>"
                         title="<?= gettext("Kill client connection from") . " " . $conn['remote_host']; ?>"
                         class="act_kill_client btn btn-default">
                         <i class="fa fa-times fa-fw"></i>

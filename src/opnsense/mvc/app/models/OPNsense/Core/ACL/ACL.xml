@@ -141,9 +141,10 @@
         </patterns>
     </page-diagnostics-tables>
     <page-diagnostics-pf-info>
-        <name>Diagnostics: pfInfo</name>
+        <name>Diagnostics: Firewall statistics</name>
         <patterns>
-            <pattern>diag_pf_info.php*</pattern>
+            <pattern>ui/diagnostics/firewall/statistics</pattern>
+            <pattern>api/diagnostics/firewall/pf_statistcs/*</pattern>
         </patterns>
     </page-diagnostics-pf-info>
     <page-diagnostics-system-pftop>
@@ -321,6 +322,7 @@
             <pattern>api/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
+            <pattern>api/diagnostics/lvtemplate/*</pattern>
         </patterns>
     </page-diagnostics-logs-firewall-dynamic>
     <page-diagnostics-logs-firewall-summary>

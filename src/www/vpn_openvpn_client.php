@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
             ,custom_options,ns_cert_type,dev_mode,tlsmode,caref,certref,crypto,digest
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
-            ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
+            ,compression,passtos,route_no_pull,route_no_exec,verbosity_level";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
             ,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,tlsmode
             ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
-            ,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
+            ,compression,passtos,route_no_pull,route_no_exec,verbosity_level";
 
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -318,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,server_addr,server_port,resolve_retry,proxy_addr,proxy_port,remote_random
                 ,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
-                ,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,tlsmode
+                ,use_shaper,compression,passtos,route_no_pull,route_no_exec,tlsmode
                 ,verbosity_level,interface";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
@@ -499,17 +499,6 @@ $( document ).ready(function() {
       }
   });
   $("#mode").change();
-  $("#dev_mode").change(function(){
-      switch($(this).val()) {
-          case "tun":
-            $(".chkboxNoTunIPv6").show();
-            break;
-          case "tap":
-            $(".chkboxNoTunIPv6").hide();
-            break;
-      }
-  });
-  $("#dev_mode").change();
 
   $("#autokey_enable").change(function(){
       if ($("#autokey_enable:checked").val() != undefined) {
@@ -758,7 +747,7 @@ $( document ).ready(function() {
                 <div><?=gettext("Username"); ?> <br/></div>
                 <div><input name="proxy_user" id="proxy_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['proxy_user'];?>" /></div>
                 <div><?=gettext("Password"); ?> </div>
-                <div><input name="proxy_passwd" id="proxy_passwd" type="password" class="form-control pwd" size="20" value="<?=$pconfig['proxy_passwd'];?>" /></div>
+                <div><input name="proxy_passwd" id="proxy_passwd" type="password" autocomplete="new-password" class="form-control pwd" size="20" value="<?=$pconfig['proxy_passwd'];?>" /></div>
               </div>
             </td>
           </tr>
@@ -788,7 +777,7 @@ $( document ).ready(function() {
               <div><?=gettext("Username"); ?></div>
               <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
               <div><?=gettext("Password"); ?></div>
-              <div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
+              <div><input name="auth_pass" id="auth_pass" type="password" autocomplete="new-password" class="form-control pwd" size="20" value="<?=$pconfig['auth_pass'];?>" /></div>
               <div class="hidden" data-for="help_for_auth_user_pass">
                 <?=gettext("Leave empty when no user name and password are needed."); ?>
               </div>
@@ -1072,15 +1061,6 @@ $( document ).ready(function() {
               <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
               <div class="hidden" data-for="help_for_passtos">
                 <?=gettext("Set the TOS IP header value of tunnel packets to match the encapsulated packet value"); ?>.
-              </div>
-            </td>
-          </tr>
-          <tr class="chkboxNoTunIPv6">
-            <td><a id="help_for_no_tun_ipv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable IPv6"); ?></td>
-            <td>
-              <input name="no_tun_ipv6" type="checkbox" value="yes" <?=!empty($pconfig['no_tun_ipv6']) ? "checked=\"checked\"" : "" ;?> />
-              <div class="hidden" data-for="help_for_no_tun_ipv6">
-                <?=gettext("Don't forward IPv6 traffic"); ?>.
               </div>
             </td>
           </tr>

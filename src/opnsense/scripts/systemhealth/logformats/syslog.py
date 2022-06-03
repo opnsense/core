@@ -25,55 +25,96 @@
 """
 import re
 import datetime
-from . import BaseLogFormat
+from . import NewBaseLogFormat
 
-class SysLogFormat(BaseLogFormat):
+class SysLogFormat(NewBaseLogFormat):
     def __init__(self, filename):
         super(SysLogFormat, self).__init__(filename)
-        self._priority = 1
+        self._priority = 2
         self._startup_timestamp = datetime.datetime.now()
 
     @staticmethod
     def match(line):
         return len(line) > 15 and re.match(r'(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)', line[7:15])
 
-    def timestamp(self, line):
+    @property
+    def timestamp(self):
         # syslog format, strip timestamp and return actual log data
-        ts = datetime.datetime.strptime("%s %s" % (self._startup_timestamp.year, line[0:15]), "%Y %b %d %H:%M:%S")
+        ts = datetime.datetime.strptime("%s %s" % (self._startup_timestamp.year, self._line[0:15]), "%Y %b %d %H:%M:%S")
         ts = ts.replace(year=self._startup_timestamp.year)
         if (self._startup_timestamp - ts).days < 0:
             # likely previous year, (month for this year not reached yet)
             ts = ts.replace(year=ts.year - 1)
         return ts.isoformat()
 
-    @staticmethod
-    def line(line):
+    @property
+    def line(self):
         # parse [date] [hostname] [process_name] [line] format
-        response = line[16:]
+        response = self._line[16:]
         tmp = response.find(':')
         return response[tmp+1:].strip() if tmp > -1 else response[response.find(' ')+1:].strip()
 
-    @staticmethod
-    def process_name(line):
-        response = line[16:]
+    @property
+    def process_name(self):
+        response = self._line[16:]
         tmp = response.find(':')
         return response[:tmp].strip().split()[-1] if tmp > -1 else ""
 
 
-class SysLogFormatEpoch(BaseLogFormat):
+class SysLogFormatEpoch(NewBaseLogFormat):
     def __init__(self, filename):
         super(SysLogFormatEpoch, self).__init__(filename)
-        self._priority = 2
+        self._priority = 3
 
     @staticmethod
     def match(line):
         # looks like an epoch
         return len(line) > 15 and line[0:10].isdigit() and line[10] == '.' and line[11:13].isdigit()
 
-    @staticmethod
-    def timestamp(line):
-        return datetime.datetime.fromtimestamp(float(line[0:13])).isoformat()
+    @property
+    def timestamp(self):
+        return datetime.datetime.fromtimestamp(float(self._line[0:13])).isoformat()
+
+    @property
+    def line(self):
+        return self._line[14:].strip()
+
+
+class SysLogFormatRFC5424(NewBaseLogFormat):
+    def __init__(self, filename):
+        super().__init__(filename)
+        self._priority = 1
+        self._parts = list()
 
     @staticmethod
-    def line(line):
-        return line[14:].strip()
+    def match(line):
+        return len(line) > 15 and line[0] == '<' and '>' in line[1:5] and line.find(']') > 0
+
+    def set_line(self, line):
+        super().set_line(line)
+        self._parts = self._line.split(maxsplit=5)
+
+    @property
+    def line(self):
+        return self._line.split(']', 1)[-1]
+
+    @property
+    def timestamp(self):
+        return self._parts[1].split('+', maxsplit=1)[0]
+
+    @property
+    def process_name(self):
+        return self._parts[3]
+
+    @property
+    def pid(self):
+        return self._parts[4]
+
+    @property
+    def facility(self):
+        return int(int(self._line[1:].split('>', 1)[0]) / 8)
+
+    @property
+    def severity(self):
+        tmp = int(self._line[1:].split('>', 1)[0])
+        return tmp - (int((tmp / 8)) * 8)

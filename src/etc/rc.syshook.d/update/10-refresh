@@ -7,4 +7,6 @@
 touch /usr/local/opnsense/www/index.php
 
 # remove spurious .pkgsave files pkg may have created
-daemon -f find /usr/local -type f -name "*.pkgsave" -delete
+for DIR in /boot /usr/libexec/bsdinstall /usr/local; do
+	daemon -f find ${DIR} -type f -name "*.pkgsave" -delete
+done

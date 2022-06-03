@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2021 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -33,60 +33,21 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/dhcpd.inc");
 
-/*
- * This function will remove entries from dhcpd.leases that would otherwise
- * overlap with static DHCP reservations. If we don't clean these out,
- * then DHCP will print a warning in the logs about a duplicate lease
- *
- * XXX errr: why are we doing this only on this particular page?
- */
-function dhcp_clean_leases()
+function validate_partial_mac_list($maclist)
 {
-    global $config;
-
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
-
-    $leasesfile = dhcpd_dhcpv4_leasesfile();
-    if (!file_exists($leasesfile)) {
-        return;
-    }
-
-    /* Build lease patterns for static MACs */
-    $lease_patterns = array();
-    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
-        if (isset($config['dhcpd'][$ifname]['staticmap'])) {
-            foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
-                $lease_patterns[] = '(lease\s*[0-9\.]+\s*\{[^\{\}]*hardware ethernet ' . $static['mac'] . '[^\{\}]*(.*"[^\{\}]*\}|\})\s?)';
-            }
-        }
-    }
-
-    /* Read existing leases file */
-    $leases_contents = file_get_contents($leasesfile);
-
-    /* Remove existing leases for static MACs */
-    $leases_contents = preg_replace($lease_patterns, '', $leases_contents);
-
-    /* Write out the new leases file */
-    $fd = fopen($leasesfile, 'w');
-    fwrite($fd, $leases_contents);
-    fclose($fd);
-}
-
-function validate_partial_mac_list($maclist) {
     $macs = explode(',', $maclist);
-    // Loop through and look for invalid MACs.
+
     foreach ($macs as $mac) {
         if (!is_macaddr($mac, true)) {
             return false;
         }
     }
+
     return true;
 }
 
 function reconfigure_dhcpd()
 {
-    dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp4_configure();
@@ -97,7 +58,8 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'fail
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
-  'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport', 'omapialgorithm', 'omapikey', 'minsecs');
+  'filename32arm', 'filename64arm', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
+  'omapialgorithm', 'omapikey', 'minsecs');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -492,6 +454,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+$range_from = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) & gen_subnet_mask_long($config['interfaces'][$if]['subnet']))) + 1;
+$range_to = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) | (~gen_subnet_mask_long($config['interfaces'][$if]['subnet'])))) - 1;
+
 $service_hook = 'dhcpd';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
@@ -706,20 +671,18 @@ include("head.inc");
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available range");?></td>
                       <td>
-<?php
-                        $range_from = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) & gen_subnet_mask_long($config['interfaces'][$if]['subnet']))) + 1;
-                        $range_to = ip2long(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) | (~gen_subnet_mask_long($config['interfaces'][$if]['subnet'])))) - 1;?>
-                        <?=long2ip32($range_from);?> - <?=long2ip32($range_to);?>
-<?php
-                        if (isset($pool) || ($act == "newpool")): ?>
+<?php if ($range_to <= $range_from): ?>
+                        <span class="text-danger"><?= gettext('No available address range for configured interface subnet size.') ?></span>
+<?php else: ?>
+                        <?= long2ip32($range_from) ?> - <?= long2ip32($range_to) ?>
+<?php endif ?>
+<?php if (isset($pool) || ($act == "newpool")): ?>
                         <br />In-use DHCP Pool Ranges:
                           <br /><?=htmlspecialchars($config['dhcpd'][$if]['range']['from']); ?>-<?=htmlspecialchars($config['dhcpd'][$if]['range']['to']);?>
-<?php
-                          foreach ($a_pools as $p): ?>
+<?php foreach ($a_pools as $p): ?>
                           <br /><?= htmlspecialchars($p['range']['from']); ?>-<?=htmlspecialchars($p['range']['to']); ?>
-<?php
-                          endforeach;
-                        endif;?>
+<?php endforeach ?>
+<?php endif ?>
                       </td>
                     </tr>
                     <tr>
@@ -1004,25 +967,28 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Network booting') ?></td>
                       <td>
                         <div id="shownetbootbox">
                           <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Network booting");?>
                         </div>
                         <div id="shownetboot" style="display:none">
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
-                          <strong><?=gettext("Enables network booting.");?></strong>
+                          <?= gettext('Enable network booting') ?>
                           <br/><br/>
                           <?=gettext('Set next-server IP');?>
                           <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />
                           <?=gettext('Set default bios filename');?>
                           <input name="filename" type="text" id="filename" value="<?=$pconfig['filename'];?>" /><br />
-                          <?=gettext('Set UEFI 32bit filename');?>
+                          <?=gettext('Set x86 UEFI (32-bit) filename');?>
                           <input name="filename32" type="text" id="filename32" value="<?=$pconfig['filename32'];?>" /><br />
-                          <?=gettext('Set UEFI 64bit filename');?>
+                          <?=gettext('Set x64 UEFI/EBC (64-bit) filename');?>
                           <input name="filename64" type="text" id="filename64" value="<?=$pconfig['filename64'];?>" /><br />
-                          <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?><br/>
-                          <?=gettext("You will need all three filenames and a boot server configured for UEFI to work!");?>
+                          <?=gettext('Set ARM UEFI (32-bit) filename');?>
+                          <input name="filename32arm" type="text" id="filename32arm" value="<?=$pconfig['filename32arm'];?>" /><br />
+                          <?=gettext('Set ARM UEFI (64-bit) filename');?>
+                          <input name="filename64arm" type="text" id="filename64arm" value="<?=$pconfig['filename64arm'];?>" /><br />
+                          <?= gettext('You need both a filename and a boot server configured for this to work.') ?><br/>
                           <br/><br/>
                           <?=gettext('Set root-path string');?>
                           <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />

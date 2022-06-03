@@ -62,7 +62,7 @@ class CountryField extends BaseListField
     {
         $setid = $this->optionSetId();
         if (!isset(self::$internalCacheOptionList[$setid])) {
-            self::$internalCacheOptionList[$setid] =  array();
+            self::$internalCacheOptionList[$setid] = [];
         }
         if (empty(self::$internalCacheOptionList[$setid])) {
             $filename = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';

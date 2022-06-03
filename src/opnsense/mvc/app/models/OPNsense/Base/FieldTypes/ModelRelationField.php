@@ -133,7 +133,7 @@ class ModelRelationField extends BaseField
                             if ($node->$groupKey == null) {
                                 continue;
                             }
-                            $group = $node->$groupKey->__toString();
+                            $group = (string)$node->$groupKey;
                             if (isset($groups[$group])) {
                                 continue;
                             }
@@ -142,7 +142,7 @@ class ModelRelationField extends BaseField
 
                         $uuid = $node->getAttributes()['uuid'];
                         self::$internalOptionList[$this->internalCacheKey][$uuid] =
-                            $node->$displayKey->__toString();
+                            (string)$node->$displayKey;
                     }
                 }
                 unset($modelObj);

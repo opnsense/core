@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -141,11 +141,13 @@ function dpinger_configure_do($verbose = false, $gwname = null)
                         break;
                     }
                 }
-                if ($gwifip == null) {
-                    $gwifip = $ifconfig_details[$gateway['if']]['ipv4'][0]['ipaddr'];
-                    log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
-                }
             }
+
+            if ($gwifip == null) {
+                list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
+                log_error(sprintf('Choose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+            }
+
             if (!is_ipaddrv4($gwifip)) {
                 log_error(sprintf('The %s IPv4 gateway address is invalid, skipping.', $name));
                 continue;
@@ -175,14 +177,13 @@ function dpinger_configure_do($verbose = false, $gwname = null)
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             if (is_linklocal($gateway['monitor'])) {
                 /* link local monitor needs a link local address for the "src" part */
-                $gwifip = find_interface_ipv6_ll($gateway['if'], $ifconfig_details);
+                list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
             } else {
-                /* monitor is a routable address, so use a routable address for the "src" part */
-                $gwifip = find_interface_ipv6($gateway['if'], $ifconfig_details);
+                list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
             }
 
-            if (!is_ipaddrv6($gwifip)) {
-                log_error(sprintf('The %s IPv6 gateway address is invalid, skipping.', $name));
+            if (empty($gwifip)) {
+                log_error(sprintf('The %s IPv6 gateway address could not be found, skipping.', $name));
                 continue;
             }
 
@@ -195,9 +196,6 @@ function dpinger_configure_do($verbose = false, $gwname = null)
             }
             if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
                 $gateway['gateway'] .= "%{$gateway['if']}";
-            }
-            if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
-                $gwifip .= "%{$gateway['if']}";
             }
 
             /* flush the monitor unconditionally */

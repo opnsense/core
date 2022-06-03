@@ -487,14 +487,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     $conf .= "dev-type {$settings['dev_mode']}\n";
-    switch ($settings['dev_mode']) {
-        case "tun":
-            if (!$settings['no_tun_ipv6']) {
-                $conf .= "tun-ipv6\n";
-            }
-            break;
-    }
-
     $conf .= "dev-node /dev/{$devnode}\n";
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "script-security 3\n";

@@ -185,7 +185,7 @@ class Gateways
                             if (empty($dynamic_gw[(string)$gateway->interface])) {
                                 $dynamic_gw[(string)$gateway->interface] = array();
                             }
-                            $gw_arr['dynamic'] =  true;
+                            $gw_arr['dynamic'] = true;
                             $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
                         }
                     }
@@ -403,7 +403,7 @@ class Gateways
      * @param boolean $only_configured only return configured in interface or dynamic gateways
      * @return string|null gateway address
      */
-    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false)
+    public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false, $property = 'gateway')
     {
         foreach ($this->getGateways() as $gateway) {
             if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
@@ -424,7 +424,7 @@ class Gateways
                 //      are not returned as valid gateway address (automatic outbound nat rules).
                 //      An alternative setup option would be practical here, less fuzzy.
                 if (!$only_configured || $intf_gateway == $gateway['name'] || !empty($gateway['dynamic'])) {
-                    return $gateway['gateway'];
+                    return isset($gateway[$property]) ? $gateway[$property] : null;
                 }
             }
         }
@@ -448,13 +448,13 @@ class Gateways
                         foreach ($gw_group->item as $item) {
                             list($gw, $tier) = explode("|", $item);
                             if (!isset($tiers[$tier])) {
-                                $tiers[$tier] =  array();
+                                $tiers[$tier] = [];
                             }
                             $tiers[$tier][] = $gw;
                         }
                     }
                     ksort($tiers);
-                    $all_tiers =  array();
+                    $all_tiers = [];
                     foreach ($tiers as $tieridx => $tier) {
                         $all_tiers[$tieridx] = array();
                         if (!isset($result[(string)$gw_group->name])) {

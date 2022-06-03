@@ -29,24 +29,33 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_ABI?=	21.7
-CORE_MESSAGE?=	The song remains the same
-CORE_NAME?=	opnsense
-CORE_NICKNAME?=	Noble Nightingale
-CORE_TYPE?=	community
+CORE_MESSAGE?=	Carry on my wayward son
+CORE_NAME?=	opnsense-devel
+CORE_NICKNAME?=	Not Yet
+CORE_TYPE?=	development
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
 .  warning Cannot build without CORE_${REPLACEMENT} set
 . endif
+CORE_MAKE+=	CORE_${REPLACEMENT}=${CORE_${REPLACEMENT}}
 .endfor
 
 _CORE_NEXT=	${CORE_ABI:C/\./ /}
-.if ${_CORE_NEXT:[2]} == 7
+.if ${_CORE_NEXT:[2]} == 7 # community
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.1
-.else
+.elif ${_CORE_NEXT:[2]} == 10 # business
+CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
+CORE_NEXT:=	${CORE_NEXT}.4
+.elif ${_CORE_NEXT:[2]} == 1 # community
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
+.elif ${_CORE_NEXT:[2]} == 4 # business
+CORE_NEXT=	${_CORE_NEXT:[1]}
+CORE_NEXT:=	${CORE_NEXT}.10
+.else
+.error Unsupported minor version for CORE_ABI=${CORE_ABI}
 .endif
 
 .if exists(${GIT}) && exists(${GITVERSION}) && exists(${.CURDIR}/.git)
@@ -160,7 +169,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-zlib \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-dnspython2 \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
@@ -172,7 +181,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			strongswan \
 			sudo \
 			syslog-ng \
-			syslogd \
 			unbound \
 			wpa_supplicant \
 			zip \
@@ -253,8 +261,8 @@ scripts:
 .endfor
 
 install:
-	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
+	@${CORE_MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
+	@${CORE_MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} ${MAKE_REPLACE}
 .if exists(${LOCALBASE}/opnsense/www/index.php)
 	# try to update the current system if it looks like one
 	@touch ${LOCALBASE}/opnsense/www/index.php
@@ -269,19 +277,19 @@ collect:
 	done
 
 bootstrap:
-	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
+	@${CORE_MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please ${MAKE_REPLACE}
 
 plist:
-	@(${MAKE} -C ${.CURDIR}/contrib plist && \
-	    ${MAKE} -C ${.CURDIR}/src plist) | sort
+	@(${CORE_MAKE} -C ${.CURDIR}/contrib plist && \
+	    ${CORE_MAKE} -C ${.CURDIR}/src plist) | sort
 
 plist-fix:
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
 plist-check:
 	@mkdir -p ${WRKDIR}
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
 	@if ! diff -q ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
 		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
@@ -293,9 +301,9 @@ plist-check:
 
 metadata:
 	@mkdir -p ${DESTDIR}
-	@${MAKE} DESTDIR=${DESTDIR} scripts
-	@${MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
+	@${CORE_MAKE} DESTDIR=${DESTDIR} scripts
+	@${CORE_MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
+	@${CORE_MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
 
 package-check:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
@@ -308,10 +316,10 @@ package: plist-check package-check clean-wrksrc
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} metadata
+	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${MAKE} DESTDIR=${WRKSRC} install
+	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core

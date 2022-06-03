@@ -499,7 +499,7 @@ include("head.inc");
                                 <tr>
                                     <td style="width:348px">
                                       <!-- updates to "other" option in  src -->
-                                      <input  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
+                                      <input type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
                                     <td>
                                       <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask"  data-width="auto" for="dst" >
@@ -542,7 +542,8 @@ include("head.inc");
                           </tr>
                           <tr>
                             <td>
-                              <input  type="text" value="<?=$pconfig['dstport'];?>" for="dstport"> <!-- updates to "other" option in  dstport -->
+                              <!-- updates to "other" option in  dstport -->
+                              <input type="text" value="<?=$pconfig['dstport'];?>" for="dstport">
                             </td>
                           </tr>
                         </tbody>

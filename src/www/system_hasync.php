@@ -35,6 +35,7 @@ $a_hasync = &config_read_array('hasync');
 $checkbox_names = array(
     'pfsyncenabled',
     'disablepreempt',
+    'disconnectppps',
     'synchronizealiases',
     'synchronizeauthservers',
     'synchronizecerts',
@@ -127,10 +128,28 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
-                  <td style="width:22%"><strong><?= gettext('State Synchronization') ?></strong></td>
+                  <td style="width:22%"><strong><?= gettext('General settings') ?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
                     <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_disablepreempt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable preempt') ?></td>
+                  <td>
+                    <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" data-for="help_for_disablepreempt">
+                      <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_disconnectppps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disconnect dailup interfaces') ?></td>
+                  <td>
+                    <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
+                    <div class="hidden" data-for="help_for_disconnectppps">
+                      <?=gettext("When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.");?>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -143,15 +162,6 @@ include("head.inc");
                         'It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.%s' .
                         'This setting should be enabled on all members of a failover group.'), '<br/>','<a href="https://www.openbsd.org/faq/pf/carp.html" target="_blank">','</a>','<br/>','<br/>') ?>
                       <div class="well well-sm" ><b><?=gettext('Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)') ?></b></div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablepreempt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable preempt') ?></td>
-                  <td>
-                    <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" data-for="help_for_disablepreempt">
-                      <?=gettext("When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.");?>
                     </div>
                   </td>
                 </tr>
@@ -231,7 +241,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Remote System Password') ?></td>
                   <td>
-                    <input  type="password" name="password" value="<?=$pconfig['password']; ?>" />
+                    <input type="password" autocomplete="new-password" name="password" value="<?=$pconfig['password']; ?>" />
                     <div class="hidden" data-for="help_for_password">
                       <?=gettext('Enter the web GUI password of the system entered above for synchronizing your configuration.') ?><br />
                       <div class="well well-sm">

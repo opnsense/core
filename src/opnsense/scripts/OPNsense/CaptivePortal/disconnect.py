@@ -47,7 +47,7 @@ for param in sys.argv[1:]:
 response = {'terminateCause': 'UNKNOWN'}
 if parameters['sessionid'] is not None and parameters['zoneid'] is not None:
     # remove client
-    client_session_info =  DB().del_client(parameters['zoneid'], parameters['sessionid'])
+    client_session_info = DB().del_client(parameters['zoneid'], parameters['sessionid'])
     if client_session_info is not None:
         IPFW().delete(parameters['zoneid'], client_session_info['ip_address'])
         client_session_info['terminateCause'] = 'User-Request'

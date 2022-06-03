@@ -55,20 +55,21 @@ if (isset($opts['m']) && isset($opts['f'])) {
         foreach (glob("{$basename}/{$fname}_*.log") as $filename) {
             @unlink($filename);
         }
-        system_syslogd_start();
+        system_syslog_start();
     }
 
     if (is_file($filename)) {
-        $size = filesize($filename);
-        $handle = fopen($filename, "r");
-        fseek($handle, $size-20);
-        $is_clog = fread($handle,4) == 'CLOG';
-        fclose($handle);
-        if ($is_clog) {
-            system_clear_clog($filename);
-        } else {
-            system_clear_log($filename);
+        /* preserve file ownership and permissions
+           XXX: not sure if this is still needed, at least it's not consistent with how directories are reset now.
+         */
+        if (file_exists($filename)) {
+            $handle = fopen($filename, 'r+');
+            if ($handle) {
+                ftruncate($handle, 0);
+                fclose($handle);
+            }
         }
+        system_syslog_start();
         // XXX: should probably add some plugin hook for this.
         if ($fname == 'dhcpd' && $mname == 'core') {
             plugins_configure('dhcp');

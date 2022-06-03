@@ -84,7 +84,7 @@ sub process_file
     for my $line ( @lines ) {
         my $copy = $line;
         next if $line !~ s/copyright\s+\(c\)\s+//i;
-        $line =~ s/^[."\*\\#\s]+//g;
+        $line =~ s/^[."\*\\#\s-]+//g;
         $line =~ s/\s+$//g;
         chomp $copy;
         $copy =~ s/^[\*\\#\s]+//g;

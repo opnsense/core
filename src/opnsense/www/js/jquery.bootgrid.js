@@ -1219,10 +1219,10 @@ Grid.defaults = {
         datetime: {
            // convert datetime type fields from unix timestamp to readable format
            from: function (value) {
-              return moment(parseInt(value)*1000);
+              return value ? moment(parseInt(value)*1000) : "";
            },
            to: function (value) {
-              return value.format("lll");
+              return value ? value.format("lll") : "";
            }
         },
         memsize: {
@@ -1446,9 +1446,14 @@ Grid.prototype.append = function(rows)
         var appendedRows = [];
         for (var i = 0; i < rows.length; i++)
         {
-            if (appendRow.call(this, rows[i]))
+            var row = rows[i];
+            for (var j = 0; j < this.columns.length; j++) {
+                var column = this.columns[j];
+                row[column.id] = column.converter.from(row[column.id]);
+            }
+            if (appendRow.call(this, row))
             {
-                appendedRows.push(rows[i]);
+                appendedRows.push(row);
             }
         }
         sortRows.call(this);

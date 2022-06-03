@@ -15,6 +15,7 @@
                 <Required>N</Required>
                 <Multiple>Y</Multiple>
                 <OptionValues>
+                    <atf>Abuse.ch - ThreatFox IOC database</atf>
                     <aa>AdAway List</aa>
                     <ag>AdGuard List</ag>
                     <bla0>Blocklist.site Abuse</bla0>

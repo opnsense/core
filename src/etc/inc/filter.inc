@@ -92,25 +92,6 @@ function filter_rules_sort()
     }
 }
 
-function filter_pflog_start($verbose = false)
-{
-    if ($verbose) {
-        echo 'Starting PFLOG...';
-        flush();
-    }
-
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
-
-    /* enable permanent promiscuous mode to avoid dmesg noise */
-    mwexec('/sbin/ifconfig pflog0 promisc');
-
-    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
 function filter_configure()
 {
     /*
@@ -120,29 +101,6 @@ function filter_configure()
     if (!file_exists("/var/run/booting")) {
         configd_run('filter reload');
     }
-}
-
-function filter_should_trigger_kill_states()
-{
-    global $config;
-    if (empty($config['system']['kill_states'])) {
-        $a_gateways = return_gateways_status();
-        $ifdetails = legacy_interfaces_details();
-        $any_gateway_down = false;
-        foreach ((new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true) as $gateway) {
-            if (empty($gateway['monitor']) || empty($a_gateways[$gateway['name']])) {
-                continue;
-            } elseif (!is_ipaddr($gateway['monitor']) || strstr($gateway['monitor'], '127.0.0.')) {
-                continue;
-            }
-            if (stristr($a_gateways[$gateway['name']]['status'], 'down')) {
-                $any_gateway_down = true;
-                break;
-            }
-        }
-        return $any_gateway_down;
-    }
-    return false;
 }
 
 /**
@@ -206,7 +164,7 @@ function is_interface_group($if)
     return false;
 }
 
-function filter_configure_sync($verbose = false, $flush_states = false, $load_aliases = true)
+function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
     $sched_kill_states = array(); // kill states for schedules
@@ -296,7 +254,7 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
-                $intfv4[] =  $intf;
+                $intfv4[] = $intf;
             }
         }
         // add VPN and local networks
@@ -305,12 +263,13 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
-                        "interface" => $intf,
-                        "dstport" => $dstport,
-                        "staticnatport" => !empty($dstport),
-                        "destination" => array("any" => true),
-                        "ipprotocol" => 'inet',
-                        "descr" => "Automatic outbound rule"
+                        'descr' => 'Automatic outbound rule',
+                        'destination' => array('any' => true),
+                        'dstport' => $dstport,
+                        'interface' => $intf,
+                        'ipprotocol' => 'inet',
+                        'log' => !empty($config['syslog']['logoutboundnat']),
+                        'staticnatport' => !empty($dstport),
                     );
                     foreach ($intfv4 as $network) {
                         $rule['source'] = array("network" => $network);
@@ -561,8 +520,9 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         flush();
     }
 
-    if ($flush_states) {
-        mwexec('/sbin/pfctl -Fs');
+    if ($load_aliases) {
+        configd_run('template reload OPNsense/Filter');
+        configd_run('filter refresh_aliases', true);
     }
 
     if ($verbose) {
@@ -570,16 +530,16 @@ function filter_configure_sync($verbose = false, $flush_states = false, $load_al
         flush();
     }
 
-    if ($load_aliases) {
-        configd_run('template reload OPNsense/Filter');
-        configd_run('filter refresh_aliases', true);
-    }
+    /* enable permanent promiscuous mode to avoid dmesg noise */
+    mwexec('/sbin/ifconfig pflog0 promisc');
+
+    /* bring up new instance of filterlog to load new rules */
+    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
     if ($verbose) {
         echo "done.\n";
     }
-
-    filter_pflog_start($verbose);
 
     unlock($filterlck);
 }
@@ -625,7 +585,7 @@ function filter_generate_scrubing(&$FilterIflist)
                     $scrub_rule_out .= "any";
                 }
                 if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
-                    $scrub_rule_out .=  " port $" . $scrub_rule['srcport'];
+                    $scrub_rule_out .= " port $" . $scrub_rule['srcport'];
                 } else {
                     $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
                 }

@@ -83,6 +83,8 @@
                           closedIcon: $('<i class="fa fa-plus-square-o"></i>'),
                           openedIcon: $('<i class="fa fa-minus-square-o"></i>'),
                           onCreateLi: function(node, $li) {
+                              let n_title = $li.find('.jqtree-title');
+                              n_title.text(n_title.text().replace('&gt;','\>').replace('&lt;','\<'));
                               if (node.value !== undefined) {
                                   $li.find('.jqtree-element').append(
                                       '&nbsp; <strong>:</strong> &nbsp;' + node.value
@@ -101,6 +103,10 @@
                               $tree.tree('openNode', $tree.tree('getNodeById', key));
                           }
                       }
+                      //open node on label click
+                      $tree.bind('tree.click', function(e) {
+                          $tree.tree('toggle', e.node);
+                      });
                   } else {
                       let curent_state = $tree.tree('getState');
                       $tree.tree('loadData', dict_to_tree(data));
@@ -185,7 +191,7 @@
       });
 
       // update history on tab state and implement navigation
-      let selected_tab = window.location.hash != "" ? window.location.hash : "#interfaces";
+      let selected_tab = window.location.hash != "" ? window.location.hash : "#{{default_tab}}";
       $('a[href="' +selected_tab + '"]').click();
       $('.nav-tabs a').on('shown.bs.tab', function (e) {
           history.pushState(null, null, e.target.hash);

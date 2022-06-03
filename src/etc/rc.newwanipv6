@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -55,14 +55,13 @@ if (empty($argument)) {
     $interface_real = $argument;
 }
 
-$ip = get_interface_ipv6($interface);
-
 if (!isset($config['interfaces'][$interface]['enable'])) {
-    log_error("Interface '{$interface}' is disabled or empty, nothing to do.");
+    log_error("Interface '{$interface}' ($interface_real) is disabled or empty, nothing to do.");
     return;
 }
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
+$ip = get_interface_ipv6($interface);
 
 log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
@@ -71,40 +70,9 @@ log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) 
  * to reconfigure an interface.  OpenVPN might be in tap(4)
  * mode and not have an IP address.
  */
-if ((empty($ip) || !is_ipaddr($ip)) && substr($interface_real, 0, 4) != 'ovpn') {
+if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
     return;
-}
-
-$configip = $config['interfaces'][$interface]['ipaddrv6'];
-
-$searchdomain_file = "/var/etc/searchdomain_v6{$interface_real}";
-$nameserver_file = "/var/etc/nameserver_v6{$interface_real}";
-$cacheip_file = "/var/db/{$interface}_cacheipv6";
-$ip_file = "/var/db/{$interface}_ipv6";
-
-$new_domain_name_servers = getenv('new_domain_name_servers');
-if (!empty($new_domain_name_servers)) {
-    $name_servers = explode(" ", $new_domain_name_servers);
-    $valid_ns = array();
-    foreach ($name_servers as $ns) {
-        if (is_ipaddr(trim($ns))) {
-            $valid_ns[] = trim($ns);
-        }
-    }
-
-    if (count($valid_ns) > 0) {
-        @file_put_contents($nameserver_file, implode("\n", $valid_ns));
-    }
-}
-
-$new_domain_name = getenv('new_domain_name');
-if (!empty($new_domain_name)) {
-    @file_put_contents($searchdomain_file, $new_domain_name);
-}
-
-if (is_ipaddr($ip)) {
-    @file_put_contents($ip_file, $ip);
 }
 
 interfaces_vips_configure(false, $interface);
@@ -116,31 +84,22 @@ if (count(link_interface_to_track6($interface, true))) {
 system_resolvconf_generate();
 system_hosts_generate();
 
-$cacheip = @file_get_contents($cacheip_file);
+$cacheip_file = "/tmp/{$interface_real}_oldipv6";
+$cacheip = trim(@file_get_contents($cacheip_file));
 
-if (!is_ipaddr($cacheip) || $ip != $cacheip || !is_ipaddr($configip)) {
-    if (is_ipaddr($ip)) {
-        if ($ip == $cacheip) {
-            if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
-                /* PPP reconnect loop avoidance */
-                return;
-            }
-        } else {
-            if (is_ipaddr($cacheip) && does_interface_exist($interface_real)) {
-                mwexec("/sbin/ifconfig {$interface_real} inet6 {$cacheip} delete");
-            }
+if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
+    if ($ip == $cacheip) {
+        if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
+            /* PPP reconnect loop avoidance */
+            return;
         }
     }
-
-    @unlink($cacheip_file);
 
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
     filter_configure_sync();
 
-    if (is_ipaddr($ip)) {
-        @file_put_contents($cacheip_file, $ip);
-    }
+    @file_put_contents($cacheip_file, $ip . PHP_EOL);
 
     plugins_configure('vpn', false, array($interface));
     plugins_configure('newwanip', false, array($interface));

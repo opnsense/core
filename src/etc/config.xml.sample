@@ -256,7 +256,6 @@
     <crypto_hardware>aesni</crypto_hardware>
     <pf_share_forward>1</pf_share_forward>
     <lb_use_sticky>1</lb_use_sticky>
-    <kill_states>1</kill_states>
     <ssh>
       <group>admins</group>
     </ssh>
@@ -307,10 +306,6 @@
     <syscontact/>
     <rocommunity>public</rocommunity>
   </snmpd>
-  <syslog>
-    <disable_clog>1</disable_clog>
-    <reverse/>
-  </syslog>
   <nat>
     <outbound>
       <mode>automatic</mode>

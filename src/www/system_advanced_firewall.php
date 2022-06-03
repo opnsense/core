@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
     $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['kill_states'] = !empty($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
@@ -202,12 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['schedule_states']);
         }
 
-        if (!empty($pconfig['kill_states'])) {
-            $config['system']['kill_states'] = true;
-        } elseif (isset($config['system']['kill_states'])) {
-            unset($config['system']['kill_states']);
-        }
-
         if (!empty($pconfig['skip_rules_gw_down'])) {
             $config['system']['skip_rules_gw_down'] = true;
         } elseif (isset($config['system']['skip_rules_gw_down'])) {
@@ -347,16 +340,6 @@ include("head.inc");
               <tr>
                 <td style="width:22%"><strong><?= gettext('Gateway Monitoring') ?></strong></td>
                 <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
-                <td>
-                  <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
-                  <?=gettext("Disable State Killing on Gateway Failure"); ?>
-                  <div class="hidden" data-for="help_for_kill_states">
-                    <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
-                  </div>
-                </td>
               </tr>
               <tr>
                 <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>

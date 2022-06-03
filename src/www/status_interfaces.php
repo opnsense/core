@@ -59,6 +59,12 @@ include("head.inc");
   });
 </script>
 
+<style>
+  .is_unassigned {
+      font-style: italic;
+  }
+</style>
+
 <?php include("fbegin.inc"); ?>
     <section class="page-content-main">
       <div class="container-fluid">
@@ -68,22 +74,28 @@ include("head.inc");
             $mac_man = json_decode(configd_run('interface list macdb json'), true);
             $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
             $vmstat_interupts = json_decode(configd_run('system list interrupts json'), true);
-            $ifsinfo = get_interfaces_info();
-            foreach (legacy_config_get_interfaces(array('virtual' => false)) as $ifdescr => $ifcfg):
-              $ifinfo = $ifsinfo[$ifdescr];
+            foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
-              $ifname = htmlspecialchars($ifcfg['descr']);
+              $ifname = htmlspecialchars($ifinfo['descr']);
 ?>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                   <table class="table">
                     <thead>
                       <tr>
-                        <th style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#status_interfaces_<?=$ifname?>">
+                        <th class="<?= !empty($ifinfo['unassigned']) ? 'is_unassigned' : ''?>" style="cursor: pointer; width: 100%" data-toggle="collapse" data-target="#status_interfaces_<?=$ifdescr?>">
                           <i class="fa fa-chevron-down" style="margin-right: .4em; float: left"></i>
-                          <?= $ifname ?> <?= gettext("interface") ?> (<?= $ifdescr ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
+                          <?= $ifname ?> <?= gettext("interface") ?>
+<?php
+                        if ($ifdescr != $ifinfo['if']):?>
+                         (<?= $ifdescr ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
+<?php
+                        else:?>
+                        (<?= $ifdescr ?>)
+<?php
+                        endif;?>
                         </th>
 <?php
                         if (!isset($first_row)):
@@ -99,19 +111,19 @@ include("head.inc");
                     </thead>
                   </table>
                 </div>
-                <div class="interface_details collapse table-responsive"  id="status_interfaces_<?=$ifname?>">
+                <div class="interface_details collapse table-responsive"  id="status_interfaces_<?=$ifdescr?>">
                   <table class="table table-striped">
                   <tbody>
                     <tr>
                       <td style="width:22%"><?= gettext("Status") ?></td>
                       <td style="width:78%"><?= $ifinfo['status'] ?>
-<?php                   if (empty($ifcfg['enable'])): ?>
+<?php                   if (empty($ifinfo['enable'])): ?>
                           <i class="fa fa-warning" title="<?=gettext("administrative disabled");?>" data-toggle="tooltip"></i>
 <?php                   endif; ?>
                       </td>
                     </tr>
 <?php
-                    if (!empty($ifinfo['dhcplink']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['dhcplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
@@ -126,7 +138,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['dhcp6link']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['dhcp6link']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
@@ -141,7 +153,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pppoelink']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['pppoelink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
@@ -156,7 +168,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['pptplink']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['pptplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?= gettext("PPTP") ?></td>
                       <td>
@@ -171,7 +183,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['l2tplink']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -186,7 +198,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ppplink']) && !empty($ifcfg['enable'])): ?>
+                    if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
@@ -379,12 +391,44 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
+                    if (!empty($ifinfo['laggoptions'])):?>
+                    <tr>
+                      <td><?= gettext("LAGG Options") ?></td>
+                      <td>
+                          <?= gettext("flags") ?>=<?= implode(",", $ifinfo['laggoptions']['flags']) ?><br/>
+<?php
+                          if (!empty($ifinfo['lagghash'])):?>
+                          <?= gettext("lagghash") ?>=<?=$ifinfo['lagghash'] ?><br/>
+<?php
+                          endif;?>
+                          <?= gettext("flowid_shift") ?>:<?=$ifinfo['laggoptions']['flowid_shift'] ?>
+<?php
+                          if (!empty($ifinfo['laggoptions']['rr_limit'])):?>
+                          <br/><?= gettext("rr_limit") ?>:<?=$ifinfo['laggoptions']['rr_limit'] ?>
+<?php
+                          endif;?>
+                      </td>
+                    </tr>
+<?php
+                    endif;
+                    if (!empty($ifinfo['laggstatistics'])):?>
+                    <tr>
+                      <td><?= gettext("LAGG Statistics") ?></td>
+                      <td>
+                          <?= gettext("active ports") ?>:<?= $ifinfo['laggstatistics']['active ports'] ?><br/>
+                          <?= gettext("flapping") ?>:<?= $ifinfo['laggstatistics']['flapping'] ?></td>
+                    </tr>
+<?php
+                    endif;
                     if (!empty($ifinfo['laggport']) && is_array($ifinfo['laggport'])): ?>
                     <tr>
                       <td><?=gettext("LAGG Ports");?></td>
                       <td>
-                        <?php  foreach ($ifinfo['laggport'] as $laggport): ?>
-                            <?= $laggport ?><br />
+                        <?php  foreach ($ifinfo['laggport'] as $laggport => $laggport_info): ?>
+                            <?= $laggport ?>
+                            <?=gettext('flags')?>=&lt;<?=implode(",", $laggport_info['flags'])?>&gt;
+                            <?=gettext('state')?>=&lt;<?=implode(",", $laggport_info['state'])?>&gt;
+                            <br />
                         <?php  endforeach; ?>
                       </td>
                     </tr>

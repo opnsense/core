@@ -230,17 +230,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                 if (isset($ph1ent['mobile'])) {
                     $rgip = "any";
                 } elseif (!is_ipaddr($ph1ent['remote-gateway'])) {
-                    $dns_qry_type = $ph1ent['protocol'] == 'inet6' ? DNS_AAAA : DNS_A;
-                    $dns_qry_outfield = $ph1ent['protocol'] == 'inet6' ? "ipv6" : "ip";
-                    $dns_records = @dns_get_record($ph1ent['remote-gateway'], $dns_qry_type);
-                    if (is_array($dns_records)) {
-                        foreach ($dns_records as $dns_record) {
-                            if (!empty($dns_record[$dns_qry_outfield])) {
-                                $rgip = $dns_record[$dns_qry_outfield];
-                                break;
-                            }
-                        }
-                    }
+                    $rgip = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
                 } else {
                     $rgip = $ph1ent['remote-gateway'];
                 }
@@ -257,7 +247,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                             }
                         }
                     }
-                    $interface = explode("_vip", $ph1ent['interface'])[0];
+                    $interface = explode('_vip', $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
                                       "log" => !isset($config['syslog']['nologdefaultpass']),
                                       "quick" => false,
@@ -268,18 +258,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                                     );
 
                     // find gateway
-                    $gwname = null;
-                    foreach ($fw->getInterfaceMapping() as $intfnm => $intf) {
-                        if ($intfnm == $interface) {
-                            foreach ($fw->getInterfaceGateways($intf['if']) as $gwnm) {
-                                $gw = $fw->getGateway($gwnm);
-                                if ($gw['proto'] == $ph1ent['protocol']) {
-                                    $gwname = $gwnm;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
                     // register rules
                     $fw->registerFilterRule(
                         500000,
@@ -688,7 +667,7 @@ function ipsec_dump_spd()
                         $upperspec = explode("/", $linea[0]);
                         $cursp['proto'] = $upperspec[0];
                         list($cursp['src'], $cursp['dst']) = explode("-", $upperspec[2]);
-                        $cursp['reqid'] =  substr($upperspec[3], strpos($upperspec[3], "#") + 1);
+                        $cursp['reqid'] = substr($upperspec[3], strpos($upperspec[3], "#") + 1);
                         break;
                 }
             }
@@ -777,14 +756,20 @@ function ipsec_lookup_keypair($uuid)
     return $node ? $node->getNodes() : null;
 }
 
-function ipsec_resolve($hostname)
+function ipsec_resolve($hostname, $ipproto = 'inet')
 {
     if (!is_ipaddr($hostname)) {
-        /* XXX IPv4-only */
-        $ip = gethostbyname($hostname);
-        if ($ip && $ip != $hostname) {
-            $hostname = $ip;
+        $dns_qry_type = $ipproto == 'inet6' ? DNS_AAAA : DNS_A;
+        $dns_qry_outfield = $ipproto == 'inet6' ? "ipv6" : "ip";
+        $dns_records = @dns_get_record($hostname, $dns_qry_type);
+        if (is_array($dns_records)) {
+            foreach ($dns_records as $dns_record) {
+                if (!empty($dns_record[$dns_qry_outfield])) {
+                    return $dns_record[$dns_qry_outfield];
+                }
+            }
         }
+        return null;
     }
 
     return $hostname;
@@ -1076,7 +1061,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     if (!isset($iflist) || !is_array($iflist)) {
                         $iflist = get_configured_interface_with_descr();
                     }
-                    $viplist = get_configured_vips_list();
                     $srcip = null;
                     $local_subnet = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     if (is_ipaddrv6($ph2ent['pinghost'])) {
@@ -1104,9 +1088,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     }
                     /* if no valid src IP was found in configured interfaces, try the vips */
                     if (is_null($srcip)) {
-                        foreach ($viplist as $vip) {
-                            if (ip_in_subnet($vip['ipaddr'], $local_subnet)) {
-                                $srcip = $vip['ipaddr'];
+                        foreach (config_read_array('virtualip', 'vip') as $vip) {
+                            if (ip_in_subnet($vip['subnet'], $local_subnet)) {
+                                $srcip = $vip['subnet'];
                                 break;
                             }
                         }
@@ -1154,6 +1138,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         if (isset($a_client['enable']) && isset($a_client['net_list'])) {
             $strongswanTree['charon']['cisco_unity'] = 'yes';
         }
+        if (!empty($config['ipsec']['max_ikev1_exchanges'])) {
+            $strongswanTree['charon']['max_ikev1_exchanges'] = $config['ipsec']['max_ikev1_exchanges'];
+        }
 
         // Debugging configuration
         // lkey is the log key, which is a three-letter abbreviation of the subsystem to log, e.g. `ike`.
@@ -1174,7 +1161,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
             if (isset($a_client['net_list'])) {
                 foreach ($a_phase2 as $ph2ent) {
                     if (!isset($ph2ent['disabled']) && isset($ph2ent['mobile'])) {
-                        $net_list[] =  ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                        $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
                     }
                 }
             }
@@ -1517,6 +1504,18 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $ealgosp1 = 'ike = ' . implode(',', array_reverse($list)) . '!';
                 }
 
+                if (isset($ph1ent['sha256_96'])) {
+                    $sha256_96_line = "sha256_96 = yes";
+                } else {
+                    $sha256_96_line = '';
+                }
+
+                if (!empty($ph1ent['closeaction'])) {
+                    $closeaction_line = "closeaction = {$ph1ent['closeaction']}";
+                } else {
+                    $closeaction_line = '';
+                }
+
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
                     if (empty($ph1ent['dpd_action'])) {
                         if (in_array($conn_auto, array('route', 'start'))) {
@@ -1674,6 +1673,8 @@ conn con<<connectionId>>
   {$forceencaps}
   installpolicy = {$installpolicy}
   type = {$parsed_phase2['type']}
+  {$closeaction_line}
+  {$sha256_96_line}
   {$dpdline}
   {$inactivityline}
   {$keyingtriesline}
@@ -1822,13 +1823,16 @@ function generate_strongswan_conf(array $tree, $level = 0): string
 function ipsec_get_configured_vtis()
 {
     global $config;
-    $configured_intf = array();
-    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
-    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
+
+    $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
+    $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
+    $configured_intf = [];
+
     foreach ($a_phase1 as $ph1ent) {
         if (empty($ph1ent['disabled'])) {
-            $phase2items = array();
-            $phase2reqids = array();
+            $phase2items = [];
+            $phase2reqids = [];
+
             foreach ($a_phase2 as $ph2ent) {
                 if (
                     $ph2ent['mode'] == 'route-based' &&
@@ -1840,6 +1844,7 @@ function ipsec_get_configured_vtis()
                     }
                 }
             }
+
             foreach ($phase2items as $idx => $phase2) {
                 if (empty($phase2['reqid'])) {
                     continue;
@@ -1854,31 +1859,20 @@ function ipsec_get_configured_vtis()
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
                 if (empty($tunnels[$intfnm])) {
-                    $configured_intf[$intfnm] = array("reqid" => $reqid);
+                    $configured_intf[$intfnm] = ['reqid' => $reqid];
                     $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
                     $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
+                    $configured_intf[$intfnm]['interface'] = $ph1ent['interface'];
                     $configured_intf[$intfnm]['descr'] = $descr;
-                    $configured_intf[$intfnm]['networks'] = array();
+                    $configured_intf[$intfnm]['networks'] = [];
                 }
+
                 $inet = is_ipaddrv6($phase2['tunnel_local']) ? 'inet6' : 'inet';
-                // calculate netmask for the provided tunnel
-                if ($inet == 'inet6') {
-                    // XXX: we don't support 128bit integers, only the last 64 bits are considered to calculate the
-                    //      subnet size.
-                    $tunnel_int64 = [];
-                    foreach (['tunnel_local', 'tunnel_remote'] as $fieldname) {
-                        $parts = explode(':', Net_IPv6::Uncompress($phase2[$fieldname], true));
-                        $tunnel_int64[$fieldname] = hexdec(implode("", array_slice($parts, -4)));
-                    }
-                    $mask = 127 - decbin(abs($tunnel_int64['tunnel_remote'] -  $tunnel_int64['tunnel_local']));
-                } else {
-                    $mask = 31 - abs(ip2long($phase2['tunnel_remote']) - ip2long($phase2['tunnel_local']));
-                }
 
                 $configured_intf[$intfnm]['networks'][] = [
                     'inet' => $inet,
+                    'mask' => find_smallest_cidr([$phase2['tunnel_local'], $phase2['tunnel_remote']], $inet),
                     'tunnel_local' => $phase2['tunnel_local'],
-                    'mask' => $mask,
                     'tunnel_remote' => $phase2['tunnel_remote']
                 ];
             }
@@ -1910,10 +1904,20 @@ function ipsec_configure_vti($verbose = false)
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
+        $local_configured = $configured_intf[$intf]['local'];
+        $remote_configured = $configured_intf[$intf]['remote'];
+        if (!empty($configured_intf[$intf])) {
+            if (!is_ipaddr($configured_intf[$intf]['local'])) {
+                $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            }
+            if (!is_ipaddr($configured_intf[$intf]['remote'])) {
+                $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            }
+        }
         if (
             empty($configured_intf[$intf])
-            || $configured_intf[$intf]['local'] != $intf_details['tunnel']['src_addr']
-            || $configured_intf[$intf]['remote'] != $intf_details['tunnel']['dest_addr']
+            || $local_configured != $intf_details['tunnel']['src_addr']
+            || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
             log_error(sprintf("destroy interface %s", $intf));
             legacy_interface_destroy($intf);
@@ -1953,6 +1957,13 @@ function ipsec_configure_vti($verbose = false)
     foreach ($configured_intf as $intf => $intf_details) {
         // create required interfaces
         $inet = is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet';
+        if (empty($intf_details['local'])) {
+            log_error(sprintf("Unable to construct VTI interface, local tunnel endpoint for %s not found", $intf));
+            continue;
+        } elseif (empty($intf_details['remote'])) {
+            log_error(sprintf("Unable to construct VTI interface, remote tunnel endpoint for %s not found", $intf));
+            continue;
+        }
         if (empty($current_interfaces[$intf])) {
             // prevent ipsec vti interface to hit 32768 limit (create numbered, rename and attach afterwards)
             if (legacy_interface_create("ipsec", $intf) != null) {

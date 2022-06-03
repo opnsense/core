@@ -99,6 +99,7 @@ class InterfaceController extends IndexController
               "endpoint" => "/api/diagnostics/interface/getSocketStatistics"
             ]
         ];
-        $this->view->pick('OPNsense/Diagnostics/netstat');
+        $this->view->default_tab = "interfaces";
+        $this->view->pick('OPNsense/Diagnostics/treeview');
     }
 }

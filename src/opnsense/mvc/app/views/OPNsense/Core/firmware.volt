@@ -55,7 +55,7 @@
             if (data['status'] == "update") {
                 let show_log = '';
 
-                $.upgrade_needs_reboot = data['upgrade_needs_reboot'];
+                $.status_reboot = data['status_reboot'];
 
                 // show upgrade list
                 $('#upgrade').show();
@@ -81,6 +81,8 @@
 
                 packagesInfo(false);
             } else if (data['status'] == "upgrade") {
+                $.status_reboot = data['status_reboot'];
+
                 if (data['upgrade_major_message'] != '') {
                     /* we trust this data, it was signed by us and secured by csrf */
                     stdDialogInform(
@@ -173,13 +175,11 @@
     function action_may_reboot(pkg_act, pkg_name)
     {
         if (pkg_act == 'reinstall' && (pkg_name == 'kernel' || pkg_name == 'base')) {
-            const reboot_msg = "{{ lang._('The firewall will reboot directly after this set reinstall.') }}";
-
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
                 title: "{{ lang._('Reboot required') }}",
-                message: reboot_msg,
+                message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}",
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
@@ -219,9 +219,10 @@
      */
     function upgrade_ui(major)
     {
-        let reboot_msg = "";
-        if ( $.upgrade_needs_reboot == "1" || major === true) {
-            reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
+        if (major !== true && $.status_reboot != "1") {
+            backend('update');
+        } else {
+            let reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
@@ -244,8 +245,6 @@
                     }
                 }]
             });
-        } else {
-            backend('update');
         }
     }
 

@@ -31,6 +31,9 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\FieldTypes\TextField;
+use OPNsense\Base\FieldTypes\IntegerField;
+use OPNsense\Core\Backend;
 
 class AliasField extends ArrayField
 {
@@ -64,6 +67,35 @@ class AliasField extends ArrayField
             "content" => ""
         ]
     ];
+
+    private static $current_stats = null;
+
+    protected function actionPostLoadingEvent()
+    {
+        if (self::$current_stats === null) {
+            self::$current_stats = [];
+            $stats = json_decode((new Backend())->configdRun('filter diag table_size'), true);
+            if (!empty($stats) && !empty($stats['details'])) {
+                self::$current_stats = $stats['details'];
+            }
+        }
+        foreach ($this->internalChildnodes as $node) {
+            if (!$node->getInternalIsVirtual()) {
+                // generate new unattached fields, which are only usable to read data from (not synched to config.xml)
+                $current_items = new IntegerField();
+                $current_items->setInternalIsVirtual();
+                $last_updated = new TextField();
+                $last_updated->setInternalIsVirtual();
+                if (!empty((string)$node->name) && !empty(self::$current_stats[(string)$node->name])) {
+                    $current_items->setValue(self::$current_stats[(string)$node->name]['count']);
+                    $last_updated->setValue(self::$current_stats[(string)$node->name]['updated']);
+                }
+                $node->addChildNode('current_items', $current_items);
+                $node->addChildNode('last_updated', $last_updated);
+            }
+        }
+        return parent::actionPostLoadingEvent();
+    }
 
     /**
      * create virtual alias nodes
