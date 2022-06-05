@@ -311,6 +311,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
