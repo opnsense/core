@@ -139,7 +139,6 @@ if __name__ == '__main__':
 
     registered_aliases = set()
     for alias in aliases:
-        registered_aliases.add(alias.get_name())
         # fetch alias content including dependencies
         alias_name = alias.get_name()
         alias_content = alias.resolve()
@@ -150,12 +149,15 @@ if __name__ == '__main__':
                 if rel_alias:
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
                     alias_content += rel_alias.resolve()
-        # when the alias or any of it's dependencies has changed, generate new
-        if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
-            open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
 
         alias_pf_content = list()
         if alias.get_parser():
+            registered_aliases.add(alias.get_name())
+
+            # when the alias or any of it's dependencies has changed, generate new
+            if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
+                open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
+
             # only try to replace the contents of this alias if we're responsible for it (know how to parse)
             sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
             tmp = sp.stdout.strip()
