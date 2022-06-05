@@ -81,7 +81,7 @@ class Alias(object):
             elif subelem.tag == 'aliasurl':
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'address' and len(self._items) == 0:
-                # special case, aliasurl fetched addresses in old implentation we don't want to use them
+                # special case, aliasurl fetched addresses in old implementation we don't want to use them
                 self._items = set(sorted(subelem.text.split()))
             elif subelem.tag == 'url':
                 self._items = set(sorted(subelem.text.split()))
@@ -247,18 +247,19 @@ class Alias(object):
                         for item in self.items():
                             for address in address_parser(item):
                                 self._resolve_content.add(address)
-                    # resolve hostnames (async) if there are any in the collected set
-                    self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
-                    with open(self._filename_alias_content, 'w') as f_out:
-                        f_out.write('\n'.join(self._resolve_content))
+                        # resolve hostnames (async) if there are any in the collected set
+                        self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
+                        with open(self._filename_alias_content, 'w') as f_out:
+                            f_out.write('\n'.join(self._resolve_content))
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(undo_content)
                     self._resolve_content = set(undo_content.split("\n"))
-                # flush md5 hash to disk
-                open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                if self.get_parser():
+                    # flush md5 hash to disk
+                    open(self._filename_alias_hash, 'w').write(self.uniqueid())
             else:
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
         # return the addresses and networks of this alias
