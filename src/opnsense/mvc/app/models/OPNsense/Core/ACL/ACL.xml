@@ -270,6 +270,7 @@
         <patterns>
             <pattern>firewall_rules.php*</pattern>
             <pattern>api/firewall/category/searchItem*</pattern>
+            <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-firewall-rules>
     <page-firewall-rules-edit>

@@ -321,7 +321,6 @@ include("head.inc");
 
 $a_filter_raw = config_read_array('filter', 'rule');
 legacy_html_escape_form_data($a_filter);
-$all_rule_stats = json_decode(configd_run("filter rule stats"), true);
 ?>
 <body>
 <script>
@@ -511,6 +510,26 @@ $( document ).ready(function() {
             $(".view-info").hide();
             $(this).addClass('active');
             $(this).data('mode', 'stats');
+            $.ajax('api/firewall/filter_util/rule_stats', {
+                success: function(response) {
+                    if (response.status == 'ok') {
+                        let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+                        $.each(response.stats, function(index, value) {
+                            $("#" + index + "_evaluations").text(value.evaluations);
+                            $("#" + index + "_states").text(value.states);
+                            $("#" + index + "_packets").text(value.packets);
+                            if (value.bytes > 0) {
+                                let ndx = Math.floor(Math.log(value.bytes) / Math.log(1000));
+                                $("#" + index + "_bytes").text(
+                                    (value.bytes / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx]
+                                );
+                            } else {
+                                $("#" + index + "_bytes").text("0");
+                            }
+                        });
+                    }
+                }
+            });
       }
       $(this).blur();
   });
@@ -684,8 +703,7 @@ $( document ).ready(function() {
                     if ($rule->isEnabled() && $is_selected):
                         $filterent = $rule->getRawRule();
                         $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
-                        legacy_html_escape_form_data($filterent);
-                        $rule_stats = !empty($rule->getLabel()) ? $all_rule_stats[$rule->getLabel()] : array();?>
+                        legacy_html_escape_form_data($filterent);?>
                     <tr class="internal-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
@@ -712,15 +730,11 @@ $( document ).ready(function() {
                         <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
-                      <td class="view-stats hidden-xs hidden-sm"><?= !empty($rule_stats) ? $rule_stats['evaluations'] : gettext('N/A') ?></td>
+                      <td class="view-stats hidden-xs hidden-sm" id="<?=$rule->getLabel();?>_evaluations"><?= gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm">
-<?php if (!empty($rule_stats) && !empty($rule->getRef())):?>
-                          <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= $rule_stats['states'];?></a>
-<?php else: ?>
-                          <?= !empty($rule_stats) ? $rule_stats['states'] : gettext('N/A') ?></td>
-<?php endif ?>
-                      <td class="view-stats"><?= !empty($rule_stats) ? $rule_stats['packets'] : gettext('N/A') ?></td>
-                      <td class="view-stats"><?= !empty($rule_stats) ? format_bytes($rule_stats['bytes']) : gettext('N/A') ?></td>
+                          <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" id="<?=$rule->getLabel();?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?=  gettext('N/A');?></a>
+                      <td class="view-stats" id="<?=$rule->getLabel();?>_packets"><?= gettext('N/A') ?></td>
+                      <td class="view-stats" id="<?=$rule->getLabel();?>_bytes"><?= gettext('N/A') ?></td>
                       <td><?=$rule->getDescr();?></td>
                       <td>
 <?php if (!empty($rule->getRef())): ?>
@@ -858,17 +872,12 @@ $( document ).ready(function() {
 <?php
                        endif;?>
                     </td>
-                    <td class="view-stats hidden-xs hidden-sm"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['evaluations'] : gettext('N/A') ?></td>
+                    <td class="view-stats hidden-xs hidden-sm" id="<?=$rule_hash;?>_evaluations"><?= gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm">
-<?php if (!empty($all_rule_stats[$rule_hash])):?>
-                      <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule_hash);?>" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= $all_rule_stats[$rule_hash]['states'];?></a>
-<?php else: ?>
-                      <?= gettext('N/A') ?>
-<?php endif ?>
-
+                      <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule_hash);?>" id="<?=$rule_hash;?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= gettext('N/A') ?></a>
                     </td>
-                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? $all_rule_stats[$rule_hash]['packets'] : gettext('N/A') ?></td>
-                    <td class="view-stats"><?= !empty($all_rule_stats[$rule_hash]) ? format_bytes($all_rule_stats[$rule_hash]['bytes']) : gettext('N/A') ?></td>
+                    <td class="view-stats" id="<?=$rule_hash;?>_packets"><?= gettext('N/A') ?></td>
+                    <td class="view-stats" id="<?=$rule_hash;?>_bytes"><?= gettext('N/A') ?></td>
                     <td  class="rule-description">
                       <?=$filterent['descr'];?>
                       <div class="collapse rule_md5_hash">
