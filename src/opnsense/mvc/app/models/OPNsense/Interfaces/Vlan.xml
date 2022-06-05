@@ -8,11 +8,25 @@
         <vlan type="ArrayField">
             <if type=".\VlanInterfaceField">
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>tag.check001</reference>
+                    </check001>
+                </Constraints>
             </if>
             <tag type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>4094</MaximumValue>
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Tag should be unique for this interface</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                        <addFields>
+                            <field1>if</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
             </tag>
             <pcp type="OptionField">
                 <Required>Y</Required>
