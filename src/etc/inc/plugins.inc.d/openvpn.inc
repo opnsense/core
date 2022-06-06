@@ -345,6 +345,11 @@ function openvpn_add_dhcpopts(&$settings, &$conf)
     if (!empty($settings['dns_domain'])) {
         $conf .= "push \"dhcp-option DOMAIN {$settings['dns_domain']}\"\n";
     }
+    if (!empty($settings['dns_domain_search'])) {
+        foreach (explode(",", $settings['dns_domain_search']) as $domain) {
+            $conf .= "push \"dhcp-option DOMAIN-SEARCH {$domain}\"\n";
+        }
+    }
     if (!empty($settings['dns_server1'])) {
         $conf .= "push \"dhcp-option DNS {$settings['dns_server1']}\"\n";
     }
