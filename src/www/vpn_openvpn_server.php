@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
  *
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,local_group
+            ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search,local_group
             ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-            ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain
+            ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search
             ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
@@ -256,6 +256,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        if (!empty($pconfig['dns_domain_search'])) {
+            $tmp_ok_domain = 0;
+            $tmp_nok_domain = 0;
+            foreach (explode(",", $pconfig['dns_domain_search'] ?? "") as $domain) {
+                if (is_domain($domain)) {
+                    $tmp_ok_domain++;
+                } else {
+                    $tmp_nok_domain++;
+                }
+            }
+            if ($tmp_nok_domain > 0) {
+                $input_errors[] = gettext("The field 'DNS Domain search list' must contain valid domain names");
+            } elseif ($tmp_ok_domain > 10) {
+                $input_errors[] = gettext("The field 'DNS Domain search list' may contain max 10 entries");
+            }
+        }
+
         if (!empty($pconfig['dns_server1']) && !is_ipaddr(trim($pconfig['dns_server1']))) {
             $input_errors[] = gettext("The field 'DNS Server #1' must contain a valid IP address");
         }
@@ -366,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,gwredir,local_network,local_networkv6,maxclients,compression
                 ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
-                ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
+                ,serverbridge_dhcp_end,dns_domain,dns_domain_search,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,verbosity_level,wins_server1,tlsmode
                 ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name,cso_login_matching";
@@ -571,6 +588,15 @@ $( document ).ready(function() {
           }
       });
       $("#dns_domain_enable").change();
+
+      $("#dns_domain_search_enable").change(function(){
+          if ($("#dns_domain_search_enable").is(':checked')) {
+              $("#dns_domain_search_data").show();
+          } else {
+              $("#dns_domain_search_data").hide();
+          }
+      });
+      $("#dns_domain_search_enable").change();
 
       $("#dns_server_enable").change(function(){
           if ($("#dns_server_enable").is(':checked')) {
@@ -1370,6 +1396,20 @@ $( document ).ready(function() {
                         <div class="hidden" data-for="help_for_dns_domain">
                           <span>
                               <?=gettext("Provide a default domain name to clients"); ?><br />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
+                      <td style="width:22%"><a id="help_for_dns_domain_search" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Domain search list"); ?></td>
+                      <td>
+                        <input name="dns_domain_search_enable" type="checkbox" id="dns_domain_search_enable" value="yes" <?=!empty($pconfig['dns_domain_search']) ? "checked=\"checked\"" : "" ;?> />
+                        <div id="dns_domain_search_data">
+                            <input name="dns_domain_search" type="text" class="form-control unknown" value="<?=htmlspecialchars($pconfig['dns_domain_search']);?>" />
+                        </div>
+                        <div class="hidden" data-for="help_for_dns_domain_search">
+                          <span>
+                              <?=gettext("Add name to the domain search list. Repeat this option to add more entries. Expressed as a comma-separated list up to 10 domains are supported."); ?><br />
                           </span>
                         </div>
                       </td>
