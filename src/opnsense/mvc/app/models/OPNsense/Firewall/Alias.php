@@ -216,7 +216,7 @@ class Alias extends BaseModel
             if ($uuid === false) {
                 return null;
             }
-            $alias = $this->getNodeByReference("aliases.alias.".$uuid);
+            $alias = $this->getNodeByReference('aliases.alias.' . $uuid);
             if ($alias != null && (string)$alias->name == $name) {
                 return $alias;
             }

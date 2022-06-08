@@ -225,11 +225,11 @@ class Util
      */
     private static function getservbyname($service, $protocol)
     {
-        if (!isset(self::$servbynames[$protocol])){
+        if (!isset(self::$servbynames[$protocol])) {
             self::$servbynames[$protocol] = [];
         }
         if (!isset(self::$servbynames[$protocol][$service])) {
-           self::$servbynames[$protocol][$service] = getservbyname($service, $protocol);
+            self::$servbynames[$protocol][$service] = getservbyname($service, $protocol);
         }
         return self::$servbynames[$protocol][$service];
     }
@@ -244,7 +244,8 @@ class Util
     {
         $tmp = explode(':', $number);
         foreach ($tmp as $port) {
-            if ((filter_var($port, FILTER_VALIDATE_INT, array(
+            if (
+                (filter_var($port, FILTER_VALIDATE_INT, array(
                   "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port)) &&
                 !self::getservbyname($port, "tcp") && !self::getservbyname($port, "udp")
             ) {
