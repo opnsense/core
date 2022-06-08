@@ -220,6 +220,9 @@ abstract class BaseModel
                     foreach ($xmlNode->children() as $fieldMethod) {
                         $method_name = "set" . $fieldMethod->getName();
                         if ($field_rfcls->hasMethod($method_name)) {
+                            // XXX: For array objects we will execute parseOptionData() more than needed as the
+                            //      the model data itself can't change in the meantime.
+                            //      e.g. setOptionValues() with a list of static options will recalculate for each item.
                             $fieldObject->$method_name($this->parseOptionData($fieldMethod));
                         }
                     }
