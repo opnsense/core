@@ -68,7 +68,7 @@ class AutoNumberField extends BaseField
     public function __construct($ref = null, $tagname = null)
     {
         parent:: __construct($ref, $tagname);
-        $this->minimum_value = 0;
+        $this->minimum_value = 1;
         $this->maximum_value = PHP_INT_MAX - 1;
     }
 
