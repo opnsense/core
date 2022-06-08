@@ -25,6 +25,7 @@
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                     </filters>
+                    <ValidationMessage>One or more interfaces must be selected</ValidationMessage>
                 </interfaces>
                 <authservers type="AuthenticationServerField">
                     <Required>N</Required>
