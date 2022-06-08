@@ -255,9 +255,8 @@ manifest:
 	@echo "}"
 
 .if ${.TARGETS:Mupgrade}
-PKG_FORMAT?=	tar
-.else
-PKG_FORMAT?=	txz
+# lighter package format for quick completion
+PKG_FORMAT?=	-f tar
 .endif
 
 PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
@@ -335,7 +334,7 @@ package: plist-check package-check clean-wrksrc
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \
+	@PORTSDIR=${.CURDIR} ${PKG} create ${PKG_FORMAT} -v -m ${WRKSRC} \
 	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
 
 upgrade-check:
