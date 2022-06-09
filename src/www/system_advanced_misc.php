@@ -485,13 +485,13 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
+                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var/log RAM disk'); ?></td>
                 <td>
-                  <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext("Use memory file system for /var"); ?>
+                  <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?= !empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '' ?>/>
+                  <?= gettext('Use memory file system for /var/log') ?>
                   <div class="hidden" data-for="help_for_use_mfs_var">
-                    <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
-                      "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
+                    <?= gettext('Set this if you wish to use /var/log as a RAM disk (memory file system disks) ' .
+                      'rather than using the hard disk. Setting this will cause the log data to be lost on reboot.') ?>
                   </div>
                 </td>
               </tr>
