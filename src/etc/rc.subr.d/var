@@ -93,6 +93,11 @@ else
 	# config restore for install media does not support
 	# this as neither /var/log nor /root are persistent
 	USE_MFS_VAR=0
+
+	# force the permission of /root to avoid a health audit
+	# error on ISO format that will not have the correct
+	# permission on boot
+	chmod 755 /root # XXX 750 when ready
 fi
 
 # XXX remove all renmants of /root/var handling after 22.7
