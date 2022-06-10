@@ -152,39 +152,6 @@ function dhcpd_services()
     return $services;
 }
 
-function dhcpd_generate_ipv6_from_mac($mac)
-{
-    $elements = explode(":", $mac);
-    if (count($elements) != 6) {
-        return false;
-    }
-
-    $i = 0;
-    $ipv6 = "fe80::";
-    foreach ($elements as $byte) {
-        if ($i == 0) {
-            $hexadecimal = substr($byte, 1, 2);
-            $bitmap = base_convert($hexadecimal, 16, 2);
-            $bitmap = str_pad($bitmap, 4, '0', STR_PAD_LEFT);
-            $bitmap = substr($bitmap, 0, 2) . '1' . substr($bitmap, 3, 4);
-            $byte = substr($byte, 0, 1) . base_convert($bitmap, 2, 16);
-        }
-        $ipv6 .= $byte;
-        if ($i == 1) {
-            $ipv6 .= ":";
-        }
-        if ($i == 3) {
-            $ipv6 .= ":";
-        }
-        if ($i == 2) {
-            $ipv6 .= "ff:fe";
-        }
-
-        $i++;
-    }
-    return $ipv6;
-}
-
 function dhcpd_get_pppoes_child_interfaces($ifpattern)
 {
     $if_arr = array();
@@ -1658,12 +1625,6 @@ EOD;
             $dhcpdv6ifs = array_merge($dhcpdv6ifs, dhcpd_get_pppoes_child_interfaces($dhcpv6if));
         } else {
             $realif = get_real_interface($dhcpv6if, "inet6");
-            if (stristr("$realif", "bridge")) {
-                $mac = get_interface_mac($realif, $ifconfig_details);
-                $v6address = dhcpd_generate_ipv6_from_mac($mac);
-                /* create link local address for bridges */
-                mwexec("/sbin/ifconfig {$realif} inet6 {$v6address}");
-            }
             $realif = escapeshellcmd($realif);
             $dhcpdv6ifs[] = $realif;
         }
@@ -1734,11 +1695,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
     $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
-        if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
-            continue;
-        }
-
-        if (is_ipaddr(get_interface_ip($dhcrelayif, $ifconfig_details))) {
+        if (isset($iflist[$dhcrelayif]) && get_interface_ip($dhcrelayif, $ifconfig_details)) {
             $dhcrelayifs[] = get_real_interface($dhcrelayif);
         }
     }
@@ -1855,11 +1812,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
-        if (!isset($iflist[$dhcrelayif]) || link_interface_to_bridge($dhcrelayif)) {
-            continue;
-        }
-
-        if (is_ipaddrv6(get_interface_ipv6($dhcrelayif, $ifconfig_details))) {
+        if (isset($iflist[$dhcrelayif]) && get_interface_ipv6($dhcrelayif, $ifconfig_details)) {
             $dhcrelayifs[] = get_real_interface($dhcrelayif);
         }
     }
