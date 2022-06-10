@@ -1451,8 +1451,8 @@ authoritative;
 
 EOD;
 
-    $dhcpdv6ifs = array();
-    $ddns_zones = array();
+    $dhcpdv6ifs = [];
+    $ddns_zones = [];
     $need_ddns_updates = false;
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
@@ -1620,13 +1620,11 @@ EOD;
             $ddns_zones[] = $newzone;
         }
 
-        if (preg_match("/poes/si", $dhcpv6if)) {
-            /* magic here */
+        if (preg_match('/poes/si', $dhcpv6if)) {
+            /* XXX magic here */
             $dhcpdv6ifs = array_merge($dhcpdv6ifs, dhcpd_get_pppoes_child_interfaces($dhcpv6if));
         } else {
-            $realif = get_real_interface($dhcpv6if, "inet6");
-            $realif = escapeshellcmd($realif);
-            $dhcpdv6ifs[] = $realif;
+            $dhcpdv6ifs[] = escapeshellcmd(get_real_interface($dhcpv6if, 'inet6'));
         }
     }
 
