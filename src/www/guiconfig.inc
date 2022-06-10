@@ -471,7 +471,7 @@ if (!$timezone) {
 
 date_default_timezone_set($timezone);
 
-function get_crash_report($pedantic = false)
+function get_crash_report()
 {
     if (!userIsAdmin($_SESSION['Username'])) {
         return;
@@ -484,22 +484,12 @@ function get_crash_report($pedantic = false)
     );
     $skip_files = array('.', '..', 'minfree', 'bounds', '');
     $PHP_errors_log = '/tmp/PHP_errors.log';
-    $excludes = array();
     $count = 0;
 
-    if (!$pedantic) {
-        $excludes[] = 'PHP Notice:';
-    }
-
     if (file_exists($PHP_errors_log)) {
-        $extra = '';
-        foreach ($excludes as $exclude) {
-            $extra .= sprintf('/usr/bin/grep -v %s | ', escapeshellarg($exclude));
-        }
         $total = shell_exec(sprintf(
-            '/bin/cat %s | %s /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-            $PHP_errors_log,
-            $extra
+            '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
+            $PHP_errors_log
         ));
         if ($total > 0) {
             $count++;
