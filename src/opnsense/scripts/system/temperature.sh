@@ -42,6 +42,10 @@ if [ "${CMD}" = 'rrd' ]; then
 	done
 else
 	# The grep is opportunistic, but at least we only grep the
-	# variable names and not their content at the same time.
-	sysctl -e $(sysctl -aN | grep temperature) | sort
+	# variable names and not their content at the same time and
+	# as long as we can find something that matches our search.
+	SYSCTLS=$(sysctl -aN | grep temperature)
+	if [ -n "${SYSCTLS}" ]; then
+		sysctl -e ${SYSCTLS} | sort
+	fi
 fi
