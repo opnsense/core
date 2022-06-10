@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!count($input_errors)) {
-            $reason = (empty($pconfig['crlreason'])) ? OCSP_REVOKED_STATUS_UNSPECIFIED : $pconfig['crlreason'];
+            $reason = (empty($pconfig['crlreason'])) ? CERT_CRL_STATUS_UNSPECIFIED : $pconfig['crlreason'];
             cert_revoke($cert, $crl, $reason);
             plugins_configure('crl');
             write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));

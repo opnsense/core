@@ -34,27 +34,27 @@ require_once('phpseclib/File/ASN1/Element.php');
 require_once('phpseclib/Crypt/RSA.php');
 require_once('phpseclib/Crypt/Hash.php');
 
-define("OCSP_REVOKED_STATUS_NOSTATUS", -1);
-define("OCSP_REVOKED_STATUS_UNSPECIFIED", 0);
-define("OCSP_REVOKED_STATUS_KEYCOMPROMISE", 1);
-define("OCSP_REVOKED_STATUS_CACOMPROMISE", 2);
-define("OCSP_REVOKED_STATUS_AFFILIATIONCHANGED", 3);
-define("OCSP_REVOKED_STATUS_SUPERSEDED", 4);
-define("OCSP_REVOKED_STATUS_CESSATIONOFOPERATION", 5);
-define("OCSP_REVOKED_STATUS_CERTIFICATEHOLD", 6);
+define("CERT_CRL_STATUS_NOSTATUS", -1);
+define("CERT_CRL_STATUS_UNSPECIFIED", 0);
+define("CERT_CRL_STATUS_KEYCOMPROMISE", 1);
+define("CERT_CRL_STATUS_CACOMPROMISE", 2);
+define("CERT_CRL_STATUS_AFFILIATIONCHANGED", 3);
+define("CERT_CRL_STATUS_SUPERSEDED", 4);
+define("CERT_CRL_STATUS_CESSATIONOFOPERATION", 5);
+define("CERT_CRL_STATUS_CERTIFICATEHOLD", 6);
 
 function crl_status_code()
 {
     /* Array index 0 is a description, index 1 is the key used by phpseclib */
     return array(
-        OCSP_REVOKED_STATUS_NOSTATUS              => ["No Status (default)", "unused"],
-        OCSP_REVOKED_STATUS_UNSPECIFIED           => ["Unspecified", "unused"],
-        OCSP_REVOKED_STATUS_KEYCOMPROMISE         => ["Key Compromise", "keyCompromise"],
-        OCSP_REVOKED_STATUS_CACOMPROMISE          => ["CA Compromise", "cACompromise"],
-        OCSP_REVOKED_STATUS_AFFILIATIONCHANGED    => ["Affiliation Changed", "affiliationChanged"],
-        OCSP_REVOKED_STATUS_SUPERSEDED            => ["Superseded", "superseded"],
-        OCSP_REVOKED_STATUS_CESSATIONOFOPERATION  => ["Cessation of Operation", "cessationOfOperation"],
-        OCSP_REVOKED_STATUS_CERTIFICATEHOLD       => ["Certificate Hold", "certificateHold"]
+        CERT_CRL_STATUS_NOSTATUS              => ["No Status (default)", "unused"],
+        CERT_CRL_STATUS_UNSPECIFIED           => ["Unspecified", "unused"],
+        CERT_CRL_STATUS_KEYCOMPROMISE         => ["Key Compromise", "keyCompromise"],
+        CERT_CRL_STATUS_CACOMPROMISE          => ["CA Compromise", "cACompromise"],
+        CERT_CRL_STATUS_AFFILIATIONCHANGED    => ["Affiliation Changed", "affiliationChanged"],
+        CERT_CRL_STATUS_SUPERSEDED            => ["Superseded", "superseded"],
+        CERT_CRL_STATUS_CESSATIONOFOPERATION  => ["Cessation of Operation", "cessationOfOperation"],
+        CERT_CRL_STATUS_CERTIFICATEHOLD       => ["Certificate Hold", "certificateHold"]
     );
 }
 
@@ -663,7 +663,7 @@ function crl_update(&$crl)
     return true;
 }
 
-function cert_revoke($cert, &$crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
+function cert_revoke($cert, &$crl, $reason = CERT_CRL_STATUS_UNSPECIFIED)
 {
     if (is_cert_revoked($cert, $crl['refid'])) {
         return true;
