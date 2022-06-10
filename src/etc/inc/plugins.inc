@@ -258,7 +258,12 @@ function plugins_configure($hook, $verbose = false, $args = array())
                          * given by the plugin, which allows to securely
                          * pull more info from the configure call spot.
                          */
-                        list($argf, $argc) = explode(':', $task);
+                        if (substr_count($task, ':')) {
+                            list($argf, $argc) = explode(':', $task);
+                        } else {
+                            $argf = $task;
+                            $argc = null;
+                        }
                         if (empty($argc) || !is_numeric($argc)) {
                             $argc = 1;
                         }
@@ -305,7 +310,12 @@ function plugins_run($hook, $verbose = false, $args = array())
                      * given by the plugin, which allows to securely
                      * pull more info from the configure call spot.
                      */
-                    list($argf, $argc) = explode(':', $task);
+                    if (substr_count($task, ':')) {
+                        list($argf, $argc) = explode(':', $task);
+                    } else {
+                        $argf = $task;
+                        $argc = null;
+                    }
                     if (empty($argc) || !is_numeric($argc)) {
                         $argc = 1;
                     }
