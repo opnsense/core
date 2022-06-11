@@ -51,6 +51,11 @@ class ControllerBase extends ControllerRoot
     {
         $result = array();
         foreach ($xmlNode as $key => $node) {
+            $element = array();
+            $nodes = $node->children();
+            $nodes_count = $nodes->count();
+            $attributes = $node->attributes();
+
             switch ($key) {
                 case "tab":
                     if (!array_key_exists("tabs", $result)) {
@@ -73,19 +78,164 @@ class ControllerBase extends ControllerRoot
                     $subtab[] = $this->parseFormNode($node);
                     $result[] = $subtab;
                     break;
-                case "field":
-                    // field type, containing attributes
-                    $result[] = $this->parseFormNode($node);
-                    break;
                 case "help":
                 case "hint":
                 case "label":
                     $result[$key] = gettext((string)$node);
                     break;
                 default:
-                    // default behavior, copy in value as key/value data
-                    $result[$key] = (string)$node;
+
+                // There's primarily two structures we need to build here.
+                //
+                // The first is very simple, and consists of a single
+                // key/value pair which is the name of the XML element, and
+                // the value of that XML element.
+                //
+                // XML:
+                // <model>settings</model>
+                //
+                // This gets translated into a PHP array.
+                //
+                // PHP Array:
+                // ["model"]=> string(8) "settings"
+                //
+                // The second is a more complex structure which consists of
+                // nested elements with attributes (which can include single
+                // elements with attributes).
+                //
+                // XML:
+                // <columns>
+                //   <select>true</select>
+                //   <column id="expression" width="" size="" type="string" visible="true" data-formatter="">
+                //     Expression
+                //   </column>
+                //   <column id="schedule" width="" size="" type="string" visible="true" data-formatter="">
+                //     Schedule
+                //   </column>
+                //   <column id="comment" width="" size="" type="string" visible="true" data-formatter="">
+                //     Comment
+                //   </column>
+                // </columns>
+                //
+                // This gets translated into a PHP array.
+                //
+                // PHP Array:
+                // ["columns"]=> array(2) {
+                //     ["select"]=> string(4) "true"
+                //     ["column"]=> array(3) {
+                //         [0]=> array(2) {
+                //             ["@attributes"]=> array(6) {
+                //                 ["id"]=>             string(10) "expression"
+                //                 ["width"]=>          string(0) ""
+                //                 ["size"]=>           string(0) ""
+                //                 ["type"]=>           string(6) "string"
+                //                 ["visible"]=>        string(4) "true"
+                //                 ["data-formatter"]=> string(0) ""
+                //             }
+                //             [0]=> string(10) "Expression"
+                //         }
+                //         [1]-> ...
+                //     }
+                // }
+                //
+                // The array named "columns" is equivalent to the XML columns element.
+                // The string named "select" is the single XML element (with no children).
+                // The array named "column" is the collection of same named XML elements
+                // interpreted as an array.
+                // Each of the attributes of each XML element is stored as an array named "@attributes".
+                // And the XML value is stored as a string in the first index.
+                //
+                // Here's another nested structure example with attirbutes at multiple levels:
+                // XML:
+                //  <button type="group" icon="fa fa-floppy-o" label="Save Basic Settings" id="save_actions">
+                //      <dropdown action="save" icon="fa fa-floppy-o">Save Only</dropdown>
+                //      <dropdown action="save_apply" icon="fa fa-floppy-o">Save and Apply</dropdown>
+                //  </button>
+                //
+                // This converts to a PHP array.
+                //
+                // PHP Array:
+                // ["button"]=> array(2) {
+                //     ["dropdown"]=> array(2) {
+                //         [0]=> array(2) {
+                //             ["@attributes"]=> array(2) {
+                //                 ["action"]=>             string(4) "save"
+                //                 ["icon"]=>               string(14) "fa fa-floppy-o"
+                //           }
+                //           [0]=>                          string(9) "Save Only"
+                //         }
+                //         [1]=> array(2) {
+                //             ["@attributes"]=> array(2) {
+                //                 ["action"]=>             string(10) "save_apply"
+                //                 ["icon"]=>               string(14) "fa fa-floppy-o"
+                //             }
+                //             [0]=>                        string(14) "Save and Apply"
+                //         }
+                //     }
+                //     ["@attributes"]=> array(4) {
+                //         ["type"]=>                       string(5) "group"
+                //         ["icon"]=>                       string(14) "fa fa-floppy-o"
+                //         ["label"]=>                      string(19) "Save Basic Settings"
+                //         ["id"]=>                         string(11) "save_actions"
+                //     }
+                // }
+
+                // If there are attributes, let's grab them.
+                if (count($attributes) !== 0) {
+                    foreach ($attributes as $attr_name => $attr_value) {
+                    // Create an array with each key named after the attribute name, and store its value accordingly.
+                    $my_attributes[$attr_name] = $attr_value->__tostring();
+                }
+                // Store the attributes to a named index in the element array.
+                    $element['@attributes'] = $my_attributes;
+                }
+
+                // If there are no children, then we've reached the end of this branch.
+                if ($nodes_count === 0) {
+                    if ($node->attributes()) {
+                        // Using xpath to look at the parent node,
+                        // if there are other nodes that have the same key name,
+                        // then we need to put this node into an array of the same key name,
+                        // mimicing that structure.
+                        // It will be one of the indexes in that array.
+                        if (count($node->xpath('../' . $key)) > 1) {
+                            $element[] = $node->__toString();
+                            $result[$key][] = $element;
+                        } else {
+                            // Since this is the only key with this name then we're not
+                            // creating an array, we're just naming the key after it,
+                            // and setting the value of that key.
+                            $element[] = $node->__toString();
+                            $result[$key] = $element;
+                        }
+                    } else {
+                        // We have no attributes to attach,
+                        // Using xpath to look at the parent node,
+                        // if there are other nodes that have the same key name,
+                        // then we need to put this node into an array of the same key name,
+                        // mimicing that structure.
+                        if (count($node->xpath('../' . $key)) > 1) {
+                            $result[$key][] = $node->__toString();
+                        } else {
+                            // No multiple nodes, and no attributes,
+                            // just set the key/value pair.
+                            $result[$key] = $node->__toString();
+                        }
+                    }
+
                     break;
+                }
+
+                // If we have 1 key, then lets set the value,
+                // but merge it with $element to include any attributes.
+                if (count($node->xpath('../' . $key)) < 2) {
+                    $result[$key] = array_merge($this->parseFormNode($node), $element);
+                    break;
+                }
+                // Nothing else to do, so let's recurse,
+                // but also merge with $element to include any attributes,
+                // adding it as a new index in the array.
+                $result[$key][] = array_merge($this->parseFormNode($node), $element);
             }
         }
 
