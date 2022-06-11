@@ -67,7 +67,7 @@
             </td>
         </tr>
 {% endif %}
-        {% for field in fields|default({})%}
+        {% for field in fields['field']|default({})%}
             {% if field['type'] == 'header' %}
               {# close table and start new one with header #}
 
