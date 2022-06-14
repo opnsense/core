@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['crypto_hardware'])) {
         if (count(array_intersect($pconfig['crypto_hardware'], crypto_modules())) == count($pconfig['crypto_hardware'])) {
             $input_errors[] = gettext('Please select a valid Cryptographic Accelerator.');
-	}
+        }
     } else {
         $pconfig['crypto_hardware'] = [];
     }
