@@ -1,7 +1,5 @@
 <!doctype html>
-<!--[if IE 8 ]><html lang="en-US" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en-US" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en-US" class="no-js"><!--<![endif]-->
+<html lang="en-US" class="no-js">
   <head>
 
     <meta charset="UTF-8" />
