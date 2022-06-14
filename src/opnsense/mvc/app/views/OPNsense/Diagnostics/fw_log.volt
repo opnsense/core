@@ -29,8 +29,13 @@
 
     $( document ).ready(function() {
         var field_type_icons = {
-          'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right',
-          'out': 'fa-arrow-left', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'
+          'binat': 'fa-exchange',
+          'block': 'fa-ban',
+          'in': 'fa-arrow-right',
+          'nat': 'fa-exchange',
+          'out': 'fa-arrow-left',
+          'pass': 'fa-play',
+          'rdr': 'fa-exchange'
         };
         var interface_descriptions = {};
         let hostnameMap = {};
@@ -280,7 +285,7 @@
                                 log_tr.addClass('fw_pass');
                             } else if (record['action'] == 'block') {
                                 log_tr.addClass('fw_block');
-                            } else if (record['action'] == 'rdr' || record['action'] == 'nat') {
+                            } else if (record['action'] == 'rdr' || record['action'] == 'nat' || record['action'] == 'binat') {
                                 log_tr.addClass('fw_nat');
                             }
                             $("#grid-log > tbody > tr:first").before(log_tr);
