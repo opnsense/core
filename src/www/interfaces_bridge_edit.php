@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
             if ($confif != '') {
-                interface_configure(false, $confif);
+                interface_configure(false, $confif, true);
             }
             header(url_safe('Location: /interfaces_bridge.php'));
             exit;

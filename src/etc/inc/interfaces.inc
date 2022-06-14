@@ -2324,7 +2324,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         echo "done.\n";
     }
 
-    if (!file_exists('/var/run/booting') && $reload) {
+    if ($reload) {
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, array($interface));
         plugins_configure('dhcp', $verbose);
