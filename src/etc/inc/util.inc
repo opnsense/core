@@ -806,7 +806,7 @@ function get_configured_ip_addresses()
             if (!empty($if[$iptype])) {
                 foreach ($if[$iptype] as $addr) {
                     if (!empty($addr['ipaddr'])) {
-                        $scope = $addr['link-local'] ? "%{$ifname}" : '';
+                        $scope = !empty($addr['link-local']) ? "%{$ifname}" : '';
                         $ip_array[$addr['ipaddr'] . $scope] = $ifname;
                     }
                 }
