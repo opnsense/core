@@ -364,7 +364,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
         $pwread = fgets($fd);
         pclose($fd);
-        if (substr_count($pwread, ':') {
+        if (substr_count($pwread, ':')) {
             $userattrs = explode(':', trim($pwread));
         }
     }
