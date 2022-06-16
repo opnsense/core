@@ -200,7 +200,7 @@ class Gateways
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'], ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
+                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'] ?? null, ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
                     $fsuffix = $ipproto == "inet6" ? "v6" : "";
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
@@ -258,7 +258,7 @@ class Gateways
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (
                         $ipproto == 'inet6'
-                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))
+                            && in_array($ifcfg['ipaddrv6'] ?? null, ['slaac', 'dhcp6', '6to4', '6rd'])
                     ) {
                         // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));

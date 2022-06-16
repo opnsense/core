@@ -2132,7 +2132,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    switch ($wancfg['ipaddr']) {
+    switch ($wancfg['ipaddr'] ?? '') {
         case 'l2tp':
         case 'ppp':
         case 'pppoe':
@@ -2213,7 +2213,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* XXX maybe spoofmac, media and promisc can live here too? */
     configure_interface_hardware($realhwif, $ifconfig_details);
 
-    switch ($wancfg['ipaddr']) {
+    switch ($wancfg['ipaddr'] ?? '') {
         case 'dhcp':
             interface_dhcp_configure($interface);
             break;
@@ -3435,7 +3435,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
             $cfg = &config_read_array('interfaces', $interface);
 
             if ($family == 'inet6') {
-                switch (isset($cfg['ipaddrv6']) ? $cfg['ipaddrv6'] : '') {
+                switch ($cfg['ipaddrv6'] ?? '') {
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
@@ -3451,7 +3451,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
                         }
                         break;
                     default:
-                        switch ($cfg['ipaddr']) {
+                        switch ($cfg['ipaddr'] ?? '') {
                             case 'l2tp':
                             case 'ppp':
                             case 'pppoe':
@@ -3821,11 +3821,15 @@ function get_interfaces_info($include_unlinked = false)
     $result = array();
     $interfaces = legacy_config_get_interfaces(array('virtual' => false));
     $known_interfaces = [];
-    foreach ($interfaces as $ifdescr => $interface) {
+    foreach (array_keys($interfaces) as $ifdescr) {
         $interfaces[$ifdescr]['if'] = get_real_interface($ifdescr);
+        if (!empty($interfaces[$ifdescr]['if'])) {
+            $known_interfaces[] = $interfaces[$ifdescr]['if'];
+        }
         $interfaces[$ifdescr]['ifv6'] = get_real_interface($ifdescr, 'inet6');
-        $known_interfaces[] = $interface['if'];
-        $known_interfaces[] = $interface['ifv6'];
+        if (!empty($interfaces[$ifdescr]['if'])) {
+            $known_interfaces[] = $interfaces[$ifdescr]['if'];
+        }
     }
 
     if ($include_unlinked) {
@@ -3901,7 +3905,7 @@ function get_interfaces_info($include_unlinked = false)
         $ifinfo['outerrs'] = $ifinfotmp['output errors'];
         $ifinfo['collisions'] = $ifinfotmp['collisions'];
 
-        $link_type = $config['interfaces'][$ifdescr]['ipaddr'];
+        $link_type = $config['interfaces'][$ifdescr]['ipaddr'] ?? '';
         switch ($link_type) {
             case 'dhcp':
                 $ifinfo['dhcplink'] = isvalidpid("/var/run/dhclient.{$ifinfo['if']}.pid") ? 'up' : 'down';
