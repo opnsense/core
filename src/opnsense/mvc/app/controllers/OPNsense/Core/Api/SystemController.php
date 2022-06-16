@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2019 Deciso B.V.
+ *    Copyright (C) 2022 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -55,5 +55,16 @@ class SystemController extends ApiControllerBase
         return [
             'status' => 'ok'
         ];
+    }
+
+    public function statusAction()
+    {
+        $backend = new Backend();
+        $status = json_decode(trim($backend->configdRun('system status')));
+        if ($status) {
+            return $status;
+        }
+
+        return array("message" => "Unable to run configd action");
     }
 }
