@@ -42,12 +42,6 @@ foreach (new SplFileObject($leases_file) as $line) {
         continue;
     }
 
-    /* is it active? otherwise just discard */
-    if (preg_match("/binding state active/i", $line, $activematch)) {
-        $active = true;
-        continue;
-    }
-
     if (preg_match("/iaaddr[ ]+([0-9a-f:]+)[ ]+/i", $line, $addressmatch)) {
         $ia_na = $addressmatch[1];
         continue;
@@ -62,27 +56,29 @@ foreach (new SplFileObject($leases_file) as $line) {
     if (preg_match("/^}/i ", $line)) {
         switch ($type) {
             case "ia-na":
-                $duid_arr[$duid][$type] = $ia_na;
+                if (!empty($ia_na)) {
+                    $duid_arr[$duid][$type] = $ia_na;
+                }
                 break;
             case "ia-pd":
-                $duid_arr[$duid][$type] = $ia_pd;
+                if (!empty($ia_pd)) {
+                    $duid_arr[$duid][$type] = $ia_pd;
+                }
                 break;
         }
+
         unset($type);
         unset($duid);
-        unset($active);
         unset($ia_na);
         unset($ia_pd);
-        continue;
     }
 }
 
 $routes = [];
 foreach ($duid_arr as $entry) {
-    if ($entry['ia-pd'] != '') {
+    if (!empty($entry['ia-pd']) && !empty($entry['ia-na'])) {
         $routes[$entry['ia-na']] = $entry['ia-pd'];
     }
-    array_shift($duid_arr);
 }
 
 if (count($routes) > 0) {
