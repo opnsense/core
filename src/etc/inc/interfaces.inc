@@ -2116,7 +2116,7 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
-function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkupevent = false)
+function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false)
 {
     global $config;
 
@@ -2146,6 +2146,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
+    if ($reload) {
+        foreach (plugins_devices() as $device) {
+            if (empty($device['function']) || empty($device['names'])) {
+                continue;
+	    }
+
+	    if (in_array($realhwif, $device['names'])) {
+                log_msg("Device $realhwif requires reload for $interface, configuring now", LOG_ERR);
+                call_user_func_array($device['function'], [$realhwif]);
+            }
+	}
+    }
+
     $ifconfig_details = legacy_interfaces_details();
     if (
         (strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
@@ -2170,7 +2183,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 
-    if (!$linkupevent) {
+    if (!$linkup) {
         /* XXX wireless configuration: shouldn't live in interface config */
         interface_wireless_configure($realif, $wancfg);
     }
@@ -2255,13 +2268,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 }
                 break;
             case '6rd':
-                interface_6rd_configure($interface, $wancfg, $reload || $linkupevent);
+                interface_6rd_configure($interface, $wancfg, $reload || $linkup);
                 break;
             case '6to4':
-                interface_6to4_configure($interface, $wancfg, $reload || $linkupevent);
+                interface_6to4_configure($interface, $wancfg, $reload || $linkup);
                 break;
             case 'track6':
-                interface_track6_configure($interface, $wancfg, $reload || $linkupevent);
+                interface_track6_configure($interface, $wancfg, $reload || $linkup);
                 break;
             default:
                 if (!isset($wancfg['dhcp6usev4iface'])) {
