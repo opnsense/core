@@ -2150,13 +2150,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         foreach (plugins_devices() as $device) {
             if (empty($device['function']) || empty($device['names'])) {
                 continue;
-	    }
+            }
 
-	    if (in_array($realhwif, $device['names'])) {
+            if (in_array($realhwif, $device['names'])) {
                 log_msg("Device $realhwif requires reload for $interface, configuring now", LOG_ERR);
                 call_user_func_array($device['function'], [$realhwif]);
             }
-	}
+        }
     }
 
     $ifconfig_details = legacy_interfaces_details();
