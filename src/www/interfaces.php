@@ -520,7 +520,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['wpa_strict_rekey'] = isset($a_interfaces[$if]['wireless']['wpa']['wpa_strict_rekey']);
             $pconfig['wpa_enable'] = isset($a_interfaces[$if]['wireless']['wpa']['enable']);
         }
-        if (is_array($a_interfaces[$if]['wireless']['wep']) && is_array($a_interfaces[$if]['wireless']['wep']['key'])) {
+        if (!empty($a_interfaces[$if]['wireless']['wep']['key'])) {
             $i = 1;
             foreach ($a_interfaces[$if]['wireless']['wep']['key'] as $wepkey) {
                 $pconfig['key' . $i] = $wepkey['value'];
@@ -982,8 +982,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $new_ppp_config = array();
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
-            $new_config["if"] = $old_config["if"];
-            if (!empty($old_config['wireless'])) {
+            $new_config['if'] = $old_config['if'];
+            if (isset($old_config['wireless'])) {
                 $new_config['wireless'] = $old_config['wireless'];
             }
             //
