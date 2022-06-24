@@ -140,7 +140,12 @@ $.fn.UIBootgrid = function (params) {
         // merge additional options (if any)
         if (params['options'] !== undefined) {
             $.each(params['options'],  function(key, value) {
-                gridopt[key] = value;
+                if (key == 'formatters') {
+                    // Add formatters to existing defaults and overwrite any of the same name.
+                    gridopt[key] = Object.assign({}, gridopt[key], value);
+                } else {
+                    gridopt[key] = value;
+                }
             });
         }
 
