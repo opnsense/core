@@ -82,7 +82,7 @@ $.fn.UIBootgrid = function (params) {
             },
             "command-info": {
                 method: this_grid.command_info,
-                requires: ['get']
+                requires: ['info']
             },
             "command-toggle": {
                 method: this_grid.command_toggle,
