@@ -72,14 +72,18 @@ try {
     echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
 } catch (\Exception $e) {
     if (
-        isset($application) || (
-          stripos($e->getMessage(), ' handler class cannot be loaded') !== false ||
-          stripos($e->getMessage(), ' was not found on handler ') !== false
+        stripos($e->getMessage(), ' handler class cannot be loaded') !== false ||
+        stripos($e->getMessage(), ' was not found on handler ') !== false
         )
-    ) {
+    {
         // Render default UI page when controller or action wasn't found
-        echo $application->handle('/ui/')->getContent();
+        if (isset($application)) {
+            echo $application->handle('/ui/')->getContent();
+        } else {
+            echo $e->getMessage();
+        }
     } else {
-        echo $e->getMessage();
+        echo $e->getFile() . ':' . $e->getLine() . ': ' . $e->getMessage() . "<br>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
     }
 }
