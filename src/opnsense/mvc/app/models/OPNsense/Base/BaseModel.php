@@ -319,6 +319,9 @@ abstract class BaseModel
         if ($model_xml->getName() != "model") {
             throw new ModelException('model xml ' . $model_filename . ' seems to be of wrong type');
         }
+        if (!$model_xml->mount) {
+            throw new ModelException('model xml ' . $model_filename . ' missing mount definition');
+        }
         /*
          *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
          *       mountpoints starting with a single /
