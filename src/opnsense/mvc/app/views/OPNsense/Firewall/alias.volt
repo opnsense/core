@@ -54,11 +54,19 @@
                         }
                     },
                     "rowtoggle": function (column, row) {
-                        if (parseInt(row[column.id], 2) === 1) {
-                            return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + row.uuid + '"></span>';
-                        } else {
-                            return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
-                        }
+                        var data_value = parseInt(row[column.id], 2); // 1 = Enabled, 0 = Disabled
+                        var is_uuid = row.uuid.includes('-');         // true = row is UUID, false = row is internal aliases
+                        var html = '<span class="fa fa-fw bootgrid-tooltip';
+                        html += ' ' + ((data_value === 1) ? 'fa-check-square-o' : 'fa-square-o');
+                        html += ' ' + ((is_uuid === true) ? 'command-toggle' : 'text-muted');
+                        html += '" ' + ((is_uuid === true) ? 'style="cursor: pointer;"' : 'disabled=""');
+                        html += ' ' + ((is_uuid === false) ? 'title="Toggle disabled for internal aliases"' : '');
+                        //html += ' ' + ((is_uuid === false && data_value === 1) ? 'title="' + $.fn.UIBootgrid.defaults.disableText + '"' : '');
+                        //html += ' ' + ((is_uuid === false && data_value === 0) ? 'title="' + $.fn.UIBootgrid.defaults.enableText + '"' : '');
+                        html += ' ' + 'data-row-id="' + row.uuid + '"';
+                        html += ' ' + 'data-value="' + data_value + '"';
+                        html += '></span>'
+                        return html;
                     },
                 }
             }
