@@ -582,7 +582,7 @@ abstract class BaseModel
                 throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
-        if ($this->internal_mountpoint !== ':memory:') {
+        if ($this->internal_mountpoint != ':memory:') {
             $this->internalSerializeToConfig();
         }
     }
