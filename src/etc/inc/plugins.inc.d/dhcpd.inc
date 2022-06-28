@@ -1144,8 +1144,8 @@ EOD;
                     $smdnscfg .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $sm['domainsearchlist'])) . "\";\n";
                 }
 
-                if (isset($sm['ddnsupdate'])) {
-                    if (($sm['ddnsdomain'] != '') && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
+                if ($need_ddns_updates) {
+                    if (!empty($sm['ddnsdomain']) && ($sm['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
                         $smdnscfg .= "  ddns-domainname \"{$sm['ddnsdomain']}\";\n";
                     }
                 }
