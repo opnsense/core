@@ -433,8 +433,7 @@ function ipsec_parse_phase2($ikeid)
                 ) {
                     $result['left_override'] = "%any";
                 } else {
-                    $tmpsubnet = ipsec_get_phase1_src($ph1ent);
-                    $result['leftsubnets'][] = $tmpsubnet;
+                    $result['leftsubnets'][] = ipsec_get_phase1_src($ph1ent);
                 }
                 if (!isset($ph1ent['mobile'])) {
                     $result['rightsubnets'][] = $ph1ent['remote-gateway'];
