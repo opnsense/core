@@ -356,7 +356,11 @@ function ipsec_get_phase1_src(&$ph1ent)
     } else {
         $if = "wan";
     }
-    if ($ph1ent['protocol'] == "inet6") {
+    if ($ph1ent['protocol'] == "inet46") {
+        $ipv4 = get_interface_ip($if);
+        $ipv6 = get_interface_ipv6($if);
+        return $ipv4 ? $ipv4.($ipv6 ? ','.$ipv6 : '') : $ipv6;
+    } elseif ($ph1ent['protocol'] == "inet6") {
         return get_interface_ipv6($if);
     } else {
         return get_interface_ip($if);

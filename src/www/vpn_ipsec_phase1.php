@@ -699,6 +699,9 @@ include("head.inc");
                       <select name="protocol">
                       <?php
                       $protocols = array("inet" => "IPv4", "inet6" => "IPv6");
+                      if (!empty($pconfig['mobile'])) {
+                          $protocols["inet46"] = "IPv4+6";
+                      }
                       foreach ($protocols as $protocol => $name) :
                       ?>
                         <option value="<?=$protocol;?>"  <?=$protocol == $pconfig['protocol'] ? "selected=\"selected\"" : "";?> >

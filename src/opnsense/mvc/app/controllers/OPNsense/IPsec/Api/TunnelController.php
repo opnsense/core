@@ -103,7 +103,7 @@ class TunnelController extends ApiControllerBase
                     "id" => intval((string)$p1->ikeid),   // ikeid should be unique
                     "seqid" => $idx,
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
-                    "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
+                    "protocol" => $p1->protocol == "inet46" ? "IPv4+6" : ($p1->protocol == "inet6" ? "IPv6" : "IPv4"),
                     "iketype" => $ph1type[(string)$p1->iketype],
                     "interface" => !empty($ifs[$interface]) ? $ifs[$interface] : $interface,
                     "remote_gateway" => (string)$p1->{"remote-gateway"},
