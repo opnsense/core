@@ -218,25 +218,6 @@ function _interfaces_vlan_configure($vlan)
     interfaces_bring_up($vlan['vlanif']);
 }
 
-function interfaces_test_wireless_capability($if, $cap)
-{
-    $caps = array('hostap' => 'HOSTAP', 'adhoc' => 'IBSS');
-
-    if (!isset($caps[$cap])) {
-        return false;
-    }
-
-    exec(sprintf('/sbin/ifconfig %s list caps', escapeshellarg($if)), $lines);
-
-    foreach ($lines as $line) {
-        if (preg_match("/^drivercaps=.*<.*{$caps[$cap]}.*>$/", $line)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function interfaces_create_wireless_clones($verbose = false)
 {
     global $config;
@@ -1846,8 +1827,7 @@ function interface_wireless_configure($if, &$wancfg)
                             }
                             break;
                     }
-                }
-                else {
+                } else {
                     $authentication[] = "psk=\"{$wlcfg['wpa']['passphrase']}\"";
                 }
                 $authentication = implode("\n", $authentication);

@@ -238,6 +238,25 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
  * End of import
  ***************************************************************************************************************/
 
+function test_wireless_capability($if, $cap)
+{
+    $caps = ['hostap' => 'HOSTAP', 'adhoc' => 'IBSS'];
+
+    if (!isset($caps[$cap])) {
+        return false;
+    }
+
+    exec(sprintf('/sbin/ifconfig %s list caps', escapeshellarg($if)), $lines);
+
+    foreach ($lines as $line) {
+        if (preg_match("/^drivercaps=.*<.*{$caps[$cap]}.*>$/", $line)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function get_wireless_modes($interface) {
     /* return wireless modes and channels */
     $wireless_modes = array();
@@ -3260,27 +3279,27 @@ include("head.inc");
 <?php
                               endforeach;?>
                             </select>
+                            <br />
                             <div class="hidden" data-for="help_for_regdomain">
-                              <?=gettext("Note: Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work."); ?>
+                              <?=gettext("Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work."); ?>
                             </div>
-
-                            <br /><br />
+                            <br />
                             <?=gettext("Country (listed with country code and regulatory domain)"); ?><br />
                             <select name="regcountry" class="selectpicker" data-size="10" data-style="btn-default" id="regcountry">
                               <option <?=empty($pconfig['regcountry']) ? "selected=\"selected\"" : ""; ?> value=""><?=gettext("Default"); ?></option>
 <?php
                             foreach($wl_countries as $wl_country_key => $wl_country):?>
                               <option value="<?=$wl_countries_attr[$wl_country_key]['ID'];?>" <?=$pconfig['regcountry'] == $wl_countries_attr[$wl_country_key]['ID'] ?  "selected=\"selected\" " : "";?> >
-                                  <?=$wl_country['name'];?> -- ( <?=$wl_countries_attr[$wl_country_key]['ID'];?> <?=strtoupper($wl_countries_attr[$wl_country_key]['rd'][0]['REF']);?> )
+                                  <?=$wl_country['name'];?> (<?=$wl_countries_attr[$wl_country_key]['ID'];?> <?=strtoupper($wl_countries_attr[$wl_country_key]['rd'][0]['REF']);?>)
                               </option>
 <?php
                             endforeach;?>
                             </select>
                             <br />
                             <div class="hidden" data-for="help_for_regdomain">
-                              <?=gettext("Note: Any country setting other than \"Default\" will override the regulatory domain setting"); ?>.
+                              <?=gettext("Any country setting other than \"Default\" will override the regulatory domain setting"); ?>.
                             </div>
-                            <br /><br />
+                            <br />
                             <?=gettext("Location"); ?><br />
                             <select name="reglocation" class="selectpicker" data-style="btn-default" id="reglocation">
                               <option <?=empty($pconfig['reglocation']) ? "selected=\"selected\"" : ""; ?> value=""><?=gettext("Default"); ?></option>
@@ -3288,7 +3307,6 @@ include("head.inc");
                               <option <?=$pconfig['reglocation'] == 'outdoor' ? "selected=\"selected\"" : ""; ?> value="outdoor"><?=gettext("Outdoor"); ?></option>
                               <option <?=$pconfig['reglocation'] == 'anywhere' ? "selected=\"selected\"" : ""; ?> value="anywhere"><?=gettext("Anywhere"); ?></option>
                             </select>
-                            <br /><br />
                             <div class="hidden" data-for="help_for_regdomain">
                               <?=gettext("These settings may affect which channels are available and the maximum transmit power allowed on those channels. Using the correct settings to comply with local regulatory requirements is recommended."); ?>
                               <br />
@@ -3315,13 +3333,13 @@ include("head.inc");
                           <td>
                             <select name="mode" class="selectpicker" data-style="btn-default" id="mode">
 <?php
-                              if (interfaces_test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
+                              if (test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
                               <option <?=$pconfig['mode'] == 'hostap' ? "selected=\"selected\"" : "";?> value="hostap"><?=gettext("Access Point"); ?></option>
 <?php
                               endif; ?>
                               <option <?=$pconfig['mode'] == 'bss' ? "selected=\"selected\"" : "";?> value="bss"><?=gettext("Infrastructure (BSS)"); ?></option>
 <?php
-                              if (interfaces_test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
+                              if (test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
                               <option <?=$pconfig['mode'] == 'adhoc' ? "selected=\"selected\"" : "";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)"); ?></option>
 <?php
                               endif; ?>
@@ -3402,7 +3420,7 @@ include("head.inc");
                           <td><a id="help_for_wep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WEP"); ?></td>
                           <td>
                             <input name="wep_enable" type="checkbox" id="wep_enable" value="yes" <?= $pconfig['wep_enable'] ? "checked=\"checked\"" : ""; ?> />
-                            <label for="wep_enable"><strong><?=gettext("Enable WEP"); ?></strong></label>
+                            <label for="wep_enable"><?=gettext("Enable WEP"); ?></label>
                             <table class="table table-condensed cfg-wireless-wep">
                               <tr>
                                 <td></td>
@@ -3456,7 +3474,7 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA"); ?></td>
                           <td>
                             <input name="wpa_enable" type="checkbox" id="wpa_enable" value="yes" <?php if ($pconfig['wpa_enable']) echo "checked=\"checked\""; ?> />
-                            <label for="wpa_enable"><strong><?=gettext("Enable WPA"); ?></strong></label>
+                            <label for="wpa_enable"><?=gettext("Enable WPA"); ?></label>
                           </td>
                         </tr>
                         <tr class="cfg-wireless-eap">
