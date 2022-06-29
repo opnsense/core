@@ -262,7 +262,7 @@ class ActionHandler(object):
             cnf = configparser.RawConfigParser()
             try:
                 cnf.read(config_filename)
-            except:
+            except configparser.Error:
                 syslog_error('exception occurred while reading "%s": %s' % (config_filename, traceback.format_exc(0)))
 
             for section in cnf.sections():
