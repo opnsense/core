@@ -61,7 +61,8 @@ class AliasController extends ApiMutableModelControllerBase
             "aliases.alias",
             array('enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'),
             "name",
-            $filter_funct
+            $filter_funct,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
