@@ -423,12 +423,6 @@ license: want-p5-File-Slurp
 
 sync: license plist-fix
 
-dhparam:
-.for BITS in 1024 2048 4096
-	${OPENSSL} dhparam -out \
-	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
-.endfor
-
 ARGS=	diff mfc
 
 # handle argument expansion for required targets

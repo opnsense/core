@@ -3,9 +3,6 @@
 /usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
-/usr/local/etc/dh-parameters.2048.rfc7919
-/usr/local/etc/dh-parameters.3072.rfc7919
-/usr/local/etc/dh-parameters.4096.rfc7919
 /usr/local/etc/dhcpd.opnsense.d/README
 /usr/local/etc/dhcpd6.opnsense.d/README
 /usr/local/etc/dnsmasq.conf.d/README
@@ -38,6 +35,7 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh
 /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php
+/usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify
@@ -864,7 +862,6 @@
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
-/usr/local/opnsense/scripts/system/dh_parameters.sh
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
@@ -1925,9 +1922,6 @@
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
-@sample /usr/local/etc/dh-parameters.1024.sample
-@sample /usr/local/etc/dh-parameters.2048.sample
-@sample /usr/local/etc/dh-parameters.4096.sample
 @sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/OPNsense.conf.sample

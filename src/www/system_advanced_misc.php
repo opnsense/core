@@ -81,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
     $pconfig['max_mfs_tmp'] = $config['system']['max_mfs_tmp'] ?? null;
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
-    $pconfig['dhparamusage'] = !empty($config['system']['dhparamusage']) ? $config['system']['dhparamusage'] : null;
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
@@ -212,13 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['captiveportalbackup']);
         }
 
-        if (!empty($pconfig['dhparamusage'])) {
-            $config['system']['dhparamusage'] = $pconfig['dhparamusage'];
-        } elseif (isset($config['system']['dhparamusage'])) {
-            unset($config['system']['dhparamusage']);
-        }
-
-        // System Sounds
         if (!empty($pconfig['disablebeep'])) {
             $config['system']['disablebeep'] = true;
         } elseif (isset($config['system']['disablebeep'])) {
@@ -266,24 +258,6 @@ include("head.inc");
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_dhparamusage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Diffie-Hellman parameters') ?></td>
-                <td>
-                  <select name="dhparamusage" class="selectpicker" data-style="btn-default" id="dhparamusage">
-                    <option value="" <?= $pconfig['dhparamusage'] == '' ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
-                    <option value="rfc7919" <?= $pconfig['dhparamusage'] == 'rfc7919' ? "selected='selected'" : '' ?>><?=gettext('RFC 7919') ?></option>
-                    <option value="weekly" <?= $pconfig['dhparamusage'] == 'weekly' ? "selected='selected'" : '' ?>><?=gettext('Weekly renewal') ?></option>
-                    <option value="monthly" <?= $pconfig['dhparamusage'] == 'monthly' ? "selected='selected'" : '' ?>><?=gettext('Monthly renewal') ?></option>
-                    <option value="custom" <?= $pconfig['dhparamusage'] == 'custom' ? "selected='selected'" : '' ?>><?=gettext('Custom renewal') ?></option>
-                  </select>
-                  <div class="hidden" data-for="help_for_dhparamusage">
-                    <?=gettext('Diffie-Hellman parameters are statically provided and updated at least twice per year in software updates. ' .
-                               'RFC 7919 predefines static recommendations instead, which are commonly known and verfiable by clients. ' .
-                               'You can choose to regenerate unqiue parameters locally instead according to a predefined or custom schedule. ' .
-                               'In case of custom renewal make sure to set up the respective cron job or rotate the files in some other way.') ?>
-                  </div>
                 </td>
               </tr>
               <tr>

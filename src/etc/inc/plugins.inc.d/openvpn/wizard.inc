@@ -676,7 +676,6 @@ function step12_submitphpaction()
         $server['tls'] = base64_encode($tlskey);
         $server['tlsmode'] = 'auth';
     }
-    $server['dh_length'] = $pconfig['step10']['dhkey'];
     if (isset($pconfig['step10']['tunnelnet'])) {
         $server['tunnel_network'] = $pconfig['step10']['tunnelnet'];
     }

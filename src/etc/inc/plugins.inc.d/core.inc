@@ -236,20 +236,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'weekly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '*', '*', '0');
-                break;
-            case 'monthly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '1', '*', '*');
-                break;
-            default:
-                /* cron job operated by user manually or RFC 7919 */
-                break;
-        }
-    }
-
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
             $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup', 0, 1);

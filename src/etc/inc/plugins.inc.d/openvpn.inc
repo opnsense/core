@@ -827,7 +827,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 openvpn_add_keyfile($cert['prv'], $conf, $mode_id, "key");
             }
             if ($mode == 'server') {
-                $conf .= "dh " . get_dh_parameters($settings['dh_length']) . "\n";
+                $conf .= "dh /usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919\n";
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);

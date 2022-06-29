@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search,local_group
-            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
+            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
@@ -97,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['tlsmode'] = null;
         }
     } elseif ($act == "new") {
-        $pconfig['dh_length'] = 2048;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
         $pconfig['protocol'] = 'UDP';
@@ -114,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search
-            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
+            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
         foreach (explode(",", $init_fields) as $fieldname) {
@@ -423,8 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     $server['tls'] = base64_encode($pconfig['tls']);
                 }
-                foreach (array("caref","crlref",
-                      "certref","dh_length","cert_depth") as $cpKey) {
+                foreach (['caref', 'crlref', 'certref', 'cert_depth'] as $cpKey) {
                     if (isset($pconfig[$cpKey])) {
                         $server[$cpKey] = $pconfig[$cpKey];
                     }
@@ -974,23 +972,6 @@ $( document ).ready(function() {
                           <br /><?=gettext("Create one under");?> <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a>.
 <?php
                       endif; ?>
-                      </td>
-                    </tr>
-                    <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DH Parameters Length"); ?></td>
-                      <td>
-                        <select name="dh_length" class="selectpicker">
-<?php
-                        foreach (list_dh_parameters() as $length):
-                            $selected = "";
-                            if ($length == $pconfig['dh_length']) {
-                                $selected = ' selected="selected"';
-                            }
-                        ?>
-                          <option value="<?= html_safe($length) ?>" <?=$selected?>><?= sprintf(gettext('%s bit'), $length) ?></option>
-<?php
-                        endforeach; ?>
-                        </select>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
