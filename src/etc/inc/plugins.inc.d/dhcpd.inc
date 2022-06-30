@@ -152,22 +152,6 @@ function dhcpd_services()
     return $services;
 }
 
-function dhcpd_get_pppoes_child_interfaces($ifpattern)
-{
-    $if_arr = array();
-    if ($ifpattern == "") {
-        return;
-    }
-
-    exec("ifconfig", $out, $ret);
-    foreach ($out as $line) {
-        if (preg_match("/^({$ifpattern}[0-9]+):/i", $line, $match)) {
-            $if_arr[] = $match[1];
-        }
-    }
-    return $if_arr;
-}
-
 function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 {
     global $config;
@@ -1624,12 +1608,7 @@ EOD;
             $ddns_zones[] = $newzone;
         }
 
-        if (preg_match('/poes/si', $dhcpv6if)) {
-            /* XXX magic here */
-            $dhcpdv6ifs = array_merge($dhcpdv6ifs, dhcpd_get_pppoes_child_interfaces($dhcpv6if));
-        } else {
-            $dhcpdv6ifs[] = escapeshellcmd(get_real_interface($dhcpv6if, 'inet6'));
-        }
+        $dhcpdv6ifs[] = escapeshellcmd(get_real_interface($dhcpv6if, 'inet6'));
     }
 
     if ($need_ddns_updates) {
