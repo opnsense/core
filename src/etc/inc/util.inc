@@ -1159,32 +1159,36 @@ function get_single_sysctl($name)
  * Set sysctl OID's listed as key/value pairs and return
  * an array with keys set for those that succeeded
  */
-function set_sysctl($values)
+function set_sysctl($values, $filter = true)
 {
+    $ret = [];
+
     if (empty($values)) {
-        return array();
+        return $ret;
     }
 
     $sysctls = null;
-    exec('/sbin/sysctl -WaN', $list, $success);
-    if ($success == 0) {
-        $sysctls = $list;
+
+    if ($filter) {
+        exec('/sbin/sysctl -WaN', $list, $success);
+        if ($success == 0) {
+            $sysctls = $list;
+        }
     }
 
-    $value_list = array();
+    $value_list = [];
     foreach ($values as $key => $value) {
-        if ($sysctls != null && !in_array($key, $sysctls)) {
+        if ($sysctls !== null && !in_array($key, $sysctls)) {
             continue;
         }
-        $value_list[] = escapeshellarg($key) . "=" . escapeshellarg($value);
+        $value_list[] = escapeshellarg($key) . '=' . escapeshellarg($value);
     }
 
     if (count($value_list)) {
         exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
 
-        $ret = array();
         foreach ($output as $line) {
-            $line = explode(": ", $line, 2);
+            $line = explode(': ', $line, 2);
             if (count($line) == 2) {
                 $ret[$line[0]] = true;
             }
@@ -1197,18 +1201,10 @@ function set_sysctl($values)
 /*
  * set_single_sysctl($name, $value)
  * Wrapper to set_sysctl() to make it simple to set only one sysctl
- * returns boolean meaning if it suceed
  */
 function set_single_sysctl($name, $value)
 {
-    if (empty($name)) {
-        return false;
-    }
-    $result = set_sysctl(array($name => $value));
-    if (!isset($result[$name]) || $result[$name] != $value) {
-        return false;
-    }
-    return true;
+    set_sysctl([$name => $value], false);
 }
 
 /****f* util/is_URL
