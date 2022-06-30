@@ -435,6 +435,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act ==  "del") {
         if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
+            if (isset($config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr'])) {
+                configdp_run('interface remove arp', [
+                    $config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr']
+                ]);
+            }
             unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
             write_config();
             if (isset($config['dhcpd'][$if]['enable'])) {
