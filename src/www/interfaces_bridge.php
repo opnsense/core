@@ -42,11 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (is_interface_assigned($a_bridges[$id]['bridgeif'])) {
             $input_errors[] = gettext("This bridge cannot be deleted because it is assigned as an interface.");
         } else {
-            if (!does_interface_exist($a_bridges[$id]['bridgeif'])) {
-                log_error("Bridge interface does not exist, skipping ifconfig destroy.");
-            } else {
-                mwexec("/sbin/ifconfig " . escapeshellarg($a_bridges[$id]['bridgeif']) . " destroy");
-            }
+            mwexec("/sbin/ifconfig " . escapeshellarg($a_bridges[$id]['bridgeif']) . " destroy");
             unset($a_bridges[$id]);
             write_config();
             header(url_safe('Location: /interfaces_bridge.php'));
