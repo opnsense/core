@@ -44,6 +44,8 @@ class LogController extends ApiControllerBase
         $action = count($arguments) > 1 ? $arguments[1] : "";
         $searchPhrase = '';
         $severities = '';
+        $defaultRows = 10;
+        $maxRows = 5000;
         // create filter to sanitize input data
         $filter = new Filter([
             'query' => function ($value) {
@@ -59,7 +61,13 @@ class LogController extends ApiControllerBase
                 return ["status" => "ok"];
             } else {
                 // fetch query parameters (limit results to prevent out of memory issues)
-                $itemsPerPage = $this->request->getPost('rowCount') == -1 ? 5000 : $this->request->getPost('rowCount', 'int', 9999);
+                $itemsPerPage = $this->request->getPost('rowCount', 'int', $defaultRows);
+                if (is_integer($itemsPerPage)) {
+                    $itemsPerPage = ($itemsPerPage > $maxRows ||
+                                     $itemsPerPage <= 0) ? $maxRows : $itemsPerPage;
+                } else {
+                    $itemsPerPage = $defaultRows;
+                }
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {
