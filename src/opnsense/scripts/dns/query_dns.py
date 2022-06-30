@@ -57,7 +57,7 @@ if is_ipaddr:
             if line.find('IN') > -1 and not line.startswith(';'):
                 result['PTR']['answers'].append(line)
             elif line.find('Received') == 0:
-                result['PTR']['server'] = line.split('from')[-1].split()[0]
+                result['PTR']['server'] = line.split('from')[-1].split('#')[0].strip()
                 result['PTR']['query_time'] = line.split(' in ')[-1]
 else:
     for qtype in inputargs.types.split(','):
@@ -82,7 +82,7 @@ else:
             elif response_section == 'ADDITIONAL' and line.find('Query time') > -1:
                 qtype_results['query_time'] = line.split(':')[1].strip()
             elif response_section == 'ADDITIONAL' and line.find('SERVER') > -1:
-                qtype_results['server'] = line.split(':')[1].strip()
+                qtype_results['server'] = line.split(':', 1)[1].strip()
         if qtype_results['answers']:
             result[qtype] = qtype_results
 
