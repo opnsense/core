@@ -140,7 +140,7 @@ $.fn.UIBootgrid = function (params) {
         // merge additional options (if any)
         if (params['options'] !== undefined) {
             $.each(params['options'],  function(key, value) {
-                if (typeof(value) === 'object') {
+                if (typeof(value) === 'object' && Array.isArray(value) == false) {
                     gridopt[key] = Object.assign({}, gridopt[key], value);
                 } else {
                     gridopt[key] = value;
