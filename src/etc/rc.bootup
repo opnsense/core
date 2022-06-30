@@ -109,14 +109,4 @@ rrd_configure(true, true);
 /* XXX this seems misplaced */
 system_powerd_configure(true);
 
-/*
- * Give syslog a kick after everything else has been
- * initialized, otherwise it can occasionally fail to
- * route syslog messages properly on both IPv4 and IPv6.
- *
- * XXX dynamic addressing might not be set up here yet,
- * because these events are blocked by /var/run/booting
- */
-system_syslog_start(true);
-
 exit(0);
