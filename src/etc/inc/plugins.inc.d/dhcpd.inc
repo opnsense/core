@@ -633,11 +633,10 @@ EOD;
      * to setup failover peer "bleh" entries
      */
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+        interfaces_staticarp_configure($dhcpif);
+
         if (!isset($dhcpifconf['enable'])) {
             continue;
-        }
-        if (!empty($config['dhcpd'][$dhcpif]['staticmap'])) {
-            interfaces_staticarp_configure($dhcpif);
         }
 
         if (!empty($dhcpifconf['failover_peerip'])) {

@@ -3816,39 +3816,22 @@ function interfaces_staticarp_configure($if)
         return;
     }
 
-    if (isset($config['dhcpd'][$if]['staticarp'])) {
-        mwexecf('/sbin/ifconfig %s staticarp', array($ifcfg['if']));
-        if (!file_exists("/var/run/booting")) {
-            // XXX: arp is really slow when there are many interfaces, while booting -d -a shouldn't be needed anyway
-            mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
-        }
-        if (isset($config['dhcpd'][$if]['staticmap'])) {
-            foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
-                if (isset($arpent['ipaddr'])) {
-                    mwexecf(
-                        '/usr/sbin/arp -s %s %s',
-                        array($arpent['ipaddr'], $arpent['mac'])
-                    );
-                }
+    mwexecf('/sbin/ifconfig %s %sstaticarp', [$ifcfg['if'], isset($config['dhcpd'][$if]['staticarp']) ? '' : '-']);
+
+    if (!file_exists('/var/run/booting')) {
+        // XXX: arp is really slow when there are many interfaces, while booting -d -a shouldn't be needed anyway
+        mwexecf('/usr/sbin/arp -d -i %s -a', [$ifcfg['if']]);
+    }
+
+    if (isset($config['dhcpd'][$if]['staticmap'])) {
+        foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
+            if (!isset($config['dhcpd'][$if]['staticarp']) && !isset($arpent['arp_table_static_entry'])) {
+                continue;
             }
-        }
-    } else {
-        mwexecf('/sbin/ifconfig %s -staticarp', array($ifcfg['if']));
-        if (!file_exists("/var/run/booting")) {
-            // XXX: arp is really slow when there are many interfaces, while booting -d -a shouldn't be needed anyway
-            mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
-        }
-        if (isset($config['dhcpd'][$if]['staticmap'])) {
-            foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
-                if (isset($arpent['arp_table_static_entry'])) {
-                    if (isset($arpent['ipaddr'])) {
-                        mwexecf(
-                            '/usr/sbin/arp -s %s %s',
-                            array($arpent['ipaddr'], $arpent['mac'])
-                        );
-                    }
-                }
+            if (!isset($arpent['ipaddr'])) {
+                continue;
             }
+            mwexecf( '/usr/sbin/arp -s %s %s', [$arpent['ipaddr'], $arpent['mac']]);
         }
     }
 }
