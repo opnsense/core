@@ -28,82 +28,33 @@
 
 namespace OPNsense\System;
 
-/* XXX: can be converted to an enum in PHP 8.1 */
-abstract class StatusLevel
+abstract class AbstractStatus
 {
-    const Error = 0;
-    const Warning = 1;
-    const Notice = 2;
-    const Deprecated = 3;
-    const Ok = 4;
-}
+    const STATUS_ERROR = -1;
+    const STATUS_WARN = 0;
+    const STATUS_NOTICE = 1;
+    const STATUS_OK = 2;
 
-abstract class AbstractStatus implements \JsonSerializable
-{
-    protected $statusLevel;
-    protected $message;
-    protected $category;
-    protected $logLocation;
-    protected $className;
-    protected $timeStamp;
+    protected $internalMessage = 'No problems were detected.';
+    protected $internalLogLocation = '';
+    protected $internalStatus = self::STATUS_OK;
 
-    public function __construct($statusLevel, $message, $category, $logLocation, $className, $serialize = true)
+    public function __construct()
     {
-        $this->statusLevel = $statusLevel;
-        $this->message = $message;
-        $this->category = $category;
-        $this->logLocation = $logLocation;
-        $this->className = $className;
-        $this->timeStamp = hrtime(true);
-
-        if ($serialize) {
-            $this->serialize();
-        }
-    }
-
-    private function serialize()
-    {
-        $file = '/tmp/status/' . $this->category . '.status';
-        if (!file_exists(dirname($file))) {
-            mkdir(dirname($file), 0750, true);
-        }
-
-        file_put_contents($file, serialize($this->jsonSerialize()) . "\n", FILE_APPEND | LOCK_EX);
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            "statusLevel" => $this->statusLevel,
-            "message" => $this->message,
-            "category" => $this->category,
-            "logLocation" => $this->logLocation,
-            "className" => $this->className,
-            "timeStamp" => $this->timeStamp
-        ];
     }
 
     public function getStatus()
     {
-        return $this->statusLevel;
+        return $this->internalStatus;
     }
 
     public function getMessage($verbose = false)
     {
-        if (!$verbose) {
-            return $this->message;
-        }
-
-        // TODO: Get full dump
+        return $this->internalMessage;
     }
 
     public function getLogLocation()
     {
-        return $this->logLocation;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
+        return $this->internalLogLocation;
     }
 }

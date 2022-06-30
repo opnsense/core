@@ -103,6 +103,116 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
+                $.ajax("/api/core/system/status", {
+                    type: 'get',
+                    dataType: "json",
+                    error : function (jqXHR, textStatus, errorThrown) {
+                        console.log('system.status : ' +errorThrown);
+                    },
+                    success: function (data) {
+                        let severity = BootstrapDialog.TYPE_SUCCESS;
+                        $.each(data, function(subject, statusObject) {
+                            if (subject == 'System') {
+                                switch (statusObject.status) {
+                                    case "Error":
+                                        $('#system_status').toggleClass("fa fa-exclamation-triangle text-danger");
+                                        severity = BootstrapDialog.TYPE_DANGER;
+                                        break;
+                                    case "Warning":
+                                        $('#system_status').toggleClass("fa fa-exclamation-triangle text-warning");
+                                        severity = BootstrapDialog.TYPE_WARNING;
+                                        statusObject.severity = 'warning';
+                                        break;
+                                    case "Notice":
+                                        $('#system_status').toggleClass("fa fa-check-circle text-info");
+                                        severity = BootstrapDialog.TYPE_INFO;
+                                        statusObject.severity = 'info';
+                                        break;
+                                    default:
+                                        $('#system_status').toggleClass('fa fa-check-circle-o text-success');
+                                        statusObject.severity = 'success';
+                                        break;
+                                }
+                            } else {
+                                switch (statusObject.status) {
+                                    case "Error":
+                                        statusObject.severity = 'danger';
+                                        statusObject.icon = 'fa fa-exclamation-triangle text-danger"'
+                                        break;
+                                    case "Warning":
+                                        statusObject.severity = 'warning';
+                                        statusObject.icon = 'fa fa-exclamation-triangle text-warning';
+                                        break;
+                                    case "Notice":
+                                        statusObject.severity = 'info';
+                                        statusObject.icon = 'fa fa-check-circle text-info';
+                                        break;
+                                    default:
+                                        statusObject.severity = 'success';
+                                        statusObject.icon = 'fa fa-check-circle text-success';
+                                        break;
+                                }
+                            }
+                        });
+                        console.log(data);
+
+                        $("#system_status").click(function() {
+                            BootstrapDialog.show({
+                                type: severity,
+                                data: data,
+                                title: '{{ lang._('System Status')}}',
+                                message: function(dialog) {
+                                    let $message = $(
+                                        '<div class="row">' +
+                                            '<div class="col-md-6">' +
+                                                '<div class="list-group" id="list-tab" role="tablist" style="margin-bottom: 0">' +
+                                                '</div>' +
+                                            '</div>' +
+                                            '<div class="col-md-6">' +
+                                                '<div class="tab-content" id="nav-tabContent">' +
+                                                '</div>' +
+                                            '</div>'+
+                                            '</div>'
+                                    );
+                                    $.each(data, function(subject, statusObject) {
+                                        let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
+                                        if (subject == 'System') {
+                                            return;
+                                        }
+                                        let $listItem = $(
+                                            '<a class="list-group-item list-group-item-border" data-toggle="list" href="#list-' + subject + '" role="tab" style="outline: 0">' +
+                                                 formattedSubject +
+                                                 '<span class="' + statusObject.icon + '" style="float: right"></span>' +
+                                            '</a>'
+                                        );
+                                        let referral = statusObject.logLocation ? 'Click <a href="' + statusObject.logLocation + '">here</a> for more information.' : ''
+                                        let $pane = $(
+                                            '<div class="tab-pane fade" id="list-' + subject + '" role="tabpanel"><p>' + statusObject.message + ' ' + referral + '</p></div>'
+                                        );
+                                        $message.find('#list-tab').append($listItem);
+                                        $message.find('#nav-tabContent').append($pane);
+                                        $message.find('#list-tab a:first-child').addClass('active').tab('show');
+                                        $message.find('#nav-tabContent div:first-child').addClass('active in');
+                                        $message.find('#list-tab a[href="#list-' + subject + '"]').on('click', function(e) {
+                                            e.preventDefault();
+                                            $(this).tab('show');
+                                            $(this).toggleClass('active').siblings().removeClass('active');
+                                        });
+                                    });
+                                    return $message;
+                                },
+                                buttons: [{
+                                    label: '{{ lang._('Close') }}',
+                                    cssClass: 'btn-primary',
+                                    action: function(dialogRef) {
+                                        dialogRef.close();
+                                    }
+                                }],
+                            });
+                        });
+                    }
+                });
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',
@@ -172,6 +282,27 @@
             });
         </script>
 
+        <style type="text/css">
+            /* On upstream Bootstrap, these properties are set in list-group-item.*/
+            .list-group-item-border {
+                border: 1px solid #ddd;
+            }
+
+            .list-group-item-border:first-child {
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
+
+            .list-group-item-border:last-child {
+                border-bottom-left-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+            .btn.pull-right {
+                margin-left: 3px;
+            }
+
+        </style>
+
         <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
         <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
@@ -218,6 +349,11 @@
           <ul class="nav navbar-nav navbar-right">
             <li id="menu_messages">
               <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
+            </li>
+            <li>
+              <span class="navbar-text" style="margin-left: 0">
+                <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+              </span>
             </li>
             <li>
               <form class="navbar-form" role="search">

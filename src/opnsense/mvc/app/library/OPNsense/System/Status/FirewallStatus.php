@@ -26,18 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\System;
+namespace OPNsense\System\Status;
 
-class CrashReporterStatus extends AbstractStatus {
+use OPNsense\System\AbstractStatus;
 
-    public function __construct($statusLevel, $message, $serialize = true)
+class FirewallStatus extends AbstractStatus {
+
+    public function __construct()
     {
-        parent::__construct($statusLevel,
-            $message,
-            'crashreporter',
-            ['/var/log/filter'],
-            get_class(),
-            $serialize
-        );
+        $this->internalStatus = static::STATUS_OK;
     }
+
 }

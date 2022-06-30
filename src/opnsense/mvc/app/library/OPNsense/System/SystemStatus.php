@@ -28,6 +28,11 @@
 
 namespace OPNsense\System;
 
+/**
+ * SystemStatus: Crawl through the \OPNsense\System\Status namespace and
+ * instantiate every class that correctly extends AbstractStatus. Every created
+ * object is responsible for detecting problems in its own defined category.
+ */
 class SystemStatus
 {
     private $statuses;
@@ -37,33 +42,69 @@ class SystemStatus
         $this->statuses = $this->collectStatus();
     }
 
+    /**
+     * @throws \Exception
+     */
     private function collectStatus()
     {
         $result = array();
-        $all = glob('/tmp/status/*');
-        foreach ($all as $categoryHandle) {
-            $fileOpen  = fopen($categoryHandle, 'r');
-            if ($fileOpen) {
-                while (($status = unserialize(fgets($fileOpen))) !== false) {
-                    $obj = '\\' . $status['className'];
-                    if (class_exists($obj)) {
-                        $result[$status['category']][] = new $obj($status['statusLevel'], $status['message'], false);
-                    }
-                }
-                fclose($fileOpen);
-                if ($result) {
-                    foreach ($result as $category => $status) {
-                        /* Sort by severity and re-assign - errors first */
-                        usort($status, fn($a, $b) => $a->getStatus() - $b->getStatus());
-                        $result[$category] = $status;
-                    }
-                }
+        $statusCodes = array();
+        $all = scandir(__DIR__ . '/Status');
+        $classes = array_map(function($file) {
+            if (str_contains($file, 'Status')) {
+                return '\\OPNsense\\System\\Status\\' . str_replace('.php', '', $file);
             }
+        }, $all);
+
+        $statuses = array_filter($classes, function($class) {
+            return class_exists($class) && is_subclass_of($class, '\\OPNsense\\System\\AbstractStatus');
+        });
+
+        foreach ($statuses as $statusClass) {
+            $obj = new $statusClass();
+            $reflect = new \ReflectionClass($obj);
+            $shortName = str_replace('Status', '', $reflect->getShortName());
+
+            if ($shortName == 'System') {
+                /* reserved */
+                throw new \Exception("SystemStatus classname is reserved");
+            }
+
+            $statusCodes[] = $obj->getStatus();
+
+            $result[$shortName] = [
+                'status' => $this->parseStatus($obj->getStatus()),
+                'message' => $obj->getMessage(),
+                'logLocation' => $obj->getLogLocation()
+            ];
         }
+
+        /* Determine the most severe status type */
+        sort($statusCodes);
+        $result['System'] = [
+            'status' => $this->parseStatus($statusCodes[0]),
+        ];
 
         return $result;
     }
 
+    private function parseStatus($statusCode)
+    {
+        switch ($statusCode) {
+            case AbstractStatus::STATUS_ERROR:
+                return 'Error';
+            case AbstractStatus::STATUS_WARN:
+                return 'Warning';
+            case AbstractStatus::STATUS_NOTICE:
+                return 'Notice';
+            default:
+                return 'OK';
+        }
+    }
+
+    /**
+     * @return array An array containing a parseable format of every status object
+     */
     public function getSystemStatus()
     {
         return $this->statuses;

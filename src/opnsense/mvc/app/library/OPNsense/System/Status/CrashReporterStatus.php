@@ -26,18 +26,51 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\System;
+namespace OPNsense\System\Status;
 
-class FirewallStatus extends AbstractStatus {
+use OPNsense\System\AbstractStatus;
+use OPNsense\Core\Config;
 
-    public function __construct($statusLevel, $message, $serialize = true)
+class CrashReporterStatus extends AbstractStatus {
+
+    public function __construct()
     {
-        parent::__construct($statusLevel,
-            $message,
-            'firewall',
-            '/var/log/filter',
-            get_class(),
-            $serialize
-        );
+        if ($this->hasCrashed()) {
+            $this->internalMessage = "A problem was detected.";
+            $this->internalStatus = static::STATUS_ERROR;
+            $this->internalLogLocation = '/crash_reporter.php';
+        }
+    }
+
+    private function hasCrashed()
+    {
+        $config = Config::getInstance()->object();
+        $deployment = $config->system->deployment;
+        if (empty($deployment) || $deployment != 'production') {
+            return false;
+        }
+
+        $skipFiles = array('.', '..', 'minfree', 'bounds', '');
+        $errorLog = '/tmp/PHP_errors.log';
+        $count = 0;
+
+        if (file_exists($errorLog)) {
+            $total = trim(shell_exec(sprintf(
+                '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
+                $errorLog
+            )));
+            if ($total > 0) {
+                $count++;
+            }
+        }
+
+        $crashes = glob('/var/crash/*');
+        foreach ($crashes as $crash) {
+            if (!in_array(basename($crash), $skipFiles)) {
+                $count++;
+            }
+        }
+
+        return $count > 0;
     }
 }

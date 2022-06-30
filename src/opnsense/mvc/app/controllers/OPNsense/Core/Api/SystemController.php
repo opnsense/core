@@ -60,7 +60,9 @@ class SystemController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $status = json_decode(trim($backend->configdRun('system status')));
+        $status = trim($backend->configdRun('system status'));
+
+        /* TODO: ACL check */
         if ($status) {
             return $status;
         }
