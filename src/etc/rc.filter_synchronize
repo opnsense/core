@@ -38,6 +38,8 @@ require_once("util.inc");
 require_once("interfaces.inc");
 require_once("XMLRPC_Client.inc");
 
+exit_on_bootup();
+
 /**
  * fetch carp vips from config with modified advskew for the backup host to use
  * @return array
@@ -220,10 +222,6 @@ function carp_sync_xml($url, $username, $password, $sections, $debug)
     }
 
     return true;
-}
-
-if (file_exists('/var/run/booting')) {
-    return;
 }
 
 if (!empty($config['hasync'])) {

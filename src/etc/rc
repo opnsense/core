@@ -229,9 +229,7 @@ echo "done."
 
 # Let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-touch /var/run/booting
-/usr/local/etc/rc.bootup || exit 1
-rm /var/run/booting
+/usr/local/bin/flock -n -o /var/run/booting /usr/local/etc/rc.bootup || exit 1
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start

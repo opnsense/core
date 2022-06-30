@@ -39,11 +39,10 @@ require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
-if (file_exists('/var/run/booting')) {
+exit_on_bootup(function ($argument) {
     log_error("IP renewal deferred during boot on '{$argument}'");
     file_put_contents('/tmp/newwanip_' . $argument, $argument);
-    return;
-}
+}, [$argument]);
 
 log_error("IPv4 renewal is starting on '{$argument}'");
 

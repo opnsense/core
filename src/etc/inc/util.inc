@@ -285,13 +285,23 @@ function lock($lock, $op = LOCK_SH)
     }
 }
 
-
 /* unlock configuration file */
 function unlock($cfglckkey = null)
 {
     if ($cfglckkey) {
         flock($cfglckkey, LOCK_UN);
         fclose($cfglckkey);
+    }
+}
+
+function exit_on_bootup($callback = null, $arguments = [])
+{
+    /* intentionally we exit here to avoid future cleverless WRT bootup handing */
+    if (!flock(fopen('/var/run/booting', 'r+'), LOCK_SH | LOCK_NB)) {
+        if ($callback) {
+            call_user_func_array($callback, $arguments);
+        }
+        exit(0);
     }
 }
 
