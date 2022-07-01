@@ -83,6 +83,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210629
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210903
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20220701
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
