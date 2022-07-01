@@ -296,7 +296,7 @@ function unlock($cfglckkey = null)
 
 function exit_on_bootup($callback = null, $arguments = [])
 {
-    /* intentionally we exit here to avoid future cleverless WRT bootup handing */
+    /* intentionally we exit here to avoid future cleverness WRT bootup handing */
     if (!flock(fopen('/var/run/booting', 'r+'), LOCK_SH | LOCK_NB)) {
         if ($callback) {
             call_user_func_array($callback, $arguments);
