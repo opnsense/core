@@ -106,8 +106,10 @@ esac
 
 echo
 
-CHANGELOG=$(configctl firmware changelog text ${CHANGELOG})
-if [ "${CHANGELOG}" ]; then
+if [ -n "${CHANGELOG}" ]; then
+	CHANGELOG=$(configctl firmware changelog text ${CHANGELOG})
+fi
+if [ -n "${CHANGELOG}" ]; then
 	echo "${CHANGELOG}" | less
 fi
 
