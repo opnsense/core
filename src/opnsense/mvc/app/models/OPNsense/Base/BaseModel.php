@@ -638,7 +638,9 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+        if ($this->internal_mountpoint == ':memory:') {
+            return false;
+        } elseif (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
             $upgradePerfomed = false;
             $migObjects = array();
             $logger = new Logger(
