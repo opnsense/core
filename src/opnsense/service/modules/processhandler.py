@@ -260,7 +260,11 @@ class ActionHandler(object):
 
             # traverse config directory and open all filenames starting with actions_
             cnf = configparser.RawConfigParser()
-            cnf.read(config_filename)
+            try:
+                cnf.read(config_filename)
+            except configparser.Error:
+                syslog_error('exception occurred while reading "%s": %s' % (config_filename, traceback.format_exc(0)))
+
             for section in cnf.sections():
                 # map configuration data on object
                 action_obj = Action(config_environment=self.config_environment)
