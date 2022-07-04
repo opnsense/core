@@ -463,13 +463,16 @@ include("fbegin.inc");
                     <td>
                       <input name="tunnel_network" type="text" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                       <div class="hidden" data-for="help_for_tunnel_network">
-                        <?=gettext("This is the IPv4 virtual network used for private " .
-                                                "communications between this client and the " .
-                                                "server expressed using CIDR (eg. 10.0.8.0/24). " .
-                                                "The first network address is assumed to be the " .
-                                                "server address and the second network address " .
-                                                "will be assigned to the client virtual " .
-                                                "interface"); ?>.
+                        <?=sprintf(
+                            gettext(
+                              "This defines the %s network used for this client in CIDR format, the addressing depends on ".
+                              "the device mode (tun, tap) and the choice for topology. <br/><br/>".
+                              "When topology is unset for a server in tun mode, the  first network address is ".
+                              "assumed to be the server address and the second network address will be assigned to the client virtual ".
+                              "interface. </br><br/>".
+                              "Otherwise the configured address is used for this clients virtual interface using the configured netmask."
+                            ),
+                            gettext("IPv4"));?>
                       </div>
                     </td>
                   </tr>
@@ -478,13 +481,16 @@ include("fbegin.inc");
                     <td>
                       <input name="tunnel_networkv6" type="text" value="<?=$pconfig['tunnel_networkv6'];?>" />
                       <div class="hidden" data-for="help_for_tunnel_networkv6">
-                          <?=gettext("This is the IPv6 virtual network used for private " .
-                                                "communications between this server and client " .
-                                                "hosts expressed using CIDR (eg. fe80::/64). " .
-                                                "The first network address will be assigned to " .
-                                                "the server virtual interface. The remaining " .
-                                                "network addresses can optionally be assigned " .
-                                                "to connecting clients. (see Address Pool)"); ?>
+                        <?=sprintf(
+                            gettext(
+                              "This defines the %s network used for this client in CIDR format, the addressing depends on ".
+                              "the device mode (tun, tap) and the choice for topology. <br/><br/>".
+                              "When topology is unset for a server in tun mode, the  first network address is ".
+                              "assumed to be the server address and the second network address will be assigned to the client virtual ".
+                              "interface. </br><br/>".
+                              "Otherwise the configured address is used for this clients virtual interface using the configured netmask."
+                            ),
+                            gettext("IPv6"));?>
                       </div>
                     </td>
                   </tr>
