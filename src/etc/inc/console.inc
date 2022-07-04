@@ -445,6 +445,8 @@ EOD;
             unset($config['interfaces']['wan']['wireless']);
         }
     } elseif (isset($config['interfaces']['wan'])) {
+        unset($config['interfaces']['wan']['enable']);
+        interface_bring_down('wan');
         unset($config['interfaces']['wan']);
     }
 
@@ -466,6 +468,8 @@ EOD;
 
     /* remove all other (old) optional interfaces */
     for (; isset($config['interfaces']['opt' . ($i + 1)]); $i++) {
+        unset($config['interfaces']['opt' . ($i + 1)]['enable']);
+        interface_bring_down('opt' . ($i + 1));
         unset($config['interfaces']['opt' . ($i + 1)]);
     }
 
