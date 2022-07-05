@@ -59,7 +59,8 @@ class LogController extends ApiControllerBase
                 return ["status" => "ok"];
             } else {
                 // fetch query parameters (limit results to prevent out of memory issues)
-                $itemsPerPage = $this->request->getPost('rowCount') == -1 ? 5000 : $this->request->getPost('rowCount', 'int', 9999);
+                $itemsPerPage = $this->request->getPost('rowCount', 'int', -1);
+                $itemsPerPage = min($itemsPerPage == -1 ? 5000 : $itemsPerPage, 9999);
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {
