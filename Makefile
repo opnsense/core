@@ -184,6 +184,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON}-vici \
 			radvd \
 			rrdtool \
 			samplicator \
