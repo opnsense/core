@@ -154,7 +154,6 @@
                                 }
                             }
                         });
-                        console.log(data);
 
                         $("#system_status").click(function() {
                             BootstrapDialog.show({

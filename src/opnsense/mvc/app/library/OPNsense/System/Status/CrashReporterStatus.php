@@ -46,7 +46,7 @@ class CrashReporterStatus extends AbstractStatus {
     {
         $config = Config::getInstance()->object();
         $deployment = $config->system->deployment;
-        if (empty($deployment) || $deployment != 'production') {
+        if (!empty($deployment)) {
             return false;
         }
 

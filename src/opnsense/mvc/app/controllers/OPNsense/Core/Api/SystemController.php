@@ -62,7 +62,6 @@ class SystemController extends ApiControllerBase
         $backend = new Backend();
         $status = trim($backend->configdRun('system status'));
 
-        /* TODO: ACL check */
         if ($status) {
             return $status;
         }
