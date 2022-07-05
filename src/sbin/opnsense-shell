@@ -63,9 +63,9 @@ defaults)
 	shift
 	exec ${CMD_DEFAULTS} "${@}"
 	;;
-update)
+firmware)
 	shift
-	exec ${CMD_UPDATE} "${@}"
+	exec ${CMD_FIRMWARE} "${@}"
 	;;
 halt)
 	shift
