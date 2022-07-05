@@ -721,6 +721,7 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/carp_status
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
+/usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
@@ -824,7 +825,6 @@
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/update_tables
-/usr/local/opnsense/scripts/shell/add_user
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
 /usr/local/opnsense/scripts/shell/firmware.sh
