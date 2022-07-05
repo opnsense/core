@@ -65,7 +65,7 @@ include('head.inc');
 $plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
 
 $crash_report_header = sprintf(
-    "%s %s\n%s %s %s\n%sTime %s\n%s\nPHP %s\n",
+    "%s %s\n%s %s %s\n%sTime %s\n%s\n%s\nPHP %s\n",
     php_uname('v'),
     $g['product_arch'],
     $g['product_name'],
@@ -74,6 +74,7 @@ $crash_report_header = sprintf(
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
     trim(shell_exec('/usr/local/bin/openssl version')),
+    trim(shell_exec('/usr/local/bin/python3 -V')),
     PHP_VERSION
 );
 
