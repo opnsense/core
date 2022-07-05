@@ -793,13 +793,6 @@
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
 /usr/local/opnsense/scripts/ipsec/list_status.py
-/usr/local/opnsense/scripts/ipsec/vici/__init__.py
-/usr/local/opnsense/scripts/ipsec/vici/compat.py
-/usr/local/opnsense/scripts/ipsec/vici/exception.py
-/usr/local/opnsense/scripts/ipsec/vici/protocol.py
-/usr/local/opnsense/scripts/ipsec/vici/session.py
-/usr/local/opnsense/scripts/ipsec/vici/test/__init__.py
-/usr/local/opnsense/scripts/ipsec/vici/test/test_protocol.py
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
