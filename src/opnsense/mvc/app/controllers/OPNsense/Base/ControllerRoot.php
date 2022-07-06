@@ -92,12 +92,11 @@ class ControllerRoot extends Controller
 
         $locale = $lang . '.UTF-8';
         $interpolator = new InterpolatorFactory();
-        $this->translator = new ViewTranslator($interpolator, array(
+        $this->translator = new ViewTranslator($interpolator, [
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
-            /* XXX: Phalcon version check, to be removed */
-            'locale' => explode('.', phpversion("phalcon"))[0] < 5 ? $locale : [$locale]
-        ));
+            'locale' => [$locale],
+        ]);
 
         /* somehow this is not done by Phalcon */
         bind_textdomain_codeset('OPNsense', $locale);
@@ -109,16 +108,16 @@ class ControllerRoot extends Controller
      * @param string $ident syslog identifier
      * @return Syslog log handler
      */
-    protected function getLogger($ident = "api")
+    protected function getLogger($ident = 'api')
     {
         if ($this->logger == null) {
             $this->logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog($ident, array(
+                    'main' => new Syslog($ident, [
                         'option' => LOG_PID,
-                        'facility' => LOG_LOCAL4
-                    ))
+                        'facility' => LOG_LOCAL4,
+                    ])
                 ]
             );
         }
