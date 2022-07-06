@@ -70,7 +70,8 @@
     <page-status-ipsec-spd>
         <name>Status: IPsec: SPD</name>
         <patterns>
-            <pattern>diag_ipsec_spd.php*</pattern>
+            <pattern>ui/ipsec/spd</pattern>
+            <pattern>api/ipsec/spd/*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>

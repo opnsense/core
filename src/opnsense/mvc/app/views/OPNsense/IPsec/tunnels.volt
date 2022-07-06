@@ -277,9 +277,10 @@
     <table id="grid-phase2" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
+              <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-sortable="false">{{ lang._('Enabled') }}</th>
               <th data-column-id="id" data-type="numeric" data-identifier="true" data-visible="false">ID</th>
               <th data-column-id="uniqid" data-type="string" data-visible="false">{{ lang._('uniqid') }}</th>
-              <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle" data-sortable="false">{{ lang._('Enabled') }}</th>
+              <th data-column-id="reqid" data-type="string" data-width="6em">{{ lang._('Reqid') }}</th>
               <th data-column-id="type" data-width="8em" data-type="string" data-formatter="mode_type" data-sortable="false">{{ lang._('Type') }}</th>
               <th data-column-id="local_subnet" data-width="18em" data-type="string">{{ lang._('Local Subnet') }}</th>
               <th data-column-id="remote_subnet" data-width="18em" data-type="string">{{ lang._('Remote Subnet') }}</th>
