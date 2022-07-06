@@ -96,7 +96,7 @@ class ApiControllerBase extends ControllerRoot
 
         return [
            'total' => count($entry_keys),
-           'rowCount' => $itemsPerPage,
+           'rowCount' => count($formatted),
            'current' => $currentPage,
            'rows' => $formatted,
         ];
