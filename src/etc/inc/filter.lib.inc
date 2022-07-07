@@ -545,7 +545,7 @@ function filter_core_rules_system($fw, $defaults)
         $fw->registerFilterRule(
             5,
             array('direction' => 'out', 'statetype' => 'keep', 'quick' => false, 'interface' => 'enc0',
-                '#ref' => '/ui/ipsec/tunnels',
+                '#ref' => 'ui/ipsec/tunnels',
                 'descr' => 'IPsec internal host to host'),
             $defaults['pass']
         );
