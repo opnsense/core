@@ -64,7 +64,8 @@
     <page-status-ipsec-sad>
         <name>Status: IPsec: SAD</name>
         <patterns>
-            <pattern>diag_ipsec_sad.php*</pattern>
+            <pattern>ui/ipsec/sad</pattern>
+            <pattern>api/ipsec/sad/*</pattern>
         </patterns>
     </page-status-ipsec-sad>
     <page-status-ipsec-spd>

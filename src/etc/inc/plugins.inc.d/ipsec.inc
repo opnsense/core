@@ -627,64 +627,6 @@ function ipsec_phase1_status($ipsec_status, $ikeid)
     return false;
 }
 
-
-/*
- * Return dump of SAD table
- */
-function ipsec_dump_sad()
-{
-    $fd = @popen("/sbin/setkey -D", "r");
-    $sad = array();
-    if ($fd) {
-        $cursa = null;
-        $i = 0;
-        while (!feof($fd)) {
-            $line = chop(fgets($fd));
-            if (!$line || $line[0] == " ") {
-                continue;
-            }
-            if ($line == "No SAD entries.") {
-                break;
-            }
-            if ($line[0] != "\t") {
-                if (is_array($cursa)) {
-                    $sad[] = $cursa;
-                }
-                $cursa = array();
-                list($cursa['src'],$cursa['dst']) = explode(" ", $line);
-                $i = 0;
-            } else {
-                $linea = explode(" ", trim($line));
-                switch ($i) {
-                    case 1:
-                        $cursa['proto'] = $linea[0];
-                        $cursa['spi'] = substr($linea[2], strpos($linea[2], "x") + 1, -1);
-                        $reqid = substr($linea[3], strpos($linea[3], "=") + 1);
-                        $cursa['reqid'] = substr($reqid, 0, strcspn($reqid, "("));
-                        break;
-                    case 2:
-                        $cursa['ealgo'] = $linea[1];
-                        break;
-                    case 3:
-                        $cursa['aalgo'] = $linea[1];
-                        break;
-                    case 8:
-                        $sadata = explode("(", $linea[1]);
-                        $cursa['data'] = $sadata[0] . " B";
-                        break;
-                }
-            }
-            $i++;
-        }
-        if (is_array($cursa) && count($cursa)) {
-            $sad[] = $cursa;
-        }
-        pclose($fd);
-    }
-
-    return $sad;
-}
-
 function ipsec_mobilekey_sort()
 {
     global $config;
