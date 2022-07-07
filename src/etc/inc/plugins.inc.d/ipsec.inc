@@ -844,7 +844,7 @@ function ipsec_configure_spd()
                 continue;
             }
             $reqid_mapping = ipsec_parse_phase2($ph1ent['ikeid'])['uniqid_reqid'];
-            foreach (array_unique(array_values($reqid_mapping)) as $reqid)  {
+            foreach (array_unique(array_values($reqid_mapping)) as $reqid) {
                 if (!empty($previous_spd_entries[$reqid])) {
                     foreach ($previous_spd_entries[$reqid] as $spd_entry) {
                         $spd_entries[] = $spd_entry;
