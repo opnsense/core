@@ -802,75 +802,70 @@ function ipsec_configure_spd()
 
     $spd_entries = array();
 
-    // cleanup, collect previous manual added spd entries (stash in spd_entries) for removal.
+    /**
+     * try to figure out which SPD entries where created manually and collect them in a list sequenced by reqid
+     * when the entry is either bound to an interface (ifname=) or has a lifetime, these where not likely created by us
+     */
     exec('/sbin/setkey -PD', $lines);
     $line_count = 0;
-    $src = $dst = $direction = '';
+    $src = $dst = $direction = $reqid = '';
+    $is_automatic = false;
+    $previous_spd_entries = [];
     foreach ($lines as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
+            $src = $dst = $direction = $reqid = '';
             if (count($tmp) >= 3) {
                 $src = explode('[', $tmp[0])[0];
                 $dst = explode('[', $tmp[1])[0];
             }
             $line_count = 0;
+            $is_automatic = false;
         } elseif ($line_count == 1) {
             // direction
             $direction = trim(explode(' ', $line)[0]);
-        } elseif (strpos($line, '/require') !== false) {
-            // we'll assume that the require items in the spd are our manual items, so
-            // they will be removed first
-            $spd_entries[] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
+        } elseif (strpos($line, '/unique:') !== false) {
+            $reqid = explode('/unique:', $line)[1];
+        } elseif (strpos($line, "\tlifetime:") === 0 || strpos($line, "ifname=") > 0) {
+            $is_automatic = true;
+        } elseif (strpos($line, "\trefcnt") === 0 && !$is_automatic && $reqid != "") {
+            if (empty($previous_spd_entries[$reqid])) {
+                $previous_spd_entries[$reqid] = [];
+            }
+            $previous_spd_entries[$reqid][] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
         }
         $line_count++;
     }
 
-    // add manual added spd entries
+    // process manual added spd en tries
     if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!empty($ph1ent['disabled'])) {
                 continue;
             }
             $reqid_mapping = ipsec_parse_phase2($ph1ent['ikeid'])['uniqid_reqid'];
+            foreach (array_unique(array_values($reqid_mapping)) as $reqid)  {
+                if (!empty($previous_spd_entries[$reqid])) {
+                    foreach ($previous_spd_entries[$reqid] as $spd_entry) {
+                        $spd_entries[] = $spd_entry;
+                    }
+                    unset($previous_spd_entries[$reqid]);
+                }
+            }
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
                     $tunnel_src = ipsec_get_phase1_src($ph1ent);
                     $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
 
-                    // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
-                    $peerid_spec = ipsec_find_id($ph1ent, "peer");
-                    if (!is_ipaddr($peerid_spec)) {
-                        if (is_ipaddr($ph1ent['remote-gateway'])) {
-                            $peerid_spec = $ph1ent['remote-gateway'];
-                        } else {
-                            log_error(sprintf(
-                                "spdadd: unable to match remote network on %s or %s [skipped]",
-                                $peerid_spec,
-                                $ph1ent['remote-gateway']
-                            ));
-                        }
-                    }
-                    $myid_data = ipsec_find_id($ph1ent, "local");
-                    if ($myid_data != $tunnel_src) {
-                        log_error(sprintf(
-                            "spdadd: using %s in source policy, local id set to %s",
-                            $tunnel_src,
-                            $myid_data
-                        ));
-                    }
-                    if ($peerid_spec != $tunnel_dst) {
-                        log_error(sprintf(
-                            "spdadd: using %s in destination policy, peer id set to %s",
-                            $tunnel_dst,
-                            $peerid_spec
-                        ));
-                    }
-                    if (empty($reqid_mapping[$ph2ent['uniqid']])) {
-                        log_error(sprintf("spdadd: unable to find reqid for %s", $ph2ent['uniqid']));
-                    }
-                    // XXX: end
-
                     if (empty($tunnel_dst) || empty($tunnel_src)) {
+                        log_error(sprintf(
+                            "spdadd: skipped for tunnel %s-%s (reqid :%s, local: %s, remote: %s)",
+                            $tunnel_src,
+                            $tunnel_dst,
+                            !empty($reqid_mapping[$ph2ent['uniqid']]) ? $reqid_mapping[$ph2ent['uniqid']] : "",
+                            $ph2ent['spd'],
+                            ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode'])
+                        ));
                         continue;
                     }
 
