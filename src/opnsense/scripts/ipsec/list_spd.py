@@ -39,7 +39,7 @@ if __name__ == '__main__':
     for line in sp.stdout.split("\n"):
         line_no += 1
         parts = line.split()
-        if not line.startswith("\t") and line.count('/') == 2:
+        if not line.startswith("\t") and len(parts) > 2:
             line_no = 0
             spec_line = line.strip()
             spd_rec = {

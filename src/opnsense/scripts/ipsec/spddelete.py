@@ -40,7 +40,7 @@ if __name__ == '__main__':
     sp = subprocess.run(['/sbin/setkey', '-DP'], capture_output=True, text=True)
     spec_line = None
     for line in sp.stdout.split("\n"):
-        if not line.startswith("\t") and line.count('/') == 2:
+        if not line.startswith("\t") and len(line.split()) > 2:
             spec_line = line.strip()
         elif spec_line:
             ident = "%s %s" % (spec_line, line.strip().split()[0])
