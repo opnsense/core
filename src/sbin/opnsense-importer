@@ -149,7 +149,7 @@ zfs_unload()
 
 zfs_probe()
 {
-	zpool import -aNf 2> /dev/null
+	zpool import -aNf > /dev/null 2> /dev/null
 
 	zpool get -H cachefile | while read ZPOOL ZMORE; do
 		ZGUID=$(zpool get -H guid ${ZPOOL} | awk '{ print $3 }')
