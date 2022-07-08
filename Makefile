@@ -28,11 +28,11 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	22.1
-CORE_MESSAGE?=	Carry on my wayward son
-CORE_NAME?=	opnsense-devel
+CORE_ABI?=	22.7
+CORE_MESSAGE?=	TBA
+CORE_NAME?=	opnsense
 CORE_NICKNAME?=	Not Yet
-CORE_TYPE?=	development
+CORE_TYPE?=	community
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
@@ -127,10 +127,7 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2022
 
 CORE_DEPENDS_amd64?=	beep \
-			suricata-devel
-
-# XXX transition helpers for PHP 8 migration
-CORE_DEPENDS_PHP74=	php74-json php74-openssl
+			suricata
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
@@ -141,11 +138,11 @@ CORE_DEPENDS?=		ca_root_nss \
 			dpinger \
 			expiretable \
 			filterlog \
-			ifinfo \
-			iftop \
 			flock \
 			flowd \
 			hostapd \
+			ifinfo \
+			iftop \
 			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			lighttpd \
@@ -176,7 +173,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			${CORE_DEPENDS_PHP${CORE_PHP}} \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
