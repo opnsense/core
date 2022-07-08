@@ -506,7 +506,7 @@ include("head.inc");
                 <td>
                   <input name="max_mfs_var" type="text" id="max_mfs_var" placeholder="50" value="<?= html_safe($pconfig['max_mfs_var']) ?>"/>
                   <div class="hidden" data-for="help_for_max_mfs_var">
-                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited.') ?>
+                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited, which will additionally include all swap space.') ?>
                   </div>
                 </td>
               </tr>
@@ -525,7 +525,7 @@ include("head.inc");
                 <td>
                   <input name="max_mfs_tmp" type="text" id="max_mfs_tmp" placeholder="50" value="<?= html_safe($pconfig['max_mfs_tmp']) ?>"/>
                   <div class="hidden" data-for="help_for_max_mfs_tmp">
-                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited.') ?>
+                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited, which will additionally include all swap space.') ?>
                   </div>
                 </td>
               </tr>
