@@ -141,11 +141,11 @@ CORE_DEPENDS?=		ca_root_nss \
 			dpinger \
 			expiretable \
 			filterlog \
-			ifinfo \
-			iftop \
 			flock \
 			flowd \
 			hostapd \
+			ifinfo \
+			iftop \
 			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			lighttpd \
