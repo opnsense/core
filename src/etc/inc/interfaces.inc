@@ -4322,18 +4322,24 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 continue;
             }
 
+            $matched_subnet = false;
             if ($info['family'] == 'inet' && strpos($vip['subnet'], ':') === false) {
-                $info['alias'] = $info['alias'] || $vip['subnet'] == $info['address'];
+                $matched_subnet = $vip['subnet'] == $info['address'];
             } elseif ($info['family'] == 'inet6' && strpos($vip['subnet'], ':') !== false) {
                 /*
                  * Since we do not know what subnet value was given by user
                  * uncompress/compress to match correctly compressed system
                  * value.
                  */
-                $info['alias'] = $info['alias'] || Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
+                $matched_subnet = Net_IPv6::compress(Net_IPv6::uncompress($vip['subnet'])) == $info['address'];
+            }
+            if (!$matched_subnet) {
+                continue;
             }
 
-            if ($info['alias'] && !empty($vip['nobind'])) {
+            $info['alias'] = true;
+
+            if (!empty($vip['nobind'])) {
                 $info['bind'] = false;
             }
         }
