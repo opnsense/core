@@ -1323,6 +1323,8 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                 /* with enough room we can add dhcp6 prefix delegation */
                 $pdlen = calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
                 if ($pdlen > 2) {
+                    /* XXX calculation is probably out of whack, please fix */
+
                     $pdlenmax = $pdlen;
                     $pdlenhalf = $pdlenmax - 1;
                     $pdlenmin = 64 - ceil($pdlenhalf / 4);
@@ -1344,66 +1346,31 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
                 if (!empty($dhcpdv6cfg[$ifname]['range']['from']) && !empty($dhcpdv6cfg[$ifname]['range']['to'])) {
                     /* get config entry and marry it to the live prefix */
                     $dhcpdv6cfg[$ifname]['range'] = array(
-                        'from' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
-                        'to' => make_ipv6_64_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
+                        'from' => merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
+                        'to' => merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
                     );
                 }
 
                 if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
-                    $pd_prefix_from_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['from']);
-                    $pd_prefix_to_array = explode(':', $dhcpdv6cfg[$ifname]['prefixrange']['to']);
+                    /* XXX $pdlen is never validated against prefixlenght setting, but must be smaller or equal */
+                    $pdlen = 64 - calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
 
-                    $pd_prefix_from_array[2] = sprintf("%02s", $pd_prefix_from_array[2]);
-                    $pd_prefix_to_array[2] = sprintf("%02s", $pd_prefix_to_array[2]);
-
-                    for ($x = 0; $x < 4; $x++) {
-                        /* make the prefx long format otherwise dhcpd complains */
-                        $ifcfgipv6arr[$x] = sprintf("%04s", $ifcfgipv6arr[$x]);
+                    $range_from = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['from'], '::');
+                    if ($range_from == '::') {
+                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value");
+                        /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
+                        $range_from = $dhcpdv6cfg[$ifname]['prefixrange']['from'] . ':0:0:0:0';
                     }
 
-                    $pd_prefix_from_array_out = $ifcfgipv6arr;
-                    $pd_prefix_to_array_out = $ifcfgipv6arr;
-
-                    $pdval = intval($dhcpdv6cfg[$ifname]['prefixrange']['prefixlength']);
-
-                    switch ($pdval) {
-                        // For PD sizes of /60 through /64, the user must do the math!
-                        case 60:
-                        case 62:
-                        case 63:
-                        case 64: // 3&4th bytes on 4th array
-                            $pd_prefix_from_array_out[3] = sprintf("%04s", $ifcfgipv6arr[3]); // make it 4 bytes
-                            $pd_prefix_from_array_out[3] = substr($pd_prefix_from_array_out[3], 0, 2) . $pd_prefix_from_array[2];
-                            $pd_prefix_to_array_out[3] = sprintf("%04s", $ifcfgipv6arr[3]); // make it 4 bytes
-                            $pd_prefix_to_array_out[3] = substr($pd_prefix_to_array_out[3], 0, 2) . $pd_prefix_to_array[2];
-                            break;
-                        case 56: // 1st&2nd bytes on 4th array
-                            $pd_prefix_from_array[2] = str_pad($pd_prefix_from_array[2], 4, "0");
-                            $pd_prefix_from_array_out[3] = sprintf("%s", $pd_prefix_from_array[2]); // make it 4 bytes
-                            $pd_prefix_to_array[2] = str_pad($pd_prefix_to_array[2], 4, "0");
-                            $pd_prefix_to_array_out[3] = sprintf("%s", $pd_prefix_to_array[2]); // make it 4 bytes
-                            break;
-                        case 52: // 1st byte on 4th array only, 0 to f, we only want one byte, but lookout for the user entering more
-                            $len = strlen($pd_prefix_from_array[2]);
-                            $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2], $len - 1, 1);
-                            $pd_prefix_from_array_out[3] = sprintf("%s000", substr($pd_prefix_from_array[2], 0, 1)); // first byte from entered value
-                            $len = strlen($pd_prefix_to_array[2]);
-                            $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], $len - 1, 1);
-                            $pd_prefix_to_array_out[3] = sprintf("%s000", substr($pd_prefix_to_array[2], 0, 1));
-                            break;
-                        case 48: // 4th byte on 2nd array
-                            $pd_prefix_from_array[2] = substr($pd_prefix_from_array[2], 0, 1);
-                            $pd_prefix_from_array_out[1] = substr(sprintf("%03s", $ifcfgipv6arr[1]), 0, 3) . $pd_prefix_from_array[2]; // get 1st 3 byte + nibble
-                            $pd_prefix_to_array[2] = substr($pd_prefix_to_array[2], 0, 1);
-                            $pd_prefix_to_array_out[1] = substr(sprintf("%03s", $ifcfgipv6arr[1]), 0, 3) . $pd_prefix_to_array[2]; // get 1st 3 byte + nibble
-                            break;
+                    $range_to = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['to'], '::');
+                    if ($range_to == '::') {
+                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value");
+                        /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
+                        $range_to = $dhcpdv6cfg[$ifname]['prefixrange']['to'] . ':0:0:0:0';
                     }
 
-                    $ipv6_from_pd_from = implode(':', $pd_prefix_from_array_out);
-                    $ipv6_from_pd_to = implode(':', $pd_prefix_to_array_out);
-
-                    $dhcpdv6cfg[$ifname]['prefixrange']['from'] = Net_IPv6::compress($ipv6_from_pd_from);
-                    $dhcpdv6cfg[$ifname]['prefixrange']['to'] = Net_IPv6::compress($ipv6_from_pd_to);
+                    $dhcpdv6cfg[$ifname]['prefixrange']['from'] = merge_ipv6_address($ifcfgipv6, $range_from, $pdlen);
+                    $dhcpdv6cfg[$ifname]['prefixrange']['to'] = merge_ipv6_address($ifcfgipv6, $range_to, $pdlen);
                 }
             }
         }
@@ -1575,7 +1542,7 @@ host s_{$dhcpv6if}_{$i} {
 EOD;
                 if (!empty($sm['ipaddrv6'])) {
                     if (isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
-                        $sm['ipaddrv6'] = make_ipv6_64_address($ifcfgipv6, $sm['ipaddrv6']);
+                        $sm['ipaddrv6'] = merge_ipv6_address($ifcfgipv6, $sm['ipaddrv6']);
                     }
                     $dhcpdv6conf .= "  fixed-address6 {$sm['ipaddrv6']};\n";
                 }
@@ -1906,7 +1873,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
 
                 if (!empty($ipaddrv6) && strpos($host['ipaddrv6'], '::') === 0) {
                     /* expand IPv6 suffix address, but only allow user-given compressed suffix */
-                    $host['ipaddrv6'] = make_ipv6_64_address($ipaddrv6, $host['ipaddrv6']);
+                    $host['ipaddrv6'] = merge_ipv6_address($ipaddrv6, $host['ipaddrv6']);
                 }
 
                 if (!empty($host['ipaddrv6'])) {

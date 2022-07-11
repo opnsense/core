@@ -512,6 +512,29 @@ function find_smallest_cidr6($ips)
     return 128 - $bits;
 }
 
+/* merge IPv6 address prefix of default size 64 with suffix */
+function merge_ipv6_address($prefix, $suffix, $size = 64)
+{
+    $size = 128 - $size;
+
+    $prefix_bits = unpack('N*', inet_pton($prefix));
+    $suffix_bits = unpack('N*', inet_pton($suffix));
+    $mask = [
+        1 => (0xffffffff << max($size - 96, 0)) & 0xffffffff,
+        2 => (0xffffffff << max($size - 64, 0)) & 0xffffffff,
+        3 => (0xffffffff << max($size - 32, 0)) & 0xffffffff,
+        4 => (0xffffffff << $size) & 0xffffffff,
+    ];
+
+    $result = '';
+
+    for ($pos = 1; $pos <= 4; $pos += 1) {
+        $result .=  sprintf('%08x', ($prefix_bits[$pos] & $mask[$pos]) | ($suffix_bits[$pos] & (~$mask[$pos] & 0xffffffff)));
+    }
+
+    return Net_IPv6::compress(implode(':', str_split($result, 4)));
+}
+
 /* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
 function is_ipaddr($ipaddr)
 {

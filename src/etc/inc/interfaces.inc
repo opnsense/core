@@ -4219,28 +4219,6 @@ function is_ipaddr_configured($ipaddr, $ignore_if = '')
     }
 }
 
-
-function make_ipv6_64_address($prefix, $suffix)
-{
-    $prefix_array = explode(':', Net_IPv6::uncompress($prefix));
-    $suffix_array = explode(':', Net_IPv6::uncompress($suffix));
-
-    /* unconditionally merge right side of /64 */
-    foreach (array(4, 5, 6, 7) as $index) {
-        $prefix_array[$index] = $suffix_array[$index];
-    }
-
-    /* XXX correctly merging the left side of /64 requires user-specified prefix length */
-    foreach (array(0, 1, 2, 3) as $index) {
-        if ((int)$suffix_array[$index] === 0) {
-            continue;
-        }
-        $prefix_array[$index] = $suffix_array[$index];
-    }
-
-    return implode(':', $prefix_array);
-}
-
 function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details = null)
 {
     global $config;
