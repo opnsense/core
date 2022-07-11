@@ -217,8 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $range_to = $pconfig['range_to'];
 
             if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
-                $range_from = make_ipv6_64_address($ifcfgip, $pconfig['range_from']);
-                $range_to = make_ipv6_64_address($ifcfgip, $pconfig['range_to']);
+                $range_from = merge_ipv6_address($ifcfgip, $pconfig['range_from']);
+                $range_to = merge_ipv6_address($ifcfgip, $pconfig['range_to']);
             }
 
             if (!empty($pconfig['range_from']) && !empty($pconfig['range_to'])) {
@@ -537,13 +537,9 @@ include("head.inc");
                               <td>
                                 <strong><?=gettext("Prefix Delegation Size"); ?>:</strong>
                                 <select name="prefixrange_length" id="prefixrange_length">
-                                  <option value="48" <?=$pconfig['prefixrange_length'] == 48 ? "selected=\"selected\"" : ""; ?>>48</option>
-                                  <option value="52" <?=$pconfig['prefixrange_length'] == 52 ? "selected=\"selected\"" : ""; ?>>52</option>
-                                  <option value="56" <?=$pconfig['prefixrange_length'] == 56 ? "selected=\"selected\"" : ""; ?>>56</option>
-                                  <option value="60" <?=$pconfig['prefixrange_length'] == 60 ? "selected=\"selected\"" : ""; ?>>60</option>
-                                  <option value="62" <?=$pconfig['prefixrange_length'] == 62 ? "selected=\"selected\"" : ""; ?>>62</option>
-                                  <option value="63" <?=$pconfig['prefixrange_length'] == 63 ? "selected=\"selected\"" : ""; ?>>63</option>
-                                  <option value="64" <?=$pconfig['prefixrange_length'] == 64 ? "selected=\"selected\"" : ""; ?>>64</option>
+<?php for ($i = 48; $i <= 64; $i++): ?>
+                                  <option value="<?= $i ?>" <?=$pconfig['prefixrange_length'] == $i ? 'selected="selected"' : '' ?>><?= $i ?></option>
+<?php endfor ?>
                                 </select>
                               </td>
                               <td></td>
