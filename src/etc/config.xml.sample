@@ -248,6 +248,8 @@
     <ssh>
       <group>admins</group>
     </ssh>
+    <rrdbackup>-1</rrdbackup>
+    <netflowbackup>-1</netflowbackup>
   </system>
   <interfaces>
     <wan>
