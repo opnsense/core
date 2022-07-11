@@ -473,7 +473,7 @@ include("head.inc");
 <?php if ($pdlen >= 0): ?>
                      <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available prefix delegation size");?></td>
-                      <td><?= 64 - $pdlen ?></td>
+                      <td><?= 64 - $pdlen ?> <?= gettext('bits') ?></td>
                     </tr>
 <?php endif ?>
 <?php endif ?>
