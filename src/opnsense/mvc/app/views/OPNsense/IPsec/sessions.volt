@@ -37,9 +37,16 @@
                 formatters:{
                     commands: function (column, row) {
                         if (row['connected']) {
-                            return  '<button type="button" class="btn btn-xs btn-default command-disconnect" data-row-id="' + row.name + '"><span class="fa fa-remove fa-fw"></span></button>';
+                            return  '<button type="button" class="btn btn-xs btn-default command-disconnect" data-toggle="tooltip" title="{{ lang._('Disconnect') }}" data-row-id="' + row.name + '"><span class="fa fa-remove fa-fw"></span></button>';
                         } else {
-                            return  '<button type="button" class="btn btn-xs btn-default command-connect" data-row-id="' + row.name + '"><span class="fa fa-play fa-fw text-success"></span></button>';
+                            return  '<button type="button" class="btn btn-xs btn-default command-connect" data-toggle="tooltip" title="{{ lang._('Connect') }}" data-row-id="' + row.name + '"><span class="fa fa-play fa-fw"></span></button>';
+                        }
+                    },
+                    status: function (column, row) {
+                        if (row['connected']) {
+                            return '<span class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._('Connected') }}"></span>';
+                        } else {
+                            return '<span class="fa fa-remove fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Disconnected') }}"></span>';
                         }
                     }
                 }
@@ -119,6 +126,7 @@
         <thead>
           <tr>
               <th data-column-id="name" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="connected" data-width="6em" data-type="string" data-formatter="status">{{ lang._('Status') }}</th>
               <th data-column-id="phase1desc" data-type="string">{{ lang._('Connection') }}</th>
               <th data-column-id="version" data-type="string">{{ lang._('Version') }}</th>
               <th data-column-id="local-id" data-type="string">{{ lang._('Local ID') }}</th>
@@ -127,7 +135,7 @@
               <th data-column-id="remote-addrs" data-type="string">{{ lang._('Remote IP') }}</th>
               <th data-column-id="local-class" data-type="string">{{ lang._('Local Auth') }}</th>
               <th data-column-id="remote-class" data-type="string">{{ lang._('Remote Auth') }}</th>
-              <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+              <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false"></th>
           </tr>
         </thead>
         <tbody>
