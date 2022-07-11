@@ -81,7 +81,7 @@
 
 
 <div class="tab-content content-box">
-    <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+    <table id="grid-spd" class="table table-condensed table-hover table-striped table-responsive">
         <thead>
         <tr>
             <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
