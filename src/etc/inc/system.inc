@@ -248,7 +248,7 @@ function get_locale_list()
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
-    $locales['it_IT'] = gettext('Italian'); /* development only */
+    $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['no_NO'] = gettext('Norwegian');
     $locales['po_PL'] = gettext('Polish'); /* development only */
