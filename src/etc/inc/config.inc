@@ -101,7 +101,12 @@ function convert_config($verbose = false)
     }
 
     /* register pluggable interfaces */
-    mwexecf('/usr/local/sbin/pluginctl -i');
+    $cmd = '/usr/local/sbin/pluginctl -i';
+    if ($verbose) {
+        passthru($cmd);
+    } else {
+        mwexecf($cmd);
+    }
 
     /* factory reset on release type and plugins if necessary */
     $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
