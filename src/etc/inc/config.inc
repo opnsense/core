@@ -100,6 +100,9 @@ function convert_config($verbose = false)
         mwexecf($cmd);
     }
 
+    /* register pluggable interfaces */
+    mwexecf('/usr/local/sbin/pluginctl -i');
+
     /* factory reset on release type and plugins if necessary */
     $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
     if ($verbose) {
@@ -140,8 +143,6 @@ function write_config($desc = '', $backup = true)
             }
         }
     }
-
-    plugins_interfaces();
 
     $cnf = OPNsense\Core\Config::getInstance();
     $cnf->fromArray($config);

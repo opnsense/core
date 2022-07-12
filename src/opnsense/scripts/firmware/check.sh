@@ -64,7 +64,7 @@ repository="error"
 sets_upgraded=
 upgrade_needs_reboot="0"
 
-product_suffix="-$(pluginctl -g system.firmware.type)"
+product_suffix="-$(/usr/local/sbin/pluginctl -g system.firmware.type)"
 if [ "${product_suffix}" = "-" ]; then
     product_suffix=
 fi
