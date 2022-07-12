@@ -63,7 +63,7 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
-$opts = getopt('cdghiirs', [], $optind);
+$opts = getopt('cdghirs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
