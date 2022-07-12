@@ -167,7 +167,8 @@ function plugins_interfaces()
 {
     global $config;
 
-    $stale_interfaces = array();
+    $stale_interfaces = [];
+    $changed = false;
 
     // mark previous dynamic registrations stale
     if (isset($config['interfaces'])) {
@@ -199,11 +200,15 @@ function plugins_interfaces()
                     } else {
                         $intf_config = &config_read_array('interfaces', $intf_ref);
                     }
-                    $intf_config['internal_dynamic'] = true;
+                    if (!isset($intf_config['internal_dynamic'])) {
+                        $intf_config['internal_dynamic'] = true;
+                        $changed = true;
+                    }
                     // traverse and diff interface properties with known configuration
                     foreach ($intf_data as $prop_name => $prop_value) {
                         if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || $intf_config[$prop_name] != $prop_value) {
                             $intf_config[$prop_name] = $prop_value;
+                            $changed = true;
                         }
                     }
                 }
@@ -215,8 +220,11 @@ function plugins_interfaces()
     foreach ($stale_interfaces as $intf_ref => $no_data) {
         if (isset($config['interfaces'][$intf_ref])) {
             unset($config['interfaces'][$intf_ref]);
+            $changed = true;
         }
     }
+
+    return $changed;
 }
 
 function plugins_firewall($fw)
