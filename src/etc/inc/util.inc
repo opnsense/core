@@ -296,13 +296,28 @@ function unlock($cfglckkey = null)
 
 function exit_on_bootup($callback = null, $arguments = [])
 {
-    /* intentionally we exit here to avoid future cleverness WRT bootup handing */
-    if (!flock(fopen('/var/run/booting', 'r+'), LOCK_SH | LOCK_NB)) {
+    $bootflag = '/var/run/booting';
+
+    /* make sure file exists */
+    @touch($bootflag);
+
+    $fp = fopen($bootflag, 'r');
+    if (!$fp) {
+        /* log possible error and adjust exist code */
+        log_error("exit_on_bootup(): error opening $bootflag");
+        exit(1);
+    }
+
+    if (!flock($fp, LOCK_SH | LOCK_NB)) {
         if ($callback) {
             call_user_func_array($callback, $arguments);
         }
+        /* intentionally we exit here to avoid future cleverness WRT bootup handing */
         exit(0);
     }
+
+    /* let the script run if we made sure we are up and running */
+    fclose($fp);
 }
 
 /* validate non-negative numeric string, or equivalent numeric variable */
