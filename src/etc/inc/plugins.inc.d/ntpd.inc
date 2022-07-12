@@ -76,7 +76,7 @@ function ntpd_cron()
     $jobs = array();
 
     if (ntpd_enabled() && !empty($config['ntpd']['clientmode'])) {
-        $jobs[]['autocron'] = array('pluginctl -s ntpd restart', '0', '2');
+        $jobs[]['autocron'] = ['/usr/local/sbin/pluginctl -s ntpd restart', '0', '2'];
     }
 
     return $jobs;

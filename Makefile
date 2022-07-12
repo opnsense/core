@@ -346,7 +346,7 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@pluginctl webgui
+	@${.CURDIR}/src/sbin/pluginctl webgui
 
 lint-shell:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
