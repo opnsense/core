@@ -64,7 +64,7 @@ class SessionsController extends ApiControllerBase
         if (!empty($data)) {
             foreach ($data as $conn => $payload) {
                 $record = $payload;
-                $record['ikeid'] = substr(explode('-', $conn)[0],3);
+                $record['ikeid'] = substr(explode('-', $conn)[0], 3);
                 $record['phase1desc'] = null;
                 $record['name'] = $conn;
                 if (!empty($phase1s[$record['ikeid']])) {
