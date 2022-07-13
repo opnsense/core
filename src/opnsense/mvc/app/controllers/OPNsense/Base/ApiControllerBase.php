@@ -54,6 +54,7 @@ class ApiControllerBase extends ControllerRoot
         $sort_flags = SORT_NATURAL
     ) {
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
         $entry_keys = array_keys($records);
