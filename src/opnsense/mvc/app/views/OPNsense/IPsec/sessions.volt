@@ -143,7 +143,7 @@
     </table>
 </div>
 
-<div class="tab-content content-box __mb" id="box-phase2">
+<div class="tab-content content-box __mb" id="box-phase2" style="display:none">
     <table id="grid-phase2" class="table table-condensed table-hover table-striped table-responsive">
       <thead>
         <tr>
