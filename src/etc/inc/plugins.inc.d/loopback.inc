@@ -83,12 +83,12 @@ function loopback_configure_do($verbose = false, $device = null)
     // (re)configure loopback devices
     foreach ($loopbacks as $loopback) {
         $device_name = "lo{$loopback->deviceId}";
+        $configured_devices[] = $device_name;
 
         if ($device !== null && $device != $device_name) {
             continue;
         }
 
-        $configured_devices[] = $device_name;
         if (!in_array($device_name, $configured_interfaces)) {
             mwexecf('/sbin/ifconfig %s create', [$device_name]);
         }
