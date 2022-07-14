@@ -3995,8 +3995,10 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
-            $sec = trim(`/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh {$ifinfo['if']}`);
-            $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
+            $sec = trim(shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ' . escapeshellarg($ifinfo['if'])));
+            if (is_int($sec)) {
+                $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
+            }
         }
 
         if ($ifinfo['status'] == "up") {
@@ -4029,7 +4031,7 @@ function get_interfaces_info($include_unlinked = false)
 
         $bridge = link_interface_to_bridge($ifdescr);
         if ($bridge) {
-            $bridge_text = `/sbin/ifconfig {$bridge}`;
+            $bridge_text = shell_exec('/sbin/ifconfig ' . escapeshellarg($bridge));
             if (stristr($bridge_text, 'blocking') != false) {
                 $ifinfo['bridge'] = "<b><span class='text-danger'>" . gettext("blocking") . "</span></b> - " . gettext("check for ethernet loops");
                 $ifinfo['bridgeint'] = $bridge;
