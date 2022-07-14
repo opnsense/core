@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ if ($ret != null) {
     $ret['product_time'] = date('D M j H:i:s T Y', filemtime('/usr/local/opnsense/www/index.php'));
     $repos = explode("\n", trim(shell_exec('opnsense-verify -l')));
     sort($repos);
+    $ret['product_log'] = empty(trim(shell_exec('opnsense-update -G'))) ? 0 : 1;
     $ret['product_repos'] = implode(', ', $repos);
     $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
     ksort($ret);

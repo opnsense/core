@@ -447,6 +447,11 @@
                 );
             }
 
+            if (data['product']['product_log']) {
+                $('#audit_upgrade').parent().show();
+            } else {
+                $('#audit_upgrade').parent().hide();
+            }
             $('#audit_actions').show();
             $("#plugin_search").keyup();
             $("#package_search").keyup();
@@ -598,6 +603,17 @@
         $('#audit_security').click(function () { backend('audit'); });
         $('#audit_connection').click(function () { backend('connection'); });
         $('#audit_health').click(function () { backend('health'); });
+        $('#audit_upgrade').click(function () {
+            ajaxCall('/api/core/firmware/log/0', {}, function (data, status) {
+                if (data['log'] != undefined) {
+                    stdDialogConfirm("{{ lang._('Upgrade log') }}", data['log'],
+                      "{{ lang._('Clear') }}", "{{ lang._('Close') }}", function () {
+                        ajaxCall('/api/core/firmware/log/1');
+                        $('#audit_upgrade').parent().hide();
+                      }, 'primary');
+                }
+            });
+        });
 
         // populate package information
         packagesInfo(true);
@@ -872,6 +888,7 @@
                                             <li><a id="audit_connection" href="#">{{ lang._('Connectivity') }}</a></li>
                                             <li><a id="audit_health" href="#">{{ lang._('Health') }}</a></li>
                                             <li><a id="audit_security" href="#">{{ lang._('Security') }}</a></li>
+                                            <li><a id="audit_upgrade" href="#">{{ lang._('Upgrade') }}</a></li>
                                         </ul>
                                     </div>
                                     <div class="btn-group" id="plugin_actions" style="display:none;">

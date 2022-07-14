@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -365,6 +365,28 @@ class FirmwareController extends ApiControllerBase
             $response['html'] = $html;
         }
 
+
+        return $response;
+    }
+
+    /**
+     * Retrieve upgrade log hidden in system
+     * @return string with upgrade log
+     * @throws \Exception
+     */
+    public function logAction($clear)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = ['status' => 'failure'];
+
+        if ($this->request->isPost()) {
+            $text = trim($backend->configdRun('firmware log ' . (empty($clear) ? 'show' : 'clear')));
+            $response['status'] = 'ok';
+            if (!empty($text)) {
+                $response['log'] = $text;
+            }
+        }
 
         return $response;
     }
