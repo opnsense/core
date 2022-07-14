@@ -30,11 +30,27 @@ namespace OPNsense\System\Status;
 
 use OPNsense\System\AbstractStatus;
 
-class FirewallStatus extends AbstractStatus {
+class FirewallStatus extends AbstractStatus
+{
 
     public function __construct()
     {
-        $this->internalStatus = static::STATUS_OK;
+        foreach ($this->statusStrings as $level) {
+            if (file_exists('/tmp/rules.' . $level)) {
+                $this->internalLogLocation = file_get_contents('/tmp/rules.' . $level);
+                $this->internalMessage = "A problem was detected.";
+                $this->internalStatus = constant("static::STATUS_" . strtoupper($level));
+            }
+        }
+    }
+
+    public function dismissStatus()
+    {
+        foreach ($this->statusStrings as $level) {
+            if (file_exists('/tmp/rules.' . $level)) {
+                unlink('/tmp/rules.' . $level);
+            }
+        }
     }
 
 }

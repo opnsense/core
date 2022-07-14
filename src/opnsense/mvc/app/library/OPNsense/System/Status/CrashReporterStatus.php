@@ -44,12 +44,6 @@ class CrashReporterStatus extends AbstractStatus {
 
     private function hasCrashed()
     {
-        $config = Config::getInstance()->object();
-        $deployment = $config->system->deployment;
-        if (!empty($deployment)) {
-            return false;
-        }
-
         $skipFiles = array('.', '..', 'minfree', 'bounds', '');
         $errorLog = '/tmp/PHP_errors.log';
         $count = 0;
@@ -71,6 +65,27 @@ class CrashReporterStatus extends AbstractStatus {
             }
         }
 
+        $config = Config::getInstance()->object();
+        $deployment = $config->system->deployment;
+        if (!empty($deployment)) {
+            if ($count > 0) {
+                $this->internalMessage = "A problem was detected, but non-production deployment is configured so crash reports cannot be sent.";
+                $this->internalStatus = static::STATUS_NOTICE;
+                $this->internalLogLocation = '/crash_reporter.php';
+            }
+            return false;
+        }
+
         return $count > 0;
+    }
+
+    public function dismissStatus()
+    {
+        /* Same logic as crash_reporter */
+        $files_to_upload = glob('/var/crash/*');
+        foreach ($files_to_upload as $file_to_upload) {
+            @unlink($file_to_upload);
+        }
+        @unlink('/tmp/PHP_errors.log');
     }
 }

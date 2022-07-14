@@ -75,6 +75,24 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       ol.example li.placeholder:before {
         position: absolute;
       }
+
+      /* On upstream Bootstrap, these properties are set in list-group-item.*/
+      .list-group-item-border {
+          border: 1px solid #ddd;
+      }
+
+      .list-group-item-border:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+      }
+
+      .list-group-item-border:last-child {
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+      }
+      .btn.pull-right {
+          margin-left: 3px;
+      }
     </style>
 
     <!-- Favicon -->
@@ -195,6 +213,166 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
+      function updateStatusDialog(dialog, status, subjectRef = null) {
+          let $message = $(
+              '<div class="row">' +
+              '<div class="col-md-6">' +
+              '<div class="list-group" id="list-tab" role="tablist" style="margin-bottom: 0">' +
+              '</div>' +
+              '</div>' +
+              '<div class="col-md-6">' +
+              '<div class="tab-content" id="nav-tabContent">' +
+              '</div>' +
+              '</div>'+
+              '</div>'
+          );
+          for (let subject in status.data) {
+              if (subject === 'System') {
+                  continue;
+              }
+              let statusObject = status.data[subject];
+              let dismissNeeded = true;
+
+              if (status.data[subject].status == "OK") {
+                  dismissNeeded = false;
+              }
+              let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
+              let $listItem = $(
+                  '<a class="list-group-item list-group-item-border" data-toggle="list" href="#list-' + subject + '" role="tab" style="outline: 0">' +
+                  formattedSubject +
+                  '<span class="' + statusObject.icon + '" style="float: right"></span>' +
+                  '</a>'
+              );
+              let referral = statusObject.logLocation ? 'Click <a href="' + statusObject.logLocation + '">here</a> for more information.' : ''
+              let $pane = $(
+                  '<div class="tab-pane fade" id="list-' + subject + '" role="tabpanel"><p>' + statusObject.message + ' ' + referral + '</p>' +
+                  '</div>'
+              );
+
+              $message.find('#list-tab').append($listItem);
+              $message.find('#nav-tabContent').append($pane);
+
+              if (subjectRef) {
+                  $message.find('#list-tab a[href="#list-' + subjectRef + '"]').addClass('active').tab('show').siblings().removeClass('active');
+                  $pane.addClass('active in').siblings().removeClass('active in');
+              } else {
+                  $message.find('#list-tab a:first-child').addClass('active').tab('show');
+                  $message.find('#nav-tabContent div:first-child').addClass('active in');
+              }
+
+              $message.find('#list-tab a[href="#list-' + subject + '"]').on('click', function(e) {
+                  e.preventDefault();
+                  $(this).tab('show');
+                  $(this).toggleClass('active').siblings().removeClass('active');
+              });
+
+              if (dismissNeeded) {
+                  let $button = $('<div><button id="dismiss-'+ subject + '" type="button" class="btn btn-link btn-sm" style="padding: 0px;">Dismiss</button></div>');
+                  $pane.append($button);
+              }
+
+              $message.find('#dismiss-' + subject).on('click', function(e) {
+                  $.ajax('/api/core/system/dismissStatus', {
+                      type: 'post',
+                      data: {'subject': subject},
+                      dialogRef: dialog,
+                      subjectRef: subject,
+                      success: function() {
+                          updateStatus().then((data) => {
+                              let newStatus = parseStatus(data);
+                              let $newMessage = updateStatusDialog(this.dialogRef, newStatus, this.subjectRef);
+                              this.dialogRef.setType(newStatus.severity);
+                              this.dialogRef.setMessage($newMessage);
+                              $('#system_status').attr("class", newStatus.data['System'].icon);
+                          });
+                      }
+                  });
+              });
+          }
+          return $message;
+      }
+
+      function parseStatus(data) {
+          let status = {};
+          let severity = BootstrapDialog.TYPE_SUCCESS;
+          $.each(data, function(subject, statusObject) {
+              if (subject == 'System') {
+                  switch (statusObject.status) {
+                      case "Error":
+                          $('#system_status').toggleClass("fa fa-exclamation-triangle text-danger");
+                          severity = BootstrapDialog.TYPE_DANGER;
+                          statusObject.icon = 'fa fa-exclamation-triangle text-danger'
+                          break;
+                      case "Warning":
+                          $('#system_status').toggleClass("fa fa-exclamation-triangle text-warning");
+                          severity = BootstrapDialog.TYPE_WARNING;
+                          statusObject.icon = 'fa fa-exclamation-triangle text-warning';
+                          break;
+                      case "Notice":
+                          $('#system_status').toggleClass("fa fa-check-circle text-info");
+                          severity = BootstrapDialog.TYPE_INFO;
+                          statusObject.icon = 'fa fa-check-circle text-info';
+                          break;
+                      default:
+                          $('#system_status').toggleClass('fa fa-check-circle text-success');
+                          statusObject.icon = 'fa fa-check-circle text-success';
+                          break;
+                  }
+              } else {
+                  switch (statusObject.status) {
+                      case "Error":
+                          statusObject.icon = 'fa fa-exclamation-triangle text-danger'
+                          break;
+                      case "Warning":
+                          statusObject.icon = 'fa fa-exclamation-triangle text-warning';
+                          break;
+                      case "Notice":
+                          statusObject.icon = 'fa fa-check-circle text-info';
+                          break;
+                      default:
+                          statusObject.icon = 'fa fa-check-circle text-success';
+                          break;
+                  }
+              }
+          });
+          status.severity = severity;
+          status.data = data;
+
+          return status;
+      }
+
+      function updateStatus() {
+          return $.ajax("/api/core/system/status", {
+              type: 'get',
+              dataType: "json",
+              error : function (jqXHR, textStatus, errorThrown) {
+                  console.log('system.status : ' +errorThrown);
+              }
+          });
+      }
+
+      updateStatus().then((data) => {
+          let status = parseStatus(data);
+
+          $("#system_status").click(function() {
+              BootstrapDialog.show({
+                  type: status.severity,
+                  title: 'System Status',
+                  message: function(dialog) {
+                      let $message = updateStatusDialog(dialog, status);
+                      return $message;
+                  },
+                  buttons: [{
+                      label: 'Close',
+                      cssClass: 'btn-primary',
+                      action: function(dialogRef) {
+                          dialogRef.close();
+                      }
+                  }],
+              });
+          });
+      });
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
@@ -243,14 +421,15 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               });
           }
       });
-      // change search input size on focus() to fit results
+
+      //change search input size on focus() to fit results
       $("#menu_search_box").focus(function(){
           $("#menu_search_box").css('width', '450px');
-          $("#menu_messages").hide();
+          $("#system_status").hide();
       });
       $("#menu_search_box").focusout(function(){
           $("#menu_search_box").css('width', '250px');
-          $("#menu_messages").show();
+          $("#system_status").show();
       });
       // convert input form tables for better mobile experience
       hook_stacked_form_tables(".opnsense_standard_table_form");

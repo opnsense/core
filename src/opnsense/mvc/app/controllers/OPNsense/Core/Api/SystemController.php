@@ -62,10 +62,27 @@ class SystemController extends ApiControllerBase
         $backend = new Backend();
         $status = trim($backend->configdRun('system status'));
 
+        /* TODO: iterate ACLs and check access rights */
         if ($status) {
             return $status;
         }
 
         return array("message" => "Unable to run configd action");
+    }
+
+    public function dismissStatusAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost("subject")) {
+            $subsystem = $this->request->getPost("subject");
+            if ($subsystem) {
+                $backend = new Backend();
+                $status = $backend->configdRun(sprintf('system dismiss status %s', $subsystem));
+                if ($status == "OK") {
+                    return [
+                        'status' => 'ok'
+                    ];
+                }
+            }
+        }
     }
 }

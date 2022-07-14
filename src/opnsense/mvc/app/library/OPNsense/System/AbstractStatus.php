@@ -31,13 +31,14 @@ namespace OPNsense\System;
 abstract class AbstractStatus
 {
     const STATUS_ERROR = -1;
-    const STATUS_WARN = 0;
+    const STATUS_WARNING = 0;
     const STATUS_NOTICE = 1;
     const STATUS_OK = 2;
 
     protected $internalMessage = 'No problems were detected.';
     protected $internalLogLocation = '';
     protected $internalStatus = self::STATUS_OK;
+    protected $statusStrings = array('notice', 'warning', 'error');
 
     public function __construct()
     {
@@ -56,5 +57,10 @@ abstract class AbstractStatus
     public function getLogLocation()
     {
         return $this->internalLogLocation;
+    }
+
+    public function dismissStatus()
+    {
+        /* To be overridden by the child status classes */
     }
 }

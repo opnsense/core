@@ -36,6 +36,7 @@ namespace OPNsense\System;
 class SystemStatus
 {
     private $statuses;
+    private $objectMap = [];
 
     public function __construct()
     {
@@ -64,6 +65,7 @@ class SystemStatus
             $obj = new $statusClass();
             $reflect = new \ReflectionClass($obj);
             $shortName = str_replace('Status', '', $reflect->getShortName());
+            $this->objectMap[$shortName] = $obj;
 
             if ($shortName == 'System') {
                 /* reserved */
@@ -93,7 +95,7 @@ class SystemStatus
         switch ($statusCode) {
             case AbstractStatus::STATUS_ERROR:
                 return 'Error';
-            case AbstractStatus::STATUS_WARN:
+            case AbstractStatus::STATUS_WARNING:
                 return 'Warning';
             case AbstractStatus::STATUS_NOTICE:
                 return 'Notice';
@@ -108,6 +110,13 @@ class SystemStatus
     public function getSystemStatus()
     {
         return $this->statuses;
+    }
+
+    public function dismissStatus($subsystem)
+    {
+        if (array_key_exists($subsystem, $this->objectMap)) {
+            $this->objectMap[$subsystem]->dismissStatus();
+        }
     }
 
 }
