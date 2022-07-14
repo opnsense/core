@@ -40,10 +40,6 @@ abstract class AbstractStatus
     protected $internalStatus = self::STATUS_OK;
     protected $statusStrings = array('notice', 'warning', 'error');
 
-    public function __construct()
-    {
-    }
-
     public function getStatus()
     {
         return $this->internalStatus;
