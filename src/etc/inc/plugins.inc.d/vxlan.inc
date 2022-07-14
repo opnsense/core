@@ -81,6 +81,7 @@ function vxlan_configure_do($verbose = false, $device = null)
         $device_name = "vxlan{$vxlan->deviceId}";
 
         if ($device !== null && $device != $device_name) {
+            $configured_devices[] = $device_name;
             continue;
         }
 
