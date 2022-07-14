@@ -174,7 +174,8 @@ function system_api_firmware()
     $current = explode('_', $product['product_version'])[0];
 
     /* information from changelog, more accurate for production release */
-    $from_changelog = !empty($product['product_latest']) &&
+    $from_changelog = strpos($product['product_id'], '-devel') === false &&
+        !empty($product['product_latest']) &&
         $product['product_latest'] != $current;
 
     /* update status from last check, also includes major releases */
