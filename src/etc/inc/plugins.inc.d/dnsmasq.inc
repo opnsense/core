@@ -278,24 +278,18 @@ function _dnsmasq_dhcpleases_start()
 {
     global $config;
 
-    /* XXX this code is going away soon enough */
-    $leases = '/var/dhcpd/var/db/dhcpd.leases';
-
-    if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
+    if (isset($config['dnsmasq']['regdhcp'])) {
         $domain = $config['system']['domain'];
         if (isset($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
-        mwexecf(
-            '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
-            [$leases, $domain, '/var/run/dnsmasq.pid', '/var/etc/dnsmasq-leases']
-        );
+        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
     }
 }
 
 function _dnsmasq_dhcpleases_stop()
 {
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+    killbypid('/var/run/dnsmasq_dhcpd.pid', 'TERM', true);
 }
 
 function dnsmasq_hosts_generate()

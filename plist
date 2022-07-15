@@ -738,6 +738,7 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
+/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
 /usr/local/opnsense/scripts/dhcp/unbound_watcher.py
