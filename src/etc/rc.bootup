@@ -76,9 +76,7 @@ if (is_interface_mismatch()) {
     while (!set_networking_interfaces_ports(true));
 }
 
-/* loopback device is required early for syslog */
-interfaces_loopback_configure(true);
-
+interfaces_loopback_configure(true); /* loopback device is required early for syslog */
 system_kernel_configure(true);
 system_sysctl_configure(true);
 system_timezone_configure(true);
@@ -88,8 +86,8 @@ system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslog_start(true);
 
+filter_configure_sync(true, false); /* apply default policy before interface setup */
 interfaces_configure(true);
-
 system_resolvconf_generate(true);
 filter_configure_sync(true);
 plugins_configure('early', true);
@@ -106,7 +104,6 @@ plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 rrd_configure(true, true);
 
-/* XXX this seems misplaced */
-system_powerd_configure(true);
+system_powerd_configure(true); /* XXX this seems misplaced */
 
 exit(0);
