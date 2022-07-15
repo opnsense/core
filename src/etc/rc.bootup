@@ -88,6 +88,9 @@ system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslog_start(true);
 
+/* apply default policy before interface setup */
+filter_configure_sync(true, false);
+
 interfaces_configure(true);
 
 system_resolvconf_generate(true);
