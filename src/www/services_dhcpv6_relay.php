@@ -102,12 +102,12 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if ($dhcpd_enabled):
+          print_info_box(gettext('The DHCPv6 server is currently enabled. Cannot enable the DHCPv6 relay while the DHCPv6 server is enabled on any interface.'));
+        else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
-          <?php if ($dhcpd_enabled):
-            print_info_box(gettext('The DHCPv6 server is currently enabled. Cannot enable the DHCPv6 relay while the DHCPv6 server is enabled on any interface.'));
-          else: ?>
           <div class="content-box">
             <form method="post" name="iform" id="iform">
               <div>
@@ -178,9 +178,8 @@ include("head.inc");
               </div>
             </form>
           </div>
-<?php
-          endif; ?>
         </section>
+        <?php endif ?>
       </div>
     </div>
   </section>
