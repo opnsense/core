@@ -54,13 +54,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         switch ($pconfig['ipproto']) {
             case 'ipv6':
                 list ($ifaddr) = interfaces_primary_address6($pconfig['interface']);
-                $command .= '6';
+                $command .= ' -6';
                 break;
             case 'ipv6-ll':
-                $command .= '6';
+                $command .= ' -6';
                 list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
                 break;
             default:
+                $command .= ' -4';
                 list ($ifaddr) = interfaces_primary_address($pconfig['interface']);
                 break;
         }
