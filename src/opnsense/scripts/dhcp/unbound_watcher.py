@@ -226,12 +226,12 @@ if __name__ == '__main__':
             config=inputargs.config
         )
     else:
-        syslog.syslog(syslog.LOG_NOTICE, 'daemonize dhcpd lease watcher.')
+        syslog.syslog(syslog.LOG_NOTICE, 'daemonize unbound dhcpd watcher.')
         cmd  = lambda : run_watcher(
             target_filename=inputargs.target,
             default_domain=inputargs.domain,
             watch_file=inputargs.source,
             config=inputargs.config
         )
-        daemon = Daemonize(app="lease_watcher", pid=inputargs.pid, action=cmd)
+        daemon = Daemonize(app="unbound_dhcpd", pid=inputargs.pid, action=cmd)
         daemon.start()

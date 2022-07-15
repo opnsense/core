@@ -739,8 +739,8 @@
 /usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/get_leases.py
-/usr/local/opnsense/scripts/dhcp/lease_watcher.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
+/usr/local/opnsense/scripts/dhcp/unbound_watcher.py
 /usr/local/opnsense/scripts/dns/query_dns.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py

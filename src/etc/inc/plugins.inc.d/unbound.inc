@@ -423,7 +423,7 @@ function unbound_configure_do($verbose = false, $interface = '')
         if (isset($config['unbound']['regdhcpdomain'])) {
             $domain = $config['unbound']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dhcp/lease_watcher.py --domain %s', $domain);
+        mwexecf('/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain %s', $domain);
     }
 
     if ($verbose) {
