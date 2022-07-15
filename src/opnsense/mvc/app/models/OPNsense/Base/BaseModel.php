@@ -549,6 +549,7 @@ abstract class BaseModel
      *
      * @param bool $validateFullModel by default we only validate the fields we have changed
      * @param bool $disable_validation skip validation, be careful to use this!
+     * @return bool persisted changes
      * @throws Validation\Exception validation errors
      */
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
@@ -584,6 +585,9 @@ abstract class BaseModel
         }
         if ($this->internal_mountpoint != ':memory:') {
             $this->internalSerializeToConfig();
+            return true;
+        } else {
+            return false;
         }
     }
 
