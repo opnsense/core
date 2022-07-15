@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -110,6 +110,7 @@ function dnsmasq_configure_do($verbose = false)
     }
 
     $args .= ' -H /var/etc/dnsmasq-hosts ';
+    $args .= ' -H /var/etc/dnsmasq-leases ';
 
     /* Setup listen port, if non-default */
     if (isset($config['dnsmasq']['port']) && is_port($config['dnsmasq']['port'])) {
@@ -267,30 +268,28 @@ function _dnsmasq_add_host_entries()
      * as it should be brings the service back to life.
      */
     chmod('/var/etc/dnsmasq-hosts', 0644);
+
+    @unlink('/var/etc/dnsmasq-leases');
+    touch('/var/etc/dnsmasq-leases');
+    chmod('/var/etc/dnsmasq-leases', 0644);
 }
 
 function _dnsmasq_dhcpleases_start()
 {
     global $config;
 
-    /* XXX this code is going away soon enough */
-    $leases = '/var/dhcpd/var/db/dhcpd.leases';
-
-    if (isset($config['dnsmasq']['regdhcp']) && file_exists($leases)) {
+    if (isset($config['dnsmasq']['regdhcp'])) {
         $domain = $config['system']['domain'];
         if (isset($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
-        mwexecf(
-            '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
-            array($leases, $domain, '/var/run/dnsmasq.pid', '/var/etc/dnsmasq-hosts')
-        );
+        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
     }
 }
 
 function _dnsmasq_dhcpleases_stop()
 {
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+    killbypid('/var/run/dnsmasq_dhcpd.pid', 'TERM', true);
 }
 
 function dnsmasq_hosts_generate()
