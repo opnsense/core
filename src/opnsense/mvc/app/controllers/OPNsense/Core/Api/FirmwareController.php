@@ -374,14 +374,15 @@ class FirmwareController extends ApiControllerBase
      * @return string with upgrade log
      * @throws \Exception
      */
-    public function logAction()
+    public function logAction($clear)
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
-        $response = [];
+        $response = ['status' => 'failure'];
 
         if ($this->request->isPost()) {
-            $text = trim($backend->configdRun('firmware log'));
+            $text = trim($backend->configdRun('firmware log ' . (empty($clear) ? 'show' : 'clear')));
+            $response['status'] = 'ok';
             if (!empty($text)) {
                 $response['log'] = $text;
             }

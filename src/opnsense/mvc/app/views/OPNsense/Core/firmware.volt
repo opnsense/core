@@ -604,9 +604,13 @@
         $('#audit_connection').click(function () { backend('connection'); });
         $('#audit_health').click(function () { backend('health'); });
         $('#audit_upgrade').click(function () {
-            ajaxCall('/api/core/firmware/log', {}, function (data, status) {
+            ajaxCall('/api/core/firmware/log/0', {}, function (data, status) {
                 if (data['log'] != undefined) {
-                    stdDialogInform("{{ lang._('Upgrade log') }}", data['log'], "{{ lang._('Close') }}");
+                    stdDialogConfirm("{{ lang._('Upgrade log') }}", data['log'],
+                      "{{ lang._('Clear') }}", "{{ lang._('Close') }}", function () {
+                        ajaxCall('/api/core/firmware/log/1');
+                        $('#audit_upgrade').parent().hide();
+                      }, 'primary');
                 }
             });
         });
