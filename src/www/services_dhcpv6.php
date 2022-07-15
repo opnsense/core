@@ -430,6 +430,9 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
+          <?php print_info_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?>
+        <?php else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('staticmaps')): ?><p>
@@ -438,9 +441,6 @@ include("head.inc");
         <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform" id="iform">
-              <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
-              <?php print_content_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?>
-              <?php else: ?>
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
@@ -812,9 +812,8 @@ include("head.inc");
                     endif; ?>
                   </table>
                 </div>
-<?php
-                endif; ?>
               </div>
+<?php endif; ?>
           </section>
         </div>
       </div>

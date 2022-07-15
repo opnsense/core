@@ -207,18 +207,6 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
 EOFnp;
 }
 
-function print_content_box($msg)
-{
-    echo <<<EOFnp
-<div class="table-responsive">
-  <table class="table table-striped">
-     <tr><td>{$msg}</td></tr>
-  </table>
-</div>
-
-EOFnp;
-}
-
 function print_info_box_apply($msg, $alert = 'info')
 {
     $iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
