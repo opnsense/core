@@ -2707,12 +2707,12 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     killbypid('/var/run/rtsold.pid', 'TERM', true);
 
     $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a',
+        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a -u',
         array(
             '/var/run/rtsold.pid',
             '/var/etc/rtsold_script.sh',
             '/var/etc/rtsold_script.sh',
-            '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+            '/var/etc/rtsold_rdnss_script.sh',
         )
     );
 
@@ -2879,6 +2879,53 @@ EOD;
 
     @file_put_contents('/var/etc/rtsold_script.sh', $rtsold_script);
     @chmod('/var/etc/rtsold_script.sh', 0755);
+
+    $rtsold_rdnss_script = <<<EOD
+#!/bin/sh
+# this file was auto-generated, do not edit
+# This script is to be invoked by rtsold when a Router Advertisement
+# with RDNSS / DNSSL options is encountered. It extracts interface,
+# router and DNS information from arguments and STDIN.
+# \${2} is 'ifname:slaac:[RA-source-address]', where 'ifname' is the
+# interface the RA was received on.
+if [ -z "\${2}" ]; then
+    echo "Nothing to do."
+    exit 0
+fi
+ifname=$(echo "\${2}" | sed -E 's/:.*//')
+if [ -n "$(/usr/local/sbin/ifctl -i \${ifname} -6r)" ]; then
+    echo "IPv6 gateway for \${ifname} already exists."
+    exit 0
+fi
+# \${1} indicates whether DNS information should be added or deleted.
+if [ "\${1}" = "-a" ]; then
+    rasrca=$(echo "\${2}" | sed -E 's/.*\[|\].*//g')
+    /usr/local/sbin/ifctl -i \${ifname} -6rd -a \${rasrca}
+    # XXX stop modifying defaultgw files in scripts
+    echo \${rasrca} > /tmp/\${ifname}_defaultgwv6
+    # rtsold sends a resolv.conf(5) file to STDIN of this script
+    while IFS=' ' read -r type value; do
+        if [ "\${type}" = "nameserver" ]; then
+            # in:  nameserver 2001:db8::1
+            #      nameserver 2001:db8::2
+            #      nameserver 2001:db8::3
+            # out: -a 2001:db8::1 -a 2001:db8::2 -a 2001:db8::3
+            nameservers="\${nameservers} -a \${value}"
+        elif [ "\${type}" = "search" ]; then
+            # in:  search example.com example.net example.org
+            # out: -a example.com -a example.net -a example.org
+            searchlist="-a $(echo "\${value}" | sed -E 's/ / -a /g')"
+        fi
+    done
+    /usr/local/sbin/ifctl -i \${ifname} -6nd \${nameservers}
+    /usr/local/sbin/ifctl -i \${ifname} -6sd \${searchlist}
+    /usr/local/sbin/configctl -d interface newipv6 \${ifname}
+fi
+
+EOD;
+
+    @file_put_contents('/var/etc/rtsold_rdnss_script.sh', $rtsold_rdnss_script);
+    @chmod('/var/etc/rtsold_rdnss_script.sh', 0755);
 }
 
 function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
