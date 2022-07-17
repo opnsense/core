@@ -806,6 +806,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
+/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
 /usr/local/opnsense/scripts/interfaces/traffic_stats.php
 /usr/local/opnsense/scripts/interfaces/traffic_top.py
 /usr/local/opnsense/scripts/ipsec/connect.py
