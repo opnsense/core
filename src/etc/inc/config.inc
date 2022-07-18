@@ -163,7 +163,7 @@ function write_config($desc = '', $backup = true)
         return -1;
     }
 
-    /* on succesfull save, serialize config back to global */
+    /* on successful save, serialize config back to global */
     $config = $cnf->toArray(listtags());
 
     return $config;
