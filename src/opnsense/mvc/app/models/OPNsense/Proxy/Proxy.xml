@@ -192,7 +192,7 @@
                     <ValidationMessage>Specify the maximum upload size (kB).</ValidationMessage>
                     <Required>N</Required>
                 </maxUploadSize>
-                <OverallBandwidthTrotteling type="IntegerField">
+                <OverallBandwidthThrottling type="IntegerField">
                     <default>1024</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the overall bandwidth for downloads in kilobits per second.</ValidationMessage>
@@ -202,22 +202,22 @@
                             <ValidationMessage>Both throttling parameters should either be filled or empty</ValidationMessage>
                             <type>AllOrNoneConstraint</type>
                             <addFields>
-                                <field1>perHostTrotteling</field1>
+                                <field1>perHostThrottling</field1>
                             </addFields>
                         </check001>
                     </Constraints>
-                </OverallBandwidthTrotteling>
-                <perHostTrotteling type="IntegerField">
+                </OverallBandwidthThrottling>
+                <perHostThrottling type="IntegerField">
                     <default>256</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the per host bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
                     <Constraints>
                         <check001>
-                            <reference>OverallBandwidthTrotteling.check001</reference>
+                            <reference>OverallBandwidthThrottling.check001</reference>
                         </check001>
                     </Constraints>
-                </perHostTrotteling>
+                </perHostThrottling>
             </traffic>
             <parentproxy>
                 <enabled type="BooleanField">
