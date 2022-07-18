@@ -100,7 +100,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            /* XXX for now only if a certificate is not availabe */
+            /* XXX for now only if a certificate is not available */
             webgui_create_selfsigned(false);
             $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         }
