@@ -39,7 +39,7 @@ use OPNsense\Core\Config;
 class SadController extends ApiControllerBase
 {
     /**
-     * Search SAD entrys
+     * Search SAD entries
      * @return array
      */
     public function searchAction()

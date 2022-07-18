@@ -39,7 +39,7 @@ use OPNsense\Core\Config;
 class SpdController extends ApiControllerBase
 {
     /**
-     * Search SPD entrys
+     * Search SPD entries
      * @return array
      */
     public function searchAction()
