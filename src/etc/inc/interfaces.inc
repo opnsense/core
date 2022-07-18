@@ -640,6 +640,9 @@ function _interfaces_gif_configure($gif)
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
         $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
         $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
+        if (is_linklocal($realifgw) && strpos($realifgw, '%') === false) {
+            $realifgw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
+        }
     }
 
     interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0])); /* XXX overreach? */
