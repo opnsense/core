@@ -361,7 +361,7 @@ mimetype.assign             = (
 url.access-deny             = ( "~", ".inc" )
 
 
-######### Options that are good to be but not neccesary to be changed #######
+######### Options that are good to be but not necessary to be changed #######
 
 ## bind to port (default: 80)
 
