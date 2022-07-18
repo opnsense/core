@@ -972,7 +972,7 @@ function openvpn_delete($mode, &$settings)
  * generate config (text) data for a single client specific override
  * @param array $settings csc item
  * @param array $server openvpn server item
- * @param string $target_filename write to filename, or use configured/generated path when emtpy
+ * @param string $target_filename write to filename, or use configured/generated path when empty
  * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
 function openvpn_csc_conf_write($settings, $server, $target_filename = null)
