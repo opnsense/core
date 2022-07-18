@@ -352,7 +352,7 @@ class FirewallController extends ApiControllerBase
      * retrieve various pf statistics
      * @return mixed
      */
-    public function pfStatistcsAction($section = null)
+    public function pfStatisticsAction($section = null)
     {
         return json_decode((new Backend())->configdpRun('filter diag info', [$section]), true);
     }
