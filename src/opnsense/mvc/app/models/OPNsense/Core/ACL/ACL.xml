@@ -144,7 +144,7 @@
         <name>Diagnostics: Firewall statistics</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/statistics</pattern>
-            <pattern>api/diagnostics/firewall/pf_statistcs/*</pattern>
+            <pattern>api/diagnostics/firewall/pf_statistics/*</pattern>
         </patterns>
     </page-diagnostics-pf-info>
     <page-diagnostics-system-pftop>
