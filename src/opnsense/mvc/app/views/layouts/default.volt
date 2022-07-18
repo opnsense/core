@@ -174,7 +174,7 @@
         <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
 
-        <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
+        <!-- Bootgrid (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jquery.bootgrid.css', theme_name)) }}" />
         <script src="{{ cache_safe('/ui/js/jquery.bootgrid.js') }}"></script>
         <!-- Bootstrap type ahead -->
