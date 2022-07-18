@@ -186,10 +186,6 @@ class SettingsController extends ApiMutableModelControllerBase
                         $item_html = str_replace("%url%", "http://cgi.nessus.org/plugins/dump.php3?id=" .
                             substr($ref, 7), $item_html);
                         $item_html = str_replace("%ref%", 'nessus ' . substr($ref, 7), $item_html);
-                    } elseif (substr($ref, 0, 7) == "mcafee,") {
-                        $item_html = str_replace("%url%", "http://vil.nai.com/vil/dispVirus.asp?virus_k=" .
-                            substr($ref, 7), $item_html);
-                        $item_html = str_replace("%ref%", 'macafee ' . substr($ref, 7), $item_html);
                     } else {
                         continue;
                     }
