@@ -133,7 +133,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
             if (is_ipaddrv4($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
-                    /* explictly do not require $addr['alias'] to be true here */
+                    /* explicitly do not require $addr['alias'] to be true here */
                     if ($addr['family'] != 'inet') {
                         continue;
                     }
