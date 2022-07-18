@@ -758,7 +758,7 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * retrieve exectution status
+     * retrieve execution status
      */
     public function runningAction()
     {
