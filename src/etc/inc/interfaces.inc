@@ -2198,7 +2198,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         (strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
         (strpos($realhwif, '/') === 0 && !file_exists($realhwif))
     ) {
-        log_error(sprintf('Unable to configure non-existent interface %s (%s)', $interface, $realhwif));
+        log_error(sprintf('Unable to configure nonexistent interface %s (%s)', $interface, $realhwif));
         return $loaded;
     }
 
@@ -2397,7 +2397,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $reload = false
 
     $trackcfg = $config['interfaces'][$lancfg['track6-interface']];
     if (!isset($trackcfg['enable'])) {
-        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking nonexistent interface {$lancfg['track6-interface']}");
         return;
     }
 
@@ -2435,7 +2435,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
 
     if (empty($wancfg)) {
-        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking nonexistent interface {$lancfg['track6-interface']}");
         return;
     }
 
