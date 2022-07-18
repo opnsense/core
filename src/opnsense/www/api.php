@@ -32,7 +32,7 @@ try {
     if (method_exists($e, 'getTitle')) {
         $response['errorTitle'] = $e->getTitle();
     } else {
-        $response['errorTitle'] = gettext('An API exception occured');
+        $response['errorTitle'] = gettext('An API exception occurred');
         $response['errorMessage'] = $e->getFile() . ':' . $e->getLine() . ': ' . $response['errorMessage'];
         error_log($e);
     }

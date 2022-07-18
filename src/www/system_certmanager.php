@@ -1028,7 +1028,7 @@ include("head.inc");
                         BootstrapDialog.show({
                                 type:BootstrapDialog.TYPE_DANGER,
                                 title: "<?= gettext("Unknown Error");?>",
-                                message: "<?= gettext("Unknown error occured. Try again.");?>",
+                                message: "<?= gettext("Unknown error occurred. Try again.");?>",
                                 buttons: [
                                     {
                                         label: "<?=gettext("OK");?>",
