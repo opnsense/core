@@ -227,7 +227,7 @@ def main():
                     capture_output=True
                 )
             except OSError:
-                # if accounting script crashes don't exit backgroung process
+                # if accounting script crashes don't exit background process
                 pass
 
             # sleep
