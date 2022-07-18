@@ -1624,7 +1624,7 @@ $( document ).ready(function() {
                         <input name="cso_login_matching" type="checkbox" value="yes" <?=!empty($pconfig['cso_login_matching']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_cso_login_matching">
                           <span>
-                            <?=gettext("Use username instead of common name to match client specfic override."); ?><br />
+                            <?=gettext("Use username instead of common name to match client specific override."); ?><br />
                           </span>
                         </div>
                       </td>
