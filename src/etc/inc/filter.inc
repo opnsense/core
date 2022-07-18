@@ -434,7 +434,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= "\n";
     $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
-    $rules .= filter_generate_scrubing($cnfint);
+    $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
@@ -541,7 +541,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     unlock($filterlck);
 }
 
-function filter_generate_scrubing(&$FilterIflist)
+function filter_generate_scrubbing(&$FilterIflist)
 {
     global $config;
 
