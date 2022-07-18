@@ -1863,7 +1863,7 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                 }
 
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
-                //      for backward compatibilty support both here.
+                //      for backward compatibility support both here.
                 if ($inet == 6 && !empty($host['domainsearchlist'])) {
                     $domain = $host['domainsearchlist'];
                 } elseif (!empty($host['domain'])) {
