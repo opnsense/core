@@ -100,7 +100,7 @@ else
 	chmod 755 /root # XXX 750 when ready
 fi
 
-# XXX remove all renmants of /root/var handling after 22.7
+# XXX remove all remnants of /root/var handling after 22.7
 for DIR in ${MFS_DIRS}; do
 	# unconditionally remove old /var links now that the
 	# feature is constrained to /var/log directory
