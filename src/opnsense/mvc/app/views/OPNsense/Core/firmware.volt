@@ -892,7 +892,7 @@
                                         </ul>
                                     </div>
                                     <div class="btn-group" id="plugin_actions" style="display:none;">
-                                        <button type="button" class="btn btn-defaul dropdown-toggle" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             <i class="fa fa-exclamation-triangle"></i> {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
