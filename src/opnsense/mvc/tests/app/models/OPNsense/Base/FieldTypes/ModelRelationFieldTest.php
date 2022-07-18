@@ -385,7 +385,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     /**
      * Selecting none and valid, with multiple, with sorting, required false (default).
      */
-    public function testSortedNoneWithMulitpleOk()
+    public function testSortedNoneWithMultipleOk()
     {
         $field = new ModelRelationField();
         $field->setMultiple("Y");
