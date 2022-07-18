@@ -338,7 +338,7 @@ class FirmwareController extends ApiControllerBase
     /**
      * Retrieve specific changelog in text and html format
      * @param string $version changelog to retrieve
-     * @return array correspondng changelog in both formats
+     * @return array corresponding changelog in both formats
      * @throws \Exception
      */
     public function changelogAction($version)
