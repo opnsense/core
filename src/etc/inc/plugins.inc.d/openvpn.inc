@@ -497,7 +497,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
      * If a specific IP address (VIP) is requested, use it.
      * Otherwise, if a specific interface is requested, use
      * it unless "any" interface was selected, then the local
-     * directive will be ommited.
+     * directive will be omitted.
      */
     if (is_ipaddr($settings['ipaddr'])) {
         $iface_ip = $settings['ipaddr'];

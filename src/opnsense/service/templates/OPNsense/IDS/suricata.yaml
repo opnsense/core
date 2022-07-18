@@ -444,7 +444,7 @@ outputs:
   - syslog:
       enabled: {% if helpers.empty('OPNsense.IDS.general.syslog') %}no{% else %}yes{% endif %}
 
-      # reported identity to syslog. If ommited the program name (usually
+      # reported identity to syslog. If omitted the program name (usually
       # suricata) will be used.
       #identity: "suricata"
       facility: local5
