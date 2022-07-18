@@ -62,9 +62,9 @@ for TOPING in $PINGHOSTS ; do
 	WANTHRESHOLD=`echo $TOPING | cut -d"|" -f7`
 	AF=`echo $TOPING | cut -d"|" -f8`
 	if [ "$AF" == "inet6" ]; then
-		PINGCMD=ping6
+		PINGCMD="ping -6"
 	else
-		PINGCMD=ping
+		PINGCMD="ping -4"
 	fi
 	echo Processing $DSTIP
 	# Look for a service being down
