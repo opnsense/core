@@ -992,7 +992,7 @@ ImpactIQCheckDirnos:
 	if $TA_Bonding == "yes" set $checkValue "001"
 	if $TA_Bonding == "yes" set $checkValueNew "1"
 	set $checkCmd "S80"
-	set $checkMsg "Reprogramming mutli-link PPP setting..."
+	set $checkMsg "Reprogramming multi-link PPP setting..."
 	call ModemCheckValue
 
 # Restart if necessary, and wait extra long if the switch type changed
