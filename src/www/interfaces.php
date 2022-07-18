@@ -926,7 +926,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-            // check_wireless_mode (more wireless weirness)
+            // check_wireless_mode (more wireless weirdness)
             // validations shouldn't perform actual actions, needs serious fixing at some point
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
                 if (does_interface_exist(interface_get_wireless_clone($wlanbaseif))) {
@@ -1308,7 +1308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 // todo: it's probably better to choose one place to store wireless data
-                //       this construction implements a lot of weirness (more info interface_sync_wireless_clones)
+                //       this construction implements a lot of weirdness (more info interface_sync_wireless_clones)
                 $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
                 if (!empty($pconfig['persistcommonwireless'])) {
                     config_read_array('wireless', 'interfaces', $wlanbaseif);
