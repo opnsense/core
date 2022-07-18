@@ -530,7 +530,7 @@ class Config extends Singleton
         if (file_exists($target_dir . "config-" . $timestamp . ".xml")) {
             // The new target backup filename shouldn't exists, because of the use of microtime.
             // in the unlikely event that we can process events too fast for microtime(), suffix with a more
-            // precise tiestamp to ensure we can't miss a backup
+            // precise timestamp to ensure we can't miss a backup
             $target_filename = "config-" . $timestamp . "_" .  hrtime()[1] . ".xml";
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
