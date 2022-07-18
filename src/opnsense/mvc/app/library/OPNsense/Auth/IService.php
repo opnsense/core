@@ -68,7 +68,7 @@ interface IService
 
      /**
       * When authenticated, validate if this user is actually allowed to access the service, there might be
-      * other constraints, such as required gropu memberships.
+      * other constraints, such as required group memberships.
       * @return boolean is authenticated
       */
     public function checkConstraints();
