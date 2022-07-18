@@ -435,9 +435,9 @@ EOD;
     }
 
     if (empty($config['system']['deployment']) || $config['system']['deployment'] == 'development') {
-       $lighty_config .= "# send static error pages for some errors in non-debug mode\n";
-       $lighty_config .= "server.error-intercept = \"enable\"\n";
-       $lighty_config .= "server.errorfile-prefix = \"/usr/local/opnsense/data/webgui/status-\"\n";
+        $lighty_config .= "# send static error pages for some errors in non-debug mode\n";
+        $lighty_config .= "server.error-intercept = \"enable\"\n";
+        $lighty_config .= "server.errorfile-prefix = \"/usr/local/opnsense/data/webgui/status-\"\n";
     }
 
     $lighty_config .= <<<EOD
