@@ -139,19 +139,19 @@ class FirmwareController extends ApiControllerBase
                     switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
                         case 'p':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 't':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'g':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'm':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'k':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         default:
                             break;
                     }
