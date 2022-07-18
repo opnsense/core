@@ -99,7 +99,7 @@ function check_security_dns_rebind()
 }
 
 /* HTTP referer detection, return true when being forwarded from an unknown referer*/
-function check_security_http_referer_enforement()
+function check_security_http_referer_enforcement()
 {
     global $config;
     if (!isset($config['system']['webgui']['nohttpreferercheck']) && isset($_SERVER['HTTP_REFERER'])) {
@@ -157,7 +157,7 @@ function session_auth()
         if (check_security_dns_rebind()) {
             display_error_form(sprintf(gettext('A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname. You can disable this check if needed under System: Settings: Administration.'), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
             exit;
-        } elseif (check_security_http_referer_enforement()) {
+        } elseif (check_security_http_referer_enforcement()) {
             display_error_form(sprintf(
                 gettext('The HTTP_REFERER "%s" does not match the predefined settings. You can disable this check if needed under System: Settings: Administration.'),
                 html_safe($_SERVER['HTTP_REFERER'])
