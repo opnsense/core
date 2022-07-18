@@ -232,7 +232,7 @@
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
                 <label>Overall bandwidth throttling (kbps)</label>
                 <type>text</type>
-                <help>Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).</help>
+                <help>Enter the allowed overall bandwidth in kilobits per second (leave empty to disable).</help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>
