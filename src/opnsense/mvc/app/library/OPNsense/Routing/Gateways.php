@@ -290,7 +290,7 @@ class Gateways
 
     /**
      * determine default gateway, exclude gateways in skip list
-     * since getGateways() is correcly ordered, we just need to find the first active, not down gateway
+     * since getGateways() is correctly ordered, we just need to find the first active, not down gateway
      * @param array|null $skip list of gateways to ignore
      * @param string $ipproto inet/inet6 type
      * @return string type name
