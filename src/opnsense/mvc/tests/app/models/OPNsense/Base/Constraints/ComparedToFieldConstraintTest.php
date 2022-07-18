@@ -83,7 +83,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
      * @param $other_field_value integer field content
      * @param $field string name of the field
      * @param $operator string see the related documentaton
-     * @return ComparedToFieldConstraint the created contraint
+     * @return ComparedToFieldConstraint the created constraint
      */
     private function make_validator($node_value, $other_field_value, $field, $operator)
     {
