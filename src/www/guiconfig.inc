@@ -86,7 +86,7 @@ function get_themed_filename($url)
 
 require_once("authgui.inc");
 
-/* Reserved table names to avoid colision */
+/* Reserved table names to avoid collision */
 $reserved_table_names = [
     'bogons',
     'bogonsv6',
