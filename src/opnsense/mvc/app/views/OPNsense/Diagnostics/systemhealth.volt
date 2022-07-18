@@ -336,7 +336,7 @@
                 }
 
                 // Create tables (general and detail)
-                if ($('input:radio[name=show_table]:checked').val() == 1) { // check if togle table is on
+                if ($('input:radio[name=show_table]:checked').val() == 1) { // check if toggle table is on
                     table_head = "<th>#</th>";
                     if ($('input:radio[name=toggle_time]:checked').val() == 1) {
                         table_head += "<th>{{ lang._('full date & time') }}</th>";
