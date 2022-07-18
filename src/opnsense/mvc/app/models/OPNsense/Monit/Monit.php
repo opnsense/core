@@ -45,11 +45,11 @@ class Monit extends BaseModel
         'process'    => ['Existence', 'ProcessResource', 'ProcessDiskIO',
                          'UID', 'GID', 'PID', 'PPID', 'Uptime', 'Connection', 'Custom'],
         'file'       => ['Existence', 'FileChecksum', 'Timestamp', 'FileSize',
-                         'FileContent', 'Permission', 'UID', 'GID', 'Custom'],
-        'fifo'       => ['Existence', 'Timestamp', 'Permission', 'UID', 'GID', 'Custom'],
+                         'FileContent', 'Permisssion', 'UID', 'GID', 'Custom'],
+        'fifo'       => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
         'filesystem' => ['Existence', 'FilesystemMountFlags',
-                         'SpaceUsage', 'InodeUsage', 'DiskIO', 'Permission', 'Custom'],
-        'directory'  => ['Existence', 'Timestamp', 'Permission', 'UID', 'GID', 'Custom'],
+                         'SpaceUsage', 'InodeUsage', 'DiskIO', 'Permisssion', 'Custom'],
+        'directory'  => ['Existence', 'Timestamp', 'Permisssion', 'UID', 'GID', 'Custom'],
         'host'       => ['NetworkPing', 'Connection', 'Custom'],
         'system'     => ['SystemResource', 'Uptime', 'Custom'],
         'custom'     => ['ProgramStatus', 'Custom'],
@@ -104,7 +104,7 @@ class Monit extends BaseModel
             'write rate',
             'service time'
         ],
-        'Permission' => [
+        'Permisssion' => [
             'failed permission',
             'changed permission'
         ],

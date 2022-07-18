@@ -305,7 +305,7 @@
                <SpaceUsage>Space Usage</SpaceUsage>
                <InodeUsage>Inode Usage</InodeUsage>
                <DiskIO>Disk I/O</DiskIO>
-               <Permission>Permission</Permission>
+               <Permisssion>Permission</Permisssion>
                <UID>UID</UID>
                <GID>GID</GID>
                <PID>PID</PID>
