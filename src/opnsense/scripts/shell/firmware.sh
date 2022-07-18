@@ -27,7 +27,7 @@
 
 set -e
 
-# From this shell script never execute any remote work priror to user
+# From this shell script never execute any remote work prior to user
 # consent.  The first action is the unconditional changelog fetch after
 # script invoke.  After that we opportunistically run the selected major
 # "upgrade"/minor "update" request as it appears to be available.
