@@ -3,7 +3,7 @@
 # Copyright (c) 2006 Scott Ullrich <sullrich@gmail.com>
 # All rights reserved.
 
-# Format of file should be deliminted by |
+# Format of file should be delimited by |
 #  Field 1:  Source ip
 #  Field 2:  Destination ip
 #  Field 3:  Ping count
