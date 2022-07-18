@@ -2026,7 +2026,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwite global settings"); ?></td>
+                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwrite global settings"); ?></td>
                           <td style="width:78%">
                             <input id="hw_settings_overwrite" name="hw_settings_overwrite" type="checkbox" value="yes" <?=!empty($pconfig['hw_settings_overwrite']) ? 'checked="checked"' : '' ?>/>
                             <div class="hidden" data-for="help_for_hw_settings_overwrite">
