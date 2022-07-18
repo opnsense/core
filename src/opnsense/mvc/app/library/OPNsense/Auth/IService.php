@@ -53,7 +53,7 @@ interface IService
     public function supportedAuthenticators();
 
      /**
-      * set the username for this service, in some scenarios this might be prefixed with some addtional
+      * set the username for this service, in some scenarios this might be prefixed with some additional
       * logic to determine which authenticators are actually supported.
       * (in case one pam service has multiple real services assigned)
       * @param $username string
