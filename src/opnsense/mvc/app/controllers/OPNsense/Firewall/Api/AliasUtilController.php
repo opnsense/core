@@ -255,7 +255,7 @@ class AliasUtilController extends ApiControllerBase
                 $backend->configdpRun("filter add table", array($alias, $address));
                 return array("status" => "done");
             } else {
-                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+                return array("status" => "failed", "status_msg" => sprintf("nonexistent alias %s", $alias));
             }
         } else {
             return array("status" => "failed");

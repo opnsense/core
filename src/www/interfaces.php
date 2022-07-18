@@ -562,7 +562,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
         $if = $_POST['if'];
-        // read physcial interface name from config.xml
+        // read physical interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
     }
     $ifgroup = !empty($_GET['group']) ? $_GET['group'] : '';
@@ -926,7 +926,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-            // check_wireless_mode (more wireless weirness)
+            // check_wireless_mode (more wireless weirdness)
             // validations shouldn't perform actual actions, needs serious fixing at some point
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
                 if (does_interface_exist(interface_get_wireless_clone($wlanbaseif))) {
@@ -1308,7 +1308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 // todo: it's probably better to choose one place to store wireless data
-                //       this construction implements a lot of weirness (more info interface_sync_wireless_clones)
+                //       this construction implements a lot of weirdness (more info interface_sync_wireless_clones)
                 $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
                 if (!empty($pconfig['persistcommonwireless'])) {
                     config_read_array('wireless', 'interfaces', $wlanbaseif);
@@ -2026,7 +2026,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwite global settings"); ?></td>
+                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwrite global settings"); ?></td>
                           <td style="width:78%">
                             <input id="hw_settings_overwrite" name="hw_settings_overwrite" type="checkbox" value="yes" <?=!empty($pconfig['hw_settings_overwrite']) ? 'checked="checked"' : '' ?>/>
                             <div class="hidden" data-for="help_for_hw_settings_overwrite">

@@ -94,7 +94,7 @@ Fetch changes from the running system for all known files.
 make lint
 ---------
 
-Run serveral syntax checks on the repository.  This is recommended
+Run several syntax checks on the repository.  This is recommended
 before issuing a pull request on GitHub.
 
 make style

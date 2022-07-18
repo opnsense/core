@@ -91,8 +91,8 @@ class AsyncLookup:
         dnsResolver = Resolver()
         dnsResolver.timeout = 2
         tasks = []
-        for adres in addresses:
-            tasks.append(dnsResolver.resolve_address(adres))
+        for address in addresses:
+            tasks.append(dnsResolver.resolve_address(address))
         responses = await asyncio.gather(*tasks, return_exceptions=True)
         for response in responses:
             if type(response) is dns.resolver.Answer:

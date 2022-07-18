@@ -645,7 +645,7 @@ abstract class BaseModel
         if ($this->internal_mountpoint == ':memory:') {
             return false;
         } elseif (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
-            $upgradePerfomed = false;
+            $upgradePerformed = false;
             $migObjects = array();
             $logger = new Logger(
                 'messages',
@@ -687,7 +687,7 @@ abstract class BaseModel
                         try {
                             $migobj->run($this);
                             $migObjects[] = $migobj;
-                            $upgradePerfomed = true;
+                            $upgradePerformed = true;
                         } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
@@ -701,7 +701,7 @@ abstract class BaseModel
             }
             // serialize to config after last migration step, keep the config data static as long as not all
             // migrations have completed.
-            if ($upgradePerfomed) {
+            if ($upgradePerformed) {
                 try {
                     $this->serializeToConfig();
                     foreach ($migObjects as $migobj) {

@@ -209,7 +209,7 @@ function _interfaces_vlan_configure($vlan)
 {
     interfaces_bring_up($vlan['if']); /* XXX overreach? */
 
-    /* destroy is a safety precaution, when confguring via api or gui this function should only be called on new vlans */
+    /* destroy is a safety precaution, when configuring via api or gui this function should only be called on new vlans */
     legacy_interface_destroy($vlan['vlanif']);
     legacy_interface_create('vlan', $vlan['vlanif']);
 
@@ -1709,7 +1709,7 @@ function interface_wireless_configure($if, &$wancfg)
         $wlcmd[] = "-mediaopt adhoc";
     }
 
-    /* Not neccesary to set BSS mode as this is default if adhoc and/or hostap is NOT set */
+    /* Not necessary to set BSS mode as this is default if adhoc and/or hostap is NOT set */
 
     /* handle hide ssid option */
     if (isset($wlcfg['hidessid']['enable'])) {

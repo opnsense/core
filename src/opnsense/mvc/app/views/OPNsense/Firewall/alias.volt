@@ -247,7 +247,7 @@
                     break;
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
-                    /* FALLTROUGH */
+                    /* FALLTHROUGH */
                 default:
                     $("#alias_type_default").show();
                     $("#alias\\.proto").selectpicker('hide');

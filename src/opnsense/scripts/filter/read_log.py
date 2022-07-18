@@ -170,7 +170,7 @@ if __name__ == '__main__':
                     # no id for translation rules
                     rule['label'] = "%s rule" % rule['action']
                 elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
-                    # rule id apended in record format, don't use rule sequence number in that case either
+                    # rule id appended in record format, don't use rule sequence number in that case either
                     rule['rid'] = rulep[-1]
                     if rulep[-1] in running_conf_descr:
                         rule['label'] = running_conf_descr[rulep[-1]]

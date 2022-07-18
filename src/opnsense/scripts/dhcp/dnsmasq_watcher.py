@@ -97,7 +97,7 @@ def run_watcher(target_filename, default_domain, watch_file, service_pid):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--domain', help='default domain to use', default='local')
-    parser.add_argument('--foreground', help='run in forground', default=False, action='store_true')
+    parser.add_argument('--foreground', help='run in foreground', default=False, action='store_true')
     parser.add_argument('--pid', help='pid file location', default='/var/run/dnsmasq_dhcpd.pid')
     parser.add_argument('--servicepid', help='dnsmasq pid file location', default='/var/run/dnsmasq.pid')
     parser.add_argument('--source', help='source leases file', default='/var/dhcpd/var/db/dhcpd.leases')

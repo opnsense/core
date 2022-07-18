@@ -89,7 +89,7 @@
         {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings', 'apply_btn_id':'btn_save_capture'])}}
     </div>
     <div id="cache" class="tab-pane fade in">
-        <!-- tab page netfow cache -->
+        <!-- tab page netflow cache -->
         <table class="table table-striped" id="cache_stats">
           <thead>
             <tr>

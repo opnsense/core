@@ -182,7 +182,7 @@ function window_highlight_table_option()
 
 
 /**
- * load fireall categories and hook change events.
+ * load firewall categories and hook change events.
  * in order to use this partial the html template should contain the following:
  * - a <select> with the id "fw_category" to load categories in
  * - <tr/> entities with class "rule" to identify the rows to filter

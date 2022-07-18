@@ -266,12 +266,12 @@ function filter_core_rules_system($fw, $defaults)
             'to' => 'ff02::/16', 'direction' => 'in' ),
         $defaults['pass']
     );
-    // block all targetting port 0
+    // block all targeting port 0
     foreach (array('from_port', 'to_port') as $target) {
         $fw->registerFilterRule(
             1,
             array('ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
-                'descr' => 'block all targetting port 0'),
+                'descr' => 'block all targeting port 0'),
             $defaults['block']
         );
     }

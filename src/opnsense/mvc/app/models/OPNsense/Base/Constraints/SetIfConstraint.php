@@ -29,7 +29,7 @@
 namespace OPNsense\Base\Constraints;
 
 /**
- * validate if a field is set depening on the setting of another field
+ * validate if a field is set depending on the setting of another field
  * containing a specific value
  * Class SetIfConstraint
  * @package OPNsense\Base\Constraints

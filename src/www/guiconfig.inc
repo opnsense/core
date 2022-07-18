@@ -86,7 +86,7 @@ function get_themed_filename($url)
 
 require_once("authgui.inc");
 
-/* Reserved table names to avoid colision */
+/* Reserved table names to avoid collision */
 $reserved_table_names = [
     'bogons',
     'bogonsv6',
@@ -283,7 +283,7 @@ function get_std_save_message($plain = false)
         }
         return sprintf(
             gettext("The changes have been applied successfully, ".
-                    "remember to update your backup server in %sSystem: High availablity: status%s"),
+                    "remember to update your backup server in %sSystem: High availability: status%s"),
             $lnk_start, $lnk_end
         );
     } else {

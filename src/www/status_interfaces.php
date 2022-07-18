@@ -73,7 +73,7 @@ include("head.inc");
 <?php
             $mac_man = json_decode(configd_run('interface list macdb json'), true);
             $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
-            $vmstat_interupts = json_decode(configd_run('system list interrupts json'), true);
+            $vmstat_interrupts = json_decode(configd_run('system list interrupts json'), true);
             foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
@@ -456,8 +456,8 @@ include("head.inc");
                     </tr>
 <?php
                   endif;
-                  if (!empty($vmstat_interupts['interrupt_map'][$ifinfo['if']])):
-                      $intrpts = $vmstat_interupts['interrupt_map'][$ifinfo['if']];?>
+                  if (!empty($vmstat_interrupts['interrupt_map'][$ifinfo['if']])):
+                      $intrpts = $vmstat_interrupts['interrupt_map'][$ifinfo['if']];?>
                     <tr>
                       <td><?= gettext("Interrupts") ?></td>
                       <td>
@@ -474,9 +474,9 @@ include("head.inc");
                         foreach ($intrpts as $intrpt):?>
                         <tr>
                           <td><?=$intrpt;?></td>
-                          <td><?=implode(' ', $vmstat_interupts['interrupts'][$intrpt]['devices']);?></td>
-                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['total'];?></td>
-                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['rate'];?></td>
+                          <td><?=implode(' ', $vmstat_interrupts['interrupts'][$intrpt]['devices']);?></td>
+                          <td><?=$vmstat_interrupts['interrupts'][$intrpt]['total'];?></td>
+                          <td><?=$vmstat_interrupts['interrupts'][$intrpt]['rate'];?></td>
                         </tr>
 <?php
                         endforeach; ?>
