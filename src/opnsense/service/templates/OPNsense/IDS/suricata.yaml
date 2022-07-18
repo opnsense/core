@@ -855,7 +855,7 @@ app-layer:
 
       # server-config:            List of server configurations to use if address matches
       #   address:                List of IP addresses or networks for this block
-      #   personalitiy:           List of personalities used by this block
+      #   personality:            List of personalities used by this block
       #
       #                           Then, all the fields from default-config can be overloaded
       #
