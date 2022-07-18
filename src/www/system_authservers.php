@@ -167,8 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               gettext("Hostname or IP"),
               gettext("Services"));
 
-          if ($pconfig['radisu_srvcs'] == "both" ||
-              $pconfig['radisu_srvcs'] == "auth") {
+          if ($pconfig['radius_srvcs'] == "both" ||
+              $pconfig['radius_srvcs'] == "auth") {
               $reqdfields[] = "radius_auth_port";
               $reqdfieldsn[] = gettext("Authentication port value");
           }
