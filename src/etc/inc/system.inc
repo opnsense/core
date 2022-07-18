@@ -631,7 +631,8 @@ function system_staticroutes_configure($interface = '')
             $ip = $rtent['network'];
             if (!empty($rtent['disabled'])) {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                mwexec("/sbin/route delete {$inet}", true);
+                $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
+                mwexec("/sbin/route delete {$cmd}", true);
             } else {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
