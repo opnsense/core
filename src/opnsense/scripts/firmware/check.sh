@@ -29,7 +29,7 @@
 #
 # connection: error|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|forbidden|ok
-# last_ckeck: <date_time_stamp>
+# last_check: <date_time_stamp>
 # download_size: <size_of_total_downloads>[,<size_of_total_downloads>]
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
