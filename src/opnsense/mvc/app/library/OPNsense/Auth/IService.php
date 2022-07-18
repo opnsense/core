@@ -53,7 +53,7 @@ interface IService
     public function supportedAuthenticators();
 
      /**
-      * set the username for this service, in some scenarios this might be prefixed with some addtional
+      * set the username for this service, in some scenarios this might be prefixed with some additional
       * logic to determine which authenticators are actually supported.
       * (in case one pam service has multiple real services assigned)
       * @param $username string
@@ -68,7 +68,7 @@ interface IService
 
      /**
       * When authenticated, validate if this user is actually allowed to access the service, there might be
-      * other constraints, such as required gropu memberships.
+      * other constraints, such as required group memberships.
       * @return boolean is authenticated
       */
     public function checkConstraints();

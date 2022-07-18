@@ -55,7 +55,7 @@ if __name__ == '__main__':
         for rule_info_record in RuleCache.list_rules(filename=filename):
             # default behavior, do not touch rule, only copy to output
             rule = rule_info_record['rule']
-            # change rule if in rule rule updates
+            # change rule if in rule updates
             if rule_info_record['metadata'] is not None and 'sid' in rule_info_record['metadata'] \
                     and rule_info_record['metadata']['sid'] in rule_updates:
                 # search last comment marker

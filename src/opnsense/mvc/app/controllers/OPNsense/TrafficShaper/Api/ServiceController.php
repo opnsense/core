@@ -93,7 +93,7 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
             $ipfwstats = json_decode((new Backend())->configdRun("ipfw stats"), true);
             if ($ipfwstats != null) {
-                // ipfw stats are stuctured as they would be using the various ipfw commands, let's reformat
+                // ipfw stats are structured as they would be using the various ipfw commands, let's reformat
                 // into something easier to handle from the UI and attach model data.
                 $result['status'] = "ok";
                 $result['items'] = array();

@@ -67,7 +67,7 @@ class ComparedToFieldConstraint extends BaseConstraint
             }
 
             if (
-                !$this->is_contraint_fulfilled(
+                !$this->is_constraint_fulfilled(
                     $operator,
                     floatval((string)$node),
                     floatval((string)$other_node_content)
@@ -83,9 +83,9 @@ class ComparedToFieldConstraint extends BaseConstraint
      * @param $operator string one of gt|gte|lt|lte|eq|neq
      * @param $our_value float the value of this field
      * @param $foreign_value float the value of the referenced field
-     * @return bool if the contraint is fulfilled
+     * @return bool if the constraint is fulfilled
      */
-    private function is_contraint_fulfilled($operator, $our_value, $foreign_value)
+    private function is_constraint_fulfilled($operator, $our_value, $foreign_value)
     {
         switch ($operator) {
             case 'gt':

@@ -427,7 +427,7 @@ abstract class BaseField
     }
 
     /**
-     * check for existance of child attribute
+     * check for existence of child attribute
      * @return bool if child exists
      */
     public function hasChild($name)

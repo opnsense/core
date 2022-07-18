@@ -83,7 +83,7 @@ $di->setShared('session', function () {
     ]);
     $session->setAdapter($files);
     $session->start();
-    // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
+    // Set session response cookie, unfortunately we need to read the config here to determine if secure option is
     // a valid choice.
     $cnf = Config::getInstance();
     if ((string)$cnf->object()->system->webgui->protocol == 'https') {

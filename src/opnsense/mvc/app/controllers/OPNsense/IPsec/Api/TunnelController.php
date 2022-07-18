@@ -54,7 +54,7 @@ class TunnelController extends ApiControllerBase
               'cast128' => 'CAST128',
               'des' => 'DES'
         ];
-        $ph1authmethos = [
+        $ph1authmethods = [
             'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
             'xauth_rsa_server' => 'Mutual RSA + Xauth',
             'xauth_psk_server' => 'Mutual PSK + Xauth',
@@ -109,7 +109,7 @@ class TunnelController extends ApiControllerBase
                     "mobile" => !empty((string)$p1->mobile),
                     "mode" => (string)$p1->mode,
                     "proposal" => $ph1proposal,
-                    "authentication" => $ph1authmethos[(string)$p1->authentication_method],
+                    "authentication" => $ph1authmethods[(string)$p1->authentication_method],
                     "description" => (string)$p1->descr
                 ];
                 $item['type'] = "{$item['protocol']} {$item['iketype']}";

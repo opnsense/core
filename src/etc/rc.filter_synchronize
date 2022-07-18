@@ -181,7 +181,7 @@ function carp_sync_xml($url, $username, $password, $sections, $debug)
     // remove items which may not be synced
     remove_nosync($transport_data);
 
-    // ***** post proccessing *****
+    // ***** post processing *****
     // dhcpd, unchanged from legacy code (may need some inspection later)
     if (is_array($transport_data['dhcpd'])) {
         foreach($transport_data['dhcpd'] as $dhcpif => $dhcpifconf) {

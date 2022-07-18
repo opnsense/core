@@ -727,7 +727,7 @@ $(document).ready(function() {
 <?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_sshlogingroup">
-                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-adminstrators as every user can access system files using SSH or SFTP.') ?>
+                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-administrators as every user can access system files using SSH or SFTP.') ?>
                   </div>
                 </td>
               </tr>

@@ -94,7 +94,7 @@ function loopback_configure_do($verbose = false, $device = null)
         }
     }
 
-    // destroy non existing interfaces
+    // destroy nonexistent interfaces
     foreach ($configured_interfaces as $intf) {
         if (strpos($intf, "lo") === 0) {
             if (!in_array($intf, $configured_devices)) {

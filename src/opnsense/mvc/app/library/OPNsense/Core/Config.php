@@ -530,7 +530,7 @@ class Config extends Singleton
         if (file_exists($target_dir . "config-" . $timestamp . ".xml")) {
             // The new target backup filename shouldn't exists, because of the use of microtime.
             // in the unlikely event that we can process events too fast for microtime(), suffix with a more
-            // precise tiestamp to ensure we can't miss a backup
+            // precise timestamp to ensure we can't miss a backup
             $target_filename = "config-" . $timestamp . "_" .  hrtime()[1] . ".xml";
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
@@ -679,7 +679,7 @@ class Config extends Singleton
                 if ($backup_filename) {
                     $this->auditLogChange($backup_filename, $revision);
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
-                    // Althought we include the backup filename, the event handler is responsible to determine the
+                    // Although we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
                     $logger = new Logger(
                         'messages',

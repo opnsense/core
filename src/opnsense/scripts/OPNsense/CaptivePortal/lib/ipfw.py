@@ -95,7 +95,7 @@ class IPFW(object):
 
     @staticmethod
     def list_accounting_info():
-        """ list accounting info per ip addres, addresses can't overlap in zone's so we just output all we know here
+        """ list accounting info per ip address, addresses can't overlap in zone's so we just output all we know here
         instead of trying to map addresses back to zones.
         :return: list accounting info per ip address
         """

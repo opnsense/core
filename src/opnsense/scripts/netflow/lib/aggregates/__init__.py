@@ -106,7 +106,7 @@ class BaseFlowAggregator(object):
             cur.close()
 
     def _create_target_table(self):
-        """ construct target aggregate table, using resulution and list of agg_fields
+        """ construct target aggregate table, using resolution and list of agg_fields
         :return: None
         """
         if self._db_connection is not None:

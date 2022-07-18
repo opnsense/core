@@ -292,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
          * format may be used. to keep it simple for the enduser, we only
          * claim to accept MM/DD/YYYY as inputs. Advanced users may use inputs
          * like "+1 day", which will be converted to MM/DD/YYYY based on "now".
-         * Otherwhise such an entry would lead to an invalid expiration data.
+         * Otherwise such an entry would lead to an invalid expiration data.
          */
         if (!empty($pconfig['expires'])) {
             try {

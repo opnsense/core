@@ -80,7 +80,7 @@ system_resolvconf_generate();
 system_hosts_generate();
 
 if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
-    /* require immediate recofiguration before reconfiguring clients */
+    /* require immediate reconfiguration before reconfiguring clients */
     plugins_configure('dhcp', false, ['inet6']);
 }
 

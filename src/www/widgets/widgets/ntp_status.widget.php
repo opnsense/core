@@ -280,7 +280,7 @@ History:  1.0   2000-05-09 GIF-image digits
                          cookies to work around Win IE stale-time bug
       2.1   2002-10-12 Noted Mozilla 1.0 compatibility; released PHP version.
       2.1.1 2002-10-20 Fixed octal bug in the PHP translation; the number of
-            minutes & seconds were misinterpretes when less than 10
+            minutes & seconds were misinterprets when less than 10
       2.1.2 2003-08-07 The previous fix had introduced a bug when the
                     minutes or seconds were exactly 0. Thanks to Man Bui
                     for reporting the bug.
