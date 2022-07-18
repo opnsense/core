@@ -70,16 +70,8 @@ try {
     $application = new \Phalcon\Mvc\Application($di);
 
     echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
-} catch (\Exception $e) {
-    if (
-        isset($application) || (
-          stripos($e->getMessage(), ' handler class cannot be loaded') !== false ||
-          stripos($e->getMessage(), ' was not found on handler ') !== false
-        )
-    ) {
-        // Render default UI page when controller or action wasn't found
-        echo $application->handle('/ui/')->getContent();
-    } else {
-        echo $e->getMessage();
-    }
+} catch (\Error | \Exception $e) {
+    error_log($e);
+
+    header('Location: /crash_reporter.php', true, 303);
 }
