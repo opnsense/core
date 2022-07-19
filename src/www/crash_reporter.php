@@ -191,7 +191,7 @@ if ($has_crashed) {
     if ($is_prod) {
         $message = gettext('An issue was detected.');
     } else {
-        $message = gettext('Non-production deployment is configured so crash reports cannot be sent.');
+        $message = gettext('Development deployment is configured so crash reports cannot be sent.');
     }
 }
 
