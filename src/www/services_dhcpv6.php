@@ -554,7 +554,7 @@ include("head.inc");
                             'calculator to ensure you have entered a correct range if the dhcpd6 server fails to start.') ?>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                           <br/><br/>
-                          <?= gettext('When using a tracked interface then please only enter the range itself. i.e. ::xx. For example, for a /60 subnet from ::20 to ::40.') ?>
+                          <?= gettext('When using a tracked interface then please only enter the range itself. i.e. ::xxxx:0:0:0:0. For example, for a /56 subnet from ::100:0:0:0:0 to ::f00:0:0:0:0.') ?>
 <?php endif ?>
                         </div>
                       </td>
