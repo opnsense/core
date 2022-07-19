@@ -31,6 +31,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+if (file_exists('/var/run/development')) {
+    ini_set('display_errors', 0);
+}
+
 require_once("util.inc");
 require_once("config.inc");
 

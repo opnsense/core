@@ -671,7 +671,7 @@ $(document).ready(function() {
                   <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable access log"); ?>
                   <div class="hidden" data-for="help_for_httpaccesslog">
-                    <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
+                    <?=gettext("Enable access logging on the web GUI for debugging and analysis purposes.") ?>
                   </div>
                 </td>
               </tr>
@@ -1048,13 +1048,9 @@ $(document).ready(function() {
                     <option value="development" <?= $pconfig['deployment'] == 'development' ? 'selected="selected"' : '' ?>>
                       <?=gettext("Development");?>
                     </option>
-                    <option value="debug" <?=$pconfig['deployment'] == 'debug' ? 'selected="selected"' : '' ?>>
-                      <?=gettext("Debug");?>
-                    </option>
                   </select>
                   <div class="hidden" data-for="help_for_deployment">
                     <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
-                    <?=gettext("Warning: enabling debug mode will affect the GUI's layout and may break usability.");?>
                   </div>
                 </td>
               </tr>

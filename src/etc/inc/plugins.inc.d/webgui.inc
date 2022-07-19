@@ -133,6 +133,13 @@ function webgui_configure_do($verbose = false, $interface = '')
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
+    /* we need a marker file for debug mode to ensure quick action */
+    if (empty($config['system']['deployment'])) {
+        @unlink('/var/run/development');
+    } else {
+        @touch('/var/run/development');
+    }
+
     /*
      * Force reloading all php-cgi children to
      * avoid hiccups with moved include files.
