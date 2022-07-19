@@ -36,7 +36,7 @@ require_once("interfaces.inc");
 
 $pconfig = $_POST;
 
-if (is_numeric($pconfig['filterlogentries'])) {
+if (is_numeric($pconfig['filterlogentries'] ?? null)) {
     $config['widgets']['filterlogentries'] = $pconfig['filterlogentries'];
     $config['widgets']['filterlogentriesupdateinterval'] = $pconfig['filterlogentriesupdateinterval'];
 
