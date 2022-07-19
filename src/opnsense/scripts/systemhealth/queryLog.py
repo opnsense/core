@@ -39,7 +39,7 @@ import datetime
 import glob
 from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from log_helper import reverse_log_reader, fetch_clog
+from log_helper import reverse_log_reader
 import argparse
 
 if __name__ == '__main__':
@@ -85,13 +85,9 @@ if __name__ == '__main__':
             filter_regexp = re.compile('.*')
 
         row_number = 0
-        for log_filename in log_filenames:
-            if os.path.exists(log_filename):
-                format_container = FormatContainer(log_filename)
-                try:
-                    filename = fetch_clog(log_filename)
-                except Exception as e:
-                    filename = log_filename
+        for filename in log_filenames:
+            if os.path.exists(filename):
+                format_container = FormatContainer(filename)
                 for rec in reverse_log_reader(filename):
                     row_number += 1
                     if rec['line'] != "" and filter_regexp.match(('%s' % rec['line']).lower()):
