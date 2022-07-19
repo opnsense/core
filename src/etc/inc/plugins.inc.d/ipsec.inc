@@ -1716,7 +1716,7 @@ function ipsec_get_configured_vtis()
 
             foreach ($a_phase2 as $ph2ent) {
                 if (
-                    $ph2ent['mode'] == 'route-based' &&
+                    isset($ph2ent['mode']) && $ph2ent['mode'] == 'route-based' &&
                         empty($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid']
                 ) {
                     $phase2items[] = $ph2ent;
@@ -1736,7 +1736,7 @@ function ipsec_get_configured_vtis()
                 } else {
                     // use smallest reqid within tunnel
                     $reqid = min($phase2reqids);
-                    $descr = $ph1ent['descr'];
+                    $descr = $ph1ent['descr'] ?? '';
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
                 if (empty($tunnels[$intfnm])) {
