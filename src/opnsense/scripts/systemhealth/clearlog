@@ -57,9 +57,9 @@ if (isset($opts['m']) && isset($opts['f'])) {
         system_syslog_start();
     }
 
+    // non syslog files, in case service doesn't use our default syslog naming
     $filename = "{$basename}.log";
     if (is_file($filename)) {
-        // remove legacy clog file
         @unlink($filename);
         system_syslog_start();
         // XXX: should probably add some plugin hook for this.
