@@ -28,5 +28,5 @@ INTERVAL=${1:-60}
 
 while :; do
 	sleep "${INTERVAL}"
-        configctl dhcpd update prefixes
+	configctl dhcpd update prefixes
 done
