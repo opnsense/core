@@ -227,7 +227,7 @@ function cert_import(&$cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns)
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
