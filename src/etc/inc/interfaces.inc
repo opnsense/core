@@ -2387,7 +2387,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     return $loaded;
 }
 
-function interface_track6_configure($interface = 'lan', $lancfg, $reload = false)
+function interface_track6_configure($interface, $lancfg, $reload = false)
 {
     global $config;
 
@@ -2423,7 +2423,7 @@ function interface_track6_configure($interface = 'lan', $lancfg, $reload = false
     }
 }
 
-function interface_track6_6rd_configure($interface = 'lan', $lancfg)
+function interface_track6_6rd_configure($interface, $lancfg)
 {
     global $config;
 
@@ -2482,7 +2482,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
     mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
 }
 
-function interface_track6_6to4_configure($interface = 'lan', $lancfg)
+function interface_track6_6to4_configure($interface, $lancfg)
 {
     if (!isset($lancfg['enable'])) {
         /* deconfiguring is done elsewhere as it simply removes addresses */
@@ -2528,7 +2528,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
     mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 }
 
-function interface_6rd_configure($interface = 'wan', $wancfg, $update = false)
+function interface_6rd_configure($interface, $wancfg, $update = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2598,7 +2598,7 @@ function interface_6rd_configure($interface = 'wan', $wancfg, $update = false)
     link_interface_to_track6($interface, $update);
 }
 
-function interface_6to4_configure($interface = 'wan', $wancfg, $update = false)
+function interface_6to4_configure($interface, $wancfg, $update = false)
 {
     if (!is_array($wancfg)) {
         return;
@@ -2688,7 +2688,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg, $update = false)
     link_interface_to_track6($interface, $update);
 }
 
-function interface_dhcpv6_configure($interface = 'wan', $wancfg)
+function interface_dhcpv6_configure($interface, $wancfg)
 {
     $syscfg = config_read_array('system');
 
@@ -2753,7 +2753,7 @@ function interface_dhcpv6_id($interface)
     return $id;
 }
 
-function interface_dhcpv6_prepare($interface = 'wan', $wancfg, $cleanup = false)
+function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 {
     if (!is_array($wancfg)) {
         return;
