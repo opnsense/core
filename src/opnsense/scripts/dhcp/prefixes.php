@@ -75,17 +75,16 @@ foreach (new SplFileObject($leases_file) as $line) {
 }
 
 $routes = [];
+
 foreach ($duid_arr as $entry) {
     if (!empty($entry['ia-pd']) && !empty($entry['ia-na'])) {
         $routes[$entry['ia-na']] = $entry['ia-pd'];
     }
 }
 
-if (count($routes) > 0) {
-    foreach ($routes as $address => $prefix) {
-        mwexecf('/sbin/route delete -inet6 %s %s', [$prefix, $address], true);
-        mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
-    }
+foreach ($routes as $address => $prefix) {
+    mwexecf('/sbin/route delete -inet6 %s %s', [$prefix, $address], true);
+    mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
 }
 
 $dhcpd_log = trim(shell_exec('opnsense-log -n dhcpd'));
@@ -100,14 +99,10 @@ foreach (new SplFileObject($dhcpd_log) as $line) {
         if (in_array($expire[1], $routes)) {
             continue;
         }
-        $expires[$expire[1]] = $expire[1];
+        $expires[$expire[1]] = 1;
     }
 }
 
-if (count($expires) > 0) {
-    foreach ($expires as $prefix) {
-        if (isset($prefix['prefix'])) {
-            mwexecf('/sbin/route delete -inet6 %s', [$prefix['prefix']], true);
-        }
-    }
+foreach (array_keys($expires) as $prefix) {
+    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
 }
