@@ -96,7 +96,8 @@ class SystemController extends ApiControllerBase
         if ($this->request->isPost() && $this->request->hasPost("subject") && $this->request->hasPost("acl")) {
             $acl = new ACL();
             $aclCheck = $this->request->getPost("acl");
-            if (!$acl->isPageAccessible($this->getUserName(), $aclCheck)) {
+            if (!$acl->isPageAccessible($this->getUserName(), $aclCheck) ||
+                $acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
                 return ["status" => "user not allowed to dismiss status"];
             }
 
