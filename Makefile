@@ -499,7 +499,8 @@ test: want-phpunit9-php${CORE_PHP}
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml
+	    phpunit --configuration PHPunit.xml || true; \
+	    rm -f .phpunit.result.cache
 
 checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
