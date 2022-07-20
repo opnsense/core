@@ -274,7 +274,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               $message.find('#dismiss-' + subject).on('click', function(e) {
                   $.ajax('/api/core/system/dismissStatus', {
                       type: 'post',
-                      data: {'subject': subject, 'acl': statusObject.logLocation},
+                      data: {'subject': subject},
                       dialogRef: dialog,
                       subjectRef: subject,
                       success: function() {

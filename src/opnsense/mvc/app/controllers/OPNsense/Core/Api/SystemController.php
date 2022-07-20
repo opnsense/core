@@ -93,24 +93,29 @@ class SystemController extends ApiControllerBase
 
     public function dismissStatusAction()
     {
-        if ($this->request->isPost() && $this->request->hasPost("subject") && $this->request->hasPost("acl")) {
+        if ($this->request->isPost() && $this->request->hasPost("subject")) {
             $acl = new ACL();
-            $aclCheck = $this->request->getPost("acl");
-            if (!$acl->isPageAccessible($this->getUserName(), $aclCheck) ||
-                $acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-                return ["status" => "user not allowed to dismiss status"];
-            }
-
+            $backend = new Backend();
             $subsystem = $this->request->getPost("subject");
-            if ($subsystem) {
-                $backend = new Backend();
-                $status = $backend->configdRun(sprintf('system dismiss status %s', $subsystem));
+            $system = json_decode(trim($backend->configdRun('system status')), true);
+            if (!array_key_exists($subsystem, $system)) {
+                return ["status" => "status type does not exist"];
+            }
+            if (isset($system[$subsystem]['logLocation'])) {
+                $aclCheck = $system[$subsystem]['logLocation'];
+                if (!$acl->isPageAccessible($this->getUserName(), $aclCheck) ||
+                    $acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+                    return ["status" => "user not allowed to dismiss status"];
+                }
+                $status = trim($backend->configdRun(sprintf('system dismiss status %s', $subsystem)));
                 if ($status == "OK") {
                     return [
-                        'status' => 'ok'
+                        "status" => "ok"
                     ];
                 }
             }
         }
+
+        return ["status" => "failed"];
     }
 }
