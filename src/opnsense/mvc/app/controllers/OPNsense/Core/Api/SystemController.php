@@ -88,6 +88,8 @@ class SystemController extends ApiControllerBase
 
             return json_encode($statuses);
         }
+
+        return ["status" => "failed"];
     }
 
     public function dismissStatusAction()
