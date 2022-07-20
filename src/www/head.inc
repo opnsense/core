@@ -296,43 +296,30 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           let status = {};
           let severity = BootstrapDialog.TYPE_SUCCESS;
           $.each(data, function(subject, statusObject) {
-              if (subject == 'System') {
-                  switch (statusObject.status) {
-                      case "Error":
-                          $('#system_status').toggleClass("fa fa-exclamation-triangle text-danger");
-                          severity = BootstrapDialog.TYPE_DANGER;
-                          statusObject.icon = 'fa fa-exclamation-triangle text-danger'
-                          break;
-                      case "Warning":
-                          $('#system_status').toggleClass("fa fa-exclamation-triangle text-warning");
-                          severity = BootstrapDialog.TYPE_WARNING;
-                          statusObject.icon = 'fa fa-exclamation-triangle text-warning';
-                          break;
-                      case "Notice":
-                          $('#system_status').toggleClass("fa fa-check-circle text-info");
-                          severity = BootstrapDialog.TYPE_INFO;
-                          statusObject.icon = 'fa fa-check-circle text-info';
-                          break;
-                      default:
-                          $('#system_status').toggleClass('fa fa-check-circle text-success');
-                          statusObject.icon = 'fa fa-check-circle text-success';
-                          break;
-                  }
-              } else {
-                  switch (statusObject.status) {
-                      case "Error":
-                          statusObject.icon = 'fa fa-exclamation-triangle text-danger'
-                          break;
-                      case "Warning":
-                          statusObject.icon = 'fa fa-exclamation-triangle text-warning';
-                          break;
-                      case "Notice":
-                          statusObject.icon = 'fa fa-check-circle text-info';
-                          break;
-                      default:
-                          statusObject.icon = 'fa fa-check-circle text-success';
-                          break;
-                  }
+              switch (statusObject.status) {
+                  case "Error":
+                      statusObject.icon = 'fa fa-exclamation-triangle text-danger'
+                      if (subject != 'System') break;
+                      $('#system_status').toggleClass(statusObject.icon);
+                      severity = BootstrapDialog.TYPE_DANGER;
+                      break;
+                  case "Warning":
+                      statusObject.icon = 'fa fa-exclamation-triangle text-warning';
+                      if (subject != 'System') break;
+                      $('#system_status').toggleClass(statusObject.icon);
+                      severity = BootstrapDialog.TYPE_WARNING;
+                      break;
+                  case "Notice":
+                      statusObject.icon = 'fa fa-check-circle text-info';
+                      if (subject != 'System') break;
+                      $('#system_status').toggleClass(statusObject.icon);
+                      severity = BootstrapDialog.TYPE_INFO;
+                      break;
+                  default:
+                      statusObject.icon = 'fa fa-check-circle text-success';
+                      if (subject != 'System') break;
+                      $('#system_status').toggleClass(statusObject.icon);
+                      break;
               }
           });
           status.severity = severity;
