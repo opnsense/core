@@ -385,7 +385,7 @@ function core_configure()
 /**
  * user changed event, synchronize attached system groups for requested user
  */
-function core_user_changed_groups($verbose = false, $username)
+function core_user_changed_groups($unused, $username)
 {
     global $config;
     if (is_array($config['system']['user'])) {
