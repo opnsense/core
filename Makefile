@@ -136,7 +136,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
-			dhcpleases \
 			dnsmasq \
 			dpinger \
 			expiretable \
