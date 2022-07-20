@@ -205,7 +205,7 @@ def query_top(rule_label, filter_str):
                 record['descr'] = None
             for timefield in ['age', 'expire']:
                 tmp = record[timefield].split(':')
-                record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2])
+                record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2]) if len(tmp) > 2 else 0
 
             search_line = " ".join(str(item) for item in filter(None, record.values()))
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
