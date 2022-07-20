@@ -68,40 +68,18 @@ class SystemStatus
             $this->objectMap[$shortName] = $obj;
 
             if ($shortName == 'System') {
-                /* reserved */
+                /* reserved for front-end usage */
                 throw new \Exception("SystemStatus classname is reserved");
             }
 
-            $statusCodes[] = $obj->getStatus();
-
             $result[$shortName] = [
-                'status' => $this->parseStatus($obj->getStatus()),
+                'statusCode' => $obj->getStatus(),
                 'message' => $obj->getMessage(),
                 'logLocation' => $obj->getLogLocation()
             ];
         }
 
-        /* Determine the most severe status type */
-        sort($statusCodes);
-        $result['System'] = [
-            'status' => $this->parseStatus($statusCodes[0]),
-        ];
-
         return $result;
-    }
-
-    private function parseStatus($statusCode)
-    {
-        switch ($statusCode) {
-            case AbstractStatus::STATUS_ERROR:
-                return 'Error';
-            case AbstractStatus::STATUS_WARNING:
-                return 'Warning';
-            case AbstractStatus::STATUS_NOTICE:
-                return 'Notice';
-            default:
-                return 'OK';
-        }
     }
 
     /**

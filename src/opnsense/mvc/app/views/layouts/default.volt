@@ -221,10 +221,7 @@
                 function updateStatus() {
                     return $.ajax("/api/core/system/status", {
                         type: 'get',
-                        dataType: "json",
-                        error : function (jqXHR, textStatus, errorThrown) {
-                            console.log('system.status : ' +errorThrown);
-                        }
+                        dataType: "json"
                     });
                 }
 

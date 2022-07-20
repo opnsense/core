@@ -31,6 +31,7 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 
 /**
@@ -60,14 +61,34 @@ class SystemController extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $status = trim($backend->configdRun('system status'));
+        $statuses = json_decode(trim($backend->configdRun('system status')), true);
 
-        /* TODO: iterate ACLs and check access rights */
-        if ($status) {
-            return $status;
+        if (!$statuses) {
+            return array("message" => "Unable to run configd action");
         }
 
-        return array("message" => "Unable to run configd action");
+        $order = [-1 => 'Error', 0 => 'Warning', 1 => 'Notice', 2 => 'OK'];
+
+        $acl = new ACL();
+        foreach($statuses as $subsystem => $status) {
+            $statuses[$subsystem]['status'] = $order[$status['statusCode']];
+            if (!empty($status['logLocation'])) {
+                if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
+                    unset($statuses[$subsystem]);
+                }
+            }
+        }
+
+        /* Sort on the highest error level after the ACL check */
+        $statusCodes = array_map(function($v) {
+            return $v['statusCode'];
+        }, array_values($statuses));
+        sort($statusCodes);
+        $statuses['System'] = [
+            'status' => $order[$statusCodes[0]]
+        ];
+
+        return json_encode($statuses);
     }
 
     public function dismissStatusAction()
