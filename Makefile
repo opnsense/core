@@ -199,7 +199,7 @@ PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
 WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit7-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
+		phpunit9-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
 
 .for WANT in ${WANTS}
 want-${WANT}:
@@ -493,7 +493,7 @@ push:
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
 
-test: want-phpunit7-php${CORE_PHP}
+test: want-phpunit9-php${CORE_PHP}
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
