@@ -24,9 +24,17 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-INTERVAL=${1:-60}
+CHECKSUM="md5 -q"
+INTERVAL=${1:-20}
+LEASES="/var/dhcpd/var/db/dhcpd6.leases"
+PREVIOUS=
 
 while :; do
+	CURRENT=$(${CHECKSUM} ${LEASES})
+	if [ "${CURRENT}" != "${PREVIOUS}" ]; then
+		configctl dhcpd update prefixes
+		PREVIOUS=${CURRENT}
+	fi
+
 	sleep "${INTERVAL}"
-	configctl dhcpd update prefixes
 done
