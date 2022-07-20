@@ -344,10 +344,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       function updateStatus() {
           return $.ajax("/api/core/system/status", {
               type: 'get',
-              dataType: "json",
-              error : function (jqXHR, textStatus, errorThrown) {
-                  console.log('system.status : ' +errorThrown);
-              }
+              dataType: "json"
           });
       }
 
