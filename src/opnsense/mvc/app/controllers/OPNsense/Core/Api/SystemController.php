@@ -93,7 +93,13 @@ class SystemController extends ApiControllerBase
 
     public function dismissStatusAction()
     {
-        if ($this->request->isPost() && $this->request->hasPost("subject")) {
+        if ($this->request->isPost() && $this->request->hasPost("subject") && $this->request->hasPost("acl")) {
+            $acl = new ACL();
+            $aclCheck = $this->request->getPost("acl");
+            if (!$acl->isPageAccessible($this->getUserName(), $aclCheck)) {
+                return ["status" => "user not allowed to dismiss status"];
+            }
+
             $subsystem = $this->request->getPost("subject");
             if ($subsystem) {
                 $backend = new Backend();
