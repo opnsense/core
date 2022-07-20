@@ -61,8 +61,8 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
         $field = new AuthGroupField();
         $field->eventPostLoading();
 
-        $this->assertContains('100', array_keys($field->getNodeData()));
-        $this->assertContains('100', array_keys($field->getNodeData()));
+        $this->assertContains(100, array_keys($field->getNodeData()));
+        $this->assertContains(100, array_keys($field->getNodeData()));
     }
 
     /**
