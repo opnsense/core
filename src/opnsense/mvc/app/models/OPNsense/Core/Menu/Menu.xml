@@ -187,6 +187,7 @@
             <Statistics url="/ui/diagnostics/firewall/statistics"/>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
+            <General VisibleName="General" url="/ui/diagnostics/log/core/firewall"/>
             <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
             <Overview url="/ui/diagnostics/firewall/stats"/>
             <Plain VisibleName="Plain View" url="/ui/diagnostics/log/core/filter"/>
