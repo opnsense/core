@@ -62,6 +62,8 @@ class SystemController extends ApiControllerBase
     {
         $this->sessionClose();
 
+        $response = ["status" => "failed"];
+
         $backend = new Backend();
         $statuses = json_decode(trim($backend->configdRun('system status')), true);
         if ($statuses) {
@@ -74,6 +76,8 @@ class SystemController extends ApiControllerBase
                     if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
                         unset($statuses[$subsystem]);
                     }
+                } else {
+                    return $response;
                 }
             }
 
@@ -86,10 +90,10 @@ class SystemController extends ApiControllerBase
                 'status' => $order[$statusCodes[0]]
             ];
 
-            return json_encode($statuses);
+            $response = json_encode($statuses);
         }
 
-        return ["status" => "failed"];
+        return $response;
     }
 
     public function dismissStatusAction()

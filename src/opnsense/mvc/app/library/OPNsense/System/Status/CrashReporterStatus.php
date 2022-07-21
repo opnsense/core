@@ -35,10 +35,11 @@ class CrashReporterStatus extends AbstractStatus {
 
     public function __construct()
     {
+        $this->internalLogLocation = '/crash_reporter.php';
+
         if ($this->hasCrashed()) {
             $this->internalMessage = "A problem was detected.";
             $this->internalStatus = static::STATUS_ERROR;
-            $this->internalLogLocation = '/crash_reporter.php';
         }
     }
 
