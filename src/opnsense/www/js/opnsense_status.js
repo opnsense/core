@@ -96,6 +96,7 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
                         this.dialogRef.setType(newStatus.severity);
                         this.dialogRef.setMessage($newMessage);
                         $('#system_status').attr("class", newStatus.data['System'].icon);
+                        registerStatusDelegate(this.dialogRef, newStatus);
                     });
                 }
             });
@@ -138,6 +139,17 @@ function parseStatus(data) {
     status.data = data;
 
     return status;
+}
+
+function registerStatusDelegate(dialog, status) {
+    $("#system_status").click(function() {
+        dialog.setType(status.severity);
+        dialog.setMessage(function(dialogRef) {
+            let $message = updateStatusDialog(dialogRef, status);
+            return $message;
+        });
+        dialog.open();
+    });
 }
 
 function updateStatus() {

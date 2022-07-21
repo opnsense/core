@@ -103,27 +103,21 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
-                // update system status and display
+                // Create status dialog instance
+                let dialog = new BootstrapDialog({
+                     title: '{{ lang._('System Status')}}',
+                     buttons: [{
+                         label: '{{ lang._('Close') }}',
+                         cssClass: 'btn-primary',
+                         action: function(dialogRef) {
+                             dialogRef.close();
+                         }
+                     }],
+                });
+
                 updateStatus().then((data) => {
                     let status = parseStatus(data);
-
-                    $("#system_status").click(function() {
-                        BootstrapDialog.show({
-                            type: status.severity,
-                            title: '{{ lang._('System Status')}}',
-                            message: function(dialog) {
-                                let $message = updateStatusDialog(dialog, status);
-                                return $message;
-                            },
-                            buttons: [{
-                                label: '{{ lang._('Close') }}',
-                                cssClass: 'btn-primary',
-                                action: function(dialogRef) {
-                                    dialogRef.close();
-                                }
-                            }],
-                        });
-                    });
+                    registerStatusDelegate(dialog, status);
                 });
 
                 // hook in live menu search

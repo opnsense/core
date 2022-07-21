@@ -38,7 +38,7 @@ class CrashReporterStatus extends AbstractStatus {
         $this->internalLogLocation = '/crash_reporter.php';
 
         if ($this->hasCrashed()) {
-            $this->internalMessage = "A problem was detected.";
+            $this->internalMessage = gettext("A problem was detected.");
             $this->internalStatus = static::STATUS_ERROR;
         }
     }
@@ -70,7 +70,7 @@ class CrashReporterStatus extends AbstractStatus {
         $deployment = $config->system->deployment;
         if (!empty($deployment)) {
             if ($count > 0) {
-                $this->internalMessage = "A problem was detected, but non-production deployment is configured so crash reports cannot be sent.";
+                $this->internalMessage = gettext("A problem was detected, but non-production deployment is configured so crash reports cannot be sent.");
                 $this->internalStatus = static::STATUS_NOTICE;
                 $this->internalLogLocation = '/crash_reporter.php';
             }

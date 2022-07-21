@@ -215,27 +215,21 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
-      // update system status and display
+      // Create status dialog instance
+      let dialog = new BootstrapDialog({
+          title: 'System Status',
+          buttons: [{
+              label: 'Close',
+              cssClass: 'btn-primary',
+              action: function(dialogRef) {
+                  dialogRef.close();
+              }
+          }],
+      });
+
       updateStatus().then((data) => {
           let status = parseStatus(data);
-
-          $("#system_status").click(function() {
-              BootstrapDialog.show({
-                  type: status.severity,
-                  title: 'System Status',
-                  message: function(dialog) {
-                      let $message = updateStatusDialog(dialog, status);
-                      return $message;
-                  },
-                  buttons: [{
-                      label: 'Close',
-                      cssClass: 'btn-primary',
-                      action: function(dialogRef) {
-                          dialogRef.close();
-                      }
-                  }],
-              });
-          });
+          registerStatusDelegate(dialog, status);
       });
 
       // hook in live menu search

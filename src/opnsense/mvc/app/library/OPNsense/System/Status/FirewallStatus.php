@@ -39,7 +39,7 @@ class FirewallStatus extends AbstractStatus
 
         foreach ($this->statusStrings as $level) {
             if (file_exists('/tmp/rules.' . $level)) {
-                $this->internalMessage = "A problem was detected.";
+                $this->internalMessage = gettext("A problem was detected.");
                 $this->internalStatus = constant("static::STATUS_" . strtoupper($level));
             }
         }
