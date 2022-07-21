@@ -120,6 +120,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     inputargs = parser.parse_args()
+    syslog.openlog('firewall', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
     # make sure our target directory exists
     if not os.path.isdir('/var/db/aliastables'):
         os.makedirs('/var/db/aliastables')

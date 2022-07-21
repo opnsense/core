@@ -236,20 +236,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'weekly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '*', '*', '0');
-                break;
-            case 'monthly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '1', '*', '*');
-                break;
-            default:
-                /* cron job operated by user manually or RFC 7919 */
-                break;
-        }
-    }
-
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
             $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup', 0, 1);
@@ -267,7 +253,6 @@ function core_syslog()
     $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
     $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
-    $logfacilities['filter'] = array('facility' => array('filterlog'));
     $logfacilities['gateways'] = array('facility' => array('dpinger'));
     $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
     $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
@@ -399,7 +384,7 @@ function core_configure()
 /**
  * user changed event, synchronize attached system groups for requested user
  */
-function core_user_changed_groups($verbose = false, $username)
+function core_user_changed_groups($unused, $username)
 {
     global $config;
     if (is_array($config['system']['user'])) {

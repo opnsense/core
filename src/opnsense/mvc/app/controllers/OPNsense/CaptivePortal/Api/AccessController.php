@@ -92,7 +92,7 @@ class AccessController extends ApiControllerBase
      */
     private function getClientIp()
     {
-        // determine orginal sender of this request
+        // determine original sender of this request
         if (
             $this->request->getHeader('X-Forwarded-For') != "" &&
             explode('.', $this->request->getClientAddress())[0] == '127'

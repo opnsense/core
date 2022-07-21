@@ -285,7 +285,7 @@ class Util
      */
     public static function calcRuleHash($rule)
     {
-        // remove irrelavant fields
+        // remove irrelevant fields
         foreach (array('updated', 'created', 'descr') as $key) {
             unset($rule[$key]);
         }

@@ -54,17 +54,37 @@ class ApiControllerBase extends ControllerRoot
         $sort_flags = SORT_NATURAL
     ) {
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
         $entry_keys = array_keys($records);
         $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
+
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+            $keys = array_keys($this->request->getPost('sort'));
+            $order = $this->request->getPost('sort')[$keys[0]];
+            $keys = array_column($records, $keys[0]);
+            if (!empty($keys)) {
+                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $records);
+            }
+        } elseif (!empty($defaultSort)) {
+            $keys = array_column($records, $defaultSort);
+            if (!empty($keys)) {
+                array_multisort($keys, SORT_ASC, $sort_flags, $records);
+            }
+        }
+
         $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
             if (is_callable($filter_funct) && !$filter_funct($record)) {
                 // not applicable according to $filter_funct()
                 return false;
             } elseif (!empty($searchPhrase)) {
                 foreach ($records[$key] as $itemkey => $itemval) {
-                    if (stripos($itemval, $searchPhrase) !== false && (empty($fields) || in_array($itemkey, $fields))) {
+                    if (
+                        !is_array($itemval) &&
+                        stripos((string)$itemval, $searchPhrase) !== false &&
+                        (empty($fields) || in_array($itemkey, $fields))
+                    ) {
                         return true;
                     }
                 }
@@ -73,6 +93,7 @@ class ApiControllerBase extends ControllerRoot
                 return true;
             }
         });
+
         $formatted = array_map(function ($value) use (&$records) {
             foreach ($records[$value] as $ekey => $evalue) {
                 $item[$ekey] = $evalue;
@@ -80,23 +101,9 @@ class ApiControllerBase extends ControllerRoot
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
-            $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($formatted, $keys[0]);
-            if (!empty($keys)) {
-                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $formatted);
-            }
-        } elseif (!empty($defaultSort)) {
-            $keys = array_column($formatted, $defaultSort);
-            if (!empty($keys)) {
-                array_multisort($keys, SORT_ASC, $sort_flags, $formatted);
-            }
-        }
-
         return [
            'total' => count($entry_keys),
-           'rowCount' => $itemsPerPage,
+           'rowCount' => count($formatted),
            'current' => $currentPage,
            'rows' => $formatted,
         ];

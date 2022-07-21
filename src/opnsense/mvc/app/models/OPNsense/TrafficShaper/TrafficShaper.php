@@ -61,13 +61,13 @@ class TrafficShaper extends BaseModel
                     }
                     if ($currentval > $maximumval) {
                         $messages->appendMessage(new Message(
-                            gettext(sprintf(
-                                "%d %s/s exceeds the maximum bandwith of %d %s/s.",
+                            sprintf(
+                                gettext('%d %s/s exceeds the maximum bandwidth of %d %s/s.'),
                                 $currentval,
                                 $parentNode->bandwidthMetric,
                                 $maximumval,
                                 $parentNode->bandwidthMetric
-                            )),
+                            ),
                             $key
                         ));
                     }

@@ -140,7 +140,7 @@ class NetflowController extends ApiControllerBase
                 // aggregation process maybe restarted at all time
                 $backend->configdRun("netflow aggregate restart");
             } else {
-                // stop collector and agreggator
+                // stop collector and aggregator
                 $backend->configdRun("netflow collect stop");
                 $backend->configdRun("netflow aggregate stop");
             }

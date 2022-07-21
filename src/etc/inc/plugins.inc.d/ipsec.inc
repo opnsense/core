@@ -356,7 +356,11 @@ function ipsec_get_phase1_src(&$ph1ent)
     } else {
         $if = "wan";
     }
-    if ($ph1ent['protocol'] == "inet6") {
+    if ($ph1ent['protocol'] == "inet46") {
+        $ipv4 = get_interface_ip($if);
+        $ipv6 = get_interface_ipv6($if);
+        return $ipv4 ? $ipv4 . ($ipv6 ? ',' . $ipv6 : '') : $ipv6;
+    } elseif ($ph1ent['protocol'] == "inet6") {
         return get_interface_ipv6($if);
     } else {
         return get_interface_ip($if);
@@ -429,8 +433,7 @@ function ipsec_parse_phase2($ikeid)
                 ) {
                     $result['left_override'] = "%any";
                 } else {
-                    $tmpsubnet = ipsec_get_phase1_src($ph1ent);
-                    $result['leftsubnets'][] = $tmpsubnet;
+                    $result['leftsubnets'][] = ipsec_get_phase1_src($ph1ent);
                 }
                 if (!isset($ph1ent['mobile'])) {
                     $result['rightsubnets'][] = $ph1ent['remote-gateway'];
@@ -624,118 +627,6 @@ function ipsec_phase1_status($ipsec_status, $ikeid)
     return false;
 }
 
-/*
- * Return dump of SPD table
- */
-function ipsec_dump_spd()
-{
-    $fd = @popen("/sbin/setkey -DP", "r");
-    $spd = array();
-    if ($fd) {
-        $i = 0;
-        while (!feof($fd)) {
-            $line = chop(fgets($fd));
-            if (!$line) {
-                continue;
-            }
-            if ($line == "No SPD entries.") {
-                break;
-            }
-            if ($line[0] != "\t") {
-                if (isset($cursp)) {
-                    $spd[] = $cursp;
-                }
-                $cursp = array();
-                $linea = explode(" ", $line);
-                $cursp['srcid'] = substr($linea[0], 0, strpos($linea[0], "["));
-                $cursp['dstid'] = substr($linea[1], 0, strpos($linea[1], "["));
-                $i = 0;
-            } elseif (isset($cursp)) {
-                $linea = explode(" ", trim($line));
-                switch ($i) {
-                    case 1:
-                        if ($linea[1] == "none") { /* don't show default anti-lockout rule */
-                            unset($cursp);
-                        } else {
-                            $cursp['dir'] = $linea[0];
-                        }
-                        break;
-                    case 2:
-                        $upperspec = explode("/", $linea[0]);
-                        $cursp['proto'] = $upperspec[0];
-                        list($cursp['src'], $cursp['dst']) = explode("-", $upperspec[2]);
-                        $cursp['reqid'] = substr($upperspec[3], strpos($upperspec[3], "#") + 1);
-                        break;
-                }
-            }
-            $i++;
-        }
-        if (isset($cursp) && count($cursp)) {
-            $spd[] = $cursp;
-        }
-        pclose($fd);
-    }
-
-    return $spd;
-}
-
-/*
- * Return dump of SAD table
- */
-function ipsec_dump_sad()
-{
-    $fd = @popen("/sbin/setkey -D", "r");
-    $sad = array();
-    if ($fd) {
-        $cursa = null;
-        $i = 0;
-        while (!feof($fd)) {
-            $line = chop(fgets($fd));
-            if (!$line || $line[0] == " ") {
-                continue;
-            }
-            if ($line == "No SAD entries.") {
-                break;
-            }
-            if ($line[0] != "\t") {
-                if (is_array($cursa)) {
-                    $sad[] = $cursa;
-                }
-                $cursa = array();
-                list($cursa['src'],$cursa['dst']) = explode(" ", $line);
-                $i = 0;
-            } else {
-                $linea = explode(" ", trim($line));
-                switch ($i) {
-                    case 1:
-                        $cursa['proto'] = $linea[0];
-                        $cursa['spi'] = substr($linea[2], strpos($linea[2], "x") + 1, -1);
-                        $reqid = substr($linea[3], strpos($linea[3], "=") + 1);
-                        $cursa['reqid'] = substr($reqid, 0, strcspn($reqid, "("));
-                        break;
-                    case 2:
-                        $cursa['ealgo'] = $linea[1];
-                        break;
-                    case 3:
-                        $cursa['aalgo'] = $linea[1];
-                        break;
-                    case 8:
-                        $sadata = explode("(", $linea[1]);
-                        $cursa['data'] = $sadata[0] . " B";
-                        break;
-                }
-            }
-            $i++;
-        }
-        if (is_array($cursa) && count($cursa)) {
-            $sad[] = $cursa;
-        }
-        pclose($fd);
-    }
-
-    return $sad;
-}
-
 function ipsec_mobilekey_sort()
 {
     global $config;
@@ -853,75 +744,70 @@ function ipsec_configure_spd()
 
     $spd_entries = array();
 
-    // cleanup, collect previous manual added spd entries (stash in spd_entries) for removal.
+    /**
+     * try to figure out which SPD entries where created manually and collect them in a list sequenced by reqid
+     * when the entry is either bound to an interface (ifname=) or has a lifetime, these where not likely created by us
+     */
     exec('/sbin/setkey -PD', $lines);
     $line_count = 0;
-    $src = $dst = $direction = '';
+    $src = $dst = $direction = $reqid = '';
+    $is_automatic = false;
+    $previous_spd_entries = [];
     foreach ($lines as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
+            $src = $dst = $direction = $reqid = '';
             if (count($tmp) >= 3) {
                 $src = explode('[', $tmp[0])[0];
                 $dst = explode('[', $tmp[1])[0];
             }
             $line_count = 0;
+            $is_automatic = false;
         } elseif ($line_count == 1) {
             // direction
             $direction = trim(explode(' ', $line)[0]);
-        } elseif (strpos($line, '/require') !== false) {
-            // we'll assume that the require items in the spd are our manual items, so
-            // they will be removed first
-            $spd_entries[] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
+        } elseif (strpos($line, '/unique:') !== false) {
+            $reqid = explode('/unique:', $line)[1];
+        } elseif (strpos($line, "\tlifetime:") === 0 || strpos($line, "ifname=") > 0) {
+            $is_automatic = true;
+        } elseif (strpos($line, "\trefcnt") === 0 && !$is_automatic && $reqid != "") {
+            if (empty($previous_spd_entries[$reqid])) {
+                $previous_spd_entries[$reqid] = [];
+            }
+            $previous_spd_entries[$reqid][] = sprintf("spddelete -n %s %s any -P %s;", $src, $dst, $direction);
         }
         $line_count++;
     }
 
-    // add manual added spd entries
+    // process manual added spd en tries
     if (!empty($config['ipsec']['phase1']) && !empty($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!empty($ph1ent['disabled'])) {
                 continue;
             }
             $reqid_mapping = ipsec_parse_phase2($ph1ent['ikeid'])['uniqid_reqid'];
+            foreach (array_unique(array_values($reqid_mapping)) as $reqid) {
+                if (!empty($previous_spd_entries[$reqid])) {
+                    foreach ($previous_spd_entries[$reqid] as $spd_entry) {
+                        $spd_entries[] = $spd_entry;
+                    }
+                    unset($previous_spd_entries[$reqid]);
+                }
+            }
             foreach ($config['ipsec']['phase2'] as $ph2ent) {
                 if (!isset($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid'] && !empty($ph2ent['spd'])) {
                     $tunnel_src = ipsec_get_phase1_src($ph1ent);
                     $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
 
-                    // XXX: remove me, temporary logging to validate https://github.com/opnsense/core/issues/1773
-                    $peerid_spec = ipsec_find_id($ph1ent, "peer");
-                    if (!is_ipaddr($peerid_spec)) {
-                        if (is_ipaddr($ph1ent['remote-gateway'])) {
-                            $peerid_spec = $ph1ent['remote-gateway'];
-                        } else {
-                            log_error(sprintf(
-                                "spdadd: unable to match remote network on %s or %s [skipped]",
-                                $peerid_spec,
-                                $ph1ent['remote-gateway']
-                            ));
-                        }
-                    }
-                    $myid_data = ipsec_find_id($ph1ent, "local");
-                    if ($myid_data != $tunnel_src) {
-                        log_error(sprintf(
-                            "spdadd: using %s in source policy, local id set to %s",
-                            $tunnel_src,
-                            $myid_data
-                        ));
-                    }
-                    if ($peerid_spec != $tunnel_dst) {
-                        log_error(sprintf(
-                            "spdadd: using %s in destination policy, peer id set to %s",
-                            $tunnel_dst,
-                            $peerid_spec
-                        ));
-                    }
-                    if (empty($reqid_mapping[$ph2ent['uniqid']])) {
-                        log_error(sprintf("spdadd: unable to find reqid for %s", $ph2ent['uniqid']));
-                    }
-                    // XXX: end
-
                     if (empty($tunnel_dst) || empty($tunnel_src)) {
+                        log_error(sprintf(
+                            "spdadd: skipped for tunnel %s-%s (reqid :%s, local: %s, remote: %s)",
+                            $tunnel_src,
+                            $tunnel_dst,
+                            !empty($reqid_mapping[$ph2ent['uniqid']]) ? $reqid_mapping[$ph2ent['uniqid']] : "",
+                            $ph2ent['spd'],
+                            ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode'])
+                        ));
                         continue;
                     }
 
@@ -1830,7 +1716,7 @@ function ipsec_get_configured_vtis()
 
             foreach ($a_phase2 as $ph2ent) {
                 if (
-                    $ph2ent['mode'] == 'route-based' &&
+                    isset($ph2ent['mode']) && $ph2ent['mode'] == 'route-based' &&
                         empty($ph2ent['disabled']) && $ph1ent['ikeid'] == $ph2ent['ikeid']
                 ) {
                     $phase2items[] = $ph2ent;
@@ -1850,7 +1736,7 @@ function ipsec_get_configured_vtis()
                 } else {
                     // use smallest reqid within tunnel
                     $reqid = min($phase2reqids);
-                    $descr = $ph1ent['descr'];
+                    $descr = $ph1ent['descr'] ?? '';
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
                 if (empty($tunnels[$intfnm])) {

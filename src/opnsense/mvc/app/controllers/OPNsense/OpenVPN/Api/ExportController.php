@@ -127,7 +127,7 @@ class ExportController extends ApiControllerBase
      * @return array
      * @throws \OPNsense\Base\ModelException when unable to create model
      */
-    private function configuredSetttings($vpnid)
+    private function configuredSettings($vpnid)
     {
         $result = array();
         $serverModel = $this->getModel()->getServer($vpnid);
@@ -191,7 +191,7 @@ class ExportController extends ApiControllerBase
             // relevant properties
             $result[$vpnid]["mode"] = (string)$server->mode;
             $result[$vpnid]["vpnid"] = $vpnid;
-            $result[$vpnid] = array_merge($result[$vpnid], $this->configuredSetttings($vpnid));
+            $result[$vpnid] = array_merge($result[$vpnid], $this->configuredSettings($vpnid));
         }
         return $result;
     }

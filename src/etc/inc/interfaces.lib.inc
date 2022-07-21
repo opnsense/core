@@ -234,7 +234,7 @@ function legacy_interfaces_details($intf = null)
     $cmd = '/sbin/ifconfig -m -v ' . $tmp_intf;
     exec($cmd . ' 2>&1', $ifconfig_data, $ret);
     if ($ret) {
-        /* only error if no explicit interface was choosen */
+        /* only error if no explicit interface was chosen */
         if (empty($intf)) {
             log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
         }

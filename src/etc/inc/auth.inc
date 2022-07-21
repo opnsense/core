@@ -361,14 +361,16 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     /* read from pw db if not provided (batch mode) */
     if ($userattrs === null) {
-        $fd = popen("/usr/sbin/pw usershow -n {$user_name} 2>&1", "r");
+        $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
         $pwread = fgets($fd);
         pclose($fd);
-        $userattrs = explode(":", trim($pwread));
+        if (substr_count($pwread, ':')) {
+            $userattrs = explode(':', trim($pwread));
+        }
     }
 
     /* determine add or mod */
-    if (empty($userattrs) || $userattrs[0] != $user['name'] || !strncmp($pwread, 'pw:', 3)) {
+    if ($userattrs === null || $userattrs[0] != $user['name']) {
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&

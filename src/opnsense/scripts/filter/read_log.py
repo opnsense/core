@@ -37,7 +37,7 @@ import argparse
 import ujson
 import subprocess
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from log_helper import reverse_log_reader, fetch_clog
+from log_helper import reverse_log_reader
 from params import update_params
 
 
@@ -107,12 +107,8 @@ if __name__ == '__main__':
     if os.path.isfile('/var/log/filter.log'):
         filter_logs.append('/var/log/filter.log')
 
-    for filter_log in filter_logs:
+    for filename in filter_logs:
         do_exit = False
-        try:
-            filename = fetch_clog(filter_log)
-        except Exception as e:
-            filename = filter_log
         for record in reverse_log_reader(filename):
             if record['line'].find('filterlog') > -1:
                 rule = dict()
@@ -170,7 +166,7 @@ if __name__ == '__main__':
                     # no id for translation rules
                     rule['label'] = "%s rule" % rule['action']
                 elif len(rulep) > 0 and len(rulep[-1]) == 32 and set(rulep[-1]).issubset(HEX_DIGITS):
-                    # rule id apended in record format, don't use rule sequence number in that case either
+                    # rule id appended in record format, don't use rule sequence number in that case either
                     rule['rid'] = rulep[-1]
                     if rulep[-1] in running_conf_descr:
                         rule['label'] = running_conf_descr[rulep[-1]]

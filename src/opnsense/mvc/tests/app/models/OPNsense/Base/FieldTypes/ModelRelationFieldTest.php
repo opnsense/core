@@ -209,7 +209,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * Selecting none option, while blank desciption override.
+     * Selecting none option, while blank description override.
      * Defined blank description should pass through to value, and show selected.
      * Needs not required (default), and multiple false (default)
      */
@@ -231,7 +231,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * Selecting none option, while blank desciption override.
+     * Selecting none option, while blank description override.
      * Empty Blank description should get override with word "none"
      * Needs not required (default), and multiple false (default)
      */
@@ -385,7 +385,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     /**
      * Selecting none and valid, with multiple, with sorting, required false (default).
      */
-    public function testSortedNoneWithMulitpleOk()
+    public function testSortedNoneWithMultipleOk()
     {
         $field = new ModelRelationField();
         $field->setMultiple("Y");

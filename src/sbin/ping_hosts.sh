@@ -3,7 +3,7 @@
 # Copyright (c) 2006 Scott Ullrich <sullrich@gmail.com>
 # All rights reserved.
 
-# Format of file should be deliminted by |
+# Format of file should be delimited by |
 #  Field 1:  Source ip
 #  Field 2:  Destination ip
 #  Field 3:  Ping count
@@ -62,9 +62,9 @@ for TOPING in $PINGHOSTS ; do
 	WANTHRESHOLD=`echo $TOPING | cut -d"|" -f7`
 	AF=`echo $TOPING | cut -d"|" -f8`
 	if [ "$AF" == "inet6" ]; then
-		PINGCMD=ping6
+		PINGCMD="ping -6"
 	else
-		PINGCMD=ping
+		PINGCMD="ping -4"
 	fi
 	echo Processing $DSTIP
 	# Look for a service being down

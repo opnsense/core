@@ -57,7 +57,7 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
 
     def __init__(self, resolution, database_dir='/var/netflow'):
         """
-        :param resolution: sample resultion (seconds)
+        :param resolution: sample resolution (seconds)
         :return: None
         """
         super(FlowSourceAddrTotals, self).__init__(resolution, database_dir)

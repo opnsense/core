@@ -248,7 +248,7 @@ function get_locale_list()
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
-    $locales['it_IT'] = gettext('Italian'); /* development only */
+    $locales['it_IT'] = gettext('Italian');
     $locales['ja_JP'] = gettext('Japanese');
     $locales['no_NO'] = gettext('Norwegian');
     $locales['po_PL'] = gettext('Polish'); /* development only */
@@ -386,7 +386,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         /* inspect static servers and optional gateway assignment */
-        $dns = $syscfg['dnsserver'][$dnscounter - 1];
+        $dns = $syscfg['dnsserver'][$dnscounter - 1] ?? null;
         if (empty($dns) || !is_ipaddr($dns)) {
             continue;
         }
@@ -631,7 +631,8 @@ function system_staticroutes_configure($interface = '')
             $ip = $rtent['network'];
             if (!empty($rtent['disabled'])) {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                mwexec("/sbin/route delete {$inet}", true);
+                $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
+                mwexec("/sbin/route delete {$cmd}", true);
             } else {
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";

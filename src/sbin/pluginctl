@@ -63,15 +63,16 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
-$opts = getopt('cdghrs', [], $optind);
+$opts = getopt('cdghirs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -d | -g | -h | -r | -s] ...\n\n";
+    echo "Usage: pluginctl [-c | -d | -g | -h | -i | -r | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-d device mode, lists registered devices\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
+    echo "\t-i invoke dynamic interface registration\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-s service mode (e.g. myservice restart)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
@@ -123,6 +124,10 @@ if (isset($opts['h'])) {
    }
 } elseif (isset($opts['g'])) {
    echo get_config_prop($args[0]) . PHP_EOL;
+} elseif (isset($opts['i'])) {
+    if (plugins_interfaces()) {
+        write_config('Updated plugin interface configuration');
+    }
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];

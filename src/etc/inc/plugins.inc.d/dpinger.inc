@@ -133,7 +133,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
             if (is_ipaddrv4($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
-                    /* explictly do not require $addr['alias'] to be true here */
+                    /* explicitly do not require $addr['alias'] to be true here */
                     if ($addr['family'] != 'inet') {
                         continue;
                     }
@@ -183,7 +183,14 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
             $gwifip = null;
 
-            if (is_ipaddrv6($gateway['gateway'])) {
+            if (is_linklocal($gateway['monitor'])) {
+                /* link local monitor needs a link local address for the "src" part */
+                list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
+            } else {
+                list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
+            }
+
+            if ($gwifip == null && is_ipaddrv6($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
                     if ($addr['family'] != 'inet6' || !$addr['alias']) {
                         continue;
@@ -195,15 +202,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                         $gwifip = $addr['address'];
                         break;
                     }
-                }
-            }
-
-            if ($gwifip == null) {
-                if (is_linklocal($gateway['monitor'])) {
-                    /* link local monitor needs a link local address for the "src" part */
-                    list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
-                } else {
-                    list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
                 }
             }
 

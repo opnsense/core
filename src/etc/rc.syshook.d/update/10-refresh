@@ -10,3 +10,6 @@ touch /usr/local/opnsense/www/index.php
 for DIR in /boot /usr/libexec/bsdinstall /usr/local; do
 	daemon -f find ${DIR} -type f -name "*.pkgsave" -delete
 done
+
+# remove our stale pyc files not handled by pkg
+daemon -f find /usr/local/opnsense -type f -name "*.pyc" -delete

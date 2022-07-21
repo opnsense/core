@@ -497,7 +497,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
      * If a specific IP address (VIP) is requested, use it.
      * Otherwise, if a specific interface is requested, use
      * it unless "any" interface was selected, then the local
-     * directive will be ommited.
+     * directive will be omitted.
      */
     if (is_ipaddr($settings['ipaddr'])) {
         $iface_ip = $settings['ipaddr'];
@@ -827,7 +827,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 openvpn_add_keyfile($cert['prv'], $conf, $mode_id, "key");
             }
             if ($mode == 'server') {
-                $conf .= "dh " . get_dh_parameters($settings['dh_length']) . "\n";
+                $conf .= "dh /usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919\n";
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);
@@ -972,7 +972,7 @@ function openvpn_delete($mode, &$settings)
  * generate config (text) data for a single client specific override
  * @param array $settings csc item
  * @param array $server openvpn server item
- * @param string $target_filename write to filename, or use configured/generated path when emtpy
+ * @param string $target_filename write to filename, or use configured/generated path when empty
  * @return string|boolean filename or false when unable to (missing common name or vpnid)
  */
 function openvpn_csc_conf_write($settings, $server, $target_filename = null)

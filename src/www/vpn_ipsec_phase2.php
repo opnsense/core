@@ -294,7 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* User is adding phase 2 for mobile phase1 */
         foreach ($config['ipsec']['phase2'] as $key => $name) {
             if (isset($name['mobile']) && $pconfig['ikeid'] == $name['ikeid'] && $name['uniqid'] != $pconfig['uniqid']) {
-                /* check duplicate localids only for mobile clents */
+                /* check duplicate localids only for mobile clients */
                 $localid_data = ipsec_idinfo_to_cidr($name['localid'], false, $name['mode']);
                 $entered = array();
                 $entered['type'] = $pconfig['localid_type'];

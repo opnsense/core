@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2022 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,28 +24,17 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-FLOCK="/usr/local/bin/flock"
-LOCKFILE="/tmp/dh-parameters.lock"
-OPENSSL="/usr/local/bin/openssl"
-TMPFILE="/tmp/dh-parameters.${$}"
-WANTBITS="1024 2048 4096"
+CHECKSUM="md5 -q"
+INTERVAL=${1:-20}
+LEASES="/var/dhcpd/var/db/dhcpd6.leases"
+PREVIOUS=
 
-if [ -n "${1}" ]; then
-	WANTBITS=${1}
-fi
-
-touch ${LOCKFILE}
-
-(
-	if ${FLOCK} -n 9; then
-		for BITS in ${WANTBITS}; do
-			${OPENSSL} dhparam -out ${TMPFILE} ${BITS}
-			mv ${TMPFILE} /usr/local/etc/dh-parameters.${BITS}
-			# provide a sample file for non-default bit sizes
-                        if [ ! -f /usr/local/etc/dh-parameters.${BITS}.sample ]; then
-				cp /usr/local/etc/dh-parameters.${BITS} \
-				    /usr/local/etc/dh-parameters.${BITS}.sample
-			fi
-		done
+while :; do
+	CURRENT=$(${CHECKSUM} ${LEASES})
+	if [ "${CURRENT}" != "${PREVIOUS}" ]; then
+		configctl dhcpd update prefixes
+		PREVIOUS=${CURRENT}
 	fi
-) 9< ${LOCKFILE}
+
+	sleep "${INTERVAL}"
+done

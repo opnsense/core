@@ -50,7 +50,7 @@ class IntegerValidator extends BaseValidator
     {
         $value = $validator->getValue($attribute);
         $msg = $this->getOption('message');
-        if (ctype_digit(strval(($value))) == false or (string)((int)$value) !== (string)$value) {
+        if (filter_var($value, FILTER_VALIDATE_INT) === false) {
             $validator->appendMessage(new Message($msg, $attribute, 'IntegerValidator'));
             return false;
         }

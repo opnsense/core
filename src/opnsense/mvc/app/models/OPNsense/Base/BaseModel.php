@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Deciso B.V.
+ * Copyright (C) 2015-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -220,6 +220,9 @@ abstract class BaseModel
                     foreach ($xmlNode->children() as $fieldMethod) {
                         $method_name = "set" . $fieldMethod->getName();
                         if ($field_rfcls->hasMethod($method_name)) {
+                            // XXX: For array objects we will execute parseOptionData() more than needed as the
+                            //      the model data itself can't change in the meantime.
+                            //      e.g. setOptionValues() with a list of static options will recalculate for each item.
                             $fieldObject->$method_name($this->parseOptionData($fieldMethod));
                         }
                     }
@@ -316,17 +319,9 @@ abstract class BaseModel
         if ($model_xml->getName() != "model") {
             throw new ModelException('model xml ' . $model_filename . ' seems to be of wrong type');
         }
-        /*
-         *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
-         *       mountpoints starting with a single /
-         */
-        if (strpos($model_xml->mount, "//") === 0) {
-            $src_mountpoint = $model_xml->mount;
-        } else {
-            $src_mountpoint = "/opnsense{$model_xml->mount}";
+        if (!$model_xml->mount) {
+            throw new ModelException('model xml ' . $model_filename . ' missing mount definition');
         }
-        $this->internal_mountpoint = $model_xml->mount;
-
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
@@ -334,15 +329,28 @@ abstract class BaseModel
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
         }
+        $this->internal_mountpoint = $model_xml->mount;
 
-        // use an xpath expression to find the root of our model in the config.xml file
-        // if found, convert the data to a simple structure (or create an empty array)
-        $tmp_config_data = $internalConfigHandle->xpath($src_mountpoint);
-        if ($tmp_config_data->length > 0) {
-            $config_array = simplexml_import_dom($tmp_config_data->item(0));
-        } else {
-            $config_array = array();
+        $config_array = [];
+        if ($this->internal_mountpoint != ':memory:') {
+            /*
+             *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
+             *       mountpoints starting with a single /
+             */
+            if (strpos($model_xml->mount, "//") === 0) {
+                $src_mountpoint = $model_xml->mount;
+            } else {
+                $src_mountpoint = "/opnsense{$model_xml->mount}";
+            }
+            // use an xpath expression to find the root of our model in the config.xml file
+            // if found, convert the data to a simple structure (or create an empty array)
+            $tmp_config_data = $internalConfigHandle->xpath($src_mountpoint);
+            if ($tmp_config_data->length > 0) {
+                $config_array = simplexml_import_dom($tmp_config_data->item(0));
+            }
         }
+
+
 
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData);
@@ -541,6 +549,7 @@ abstract class BaseModel
      *
      * @param bool $validateFullModel by default we only validate the fields we have changed
      * @param bool $disable_validation skip validation, be careful to use this!
+     * @return bool persisted changes
      * @throws Validation\Exception validation errors
      */
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
@@ -574,7 +583,12 @@ abstract class BaseModel
                 throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
-        $this->internalSerializeToConfig();
+        if ($this->internal_mountpoint != ':memory:') {
+            $this->internalSerializeToConfig();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -628,8 +642,10 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
-            $upgradePerfomed = false;
+        if ($this->internal_mountpoint == ':memory:') {
+            return false;
+        } elseif (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+            $upgradePerformed = false;
             $migObjects = array();
             $logger = new Logger(
                 'messages',
@@ -671,7 +687,7 @@ abstract class BaseModel
                         try {
                             $migobj->run($this);
                             $migObjects[] = $migobj;
-                            $upgradePerfomed = true;
+                            $upgradePerformed = true;
                         } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
@@ -685,7 +701,7 @@ abstract class BaseModel
             }
             // serialize to config after last migration step, keep the config data static as long as not all
             // migrations have completed.
-            if ($upgradePerfomed) {
+            if ($upgradePerformed) {
                 try {
                     $this->serializeToConfig();
                     foreach ($migObjects as $migobj) {

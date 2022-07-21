@@ -100,7 +100,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     if ($config['system']['webgui']['protocol'] == "https") {
         $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         if (!is_array($cert) && !$cert['crt'] && !$cert['prv']) {
-            /* XXX for now only if a certificate is not availabe */
+            /* XXX for now only if a certificate is not available */
             webgui_create_selfsigned(false);
             $cert =& lookup_cert($config['system']['webgui']['ssl-certref']);
         }
@@ -133,13 +133,20 @@ function webgui_configure_do($verbose = false, $interface = '')
     /* regenerate the php.ini files in case the setup has changed */
     configd_run('template reload OPNsense/WebGui');
 
+    /* we need a marker file for development mode to ensure quick action */
+    if (empty($config['system']['deployment'])) {
+        @unlink('/var/run/development');
+    } else {
+        @touch('/var/run/development');
+    }
+
     /*
      * Force reloading all php-cgi children to
      * avoid hiccups with moved include files.
      */
     killbyname('php-cgi', 'HUP');
 
-    /* start lighthttpd */
+    /* start lighttpd */
     if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
         if ($verbose) {
             echo "failed.\n";
@@ -361,7 +368,7 @@ mimetype.assign             = (
 url.access-deny             = ( "~", ".inc" )
 
 
-######### Options that are good to be but not neccesary to be changed #######
+######### Options that are good to be but not necessary to be changed #######
 
 ## bind to port (default: 80)
 

@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search,local_group
-            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
+            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name,cso_login_matching";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
@@ -97,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['tlsmode'] = null;
         }
     } elseif ($act == "new") {
-        $pconfig['dh_length'] = 2048;
         $pconfig['dev_mode'] = "tun";
         $pconfig['interface'] = 'any';
         $pconfig['protocol'] = 'UDP';
@@ -114,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,push_register_dns,push_block_outside_dns,dns_domain,dns_domain_search
-            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref,dh_length
+            ,client_mgmt_port,verbosity_level,tlsmode,caref,crlref,certref
             ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name
             ,cso_login_matching";
         foreach (explode(",", $init_fields) as $fieldname) {
@@ -423,8 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     $server['tls'] = base64_encode($pconfig['tls']);
                 }
-                foreach (array("caref","crlref",
-                      "certref","dh_length","cert_depth") as $cpKey) {
+                foreach (['caref', 'crlref', 'certref', 'cert_depth'] as $cpKey) {
                     if (isset($pconfig[$cpKey])) {
                         $server[$cpKey] = $pconfig[$cpKey];
                     }
@@ -976,23 +974,6 @@ $( document ).ready(function() {
                       endif; ?>
                       </td>
                     </tr>
-                    <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DH Parameters Length"); ?></td>
-                      <td>
-                        <select name="dh_length" class="selectpicker">
-<?php
-                        foreach (list_dh_parameters() as $length):
-                            $selected = "";
-                            if ($length == $pconfig['dh_length']) {
-                                $selected = ' selected="selected"';
-                            }
-                        ?>
-                          <option value="<?= html_safe($length) ?>" <?=$selected?>><?= sprintf(gettext('%s bit'), $length) ?></option>
-<?php
-                        endforeach; ?>
-                        </select>
-                      </td>
-                    </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
                       <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Key"); ?></td>
                       <td>
@@ -1303,7 +1284,7 @@ $( document ).ready(function() {
                         endforeach; ?>
                         </select>
                         <div class="hidden" data-for="help_for_compression">
-                            <?=gettext("Compress tunnel packets using the LZ4/LZO algorithm. The LZ4 generally offers the best preformance with least CPU usage. For backwards compatibility use the LZO (which is identical to the older option --comp-lzo yes). In the partial mode (the option --compress with an empty algorithm) compression is turned off, but the packet framing for compression is still enabled, allowing a different setting to be pushed later. The legacy LZO algorithm with adaptive compression mode will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
+                            <?=gettext("Compress tunnel packets using the LZ4/LZO algorithm. The LZ4 generally offers the best performance with least CPU usage. For backwards compatibility use the LZO (which is identical to the older option --comp-lzo yes). In the partial mode (the option --compress with an empty algorithm) compression is turned off, but the packet framing for compression is still enabled, allowing a different setting to be pushed later. The legacy LZO algorithm with adaptive compression mode will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>
                         </div>
                       </td>
                     </tr>
@@ -1643,7 +1624,7 @@ $( document ).ready(function() {
                         <input name="cso_login_matching" type="checkbox" value="yes" <?=!empty($pconfig['cso_login_matching']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_cso_login_matching">
                           <span>
-                            <?=gettext("Use username instead of common name to match client specfic override."); ?><br />
+                            <?=gettext("Use username instead of common name to match client specific override."); ?><br />
                           </span>
                         </div>
                       </td>

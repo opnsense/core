@@ -68,7 +68,7 @@
               requestHandler: function(request){
                   if ( $('#severity_filter').val().length > 0) {
                       let selectedSeverity = $('#severity_filter').val();
-                      // get selected severities or severeties below or equal to selected
+                      // get selected severities or severities below or equal to selected
                       request['severity'] = filter_exact ? selectedSeverity : severities.slice(0,severities.indexOf(selectedSeverity) + 1);
                   }
                   return request;

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,16 +34,15 @@ namespace OPNsense\Firewall;
  */
 class NptRule extends Rule
 {
-    private $procorder = array(
-        'binat_1' => array(
-            'disabled' => 'parseIsComment',
-            'binat' => 'parseStaticText,binat ',
-            'interface' => 'parseInterface',
-            'from' => 'parsePlain,from , to any',
-            'to' => 'parsePlain, -> ',
-            'descr' => 'parseComment'
-        ),
-    );
+    private $procorder = [
+        'disabled' => 'parseIsComment',
+        'binat' => 'parseStaticText,binat ',
+        'log' => 'parseBool,log',
+        'interface' => 'parseInterface',
+        'from' => 'parsePlain,from , to any',
+        'to' => 'parsePlain, -> ',
+        'descr' => 'parseComment'
+    ];
 
     /**
      * search interfaces without a gateway other then the one provided
@@ -52,7 +51,7 @@ class NptRule extends Rule
      */
     private function reflectionInterfaces($interface)
     {
-        $result = array();
+        $result = [];
         foreach ($this->interfaceMapping as $intfk => $intf) {
             if (
                 empty($intf['gateway']) && empty($intf['gatewayv6']) && $interface != $intfk
@@ -72,7 +71,6 @@ class NptRule extends Rule
     private function parseNptRules()
     {
         foreach ($this->reader('npt') as $rule) {
-            $rule['rule_type'] = "binat_1";
             yield $rule;
         }
     }
@@ -85,7 +83,7 @@ class NptRule extends Rule
     {
         $ruleTxt = '';
         foreach ($this->parseNptRules() as $rule) {
-            $ruleTxt .= $this->ruleToText($this->procorder[$rule['rule_type']], $rule) . "\n";
+            $ruleTxt .= $this->ruleToText($this->procorder, $rule) . "\n";
         }
         return $ruleTxt;
     }

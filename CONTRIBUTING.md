@@ -25,7 +25,7 @@ All issues reported will have to be triaged and prioritised.  As we
 are a small team we may not always have the time to implement and help,
 but reporting an issue may help others to fill in.
 
-The issue catetories are as follows:
+The issue categories are as follows:
 
 * support: community-based help figuring out setup issues or code problems
 * cleanup: cosmetic changes or non-operational bugs (display issues, etc.)

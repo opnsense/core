@@ -201,7 +201,7 @@ class Monit extends BaseModel
                                         $key
                                     ));
                                 } else {
-                                    // set the test tytpe according to the condition
+                                    // set the test type according to the condition
                                     $parentNode->type = $type;
                                 }
                                 break;

@@ -45,7 +45,7 @@ if [ "$(opnsense-version -a)" != "$(opnsense-version -x)" ]; then
 fi
 
 # figure out the release type from config
-SUFFIX="-$(pluginctl -g system.firmware.type)"
+SUFFIX="-$(/usr/local/sbin/pluginctl -g system.firmware.type)"
 if [ "${SUFFIX}" = "-" ]; then
 	SUFFIX=
 fi

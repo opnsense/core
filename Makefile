@@ -129,24 +129,22 @@ CORE_COPYRIGHT_YEARS?=	2014-2022
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
-# transition helpers for PHP 8/Phalcon 5 migration
-CORE_DEPENDS_PHP74=	php74-json php74-openssl php74-phalcon
-CORE_DEPENDS_PHP80=	php80-phalcon
+# XXX transition helpers for PHP 8 migration
+CORE_DEPENDS_PHP74=	php74-json php74-openssl
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
-			dhcpleases \
 			dnsmasq \
 			dpinger \
 			expiretable \
 			filterlog \
-			ifinfo \
-			iftop \
 			flock \
 			flowd \
 			hostapd \
+			ifinfo \
+			iftop \
 			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			lighttpd \
@@ -169,6 +167,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
+			php${CORE_PHP}-phalcon \
 			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
@@ -184,6 +183,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON}-vici \
 			radvd \
 			rrdtool \
 			samplicator \
@@ -349,7 +349,7 @@ upgrade-check:
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@pluginctl webgui
+	@${.CURDIR}/src/sbin/pluginctl webgui
 
 lint-shell:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
@@ -422,12 +422,6 @@ license: want-p5-File-Slurp
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
 sync: license plist-fix
-
-dhparam:
-.for BITS in 1024 2048 4096
-	${OPENSSL} dhparam -out \
-	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
-.endfor
 
 ARGS=	diff mfc
 

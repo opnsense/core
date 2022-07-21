@@ -47,18 +47,18 @@ status_fhandle.seek(0)
 try:
     metadata = ujson.loads(status_fhandle.read())
     # ujson treats decimals as floats, round these numbers to avoid re-triggering the previous handled event
-    metadata['last_proccessed_stamp'] = round(decimal.Decimal(metadata['last_proccessed_stamp']), 4)
+    metadata['last_processed_stamp'] = round(decimal.Decimal(metadata['last_processed_stamp']), 4)
 except ValueError:
-     metadata = {'last_proccessed_stamp': 0}
+     metadata = {'last_processed_stamp': 0}
 
 for filename in sorted(glob.glob('/conf/backup/config-*.xml')):
     ts=filename.split('-')[-1].split('.xml')[0].replace('_', '')
     if ts.count('.') <= 1 and ts.replace('.', '').isdigit():
         # only process valid config backups containing a timestamp
         ts_num = decimal.Decimal(ts)
-        if ts_num > metadata['last_proccessed_stamp']:
+        if ts_num > metadata['last_processed_stamp']:
             subprocess.run(["/usr/local/etc/rc.syshook", "config", filename])
-            metadata['last_proccessed_stamp'] = ts_num
+            metadata['last_processed_stamp'] = ts_num
 
 # write metadata and exit
 status_fhandle.seek(0)

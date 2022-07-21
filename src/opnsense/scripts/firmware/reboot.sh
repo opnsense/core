@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2018-2022 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,20 @@ if [ -n "${LQUERY}" -a -n "${RQUERY}" -a "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; t
 	WANT_REBOOT=0
 elif opnsense-update -bk -c; then
 	WANT_REBOOT=0
+fi
+
+COREPKG=$(opnsense-version -n)
+
+LQUERY=$(${PKG} query %v ${COREPKG} 2> /dev/null)
+RQUERY=$(${PKG} rquery %v ${COREPKG} 2> /dev/null)
+
+# Additionally return the next version number if an update to the
+# core package is available.  We want to use it to display additional
+# information in the shell menu including the matching changelog.
+
+if [ -n "${LQUERY}" -a -n "${RQUERY}" -a \
+    "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+	echo ${RQUERY%%_*}
 fi
 
 # success is reboot:

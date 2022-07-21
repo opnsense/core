@@ -409,13 +409,10 @@ EOD;
         } elseif (isset($config['interfaces']['lan']['wireless'])) {
             unset($config['interfaces']['lan']['wireless']);
         }
-    } else {
-        if (isset($config['interfaces']['lan']['if'])) {
-            mwexec("/sbin/ifconfig " . $config['interfaces']['lan']['if'] . " delete");
-        }
-        if (isset($config['interfaces']['lan'])) {
-            unset($config['interfaces']['lan']);
-        }
+    } elseif (isset($config['interfaces']['lan'])) {
+        unset($config['interfaces']['lan']['enable']);
+        interface_bring_down('lan');
+
         if (isset($config['dhcpd']['lan'])) {
             unset($config['dhcpd']['lan']);
         }
@@ -428,6 +425,7 @@ EOD;
         if (isset($config['nat'])) {
             unset($config['nat']);
         }
+        unset($config['interfaces']['lan']);
     }
 
     if ($wanif) {
@@ -446,10 +444,10 @@ EOD;
         } elseif (isset($config['interfaces']['wan']['wireless'])) {
             unset($config['interfaces']['wan']['wireless']);
         }
-    } else {
-        if (isset($config['interfaces']['wan'])) {
-            unset($config['interfaces']['wan']);
-        }
+    } elseif (isset($config['interfaces']['wan'])) {
+        unset($config['interfaces']['wan']['enable']);
+        interface_bring_down('wan');
+        unset($config['interfaces']['wan']);
     }
 
     for ($i = 0; $i < count($optif); $i++) {
@@ -470,6 +468,8 @@ EOD;
 
     /* remove all other (old) optional interfaces */
     for (; isset($config['interfaces']['opt' . ($i + 1)]); $i++) {
+        unset($config['interfaces']['opt' . ($i + 1)]['enable']);
+        interface_bring_down('opt' . ($i + 1));
         unset($config['interfaces']['opt' . ($i + 1)]);
     }
 

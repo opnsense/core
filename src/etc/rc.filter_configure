@@ -33,9 +33,7 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-if (file_exists('/var/run/booting')) {
-    return;
-}
+exit_on_bootup();
 
 $event_arg = count($argv) >= 1 ? $argv[1] : '';
 

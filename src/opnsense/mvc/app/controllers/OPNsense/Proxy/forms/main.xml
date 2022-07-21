@@ -140,7 +140,7 @@
                 <id>proxy.general.cache.local.enabled</id>
                 <label>Enable local cache</label>
                 <type>checkbox</type>
-                <help>Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards without the /var MFS option as this will wear down your drive.</help>
+                <help>Enable or disable the local cache. Only UFS directory cache type is supported. Do not enable on embedded systems with SD or CF cards as this will wear down your drive.</help>
             </field>
             <field>
                 <id>proxy.general.cache.local.size</id>
@@ -232,7 +232,7 @@
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
                 <label>Overall bandwidth throttling (kbps)</label>
                 <type>text</type>
-                <help>Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).</help>
+                <help>Enter the allowed overall bandwidth in kilobits per second (leave empty to disable).</help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>

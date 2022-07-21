@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php endif ?>
     </td>
     <td style="width:35%; word-break: break-word;">
-      <?= empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']) ?>
+      <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
     <td style="width:45%; word-break: break-word;">
       <?= htmlspecialchars($ifinfo['ipaddr']) ?>

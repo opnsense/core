@@ -99,7 +99,7 @@ function check_security_dns_rebind()
 }
 
 /* HTTP referer detection, return true when being forwarded from an unknown referer*/
-function check_security_http_referer_enforement()
+function check_security_http_referer_enforcement()
 {
     global $config;
     if (!isset($config['system']['webgui']['nohttpreferercheck']) && isset($_SERVER['HTTP_REFERER'])) {
@@ -157,7 +157,7 @@ function session_auth()
         if (check_security_dns_rebind()) {
             display_error_form(sprintf(gettext('A potential %sDNS Rebind attack%s has been detected.%sTry to access the router by IP address instead of by hostname. You can disable this check if needed under System: Settings: Administration.'), '<a href="http://en.wikipedia.org/wiki/DNS_rebinding">', '</a>', '<br />'));
             exit;
-        } elseif (check_security_http_referer_enforement()) {
+        } elseif (check_security_http_referer_enforcement()) {
             display_error_form(sprintf(
                 gettext('The HTTP_REFERER "%s" does not match the predefined settings. You can disable this check if needed under System: Settings: Administration.'),
                 html_safe($_SERVER['HTTP_REFERER'])
@@ -314,9 +314,7 @@ function display_error_form($text)
     $themename = htmlspecialchars(get_current_theme());
 
     ?><!doctype html>
-<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<html lang="en" class="no-js">
   <head>
 
     <meta charset="UTF-8" />
@@ -335,7 +333,6 @@ function display_error_form($text)
 
     <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
-    <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
   </head>
   <body class="page-login">
     <div id=container">
@@ -377,9 +374,7 @@ function display_login_form($Login_Error)
     setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
-<!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<html lang="en" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -400,8 +395,6 @@ function display_login_form($Login_Error)
     <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")) : ?>
     <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
     <?php endif ?>
-
-    <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
   </head>
   <body class="page-login">

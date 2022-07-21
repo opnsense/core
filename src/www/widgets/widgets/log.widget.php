@@ -36,7 +36,7 @@ require_once("interfaces.inc");
 
 $pconfig = $_POST;
 
-if (is_numeric($pconfig['filterlogentries'])) {
+if (is_numeric($pconfig['filterlogentries'] ?? null)) {
     $config['widgets']['filterlogentries'] = $pconfig['filterlogentries'];
     $config['widgets']['filterlogentriesupdateinterval'] = $pconfig['filterlogentriesupdateinterval'];
 
@@ -237,7 +237,7 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
       <th data-column-id="interface" data-type="interface" class="text-center"><?= gettext('Interface') ?></th>
       <th data-column-id="src" data-type="source_address"><?= gettext('Source') ?></th>
       <th data-column-id="dst" data-type="destination_address"><?= gettext('Destination') ?></th>
-      <th data-column-id="dstport" data-type="destination_port"><?= gettext('Dest Port') ?></th>
+      <th data-column-id="dstport" data-type="destination_port"><?= gettext('Port') ?></th>
     </tr>
   </thead>
   <tbody>

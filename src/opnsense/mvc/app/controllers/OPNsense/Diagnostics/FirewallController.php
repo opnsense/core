@@ -76,27 +76,27 @@ class FirewallController extends IndexController
           [
             "name" => "info",
             "caption" => gettext("info"),
-            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/info"
+            "endpoint" => "/api/diagnostics/firewall/pf_statistics/info"
           ],
           [
             "name" => "memory",
             "caption" => gettext("memory"),
-            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/memory"
+            "endpoint" => "/api/diagnostics/firewall/pf_statistics/memory"
           ],
           [
             "name" => "timeouts",
             "caption" => gettext("timeouts"),
-            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/timeouts"
+            "endpoint" => "/api/diagnostics/firewall/pf_statistics/timeouts"
           ],
           [
             "name" => "interfaces",
             "caption" => gettext("interfaces"),
-            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/interfaces"
+            "endpoint" => "/api/diagnostics/firewall/pf_statistics/interfaces"
           ],
           [
             "name" => "rules",
             "caption" => gettext("rules"),
-            "endpoint" => "/api/diagnostics/firewall/pf_statistcs/rules"
+            "endpoint" => "/api/diagnostics/firewall/pf_statistics/rules"
           ]
         ];
         $this->view->default_tab = "info";

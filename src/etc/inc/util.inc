@@ -249,52 +249,6 @@ function service_control_restart($name, $extras)
     return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars($name));
 }
 
-function list_dh_parameters()
-{
-    global $config;
-
-    $available = array(1024, 2048, 4096);
-
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'rfc7919':
-                $available = array(2048, 3072, 4096);
-                break;
-            default:
-                /* XXX whatever we have on the disk */
-                break;
-        }
-    }
-
-    return $available;
-}
-
-function get_dh_parameters($bits)
-{
-    global $config;
-
-    $file = "/usr/local/etc/dh-parameters.{$bits}";
-
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'rfc7919':
-                return "{$file}.rfc7919";
-            default:
-                break;
-        }
-    }
-
-    if (empty($config['system']['dhparamusage']) || !file_exists($file)) {
-        /*
-         * Use the sample file if the normal file is MIA
-         * or when the renew interval is not set:
-         */
-        $file .= '.sample';
-    }
-
-    return $file;
-}
-
 function is_subsystem_dirty($subsystem = '')
 {
     return file_exists("/tmp/{$subsystem}.dirty");
@@ -331,7 +285,6 @@ function lock($lock, $op = LOCK_SH)
     }
 }
 
-
 /* unlock configuration file */
 function unlock($cfglckkey = null)
 {
@@ -339,6 +292,32 @@ function unlock($cfglckkey = null)
         flock($cfglckkey, LOCK_UN);
         fclose($cfglckkey);
     }
+}
+
+function exit_on_bootup($callback = null, $arguments = [])
+{
+    $bootflag = '/var/run/booting';
+
+    /* make sure file exists */
+    @touch($bootflag);
+
+    $fp = fopen($bootflag, 'r');
+    if (!$fp) {
+        /* log possible error and adjust exist code */
+        log_error("exit_on_bootup(): error opening $bootflag");
+        exit(1);
+    }
+
+    if (!flock($fp, LOCK_SH | LOCK_NB)) {
+        if ($callback) {
+            call_user_func_array($callback, $arguments);
+        }
+        /* intentionally we exit here to avoid future cleverness WRT bootup handing */
+        exit(0);
+    }
+
+    /* let the script run if we made sure we are up and running */
+    fclose($fp);
 }
 
 /* validate non-negative numeric string, or equivalent numeric variable */
@@ -531,6 +510,29 @@ function find_smallest_cidr6($ips)
     }
 
     return 128 - $bits;
+}
+
+/* merge IPv6 address prefix of default size 64 with suffix */
+function merge_ipv6_address($prefix, $suffix, $size = 64)
+{
+    $size = 128 - $size;
+
+    $prefix_bits = unpack('N*', inet_pton($prefix));
+    $suffix_bits = unpack('N*', inet_pton($suffix));
+    $mask = [
+        1 => (0xffffffff << max($size - 96, 0)) & 0xffffffff,
+        2 => (0xffffffff << max($size - 64, 0)) & 0xffffffff,
+        3 => (0xffffffff << max($size - 32, 0)) & 0xffffffff,
+        4 => (0xffffffff << $size) & 0xffffffff,
+    ];
+
+    $result = '';
+
+    for ($pos = 1; $pos <= 4; $pos += 1) {
+        $result .=  sprintf('%08x', ($prefix_bits[$pos] & $mask[$pos]) | ($suffix_bits[$pos] & (~$mask[$pos] & 0xffffffff)));
+    }
+
+    return Net_IPv6::compress(implode(':', str_split($result, 4)));
 }
 
 /* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
@@ -806,7 +808,7 @@ function get_configured_ip_addresses()
             if (!empty($if[$iptype])) {
                 foreach ($if[$iptype] as $addr) {
                     if (!empty($addr['ipaddr'])) {
-                        $scope = $addr['link-local'] ? "%{$ifname}" : '';
+                        $scope = !empty($addr['link-local']) ? "%{$ifname}" : '';
                         $ip_array[$addr['ipaddr'] . $scope] = $ifname;
                     }
                 }
@@ -1195,32 +1197,36 @@ function get_single_sysctl($name)
  * Set sysctl OID's listed as key/value pairs and return
  * an array with keys set for those that succeeded
  */
-function set_sysctl($values)
+function set_sysctl($values, $filter = true)
 {
+    $ret = [];
+
     if (empty($values)) {
-        return array();
+        return $ret;
     }
 
     $sysctls = null;
-    exec('/sbin/sysctl -WaN', $list, $success);
-    if ($success == 0) {
-        $sysctls = $list;
+
+    if ($filter) {
+        exec('/sbin/sysctl -WaN', $list, $success);
+        if ($success == 0) {
+            $sysctls = $list;
+        }
     }
 
-    $value_list = array();
+    $value_list = [];
     foreach ($values as $key => $value) {
-        if ($sysctls != null && !in_array($key, $sysctls)) {
+        if ($sysctls !== null && !in_array($key, $sysctls)) {
             continue;
         }
-        $value_list[] = escapeshellarg($key) . "=" . escapeshellarg($value);
+        $value_list[] = escapeshellarg($key) . '=' . escapeshellarg($value);
     }
 
     if (count($value_list)) {
         exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
 
-        $ret = array();
         foreach ($output as $line) {
-            $line = explode(": ", $line, 2);
+            $line = explode(': ', $line, 2);
             if (count($line) == 2) {
                 $ret[$line[0]] = true;
             }
@@ -1233,18 +1239,10 @@ function set_sysctl($values)
 /*
  * set_single_sysctl($name, $value)
  * Wrapper to set_sysctl() to make it simple to set only one sysctl
- * returns boolean meaning if it suceed
  */
 function set_single_sysctl($name, $value)
 {
-    if (empty($name)) {
-        return false;
-    }
-    $result = set_sysctl(array($name => $value));
-    if (!isset($result[$name]) || $result[$name] != $value) {
-        return false;
-    }
-    return true;
+    set_sysctl([$name => $value], false);
 }
 
 /****f* util/is_URL

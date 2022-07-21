@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system'][$dnsgwname] = "none";
             if (!empty($pconfig[$dnsgwname])) {
                 // The indexes used to save the item don't have to correspond to the ones in the config, but since
-                // we always redirect after save, the configuration content is read after a successfull change.
+                // we always redirect after save, the configuration content is read after a successful change.
                 $outdnscounter++;
                 $outdnsgwname="dns{$outdnscounter}gw";
                 $config['system'][$outdnsgwname] = $thisdnsgwname;

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -27,7 +27,7 @@
 
 set -e
 
-# From this shell script never execute any remote work priror to user
+# From this shell script never execute any remote work prior to user
 # consent.  The first action is the unconditional changelog fetch after
 # script invoke.  After that we opportunistically run the selected major
 # "upgrade"/minor "update" request as it appears to be available.
@@ -39,6 +39,7 @@ set -e
 
 RELEASE=$(opnsense-update -vR)
 PROMPT="y/N"
+CHANGELOG=
 ARGS=
 
 run_action()
@@ -72,7 +73,7 @@ if [ -n "${RELEASE}" ]; then
 	echo
 
 	PROMPT="${RELEASE}/${PROMPT}"
-elif /usr/local/opnsense/scripts/firmware/reboot.sh; then
+elif CHANGELOG=$(/usr/local/opnsense/scripts/firmware/reboot.sh); then
 	echo "This update requires a reboot."
 	echo
 fi
@@ -84,6 +85,7 @@ case ${YN} in
 	;;
 ${RELEASE:-y})
 	ARGS="upgrade ${RELEASE}"
+	CHANGELOG=${RELEASE}
 	;;
 [sS])
 	run_action security
@@ -103,5 +105,13 @@ ${RELEASE:-y})
 esac
 
 echo
+
+if [ -n "${CHANGELOG}" ]; then
+	CHANGELOG=$(configctl firmware changelog text ${CHANGELOG})
+fi
+if [ -n "${CHANGELOG}" ]; then
+	echo "${CHANGELOG}" | less
+	echo
+fi
 
 /usr/local/etc/rc.firmware ${ARGS}

@@ -435,6 +435,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act ==  "del") {
         if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
+            if (isset($config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr'])) {
+                configdp_run('interface remove arp', [
+                    $config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr']
+                ]);
+            }
             unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
             write_config();
             if (isset($config['dhcpd'][$if]['enable'])) {
@@ -516,7 +521,7 @@ include("head.inc");
 <script>
   $( document ).ready(function() {
     /**
-     * Additional BOOTP/DHCP Options extenable table
+     * Additional BOOTP/DHCP Options extendable table
      */
     function removeRow() {
         if ( $('#numberoptions_table > tbody > tr').length == 1 ) {
@@ -596,15 +601,15 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if (isset($config['dhcrelay']['enable'])): ?>
+          <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
+        <?php else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('staticmaps')): ?><br/>
         <?php print_info_box_apply(gettext("The static mapping configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-            <?php if (isset($config['dhcrelay']['enable'])): ?>
-              <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
-            <?php else: ?>
             <div class="tab-content content-box col-xs-12">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
@@ -1199,10 +1204,8 @@ include("head.inc");
               </div>
             </div>
           </section>
-<?php
-          endif; ?>
-<?php
-        endif; ?>
+          <?php endif ?>
+          <?php endif ?>
       </div>
     </div>
   </section>

@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
     $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
-    $pconfig['deployment'] = $config['system']['deployment'] ?? "production";
+    $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
-            ($config['system']['deployment'] ?? null) != $pconfig['deployment'];
+            ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -155,7 +155,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
-        $config['system']['deployment'] = $pconfig['deployment'];
+
+        if (!empty($pconfig['deployment'])) {
+            $config['system']['deployment'] = $pconfig['deployment'];
+        } elseif (isset($config['system']['deployment'])) {
+            unset($config['system']['deployment']);
+        }
 
         if (!empty($pconfig['ssl-hsts'])) {
             $config['system']['webgui']['ssl-hsts'] = true;
@@ -666,7 +671,7 @@ $(document).ready(function() {
                   <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable access log"); ?>
                   <div class="hidden" data-for="help_for_httpaccesslog">
-                    <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
+                    <?=gettext("Enable access logging on the web GUI for debugging and analysis purposes.") ?>
                   </div>
                 </td>
               </tr>
@@ -722,7 +727,7 @@ $(document).ready(function() {
 <?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_sshlogingroup">
-                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-adminstrators as every user can access system files using SSH or SFTP.') ?>
+                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-administrators as every user can access system files using SSH or SFTP.') ?>
                   </div>
                 </td>
               </tr>
@@ -1037,19 +1042,15 @@ $(document).ready(function() {
                 <td><a id="help_for_deployment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deployment type")?></td>
                 <td>
                   <select name="deployment" class="selectpicker">
-                    <option value="production" <?=$pconfig['deployment'] == "production" ? 'selected="selected"' : '';?>>
+                    <option value="" <?= empty($pconfig['deployment']) ? 'selected="selected"' : '' ?>>
                       <?=gettext("Production");?>
                     </option>
-                    <option value="development" <?=$pconfig['deployment'] == "development" ? 'selected="selected"' : '';?>>
+                    <option value="development" <?= $pconfig['deployment'] == 'development' ? 'selected="selected"' : '' ?>>
                       <?=gettext("Development");?>
-                    </option>
-                    <option value="debug" <?=$pconfig['deployment'] == "debug" ? 'selected="selected"' : '';?>>
-                      <?=gettext("Debug");?>
                     </option>
                   </select>
                   <div class="hidden" data-for="help_for_deployment">
                     <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
-                    <?=gettext("Warning: enabling debug mode will affect the GUI's layout and may break usability.");?>
                   </div>
                 </td>
               </tr>

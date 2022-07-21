@@ -1,7 +1,5 @@
 <!doctype html>
-<!--[if IE 8 ]><html lang="en-US" class="ie ie8 lte9 lte8 no-js"><![endif]-->
-<!--[if IE 9 ]><html lang="en-US" class="ie ie9 lte9 no-js"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en-US" class="no-js"><!--<![endif]-->
+<html lang="en-US" class="no-js">
   <head>
 
     <meta charset="UTF-8" />
@@ -213,7 +211,7 @@
         <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
 
-        <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
+        <!-- Bootgrid (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jquery.bootgrid.css', theme_name)) }}" />
         <script src="{{ cache_safe('/ui/js/jquery.bootgrid.js') }}"></script>
         <!-- Bootstrap type ahead -->

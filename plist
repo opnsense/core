@@ -3,9 +3,6 @@
 /usr/local/bin/python3
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
-/usr/local/etc/dh-parameters.2048.rfc7919
-/usr/local/etc/dh-parameters.3072.rfc7919
-/usr/local/etc/dh-parameters.4096.rfc7919
 /usr/local/etc/dhcpd.opnsense.d/README
 /usr/local/etc/dhcpd6.opnsense.d/README
 /usr/local/etc/dnsmasq.conf.d/README
@@ -37,6 +34,7 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn/attributes.sh
 /usr/local/etc/inc/plugins.inc.d/openvpn/auth-user.php
+/usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_auth_verify
@@ -82,6 +80,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210104
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20210629
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20210903
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20220701
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -140,7 +139,7 @@
 /usr/local/etc/rc.syshook.d/monitor/10-dpinger
 /usr/local/etc/rc.syshook.d/start/10-newwanip
 /usr/local/etc/rc.syshook.d/start/20-freebsd
-/usr/local/etc/rc.syshook.d/start/21-syslog-ng
+/usr/local/etc/rc.syshook.d/start/25-syslog
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
 /usr/local/etc/rc.syshook.d/start/95-beep
@@ -289,6 +288,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsDiagnosticsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/FirewallController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/InterfaceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/LogController.php
@@ -297,6 +297,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/TrafficController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/DnsDiagnosticsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/FirewallController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/InterfaceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/LogController.php
@@ -304,6 +305,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/TrafficController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/dns_diagnostics.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/netflow_capture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
@@ -326,9 +328,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SessionsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SadController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SessionsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/TunnelsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
@@ -527,6 +535,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
@@ -614,6 +624,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_pftop.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_states.volt
@@ -633,6 +644,9 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sad.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sessions.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
@@ -725,10 +739,14 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/carp_status
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
+/usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
+/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
-/usr/local/opnsense/scripts/dns/unbound_dhcpd.py
+/usr/local/opnsense/scripts/dhcp/prefixes.sh
+/usr/local/opnsense/scripts/dhcp/unbound_watcher.py
+/usr/local/opnsense/scripts/dns/query_dns.py
 /usr/local/opnsense/scripts/filter/delete_table.py
 /usr/local/opnsense/scripts/filter/download_geoip.py
 /usr/local/opnsense/scripts/filter/find_table_references.py
@@ -747,7 +765,7 @@
 /usr/local/opnsense/scripts/filter/list_states.py
 /usr/local/opnsense/scripts/filter/list_table.py
 /usr/local/opnsense/scripts/filter/list_tables.py
-/usr/local/opnsense/scripts/filter/pfstatistcs.py
+/usr/local/opnsense/scripts/filter/pfstatistics.py
 /usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
@@ -796,14 +814,11 @@
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
+/usr/local/opnsense/scripts/ipsec/list_sad.py
+/usr/local/opnsense/scripts/ipsec/list_spd.py
 /usr/local/opnsense/scripts/ipsec/list_status.py
-/usr/local/opnsense/scripts/ipsec/vici/__init__.py
-/usr/local/opnsense/scripts/ipsec/vici/compat.py
-/usr/local/opnsense/scripts/ipsec/vici/exception.py
-/usr/local/opnsense/scripts/ipsec/vici/protocol.py
-/usr/local/opnsense/scripts/ipsec/vici/session.py
-/usr/local/opnsense/scripts/ipsec/vici/test/__init__.py
-/usr/local/opnsense/scripts/ipsec/vici/test/test_protocol.py
+/usr/local/opnsense/scripts/ipsec/saddelete.py
+/usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
@@ -827,7 +842,6 @@
 /usr/local/opnsense/scripts/proxy/generate_cert.php
 /usr/local/opnsense/scripts/proxy/lib/__init__.py
 /usr/local/opnsense/scripts/proxy/setup.sh
-/usr/local/opnsense/scripts/remote_backup.php
 /usr/local/opnsense/scripts/routes/del_route.py
 /usr/local/opnsense/scripts/routes/gateway_status.php
 /usr/local/opnsense/scripts/routes/gateways.php
@@ -835,7 +849,6 @@
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
 /usr/local/opnsense/scripts/shaper/update_tables
-/usr/local/opnsense/scripts/shell/add_user
 /usr/local/opnsense/scripts/shell/banner.php
 /usr/local/opnsense/scripts/shell/defaults.php
 /usr/local/opnsense/scripts/shell/firmware.sh
@@ -867,9 +880,9 @@
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
-/usr/local/opnsense/scripts/system/dh_parameters.sh
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/nameservers.php
+/usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/status.php
@@ -1780,11 +1793,7 @@
 /usr/local/www/diag_backup.php
 /usr/local/www/diag_confbak.php
 /usr/local/www/diag_defaults.php
-/usr/local/www/diag_dns.php
-/usr/local/www/diag_ipsec.php
 /usr/local/www/diag_ipsec_leases.php
-/usr/local/www/diag_ipsec_sad.php
-/usr/local/www/diag_ipsec_spd.php
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/diag_packet_capture.php
 /usr/local/www/diag_ping.php
@@ -1929,9 +1938,6 @@
 @sample /usr/local/etc/bogons.sample
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
-@sample /usr/local/etc/dh-parameters.1024.sample
-@sample /usr/local/etc/dh-parameters.2048.sample
-@sample /usr/local/etc/dh-parameters.4096.sample
 @sample /usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
 @shadow /usr/local/etc/pkg/repos/OPNsense.conf.sample

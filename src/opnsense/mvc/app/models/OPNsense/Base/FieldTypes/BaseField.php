@@ -427,7 +427,7 @@ abstract class BaseField
     }
 
     /**
-     * check for existance of child attribute
+     * check for existence of child attribute
      * @return bool if child exists
      */
     public function hasChild($name)
@@ -498,7 +498,7 @@ abstract class BaseField
                 $parentNode = $this->getParentNode();
                 if (count($parts) == 2) {
                     $tagName = $parts[0];
-                    if (isset($parentNode->$tagName) && !$parentNode->$tagName->GetInternalIsVirtual()) {
+                    if (isset($parentNode->$tagName) && !$parentNode->$tagName->getInternalIsVirtual()) {
                         $ref_constraint = $parentNode->$tagName->getConstraintByName($parts[1]);
                         if ($ref_constraint != null) {
                             $result[] = $ref_constraint;
@@ -629,7 +629,7 @@ abstract class BaseField
         // add new items to array type objects
         if ($this->isArrayType()) {
             foreach ($data as $dataKey => $dataValue) {
-                if (!isset($this->$dataKey) && !$this->$dataKey->GetInternalIsVirtual()) {
+                if (!isset($this->$dataKey)) {
                     $node = $this->add();
                     $node->setNodes($dataValue);
                 }

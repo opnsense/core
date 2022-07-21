@@ -81,6 +81,7 @@ function vxlan_configure_do($verbose = false, $device = null)
         $device_name = "vxlan{$vxlan->deviceId}";
 
         if ($device !== null && $device != $device_name) {
+            $configured_devices[] = $device_name;
             continue;
         }
 
@@ -135,7 +136,7 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
     }
 
-    // destroy non existing interfaces
+    // destroy nonexistent interfaces
     foreach ($interfaces_details as $intf => $data) {
         if (strpos($intf, "vxlan") === 0) {
             if (!in_array($intf, $configured_devices)) {

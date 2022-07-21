@@ -35,16 +35,8 @@ $fp = fopen('php://stdin', 'r');
 echo "\nEnter a host name or IP address: ";
 
 $pinghost = chop(fgets($fp));
-if (is_ipaddrv4($pinghost) || is_hostname($pinghost)) {
-    $command = "ping";
-} elseif (is_ipaddrv6($pinghost)) {
-    $command = "ping6";
-}
-if ($command) {
-    echo "\n";
-    passthru("/sbin/{$command} -c 3 -n " . escapeshellarg($pinghost));
-    echo "\nPress ENTER to continue.\n";
-    fgets($fp);
-}
-
+echo "\n";
+passthru("/sbin/ping -c 3 -n " . escapeshellarg($pinghost));
+echo "\nPress ENTER to continue.\n";
+fgets($fp);
 fclose($fp);

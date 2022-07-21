@@ -54,10 +54,10 @@ def unbound_control(commands, input=None, output_stream=None):
         nl='\n'
         input_string = f'{nl.join(input)}{nl}'
 
+    # XXX invoke can fail (non-zero exit code), but unclear why and what to do
     subprocess.run(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
                     '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
-                   input=input_string, stdout=output_stream, stderr=subprocess.STDOUT,
-                   text=True, check=True)
+                   input=input_string, stdout=output_stream, stderr=subprocess.STDOUT, text=True)
 
     if output_stream:
         output_stream.seek(0)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
                                     default='/var/dhcpd/var/db/dhcpd.leases')
     parser.add_argument('--target', help='target config file, used when unbound restarts',
                                     default='/var/unbound/dhcpleases.conf')
-    parser.add_argument('--foreground', help='run in forground', default=False, action='store_true')
+    parser.add_argument('--foreground', help='run in foreground', default=False, action='store_true')
     parser.add_argument('--domain', help='default domain to use',  default='local')
     parser.add_argument('--config', help='configuration file to use',  default='/usr/local/etc/unbound_dhcpd.conf')
 

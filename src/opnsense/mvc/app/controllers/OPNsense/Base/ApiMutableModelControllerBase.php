@@ -253,8 +253,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected function save()
     {
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-            $this->getModel()->serializeToConfig();
-            Config::getInstance()->save();
+            if ($this->getModel()->serializeToConfig()) {
+                Config::getInstance()->save();
+            }
             return array("result" => "saved");
         } else {
             // XXX remove user-config-readonly in some future release

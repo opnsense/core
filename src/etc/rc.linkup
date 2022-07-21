@@ -34,6 +34,12 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("system.inc");
 
+exit_on_bootup();
+
+if ($argc < 3) {
+    exit;
+}
+
 function handle_argument_group($action, $realif)
 {
     global $config;
@@ -99,14 +105,6 @@ function handle_argument_group($action, $realif)
             log_error("DEVD: The action parameter passed is wrong ($action)");
             break;
     }
-}
-
-if (file_exists('/var/run/booting')) {
-    exit;
-}
-
-if ($argc < 3) {
-    exit;
 }
 
 handle_argument_group($argv[1], $argv[2]);
