@@ -560,6 +560,11 @@ function dhcpd_dhcp4_configure($verbose = false)
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
     if (!dhcpd_dhcpv4_enabled()) {
+        /*
+         * XXX If there is no enabled server interfaces_staticarp_configure()
+         * is not executed as documented.  This likely does not matter, but
+         * since it came up as odd in testing make a note here for the future.
+         */
         return;
     }
 
