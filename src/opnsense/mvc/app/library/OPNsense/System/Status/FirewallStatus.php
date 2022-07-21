@@ -35,7 +35,7 @@ class FirewallStatus extends AbstractStatus
 
     public function __construct()
     {
-        $this->internalLogLocation = '/ui/diagnostics/log/core/system';
+        $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
 
         foreach ($this->statusStrings as $level) {
             if (file_exists('/tmp/rules.' . $level)) {

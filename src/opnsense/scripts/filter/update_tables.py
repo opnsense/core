@@ -133,6 +133,7 @@ if __name__ == '__main__':
         source_tree = ET.ElementTree(file=inputargs.source_conf)
     except ET.ParseError as e:
         syslog.syslog(syslog.LOG_ERR, 'filter table parse error (%s) %s' % (str(e), inputargs.source_conf))
+        open('/tmp/rules.error').close()
         sys.exit(-1)
 
     aliases = AliasParser(source_tree)
@@ -190,6 +191,7 @@ if __name__ == '__main__':
                         if error_output not in result['messages']:
                             result['messages'].append(error_message)
                             syslog.syslog(syslog.LOG_NOTICE, error_message)
+                            open('/tmp/rules.error').close()
 
     # cleanup removed aliases
     to_remove = dict()
