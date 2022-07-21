@@ -253,6 +253,7 @@ function core_syslog()
     $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
     $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['firewall'] = array('facility' => array('firewall'));
     $logfacilities['filter'] = array('facility' => array('filterlog'));
     $logfacilities['gateways'] = array('facility' => array('dpinger'));
     $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
