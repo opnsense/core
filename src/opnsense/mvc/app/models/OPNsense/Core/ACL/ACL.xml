@@ -310,6 +310,13 @@
             <pattern>firewall_virtual_ip.php*</pattern>
         </patterns>
     </page-firewall-virtualipaddresses>
+    <page-diagnostics-logs-firewall-general>
+        <name>Diagnostics: Log: Firewall: General</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/firewall/*</pattern>
+            <pattern>api/diagnostics/log/core/firewall/*</pattern>
+        </patterns>
+    </page-diagnostics-logs-firewall-general>
     <page-diagnostics-logs-firewall-plain>
         <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>
