@@ -334,6 +334,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
+    openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
+
     $aliases = filter_generate_aliases();
     $aliases .= "\n# Plugins tables\n";
     $aliases .= $fw->tablesToText();
@@ -358,10 +360,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);
+
+        unlock($filterlck);
+        closelog();
+
         if ($verbose) {
             echo "done.\n";
         }
-        unlock($filterlck);
+
         return;
     }
 
@@ -450,11 +456,15 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
-        log_error("WARNING: Could not write new rules!");
+        syslog(LOG_ERR, 'ERROR: Could not write new rules!');
+
         unlock($filterlck);
+        closelog();
+
         if ($verbose) {
             echo "failed.\n";
         }
+
         return;
     }
 
@@ -486,15 +496,17 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         /* Brutal ugly hack but required -- PF is stuck, unwedge */
         if (strstr("$rules_error[0]", "busy")) {
             exec('/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f /tmp/rules.debug');
-            log_error('PF was wedged/busy and has been reset.');
+            syslog(LOG_WARNING, 'PF was wedged/busy and has been reset.');
             file_notice(gettext('PF was wedged/busy and has been reset.'));
         } else {
             exec('/sbin/pfctl -f /tmp/rules.debug.old 2>&1');
         }
 
-        log_error(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
+        syslog(LOG_ERR, sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
         file_notice(sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line));
+
         unlock($filterlck);
+        closelog();
 
         if ($verbose) {
             echo "failed.\n";
@@ -534,11 +546,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     killbypid('/var/run/filterlog.pid', 'TERM', true);
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
+    unlock($filterlck);
+    closelog();
+
     if ($verbose) {
         echo "done.\n";
     }
-
-    unlock($filterlck);
 }
 
 function filter_generate_scrubbing(&$FilterIflist)
@@ -671,7 +684,7 @@ function filter_generate_aliases()
                 # a bit of a hack, but prevents the ruleset from not being able to load if these types are in
                 # the configuration.
                 $aliases .= "{$aliased['name']} = \"{ 0 <> 65535 }\"\n";
-                log_error(sprintf('URL port aliases types not supported [%s]', $aliased['name']));
+                syslog(LOG_ERR, sprintf('URL port aliases types not supported [%s]', $aliased['name']));
                 file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
                 break;
             case "port":
