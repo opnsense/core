@@ -100,6 +100,7 @@ function match_wireless_interface($int)
         'bwn',
         'ipw',
         'iwi',
+        'iwlwifi',
         'iwm',
         'iwn',
         'malo',
