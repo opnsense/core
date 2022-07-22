@@ -63,6 +63,8 @@ VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
 .if exists(${VERSIONBIN})
 _CORE_ABI!=	${VERSIONBIN} -a
 CORE_ABI?=	${_CORE_ABI}
+.else
+VERSIONBIN=	true
 .endif
 
 PYTHONLINK=	${LOCALBASE}/bin/python3
