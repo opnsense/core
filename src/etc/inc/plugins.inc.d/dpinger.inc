@@ -87,6 +87,15 @@ function dpinger_configure()
     ];
 }
 
+function dpinger_syslog()
+{
+    $logfacilities = [];
+
+    $logfacilities['gateways'] = ['facility' => ['dpinger']];
+
+    return $logfacilities;
+}
+
 function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     if ($verbose) {
