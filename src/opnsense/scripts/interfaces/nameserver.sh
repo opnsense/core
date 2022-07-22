@@ -23,9 +23,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+DO_COMMAND=
 DO_CONTENTS=
-DO_DELETE=
-DO_MODE=
 DO_VERBOSE=
 
 AF=
@@ -33,10 +32,22 @@ MD=
 EX=
 IF=
 
+flush_routes()
+{
+	if [ "${MD}" != "nameserver" -o ! -f "${FILE}" ]; then
+		return
+	fi
+
+	for CONTENT in $(cat ${FILE}); do
+		# flush routes here to make sure they are recycled properly
+		route delete -${AF} "${CONTENT}"
+	done
+}
+
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:di:nprsV OPT; do
+while getopts 46a:cdi:lnprsV OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -47,28 +58,31 @@ while getopts 46a:di:nprsV OPT; do
 		EX=v6
 		;;
 	a)
+		DO_COMMAND="-a"
 		DO_CONTENTS="${DO_CONTENTS} ${OPTARG}"
 		;;
+	c)
+		MD="nameserver prefix router searchdomain"
+		;;
 	d)
-		DO_DELETE="-d"
+		DO_COMMAND="-d"
 		;;
 	i)
 		IF=${OPTARG}
 		;;
+	l)
+		DO_COMMAND="-l"
+		;;
 	n)
-		DO_MODE="-n"
 		MD="nameserver"
 		;;
 	p)
-		DO_MODE="-p"
 		MD="prefix"
 		;;
 	r)
-		DO_MODE="-r"
 		MD="router"
 		;;
 	s)
-		DO_MODE="-s"
 		MD="searchdomain"
 		;;
 	V)
@@ -85,6 +99,29 @@ if [ -n "${DO_VERBOSE}" ]; then
 	set -x
 fi
 
+if [ "${DO_COMMAND}" = "-c" ]; then
+	if [ -z "${IF}" ]; then
+		echo "Clearing requires interface option" >&2
+		exit 1
+	fi
+
+	# iterate through possible files
+	for MD in nameserver prefix router searchdomain; do
+		FILE="/tmp/${IF}_${MD}${EX}"
+		flush_routes
+		rm -f ${FILE}
+	done
+
+	exit 0
+elif [ "${DO_COMMAND}" = "-l" ]; then
+	if [ -z "${IF}" ]; then
+		EX="*"
+		IF="*"
+	fi
+	find -s /tmp -name "${IF}_${MD}${EX}"
+	exit 0
+fi
+
 FILE="/tmp/${IF:-*}_${MD}${EX}"
 
 if [ -z "${IF}" ]; then
@@ -98,20 +135,14 @@ if [ -z "${IF}" ]; then
 	exit 0
 fi
 
-if [ -n "${DO_DELETE}" ]; then
-        if [ "${DO_MODE}" = "-n" -a -f ${FILE} ]; then
-		for CONTENT in $(cat ${FILE}); do
-			# flush routes here to make sure they are recycled properly
-			route delete -${AF} "${CONTENT}"
-		done
-	fi
+if [ "${DO_COMMAND}" = "-d" ]; then
+	flush_routes
 	rm -f ${FILE}
-fi
-
-for CONTENT in ${DO_CONTENTS}; do
-	echo "${CONTENT}" >> ${FILE}
-done
-
-if [ -z "${DO_CONTENTS}${DO_DELETE}" -a -f ${FILE} ]; then
+elif [ "${DO_COMMAND}" = "-a" ]; then
+	for CONTENT in ${DO_CONTENTS}; do
+		echo "${CONTENT}" >> ${FILE}
+	done
+# if nothing else could be done display data
+elif [ -f ${FILE} ]; then
 	cat ${FILE}
 fi

@@ -932,13 +932,8 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     }
 
     /* clear stale state files associated with this interface */
-    @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_prefixv6");
-    @unlink("/tmp/{$realifv6}_routerv6");
-    @unlink("/tmp/{$realifv6}_searchdomainv6");
-    @unlink("/tmp/{$realif}_nameserver");
-    @unlink("/tmp/{$realif}_router");
-    @unlink("/tmp/{$realif}_searchdomain");
+    mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
+    mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -3930,8 +3925,7 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
-        /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_prefixv6");
+        $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
         if (!empty($aux)) {
             $ifinfo['prefixv6'] = $aux;
         }
