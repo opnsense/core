@@ -103,7 +103,6 @@ class Alias(object):
                 if idx > 65535:
                     # overflow
                     syslog.syslog(syslog.LOG_ERR, 'alias table %s overflow' % self._name)
-                    open('/tmp/rules.error').close()
                     break
                 yield "!%s" % item if address.startswith('!') else str(item)
         elif address.find('/') > -1:
@@ -161,11 +160,9 @@ class Alias(object):
                             yield address
             else:
                 syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s [http_code:%s]' % (url, req.status_code))
-                open('/tmp/rules.error').close()
                 raise IOError('error fetching alias url %s' % (url))
         except:
             syslog.syslog(syslog.LOG_ERR, 'error fetching alias url %s' % (url))
-            open('/tmp/rules.error').close()
             raise IOError('error fetching alias url %s' % (url))
 
     def _fetch_geo(self, geoitem):
@@ -256,7 +253,6 @@ class Alias(object):
                             f_out.write('\n'.join(self._resolve_content))
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
-                    open('/tmp/rules.error').close()
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(undo_content)
