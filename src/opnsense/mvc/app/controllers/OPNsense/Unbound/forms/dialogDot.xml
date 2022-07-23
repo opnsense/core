@@ -31,8 +31,8 @@
         <label>Verify CN</label>
         <type>text</type>
         <help>
-            Verify if CN in certificate matches this value. Please note that if this field is omitted,
-            Unbound will not perform any certificate verification. Therefore, man-in-the-middle attacks are still possible.
+            Verify TLS certificates against the specified Common Name (e.g. dns.example.com). Please note that if this field is
+            omitted, Unbound will not perform any certificate verification. Therefore, man-in-the-middle attacks are still possible.
         </help>
     </field>
 </form>
