@@ -31,8 +31,9 @@
         <label>Verify CN</label>
         <type>text</type>
         <help>
-            Verify TLS certificates against the specified Common Name (e.g. dns.example.com). Please note that if this field is
-            omitted, Unbound will not perform any certificate verification. Therefore, man-in-the-middle attacks are still possible.
+            The DNS servers' Common Name (e.g. dns.example.com). This field is required to verify the server's TLS certificate.
+            DNS-over-TLS is susceptible to man-in-the-middle attacks unless certificates can be verified.
+            Leave empty to accept self-signed (and potentially fraudulent) certificates.
         </help>
     </field>
 </form>
