@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -241,6 +241,14 @@ class Gateways
                         null;
                     } elseif (file_exists("/tmp/{$realif}_router{$fsuffix}")) {
                         $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$realif}_router{$fsuffix}"));
+                        if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
+                            $thisconf['monitor'] = $thisconf['gateway'];
+                        }
+                        $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
+                        $this->cached_gateways[$gwkey] = $thisconf;
+                    /* XXX duplicated above condition to support :slaac in the interim */
+                    } elseif (file_exists("/tmp/{$realif}:slaac_router{$fsuffix}")) {
+                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$realif}:slaac_router{$fsuffix}"));
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
