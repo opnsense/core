@@ -98,7 +98,7 @@ legacy_html_escape_form_data($a_laggs);
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th><?=gettext("Interface");?></th>
+                        <th><?=gettext("Device");?></th>
                         <th><?=gettext("Members");?></th>
                         <th><?=gettext("Protocol");?></th>
                         <th><?=gettext("Description");?></th>
@@ -114,7 +114,7 @@ legacy_html_escape_form_data($a_laggs);
                     $i = 0;
                     foreach ($a_laggs as $lagg): ?>
                       <tr>
-                        <td><?=strtoupper($lagg['laggif']);?></td>
+                        <td><?=$lagg['laggif'];?></td>
                         <td><?=$lagg['members'];?></td>
                         <td><?=strtoupper($lagg['proto']);?></td>
                         <td><?=$lagg['descr'];?></td>
