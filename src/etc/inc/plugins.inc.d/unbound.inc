@@ -125,6 +125,8 @@ function unbound_generate_config()
         if (!empty($config['unbound']['dns64prefix'])) {
             $dns64prefix = "dns64-prefix: {$config['unbound']['dns64prefix']}";
         }
+    } else {
+        $module_config = '';
     }
     if (isset($config['unbound']['dnssec'])) {
         $module_config .= 'validator iterator';
