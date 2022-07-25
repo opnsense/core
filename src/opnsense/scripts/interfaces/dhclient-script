@@ -71,7 +71,7 @@ add_new_address() {
 	$LOGGER "New Routers ($interface): $new_routers"
 
 	if [ -n "$new_routers" ] && [ "$new_routers" != "255.255.255.255" ]; then
-		echo $new_routers > /tmp/${interface}_router
+		/usr/local/sbin/ifctl -i ${interface} -4rd -a ${new_routers}
 	fi
 }
 
@@ -132,7 +132,7 @@ delete_old_routes() {
 	# through our interface.
 	if is_default_interface; then
 		#route delete default >/dev/null 2>&1
-		rm -f /tmp/${interface}_router
+		/usr/local/sbin/ifctl -i ${interface} -4rd
 	fi
 
 	if [ -n "$old_static_routes" ]; then
@@ -140,7 +140,8 @@ delete_old_routes() {
 		while [ $# -gt 1 ]; do
 			route delete "$1" "$2"
 			shift; shift
-			rm -f /tmp/${interface}_router
+			# XXX makes no sense to call multiple times
+			/usr/local/sbin/ifctl -i ${interface} -4rd
 		done
 	fi
 
@@ -185,12 +186,12 @@ add_new_routes() {
 				echo route add default -iface $interface | $LOGGER
 				# NOTE: Do not activate this for all ones address since pf(4) will try to forward packets to it.
 				if [ "$new_ip_address" = "$router" ]; then
-					echo $router > /tmp/${interface}_router
+					/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
 				fi
 			else
 				route add default $router
 				echo route add default $router | $LOGGER
-				echo $router > /tmp/${interface}_router
+				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
 			fi
 			ADDED_ROUTE=yes
 			# 2nd and subsequent default routers error out, so explicitly
@@ -204,8 +205,9 @@ add_new_routes() {
 		set $new_static_routes
 		while [ $# -gt 1 ]; do
 			route add $1 $2
-			if [ "$ADDED_ROUTE" = "no" ]; then
-				echo $2 > /tmp/${interface}_router
+			if [ "${ADDED_ROUTE}" = "no" ]; then
+				# XXX WTF?
+				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${2}
 			fi
 			shift; shift
 		done
@@ -288,7 +290,7 @@ MEDIUM)
 PREINIT)
 	delete_old_alias
 	$IFCONFIG $interface inet alias 0.0.0.0 netmask 255.0.0.0 broadcast 255.255.255.255 up
-	rm -f /tmp/${interface}_router
+	/usr/local/sbin/ifctl -i ${interface} -4rd
 	;;
 
 ARPCHECK|ARPSEND)
