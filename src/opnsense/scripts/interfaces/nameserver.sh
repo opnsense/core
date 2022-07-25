@@ -58,10 +58,10 @@ while getopts 46a:cdi:lnprsV OPT; do
 		EX=v6
 		;;
 	a)
-		DO_COMMAND="-a"
 		DO_CONTENTS="${DO_CONTENTS} ${OPTARG}"
 		;;
 	c)
+		DO_COMMAND="-c"
 		MD="nameserver prefix router searchdomain"
 		;;
 	d)
@@ -107,9 +107,11 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 
 	# iterate through possible files
 	for MD in nameserver prefix router searchdomain; do
-		FILE="/tmp/${IF}_${MD}${EX}"
-		flush_routes
-		rm -f ${FILE}
+		for IFC in ${IF} ${IF}:slaac; do
+			FILE="/tmp/${IFC}_${MD}${EX}"
+			flush_routes
+			rm -f ${FILE}
+		done
 	done
 
 	exit 0
@@ -138,11 +140,22 @@ fi
 if [ "${DO_COMMAND}" = "-d" ]; then
 	flush_routes
 	rm -f ${FILE}
-elif [ "${DO_COMMAND}" = "-a" ]; then
-	for CONTENT in ${DO_CONTENTS}; do
-		echo "${CONTENT}" >> ${FILE}
-	done
+fi
+
+for CONTENT in ${DO_CONTENTS}; do
+	echo "${CONTENT}" >> ${FILE}
+done
+
+if [ -n "${DO_COMMAND}${DO_CONTENT}" ]; then
+	exit 0
+fi
+
+if [ ! -f ${FILE} ]; then
+	# move to :slaac interface suffix if not found
+	FILE="/tmp/${IF}:slaac_${MD}${EX}"
+fi
+
 # if nothing else could be done display data
-elif [ -f ${FILE} ]; then
+if [ -f ${FILE} ]; then
 	cat ${FILE}
 fi

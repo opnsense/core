@@ -33,25 +33,16 @@ if [ -z "${2}" ]; then
 fi
 
 # ${2} is 'ifname:slaac:[RA-source-address]', where 'ifname' is the
-# interface the RA was received on.
+# interface the RA was received on.  Keep the ":slaac" suffix to create
+# an interface fallback configuration handled through ifctl(8) utility.
 
-ifname=${2%%:*}
-rasrca=${2##*:slaac:[}
+ifname=${2%%:[*}
+rasrca=${2##*:[}
 rasrca=${rasrca%]}
-
-# XXX replace by exlusive 'ifname:slaac' use and falling back internally in ifctl?
-if [ -n "$(/usr/local/sbin/ifctl -i ${ifname} -6r)" ]; then
-	echo "IPv6 gateway for ${ifname} already exists."
-	exit 0
-fi
 
 # ${1} indicates whether DNS information should be added or deleted.
 
 if [ "${1}" = "-a" ]; then
-	/usr/local/sbin/ifctl -i ${ifname} -6rd -a ${rasrca}
-	# XXX stop modifying defaultgw files in scripts
-	echo ${rasrca} > /tmp/${ifname}_defaultgwv6
-
 	# rtsold sends a resolv.conf(5) file to STDIN of this script
 	while IFS=' ' read -r type value; do
 		if [ "${type}" = "nameserver" ]; then
@@ -71,7 +62,14 @@ if [ "${1}" = "-a" ]; then
 
 	/usr/local/sbin/ifctl -i ${ifname} -6nd ${nameservers}
 	/usr/local/sbin/ifctl -i ${ifname} -6sd ${searchlist}
-	/usr/local/sbin/configctl -d interface newipv6 ${ifname}
-fi
+	/usr/local/sbin/ifctl -i ${ifname} -6rd -a ${rasrca}
 
-# XXX implement -d as well
+	# remove slaac suffix here to reload correct interface
+	/usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}
+elif [ "${1}" = "-d" ]; then
+	/usr/local/sbin/ifctl -i ${ifname} -6nd
+	/usr/local/sbin/ifctl -i ${ifname} -6sd
+
+	# reload DNS since data has been scrubbed
+	/usr/local/sbin/configctl -d dns reload
+fi
