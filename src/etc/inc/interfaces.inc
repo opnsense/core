@@ -597,11 +597,11 @@ function _interfaces_gre_configure($gre)
 
     interfaces_bring_up($gre['greif']);
 
-    if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gre['greif']}_router", "${gre['tunnel-remote-addr']}\n");
-    } elseif (is_ipaddrv6($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gre['greif']}_routerv6", "{$gre['tunnel-remote-addr']}\n");
-    }
+    mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
+        $gre['greif'],
+        is_ipaddrv4($gre['tunnel-remote-addr']) ? '4' : '6',
+        $gre['tunnel-remote-addr'],
+    ]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
@@ -674,11 +674,11 @@ function _interfaces_gif_configure($gif)
 
     interfaces_bring_up($gif['gifif']);
 
-    if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gif['gifif']}_router", "{$gif['tunnel-remote-addr']}\n");
-    } elseif (is_ipaddrv6($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gif['gifif']}_routerv6", "{$gif['tunnel-remote-addr']}\n");
-    }
+    mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
+        $gif['gifif'],
+        is_ipaddrv4($gif['tunnel-remote-addr']) ? '4' : '6',
+        $gif['tunnel-remote-addr'],
+    ]);
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gif['gifif']) {
@@ -2583,9 +2583,9 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$rd6brgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n"); /* XXX omit in the future */
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2673,9 +2673,9 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     legacy_interface_mtu($stfiface, $mtu);
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n"); /* XXX omit in the future */
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2861,7 +2861,7 @@ if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
     /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
-    # XXX stop modifying defaultgw files in scripts
+    # XXX omit in the future
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
 if [ -f /var/run/dhcp6c.pid ]; then
