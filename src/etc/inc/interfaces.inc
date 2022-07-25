@@ -559,6 +559,8 @@ function interfaces_gre_configure($device)
 
 function _interfaces_gre_configure($gre)
 {
+    global $config;
+
     /*
      * The model used by GRE stuffs the alias IP into 'if' and we have
      * no way of directly seeing the interface (handled slightly better
@@ -2763,6 +2765,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
+    $dhcp6_debug = $syscfg['dhcp6_debug'] ?? '';
 
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
@@ -2786,7 +2789,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $dhcp6cscript = <<<EOF
 #!/bin/sh
-if [ -n "{$syscfg['dhcp6_debug']}" ]; then
+if [ -n "{$dhcp6_debug}" ]; then
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
 fi
 case \$REASON in
