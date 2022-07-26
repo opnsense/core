@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-
 /**
  * search for a themed filename or return distribution standard
  * @param string $url relative url
