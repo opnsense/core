@@ -28,7 +28,6 @@
  */
 
 // initialize phalcon components for our script
-error_reporting(E_ALL);
 require_once('script/load_phalcon.php');
 
 use OPNsense\Core\Config;

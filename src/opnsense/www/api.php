@@ -1,7 +1,5 @@
 <?php
 
-error_reporting(E_ALL);
-
 try {
     /**
      * Read the configuration
