@@ -105,14 +105,30 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 		exit 1
 	fi
 
-	# iterate through possible files
+	HAVE_ROUTE=
+
+	# iterate through possible files for cleanup
 	for MD in nameserver prefix router searchdomain; do
 		for IFC in ${IF} ${IF}:slaac; do
 			FILE="/tmp/${IFC}_${MD}${EX}"
+			if [ ! -f ${FILE} ]; then
+				continue
+			fi
+			if [ "${MD}" = "router" ]; then
+				HAVE_ROUTE=1
+			fi
 			flush_routes
 			rm -f ${FILE}
 		done
 	done
+
+        # legacy behaviour originating from interface_bring_down()
+	/usr/sbin/arp -d -i ${IF} -a
+
+	# XXX maybe we do not have to kill states at all
+	if [ -n "${HAVE_ROUTE}" ]; then
+		/sbin/pfctl -i ${IF} -Fs
+	fi
 
 	exit 0
 elif [ "${DO_COMMAND}" = "-l" ]; then
