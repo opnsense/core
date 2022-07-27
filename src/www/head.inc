@@ -223,7 +223,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           }],
       });
 
-      updateStatus().then((data) => {
+      updateSystemStatus().then((data) => {
           let status = parseStatus(data);
           registerStatusDelegate(dialog, status);
       });

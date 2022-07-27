@@ -113,7 +113,7 @@
                      }],
                 });
 
-                updateStatus().then((data) => {
+                updateSystemStatus().then((data) => {
                     let status = parseStatus(data);
                     registerStatusDelegate(dialog, status);
                 });

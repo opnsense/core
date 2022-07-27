@@ -99,7 +99,7 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
                 dialogRef: dialog,
                 subjectRef: subject,
                 success: function() {
-                    updateStatus().then((data) => {
+                    updateSystemStatus().then((data) => {
                         let newStatus = parseStatus(data);
                         let $newMessage = updateStatusDialog(this.dialogRef, newStatus, this.subjectRef);
                         this.dialogRef.setType(newStatus.severity);
@@ -161,7 +161,7 @@ function registerStatusDelegate(dialog, status) {
     });
 }
 
-function updateStatus() {
+function updateSystemStatus() {
     return $.ajax("/api/core/system/status", {
         type: 'get',
         dataType: "json"
