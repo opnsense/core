@@ -155,8 +155,8 @@ include("head.inc");
                     <select name="if" class="selectpicker">
 <?php foreach (get_interface_list() as $ifn => $ifinfo): ?>
 <?php if (match_wireless_interface($ifn)): ?>
-                      <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? "selected=\"selected\"" : "";?>>
-                          <?=htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");?>
+                      <option value="<?= $ifnr ?>" <?= $ifn == $pconfig['if'] ? 'selected="selected"' : '' ?>>
+                          <?= html_safe($ifn) ?>
                       </option>
 <?php endif ?>
 <?php endforeach ?>
