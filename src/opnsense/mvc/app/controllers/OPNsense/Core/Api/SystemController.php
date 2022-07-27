@@ -87,7 +87,7 @@ class SystemController extends ApiControllerBase
             }, array_values($statuses));
             sort($statusCodes);
             $statuses['System'] = [
-                'status' => $order[$statusCodes[0]]
+                'status' => $order[$statusCodes[0]] ?? 'OK'
             ];
 
             $response = json_encode($statuses);

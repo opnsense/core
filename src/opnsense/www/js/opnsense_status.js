@@ -26,7 +26,10 @@
  */
 
 function updateStatusDialog(dialog, status, subjectRef = null) {
-    let $message = $(
+    const keys = Object.keys(status.data);
+    const statusAvailable = !(keys.length === 1 && keys[0] === 'System');
+
+    let $message = statusAvailable ? $(
         '<div class="row">' +
         '<div class="col-md-6">' +
         '<div class="list-group" id="list-tab" role="tablist" style="margin-bottom: 0">' +
@@ -37,7 +40,13 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
         '</div>' +
         '</div>'+
         '</div>'
-    );
+    ) :
+        $('<div>No problems were detected.</div>');
+
+    if (!statusAvailable) {
+        return $message;
+    }
+
     for (let subject in status.data) {
         if (subject === 'System') {
             continue;
