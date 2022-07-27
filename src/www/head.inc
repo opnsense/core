@@ -74,21 +74,21 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
         position: absolute;
       }
 
-      /* On upstream Bootstrap, these properties are set in list-group-item.*/
-      .list-group-item-border {
+      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
+      :is(.opn-status-group) .list-group-item-border {
           border: 1px solid #ddd;
       }
 
-      .list-group-item-border:first-child {
+      :is(.opn-status-group) .list-group-item-border:first-child {
           border-top-left-radius: 4px;
           border-top-right-radius: 4px;
       }
 
-      .list-group-item-border:last-child {
+      :is(.opn-status-group) .list-group-item-border:last-child {
           border-bottom-left-radius: 4px;
           border-bottom-right-radius: 4px;
       }
-      .btn.pull-right {
+      :is(.opn-status-group) .btn.pull-right {
           margin-left: 3px;
       }
     </style>

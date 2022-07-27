@@ -37,21 +37,15 @@ class FirewallStatus extends AbstractStatus
     {
         $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
 
-        foreach ($this->statusStrings as $level) {
-            if (file_exists('/tmp/rules.' . $level)) {
-                $this->internalMessage = gettext("A problem was detected.");
-                $this->internalStatus = constant("static::STATUS_" . strtoupper($level));
-            }
+        if (file_exists('/tmp/rules.error')) {
+            $this->internalMessage = file_get_contents('/tmp/rules.error');
+            $this->internalStatus = constant("static::STATUS_ERROR");
         }
     }
 
     public function dismissStatus()
     {
-        foreach ($this->statusStrings as $level) {
-            if (file_exists('/tmp/rules.' . $level)) {
-                unlink('/tmp/rules.' . $level);
-            }
-        }
+        @unlink('/tmp/rules.error');
     }
 
 }

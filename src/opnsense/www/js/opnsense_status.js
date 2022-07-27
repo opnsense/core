@@ -70,7 +70,7 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
             '</div>'
         );
 
-        $message.find('#list-tab').append($listItem);
+        $message.find('#list-tab').addClass('opn-status-group').append($listItem);
         $message.find('#nav-tabContent').append($pane);
 
         if (subjectRef) {

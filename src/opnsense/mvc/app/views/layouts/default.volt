@@ -26,6 +26,24 @@
       .typeahead {
         overflow: hidden;
       }
+
+      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
+      :is(.opn-status-group) .list-group-item-border {
+          border: 1px solid #ddd;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:last-child {
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+      }
+      :is(.opn-status-group) .btn.pull-right {
+          margin-left: 3px;
+      }
     </style>
 
     <!-- legacy browser functions -->
@@ -187,26 +205,6 @@
             });
         </script>
 
-        <style type="text/css">
-            /* On upstream Bootstrap, these properties are set in list-group-item.*/
-            .list-group-item-border {
-                border: 1px solid #ddd;
-            }
-
-            .list-group-item-border:first-child {
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-            }
-
-            .list-group-item-border:last-child {
-                border-bottom-left-radius: 4px;
-                border-bottom-right-radius: 4px;
-            }
-            .btn.pull-right {
-                margin-left: 3px;
-            }
-        </style>
-
         <!-- JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/) -->
         <script src="{{ cache_safe('/ui/js/tokenize2.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/tokenize2.css', theme_name)) }}" rel="stylesheet" />
@@ -252,7 +250,7 @@
         <button class="toggle-sidebar" data-toggle="tooltip right" title="{{ lang._('Toggle sidebar') }}" style="display:none;"><i class="fa fa-chevron-left"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li id="menu_user">
+            <li id="menu_messages">
               <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
             </li>
             <li>

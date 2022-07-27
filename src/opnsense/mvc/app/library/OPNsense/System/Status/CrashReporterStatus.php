@@ -45,39 +45,19 @@ class CrashReporterStatus extends AbstractStatus {
 
     private function hasCrashed()
     {
-        $skipFiles = array('.', '..', 'minfree', 'bounds', '');
-        $errorLog = '/tmp/PHP_errors.log';
-        $count = 0;
+        $has_crashed = file_exists('/tmp/PHP_errors.log') || count(glob('/var/crash/textdump*')) > 1;
 
-        if (file_exists($errorLog)) {
-            $total = trim(shell_exec(sprintf(
-                '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-                $errorLog
-            )));
-            if ($total > 0) {
-                $count++;
-            }
-        }
-
-        $crashes = glob('/var/crash/*');
-        foreach ($crashes as $crash) {
-            if (!in_array(basename($crash), $skipFiles)) {
-                $count++;
-            }
-        }
-
-        $config = Config::getInstance()->object();
-        $deployment = $config->system->deployment;
-        if ($deployment == 'development') {
-            if ($count > 0) {
-                $this->internalMessage = gettext("A problem was detected, but non-production deployment is configured so crash reports cannot be sent.");
+        if (Config::getInstance()->object()->system->deployment == 'development') {
+            if ($has_crashed) {
+                $this->internalMessage = gettext(
+                  "A problem was detected, but non-production deployment is configured so crash reports cannot be sent."
+                );
                 $this->internalStatus = static::STATUS_NOTICE;
-                $this->internalLogLocation = '/crash_reporter.php';
             }
             return false;
         }
 
-        return $count > 0;
+        return $has_crashed;
     }
 
     public function dismissStatus()

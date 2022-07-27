@@ -38,7 +38,7 @@ abstract class AbstractStatus
     protected $internalMessage = 'No problems were detected.';
     protected $internalLogLocation = '';
     protected $internalStatus = self::STATUS_OK;
-    protected $statusStrings = array('notice', 'warning', 'error');
+    protected $statusStrings = ['notice', 'warning', 'error'];
 
     public function getStatus()
     {
