@@ -294,13 +294,16 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    $search_list = glob('/tmp/*_searchdomain*');
     $syscfg = config_read_array('system');
     $master_list = [];
+    $search_list = [];
 
-    if (!isset($syscfg['dnsallowoverride'])) {
-        /* do not return domains as required by configuration */
-        $search_list = [];
+    if (isset($syscfg['dnsallowoverride'])) {
+        /* return domains as required by configuration */
+        $list = trim(shell_exec('/usr/local/sbin/ifctl -sl'));
+        if (!empty($list)) {
+            $search_list = explode("\n", $list);
+        }
     }
 
     if (is_array($search_list)) {
@@ -325,22 +328,29 @@ function get_nameservers($interface = null, $with_gateway = false)
     global $config;
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    $dns_lists = glob('/tmp/*_nameserver*');
     $syscfg = config_read_array('system');
     $exclude_interfaces = [];
     $master_list = [];
+    $dns_lists = [];
 
     if (!empty($interface)) {
         /* only acquire servers provided for this interface */
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
-        $dns_lists = [
-            "/tmp/{$realif}_nameserver",
-            "/tmp/{$realifv6}_nameserverv6",
-        ];
-    } elseif (!isset($syscfg['dnsallowoverride'])) {
-        /* do not return dynamic servers as required by configuration */
-        $dns_lists = [];
+        $list = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -4nli %s', $realif)));
+        if (!empty($list)) {
+            $dns_lists[] = $list;
+        }
+        $list = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6nli %s', $realifv6)));
+        if (!empty($list)) {
+            $dns_lists[] = $list;
+        }
+    } elseif (isset($syscfg['dnsallowoverride'])) {
+        /* return dynamic servers as required by configuration */
+        $list = trim(shell_exec('/usr/local/sbin/ifctl -nl'));
+        if (!empty($list)) {
+            $dns_lists = explode("\n", $list);
+        }
     }
 
     if (isset($syscfg['dnsallowoverride_exclude'])) {
@@ -355,7 +365,8 @@ function get_nameservers($interface = null, $with_gateway = false)
 
     foreach ($dns_lists as $fdns) {
         /* inspect dynamic servers registered in the system files */
-        $intf = explode('_', basename($fdns))[0];
+        $intf = explode('_', basename($fdns), 2);
+        $intf[1] = strpos($intf[1], 'v6') === false ? '4' : '6';
         if (in_array($intf, $exclude_interfaces)) {
             continue;
         }
@@ -365,10 +376,12 @@ function get_nameservers($interface = null, $with_gateway = false)
             continue;
         }
 
-        /* router file is available for connectivity creating nameserver files */
-        $gw = trim(@file_get_contents(str_replace('_nameserver', '_router', $fdns)));
-        if (is_linklocal($gw) && strpos($gw, '%') === false) {
-            $gw .= "%{$intf}";
+        if ($with_gateway) {
+            /* router file is available for connectivity creating nameserver files */
+            $gw = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -%s -ri %s', [$intf[1], $intf[0]])));
+            if (is_linklocal($gw) && strpos($gw, '%') === false) {
+                $gw .= "%{$intf[0]}";
+            }
         }
 
         foreach ($contents as $dns) {

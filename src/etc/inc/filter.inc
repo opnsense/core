@@ -360,10 +360,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);
+
+        unlock($filterlck);
+        closelog();
+
         if ($verbose) {
             echo "done.\n";
         }
-        unlock($filterlck);
+
         return;
     }
 
@@ -453,10 +457,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
+
         unlock($filterlck);
+        closelog();
+
         if ($verbose) {
             echo "failed.\n";
         }
+
         return;
     }
 
@@ -496,7 +504,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         syslog(LOG_ERR, sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
         touch('/tmp/rules.error');
+
         unlock($filterlck);
+        closelog();
 
         if ($verbose) {
             echo "failed.\n";
@@ -536,11 +546,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     killbypid('/var/run/filterlog.pid', 'TERM', true);
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
+    unlock($filterlck);
+    closelog();
+
     if ($verbose) {
         echo "done.\n";
     }
-
-    unlock($filterlck);
 }
 
 function filter_generate_scrubbing(&$FilterIflist)

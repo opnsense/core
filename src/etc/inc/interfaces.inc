@@ -100,6 +100,7 @@ function match_wireless_interface($int)
         'bwn',
         'ipw',
         'iwi',
+        'iwlwifi',
         'iwm',
         'iwn',
         'malo',
@@ -558,6 +559,8 @@ function interfaces_gre_configure($device)
 
 function _interfaces_gre_configure($gre)
 {
+    global $config;
+
     /*
      * The model used by GRE stuffs the alias IP into 'if' and we have
      * no way of directly seeing the interface (handled slightly better
@@ -594,11 +597,11 @@ function _interfaces_gre_configure($gre)
 
     interfaces_bring_up($gre['greif']);
 
-    if (is_ipaddrv4($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gre['greif']}_router", "${gre['tunnel-remote-addr']}\n");
-    } elseif (is_ipaddrv6($gre['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gre['greif']}_routerv6", "{$gre['tunnel-remote-addr']}\n");
-    }
+    mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
+        $gre['greif'],
+        is_ipaddrv4($gre['tunnel-remote-addr']) ? '4' : '6',
+        $gre['tunnel-remote-addr'],
+    ]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 
@@ -671,11 +674,11 @@ function _interfaces_gif_configure($gif)
 
     interfaces_bring_up($gif['gifif']);
 
-    if (is_ipaddrv4($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gif['gifif']}_router", "{$gif['tunnel-remote-addr']}\n");
-    } elseif (is_ipaddrv6($gif['tunnel-remote-addr'])) {
-        file_put_contents("/tmp/{$gif['gifif']}_routerv6", "{$gif['tunnel-remote-addr']}\n");
-    }
+    mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
+        $gif['gifif'],
+        is_ipaddrv4($gif['tunnel-remote-addr']) ? '4' : '6',
+        $gif['tunnel-remote-addr'],
+    ]);
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gif['gifif']) {
@@ -797,7 +800,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface = "wan", $ifacecfg = false)
+function interface_bring_down($interface = 'wan', $ifacecfg = false)
 {
     global $config;
 
@@ -809,7 +812,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, "inet6");
         $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : array();
+        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
@@ -846,7 +849,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     $track6 = link_interface_to_track6($interface);
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
-        plugins_configure('dhcp', false, array('inet6', $track6));
+        plugins_configure('dhcp', false, ['inet6', $track6]);
     }
 
     switch ($ifcfg['ipaddrv6']) {
@@ -887,58 +890,19 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
             break;
     }
 
-    $pfctlflush = array();
-    $arpflush = array();
-
-    if (does_interface_exist($realif)) {
-        $arpflush[$realif] = 1;
-
-        if (!empty(trim(@file_get_contents("/tmp/{$realif}_router")))) {
-            $pfctlflush[$realif] = 1;
-        }
-
-        list ($ip4) = interfaces_primary_address($interface);
-        if (!empty($ip4)) {
-            mwexecf('/sbin/ifconfig %s delete %s', array($realif, $ip4));
-        }
+    list ($ip4) = interfaces_primary_address($interface);
+    if (!empty($ip4)) {
+        mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
     }
 
-    if (does_interface_exist($realifv6)) {
-        /*
-         * XXX So we flush ARP on IPv6 here!  But why?
-         *
-         * Either we want to flush NDP or both ARP
-         * and NDP, but then the same goes for IPv4.
-         */
-        $arpflush[$realifv6] = 1;
-
-        if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
-            $pfctlflush[$realifv6] = 1;
-        }
-
-        list ($ip6) = interfaces_primary_address6($interface);
-        if (!empty($ip6)) {
-            mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realifv6, $ip6));
-        }
+    list ($ip6) = interfaces_primary_address6($interface);
+    if (!empty($ip6)) {
+        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
     }
 
-    foreach (array_keys($arpflush) as $dev) {
-        mwexecf('/usr/sbin/arp -d -i %s -a', $dev);
-    }
-
-    foreach (array_keys($pfctlflush) as $dev) {
-        log_error("Clearing states for stale {$interface} route on {$dev}");
-        mwexecf('/sbin/pfctl -i %s -Fs', $dev);
-    }
-
-    /* clear stale state files associated with this interface */
-    @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_prefixv6");
-    @unlink("/tmp/{$realifv6}_routerv6");
-    @unlink("/tmp/{$realifv6}_searchdomainv6");
-    @unlink("/tmp/{$realif}_nameserver");
-    @unlink("/tmp/{$realif}_router");
-    @unlink("/tmp/{$realif}_searchdomain");
+    /* clear stale state associated with this interface */
+    mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
+    mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
 }
 
 function interfaces_ptpid_used($ptpid)
@@ -2585,9 +2549,9 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$rd6brgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n"); /* XXX omit in the future */
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2675,9 +2639,9 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     legacy_interface_mtu($stfiface, $mtu);
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n");
+    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n"); /* XXX omit in the future */
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2710,12 +2674,12 @@ function interface_dhcpv6_configure($interface, $wancfg)
     killbypid('/var/run/rtsold.pid', 'TERM', true);
 
     $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a',
+        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a -u',
         array(
             '/var/run/rtsold.pid',
             '/var/etc/rtsold_script.sh',
             '/var/etc/rtsold_script.sh',
-            '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+            '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
         )
     );
 
@@ -2762,6 +2726,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
+    $dhcp6_debug = $syscfg['dhcp6_debug'] ?? '';
 
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
@@ -2785,7 +2750,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $dhcp6cscript = <<<EOF
 #!/bin/sh
-if [ -n "{$syscfg['dhcp6_debug']}" ]; then
+if [ -n "{$dhcp6_debug}" ]; then
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
 fi
 case \$REASON in
@@ -2862,7 +2827,7 @@ if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
     /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
-    # XXX stop modifying defaultgw files in scripts
+    # XXX omit in the future
     echo \${2} > /tmp/\${1}_defaultgwv6
 fi
 if [ -f /var/run/dhcp6c.pid ]; then
@@ -3930,8 +3895,7 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
-        /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_prefixv6");
+        $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
         if (!empty($aux)) {
             $ifinfo['prefixv6'] = $aux;
         }

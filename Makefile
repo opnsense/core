@@ -28,7 +28,7 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	22.1
+CORE_ABI?=	22.7
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
 CORE_NICKNAME?=	Not Yet
@@ -129,9 +129,6 @@ CORE_COPYRIGHT_YEARS?=	2014-2022
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
 
-# XXX transition helpers for PHP 8 migration
-CORE_DEPENDS_PHP74=	php74-json php74-openssl
-
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
@@ -175,7 +172,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-sqlite3 \
 			php${CORE_PHP}-xml \
 			php${CORE_PHP}-zlib \
-			${CORE_DEPENDS_PHP${CORE_PHP}} \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
@@ -201,13 +197,8 @@ WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
-WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit7-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
-
-.for WANT in ${WANTS}
-want-${WANT}:
-	@${PKG} info ${WANT} > /dev/null
-.endfor
+debug:
+	@${VERSIONBIN} ${@} > /dev/null
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
@@ -395,10 +386,10 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc src/opnsense
 
-style-python: want-py${CORE_PYTHON}-pycodestyle
+style-python: debug
 	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
-style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-php: debug
 	@: > ${WRKDIR}/style.out
 .for STYLEDIR in ${STYLEDIRS}
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
@@ -411,14 +402,14 @@ style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@cat ${WRKDIR}/style.out | ${PAGER}
 	@rm ${WRKDIR}/style.out
 
-style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-fix: debug
 .for STYLEDIR in ${STYLEDIRS}
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
 style: style-python style-php
 
-license: want-p5-File-Slurp
+license: debug
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
 sync: license plist-fix
@@ -496,13 +487,14 @@ push:
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
 
-test: want-phpunit7-php${CORE_PHP}
+test: debug
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml
+	    phpunit --configuration PHPunit.xml || true; \
+	    rm -f .phpunit.result.cache
 
 checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
