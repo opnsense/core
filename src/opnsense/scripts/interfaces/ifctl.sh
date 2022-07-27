@@ -165,13 +165,24 @@ fi
 FILE="/tmp/${IF:-*}_${MD}${EX}"
 
 if [ -z "${IF}" ]; then
+	RESULTS=
+
 	# list all interfaces that have the requested file
 	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
 		FOUND=${FOUND#/tmp/}
-		echo ${FOUND%%_*}
+		FOUND=${FOUND%%_*}
+		FOUND=${FOUND%:*}
+		if [ -z "$(eval echo \${${FOUND}_found})" ]; then
+			RESULTS="${RESULTS} ${FOUND}_found"
+		fi
+		eval export ${FOUND}_found='${FOUND}'
 	done
 
-	# wait for further user input using "-i"
+	# only list possible interfaces for user to choose from
+	for RESULT in ${RESULTS}; do
+		eval echo \${${RESULT}}
+	done
+
 	exit 0
 fi
 
