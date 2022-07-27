@@ -68,7 +68,7 @@ class CrashReporterStatus extends AbstractStatus {
 
         $config = Config::getInstance()->object();
         $deployment = $config->system->deployment;
-        if (!empty($deployment)) {
+        if ($deployment == 'development') {
             if ($count > 0) {
                 $this->internalMessage = gettext("A problem was detected, but non-production deployment is configured so crash reports cannot be sent.");
                 $this->internalStatus = static::STATUS_NOTICE;

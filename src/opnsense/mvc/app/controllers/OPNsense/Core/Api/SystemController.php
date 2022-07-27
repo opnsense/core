@@ -106,7 +106,7 @@ class SystemController extends ApiControllerBase
             $subsystem = $this->request->getPost("subject");
             $system = json_decode(trim($backend->configdRun('system status')), true);
             if (array_key_exists($subsystem, $system)) {
-                if (isset($system[$subsystem]['logLocation'])) {
+                if (!empty($system[$subsystem]['logLocation'])) {
                     $aclCheck = $system[$subsystem]['logLocation'];
                     if ($acl->isPageAccessible($this->getUserName(), $aclCheck) ||
                         !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
