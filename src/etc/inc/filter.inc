@@ -457,6 +457,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
+        touch('/tmp/rules.error');
 
         unlock($filterlck);
         closelog();
