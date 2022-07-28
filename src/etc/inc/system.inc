@@ -532,7 +532,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
         }
 
         log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
-        @file_put_contents("/tmp/{$realif}_defaultgw", $gateway);
+        @file_put_contents("/tmp/{$realif}_defaultgw", "{$gateway}\n");
 
         if (!$far) {
             list (, $network) = interfaces_primary_address($interface);
@@ -549,7 +549,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
         }
 
         log_error("ROUTING: creating /tmp/{$realif}_defaultgwv6 using '{$gateway}'");
-        @file_put_contents("/tmp/{$realif}_defaultgwv6", $gateway);
+        @file_put_contents("/tmp/{$realif}_defaultgwv6", "{$gateway}\n");
 
         /* IPv6 does not support far gateway notion */
         $realif = null;
