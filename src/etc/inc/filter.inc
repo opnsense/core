@@ -494,7 +494,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        exec('/sbin/pfctl -f /tmp/rules.debug.old 2>&1');
+        mwexec('/sbin/pfctl -f /tmp/rules.debug.old');
 
         syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
         file_put_contents(
