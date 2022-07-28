@@ -86,7 +86,7 @@ class Gateways
         $router = null;
 
         /* some types have fallback files we are looking for in order */
-        foreach(['', ':slaac'] as $isuffix) {
+        foreach (['', ':slaac'] as $isuffix) {
             $file = "/tmp/{$realif}{$isuffix}_router{$fsuffix}";
             if (file_exists($file)) {
                 $router = trim(@file_get_contents($file));

@@ -32,6 +32,7 @@ use Phalcon\Di\FactoryDefault;
 /**
  * Read the configuration
  */
+
 $config = include __DIR__ . "/app/config/config.php";
 
 /**
