@@ -537,6 +537,8 @@ include("head.inc");
             $(".auth_opt :input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
+                    $(".auth_eap_tls_caref").show();
+                    $(".auth_eap_tls_caref :input").prop( "disabled", false );
                 case 'psk_eap-tls':
                 case 'eap-mschapv2':
                 case 'rsa_eap-mschapv2':
