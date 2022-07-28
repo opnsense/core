@@ -70,7 +70,7 @@ class SystemController extends ApiControllerBase
             $order = [-1 => 'Error', 0 => 'Warning', 1 => 'Notice', 2 => 'OK'];
 
             $acl = new ACL();
-            foreach($statuses as $subsystem => $status) {
+            foreach ($statuses as $subsystem => $status) {
                 $statuses[$subsystem]['status'] = $order[$status['statusCode']];
                 if (!empty($status['logLocation'])) {
                     if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
@@ -82,7 +82,7 @@ class SystemController extends ApiControllerBase
             }
 
             /* Sort on the highest error level after the ACL check */
-            $statusCodes = array_map(function($v) {
+            $statusCodes = array_map(function ($v) {
                 return $v['statusCode'];
             }, array_values($statuses));
             sort($statusCodes);
@@ -108,8 +108,10 @@ class SystemController extends ApiControllerBase
             if (array_key_exists($subsystem, $system)) {
                 if (!empty($system[$subsystem]['logLocation'])) {
                     $aclCheck = $system[$subsystem]['logLocation'];
-                    if ($acl->isPageAccessible($this->getUserName(), $aclCheck) ||
-                        !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+                    if (
+                        $acl->isPageAccessible($this->getUserName(), $aclCheck) ||
+                        !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')
+                    ) {
                         $status = trim($backend->configdRun(sprintf('system dismiss status %s', $subsystem)));
                         if ($status == "OK") {
                             return [
@@ -117,10 +119,8 @@ class SystemController extends ApiControllerBase
                             ];
                         }
                     }
-
                 }
             }
-
         }
 
         return ["status" => "failed"];

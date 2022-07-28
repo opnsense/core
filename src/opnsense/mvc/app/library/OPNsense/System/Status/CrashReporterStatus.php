@@ -31,8 +31,8 @@ namespace OPNsense\System\Status;
 use OPNsense\System\AbstractStatus;
 use OPNsense\Core\Config;
 
-class CrashReporterStatus extends AbstractStatus {
-
+class CrashReporterStatus extends AbstractStatus
+{
     public function __construct()
     {
         $this->internalLogLocation = '/crash_reporter.php';
@@ -50,7 +50,7 @@ class CrashReporterStatus extends AbstractStatus {
         if (Config::getInstance()->object()->system->deployment == 'development') {
             if ($has_crashed) {
                 $this->internalMessage = gettext(
-                  "A problem was detected, but non-production deployment is configured so crash reports cannot be sent."
+                    "A problem was detected, but non-production deployment is configured so crash reports cannot be sent."
                 );
                 $this->internalStatus = static::STATUS_NOTICE;
             }

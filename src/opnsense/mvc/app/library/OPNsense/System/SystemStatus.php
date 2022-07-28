@@ -51,13 +51,13 @@ class SystemStatus
         $result = [];
         $statusCodes = [];
         $all = scandir(__DIR__ . '/Status');
-        $classes = array_map(function($file) {
+        $classes = array_map(function ($file) {
             if (strpos($file, 'Status') !== false) {
                 return '\\OPNsense\\System\\Status\\' . str_replace('.php', '', $file);
             }
         }, $all);
 
-        $statuses = array_filter($classes, function($class) {
+        $statuses = array_filter($classes, function ($class) {
             return class_exists($class) && is_subclass_of($class, '\\OPNsense\\System\\AbstractStatus');
         });
 
@@ -96,5 +96,4 @@ class SystemStatus
             $this->objectMap[$subsystem]->dismissStatus();
         }
     }
-
 }

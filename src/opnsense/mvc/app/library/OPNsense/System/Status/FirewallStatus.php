@@ -32,7 +32,6 @@ use OPNsense\System\AbstractStatus;
 
 class FirewallStatus extends AbstractStatus
 {
-
     public function __construct()
     {
         $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
@@ -47,5 +46,4 @@ class FirewallStatus extends AbstractStatus
     {
         @unlink('/tmp/rules.error');
     }
-
 }
