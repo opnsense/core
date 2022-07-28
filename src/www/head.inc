@@ -73,6 +73,24 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       ol.example li.placeholder:before {
         position: absolute;
       }
+
+      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
+      :is(.opn-status-group) .list-group-item-border {
+          border: 1px solid #ddd;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:last-child {
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+      }
+      :is(.opn-status-group) .btn.pull-right {
+          margin-left: 3px;
+      }
     </style>
 
     <!-- Favicon -->
@@ -119,6 +137,8 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 
     <!-- Bootstrap type ahead -->
     <script src="<?= cache_safe("/ui/js/bootstrap3-typeahead.min.js") ?>"></script>
+
+    <script src="<?= cache_safe("/ui/js/opnsense_status.js") ?>"></script>
 
     <script>
     //<![CDATA[
@@ -191,6 +211,23 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
+      // Create status dialog instance
+      let dialog = new BootstrapDialog({
+          title: 'System Status',
+          buttons: [{
+              label: 'Close',
+              cssClass: 'btn-primary',
+              action: function(dialogRef) {
+                  dialogRef.close();
+              }
+          }],
+      });
+
+      updateSystemStatus().then((data) => {
+          let status = parseStatus(data);
+          registerStatusDelegate(dialog, status);
+      });
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
@@ -239,14 +276,15 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               });
           }
       });
-      // change search input size on focus() to fit results
+
+      //change search input size on focus() to fit results
       $("#menu_search_box").focus(function(){
           $("#menu_search_box").css('width', '450px');
-          $("#menu_messages").hide();
+          $("#system_status").hide();
       });
       $("#menu_search_box").focusout(function(){
           $("#menu_search_box").css('width', '250px');
-          $("#menu_messages").show();
+          $("#system_status").show();
       });
       // convert input form tables for better mobile experience
       hook_stacked_form_tables(".opnsense_standard_table_form");

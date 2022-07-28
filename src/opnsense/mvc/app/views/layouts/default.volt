@@ -26,6 +26,24 @@
       .typeahead {
         overflow: hidden;
       }
+
+      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
+      :is(.opn-status-group) .list-group-item-border {
+          border: 1px solid #ddd;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+      }
+
+      :is(.opn-status-group) .list-group-item-border:last-child {
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+      }
+      :is(.opn-status-group) .btn.pull-right {
+          margin-left: 3px;
+      }
     </style>
 
     <!-- legacy browser functions -->
@@ -101,6 +119,23 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
+                // Create status dialog instance
+                let dialog = new BootstrapDialog({
+                     title: '{{ lang._('System Status')}}',
+                     buttons: [{
+                         label: '{{ lang._('Close') }}',
+                         cssClass: 'btn-primary',
+                         action: function(dialogRef) {
+                             dialogRef.close();
+                         }
+                     }],
+                });
+
+                updateSystemStatus().then((data) => {
+                    let status = parseStatus(data);
+                    registerStatusDelegate(dialog, status);
+                });
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',
@@ -153,11 +188,11 @@
                 // change search input size on focus() to fit results
                 $("#menu_search_box").focus(function(){
                     $("#menu_search_box").css('width', '450px');
-                    $("#menu_messages").hide();
+                    $("#system_status").hide();
                 });
                 $("#menu_search_box").focusout(function(){
                     $("#menu_search_box").css('width', '250px');
-                    $("#menu_messages").show();
+                    $("#system_status").show();
                 });
                 // enable bootstrap tooltips
                 $('[data-toggle="tooltip"]').tooltip();
@@ -186,6 +221,7 @@
         <script src="{{ cache_safe('/ui/js/opnsense_ui.js') }}"></script>
         <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
         <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense_status.js') }}"></script>
   </head>
   <body>
   <header class="page-head">
@@ -216,6 +252,11 @@
           <ul class="nav navbar-nav navbar-right">
             <li id="menu_messages">
               <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
+            </li>
+            <li>
+              <span class="navbar-text" style="margin-left: 0">
+                <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+              </span>
             </li>
             <li>
               <form class="navbar-form" role="search">

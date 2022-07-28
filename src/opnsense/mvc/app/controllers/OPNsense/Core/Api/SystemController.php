@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2019 Deciso B.V.
+ *    Copyright (C) 2019-2022 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -31,6 +31,7 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 
 /**
@@ -55,5 +56,73 @@ class SystemController extends ApiControllerBase
         return [
             'status' => 'ok'
         ];
+    }
+
+    public function statusAction()
+    {
+        $this->sessionClose();
+
+        $response = ["status" => "failed"];
+
+        $backend = new Backend();
+        $statuses = json_decode(trim($backend->configdRun('system status')), true);
+        if ($statuses) {
+            $order = [-1 => 'Error', 0 => 'Warning', 1 => 'Notice', 2 => 'OK'];
+
+            $acl = new ACL();
+            foreach($statuses as $subsystem => $status) {
+                $statuses[$subsystem]['status'] = $order[$status['statusCode']];
+                if (!empty($status['logLocation'])) {
+                    if (!$acl->isPageAccessible($this->getUserName(), $status['logLocation'])) {
+                        unset($statuses[$subsystem]);
+                    }
+                } else {
+                    return $response;
+                }
+            }
+
+            /* Sort on the highest error level after the ACL check */
+            $statusCodes = array_map(function($v) {
+                return $v['statusCode'];
+            }, array_values($statuses));
+            sort($statusCodes);
+            $statuses['System'] = [
+                'status' => $order[$statusCodes[0] ?? 2]
+            ];
+
+            $response = json_encode($statuses);
+        }
+
+        return $response;
+    }
+
+    public function dismissStatusAction()
+    {
+        $this->sessionClose();
+
+        if ($this->request->isPost() && $this->request->hasPost("subject")) {
+            $acl = new ACL();
+            $backend = new Backend();
+            $subsystem = $this->request->getPost("subject");
+            $system = json_decode(trim($backend->configdRun('system status')), true);
+            if (array_key_exists($subsystem, $system)) {
+                if (!empty($system[$subsystem]['logLocation'])) {
+                    $aclCheck = $system[$subsystem]['logLocation'];
+                    if ($acl->isPageAccessible($this->getUserName(), $aclCheck) ||
+                        !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+                        $status = trim($backend->configdRun(sprintf('system dismiss status %s', $subsystem)));
+                        if ($status == "OK") {
+                            return [
+                                "status" => "ok"
+                            ];
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        return ["status" => "failed"];
     }
 }

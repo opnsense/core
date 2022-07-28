@@ -31,20 +31,6 @@
 
 $aclObj = new \OPNsense\Core\ACL();
 
-/* display a top alert bar if need be */
-$need_alert_display = false;
-$found_notices = are_notices_pending();
-if($found_notices == true) {
-    $notices = get_notices();
-    if(!$notices) {
-        $need_alert_display = true;
-        $display_text = print_notices($notices) . "<br />";
-    }
-}
-if($need_alert_display == true) {
-    echo "<div class=\"col-xs-12\"><div class=\"alert alert-info\"><p>".$display_text."</p></div></div>";
-}
-
 ?>
 
 <header class="page-head">
@@ -73,7 +59,12 @@ if($need_alert_display == true) {
       <button class="toggle-sidebar" data-toggle="tooltip right" title="<?= html_safe(gettext('Toggle sidebar')) ?>" style="display:none"><i class="fa fa-chevron-left"></i></button>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
-          <li id="menu_messages"><?= get_menu_messages() ?></li>
+          <li id="menu_messages"><?= get_menu_user() ?></li>
+          <li>
+            <span class="navbar-text" style="margin-left: 0">
+              <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+            </span>
+          </li>
           <li>
             <form class="navbar-form" role="search">
               <div class="input-group">

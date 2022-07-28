@@ -30,18 +30,6 @@
  *    shared components to use with legacy pages
  */
 
-function notice_action(action,msgid) {
-  jQuery.ajax({
-    type: 'post',
-    cache: false,
-    url: 'index.php',
-    data: {closenotice: msgid},
-    success: function(response) {
-      jQuery('#menu_messages').html(response);
-    }
-  });
-}
-
 /**
  * hook on change events to network inputs, to maximize the subnet to 24 on ipv4 addresses
  * @param classname: classname to hook on to, select list of netmasks
