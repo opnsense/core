@@ -30,13 +30,6 @@
 
 require_once('guiconfig.inc');
 
-// closing should be $_POST, but the whole notice handling needs more attention. Leave it as is for now.
-if (isset($_REQUEST['closenotice'])) {
-    close_notice($_REQUEST['closenotice']);
-    echo get_menu_messages();
-    exit;
-}
-
 // if no config entry found, initialize config entry
 config_read_array('widgets');
 
@@ -341,10 +334,7 @@ include("fbegin.inc");?>
         <div class="col-md-12 col-xs-12">
 <?php
           print_service_banner('livecd');
-          $crash_report = get_crash_report();
-          if (!empty($crash_report)) {
-              print_info_box($crash_report);
-          }?>
+?>
         </div>
       </div>
       <div id="dashboard_container" class="row" style="display:none">

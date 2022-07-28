@@ -40,6 +40,13 @@
             <pattern>crash_reporter.php*</pattern>
         </patterns>
     </page-diagnostics-crash-reporter>
+    <page-system-status>
+        <name>System: Status</name>
+        <patterns>
+            <pattern>api/core/system/status</pattern>
+            <pattern>api/core/system/dismissStatus</pattern>
+        </patterns>
+    </page-system-status>
     <page-dashboard-all>
         <name>Dashboard (all)</name>
         <patterns>

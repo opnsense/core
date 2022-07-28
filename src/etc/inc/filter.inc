@@ -457,6 +457,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
+        file_put_contents('/tmp/rules.error', gettext('ERROR: Could not write new rules!'));
 
         unlock($filterlck);
         closelog();
@@ -493,17 +494,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
         }
 
-        /* Brutal ugly hack but required -- PF is stuck, unwedge */
-        if (strstr("$rules_error[0]", "busy")) {
-            exec('/sbin/pfctl -d; /sbin/pfctl -e; /sbin/pfctl -f /tmp/rules.debug');
-            syslog(LOG_WARNING, 'PF was wedged/busy and has been reset.');
-            file_notice(gettext('PF was wedged/busy and has been reset.'));
-        } else {
-            exec('/sbin/pfctl -f /tmp/rules.debug.old 2>&1');
-        }
+        mwexec('/sbin/pfctl -f /tmp/rules.debug.old');
 
-        syslog(LOG_ERR, sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line));
-        file_notice(sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line));
+        syslog(LOG_ERR, trim(sprintf('There were error(s) loading the rules: %s%s', $rules_error[0], $config_line)));
+        file_put_contents(
+            '/tmp/rules.error',
+            sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line)
+        );
 
         unlock($filterlck);
         closelog();
@@ -685,7 +682,10 @@ function filter_generate_aliases()
                 # the configuration.
                 $aliases .= "{$aliased['name']} = \"{ 0 <> 65535 }\"\n";
                 syslog(LOG_ERR, sprintf('URL port aliases types not supported [%s]', $aliased['name']));
-                file_notice(sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name']));
+                file_put_contents(
+                    '/tmp/rules.error',
+                    sprintf(gettext('URL port aliases types not supported [%s]'), $aliased['name'])
+                );
                 break;
             case "port":
                 $tmp_ports = implode(" ", filter_core_get_port_alias($aliased['name'], [], $aliasObject, $all_aliases));

@@ -120,6 +120,8 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!-- Bootstrap type ahead -->
     <script src="<?= cache_safe("/ui/js/bootstrap3-typeahead.min.js") ?>"></script>
 
+    <script src="<?= cache_safe("/ui/js/opnsense_status.js") ?>"></script>
+
     <script>
     //<![CDATA[
     $( document ).ready(function() {
@@ -191,6 +193,24 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
           $('html,aside').scrollTop(($(this).offset().top - navbar_center));
       });
 
+      // Create status dialog instance
+      let dialog = new BootstrapDialog({
+          title: "<?= html_safe(gettext('System Status')) ?>",
+          buttons: [{
+              label: "<?= html_safe(gettext('Close')) ?>",
+              action: function(dialogRef) {
+                  dialogRef.close();
+              }
+          }],
+      });
+
+      setTimeout(function () {
+          updateSystemStatus().then((data) => {
+              let status = parseStatus(data);
+              registerStatusDelegate(dialog, status);
+          });
+      }, 500);
+
       // hook in live menu search
       $.ajax("/api/core/menu/search/", {
           type: 'get',
@@ -239,14 +259,15 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
               });
           }
       });
-      // change search input size on focus() to fit results
+
+      //change search input size on focus() to fit results
       $("#menu_search_box").focus(function(){
           $("#menu_search_box").css('width', '450px');
-          $("#menu_messages").hide();
+          $("#system_status").hide();
       });
       $("#menu_search_box").focusout(function(){
           $("#menu_search_box").css('width', '250px');
-          $("#menu_messages").show();
+          $("#system_status").show();
       });
       // convert input form tables for better mobile experience
       hook_stacked_form_tables(".opnsense_standard_table_form");

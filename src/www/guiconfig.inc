@@ -502,47 +502,16 @@ function get_crash_report()
     return $savemsg;
 }
 
-function get_menu_messages()
+function get_menu_user()
 {
     global $config;
 
-    $menu_messages = '';
-
-    if (are_notices_pending()) {
-        $notices = get_notices();
-
-        if (is_array($notices)) {
-            $notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
-
-            $notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
-
-            foreach ($notices as $key => $value) {
-                $date = date("m-d-y H:i:s", $key);
-                $noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
-                $noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
-                $alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
-                $notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)." ]</a></li>";
-            }
-
-            $notice_msgs .="</ul>";
-
-            if (count($notices) == 1) {
-                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
-            } else {
-                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
-            }
-            $menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
-        }
-    } else {
-        $menu_messages .= sprintf(
-          '<span class="navbar-text">%s@%s.%s</span>',
-          $_SESSION['Username'],
-          $config['system']['hostname'],
-          $config['system']['domain']
-        );
-    }
-
-    return $menu_messages;
+    return sprintf(
+      '<span class="navbar-text">%s@%s.%s</span>',
+      $_SESSION['Username'],
+      $config['system']['hostname'],
+      $config['system']['domain']
+    );
 }
 
 function service_control_icon($service, $xs = false)

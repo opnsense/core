@@ -101,6 +101,24 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
+                // Create status dialog instance
+                let dialog = new BootstrapDialog({
+                     title: '{{ lang._('System Status')}}',
+                     buttons: [{
+                         label: '{{ lang._('Close') }}',
+                         action: function(dialogRef) {
+                             dialogRef.close();
+                         }
+                     }],
+                });
+
+                setTimeout(function () {
+                    updateSystemStatus().then((data) => {
+                        let status = parseStatus(data);
+                        registerStatusDelegate(dialog, status);
+                    });
+                }, 500);
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',
@@ -153,11 +171,11 @@
                 // change search input size on focus() to fit results
                 $("#menu_search_box").focus(function(){
                     $("#menu_search_box").css('width', '450px');
-                    $("#menu_messages").hide();
+                    $("#system_status").hide();
                 });
                 $("#menu_search_box").focusout(function(){
                     $("#menu_search_box").css('width', '250px');
-                    $("#menu_messages").show();
+                    $("#system_status").show();
                 });
                 // enable bootstrap tooltips
                 $('[data-toggle="tooltip"]').tooltip();
@@ -186,6 +204,7 @@
         <script src="{{ cache_safe('/ui/js/opnsense_ui.js') }}"></script>
         <script src="{{ cache_safe('/ui/js/opnsense_bootgrid_plugin.js') }}"></script>
         <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
+        <script src="{{ cache_safe('/ui/js/opnsense_status.js') }}"></script>
   </head>
   <body>
   <header class="page-head">
@@ -216,6 +235,11 @@
           <ul class="nav navbar-nav navbar-right">
             <li id="menu_messages">
               <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
+            </li>
+            <li>
+              <span class="navbar-text" style="margin-left: 0">
+                <i id="system_status" data-toggle="tooltip left" title="{{ lang._('Show system status') }}" style="cursor:pointer" class="fa fa-circle text-muted"></i>
+              </span>
             </li>
             <li>
               <form class="navbar-form" role="search">
