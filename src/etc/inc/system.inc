@@ -525,13 +525,6 @@ function system_default_route($gateway, $family, $interface, $far = false)
             return;
     }
 
-    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-    $current = trim(exec($tmpcmd), " \n");
-    if ($current == $gateway) {
-        log_error("ROUTING: keeping current default gateway '{$gateway}'");
-        return;
-    }
-
     if ($family == 'inet') {
         foreach (glob('/tmp/*_defaultgw') as $to_delete) {
             log_error("ROUTING: removing {$to_delete}");
@@ -560,6 +553,13 @@ function system_default_route($gateway, $family, $interface, $far = false)
 
         /* IPv6 does not support far gateway notion */
         $realif = null;
+    }
+
+    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
+    $current = trim(exec($tmpcmd), " \n");
+    if ($current == $gateway) {
+        log_error("ROUTING: keeping current default gateway '{$gateway}'");
+        return;
     }
 
     mwexecf('/sbin/route delete -%s default', array($family), true);
