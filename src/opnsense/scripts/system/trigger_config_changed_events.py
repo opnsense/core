@@ -48,7 +48,7 @@ try:
     metadata = ujson.loads(status_fhandle.read())
     # ujson treats decimals as floats, round these numbers to avoid re-triggering the previous handled event
     metadata['last_processed_stamp'] = round(decimal.Decimal(metadata['last_processed_stamp']), 4)
-except ValueError:
+except (ValueError, KeyError):
      metadata = {'last_processed_stamp': 0}
 
 for filename in sorted(glob.glob('/conf/backup/config-*.xml')):
