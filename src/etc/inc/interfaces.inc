@@ -3957,8 +3957,8 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
-            $sec = trim(shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ' . escapeshellarg($ifinfo['if'])));
-            if (is_int($sec)) {
+            $sec = intval(trim(shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ' . escapeshellarg($ifinfo['if']))));
+            if ($sec) {
                 $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
             }
         }
@@ -4147,13 +4147,12 @@ function get_ppp_uptime($port)
         $uptime_data = explode("\n", $saved_time);
         $sec = 0;
         foreach ($uptime_data as $upt) {
-            $sec += substr($upt, 1 + strpos($upt, " "));
+            $sec += intval(substr($upt, 1 + strpos($upt, ' ')));
         }
         return convert_seconds_to_hms($sec);
-    } else {
-        $total_time = gettext("No history data found!");
-        return $total_time;
     }
+
+    return gettext('No history data found!');
 }
 
 /****f* legacy/is_ipaddr_configured
