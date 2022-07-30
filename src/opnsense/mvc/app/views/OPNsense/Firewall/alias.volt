@@ -234,6 +234,11 @@
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
                     break;
+                case 'asn':
+                    $("#alias_type_default").show();
+                    $("#alias\\.proto").selectpicker('show');
+                    $("#copy-paste").show();
+                    break;
                 case 'external':
                     break;
                 case 'networkgroup':
@@ -527,6 +532,7 @@
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
                                 <option value="mac">{{ lang._('MAC address') }}</option>
+                                <option value="asn">{{ lang._('BGP ASN') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
