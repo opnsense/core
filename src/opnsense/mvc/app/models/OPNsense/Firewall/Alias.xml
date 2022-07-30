@@ -36,6 +36,7 @@
                         <geoip>GeoIP</geoip>
                         <networkgroup>Network group</networkgroup>
                         <mac>MAC address</mac>
+                        <asn>BGP ASN</asn>
                         <dynipv6host>Dynamic IPv6 Host</dynipv6host>
                         <internal>Internal (automatic)</internal>
                         <external>External (advanced)</external>

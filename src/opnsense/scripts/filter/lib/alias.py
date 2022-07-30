@@ -39,6 +39,7 @@ from dns.exception import DNSException
 from . import geoip
 from . import net_wildcard_iterator, AsyncDNSResolver
 from .arpcache import ArpCache
+from .bgpasn import BGPASN
 from .interface import InterfaceParser
 
 class Alias(object):
@@ -279,6 +280,8 @@ class Alias(object):
             return InterfaceParser(self._interface).iter_dynipv6host
         elif self._type == 'mac':
             return ArpCache().iter_addresses
+        elif self._type == 'asn':
+            return BGPASN(self._proto).iter_addresses
         else:
             return None
 
