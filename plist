@@ -755,6 +755,7 @@
 /usr/local/opnsense/scripts/filter/lib/__init__.py
 /usr/local/opnsense/scripts/filter/lib/alias.py
 /usr/local/opnsense/scripts/filter/lib/arpcache.py
+/usr/local/opnsense/scripts/filter/lib/bgpasn.py
 /usr/local/opnsense/scripts/filter/lib/geoip.py
 /usr/local/opnsense/scripts/filter/lib/interface.py
 /usr/local/opnsense/scripts/filter/lib/states.py
