@@ -89,14 +89,7 @@ link_interface_to_track6($interface, true);
 $cacheip_file = "/tmp/{$interface_real}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));
 
-if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])) {
-    if ($ip == $cacheip) {
-        if (in_array($config['interfaces'][$interface]['ipaddr'], array('l2tp', 'ppp', 'pppoe', 'pptp'))) {
-            /* PPP reconnect loop avoidance */
-            return;
-        }
-    }
-
+if ($ip != $cacheip) {
     system_routing_configure(false, $interface);
     plugins_configure('monitor');
     filter_configure_sync();
