@@ -40,6 +40,8 @@ elif [ "${AF}" = "inet6" ]; then
 
 	/usr/local/sbin/ifctl -i ${IF} -6nd
 	/usr/local/sbin/ifctl -i ${IF} -6rd
+
+	rm -f /tmp/${IF}_cacheipv6 # XXX experiment
 fi
 
 /usr/local/sbin/configctl -d dns reload

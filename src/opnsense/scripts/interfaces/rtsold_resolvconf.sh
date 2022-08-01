@@ -70,6 +70,8 @@ elif [ "${1}" = "-d" ]; then
 	/usr/local/sbin/ifctl -i ${ifname} -6nd
 	/usr/local/sbin/ifctl -i ${ifname} -6sd
 
+	rm -f /tmp/${ifname%%:slaac}_cacheipv6 # XXX experiment
+
 	# reload DNS since data has been scrubbed
 	/usr/local/sbin/configctl -d dns reload
 fi

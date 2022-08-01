@@ -2766,6 +2766,7 @@ EXIT|RELEASE)
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
+    rm -f /tmp/${wanif}_cacheipv6 # XXX experiment
     /usr/local/sbin/configctl -d dns reload
     ;;
 *)
