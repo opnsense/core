@@ -51,7 +51,7 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
         let listItem = '<a class="btn btn-default" style="width:100%;text-align:left;" href="' + statusObject.logLocation + '">' +
             '<h4><span class="' + statusObject.icon + '"></span>&nbsp;' + formattedSubject +
             '<button id="dismiss-'+ subject + '" class="close"><span aria-hidden="true">&times;</span></button></h4></div>' +
-            '<p>' + statusObject.message + '</p></a>';
+            '<p style="white-space: pre-wrap;">' + statusObject.message + '</p></a>';
 
         let referral = statusObject.logLocation;
 
