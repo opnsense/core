@@ -1903,9 +1903,9 @@ function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = nul
                 $domain = preg_split('/[ ;]+/', $domain)[0];
 
                 $entry = [
-                    'descr' => $host['descr'],
+                    'descr' => $host['descr'] ?? null,
                     'domain' => $domain,
-                    'hostname' => $host['hostname'],
+                    'hostname' => $host['hostname'] ?? null,
                     'interface' => $dhcpif,
                     $ipaddr => $host[$ipaddr],
                 ];
