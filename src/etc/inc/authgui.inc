@@ -351,26 +351,6 @@ function display_login_form($Login_Error)
 
     $themename = htmlspecialchars(get_current_theme());
 
-    /*
-     * Check against locally configured IP addresses, which will catch when
-     * someone port-forwards WebGUI access from WAN to an internal IP on the
-     * router.
-     */
-    $local_ip = isAuthLocalIP($http_host);
-
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
-            if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
-                $local_ip = true;
-                break;
-            }
-
-            if (is_ipaddrv6($http_host) && !empty($ovpns['tunnel_networkv6']) && ip_in_subnet($http_host, $ovpns['tunnel_networkv6'])) {
-                $local_ip = true;
-                break;
-            }
-        }
-    }
     setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
@@ -400,12 +380,6 @@ function display_login_form($Login_Error)
   <body class="page-login">
 
   <div class="container">
-    <?php
-    if (is_ipaddr($http_host) && !$local_ip && !isset($config['system']['webgui']['nohttpreferercheck'])) {
-        print_info_box(sprintf(gettext("You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. %sIf you did not setup this forwarding, you may be the target of a man-in-the-middle attack."), '<br /><br />'));
-    }
-    ?>
-
     <main class="login-modal-container">
       <header class="login-modal-head" style="height:50px;">
         <div class="navbar-brand">
