@@ -256,7 +256,7 @@ abstract class Rule
                     } elseif (!empty($interfaces[$network_name]['if'])) {
                         $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
                         if ($rule['ipprotocol'] == 'inet6' && $rule['interface'] == $network_name) {
-                            if ($this instanceof FilterRule && empty($rule['gateway']) && empty($rule['reply'])) {
+                            if ($this instanceof FilterRule && empty($rule['gateway']) && empty($rule['reply-to'])) {
                                 /* historically pf(4) excludes link-local on :network to avoid anti-spoof overlap */
                                 $rule[$target] .= ',fe80::/10';
                             }
