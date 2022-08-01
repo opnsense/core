@@ -393,7 +393,7 @@ function unbound_cache_flush()
     configd_run('unbound cache flush');
 }
 
-function unbound_configure_do($verbose = false, $interface = '')
+function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
 
