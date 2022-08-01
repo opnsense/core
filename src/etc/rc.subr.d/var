@@ -28,61 +28,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-remove_mfs_link()
-{
-	ROOT="/root"
-	MFS=${1}
-
-	# Persistent copies of MFS-bound directories
-	# still there must be moved back into place.
-
-	if [ -d "${ROOT}${MFS}" ]; then
-		if [ -L "${MFS}" ]; then
-			# reverse the recovery symlink before
-			# moving back the original database
-			rm "${MFS}"
-		fi
-		mkdir -p "${MFS}"
-		for DIR in $(find "${ROOT}${MFS}" -depth 1); do
-			mv "${DIR}" "${MFS}/"
-		done
-		rm -r "${ROOT}${MFS}"
-	fi
-
-	# ensure directory always exist
-	mkdir -p "${MFS}"
-}
-
-# check which directories we need
-if [ -f /etc/rc.conf ]; then
-	. /etc/rc.conf
-fi
-if [ -f /etc/rc.conf.local ]; then
-	. /etc/rc.conf.local
-fi
-for RC_CONF in $(find /etc/rc.conf.d -type f); do
-	. ${RC_CONF}
-done
-
-RC_FILES="$(ls /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null || true)"
-MFS_DIRS="
-/var/cache/opnsense-patch
-/var/cache/opnsense-update
-/var/cache/pkg
-/var/crash
-/var/db/aliastables
-/var/db/pkg
-"
-
-for RC_FILE in ${RC_FILES}; do
-	eval "$(grep "^name[[:blank:]]*=" ${RC_FILE})"
-	VAR_MFS="${name}_var_mfs"
-	eval "VAR_DIRS=\$${VAR_MFS}"
-	for VAR_DIR in ${VAR_DIRS}; do
-		MFS_DIRS="${MFS_DIRS} ${VAR_DIR}"
-	done
-done
-
 USE_MFS_VAR=$(grep -c 'use_mfs_var[^_]' /conf/config.xml)
 
 # see if / is writable (aka. non-LiveCD boot)
@@ -100,13 +45,6 @@ else
 	chmod 750 /root
 fi
 
-# XXX remove all remnants of /root/var handling after 22.7
-for DIR in ${MFS_DIRS}; do
-	# unconditionally remove old /var links now that the
-	# feature is constrained to /var/log directory
-	remove_mfs_link ${DIR}
-done
-
 # ensure default directories in /var
 if ! mtree -deiU -f /etc/mtree/BSD.var.dist -p /var > /dev/null; then
 	echo -n "Error while applying /var mtree specification, trying to continue"
@@ -115,6 +53,18 @@ fi
 
 # old config files are stored in this place
 mkdir -p /var/etc
+
+# Clear all files in this directory to prevent stale state of
+# services.  At one point this also helped to prevent shutdown(8)
+# from dropping "nologin" into the directory, preventing login on
+# the next boot.  However, do not touch the directory tree.
+find /var/run ! -type d -exec rm {} \;
+
+# setup output directory for php sessions
+mkdir -p /var/lib/php/sessions
+chown root:wheel /var/lib/php/sessions
+chmod 750 /var/lib/php/sessions
+rm -f /var/lib/php/sessions/sess_*
 
 if [ ${USE_MFS_VAR} -ne 0 ]; then
 	MAX_MFS_VAR=$(grep 'max_mfs_var' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')
@@ -129,18 +79,6 @@ if [ ${USE_MFS_VAR} -ne 0 ]; then
 	mount -t tmpfs -o size=$((MAX_MEM_SYS / 100 * MAX_MFS_VAR)) tmpfs /var/log
 	echo "done."
 fi
-
-# Clear all files in this directory to prevent stale state of
-# services.  At one point this also helped to prevent shutdown(8)
-# from dropping "nologin" into the directory, preventing login on
-# the next boot.  However, do not touch the directory tree.
-find /var/run ! -type d -exec rm {} \;
-
-# setup output directory for php sessions
-mkdir -p /var/lib/php/sessions
-chown root:wheel /var/lib/php/sessions
-chmod 750 /var/lib/php/sessions
-rm -f /var/lib/php/sessions/sess_*
 
 # prep boog log
 : > /var/log/boot.log
