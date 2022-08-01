@@ -323,7 +323,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
                 log_error(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)));
             }
             $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
-            if ($default_gw !== null) {
+            if ($default_gw !== null && !empty($default_gw['gateway'])) {
                 system_default_route(
                     $default_gw['gateway'],
                     $ipprotocol,
@@ -422,7 +422,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit frags {$config['system']['maximumfrags']}\n";
     }
 
-    if (isset($config['system']['lb_use_sticky']) && is_numeric($config['system']['srctrack']) && ($config['system']['srctrack'] > 0)) {
+    if (isset($config['system']['lb_use_sticky']) && is_numeric($config['system']['srctrack'] ?? null) && ($config['system']['srctrack'] > 0)) {
         $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
     }
 

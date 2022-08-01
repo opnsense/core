@@ -102,17 +102,18 @@ class Plugin
     {
         $this->gateways = $gateways;
         foreach ($gateways->gatewaysIndexedByName(false, true) as $key => $gw) {
-            if (!empty($gw['gateway_interface']) || Util::isIpAddress($gw['gateway'])) {
-                if (Util::isIpAddress($gw['gateway'])) {
-                    $logic = "route-to ( {$gw['if']} {$gw['gateway']} )";
+            if (!empty($gw['gateway_interface']) || Util::isIpAddress($gw['gateway'] ?? null)) {
+                $this->gatewayMapping[$key] = [
+                    "interface" => $gw['if'],
+                    "proto" => $gw['ipprotocol'],
+                    "type" => "gateway"
+                ];
+                if (!empty($gw['gateway']) && Util::isIpAddress($gw['gateway'])) {
+                    $this->gatewayMapping[$key]['logic'] = "route-to ( {$gw['if']} {$gw['gateway']} )";
+                    $this->gatewayMapping[$key]['gateway'] = $gw['gateway'];
                 } else {
-                    $logic = "route-to {$gw['if']}";
+                    $this->gatewayMapping[$key]['logic'] = "route-to {$gw['if']}";
                 }
-                $this->gatewayMapping[$key] = array("logic" => $logic,
-                                                    "interface" => $gw['if'],
-                                                    "gateway" => $gw['gateway'],
-                                                    "proto" => $gw['ipprotocol'],
-                                                    "type" => "gateway");
             }
         }
     }
