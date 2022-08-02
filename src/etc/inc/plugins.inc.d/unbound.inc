@@ -396,6 +396,7 @@ function unbound_cache_flush()
 function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
+    $domain = '';
 
     if (empty($config['unbound']['cacheflush'])) {
         if (isvalidpid('/var/run/unbound.pid')) {
@@ -419,15 +420,14 @@ function unbound_configure_do($verbose = false, $unused = '')
         flush();
     }
 
-    mwexec_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh');
-
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
         if (isset($config['unbound']['regdhcpdomain'])) {
             $domain = $config['unbound']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain %s', $domain);
     }
+
+    mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
     if ($verbose) {
         echo "done.\n";

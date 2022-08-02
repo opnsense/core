@@ -30,6 +30,8 @@ set -e
 
 # prepare and startup unbound, so we can easily background it
 
+DOMAIN=${1}
+
 # if the root.key file is missing or damaged, run unbound-anchor
 if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
 	# unbound-anchor has undefined behaviour if file is corrupted, start clean
@@ -61,3 +63,7 @@ chown -R unbound:unbound /var/unbound
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
 /usr/local/opnsense/scripts/unbound/cache.sh load
+
+if [ ! -z "${DOMAIN}" ]; then
+  /usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
+fi
