@@ -464,8 +464,6 @@ function system_hosts_generate($verbose = false)
 
     file_put_contents('/etc/hosts', $hosts);
 
-    plugins_configure('hosts');
-
     if ($verbose) {
         echo "done.\n";
     }

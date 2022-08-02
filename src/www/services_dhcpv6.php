@@ -37,6 +37,7 @@ require_once("plugins.inc.d/dhcpd.inc");
 function reconfigure_dhcpd()
 {
     system_hosts_generate();
+    plugins_configure('hosts');
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp6_configure();
     clear_subsystem_dirty('staticmaps');
