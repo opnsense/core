@@ -26,10 +26,8 @@
  */
 
 function updateStatusDialog(dialog, status, subjectRef = null) {
-    const keys = Object.keys(status.data);
-    const statusAvailable = !(keys.length === 1 && keys[0] === 'System');
-
-    let $message = statusAvailable ? $(
+    let $ret = $('<div>No problems were detected.</div>');
+    let $message = $(
         '<div class="row">' +
         '<div class="col-md-6">' +
         '<div class="list-group" id="list-tab" role="tablist" style="margin-bottom: 0">' +
@@ -40,23 +38,17 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
         '</div>' +
         '</div>'+
         '</div>'
-    ) :
-        $('<div>No problems were detected.</div>');
-
-    if (!statusAvailable) {
-        return $message;
-    }
+    );
 
     for (let subject in status.data) {
         if (subject === 'System') {
             continue;
         }
         let statusObject = status.data[subject];
-        let dismissNeeded = true;
-
         if (status.data[subject].status == "OK") {
-            dismissNeeded = false;
+            continue;
         }
+
         let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
         let $listItem = $(
             '<a class="list-group-item list-group-item-border" data-toggle="list" href="#list-' + subject + '" role="tab" style="outline: 0">' +
@@ -87,10 +79,8 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
             $(this).toggleClass('active').siblings().removeClass('active');
         });
 
-        if (dismissNeeded) {
-            let $button = $('<div><button id="dismiss-'+ subject + '" type="button" class="btn btn-link btn-sm" style="padding: 0px;">Dismiss</button></div>');
-            $pane.append($button);
-        }
+        let $button = $('<div><button id="dismiss-'+ subject + '" type="button" class="btn btn-link btn-sm" style="padding: 0px;">Dismiss</button></div>');
+        $pane.append($button);
 
         $message.find('#dismiss-' + subject).on('click', function(e) {
             $.ajax('/api/core/system/dismissStatus', {
@@ -109,8 +99,10 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
                 }
             });
         });
+
+	$ret = $message;
     }
-    return $message;
+    return $ret;
 }
 
 function parseStatus(data) {
@@ -157,8 +149,5 @@ function registerStatusDelegate(dialog, status) {
 }
 
 function updateSystemStatus() {
-    return $.ajax("/api/core/system/status", {
-        type: 'get',
-        dataType: "json"
-    });
+    return $.ajax('/api/core/system/status', { type: 'get', dataType: 'json' });
 }
