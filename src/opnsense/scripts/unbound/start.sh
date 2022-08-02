@@ -48,7 +48,7 @@ if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; t
 fi
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
-    chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
 fi
 
 for FILE in $(find /var/unbound/etc -depth 1); do
@@ -65,5 +65,5 @@ chown -R unbound:unbound /var/unbound
 /usr/local/opnsense/scripts/unbound/cache.sh load
 
 if [ -n "${DOMAIN}" ]; then
-  /usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
+	/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
 fi
