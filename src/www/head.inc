@@ -213,10 +213,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 
       // Create status dialog instance
       let dialog = new BootstrapDialog({
-          title: 'System Status',
+          title: "<?= html_safe(gettext('System Status')) ?>",
           buttons: [{
-              label: 'Close',
-              cssClass: 'btn-primary',
+              label: "<?= html_safe(gettext('Close')) ?>",
               action: function(dialogRef) {
                   dialogRef.close();
               }

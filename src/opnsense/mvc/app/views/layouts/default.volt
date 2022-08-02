@@ -124,7 +124,6 @@
                      title: '{{ lang._('System Status')}}',
                      buttons: [{
                          label: '{{ lang._('Close') }}',
-                         cssClass: 'btn-primary',
                          action: function(dialogRef) {
                              dialogRef.close();
                          }
@@ -255,7 +254,7 @@
             </li>
             <li>
               <span class="navbar-text" style="margin-left: 0">
-                <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+                <i id="system_status" data-toggle="tooltip left" title="{{ lang._('Show system status') }}" style="cursor:pointer" class="fa fa-circle text-muted"></i>
               </span>
             </li>
             <li>

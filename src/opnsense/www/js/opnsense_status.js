@@ -102,7 +102,6 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
                     updateSystemStatus().then((data) => {
                         let newStatus = parseStatus(data);
                         let $newMessage = updateStatusDialog(this.dialogRef, newStatus, this.subjectRef);
-                        this.dialogRef.setType(newStatus.severity);
                         this.dialogRef.setMessage($newMessage);
                         $('#system_status').attr("class", newStatus.data['System'].icon);
                         registerStatusDelegate(this.dialogRef, newStatus);
@@ -116,33 +115,30 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
 
 function parseStatus(data) {
     let status = {};
-    let severity = BootstrapDialog.TYPE_SUCCESS;
+    let severity = BootstrapDialog.TYPE_PRIMARY;
     $.each(data, function(subject, statusObject) {
         switch (statusObject.status) {
             case "Error":
-                statusObject.icon = 'fa fa-exclamation-triangle text-danger'
+                statusObject.icon = 'fa fa-circle text-danger'
                 if (subject != 'System') break;
-                $('#system_status').toggleClass(statusObject.icon);
                 severity = BootstrapDialog.TYPE_DANGER;
                 break;
             case "Warning":
-                statusObject.icon = 'fa fa-exclamation-triangle text-warning';
+                statusObject.icon = 'fa fa-circle text-warning';
                 if (subject != 'System') break;
-                $('#system_status').toggleClass(statusObject.icon);
                 severity = BootstrapDialog.TYPE_WARNING;
                 break;
             case "Notice":
-                statusObject.icon = 'fa fa-check-circle text-info';
+                statusObject.icon = 'fa fa-circle text-info';
                 if (subject != 'System') break;
-                $('#system_status').toggleClass(statusObject.icon);
                 severity = BootstrapDialog.TYPE_INFO;
                 break;
             default:
-                statusObject.icon = 'fa fa-check-circle text-success';
+                statusObject.icon = 'fa fa-circle text-muted';
                 if (subject != 'System') break;
-                $('#system_status').toggleClass(statusObject.icon);
                 break;
         }
+        $('#system_status').removeClass().addClass(statusObject.icon);
     });
     status.severity = severity;
     status.data = data;
@@ -152,7 +148,6 @@ function parseStatus(data) {
 
 function registerStatusDelegate(dialog, status) {
     $("#system_status").click(function() {
-        dialog.setType(status.severity);
         dialog.setMessage(function(dialogRef) {
             let $message = updateStatusDialog(dialogRef, status);
             return $message;
