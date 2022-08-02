@@ -527,6 +527,7 @@ function unbound_add_host_entries($ifconfig_details = null)
     $aliases = iterator_to_array($unbound_mdl->aliases->alias->iterateItems());
 
     if (!empty($hosts)) {
+        $ptr_records = [];
         foreach ($hosts as $host) {
             if ($host->enabled == '1') {
                 $tmp_aliases = array(array(
@@ -560,7 +561,11 @@ function unbound_add_host_entries($ifconfig_details = null)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             } else {
-                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                if (current($tmp_aliases) === $tmp_aliases[0] && !in_array($host->server, $ptr_records)) {
+                                    /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR */
+                                    $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                    $ptr_records[] = $host->server;
+                                }
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             }
                             break;
