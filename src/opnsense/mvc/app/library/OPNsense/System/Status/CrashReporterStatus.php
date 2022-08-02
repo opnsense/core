@@ -37,35 +37,25 @@ class CrashReporterStatus extends AbstractStatus
     {
         $this->internalLogLocation = '/crash_reporter.php';
 
-        if ($this->hasCrashed()) {
+        $php_errors = file_exists('/tmp/PHP_errors.log');
+        $src_errors = count(glob('/var/crash/textdump*')) > 0;
+
+        if ($php_errors || $src_errors) {
             $this->internalMessage = gettext("A problem was detected.");
-            $this->internalStatus = static::STATUS_ERROR;
-        }
-    }
+            $this->internalStatus = $php_errors ? static::STATUS_ERROR : static::STATUS_WARNING;
 
-    private function hasCrashed()
-    {
-        $has_crashed = file_exists('/tmp/PHP_errors.log') || count(glob('/var/crash/textdump*')) > 1;
-
-        if (Config::getInstance()->object()->system->deployment == 'development') {
-            if ($has_crashed) {
-                $this->internalMessage = gettext(
-                    "A problem was detected, but non-production deployment is configured so crash reports cannot be sent."
-                );
+            if (Config::getInstance()->object()->system->deployment == 'development') {
                 $this->internalStatus = static::STATUS_NOTICE;
             }
-            return false;
         }
-
-        return $has_crashed;
     }
 
     public function dismissStatus()
     {
         /* Same logic as crash_reporter */
-        $files_to_upload = glob('/var/crash/*');
-        foreach ($files_to_upload as $file_to_upload) {
-            @unlink($file_to_upload);
+        $files = glob('/var/crash/*');
+        foreach ($files as $file) {
+            @unlink($file);
         }
         @unlink('/tmp/PHP_errors.log');
     }
