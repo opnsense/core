@@ -369,6 +369,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
+        /* do not advertise any DNS servers via RA (RFC 8106) if disabled in UI */
         if (isset($dhcpv6ifconf['radisablerdnss'])) {
             $dnslist = [];
         }
@@ -381,7 +382,10 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\t};\n";
         }
 
-        if (!empty($dhcpv6ifconf['radomainsearchlist'])) {
+        /* also do not advertise any DNS domains via RA (RFC 8106) if disabled in UI */
+        if (isset($dhcpv6ifconf['radisablerdnss'])) {
+            $dnssl = null;
+        } elseif (!empty($dhcpv6ifconf['radomainsearchlist'])) {
             $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
         } elseif (!empty($config['system']['domain'])) {
             $dnssl = $config['system']['domain'];
