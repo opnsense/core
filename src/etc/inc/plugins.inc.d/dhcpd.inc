@@ -345,33 +345,40 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             }
         }
 
-        $dnslist_tmp = [];
-
-        if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
-            $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
-        } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
-            $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
-        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            if (is_ipaddrv6($ifcfgipv6)) {
-                $dnslist_tmp[] = $ifcfgipv6;
-            } else {
-                log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
-            }
-        } elseif (!empty($config['system']['dnsserver'][0])) {
-            $dnslist_tmp = $config['system']['dnsserver'];
-        }
-
         $dnslist = [];
+        $dnssl = null;
 
-        foreach ($dnslist_tmp as $server) {
-            if (is_ipaddrv6($server)) {
-                $dnslist[] = $server;
+        /* advertise both DNS servers and domains via RA (RFC 8106) if allowed */
+        if (!isset($dhcpv6ifconf['radisablerdnss'])) {
+            $dnslist_tmp = [];
+
+            if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
+                $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
+            } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
+                $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
+            } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+                if (is_ipaddrv6($ifcfgipv6)) {
+                    $dnslist_tmp[] = $ifcfgipv6;
+                } else {
+                    log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+                }
+            } elseif (!empty($config['system']['dnsserver'][0])) {
+                $dnslist_tmp = $config['system']['dnsserver'];
             }
-        }
 
-        /* do not advertise any DNS servers via RA (RFC 8106) if disabled in UI */
-        if (isset($dhcpv6ifconf['radisablerdnss'])) {
-            $dnslist = [];
+            foreach ($dnslist_tmp as $server) {
+                if (is_ipaddrv6($server)) {
+                    $dnslist[] = $server;
+                }
+            }
+
+            if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['domainsearchlist'])) {
+                $dnssl = implode(' ', explode(';', $dhcpv6ifconf['domainsearchlist']));
+            } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radomainsearchlist'])) {
+                $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
+            } elseif (!empty($config['system']['domain'])) {
+                $dnssl = $config['system']['domain'];
+            }
         }
 
         if (count($dnslist) > 0) {
@@ -382,16 +389,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             $radvdconf .= "\t};\n";
         }
 
-        /* also do not advertise any DNS domains via RA (RFC 8106) if disabled in UI */
-        if (isset($dhcpv6ifconf['radisablerdnss'])) {
-            $dnssl = null;
-        } elseif (!empty($dhcpv6ifconf['radomainsearchlist'])) {
-            $dnssl = implode(' ', explode(';', $dhcpv6ifconf['radomainsearchlist']));
-        } elseif (!empty($config['system']['domain'])) {
-            $dnssl = $config['system']['domain'];
-        } else {
-            $dnssl = null;
-        }
         if (!empty($dnssl)) {
             $radvdconf .= "\tDNSSL {$dnssl} {\n";
             if (!empty($dhcpv6ifconf['AdvDNSSLLifetime'])) {
