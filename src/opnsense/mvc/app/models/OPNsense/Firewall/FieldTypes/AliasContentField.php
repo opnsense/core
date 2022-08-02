@@ -146,7 +146,7 @@ class AliasContentField extends BaseField
         $messages = [];
         $filter_opts = ["min_range" => 1, "max_range" => 4294967296];
         foreach ($this->getItems($data) as $asn) {
-            if (filter_var($asn, FILTER_VALIDATE_INT, ["options"=> $filter_opts]) === false) {
+            if (filter_var($asn, FILTER_VALIDATE_INT, ["options" => $filter_opts]) === false) {
                 $messages[] = sprintf(gettext('Entry "%s" is not a valid ASN.'), $asn);
             }
         }
