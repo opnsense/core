@@ -411,6 +411,19 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_radisablerdnss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS options') ?></td>
+                    <td>
+                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
+                      <?= gettext('Use the DNS configuration of the DHCPv6 server') ?>
+                      <br/>
+                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
+                      <?= gettext('Do not send any DNS configuration to clients') ?>
+                      <div class="hidden" data-for="help_for_radisablerdnss">
+                        <?= gettext('Control the behavior of the embedded DNS configuration (RFC 8106). If a setting here is used the information below is ignored. Disabling the sending of DNS configuration also ignores possible DHCPv6 values.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><a id="help_for_radns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
                     <td>
                       <input name="radns1" type="text" value="<?=$pconfig['radns1'];?>" /><br />
@@ -418,12 +431,6 @@ include("head.inc");
                       <div class="hidden" data-for="help_for_radns">
                         <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                       </div>
-                      <br />
-                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
-                      <br />
-                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
-                      <?= gettext('Do not send DNS settings to clients') ?>
                     </td>
                   </tr>
                   <tr>
