@@ -420,10 +420,7 @@ include("head.inc");
                       </div>
                       <br />
                       <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
-                      <br />
-                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
-                      <?= gettext('Do not send DNS settings to clients') ?>
+                      <?= gettext('Use the DNS server list of the DHCPv6 server') ?>
                     </td>
                   </tr>
                   <tr>
@@ -432,6 +429,15 @@ include("head.inc");
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_radomainsearchlist">
                         <?=gettext("The default is to use the domain name of this system as the DNSSL option in Router Advertisements. You may optionally specify one or multiple domain(s) here. Use the semicolon character as separator.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_radisablerdnss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Disable DNS Configuration') ?></td>
+                    <td>
+                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
+                      <div class="hidden" data-for="help_for_radisablerdnss">
+                        <?=gettext("Disable all advertisements of DNS configuration (RFC 8106) to clients.");?>
                       </div>
                     </td>
                   </tr>
