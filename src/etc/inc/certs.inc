@@ -47,8 +47,8 @@ function crl_status_code()
 {
     /* Array index 0 is a description, index 1 is the key used by phpseclib */
     return array(
-        CERT_CRL_STATUS_NOSTATUS              => ["No Status (default)", "unused"],
-        CERT_CRL_STATUS_UNSPECIFIED           => ["Unspecified", "unused"],
+        CERT_CRL_STATUS_NOSTATUS              => ["No Status (default)", "unspecified"],
+        CERT_CRL_STATUS_UNSPECIFIED           => ["Unspecified", "unspecified"],
         CERT_CRL_STATUS_KEYCOMPROMISE         => ["Key Compromise", "keyCompromise"],
         CERT_CRL_STATUS_CACOMPROMISE          => ["CA Compromise", "cACompromise"],
         CERT_CRL_STATUS_AFFILIATIONCHANGED    => ["Affiliation Changed", "affiliationChanged"],
@@ -656,7 +656,7 @@ function crl_update(&$crl)
     $x509_crl->setSerialNumber($crl['serial'], 10);
     $x509_crl->setEndDate('+' . $crl['lifetime'] . ' days');
     $new_crl = $x509_crl->signCRL($ca_cert, $x509_crl);
-    $crl_text = $x509_crl->saveCRL($new_crl);
+    $crl_text = $x509_crl->saveCRL($new_crl) . PHP_EOL;
 
     /* Update the CRL */
     $crl['text'] = base64_encode($crl_text);
