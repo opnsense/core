@@ -449,16 +449,18 @@ function system_hosts_generate($verbose = false)
 
     $syscfg = config_read_array('system');
 
-    $hosts = "127.0.0.1\tlocalhost localhost.{$syscfg['domain']}\n";
+    $hosts = "127.0.0.1\tlocalhost\tlocalhost.{$syscfg['domain']}\n";
+    $hosts .= "::1\t\tlocalhost\tlocalhost.{$syscfg['domain']}\n";
 
-    /* we pull the second host entry from a "priority" list: lan, optX or wan */
-    $iflist = array_keys(get_configured_interface_with_descr());
-    sort($iflist);
-
-    if (!empty($iflist[0])) {
-        $cfgip = get_interface_ip($iflist[0]);
-        if (is_ipaddrv4($cfgip)) {
-            $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
+    $if = get_primary_interface_from_list();
+    if (!empty($if)) {
+        $cfgip = get_interface_ip($if);
+        if (!empty($cfgip)) {
+            $hosts .= "{$cfgip}\t{$syscfg['hostname']}\t{$syscfg['hostname']}.{$syscfg['domain']}\n";
+        }
+        $cfgip = get_interface_ipv6($if);
+        if (!empty($cfgip)) {
+            $hosts .= "{$cfgip}\t{$syscfg['hostname']}\t{$syscfg['hostname']}.{$syscfg['domain']}\n";
         }
     }
 
