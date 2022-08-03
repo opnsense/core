@@ -147,7 +147,11 @@ class Plugin
                 }
                 if (count($routeto) > 0) {
                     $routetologic = "route-to {" . implode(' ', $routeto) . "}";
-                    if (count($routeto) > 1) {
+                    if (!empty($gwgr[0]['poolopts'])) {
+                        // Since Gateways->getGroups() returns detail items, we have no other choice than
+                        // to copy top level attributes into the details if they matter (poolopts)
+                        $routetologic .= " {$gwgr[0]['poolopts']} ";
+                    } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
                         if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
                             $routetologic .= " sticky-address ";
