@@ -560,6 +560,7 @@ function unbound_add_host_entries($ifconfig_details = null)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             } else {
+                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             }
                             break;
