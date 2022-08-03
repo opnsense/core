@@ -35,13 +35,31 @@ class CrashReporterStatus extends AbstractStatus
 {
     public function __construct()
     {
+        $src_logs = glob('/var/crash/textdump*');
+        $php_log = '/tmp/PHP_errors.log';
+
         $this->internalLogLocation = '/crash_reporter.php';
 
-        $php_errors = file_exists('/tmp/PHP_errors.log');
-        $src_errors = count(glob('/var/crash/textdump*')) > 0;
+        $src_errors = count($src_logs) > 0;
+        if ($src_errors) {
+            foreach ($src_logs as $src_log) {
+                $info = stat($src_log);
+                if (!empty($info['mtime']) && $this->internalTimestamp < $info['mtime']) {
+                    $this->internalTimestamp = $info['mtime'];
+                }
+            }
+        }
+
+        $php_errors = file_exists($php_log);
+        if ($php_errors) {
+            $info = stat($php_log);
+            if (!empty($info['mtime']) && $this->internalTimestamp < $info['mtime']) {
+                $this->internalTimestamp = $info['mtime'];
+            }
+        }
 
         if ($php_errors || $src_errors) {
-            $this->internalMessage = gettext("A problem was detected.");
+            $this->internalMessage = gettext('An issue was detected and can be reviewed using the firmware crash reporter.');
             $this->internalStatus = $php_errors ? static::STATUS_ERROR : static::STATUS_WARNING;
 
             if (Config::getInstance()->object()->system->deployment == 'development') {

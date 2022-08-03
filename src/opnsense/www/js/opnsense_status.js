@@ -26,17 +26,10 @@
  */
 
 function updateStatusDialog(dialog, status, subjectRef = null) {
-    let $ret = $('<div>No problems were detected.</div>');
+    let $ret = $('<div><div>No problems were detected.</div></div>');
     let $message = $(
-        '<div class="row">' +
-        '<div class="col-md-6">' +
-        '<div class="list-group" id="list-tab" role="tablist" style="margin-bottom: 0">' +
-        '</div>' +
-        '</div>' +
-        '<div class="col-md-6">' +
-        '<div class="tab-content" id="nav-tabContent">' +
-        '</div>' +
-        '</div>'+
+        '<div>' +
+        '<div id="opn-status-list"></div>' +
         '</div>'
     );
 
@@ -50,39 +43,20 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
         }
 
         let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
-        let $listItem = $(
-            '<a class="list-group-item list-group-item-border" data-toggle="list" href="#list-' + subject + '" role="tab" style="outline: 0">' +
-            formattedSubject +
-            '<span class="' + statusObject.icon + '" style="float: right"></span>' +
-            '</a>'
-        );
-        let referral = statusObject.status !== 'OK' ? 'Click <a href="' + statusObject.logLocation + '">here</a> for more information.' : ''
-        let $pane = $(
-            '<div class="tab-pane fade" id="list-' + subject + '" role="tabpanel"><p>' + statusObject.message + ' ' + referral + '</p>' +
-            '</div>'
-        );
-
-        $message.find('#list-tab').addClass('opn-status-group').append($listItem);
-        $message.find('#nav-tabContent').append($pane);
-
-        if (subjectRef) {
-            $message.find('#list-tab a[href="#list-' + subjectRef + '"]').addClass('active').tab('show').siblings().removeClass('active');
-            $pane.addClass('active in').siblings().removeClass('active in');
-        } else {
-            $message.find('#list-tab a:first-child').addClass('active').tab('show');
-            $message.find('#nav-tabContent div:first-child').addClass('active in');
+        if (status.data[subject].age != undefined) {
+            formattedSubject += '&nbsp;<small>(' + status.data[subject].age + ')</small>';
         }
+        let listItem = '<a class="btn btn-default" style="width:100%; text-align: left;" href="' + statusObject.logLocation + '">' +
+            '<h4><span class="' + statusObject.icon + '"></span>&nbsp;' + formattedSubject +
+            '<button id="dismiss-'+ subject + '" class="close"><span aria-hidden="true">&times;</span></button></h4></div>' +
+            '<p>' + statusObject.message + '</p></a>';
 
-        $message.find('#list-tab a[href="#list-' + subject + '"]').on('click', function(e) {
+        let referral = statusObject.logLocation;
+
+        $message.find('#opn-status-list').append(listItem);
+
+        $message.find('#dismiss-' + subject).on('click', function (e) {
             e.preventDefault();
-            $(this).tab('show');
-            $(this).toggleClass('active').siblings().removeClass('active');
-        });
-
-        let $button = $('<div><button id="dismiss-'+ subject + '" type="button" class="btn btn-link btn-sm" style="padding: 0px;">Dismiss</button></div>');
-        $pane.append($button);
-
-        $message.find('#dismiss-' + subject).on('click', function(e) {
             $.ajax('/api/core/system/dismissStatus', {
                 type: 'post',
                 data: {'subject': subject},
@@ -100,7 +74,7 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
             });
         });
 
-	$ret = $message;
+        $ret = $message;
     }
     return $ret;
 }

@@ -26,24 +26,6 @@
       .typeahead {
         overflow: hidden;
       }
-
-      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
-      :is(.opn-status-group) .list-group-item-border {
-          border: 1px solid #ddd;
-      }
-
-      :is(.opn-status-group) .list-group-item-border:first-child {
-          border-top-left-radius: 4px;
-          border-top-right-radius: 4px;
-      }
-
-      :is(.opn-status-group) .list-group-item-border:last-child {
-          border-bottom-left-radius: 4px;
-          border-bottom-right-radius: 4px;
-      }
-      :is(.opn-status-group) .btn.pull-right {
-          margin-left: 3px;
-      }
     </style>
 
     <!-- legacy browser functions -->

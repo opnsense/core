@@ -32,18 +32,24 @@ use OPNsense\System\AbstractStatus;
 
 class FirewallStatus extends AbstractStatus
 {
+    protected $rules_error = '/tmp/rules.error';
+
     public function __construct()
     {
         $this->internalLogLocation = '/ui/diagnostics/log/core/firewall';
 
-        if (file_exists('/tmp/rules.error')) {
-            $this->internalMessage = file_get_contents('/tmp/rules.error');
+        if (file_exists($this->rules_error)) {
+            $this->internalMessage = file_get_contents($this->rules_error);
             $this->internalStatus = constant("static::STATUS_ERROR");
+            $info = stat($this->rules_error);
+            if (!empty($info['mtime'])) {
+                $this->internalTimestamp = $info['mtime'];
+            }
         }
     }
 
     public function dismissStatus()
     {
-        @unlink('/tmp/rules.error');
+        @unlink($this->rules_error);
     }
 }
