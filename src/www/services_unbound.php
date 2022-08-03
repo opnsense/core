@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['regdhcpstatic'] = isset($a_unboundcfg['regdhcpstatic']);
     $pconfig['txtsupport'] = isset($a_unboundcfg['txtsupport']);
     $pconfig['cacheflush'] = isset($a_unboundcfg['cacheflush']);
+    $pconfig['noregrecords'] = isset($a_unboundcfg['noregrecords']);
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
@@ -111,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // boolean values
+            $a_unboundcfg['noregrecords'] = !empty($pconfig['noregrecords']);
             $a_unboundcfg['cacheflush'] = !empty($pconfig['cacheflush']);
             $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
@@ -294,6 +296,20 @@ include_once("head.inc");
                             "than one listen interface is configured."); ?>
                           </div>
                         </td>
+                      </tr>
+                      <tr>
+                          <td><a id="help_for_noregrecords" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('System A/AAAA records') ?></td>
+                          <td>
+                              <input name="noregrecords" type="checkbox" id="noregrecords" value="yes" <?= !empty($pconfig['noregrecords']) ? 'checked="checked"' : '' ?>/>
+                              <?= gettext('Do not register system A/AAAA records') ?>
+                              <div class="hidden" data-for="help_for_noregrecords">
+                                  <?= sprintf(gettext("If this option is set, then A/AAAA records for " .
+                                  "all configured listen interfaces will not be generated. " .
+                                  "If desired, you can manually add them in %sUnbound DNS: Overrides%s. " .
+                                  "Use this to control which interface IP addresses are mapped to the system domain name " .
+                                  "as well as to restrict the amount of information exposed in replies."), '<a href="ui/unbound/overrides/">', '</a>'); ?>
+                              </div>
+                          </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>

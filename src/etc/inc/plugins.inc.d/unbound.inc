@@ -463,44 +463,46 @@ function unbound_add_host_entries($ifconfig_details = null)
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
 
-    foreach ($interfaces as $interface) {
-        if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
-            continue;
-        }
-
-        list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
-        list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
-
-        foreach (['4' => $laddr, '6' => $laddr6] as $ip_version => $addr) {
-            if (empty($addr)) {
+    if (empty($config['unbound']['noregrecords'])) {
+        foreach ($interfaces as $interface) {
+            if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
                 continue;
             }
 
-            $domain = $config['system']['domain'];
-            $dhcpd = $ip_version == '4' ? 'dhcpd' : 'dhcpd6';
-            $record = $ip_version == '4' ? 'A' : 'AAAA';
-            if (isset($config[$dhcpd][$interface]['enable']) && !empty($config[$dhcpd][$interface]['domain'])) {
-                $domain = $config[$dhcpd][$interface]['domain'];
-            }
-            if ($interface === get_primary_interface_from_list($interfaces) && !in_array($addr, $ptr_records, true)) {
-                $unbound_entries .= "local-data-ptr: \"{$addr} {$config['system']['hostname']}.{$domain}\"\n";
-            }
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} {$record} {$addr}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
+            list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
+            list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
 
-            $ptr_records[] = $addr;
-        }
-
-        if (empty($config['unbound']['noreglladdr6'])) {
-            if (!empty($lladdr6)) {
-                /* cannot embed scope */
-                $lladdr6 = explode('%', $lladdr6)[0];
-                $domain = $config['system']['domain'];
-                if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
-                    $domain = $config['dhcpdv6'][$interface]['domain'];
+            foreach (['4' => $laddr, '6' => $laddr6] as $ip_version => $addr) {
+                if (empty($addr)) {
+                    continue;
                 }
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$lladdr6}\"\n";
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+
+                $domain = $config['system']['domain'];
+                $dhcpd = $ip_version == '4' ? 'dhcpd' : 'dhcpd6';
+                $record = $ip_version == '4' ? 'A' : 'AAAA';
+                if (isset($config[$dhcpd][$interface]['enable']) && !empty($config[$dhcpd][$interface]['domain'])) {
+                    $domain = $config[$dhcpd][$interface]['domain'];
+                }
+                if ($interface === get_primary_interface_from_list($interfaces) && !in_array($addr, $ptr_records, true)) {
+                    $unbound_entries .= "local-data-ptr: \"{$addr} {$config['system']['hostname']}.{$domain}\"\n";
+                }
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} {$record} {$addr}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
+
+                $ptr_records[] = $addr;
+            }
+
+            if (empty($config['unbound']['noreglladdr6'])) {
+                if (!empty($lladdr6)) {
+                    /* cannot embed scope */
+                    $lladdr6 = explode('%', $lladdr6)[0];
+                    $domain = $config['system']['domain'];
+                    if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
+                        $domain = $config['dhcpdv6'][$interface]['domain'];
+                    }
+                    $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$lladdr6}\"\n";
+                    $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+                }
             }
         }
     }
