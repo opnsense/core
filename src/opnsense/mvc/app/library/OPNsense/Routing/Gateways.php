@@ -502,6 +502,7 @@ class Gateways
                                 $gateway_item = [
                                     'int' => $gateway['if'],
                                     'gwip' => $gateway['gateway'],
+                                    'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
                                     'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
                                 ];
                                 $all_tiers[$tieridx][] = $gateway_item;
