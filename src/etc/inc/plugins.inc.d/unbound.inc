@@ -463,40 +463,35 @@ function unbound_add_host_entries($ifconfig_details = null)
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
 
-    sort($interfaces);
     foreach ($interfaces as $interface) {
         if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
             continue;
         }
 
         list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
-        if (!empty($laddr)) {
-            $domain = $config['system']['domain'];
-            if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
-                $domain = $config['dhcpd'][$interface]['domain'];
-            }
-            if ($interface === $interfaces[0] && !in_array($laddr, $ptr_records, true)) {
-                $unbound_entries .= "local-data-ptr: \"{$laddr} {$config['system']['hostname']}.{$domain}\"\n";
-                $ptr_records[] = $laddr;
-            }
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
-        }
         list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
-        if (!empty($laddr6)) {
+
+        foreach (['4' => $laddr, '6' => $laddr6] as $ip_version => $addr) {
+            if (empty($addr)) {
+                continue;
+            }
+
             $domain = $config['system']['domain'];
-            if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
-                $domain = $config['dhcpdv6'][$interface]['domain'];
+            $dhcpd = $ip_version == '4' ? 'dhcpd' : 'dhcpd6';
+            $record = $ip_version == '4' ? 'A' : 'AAAA';
+            if (isset($config[$dhcpd][$interface]['enable']) && !empty($config[$dhcpd][$interface]['domain'])) {
+                $domain = $config[$dhcpd][$interface]['domain'];
             }
-            if ($interface === $interfaces[0] && !in_array($laddr6, $ptr_records, true)) {
-                $unbound_entries .= "local-data-ptr: \"{$laddr6} {$config['system']['hostname']}.{$domain}\"\n";
-                $ptr_records[] = $laddr6;
+            if ($interface === get_primary_interface_from_list($interfaces) && !in_array($addr, $ptr_records, true)) {
+                $unbound_entries .= "local-data-ptr: \"{$addr} {$config['system']['hostname']}.{$domain}\"\n";
             }
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$laddr6}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} {$record} {$addr}\"\n";
+            $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
+
+            $ptr_records[] = $addr;
         }
+
         if (empty($config['unbound']['noreglladdr6'])) {
-            list ($lladdr6) = interfaces_scoped_address6($interface, $ifconfig_details);
             if (!empty($lladdr6)) {
                 /* cannot embed scope */
                 $lladdr6 = explode('%', $lladdr6)[0];
