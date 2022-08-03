@@ -156,7 +156,13 @@ $( document ).ready(function() {
     /**
      * Reconfigure unbound - activate changes
      */
-    $("#reconfigureAct").SimpleActionButton();
+    $("#reconfigureAct").SimpleActionButton({
+        onAction: function(data, status) {
+          if (data['status'].toLowerCase().trim() == 'ok') {
+              $("#responseMsg").removeClass("hidden").html(data['status_msg']);
+          }
+        }
+    });
     updateServiceControlUI('unbound');
 });
 </script>
@@ -171,6 +177,8 @@ $( document ).ready(function() {
         margin: 1em;
     }
 </style>
+
+<div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#host_overrides" id="host_overrides_tab">{{ lang._('Host Overrides') }}</a></li>
@@ -276,7 +284,7 @@ $( document ).ready(function() {
         <tr>
             <td>
                 <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/unbound/service/reconfigure'
+                        data-endpoint='/api/unbound/service/overrides'
                         data-label="{{ lang._('Apply') }}"
                         data-service-widget="unbound"
                         data-error-title="{{ lang._('Error reconfiguring unbound') }}"

@@ -35,6 +35,7 @@ import argparse
 import json
 import shutil
 import syslog
+import ipaddress
 
 def unbound_control_reader(action):
     sp = subprocess.run(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
@@ -42,18 +43,40 @@ def unbound_control_reader(action):
     for line in sp.stdout.strip().split("\n"):
         yield line
 
-def unbound_control_do(action, bulk_input):
+def unbound_control_do(action, bulk_input = None):
     p = subprocess.Popen(['/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf', action],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    for input in bulk_input:
-        p.stdin.write("%s\n" % input)
+
+    if bulk_input:
+        for input in bulk_input:
+            p.stdin.write("%s\n" % input)
 
     result = p.communicate()[0]
+
     # return code is only available after communicate()
-    return (result, p.returncode)
+    if (p.returncode != 0):
+        syslog.syslog(syslog.LOG_ERR, 'unbound-control returned: %s' % result)
+        sys.exit(1)
+
+    syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % result)
+
+def diff_cache(new, cache, parse_func):
+    files = {'new': new, 'cache': cache}
+    contents = {}
+    for filetype in files:
+        if os.path.exists(files[filetype]):
+            with open(files[filetype], 'r') as current_f:
+                # we pass a filepointer so the parser generator can read multiple lines in a single iteration
+                contents[filetype] = set(parse_func(current_f))
+
+    additions = contents['new'] - contents['cache']
+    removals = contents['cache'] - contents['new']
+    shutil.copyfile(files['new'], files['cache'])
+    return {'removals': removals, 'additions': additions}
 
 # parse arguments
 parser = argparse.ArgumentParser()
+parser.add_argument('-o', '--overrides', help="Update DNS overrides", action="store_true", default=False)
 parser.add_argument('-b', '--dnsbl', help='Update DNS blocklists', action="store_true", default=False)
 parser.add_argument('-c', '--cache', help='Dump cache', action="store_true", default=False)
 parser.add_argument('-i', '--infra', help='Dump infrastructure cache', action="store_true", default=False)
@@ -71,37 +94,86 @@ except:
     sys.exit(1)
 
 output = None
-if args.dnsbl:
-    dnsbl_files = {'new': '/usr/local/etc/unbound.opnsense.d/dnsbl.conf', 'cache': '/tmp/unbound_dnsbl.cache'}
-    dnsbl_contents = {}
-    syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
-    for filetype in dnsbl_files:
-        dnsbl_contents[filetype] = set()
-        if os.path.exists(dnsbl_files[filetype]):
-            with open(dnsbl_files[filetype], 'r') as current_f:
-                for line in current_f:
-                    if line.startswith('local-data:'):
-                        dnsbl_contents[filetype].add(line[11:].strip(' "\'\t\r\n'))
+syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+if args.overrides:
+    def parse_hosts(filepointer):
+        for entry in filepointer:
+            command = entry.split(':', 1)[0]
+            if command in ['local-data', 'local-data-ptr', 'local-zone']:
+                parsed = " ".join([word.strip(' "\'\t\r\n') for word in entry[len(command) + 1:].strip().split(' ')])
+                if command == 'local-data-ptr':
+                    # unbound-control does not handle formatting PTR records, so do it here (a.b.c.d --> d.c.b.a.in-addr.arpa)
+                    parsed = " ".join([ipaddress.ip_address(parsed.split(' ', 1)[0]).reverse_pointer, 'PTR', parsed.split(' ', 1)[1]])
+                yield " ".join([command, parsed])
 
-    additions = dnsbl_contents['new'] - dnsbl_contents['cache']
-    removals = dnsbl_contents['cache'] - dnsbl_contents['new']
+    def parse_domains(filepointer):
+        dnqlh_done = False
+        for entry in filepointer:
+            if entry.strip().startswith('forward-zone:'):
+                name = next(filepointer).strip()[5:].strip(' "\'\t\r\n')
+                forward_addr = next(filepointer).strip()[13:].strip(' "\'\t\r\n')
+                yield " ".join([name, forward_addr])
+            elif entry.strip().startswith('server:') and not dnqlh_done:
+                unbound_control_do('set_option do-not-query-localhost: no')
+                dnqlh_done = True
+
+    hosts = diff_cache('/var/unbound/host_entries.conf', '/tmp/unbound_hostoverrides.cache', parse_hosts)
+    domains = diff_cache('/usr/local/etc/unbound.opnsense.d/domainoverrides.conf', '/tmp/unbound_domainoverrides.cache', parse_domains)
+
+    for op in hosts.keys():
+        local_zones = []
+        local_datas = []
+        if hosts[op]:
+            for val in hosts[op]:
+                split = val.split(' ')
+                local_zones.append(" ".join(split[1:])) if split[0] == 'local-zone' else local_datas.append(" ".join(split[1:]))
+
+            # first do removals to maintain a clean state
+            if op == 'removals':
+                if local_zones:
+                    removals = {line.split(' ')[0].strip() for line in local_zones}
+                    unbound_control_do('local_zones_remove', removals)
+                if local_datas:
+                    removals = {line.split(' ')[0].strip() for line in local_datas}
+                    unbound_control_do('local_datas_remove', removals)
+
+            if op == 'additions':
+                # add local zones first, otherwise the redirect for the domain in the linked local_data
+                # does not take effect.
+                if local_zones:
+                    unbound_control_do('local_zones', local_zones)
+                if local_datas:
+                    unbound_control_do('local_datas', local_datas)
+
+    # unbound-control does not do bulk insertion/removal of forwards
+    if domains['removals']:
+        for val in domains['removals']:
+            unbound_control_do(" ".join(['forward_remove', val.split(' ')[0]]))
+
+    if domains['additions']:
+        for val in domains['additions']:
+            unbound_control_do(" ".join(['forward_add', val]))
+
+    output = "OK"
+elif args.dnsbl:
+    def parse_dnsbl(filepointer):
+        for line in filepointer:
+            if line.startswith('local-data:'):
+                yield line[11:].strip(' "\'\t\r\n')
+
+    diff = diff_cache('/usr/local/etc/unbound.opnsense.d/dnsbl.conf', '/tmp/unbound_dnsbl.cache', parse_dnsbl)
+
+    additions = diff['additions']
+    removals = diff['removals']
     if removals:
         # RR removals only accept domain names, so strip it again (xxx.xx 0.0.0.0 --> xxx.xx)
         removals = {line.split(' ')[0].strip() for line in removals}
-        uc = unbound_control_do('local_datas_remove', removals)
-        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
-        if uc[1] != 0:
-            sys.exit(1)
+        unbound_control_do('local_datas_remove', removals)
     if additions:
-        uc = unbound_control_do('local_datas', additions)
-        syslog.syslog(syslog.LOG_NOTICE, 'unbound-control returned: %s' % uc[0])
-        if uc[1] != 0:
-            sys.exit(1)
+        unbound_control_do('local_datas', additions)
 
     output = {'additions': len(additions), 'removals': len(removals)}
 
-    # finally, always save a cache to keep the current state
-    shutil.copyfile(dnsbl_files['new'], dnsbl_files['cache'])
     syslog.syslog(syslog.LOG_NOTICE, 'got %d RR additions and %d RR removals' % (output['additions'], output['removals']))
 elif args.cache:
     output = list()

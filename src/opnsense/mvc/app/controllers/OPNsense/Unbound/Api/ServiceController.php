@@ -60,4 +60,25 @@ class ServiceController extends ApiMutableServiceControllerBase
             'status_msg' => gettext('An error occurred during script execution. Check the logs for details'),
         );
     }
+
+    public function overridesAction()
+    {
+        $this->sessionClose();
+        $backend = new Backend();
+        /* Do a template reload for the domain overrides which have been migrated to a template */
+        $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
+        $overrides = json_decode(trim($backend->configdRun(static::$internalServiceName . ' overrides')), true);
+
+        if ($overrides !== null) {
+            return [
+                'status' => "OK",
+                'status_msg' => "Successfully updated Unbound"
+            ];
+        }
+
+        return array(
+            'status' => 'ERR',
+            'status_msg' => gettext('An error occurred during script execution. Check the logs for details'),
+        );
+    }
 }
