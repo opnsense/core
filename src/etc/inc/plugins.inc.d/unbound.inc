@@ -441,6 +441,8 @@ function unbound_add_host_entries($ifconfig_details = null)
     $local_zone_type = 'transparent';
     $ptr_records = [];
 
+    openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
+
     if (!empty($config['unbound']['local_zone_type'])) {
         $local_zone_type = $config['unbound']['local_zone_type'];
     }
@@ -575,6 +577,8 @@ function unbound_add_host_entries($ifconfig_details = null)
                                      */
                                     $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
                                     $ptr_records[] = $host->server;
+                                } else {
+                                    syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
                                 }
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             }
@@ -614,6 +618,8 @@ function unbound_add_host_entries($ifconfig_details = null)
     }
 
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
+
+    closelog();
 }
 
 function unbound_acls_subnets()
