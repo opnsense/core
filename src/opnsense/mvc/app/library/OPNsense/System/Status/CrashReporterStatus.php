@@ -60,10 +60,11 @@ class CrashReporterStatus extends AbstractStatus
 
         if ($php_errors || $src_errors) {
             $this->internalMessage = gettext('An issue was detected and can be reviewed using the firmware crash reporter.');
-            $this->internalStatus = $php_errors ? static::STATUS_ERROR : static::STATUS_WARNING;
-
-            if (Config::getInstance()->object()->system->deployment == 'development') {
-                $this->internalStatus = static::STATUS_NOTICE;
+            if ($php_errors) {
+                $this->internalStatus = Config::getInstance()->object()->system->deployment != 'development' ? static::STATUS_ERROR : static::STATUS_NOTICE;
+            }
+            if ($src_errors && $this->internalStatus != static::STATUS_ERROR) {
+                $this->internalStatus = static::STATUS_WARNING;
             }
         }
     }

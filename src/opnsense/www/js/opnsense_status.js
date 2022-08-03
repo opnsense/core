@@ -26,7 +26,7 @@
  */
 
 function updateStatusDialog(dialog, status, subjectRef = null) {
-    let $ret = $('<div><div>No problems were detected.</div></div>');
+    let $ret = $('<div><div><a data-dismiss="modal" class="btn btn-default" style="width:100%;text-align:left;" href="#"><h4><span class="fa fa-circle text-muted"></span>&nbsp;System</h4><p>No pending messages.</p></a></div></div>');
     let $message = $(
         '<div>' +
         '<div id="opn-status-list"></div>' +
@@ -42,11 +42,13 @@ function updateStatusDialog(dialog, status, subjectRef = null) {
             continue;
         }
 
+        $message.find('a').last().addClass('__mb');
+
         let formattedSubject = subject.replace(/([A-Z])/g, ' $1').trim();
         if (status.data[subject].age != undefined) {
             formattedSubject += '&nbsp;<small>(' + status.data[subject].age + ')</small>';
         }
-        let listItem = '<a class="btn btn-default" style="width:100%; text-align: left;" href="' + statusObject.logLocation + '">' +
+        let listItem = '<a class="btn btn-default" style="width:100%;text-align:left;" href="' + statusObject.logLocation + '">' +
             '<h4><span class="' + statusObject.icon + '"></span>&nbsp;' + formattedSubject +
             '<button id="dismiss-'+ subject + '" class="close"><span aria-hidden="true">&times;</span></button></h4></div>' +
             '<p>' + statusObject.message + '</p></a>';
