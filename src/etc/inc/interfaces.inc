@@ -590,12 +590,20 @@ function _interfaces_gre_configure($gre)
         mwexecf('/sbin/ifconfig %s tunnel %s %s', [$gre['greif'], get_interface_ip($gre['if']), $gre['remote-addr']]);
     }
     if (is_ipaddrv6($gre['tunnel-local-addr']) || is_ipaddrv6($gre['tunnel-remote-addr'])) {
-        mwexecf('/sbin/ifconfig %s inet6 %s %s prefixlen %s', [
-            $gre['greif'],
-            $gre['tunnel-local-addr'],
-            $gre['tunnel-remote-addr'],
-            '128',
-        ]);
+        /* check if destination is local to source and if not we need the traditional point-to-point setup */
+        if (ip_in_subnet($gre['tunnel-remote-addr'], "{$gre['tunnel-local-addr']}/{$gre['tunnel-remote-net']}")) {
+            mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', [
+                $gre['greif'],
+                $gre['tunnel-local-addr'],
+                $gre['tunnel-remote-net'],
+           ]);
+        } else {
+            mwexecf('/sbin/ifconfig %s inet6 %s %s prefixlen 128', [
+                $gre['greif'],
+                $gre['tunnel-local-addr'],
+                $gre['tunnel-remote-addr'],
+           ]);
+        }
     } else {
         mwexecf('/sbin/ifconfig %s inet6 ifdisabled', [$gre['greif']]);
         mwexecf('/sbin/ifconfig %s %s %s netmask %s', [
