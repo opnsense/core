@@ -97,7 +97,7 @@ else
 	# force the permission of /root to avoid a health audit
 	# error on ISO format that will not have the correct
 	# permission on boot
-	chmod 755 /root # XXX 750 when ready
+	chmod 750 /root
 fi
 
 # XXX remove all remnants of /root/var handling after 22.7
