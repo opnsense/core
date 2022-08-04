@@ -84,7 +84,7 @@ function unbound_xmlrpc_sync()
 
 function unbound_optimization()
 {
-    $optimization = array();
+    $optimization = [];
 
     $numprocs = intval(get_single_sysctl('kern.smp.cpus'));
     $numprocs = $numprocs <= 0 ? 1 : $numprocs;
@@ -225,7 +225,7 @@ EOF;
     unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
-    $port = is_port($config['unbound']['port']) ? $config['unbound']['port'] : "53";
+    $port = is_port($config['unbound']['port'] ?? null) ? $config['unbound']['port'] : '53';
     $hide_id = !empty($config['unbound']['hideidentity']) ? "yes" : "no";
     $hide_version = !empty($config['unbound']['hideversion']) ? "yes" : "no";
     $prefetch = !empty($config['unbound']['prefetch']) ? "yes" : "no";
@@ -341,7 +341,6 @@ rrset-cache-size: {$rrsetcachesize}m
 {$optimization['rrset_cache_slabs']}
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
-{$optimization['so_rcvbuf']}
 {$qnameminstrict}
 {$anchor_file}
 {$forward_local}
