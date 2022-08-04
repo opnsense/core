@@ -589,10 +589,21 @@ function _interfaces_gre_configure($gre)
     } else {
         mwexecf('/sbin/ifconfig %s tunnel %s %s', [$gre['greif'], get_interface_ip($gre['if']), $gre['remote-addr']]);
     }
-    if ((is_ipaddrv6($gre['tunnel-local-addr'])) || (is_ipaddrv6($gre['tunnel-remote-addr']))) {
-        mwexec("/sbin/ifconfig {$gre['greif']} inet6 " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " prefixlen 128");
+    if (is_ipaddrv6($gre['tunnel-local-addr']) || is_ipaddrv6($gre['tunnel-remote-addr'])) {
+        mwexecf('/sbin/ifconfig %s inet6 %s %s prefixlen %s', [
+            $gre['greif'],
+            $gre['tunnel-local-addr'],
+            $gre['tunnel-remote-addr'],
+            '128',
+        ]);
     } else {
-        mwexec("/sbin/ifconfig {$gre['greif']} " . escapeshellarg($gre['tunnel-local-addr']) . " " . escapeshellarg($gre['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gre['tunnel-remote-net']));
+        mwexecf('/sbin/ifconfig %s inet6 ifdisabled', [$gre['greif']]);
+        mwexecf('/sbin/ifconfig %s %s %s netmask %s', [
+            $gre['greif'],
+            $gre['tunnel-local-addr'],
+            $gre['tunnel-remote-addr'],
+            gen_subnet_mask($gre['tunnel-remote-net']),
+        ]);
     }
 
     interfaces_bring_up($gre['greif']);
@@ -660,11 +671,21 @@ function _interfaces_gif_configure($gif)
     } else {
         mwexecf('/sbin/ifconfig %s tunnel %s %s', array($gif['gifif'], $realifip, $gif['remote-addr']));
     }
-    if ((is_ipaddrv6($gif['tunnel-local-addr'])) || (is_ipaddrv6($gif['tunnel-remote-addr']))) {
-        mwexec("/sbin/ifconfig {$gif['gifif']} inet6 " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " prefixlen 128");
+    if (is_ipaddrv6($gif['tunnel-local-addr']) || is_ipaddrv6($gif['tunnel-remote-addr'])) {
+        mwexecf('/sbin/ifconfig %s inet6 %s %s prefixlen %s', [
+            $gif['gifif'],
+            $gif['tunnel-local-addr'],
+            $gif['tunnel-remote-addr'],
+            '128',
+        ]);
     } else {
-        mwexec("/sbin/ifconfig {$gif['gifif']} inet6 ifdisabled");
-        mwexec("/sbin/ifconfig {$gif['gifif']} " . escapeshellarg($gif['tunnel-local-addr']) . " " . escapeshellarg($gif['tunnel-remote-addr']) . " netmask " . gen_subnet_mask($gif['tunnel-remote-net']));
+        mwexecf('/sbin/ifconfig %s inet6 ifdisabled', [$gif['gifif']]);
+        mwexecf('/sbin/ifconfig %s %s %s netmask %s', [
+            $gif['gifif'],
+            $gif['tunnel-local-addr'],
+            $gif['tunnel-remote-addr'],
+            gen_subnet_mask($gif['tunnel-remote-net']),
+        ]);
     }
 
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
