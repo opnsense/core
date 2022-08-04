@@ -143,7 +143,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-    hook_ipv4v6('ipv4v6net', 'network-id');
+    hook_ipv4v6('ipv4v6net', 'network-id', '128');
   });
 </script>
 <?php include("fbegin.inc"); ?>
