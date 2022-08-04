@@ -745,12 +745,12 @@ EOPP;
             }
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
-            if ($newzone['domain-name'] && !empty($config['system']['dnsserver'][0])) {
+            if (!empty($newzone['domain-name']) && !empty($config['system']['dnsserver'][0])) {
                 $newzone['dns-servers'] = $config['system']['dnsserver'];
             }
         } elseif (!empty($dns_arrv4)) {
             $dnscfg .= "  option domain-name-servers " . join(",", $dns_arrv4) . ";";
-            if ($newzone['domain-name']) {
+            if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = $dns_arrv4;
             }
         }
@@ -1189,7 +1189,7 @@ EOD;
             $ddns_zones[] = $newzone;
         }
 
-        if ($dhcpifconf['omapi'] && !$omapi_added) {
+        if (isset($dhcpifconf['omapi']) && !$omapi_added) {
             $dhcpdconf .= "\nomapi-port {$dhcpifconf['omapiport']};\n";
             if (isset($dhcpifconf['omapialgorithm']) && isset($dhcpifconf['omapikey'])) {
                 $dhcpdconf .= "key omapi_key {\n";
