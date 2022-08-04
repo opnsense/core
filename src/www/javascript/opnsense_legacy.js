@@ -47,7 +47,7 @@ function notice_action(action,msgid) {
  * @param classname: classname to hook on to, select list of netmasks
  * @param data_id: data field reference to network input field
  */
-function hook_ipv4v6(classname, data_id)
+function hook_ipv4v6(classname, data_id, prefixlen)
 {
     $("select."+classname).each(function(){
         var selectlist_id = $(this).attr('id');
@@ -61,7 +61,7 @@ function hook_ipv4v6(classname, data_id)
                         $("#"+selectlist_id+' option[value=' + i + ']').show()
                     }
                     if ((type === undefined && val == '') || type === '4') {
-                        net = '64';
+                        net = prefixlen == undefined ? '64' : prefixlen;
                     }
                     type = '6';
                 } else {
