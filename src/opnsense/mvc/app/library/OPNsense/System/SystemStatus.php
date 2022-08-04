@@ -75,7 +75,8 @@ class SystemStatus
             $result[$shortName] = [
                 'statusCode' => $obj->getStatus(),
                 'message' => $obj->getMessage(),
-                'logLocation' => $obj->getLogLocation()
+                'logLocation' => $obj->getLogLocation(),
+                'timestamp' => $obj->getTimestamp(),
             ];
         }
 

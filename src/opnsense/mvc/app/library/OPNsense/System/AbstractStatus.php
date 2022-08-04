@@ -38,6 +38,7 @@ abstract class AbstractStatus
     protected $internalMessage = 'No problems were detected.';
     protected $internalLogLocation = '';
     protected $internalStatus = self::STATUS_OK;
+    protected $internalTimestamp = '0';
     protected $statusStrings = ['notice', 'warning', 'error'];
 
     public function getStatus()
@@ -53,6 +54,11 @@ abstract class AbstractStatus
     public function getLogLocation()
     {
         return $this->internalLogLocation;
+    }
+
+    public function getTimestamp()
+    {
+        return $this->internalTimestamp;
     }
 
     public function dismissStatus()

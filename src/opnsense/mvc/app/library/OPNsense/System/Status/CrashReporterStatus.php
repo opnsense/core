@@ -35,37 +35,46 @@ class CrashReporterStatus extends AbstractStatus
 {
     public function __construct()
     {
+        $src_logs = glob('/var/crash/textdump*');
+        $php_log = '/tmp/PHP_errors.log';
+
         $this->internalLogLocation = '/crash_reporter.php';
 
-        if ($this->hasCrashed()) {
-            $this->internalMessage = gettext("A problem was detected.");
-            $this->internalStatus = static::STATUS_ERROR;
-        }
-    }
-
-    private function hasCrashed()
-    {
-        $has_crashed = file_exists('/tmp/PHP_errors.log') || count(glob('/var/crash/textdump*')) > 1;
-
-        if (Config::getInstance()->object()->system->deployment == 'development') {
-            if ($has_crashed) {
-                $this->internalMessage = gettext(
-                    "A problem was detected, but non-production deployment is configured so crash reports cannot be sent."
-                );
-                $this->internalStatus = static::STATUS_NOTICE;
+        $src_errors = count($src_logs) > 0;
+        if ($src_errors) {
+            foreach ($src_logs as $src_log) {
+                $info = stat($src_log);
+                if (!empty($info['mtime']) && $this->internalTimestamp < $info['mtime']) {
+                    $this->internalTimestamp = $info['mtime'];
+                }
             }
-            return false;
         }
 
-        return $has_crashed;
+        $php_errors = file_exists($php_log);
+        if ($php_errors) {
+            $info = stat($php_log);
+            if (!empty($info['mtime']) && $this->internalTimestamp < $info['mtime']) {
+                $this->internalTimestamp = $info['mtime'];
+            }
+        }
+
+        if ($php_errors || $src_errors) {
+            $this->internalMessage = gettext('An issue was detected and can be reviewed using the firmware crash reporter.');
+            if ($php_errors) {
+                $this->internalStatus = Config::getInstance()->object()->system->deployment != 'development' ? static::STATUS_ERROR : static::STATUS_NOTICE;
+            }
+            if ($src_errors && $this->internalStatus != static::STATUS_ERROR) {
+                $this->internalStatus = static::STATUS_WARNING;
+            }
+        }
     }
 
     public function dismissStatus()
     {
         /* Same logic as crash_reporter */
-        $files_to_upload = glob('/var/crash/*');
-        foreach ($files_to_upload as $file_to_upload) {
-            @unlink($file_to_upload);
+        $files = glob('/var/crash/*');
+        foreach ($files as $file) {
+            @unlink($file);
         }
         @unlink('/tmp/PHP_errors.log');
     }

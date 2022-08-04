@@ -90,6 +90,64 @@ class SystemController extends ApiControllerBase
                 'status' => $order[$statusCodes[0] ?? 2]
             ];
 
+            foreach ($statuses as &$status) {
+                if (!empty($status['timestamp'])) {
+                    $age = time() - $status['timestamp'];
+
+                    if ($age < 0) {
+                        /* time jump, do nothing */
+                    } elseif ($age < 60) {
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s second ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s seconds ago'), $age);
+                        }
+                    } elseif ($age < 60 * 60) {
+                         $age = intdiv($age, 60);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s minute ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s minutes ago'), $age);
+                        }
+                    } elseif ($age < 60 * 60 * 24) {
+                         $age = intdiv($age, 60 * 60);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s hour ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s hours ago'), $age);
+                        }
+                    } elseif ($age < 60 * 60 * 24 * 7) {
+                         $age = intdiv($age, 60 * 60 * 24);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s day ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s days ago'), $age);
+                        }
+                    } elseif ($age < 60 * 60 * 24 * 30) {
+                         $age = intdiv($age, 60 * 60 * 24 * 7);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s week ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s weeks ago'), $age);
+                        }
+                    } elseif ($age < 60 * 60 * 24 * 365) {
+                         $age = intdiv($age, 60 * 60 * 24 * 30);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s month ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s months ago'), $age);
+                        }
+                    } else {
+                         $age = intdiv($age, 60 * 60 * 24 * 365);
+                        if ($age == 1) {
+                            $status['age'] = sprintf(gettext('%s year ago'), $age);
+                        } else {
+                            $status['age'] = sprintf(gettext('%s years ago'), $age);
+                        }
+                    }
+                }
+            }
+
             $response = json_encode($statuses);
         }
 

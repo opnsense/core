@@ -62,7 +62,7 @@ $aclObj = new \OPNsense\Core\ACL();
           <li id="menu_messages"><?= get_menu_user() ?></li>
           <li>
             <span class="navbar-text" style="margin-left: 0">
-              <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+              <i id="system_status" data-toggle="tooltip left" title="<?= html_safe(gettext('Show system status')) ?>" style="cursor:pointer" class="fa fa-circle text-muted"></i>
             </span>
           </li>
           <li>

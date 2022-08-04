@@ -26,24 +26,6 @@
       .typeahead {
         overflow: hidden;
       }
-
-      /* On upstream Bootstrap, these properties are set in list-group-item. (format status popup) */
-      :is(.opn-status-group) .list-group-item-border {
-          border: 1px solid #ddd;
-      }
-
-      :is(.opn-status-group) .list-group-item-border:first-child {
-          border-top-left-radius: 4px;
-          border-top-right-radius: 4px;
-      }
-
-      :is(.opn-status-group) .list-group-item-border:last-child {
-          border-bottom-left-radius: 4px;
-          border-bottom-right-radius: 4px;
-      }
-      :is(.opn-status-group) .btn.pull-right {
-          margin-left: 3px;
-      }
     </style>
 
     <!-- legacy browser functions -->
@@ -124,7 +106,6 @@
                      title: '{{ lang._('System Status')}}',
                      buttons: [{
                          label: '{{ lang._('Close') }}',
-                         cssClass: 'btn-primary',
                          action: function(dialogRef) {
                              dialogRef.close();
                          }
@@ -255,7 +236,7 @@
             </li>
             <li>
               <span class="navbar-text" style="margin-left: 0">
-                <i id="system_status" data-toggle="tooltip left" title="Show system status" style="cursor:pointer"></i>
+                <i id="system_status" data-toggle="tooltip left" title="{{ lang._('Show system status') }}" style="cursor:pointer" class="fa fa-circle text-muted"></i>
               </span>
             </li>
             <li>
