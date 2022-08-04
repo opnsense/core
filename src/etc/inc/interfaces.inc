@@ -3794,7 +3794,7 @@ function get_vip_descr($ipaddress)
 
     foreach ($config['virtualip']['vip'] as $vip) {
         if ($vip['subnet'] == $ipaddress) {
-            return ($vip['descr']);
+            return ($vip['descr'] ?? '');
         }
     }
 
