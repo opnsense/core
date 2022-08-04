@@ -3796,8 +3796,8 @@ function get_interface_mac($interface, $ifconfig_details = null)
 
     if (empty($ifconfig_details)) {
         $intf_details = legacy_interface_details($interface);
-    } elseif (!empty($ifconfig_details[$ifs])) {
-        $intf_details = $ifconfig_details[$ifs];
+    } elseif (!empty($ifconfig_details[$interface])) {
+        $intf_details = $ifconfig_details[$interface];
     }
 
     return $intf_details['macaddr'];
