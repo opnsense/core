@@ -35,6 +35,6 @@ require_once("interfaces.inc");
 
 exit_on_bootup();
 
-$event_arg = count($argv) >= 1 ? $argv[1] : '';
+$event_arg = count($argv) > 1 ? $argv[1] : '';
 
 filter_configure_sync(true, $event_arg != 'skip_alias');
