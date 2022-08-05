@@ -656,7 +656,7 @@ function crl_update(&$crl)
     $x509_crl->setSerialNumber($crl['serial'], 10);
     $x509_crl->setEndDate('+' . $crl['lifetime'] . ' days');
     $new_crl = $x509_crl->signCRL($ca_cert, $x509_crl);
-    $crl_text = $x509_crl->saveCRL($new_crl);
+    $crl_text = $x509_crl->saveCRL($new_crl) . PHP_EOL;
 
     /* Update the CRL */
     $crl['text'] = base64_encode($crl_text);
