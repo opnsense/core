@@ -2828,7 +2828,7 @@ EOF;
 
     /* merge configs and prepare single instance of dhcp6c for startup */
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $_interface => $_wancfg) {
-        if (empty($_wancfg['ipaddrv6']) || $_wancfg['ipaddrv6'] != 'dhcp6') {
+        if (empty($_wancfg['ipaddrv6']) || ($_wancfg['ipaddrv6'] != 'dhcp6' && $_wancfg['ipaddrv6'] != 'slaac')) {
             continue;
         }
 
