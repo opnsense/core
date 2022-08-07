@@ -2790,6 +2790,16 @@ REQUEST)
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
+INFOREQ)
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    ARGS=
+    for NAMESERVER in \${new_domain_name_servers}; do
+        ARGS="\${ARGS} -a \${NAMESERVER}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+    /usr/local/sbin/ifctl -i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
+    ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running dns reload"
     /usr/local/sbin/ifctl -i ${wanif} -6nd
