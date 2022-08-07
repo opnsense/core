@@ -2786,7 +2786,11 @@ REQUEST)
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
-    /usr/local/sbin/ifctl -i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}
+    ARGS=
+    for DOMAIN in \${new_domain_name}; do
+        ARGS="\${ARGS} -a \${DOMAIN}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
@@ -2797,7 +2801,11 @@ INFOREQ)
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
-    /usr/local/sbin/ifctl -i ${wanif} -6sd \${new_domain_name:+"-a \${new_domain_name}"}
+    ARGS=
+    for DOMAIN in \${new_domain_name}; do
+        ARGS="\${ARGS} -a \${DOMAIN}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
