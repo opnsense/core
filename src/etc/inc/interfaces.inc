@@ -2779,7 +2779,7 @@ if [ -n "{$dhcp6_debug}" ]; then
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
 fi
 case \$REASON in
-REQUEST)
+INFOREQ|REQUEST)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
@@ -2792,20 +2792,6 @@ REQUEST)
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
-    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
-    ;;
-INFOREQ)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
-    ARGS=
-    for NAMESERVER in \${new_domain_name_servers}; do
-        ARGS="\${ARGS} -a \${NAMESERVER}"
-    done
-    /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
-    ARGS=
-    for DOMAIN in \${new_domain_name}; do
-        ARGS="\${ARGS} -a \${DOMAIN}"
-    done
-    /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
