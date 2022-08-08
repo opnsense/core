@@ -596,13 +596,13 @@ function _interfaces_gre_configure($gre)
                 $gre['greif'],
                 $gre['tunnel-local-addr'],
                 $gre['tunnel-remote-net'],
-           ]);
+            ]);
         } else {
             mwexecf('/sbin/ifconfig %s inet6 %s %s prefixlen 128', [
                 $gre['greif'],
                 $gre['tunnel-local-addr'],
                 $gre['tunnel-remote-addr'],
-           ]);
+            ]);
         }
     } else {
         mwexecf('/sbin/ifconfig %s inet6 ifdisabled', [$gre['greif']]);
