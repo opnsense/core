@@ -363,6 +363,25 @@ function renderActions()
                 actions.append(refresh);
             }
 
+            if (this.options.resetButton)
+            {
+                var resetIcon = tpl.icon.resolve(getParams.call(this, { iconCss: css.iconReset })),
+                    reset = $(tpl.actionButton.resolve(getParams.call(this,
+                        { content: resetIcon, text: this.options.labels.reset })))
+                        .on("click" + namespace, function (e)
+                        {
+                            e.stopPropagation();
+                            for (var i = 0; i < that.columns.length; i++)
+                            {
+                                localStorage.removeItem('sortColumns[' + that.uid + '][' + that.columns[i].id + ']');
+                                localStorage.removeItem('visibleColumns[' + that.uid + '][' + that.columns[i].id + ']');
+                            }
+                            localStorage.removeItem('rowCount[' + that.uid + ']');
+                            location.reload();
+                        });
+                actions.append(reset);
+            }
+
             // Row count selection
             renderRowCountSelection.call(this, actions);
 
@@ -1305,6 +1324,7 @@ Grid.defaults = {
         iconRefresh: "glyphicon-refresh",
         iconSearch: "glyphicon-search",
         iconUp: "glyphicon-chevron-up",
+        iconReset: "glyphicon-flash",
         infos: "infos", // must be a unique class name or constellation of class names within the header and footer,
         left: "text-left",
         pagination: "pagination", // must be a unique class name or constellation of class names within the header and footer
@@ -1365,6 +1385,7 @@ Grid.defaults = {
         loading: "Loading...",
         noResults: "No results found!",
         refresh: "Refresh",
+        reset: "Reset stored settings and refresh page",
         search: "Search"
     },
 
