@@ -406,6 +406,7 @@ EOD;
 
         if (match_wireless_interface($lanif)) {
             config_read_array('interfaces', 'lan', 'wireless');
+            $config['interfaces']['lan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['lan']['wireless'])) {
             unset($config['interfaces']['lan']['wireless']);
         }
@@ -441,6 +442,7 @@ EOD;
 
         if (match_wireless_interface($wanif)) {
             config_read_array('interfaces', 'wan', 'wireless');
+            $config['interfaces']['wan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['wan']['wireless'])) {
             unset($config['interfaces']['wan']['wireless']);
         }
@@ -456,6 +458,7 @@ EOD;
 
         if (match_wireless_interface($optif[$i])) {
             config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
+            $config['interfaces']['opt' . ($i + 1)]['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
             unset($config['interfaces']['opt' . ($i + 1)]['wireless']);
         }
