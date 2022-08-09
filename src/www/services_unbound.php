@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
+    $pconfig['noarecords'] = isset($a_unboundcfg['noarecords']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
     $pconfig['regdhcpstatic'] = isset($a_unboundcfg['regdhcpstatic']);
@@ -113,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // boolean values
             $a_unboundcfg['cacheflush'] = !empty($pconfig['cacheflush']);
             $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
+            $a_unboundcfg['noarecords'] = !empty($pconfig['noarecords']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
@@ -245,6 +247,12 @@ include_once("head.inc");
                           <div class="hidden" data-for="help_for_dns64">
                             <?= gettext("If no DNS64 prefix is specified, the default prefix " .
                             "64:ff9b::/96 (RFC 6052) will be used."); ?>
+                          </div>
+                          <input name="noarecords" type="checkbox" id="noarecords" value="yes" <?=!empty($pconfig['noarecords']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable AAAA-only mode') ?>
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If this option is set, Unbound will remove all A " .
+                            "records from the answer section of all responses."); ?>
                           </div>
                         </td>
                       </tr>
