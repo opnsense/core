@@ -304,6 +304,13 @@ legacy_html_escape_form_data($pconfig);
 <?php include("fbegin.inc"); ?>
 
 <script>
+
+function show_value(key) {
+    $('#show-' + key + '-btn').html('');
+    $('#show-' + key + '-val').show();
+    $("[name='" + key + "']").focus();
+}
+
 //<![CDATA[
 $( document ).ready(function() {
     // show encryption password
@@ -333,7 +340,7 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-      <?php if ($input_messages) print_info_box($input_messages); ?>
+      <?php if (isset($input_messages)) print_info_box($input_messages); ?>
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <form method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
@@ -440,25 +447,24 @@ $( document ).ready(function() {
                            <?=$field['label'];?>
                         </td>
                         <td style="width:78%">
-<?php
-                        if ($field['type'] == 'checkbox'):?>
+<?php if ($field['type'] == 'checkbox'): ?>
                         <input name="<?=$fieldId;?>" type="checkbox" <?=!empty($pconfig[$fieldId]) ? "checked" : "";?> >
-<?php
-                        elseif ($field['type'] == 'text'):?>
+<?php elseif ($field['type'] == 'text'): ?>
                         <input name="<?=$fieldId;?>" value="<?=$pconfig[$fieldId];?>" type="text">
-
-<?php
-                        elseif ($field['type'] == 'file'):?>
+<?php elseif ($field['type'] == 'file'): ?>
                         <input name="<?=$fieldId;?>" type="file">
-<?php
-                        elseif ($field['type'] == 'password'):?>
-
+<?php elseif ($field['type'] == 'password'):?>
                         <input name="<?=$fieldId;?>" type="password" autocomplete="new-password" value="<?=$pconfig[$fieldId];?>" />
-<?php
-                        elseif ($field['type'] == 'textarea'):?>
+<?php elseif ($field['type'] == 'textarea'): ?>
                         <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
-<?php
-                        endif;?>
+<?php elseif ($field['type'] == 'passwordarea'): ?>
+                        <div id="show-<?=$fieldId;?>-btn">
+                          <button onclick="event.preventDefault();show_value('<?= html_safe($fieldId) ?>');" class="btn btn-default"><?= html_safe(gettext('Click to edit')) ?></button>
+                        </div>
+                        <div id="show-<?=$fieldId;?>-val" style="display:none">
+                          <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
+                        </div>
+<?php endif ?>
                         <div class="hidden" data-for="help_for_<?=$fieldId;?>">
                             <?=!empty($field['help']) ? $field['help'] : "";?>
                         </div>
