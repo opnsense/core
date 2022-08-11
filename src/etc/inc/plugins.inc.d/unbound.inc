@@ -119,27 +119,25 @@ function unbound_generate_config()
 
     $optimization = unbound_optimization();
 
-    $respip = '';
-    $dns64prefix = '';
+    $module_config = '';
+    $anchor_file = '';
+    $dns64_config = '';
+
     if (isset($config['unbound']['dns64'])) {
-        if (isset($config['unbound']['noarecords'])) {
-            $module_config = 'respip dns64 ';
-            $respip = "response-ip: 0.0.0.0/0 redirect";
-        } else {
-            $module_config = 'dns64 ';
-        }
         if (!empty($config['unbound']['dns64prefix'])) {
-            $dns64prefix = "dns64-prefix: {$config['unbound']['dns64prefix']}";
+            $dns64_config .= "\ndns64-prefix: {$config['unbound']['dns64prefix']}";
         }
-    } else {
-        $module_config = '';
+        if (isset($config['unbound']['noarecords'])) {
+            $module_config .= 'respip ';
+            $dns64_config .= "\nresponse-ip: 0.0.0.0/0 redirect";
+        }
+        $module_config .= 'dns64 ';
     }
     if (isset($config['unbound']['dnssec'])) {
         $module_config .= 'validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
         $module_config .= 'iterator';
-        $anchor_file = '';
     }
 
     $qnameminstrict = '';
@@ -350,8 +348,7 @@ rrset-cache-size: {$rrsetcachesize}m
 {$qnameminstrict}
 {$anchor_file}
 {$forward_local}
-{$dns64prefix}
-{$respip}
+{$dns64_config}
 prefetch: {$prefetch}
 prefetch-key: {$prefetch_key}
 
