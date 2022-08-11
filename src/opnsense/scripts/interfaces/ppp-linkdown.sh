@@ -22,6 +22,8 @@ if [ "${AF}" = "inet" ]; then
 
 	/usr/local/sbin/ifctl -i ${IF} -4nd
 	/usr/local/sbin/ifctl -i ${IF} -4rd
+
+	/usr/local/sbin/configctl -d dns reload # XXX last caller, remove action and rc.resolv_conf_generate
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
@@ -41,10 +43,8 @@ elif [ "${AF}" = "inet6" ]; then
 	/usr/local/sbin/ifctl -i ${IF} -6nd
 	/usr/local/sbin/ifctl -i ${IF} -6rd
 
-	rm -f /tmp/${IF}_cacheipv6 # XXX experiment
+	/usr/local/sbin/configctl -d interface newipv6 ${IF}
 fi
-
-/usr/local/sbin/configctl -d dns reload
 
 UPTIME=$(/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ${IF})
 if [ -n "${UPTIME}" -a -f "/conf/${IF}.log" ]; then

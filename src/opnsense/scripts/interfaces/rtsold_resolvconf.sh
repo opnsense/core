@@ -63,15 +63,11 @@ if [ "${1}" = "-a" ]; then
 	/usr/local/sbin/ifctl -i ${ifname} -6nd ${nameservers}
 	/usr/local/sbin/ifctl -i ${ifname} -6sd ${searchlist}
 	/usr/local/sbin/ifctl -i ${ifname} -6rd -a ${rasrca}
-
-	# remove slaac suffix here to reload correct interface
-	/usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}
 elif [ "${1}" = "-d" ]; then
 	/usr/local/sbin/ifctl -i ${ifname} -6nd
 	/usr/local/sbin/ifctl -i ${ifname} -6sd
-
-	rm -f /tmp/${ifname%%:slaac}_cacheipv6 # XXX experiment
-
-	# reload DNS since data has been scrubbed
-	/usr/local/sbin/configctl -d dns reload
+	/usr/local/sbin/ifctl -i ${ifname} -6rd
 fi
+
+# remove slaac suffix here to reload correct interface
+/usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}

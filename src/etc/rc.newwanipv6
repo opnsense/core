@@ -44,8 +44,6 @@ exit_on_bootup(function ($argument) {
     file_put_contents('/tmp/newwanipv6_' . $argument, $argument);
 }, [$argument]);
 
-log_error("IPv6 renewal is starting on '{$argument}'");
-
 if (empty($argument)) {
     $interface = 'wan';
     $interface_real = get_real_interface($interface, 'inet6');
@@ -62,22 +60,36 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ipv6($interface);
 
-/*
- * Take care of OpenVPN and similar if you generate the event
- * to reconfigure an interface.  OpenVPN might be in tap(4)
- * mode and not have an IP address.
- */
-if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
-    log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+$cacheip_file = "/tmp/{$interface_real}_oldipv6";
+
+if (!is_ipaddr($ip)) {
+    /* remove previously cached IP since it is gone */
+    @unlink($cacheip_file);
+
+    /*
+     * Take care of OpenVPN and similar if you generate the event
+     * to reconfigure an interface.  OpenVPN might be in tap(4)
+     * mode and not have an IP address.
+     */
+    if (substr($interface_real, 0, 4) != 'ovpn') {
+        log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+        return;
+    }
+}
+
+/* this may be required to cleanse the DNS information no longer available */
+system_resolvconf_generate();
+system_hosts_generate();
+
+$cacheip = trim(@file_get_contents($cacheip_file));
+if ($ip == $cacheip) {
+    log_error("No IP change detected for {$interface_descr}[{$interface}]");
     return;
 }
 
-log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
+log_error("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 interfaces_vips_configure($interface, 6);
-
-system_resolvconf_generate();
-system_hosts_generate();
 
 if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
     /* require immediate reconfiguration before reconfiguring clients */
@@ -86,17 +98,13 @@ if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
 
 link_interface_to_track6($interface, true);
 
-$cacheip_file = "/tmp/{$interface_real}_oldipv6";
-$cacheip = trim(@file_get_contents($cacheip_file));
+system_routing_configure(false, $interface);
+plugins_configure('monitor');
+filter_configure_sync();
 
-if ($ip != $cacheip) {
-    system_routing_configure(false, $interface);
-    plugins_configure('monitor');
-    filter_configure_sync();
+/* register IP change not before this point as basic connectivity is needed */
+@file_put_contents($cacheip_file, $ip . PHP_EOL);
 
-    @file_put_contents($cacheip_file, $ip . PHP_EOL);
-
-    plugins_configure('vpn', false, array($interface));
-    plugins_configure('newwanip', false, array($interface));
-    rrd_configure();
-}
+plugins_configure('vpn', false, array($interface));
+plugins_configure('newwanip', false, array($interface));
+rrd_configure();

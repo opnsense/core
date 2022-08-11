@@ -2800,12 +2800,11 @@ INFOREQ|REQUEST)
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running dns reload"
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
-    rm -f /tmp/${wanif}_cacheipv6 # XXX experiment
-    /usr/local/sbin/configctl -d dns reload
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
     ;;
