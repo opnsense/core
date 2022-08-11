@@ -62,8 +62,6 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ip($interface);
 
-log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
-
 /*
  * Take care of OpenVPN and similar if you generate the event
  * to reconfigure an interface.  OpenVPN might be in tap(4)
@@ -73,6 +71,8 @@ if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
     log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
     return;
 }
+
+log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 interfaces_vips_configure($interface, 4);
 
