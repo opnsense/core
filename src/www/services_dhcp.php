@@ -1186,10 +1186,10 @@ include("head.inc");
                         <?=htmlspecialchars($mapent['ipaddr']);?>
                       </td>
                       <td>
-                        <?=htmlspecialchars($mapent['hostname']);?>
+                        <?=htmlspecialchars($mapent['hostname'] ?? '');?>
                       </td>
                       <td>
-                        <?=htmlspecialchars($mapent['descr']);?>
+                        <?=htmlspecialchars($mapent['descr'] ?? '');?>
                       </td>
                       <td class="text-nowrap">
                         <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
