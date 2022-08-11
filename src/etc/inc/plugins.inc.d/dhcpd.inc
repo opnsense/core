@@ -556,7 +556,7 @@ function dhcpd_dhcp4_configure($verbose = false)
     global $config;
 
     $need_ddns_updates = false;
-    $ddns_zones = array();
+    $ddns_zones = [];
 
     killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
@@ -570,7 +570,7 @@ function dhcpd_dhcp4_configure($verbose = false)
     }
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
-    $dns_arrv4 = array();
+    $dns_arrv4 = [];
     if (!empty($config['system']['dnsserver'][0])) {
         foreach ($config['system']['dnsserver'] as $dnsserver) {
             if (is_ipaddrv4($dnsserver)) {
@@ -615,8 +615,8 @@ authoritative;
 
 EOD;
 
-    $dhcpdifs = array();
     $omapi_added = false;
+    $dhcpdifs = [];
 
     /*
      * loop through and determine if we need
@@ -702,7 +702,7 @@ EOPP;
         $subnetmask = gen_subnet_mask($ifcfgsn);
         $subnet = explode('/', $ifcfgnet)[0];
 
-        $all_pools = array();
+        $all_pools = [];
         $all_pools[] = $dhcpifconf;
         if (!empty($dhcpifconf['pool'])) {
             $all_pools = array_merge($all_pools, $dhcpifconf['pool']);
@@ -718,7 +718,7 @@ EOPP;
             $dnscfg .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpifconf['domainsearchlist'])) . "\";\n";
         }
 
-        $newzone = array();
+        $newzone = [];
 
         if (isset($dhcpifconf['ddnsupdate'])) {
             $need_ddns_updates = true;
@@ -760,7 +760,7 @@ EOPP;
          * Join them into one big comma-separated string then split
          * them all up.
          */
-        $all_mac_strings = array();
+        $all_mac_strings = [];
         foreach ($all_pools as $poolconf) {
             if (!empty($poolconf['mac_allow'])) {
                 $all_mac_strings[] = $poolconf['mac_allow'];
@@ -856,7 +856,7 @@ EOPP;
                 ) {
                     $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
 
-                    $newddnszone = array();
+                    $newddnszone = [];
                     $newddnszone['domain-name'] = $poolconf['ddnsdomain'];
                     $newddnszone['dns-servers'] = array($poolconf['ddnsdomainprimary']);
                     $newddnszone['ddnsdomainkeyname'] = $poolconf['ddnsdomainkeyname'];
@@ -1232,8 +1232,8 @@ function dhcpd_zones($ddns_zones, $ipproto = 'inet')
 {
     $dhcpdconf = '';
     if (is_array($ddns_zones)) {
-        $added_zones = array();
-        $added_keys = array();
+        $added_zones = [];
+        $added_keys = [];
         foreach ($ddns_zones as $zone) {
             $versionsuffix = $ipproto == "inet6" ? "6" : "";
             // We don't need to add zones multiple times.
