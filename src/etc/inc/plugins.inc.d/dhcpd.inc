@@ -1237,7 +1237,7 @@ function dhcpd_zones($ddns_zones, $ipproto = 'inet')
         foreach ($ddns_zones as $zone) {
             $versionsuffix = $ipproto == "inet6" ? "6" : "";
             // We don't need to add zones multiple times.
-            foreach (array($zone['domain-name'], $zone['ptr-domain']) as $domain) {
+            foreach ([$zone['domain-name'], $zone['ptr-domain']] as $domain) {
                 if (!empty($domain) && !in_array($domain, $added_zones)) {
                     /* dhcpdconf2 is injected *after* the key */
                     $dhcpdconf2 = "zone {$domain}. {\n";
@@ -1245,7 +1245,7 @@ function dhcpd_zones($ddns_zones, $ipproto = 'inet')
                     $dhcpdconf2 .= "  primary{$versionsuffix} {$zone['dns-servers'][0]};\n";
                     if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey'])) {
                         if (!in_array($zone['ddnsdomainkeyname'], $added_keys)) {
-                            $dhcpdconf .= "key {$zone['ddnsdomainkeyname']} {\n";
+                            $dhcpdconf .= "\nkey {$zone['ddnsdomainkeyname']} {\n";
                             $dhcpdconf .= "  algorithm {$zone['ddnsdomainalgorithm']};\n";
                             $dhcpdconf .= "  secret {$zone['ddnsdomainkey']};\n";
                             $dhcpdconf .= "}\n";
