@@ -308,6 +308,7 @@ legacy_html_escape_form_data($pconfig);
 function show_value(key) {
     $('#show-' + key + '-btn').html('');
     $('#show-' + key + '-val').show();
+    $("[name='" + key + "']").focus();
 }
 
 //<![CDATA[
