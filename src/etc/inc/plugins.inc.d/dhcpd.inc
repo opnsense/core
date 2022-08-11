@@ -1397,6 +1397,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
 
     $dhcpdv6conf = <<<EOD
 option dhcp6.domain-search "{$config['system']['domain']}";
+option dhcp6.rapid-commit;
 {$custoptionsv6}
 default-lease-time 7200;
 max-lease-time 86400;
