@@ -498,6 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (isset($a_interfaces[$if]['wireless'])) {
+        config_read_array('interfaces', $if, 'wireless');
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
         /* Get wireless modes */
@@ -606,6 +607,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_interfaces[$if]['lock']);
         }
         if (isset($a_interfaces[$if]['wireless'])) {
+            config_read_array('interfaces', $if, 'wireless');
             interface_sync_wireless_clones($a_interfaces[$if], false);
         }
         $a_interfaces[$if]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
@@ -918,6 +920,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           Wireless interface
         */
         if (isset($a_interfaces[$if]['wireless'])) {
+            config_read_array('interfaces', $if, 'wireless');
             $reqdfields = array("mode");
             $reqdfieldsn = array(gettext("Mode"));
             if ($pconfig['mode'] == 'hostap') {
@@ -926,8 +929,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-            // check_wireless_mode (more wireless weirdness)
-            // validations shouldn't perform actual actions, needs serious fixing at some point
+            /* XXX validations should not even perform temporary actions, needs serious fixing at some point */
+            if (empty($a_interfaces[$if]['wireless']['mode'])) {
+                $a_interfaces[$if]['wireless']['mode'] = 'bss';
+            }
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
                 if (does_interface_exist(interface_get_wireless_clone($wlanbaseif))) {
                     $clone_count = 1;
@@ -942,15 +947,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 if ($clone_count > 1) {
-                      $wlanif = get_real_interface($if);
-                      $old_wireless_mode = $a_interfaces[$if]['wireless']['mode'];
-                      $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
-                      if (!interface_wireless_clone("{$wlanif}_", $a_interfaces[$if])) {
-                          $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
-                      } else {
-                          mwexec("/sbin/ifconfig " . escapeshellarg($wlanif) . "_ destroy");
-                      }
-                  }
+                    $wlanif = get_real_interface($if);
+                    $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
+                    if (!interface_wireless_clone("{$wlanif}_", $a_interfaces[$if])) {
+                        $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
+                    } else {
+                        legacy_interface_destroy("{$wlanif}_");
+                    }
+                }
             }
 
             /* loop through keys and enforce size */
@@ -1382,6 +1386,7 @@ legacy_html_escape_form_data($pconfig);
 
 // some wireless settings require additional details to build the listbox
 if (isset($a_interfaces[$if]['wireless'])) {
+    config_read_array('interfaces', $if, 'wireless');
     $wl_modes = get_wireless_modes($if);
     $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
     preg_match("/^(.*?)([0-9]*)$/", $wlanbaseif, $wlanbaseif_split);
@@ -3332,17 +3337,13 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode"); ?></td>
                           <td>
                             <select name="mode" class="selectpicker" data-style="btn-default" id="mode">
-<?php
-                              if (test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
-                              <option <?=$pconfig['mode'] == 'hostap' ? "selected=\"selected\"" : "";?> value="hostap"><?=gettext("Access Point"); ?></option>
-<?php
-                              endif; ?>
                               <option <?=$pconfig['mode'] == 'bss' ? "selected=\"selected\"" : "";?> value="bss"><?=gettext("Infrastructure (BSS)"); ?></option>
-<?php
-                              if (test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
+<?php if (test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
                               <option <?=$pconfig['mode'] == 'adhoc' ? "selected=\"selected\"" : "";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)"); ?></option>
-<?php
-                              endif; ?>
+<?php endif ?>
+<?php if (test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
+                              <option <?=$pconfig['mode'] == 'hostap' ? "selected=\"selected\"" : "";?> value="hostap"><?=gettext("Access Point"); ?></option>
+<?php endif ?>
                             </select>
                           </td>
                         </tr>

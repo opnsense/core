@@ -136,6 +136,17 @@ function list_interfaces()
         }
     }
 
+    // fixup wireless mess (automatic types have no explicit clones)
+    foreach (legacy_config_get_interfaces() as $id => $conf) {
+        if (isset($conf['wireless']) && !isset($interfaces[$conf['if']]) && does_interface_exist($conf['if'])) {
+            $interfaces[$conf['if']] = [
+                'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
+                'ifdescr' => gettext('wireless clone'),
+                'section' => 'wireless.doesnotexist',
+            ];
+        }
+    }
+
     return $interfaces;
 }
 
