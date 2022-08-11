@@ -169,11 +169,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!count($input_errors)) {
             $reason = (empty($pconfig['crlreason'])) ? CERT_CRL_STATUS_UNSPECIFIED : $pconfig['crlreason'];
-            cert_revoke($cert, $crl, $reason);
-            plugins_configure('crl');
-            write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
-            header(url_safe('Location: /system_crlmanager.php'));
-            exit;
+            if (cert_revoke($cert, $crl, $reason)) {
+                plugins_configure('crl');
+                write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
+                header(url_safe('Location: /system_crlmanager.php'));
+                exit;
+            } else {
+                $savemsg = gettext("Cannot revoke certificate. See general log for details.") . "<br />";
+                $act="edit";
+            }
         }
     } else {
         $input_errors = array();
@@ -217,6 +221,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if ($pconfig['crlmethod'] == "internal") {
+                 /* check if new CRL CA have private key and it match public key so this CA can sign anything */
+                if (isset($pconfig['caref']) && !isset($id)) {
+                    $cacert = lookup_ca($pconfig['caref']);
+                    $ca_str_crt = base64_decode($cacert['crt']);
+                    $ca_str_key = base64_decode($cacert['prv']);
+                    if (!openssl_x509_check_private_key($ca_str_crt, $ca_str_key)) {
+                        syslog(LOG_ERR, "CRL error: CA keys mismatch");
+                        $savemsg = gettext("Cannot create CRL for this CA. CA keys mismatch or key missing.") . "<br />";
+                        $act="edit";
+                    }
+                }
+
                 $crl['serial'] = empty($pconfig['serial']) ? 9999 : $pconfig['serial'];
                 $crl['lifetime'] = empty($pconfig['lifetime']) ? 9999 : $pconfig['lifetime'];
                 $crl['cert'] = array();
@@ -226,10 +242,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_crl[] = $crl;
             }
 
-            write_config(sprintf('Saved CRL %s', $crl['descr']));
-            plugins_configure('crl');
-            header(url_safe('Location: /system_crlmanager.php'));
-            exit;
+            if (!isset($savemsg)) {
+                write_config(sprintf('Saved CRL %s', $crl['descr']));
+                plugins_configure('crl');
+                header(url_safe('Location: /system_crlmanager.php'));
+                exit;
+            }
         }
     }
 
@@ -596,7 +614,7 @@ include("head.inc");
                     </a>
 <?php
                   else :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;method=existing" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
                       <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php
