@@ -748,8 +748,8 @@ EOPP;
             }
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
-            if (!empty($newzone['domain-name']) && !empty($config['system']['dnsserver'][0])) {
-                $newzone['dns-servers'] = $config['system']['dnsserver'];
+            if (!empty($newzone['domain-name'])) {
+                $newzone['dns-servers'] = [$ifcfgip];
             }
         } elseif (!empty($dns_arrv4)) {
             $dnscfg .= "  option domain-name-servers " . join(",", $dns_arrv4) . ";";
