@@ -112,10 +112,12 @@
                      }],
                 });
 
-                updateSystemStatus().then((data) => {
-                    let status = parseStatus(data);
-                    registerStatusDelegate(dialog, status);
-                });
+                setTimeout(function () {
+                    updateSystemStatus().then((data) => {
+                        let status = parseStatus(data);
+                        registerStatusDelegate(dialog, status);
+                    });
+                }, 500);
 
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
