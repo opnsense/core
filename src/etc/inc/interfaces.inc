@@ -1470,35 +1470,40 @@ function interface_wireless_clone($realif, $wlcfg)
      * If it has not been cloned then go ahead and clone it.
      */
     $needs_clone = false;
-    if (isset($wlcfg['wireless']) && is_array($wlcfg['wireless'])) {
+
+    if (!empty($wlcfg['wireless']['mode'])) {
+        /* XXX this is interfaces wireless config */
         $wlcfg_mode = $wlcfg['wireless']['mode'];
     } else {
-        $wlcfg_mode = $wlcfg['mode'];
+        /* XXX this is wireless clone config or fallback */
+        $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
     }
+
     switch ($wlcfg_mode) {
         case "hostap":
-            $mode = "wlanmode hostap";
+            $mode = 'wlanmode hostap';
             break;
         case "adhoc":
-            $mode = "wlanmode adhoc";
+            $mode = 'wlanmode adhoc';
             break;
         default:
-            $mode = "";
+            $mode = '';
             break;
     }
+
     $baseif = interface_get_wireless_base($wlcfg['if']);
     if (does_interface_exist($realif)) {
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
         $ifconfig_str = implode(PHP_EOL, $output);
-        if (($wlcfg_mode == "hostap") && (! preg_match("/hostap/si", $ifconfig_str))) {
+        if (($wlcfg_mode == 'hostap') && !preg_match('/hostap/si', $ifconfig_str)) {
             log_error("Interface {$realif} changed to hostap mode");
             $needs_clone = true;
         }
-        if (($wlcfg_mode == "adhoc") && (! preg_match("/adhoc/si", $ifconfig_str))) {
+        if (($wlcfg_mode == 'adhoc') && !preg_match('/adhoc/si', $ifconfig_str)) {
             log_error("Interface {$realif} changed to adhoc mode");
             $needs_clone = true;
         }
-        if (($wlcfg_mode == "bss") && (preg_match("/hostap|adhoc/si", $ifconfig_str))) {
+        if (($wlcfg_mode == 'bss') && preg_match('/hostap|adhoc/si', $ifconfig_str)) {
             log_error("Interface {$realif} changed to infrastructure mode");
             $needs_clone = true;
         }
@@ -2056,8 +2061,8 @@ EOD;
                 $friendly_if = convert_real_interface_to_friendly_interface_name($clone_if);
                 if (
                     !empty($friendly_if)
-                    && $config['interfaces'][$friendly_if]['wireless']['mode'] == "bss"
                     && isset($config['interfaces'][$friendly_if]['wireless']['wpa']['enable'])
+                    && $config['interfaces'][$friendly_if]['wireless']['mode'] == 'bss'
                 ) {
                     mwexec('/bin/sh /tmp/' . escapeshellarg($clone_if) . '_setup.sh');
                 }
