@@ -142,9 +142,9 @@ elif [ "${DO_COMMAND}" = "-l" ]; then
 
 	for MATCH in ${MATCHES}; do
 		FILE=${MATCH##*/}
-		IF=${FILE%%:*}
-		IF=${IF%%_*}
-		MD=${FILE#*_}
+		IF=${FILE%_*}
+		IF=${IF%%:*}
+		MD=${FILE##*_}
 
 		# suffix :slaac sorts before plain interface
 		# so we can export the resulting file name first
@@ -170,7 +170,7 @@ if [ -z "${IF}" ]; then
 	# list all interfaces that have the requested file
 	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
 		FOUND=${FOUND#/tmp/}
-		FOUND=${FOUND%%_*}
+		FOUND=${FOUND%_*}
 		FOUND=${FOUND%:*}
 		if [ -z "$(eval echo \${${FOUND}_found})" ]; then
 			RESULTS="${RESULTS} ${FOUND}_found"

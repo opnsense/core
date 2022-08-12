@@ -306,12 +306,9 @@ function get_searchdomains()
         }
     }
 
-    if (is_array($search_list)) {
-        foreach ($search_list as $fdns) {
-            $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            if (!is_array($contents)) {
-                continue;
-            }
+    foreach ($search_list as $fdns) {
+        $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (is_array($contents)) {
             foreach ($contents as $dns) {
                 if (!empty($dns) && is_hostname($dns)) {
                     $master_list[] = $dns;
@@ -365,7 +362,9 @@ function get_nameservers($interface = null, $with_gateway = false)
 
     foreach ($dns_lists as $fdns) {
         /* inspect dynamic servers registered in the system files */
-        $intf = explode('_', basename($fdns), 2);
+        $intf = [];
+        $intf[0] = preg_replace('/_[^_]+$/', '', basename($fdns));
+        $intf[1] = preg_replace('/^.+_/', '', basename($fdns));
         $intf[1] = strpos($intf[1], 'v6') === false ? '4' : '6';
         if (in_array($intf, $exclude_interfaces)) {
             continue;
