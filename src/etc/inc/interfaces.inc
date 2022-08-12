@@ -4337,6 +4337,16 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     return $result;
 }
 
+function interfaces_has_prefix_only($interface)
+{
+    $interfaces_a = config_read_array('interfaces');
+
+    return empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
+        ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
+        empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
+        isset($interfaces_a[$interface]['dhcp6prefixonly']));
+}
+
 function interfaces_primary_address($interface, $ifconfig_details = null)
 {
     $ifcfgip = $network = $subnetbits = null;
@@ -4366,14 +4376,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
-    $interfaces_a = config_read_array('interfaces');
-
-    if (
-        empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
-        ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
-        empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-        isset($interfaces_a[$interface]['dhcp6prefixonly']))
-    ) {
+    if (interfaces_has_prefix_only($interface)) {
         /* extend the search scope for a non-NA mode to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
@@ -4408,4 +4411,15 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
     }
 
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
+}
+
+function interfaces_prefix_address6($interface, $ifconfig_details = null)
+{
+    $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
+
+    if (interfaces_has_prefix_only($interface)) {
+        return interfaces_scoped_address6($interface, $ifconfig_details);
+    }
+
+    return interfaces_primary_address6($interface, $ifconfig_details);
 }
