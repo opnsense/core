@@ -800,7 +800,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface = "wan", $ifacecfg = false)
+function interface_bring_down($interface = 'wan', $ifacecfg = false)
 {
     global $config;
 
@@ -812,7 +812,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, "inet6");
         $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : array();
+        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
@@ -849,7 +849,7 @@ function interface_bring_down($interface = "wan", $ifacecfg = false)
     $track6 = link_interface_to_track6($interface);
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
-        plugins_configure('dhcp', false, array('inet6', $track6));
+        plugins_configure('dhcp', false, ['inet6', $track6]);
     }
 
     switch ($ifcfg['ipaddrv6']) {
