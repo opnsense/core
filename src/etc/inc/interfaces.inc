@@ -3934,8 +3934,7 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
-        /* XXX there are more magic files */
-        $aux = @file_get_contents("/tmp/{$ifinfo['ifv6']}_prefixv6");
+        $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
         if (!empty($aux)) {
             $ifinfo['prefixv6'] = $aux;
         }
