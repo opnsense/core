@@ -783,9 +783,9 @@ function get_configured_ip_aliases_list()
 
 function get_configured_interface_with_descr()
 {
-    $iflist = array();
+    $iflist = [];
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifdetail) {
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $if => $ifdetail) {
         if (isset($ifdetail['enable'])) {
             $iflist[$if] = $ifdetail['descr'];
         }
@@ -794,17 +794,37 @@ function get_configured_interface_with_descr()
     return $iflist;
 }
 
+function get_primary_interface_from_list($iflist = null)
+{
+    $ret = null;
+
+    if ($iflist === null) {
+        $iflist = array_keys(get_configured_interface_with_descr());
+    }
+
+    /* we pull the primary entry from a "priority" list: lan, optX or wan */
+    sort($iflist);
+
+    foreach ($iflist as $if) {
+        if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
+            $ret = $if;
+            break;
+        }
+    }
+
+    return $ret;
+}
+
 /*
  *   get_configured_ip_addresses() - Return a list of all configured
  *   interfaces IP Addresses (ipv4+ipv6)
- *
  */
 function get_configured_ip_addresses()
 {
-    $ip_array = array();
+    $ip_array = [];
 
     foreach (legacy_interfaces_details() as $ifname => $if) {
-        foreach (array('ipv4', 'ipv6') as $iptype) {
+        foreach (['ipv4', 'ipv6'] as $iptype) {
             if (!empty($if[$iptype])) {
                 foreach ($if[$iptype] as $addr) {
                     if (!empty($addr['ipaddr'])) {
