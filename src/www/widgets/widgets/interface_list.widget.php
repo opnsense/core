@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <td style="width:45%; word-break: break-word;">
       <?= htmlspecialchars($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+      <?= htmlspecialchars(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
     </td>
   </tr>
 <?php endforeach ?>
