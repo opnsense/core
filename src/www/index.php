@@ -332,9 +332,7 @@ include("fbegin.inc");?>
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 col-xs-12">
-<?php
-          print_service_banner('livecd');
-?>
+          <?php print_service_banner('livecd') ?>
         </div>
       </div>
       <div id="dashboard_container" class="row" style="display:none">
