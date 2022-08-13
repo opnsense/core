@@ -575,9 +575,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             clear_subsystem_dirty('interfaces');
 
             if (file_exists('/tmp/.interfaces.apply')) {
+                $intf_details = legacy_interfaces_details();
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    interface_bring_down($ifapply, $ifcfgo);
+                    $is_tunnel = false;
+                    if (!empty($ifcfgo['ifcfg']['if']) && !empty($intf_details[$ifcfgo['ifcfg']['if']])) {
+                        $ifdetails = $intf_details[$ifcfgo['ifcfg']['if']];
+                        $is_tunnel = !empty($ifdetails['ipv4'][0]['tunnel']) || !empty($ifdetails['ipv6'][0]['tunnel']);
+                    }
+                    if (!$is_tunnel) {
+                        // As tunnels can't be setup from the interfaces page, prevent address removal on reconfigure
+                        interface_bring_down($ifapply, $ifcfgo);
+                    }
                     interface_configure(false, $ifapply, true);
                 }
 
