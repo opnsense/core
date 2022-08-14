@@ -899,6 +899,9 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             interface_track6_configure($interface, $ifcfg);
             break;
         default:
+            if (is_ipaddrv6($ifcfg['ipaddrv6'])) {
+                mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ifcfg['ipaddrv6']]);
+            }
             break;
     }
 
@@ -924,17 +927,10 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
             break;
         default:
+            if (is_ipaddrv4($ifcfg['ipaddr'])) {
+                mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ifcfg['ipaddr']]);
+            }
             break;
-    }
-
-    list ($ip4) = interfaces_primary_address($interface);
-    if (!empty($ip4)) {
-        mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
-    }
-
-    list ($ip6) = interfaces_primary_address6($interface);
-    if (!empty($ip6)) {
-        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
     }
 
     /* clear stale state associated with this interface */
