@@ -865,6 +865,14 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             break;
     }
 
+    /* may be required or not, but kept here for symmetry with IPv4 */
+    if (!empty($ifcfg['ipaddrv6'])) {
+        list ($ip6) = interfaces_primary_address6($interface);
+        if (!empty($ip6)) {
+            mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
+        }
+    }
+
     switch ($ifcfg['ipaddr']) {
         case 'ppp':
         case 'pppoe':
@@ -890,6 +898,14 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             break;
     }
 
+    /* required for static and dhcp (dhclient limitation) */
+    if (!empty($ifcfg['ipaddr'])) {
+        list ($ip4) = interfaces_primary_address($interface);
+        if (!empty($ip4)) {
+            mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
+        }
+    }
+
     $pfctlflush = array();
     $arpflush = array();
 
@@ -898,11 +914,6 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
 
         if (!empty(trim(@file_get_contents("/tmp/{$realif}_router")))) {
             $pfctlflush[$realif] = 1;
-        }
-
-        list ($ip4) = interfaces_primary_address($interface);
-        if (!empty($ip4)) {
-            mwexecf('/sbin/ifconfig %s delete %s', array($realif, $ip4));
         }
     }
 
@@ -917,11 +928,6 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
 
         if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
             $pfctlflush[$realifv6] = 1;
-        }
-
-        list ($ip6) = interfaces_primary_address6($interface);
-        if (!empty($ip6)) {
-            mwexecf('/sbin/ifconfig %s inet6 %s delete', array($realifv6, $ip6));
         }
     }
 
