@@ -3123,7 +3123,7 @@ function interface_dhcp_configure($interface = 'wan')
     }
 
     killbypid("/var/run/dhclient.{$wanif}.pid", 'TERM', true);
-    @unlink("/tmp/{$realif}_oldip"); /* XXX dhclient cannot signal a release */
+    @unlink("/tmp/{$wanif}_oldip"); /* XXX dhclient cannot signal a release */
 
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {
