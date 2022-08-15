@@ -67,11 +67,6 @@ class UnboundLocalData:
     def __init__(self):
         self._map_by_address = dict()
         self._map_by_fqdn = dict()
-        self.load()
-
-    def load(self):
-        self._map_by_address = dict()
-        self._map_by_fqdn = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
             unbound_control(['list_local_data'], output_stream=output_stream)
             for line in output_stream:
@@ -83,7 +78,9 @@ class UnboundLocalData:
         if address not in self._map_by_address:
             self._map_by_address[address] = list()
         self._map_by_address[address].append(fqdn)
-        self._map_by_fqdn[fqdn] = address
+        if fqdn not in self._map_by_fqdn:
+            self._map_by_fqdn[fqdn] = list()
+        self._map_by_fqdn[fqdn].append(address)
 
     def all_fqdns(self, address, fqdn):
         result = set()
@@ -97,17 +94,22 @@ class UnboundLocalData:
     def cleanup(self, address, fqdn):
         if address in self._map_by_address:
             for rfqdn in self._map_by_address[address]:
-                if rfqdn in self._map_by_fqdn:
-                    del self._map_by_fqdn[rfqdn]
+                if rfqdn in self._map_by_fqdn and address in self._map_by_fqdn[rfqdn]:
+                    self._map_by_fqdn[rfqdn].remove(address)
+                    if len(self._map_by_fqdn[rfqdn]) == 0:
+                        del self._map_by_fqdn[rfqdn]
             del self._map_by_address[address]
-        if fqdn in self._map_by_fqdn:
-            if self._map_by_fqdn[fqdn] in self._map_by_address:
-                del self._map_by_address[self._map_by_fqdn[fqdn]]
-            del self._map_by_fqdn[fqdn]
+
+        if fqdn in self._map_by_fqdn and address in self._map_by_fqdn[fqdn]:
+            self._map_by_fqdn[fqdn].remove(address)
+            if len(self._map_by_fqdn[fqdn]) == 0:
+                del self._map_by_fqdn[fqdn]
 
     def is_equal(self, address, fqdn):
-        tmp = self.all_fqdns(address, fqdn)
-        return len(tmp) == 1 and fqdn in self._map_by_fqdn and self._map_by_fqdn[fqdn] == address
+        return fqdn in self._map_by_fqdn and address in self._map_by_fqdn[fqdn]
+
+    def fqdn_addresses(self, fqdn):
+        return self._map_by_fqdn[fqdn] if fqdn in self._map_by_fqdn else []
 
 
 def run_watcher(target_filename, default_domain, watch_file, config):
@@ -167,6 +169,10 @@ def run_watcher(target_filename, default_domain, watch_file, config):
                                    fqdn ]
                     if unbound_local_data.is_equal(address, fqdn):
                         unbound_local_data.cleanup(address, fqdn)
+                        # same fqdn may be hooked to other (new) hosts, reinject the existing ones after removal
+                        for addr in unbound_local_data.fqdn_addresses(fqdn):
+                            add_rr.append(f'{fqdn} IN A {addr}')
+
                     del cached_leases[address]
                     dhcpd_changed = True
 
