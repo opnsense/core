@@ -23,7 +23,7 @@ if [ "${AF}" = "inet" ]; then
 	/usr/local/sbin/ifctl -i ${IF} -4nd
 	/usr/local/sbin/ifctl -i ${IF} -4rd
 
-	/usr/local/sbin/configctl -d dns reload # XXX last caller, remove action and rc.resolv_conf_generate
+	/usr/local/sbin/configctl -d interface newip ${IF}
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)

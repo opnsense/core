@@ -354,6 +354,7 @@ EXPIRE|FAIL)
 			;;
 		esac
 	fi
+	/usr/local/sbin/configctl -d interface newip $interface
 	;;
 
 TIMEOUT)
