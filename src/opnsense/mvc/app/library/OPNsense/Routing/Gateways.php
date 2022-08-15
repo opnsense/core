@@ -382,7 +382,7 @@ class Gateways
                 $result = $gateway['gateway'];
                 if (strtolower(substr($gateway['gateway'], 0, 5)) == "fe80:") {
                     // link local, suffix interface
-                    $result .= "%{$gw['if']}";
+                    $result .= "%{$gateway['if']}";
                 }
                 return $result;
             }
