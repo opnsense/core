@@ -899,10 +899,15 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             interface_track6_configure($interface, $ifcfg);
             break;
         default:
-            if (is_ipaddrv6($ifcfg['ipaddrv6'])) {
-                mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ifcfg['ipaddrv6']]);
-            }
             break;
+    }
+
+    /* may be required or not, but kept here for symmetry with IPv4 */
+    if (!empty($ifcfg['ipaddrv6'])) {
+        list ($ip6) = interfaces_primary_address6($interface);
+        if (!empty($ip6)) {
+            mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
+        }
     }
 
     switch ($ifcfg['ipaddr']) {
@@ -925,12 +930,18 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             break;
         case 'dhcp':
             killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
+            @unlink("/tmp/{$realif}_oldip"); /* XXX dhclient cannot signal a release */
             break;
         default:
-            if (is_ipaddrv4($ifcfg['ipaddr'])) {
-                mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ifcfg['ipaddr']]);
-            }
             break;
+    }
+
+    /* required for static and dhcp (dhclient limitation) */
+    if (!empty($ifcfg['ipaddr'])) {
+        list ($ip4) = interfaces_primary_address($interface);
+        if (!empty($ip4)) {
+            mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
+        }
     }
 
     /* clear stale state associated with this interface */
@@ -3112,6 +3123,7 @@ function interface_dhcp_configure($interface = 'wan')
     }
 
     killbypid("/var/run/dhclient.{$wanif}.pid", 'TERM', true);
+    @unlink("/tmp/{$realif}_oldip"); /* XXX dhclient cannot signal a release */
 
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {
