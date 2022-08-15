@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -44,8 +44,6 @@ exit_on_bootup(function ($argument) {
     file_put_contents('/tmp/newwanip_' . $argument, $argument);
 }, [$argument]);
 
-log_error("IPv4 renewal is starting on '{$argument}'");
-
 if (empty($argument)) {
     $interface = 'wan';
     $interface_real = get_real_interface($interface);
@@ -62,17 +60,34 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ip($interface);
 
-/*
- * Take care of OpenVPN and similar if you generate the event
- * to reconfigure an interface.  OpenVPN might be in tap(4)
- * mode and not have an IP address.
- */
-if (!is_ipaddr($ip) && substr($interface_real, 0, 4) != 'ovpn') {
-    log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+$cacheip_file = "/tmp/{$interface_real}_oldip";
+
+if (!is_ipaddr($ip)) {
+    /* remove previously cached IP since it is gone */
+    @unlink($cacheip_file);
+
+    /*
+     * Take care of OpenVPN and similar if you generate the event
+     * to reconfigure an interface.  OpenVPN might be in tap(4)
+     * mode and not have an IP address.
+     */
+    if (substr($interface_real, 0, 4) != 'ovpn') {
+        log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+        return;
+    }
+}
+
+/* this may be required to cleanse the DNS information no longer available */
+system_resolvconf_generate();
+system_hosts_generate();
+
+$cacheip = trim(@file_get_contents($cacheip_file));
+if ($ip == $cacheip) {
+    log_error("No IP change detected for {$interface_descr}[{$interface}]");
     return;
 }
 
-log_error("On (IP address: {$ip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
+log_error("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 interfaces_vips_configure($interface, 4);
 
@@ -91,9 +106,6 @@ if (!empty($bridge)) {
     /* XXX _interfaces_bridge_configure() is probably cleaner */
     interface_bridge_add_member($bridge, $interface_real);
 }
-
-system_resolvconf_generate();
-system_hosts_generate();
 
 if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
     switch ($config['interfaces'][$interface]['ipaddrv6']) {
