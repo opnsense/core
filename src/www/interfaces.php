@@ -577,10 +577,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (file_exists('/tmp/.interfaces.apply')) {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    if (!empty($ifcfgo['ifcfg']['ipaddr']) || !empty($ifcfgo['ifcfg']['ipaddrv6'])) {
-                        // only de-configure interface if an address was previously set
-                        interface_bring_down($ifapply, $ifcfgo);
-                    }
+                    interface_bring_down($ifapply, $ifcfgo);
                     interface_configure(false, $ifapply, true);
                 }
 
