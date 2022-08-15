@@ -151,7 +151,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if (!does_interface_exist($_POST['if_add'])) {
+        $is_ppp = false;
+        foreach (config_read_array('ppps', 'ppp') as $ppp) {
+            if ($ppp['if'] = $_POST['if_add']) {
+                $is_ppp = true;
+                break;
+            }
+        }
+
+        if (!$is_ppp && !does_interface_exist($_POST['if_add'])) {
             $input_errors[] = sprintf(gettext('The interface "%s" does not exist. Make sure to apply its configuration first.'), $_POST['if_add']);
         }
 
