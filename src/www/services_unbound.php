@@ -303,11 +303,11 @@ include_once("head.inc");
                               <input name="noregrecords" type="checkbox" id="noregrecords" value="yes" <?= !empty($pconfig['noregrecords']) ? 'checked="checked"' : '' ?>/>
                               <?= gettext('Do not register system A/AAAA records') ?>
                               <div class="hidden" data-for="help_for_noregrecords">
-                                  <?= sprintf(gettext("If this option is set, then A/AAAA records for " .
-                                  "all configured listen interfaces will not be generated. " .
+                                  <?= sprintf(gettext("If this option is set, then no A/AAAA records for " .
+                                  "the configured listen interfaces will be generated. " .
                                   "If desired, you can manually add them in %sUnbound DNS: Overrides%s. " .
-                                  "Use this to control which interface IP addresses are mapped to the system domain name " .
-                                  "as well as to restrict the amount of information exposed in replies."), '<a href="ui/unbound/overrides/">', '</a>'); ?>
+                                  "Use this to control which interface IP addresses are mapped to the system host/domain name " .
+                                  "as well as to restrict the amount of information exposed in replies to queries for the system host/domain name ."), '<a href="ui/unbound/overrides/">', '</a>'); ?>
                               </div>
                           </td>
                       </tr>
