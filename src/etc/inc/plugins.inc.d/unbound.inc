@@ -483,13 +483,12 @@ function unbound_add_host_entries($ifconfig_details = null)
                 if (isset($config[$dhcpd][$interface]['enable']) && !empty($config[$dhcpd][$interface]['domain'])) {
                     $domain = $config[$dhcpd][$interface]['domain'];
                 }
-                if ($interface === get_primary_interface_from_list($interfaces) && !in_array($addr, $ptr_records, true)) {
+                if ($interface === get_primary_interface_from_list($interfaces)) {
                     $unbound_entries .= "local-data-ptr: \"{$addr} {$config['system']['hostname']}.{$domain}\"\n";
+                    $ptr_records[] = $addr;
                 }
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} {$record} {$addr}\"\n";
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
-
-                $ptr_records[] = $addr;
             }
 
             if (empty($config['unbound']['noreglladdr6'])) {
