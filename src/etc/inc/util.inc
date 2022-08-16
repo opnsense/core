@@ -586,13 +586,13 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
+    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr);
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
 function is_literalipaddrv6($ipaddr)
 {
-    if (preg_match("/\[([0-9a-f:]+)\]/i", $ipaddr, $match)) {
+    if (preg_match('/\[([0-9a-f:]+)\]/i', $ipaddr, $match)) {
         $ipaddr = $match[1];
     } else {
         return false;

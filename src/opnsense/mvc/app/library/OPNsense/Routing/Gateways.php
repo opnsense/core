@@ -380,8 +380,8 @@ class Gateways
         foreach ($this->getGateways() as $gateway) {
             if ($gateway['name'] == $name && !empty($gateway['gateway'])) {
                 $result = $gateway['gateway'];
-                if (strtolower(substr($gateway['gateway'], 0, 5)) == "fe80:") {
-                    // link local, suffix interface
+                if (preg_match('/^fe[89ab][0-9a-f]:/i', $gateway['gateway'])) {
+                    /* link-local, suffix interface */
                     $result .= "%{$gateway['if']}";
                 }
                 return $result;
