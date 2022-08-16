@@ -439,7 +439,7 @@ function unbound_add_host_entries($ifconfig_details = null)
     global $config;
 
     $local_zone_type = 'transparent';
-    $ptr_records = [];
+    $ptr_records = ['127.0.0.1', '::1'];
 
     openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
 
