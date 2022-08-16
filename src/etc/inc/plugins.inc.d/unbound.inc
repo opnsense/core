@@ -442,6 +442,9 @@ function unbound_add_host_entries($ifconfig_details = null)
     global $config;
 
     $local_zone_type = 'transparent';
+    $ptr_records = ['127.0.0.1', '::1'];
+
+    openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
 
     if (!empty($config['unbound']['local_zone_type'])) {
         $local_zone_type = $config['unbound']['local_zone_type'];
@@ -462,42 +465,46 @@ function unbound_add_host_entries($ifconfig_details = null)
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
-    foreach ($interfaces as $interface) {
-        if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
-            continue;
-        }
 
-        list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
-        if (!empty($laddr)) {
-            $domain = $config['system']['domain'];
-            if (isset($config['dhcpd'][$interface]['enable']) && !empty($config['dhcpd'][$interface]['domain'])) {
-                $domain = $config['dhcpd'][$interface]['domain'];
+    if (empty($config['unbound']['noregrecords'])) {
+        foreach ($interfaces as $interface) {
+            if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
+                continue;
             }
-            $unbound_entries .= "local-data-ptr: \"{$laddr} {$config['system']['hostname']}.{$domain}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} A {$laddr}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
-        }
-        list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
-        if (!empty($laddr6)) {
-            $domain = $config['system']['domain'];
-            if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
-                $domain = $config['dhcpdv6'][$interface]['domain'];
-            }
-            $unbound_entries .= "local-data-ptr: \"{$laddr6} {$config['system']['hostname']}.{$domain}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$laddr6}\"\n";
-            $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
-        }
-        if (empty($config['unbound']['noreglladdr6'])) {
-            list ($lladdr6) = interfaces_scoped_address6($interface, $ifconfig_details);
-            if (!empty($lladdr6)) {
-                /* cannot embed scope */
-                $lladdr6 = explode('%', $lladdr6)[0];
-                $domain = $config['system']['domain'];
-                if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
-                    $domain = $config['dhcpdv6'][$interface]['domain'];
+
+            list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
+            list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
+
+            foreach (['4' => $laddr, '6' => $laddr6] as $ip_version => $addr) {
+                if (empty($addr)) {
+                    continue;
                 }
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$lladdr6}\"\n";
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+
+                $domain = $config['system']['domain'];
+                $dhcpd = $ip_version == '4' ? 'dhcpd' : 'dhcpd6';
+                $record = $ip_version == '4' ? 'A' : 'AAAA';
+                if (isset($config[$dhcpd][$interface]['enable']) && !empty($config[$dhcpd][$interface]['domain'])) {
+                    $domain = $config[$dhcpd][$interface]['domain'];
+                }
+                if ($interface === get_primary_interface_from_list($interfaces)) {
+                    $unbound_entries .= "local-data-ptr: \"{$addr} {$config['system']['hostname']}.{$domain}\"\n";
+                    $ptr_records[] = $addr;
+                }
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} {$record} {$addr}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
+            }
+
+            if (empty($config['unbound']['noreglladdr6'])) {
+                if (!empty($lladdr6)) {
+                    /* cannot embed scope */
+                    $lladdr6 = explode('%', $lladdr6)[0];
+                    $domain = $config['system']['domain'];
+                    if (isset($config['dhcpdv6'][$interface]['enable']) && !empty($config['dhcpdv6'][$interface]['domain'])) {
+                        $domain = $config['dhcpdv6'][$interface]['domain'];
+                    }
+                    $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$domain} AAAA {$lladdr6}\"\n";
+                    $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+                }
             }
         }
     }
@@ -563,7 +570,15 @@ function unbound_add_host_entries($ifconfig_details = null)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             } else {
-                                $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                if (($alias === $tmp_aliases[0] || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server, $ptr_records, true)) {
+                                    /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
+                                     * The exception to this is an alias whose parent uses a wildcard and as such does not specify a PTR record.
+                                     */
+                                    $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
+                                    $ptr_records[] = $host->server;
+                                } else {
+                                    syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
+                                }
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} IN {$host->rr} {$host->server}\"\n";
                             }
                             break;
@@ -602,6 +617,8 @@ function unbound_add_host_entries($ifconfig_details = null)
     }
 
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
+
+    closelog();
 }
 
 function unbound_acls_subnets()
