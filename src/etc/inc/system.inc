@@ -363,10 +363,13 @@ function get_nameservers($interface = null, $with_gateway = false)
     foreach ($dns_lists as $fdns) {
         /* inspect dynamic servers registered in the system files */
         $intf = [];
-        $intf[0] = preg_replace('/_[^_]+$/', '', basename($fdns));
+
+        /* XXX this is ifctl logic we eventually need to pass down */
+        $intf[0] = preg_replace('/(_[^_]+|:.+)$/', '', basename($fdns));
         $intf[1] = preg_replace('/^.+_/', '', basename($fdns));
         $intf[1] = strpos($intf[1], 'v6') === false ? '4' : '6';
-        if (in_array($intf, $exclude_interfaces)) {
+
+        if (in_array($intf[0], $exclude_interfaces)) {
             continue;
         }
 
