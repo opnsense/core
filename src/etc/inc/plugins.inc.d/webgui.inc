@@ -450,9 +450,6 @@ server.error-handler-404   = "/ui/404"
 ## to help the rc.scripts
 server.pid-file            = "/var/run/lighty-webConfigurator.pid"
 
-## virtual directory listings
-server.dir-listing         = "disable"
-
 ## enable debugging
 debug.log-request-header   = "disable"
 debug.log-response-header  = "disable"
