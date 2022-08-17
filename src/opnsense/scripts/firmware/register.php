@@ -114,10 +114,7 @@ function plugins_disk_get()
 
     foreach (glob('/usr/local/opnsense/version/*') as $name) {
         $filename = basename($name);
-        if (strpos($filename, 'base') === 0) {
-            continue;
-        }
-        if (strpos($filename, 'kernel') === 0) {
+        if ($filename == 'base' || $filename == 'kernel' || $filename == 'pkgs') {
             continue;
         }
         $ret = json_decode(@file_get_contents($name), true);
