@@ -201,9 +201,15 @@ function system_resolvconf_generate($verbose = false)
     $search = array_merge($search, get_searchdomains());
 
     foreach (get_nameservers(null, true) as $dnsserver) {
+        if (isset($routes[$dnsserver['host']])) {
+            log_error("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}");
+            continue;
+        }
+
         $host = !empty($dnsserver['host']) ? $dnsserver['host'] : $dnsserver;
         $resolvconf .= "nameserver {$host}\n";
-        $routes[] = $dnsserver;
+
+        $routes[$dnsserver['host']] = $dnsserver['gateway'];
     }
 
     if (count($search)) {
@@ -229,8 +235,8 @@ function system_resolvconf_generate($verbose = false)
     rename($tempfile, '/etc/resolv.conf');
 
     /* setup static routes for DNS servers as configured */
-    foreach ($routes as $route) {
-        system_host_route($route['host'], $route['gateway']);
+    foreach ($routes as $host => $gateway) {
+        system_host_route($host, $gateway);
     }
 
     if ($verbose) {
@@ -392,7 +398,12 @@ function get_nameservers($interface = null, $with_gateway = false)
             }
 
             if ($with_gateway) {
-                $master_list[] = ['host' => $dns, 'gateway' => $gw];
+                $master_list[] = [
+                    'host' => $dns,
+                    'gateway' => $gw,
+                    'interface' => convert_real_interface_to_friendly_interface_name($intf[0]),
+                    'source' => 'interface',
+                ];
             } else {
                 $master_list[] = $dns;
             }
@@ -431,15 +442,22 @@ function get_nameservers($interface = null, $with_gateway = false)
         }
 
         if ($with_gateway) {
-            $master_list[] = ['host' => $dns, 'gateway' => $gateway];
+            $master_list[] = [
+                'host' => $dns,
+                'gateway' => $gateway,
+                'interface' => $dnsif,
+                'source' => 'config',
+            ];
         } else {
             $master_list[] = $dns;
         }
     }
 
-    /* XXX check for overlapping host routes in gateway mode? */
+    if (!$with_gateway) {
+        $master_list = array_unique($master_list);
+    }
 
-    return array_unique($master_list, SORT_REGULAR);
+    return $master_list;
 }
 
 function system_hosts_generate($verbose = false)
