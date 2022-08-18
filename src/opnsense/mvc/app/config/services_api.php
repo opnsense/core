@@ -78,7 +78,7 @@ $di->setShared('session', function () {
     } else {
         $secure = false;
     }
-    setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+    setcookie(session_name(), session_id(), 0, '/', '', $secure, true);
 
     return $session;
 });
