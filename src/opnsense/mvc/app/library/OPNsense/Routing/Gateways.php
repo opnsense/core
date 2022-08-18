@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,29 @@ class Gateways
             }
         }
         return $result;
+    }
+
+    /**
+     * return dynamic router address from file-based location created via ifctl utility
+     * @param string $realif underlying network device name
+     * @param string $ipproto inet/inet6 type
+     * @return string $router IP address
+     */
+    private function getRouterFromFile($realif, $ipproto = 'inet')
+    {
+        $fsuffix = $ipproto == 'inet6' ? 'v6' : '';
+        $router = null;
+
+        /* some types have fallback files we are looking for in order */
+        foreach (['', ':slaac'] as $isuffix) {
+            $file = "/tmp/{$realif}{$isuffix}_router{$fsuffix}";
+            if (file_exists($file)) {
+                $router = trim(@file_get_contents($file));
+                break;
+            }
+        }
+
+        return $router;
     }
 
     /**
@@ -201,7 +224,6 @@ class Gateways
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
                     $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'] ?? null, ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
-                    $fsuffix = $ipproto == "inet6" ? "v6" : "";
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
@@ -235,12 +257,11 @@ class Gateways
                             }
                         }
                     }
-                    // dynamic gateways dump their address in /tmp/[IF]_router[FSUFFIX]
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         // if name is already taken, don't try to add a new (virtual) entry
                         null;
-                    } elseif (file_exists("/tmp/{$realif}_router{$fsuffix}")) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$realif}_router{$fsuffix}"));
+                    } elseif (($router = $this->getRouterFromFile($realif, $ipproto)) != null) {
+                        $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
