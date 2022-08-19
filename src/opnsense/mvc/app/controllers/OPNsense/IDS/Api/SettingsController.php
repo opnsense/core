@@ -122,6 +122,11 @@ class SettingsController extends ApiMutableModelControllerBase
             $data = json_decode($response, true);
 
             if ($data != null && array_key_exists("rows", $data)) {
+                // overlay current model adjustments as they do have the highest priority anyway
+                foreach ($data['rows'] as &$row) {
+                    $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
+                    $row['action'] = strtolower($this->getModel()->getRuleAction($row['sid'], $row['action'], true));
+                }
                 $result = array();
                 $result['rows'] = $data['rows'];
                 $result['rowCount'] = empty($result['rows']) || !is_array($result['rows']) ? 0 : count($result['rows']);
