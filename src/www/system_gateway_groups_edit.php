@@ -261,7 +261,7 @@ $( document ).ready(function() {
                       <div class="hidden" data-for="help_for_poolopts">
                         <li> <?=gettext("Default: Round Robin, Sticky Address determined by advanced settings");?></li>
                         <li> <?=gettext("Round Robin: Loops through the translation addresses.");?></li>
-                        <li> <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?></li>
+                        <li> <?=gettext("Sticky Address: The Sticky Address option can be used with the Round Robin pool type to ensure that a particular source address is always mapped to the same translation address.");?></li>
                       </div>
                     </td>
                   </tr>
