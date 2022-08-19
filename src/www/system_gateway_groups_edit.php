@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
     }
-    if (!empty($pconfig['poolopts']) && !in_array($pconfig['poolopts'], ['round-robin', 'round-robin sticky-address', 'random', 'random sticky-address', 'source-hash', 'bitmask'])) {
+    if (!empty($pconfig['poolopts']) && !in_array($pconfig['poolopts'], ['round-robin', 'round-robin sticky-address'])) {
         $input_errors[] = gettext("Invalid pool option specified");
     }
     if (count($pconfig['item']) == 0) {
@@ -257,29 +257,10 @@ $( document ).ready(function() {
                         <option value="round-robin sticky-address" <?=$pconfig['poolopts'] == "round-robin sticky-address" ? "selected=\"selected\"" : ""; ?>>
                           <?=gettext("Round Robin with Sticky Address");?>
                         </option>
-<?/**
-*                        <option value="random" <?=$pconfig['poolopts'] == "random" ? "selected=\"selected\"" : ""; ?>>
-*                          <?=gettext("Random");?>
-*                        </option>
-*                        <option value="random sticky-address" <?=$pconfig['poolopts'] == "random sticky-address" ? "selected=\"selected\"" : ""; ?>>
-*                          <?=gettext("Random with Sticky Address");?>
-*                        </option>
-*                        <option value="source-hash" <?=$pconfig['poolopts'] == "source-hash" ? "selected=\"selected\"" : ""; ?>>
-*                          <?=gettext("Source Hash");?>
-*                        </option>
-*                        <option value="bitmask" <?=$pconfig['poolopts'] == "bitmask" ? "selected=\"selected\"" : ""; ?>>
-*                          <?=gettext("Bitmask");?>
-*                        </option>
-**/?>
                       </select>
                       <div class="hidden" data-for="help_for_poolopts">
                         <li> <?=gettext("Default: Round Robin, Sticky Address determined by advanced settings");?></li>
                         <li> <?=gettext("Round Robin: Loops through the translation addresses.");?></li>
-<!--
-                        <li> <?=gettext("Random: Selects an address from the translation address pool at random.");?></li>
-                        <li> <?=gettext("Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source.");?></li>
-                        <li> <?=gettext("Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50.");?></li>
--->
                         <li> <?=gettext("Sticky Address: The Sticky Address option can be used with the Random and Round Robin pool types to ensure that a particular source address is always mapped to the same translation address.");?></li>
                       </div>
                     </td>
