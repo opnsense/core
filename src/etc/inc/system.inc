@@ -553,7 +553,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
     mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
 }
 
-function system_routing_configure($verbose = false, $interface = '')
+function system_routing_configure($verbose = false, $interface = null, $monitor = true)
 {
     if ($verbose) {
         echo 'Setting up routes...';
@@ -588,9 +588,25 @@ function system_routing_configure($verbose = false, $interface = '')
     if ($verbose) {
         echo "done.\n";
     }
+
+    if ($monitor) {
+        $reloads = [];
+
+        if (!empty($interface)) {
+            foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
+                if ($interface == $gateway['interface']) {
+                    $reloads[] = $name;
+                }
+            }
+        }
+
+        foreach (count($reloads) ? $reloads : [null] as $reload) {
+            plugins_configure('monitor', $verbose, [$reload]);
+        }
+    }
 }
 
-function system_staticroutes_configure($interface = '')
+function system_staticroutes_configure($interface = null)
 {
     $static_routes = get_staticroutes(false);
     if (count($static_routes)) {

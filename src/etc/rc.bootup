@@ -91,7 +91,7 @@ interfaces_configure(true);
 system_resolvconf_generate(true);
 filter_configure_sync(true);
 plugins_configure('early', true);
-system_routing_configure(true);
+system_routing_configure(true, null, false);
 
 system_hosts_generate(true);
 plugins_configure('dhcp', true);

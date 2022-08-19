@@ -98,7 +98,6 @@ if ($ip != $cacheip || !is_ipaddr($config['interfaces'][$interface]['ipaddrv6'])
     }
 
     system_routing_configure(false, $interface);
-    plugins_configure('monitor');
     filter_configure_sync();
 
     @file_put_contents($cacheip_file, $ip . PHP_EOL);
