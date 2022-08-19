@@ -99,7 +99,6 @@ if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
 link_interface_to_track6($interface, true);
 
 system_routing_configure(false, $interface);
-plugins_configure('monitor');
 filter_configure_sync();
 
 /* register IP change not before this point as basic connectivity is needed */

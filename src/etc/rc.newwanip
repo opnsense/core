@@ -165,7 +165,6 @@ $intf_ipaddr = $config['interfaces'][$interface]['ipaddr'];
 
 if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
     system_routing_configure(false, $interface);
-    plugins_configure('monitor');
     filter_configure_sync();
 
     if (isset($config['system']['ip_change_kill_states'])) {

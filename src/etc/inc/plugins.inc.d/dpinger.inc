@@ -99,7 +99,7 @@ function dpinger_syslog()
 function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     if ($verbose) {
-        echo 'Setting up gateway monitors...';
+        echo sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's': " {$gwname}");
         flush();
     }
 
@@ -114,7 +114,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
     $ifconfig_details = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifconfig_details);
-    $monitor_ips = array();
+    $monitor_ips = [];
 
     $dpinger_default = dpinger_defaults();
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
