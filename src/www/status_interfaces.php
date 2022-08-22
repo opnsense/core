@@ -75,6 +75,9 @@ include("head.inc");
             $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
             $vmstat_interrupts = json_decode(configd_run('system list interrupts json'), true);
             foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):
+              if ($ifinfo['if'] == 'pfsync0') {
+                continue;
+              }
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
@@ -117,13 +120,12 @@ include("head.inc");
                     <tr>
                       <td style="width:22%"><?= gettext("Status") ?></td>
                       <td style="width:78%"><?= $ifinfo['status'] ?>
-<?php                   if (empty($ifinfo['enable'])): ?>
+<?php if (empty($ifinfo['enable'])): ?>
                           <i class="fa fa-warning" title="<?=gettext("administrative disabled");?>" data-toggle="tooltip"></i>
-<?php                   endif; ?>
+<?php endif ?>
                       </td>
                     </tr>
-<?php
-                    if (!empty($ifinfo['dhcplink']) && !empty($ifinfo['enable'])): ?>
+<?php if (!empty($ifinfo['dhcplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
@@ -136,9 +138,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['dhcp6link']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['dhcp6link']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
@@ -151,9 +152,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['pppoelink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['pppoelink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
@@ -166,9 +166,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['pptplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['pptplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?= gettext("PPTP") ?></td>
                       <td>
@@ -181,9 +180,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<? if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -196,9 +194,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<? if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
@@ -215,16 +212,14 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['ppp_uptime']) || !empty($ifinfo['ppp_uptime_accumulated'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['ppp_uptime']) || !empty($ifinfo['ppp_uptime_accumulated'])): ?>
                     <tr>
                       <td><?= empty($ifinfo['ppp_uptime_accumulated']) ? gettext("Uptime") : gettext("Uptime (historical)") ?></td>
                       <td><?= $ifinfo['ppp_uptime_accumulated'] ?> <?= $ifinfo['ppp_uptime'] ?></td>
                     </tr>
-<?php
-                    endif;
-                    if ($ifinfo['macaddr']): ?>
+<?php endif ?>
+<?php if ($ifinfo['macaddr']): ?>
                     <tr>
                       <td><?=gettext("MAC address");?></td>
                       <td>
@@ -236,19 +231,17 @@ include("head.inc");
                         ?>
                       </td>
                     </tr>
-<?php
-                  endif;
-                  if ($ifinfo['mtu']): ?>
+<?php endif ?>
+<? if ($ifinfo['mtu']): ?>
                   <tr>
                     <td><?=gettext("MTU");?></td>
                     <td>
                       <?=$ifinfo['mtu'];?>
                     </td>
                   </tr>
-<?php
-                endif;
-                if ($ifinfo['status'] != "down"):
-                  if ($ifinfo['dhcplink'] != "down" && $ifinfo['pppoelink'] != "down" && $ifinfo['pptplink'] != "down"):
+<?php endif ?>
+                <?php if ($ifinfo['status'] != 'down'):
+                  if (($ifinfo['dhcplink'] ?? '') != 'down' && ($ifinfo['pppoelink'] ?? '') != 'down' && ($ifinfo['pptplink'] ?? '') != 'down'):
                     if (!empty($ifinfo['ipaddr'])):?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
@@ -270,7 +263,7 @@ include("head.inc");
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
                       <td><?= gettext('IPv4 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway']) ?> <?= $ifinfo['gateway'] ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -305,7 +298,7 @@ include("head.inc");
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext('IPv6 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
                     endif;

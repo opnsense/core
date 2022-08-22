@@ -4017,6 +4017,15 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
+        switch ($config['interfaces'][$ifdescr]['ipaddrv6'] ?? '') {
+            case 'dhcp6':
+                $ifinfo['dhcp6link'] = isvalidpid('/var/run/dhcp6c.pid') ? 'up' : 'down';
+                break;
+            /* XXX more to do here in the future */
+            default:
+                break;
+        }
+
         if ($ifinfo['status'] == "up") {
             $wifconfiginfo = array();
             if (is_interface_wireless($ifdescr)) {
