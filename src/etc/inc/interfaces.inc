@@ -4019,7 +4019,7 @@ function get_interfaces_info($include_unlinked = false)
 
         switch ($config['interfaces'][$ifdescr]['ipaddrv6'] ?? '') {
             case 'dhcp6':
-                $ifinfo['dhcp6link'] = isvalidpid('/var/run/dhcp6c.pid') ? 'up' : 'down';
+                $ifinfo['dhcp6link'] = isvalidpid('/var/run/dhcp6c.pid') && file_exists("/var/etc/dhcp6c_{$ifdescr}.conf") ? 'up' : 'down';
                 break;
             /* XXX more to do here in the future */
             default:
