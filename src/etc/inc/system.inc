@@ -316,7 +316,7 @@ function get_searchdomains()
         $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         if (is_array($contents)) {
             foreach ($contents as $dns) {
-                if (!empty($dns) && is_hostname($dns)) {
+                if (is_fqdn($dns)) {
                     $master_list[] = $dns;
                 }
             }
