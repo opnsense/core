@@ -247,6 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
         system_sysctl_configure();
+        interfaces_hardware();
     }
 }
 
@@ -337,11 +338,6 @@ include("head.inc");
                   <div class="hidden" data-for="help_for_sharednet">
                     <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
                   </div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <?= gettext('Please note that offloading settings only apply to configured interfaces, so when using e.g. VLAN interfaces make sure to assign and enable the parent as well.') ?>
                 </td>
               </tr>
             </table>
