@@ -99,7 +99,7 @@ function dpinger_syslog()
 function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     if ($verbose) {
-        echo sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's': " {$gwname}");
+        echo sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}");
         flush();
     }
 

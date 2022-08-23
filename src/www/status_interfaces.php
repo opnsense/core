@@ -181,7 +181,7 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<? if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
+<?php if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -195,7 +195,7 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<? if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
+<?php if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
@@ -232,7 +232,7 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<? if ($ifinfo['mtu']): ?>
+<?php if ($ifinfo['mtu']): ?>
                   <tr>
                     <td><?=gettext("MTU");?></td>
                     <td>
