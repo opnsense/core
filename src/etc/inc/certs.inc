@@ -27,12 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('phpseclib/File/X509.php');
-require_once('phpseclib/File/ASN1.php');
-require_once('phpseclib/Math/BigInteger.php');
-require_once('phpseclib/File/ASN1/Element.php');
-require_once('phpseclib/Crypt/RSA.php');
-require_once('phpseclib/Crypt/Hash.php');
+require_once('phpseclib/Autoload.php');
+
+use phpseclib3\File\X509;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Exception\NoKeyLoadedException;
 
 define("CERT_CRL_STATUS_NOSTATUS", -1);
 define("CERT_CRL_STATUS_UNSPECIFIED", 0);
@@ -618,15 +617,25 @@ function crl_update(&$crl)
     }
 
     /* Load in the CA's cert */
-    $ca_cert = new \phpseclib\File\X509();
+    $ca_cert = new X509();
     $ca_cert->loadX509($ca_str_crt);
+
+    if (!$ca_cert->validateDate()) {
+        syslog(LOG_ERR, 'Cert revocation error: CA certificate invalid: invalid date');
+        return false;
+    }
+
     /* get the private key to sign the new (updated) CRL */
-    $ca_key = new \phpseclib\Crypt\RSA();
-    $ca_key->loadKey($ca_str_key);
-    $ca_cert->setPrivateKey($ca_key);
+    try {
+        $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
+        $ca_cert->setPrivateKey($ca_key);
+    } catch(NoKeyLoadedException) {
+        syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
+        return false;
+    }
 
     /* Load the CA for later signature validation */
-    $x509_crl = new \phpseclib\File\X509();
+    $x509_crl = new X509();
     $x509_crl->loadCA($ca_str_crt);
 
     /*
@@ -636,25 +645,18 @@ function crl_update(&$crl)
      * CRL container must load the same CA using loadCA() with a direct reference
      * to the CA's public cert.
      */
-
     $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
 
     /* Now validate the CRL to see if everything went well */
     if (!$x509_crl->validateSignature(false)) {
-        /* phpseclib2 not throws exceptions on validation fail. let's try to guess */
-        if (openssl_pkey_get_details(openssl_pkey_get_private($ca_str_key))['type'] === 0) {
-            syslog(LOG_ERR, "Cert revocation error: CRL validation failed at first step.");
-        } else {
-            /* phpseclib2 Crypt not supporting ECDSA / ECDH algorithms. May be the reason of sign/validateion fail */
-            syslog(LOG_ERR, "Cert revocation error: Only RSA key type currently supported for CRL signing.");
-        }
+        syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid');
         return false;
     }
 
     if (is_array($crl['cert']) && (count($crl['cert']) > 0)) {
         foreach ($crl['cert'] as $cert) {
             /* load the certificate in an x509 container to get its serial number and validate its signature */
-            $x509_cert = new \phpseclib\File\X509();
+            $x509_cert = new X509();
             $x509_cert->loadCA($ca_str_crt);
             $raw_cert = $x509_cert->loadX509(base64_decode($cert['crt']));
             if (!$x509_cert->validateSignature(false)) {
