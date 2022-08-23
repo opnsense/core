@@ -133,11 +133,11 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 	exit 0
 elif [ "${DO_COMMAND}" = "-l" ]; then
 	if [ -z "${IF}" ]; then
-		EX="*"
-		IF="*"
+		EX=".*"
+		IF="[^:]*"
 	fi
 
-	MATCHES=$(find -s /tmp -name "${IF}_${MD}${EX}" -or -name "${IF}:*_${MD}${EX}")
+	MATCHES=$(find /tmp -regex ".*/${IF}:.*_${MD}${EX}"; find /tmp -regex ".*/${IF}_${MD}${EX}")
 	RESULTS=
 
 	for MATCH in ${MATCHES}; do
@@ -146,7 +146,7 @@ elif [ "${DO_COMMAND}" = "-l" ]; then
 		IF=${IF%%:*}
 		MD=${FILE##*_}
 
-		# suffix :slaac sorts before plain interface
+		# suffix :slaac matched before plain interface
 		# so we can export the resulting file name first
 		# and overwrite later
 		if [ -z "$(eval echo \${${IF}_${MD}})" ]; then
