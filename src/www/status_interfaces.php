@@ -125,30 +125,21 @@ include("head.inc");
 <?php endif ?>
                       </td>
                     </tr>
-<?php if (!empty($ifinfo['dhcplink']) && !empty($ifinfo['enable'])): ?>
+<?php if ((!empty($ifinfo['dhcplink']) || !empty($ifinfo['dhcp6link'])) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
                         <form name="dhcplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
-                          <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
-                          <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <input type="hidden" name="status" value="<?= ($ifinfo['dhcplink'] == "up" || $ifinfo['dhcp6link'] == "up") ? gettext("up") : gettext("down") ?>" />
+                          <?php if (!empty($ifinfo['dhcplink'])): ?>
+                            <?= gettext("DHCPv4 ") ?><?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <?php endif ?>
+                          <?php if (!empty($ifinfo['dhcp6link'])): ?>
+                            <?= gettext("DHCPv6 ") ?><?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
+                          <?php endif ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
-                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
-                        </form>
-                      </td>
-                    </tr>
-<?php endif ?>
-<?php if (!empty($ifinfo['dhcp6link']) && !empty($ifinfo['enable'])): ?>
-                    <tr>
-                      <td> <?=gettext("DHCP6");?></td>
-                      <td>
-                        <form name="dhcp6link_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
-                          <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
-                          <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
-                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
-                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= ($ifinfo['dhcplink'] == "up" || $ifinfo['dhcp6link'] == "up") ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
