@@ -27,14 +27,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function phpseclib_autoload($namespace, $dir) {
+function phpseclib_autoload($namespace, $dir)
+{
     $split = '\\';
-    $ns = trim($namespace, DIRECTORY_SEPARATOR.$split);
+    $ns = trim($namespace, DIRECTORY_SEPARATOR . $split);
 
     return spl_autoload_register(
-        function($class) use ($ns, $dir, $split)
-        {
-            $prefix = $ns.$split;
+        function ($class) use ($ns, $dir, $split) {
+            $prefix = $ns . $split;
             $base_dir = $dir . DIRECTORY_SEPARATOR;
             $len = strlen($prefix);
             if (strncmp($prefix, $class, $len)) {
@@ -658,7 +658,7 @@ function crl_update(&$crl)
     try {
         $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
         $ca_cert->setPrivateKey($ca_key);
-    } catch(NoKeyLoadedException) {
+    } catch (NoKeyLoadedException) {
         syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
         return false;
     }
