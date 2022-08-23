@@ -27,12 +27,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('phpseclib/File/X509.php');
-require_once('phpseclib/File/ASN1.php');
-require_once('phpseclib/Math/BigInteger.php');
-require_once('phpseclib/File/ASN1/Element.php');
-require_once('phpseclib/Crypt/RSA.php');
-require_once('phpseclib/Crypt/Hash.php');
+function phpseclib_autoload($namespace, $dir)
+{
+    $split = '\\';
+    $ns = trim($namespace, DIRECTORY_SEPARATOR . $split);
+
+    return spl_autoload_register(
+        function ($class) use ($ns, $dir, $split) {
+            $prefix = $ns . $split;
+            $base_dir = $dir . DIRECTORY_SEPARATOR;
+            $len = strlen($prefix);
+            if (strncmp($prefix, $class, $len)) {
+                return;
+            }
+
+            $relative_class = substr($class, $len);
+
+            $file = $base_dir .
+                str_replace($split, DIRECTORY_SEPARATOR, $relative_class) .
+                '.php';
+
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    );
+}
+
+/* Autoload phpseclib3 and it's dependencies */
+phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
+phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
+
+use phpseclib3\File\X509;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Exception\NoKeyLoadedException;
 
 define("CERT_CRL_STATUS_NOSTATUS", -1);
 define("CERT_CRL_STATUS_UNSPECIFIED", 0);
@@ -612,17 +640,31 @@ function crl_update(&$crl)
     $crl['serial']++;
     $ca_str_crt = base64_decode($ca['crt']);
     $ca_str_key = base64_decode($ca['prv']);
+    if (!openssl_x509_check_private_key($ca_str_crt, $ca_str_key)) {
+        syslog(LOG_ERR, "Cert revocation error: CA keys mismatch");
+        return false;
+    }
 
     /* Load in the CA's cert */
-    $ca_cert = new \phpseclib\File\X509();
+    $ca_cert = new X509();
     $ca_cert->loadX509($ca_str_crt);
+
+    if (!$ca_cert->validateDate()) {
+        syslog(LOG_ERR, 'Cert revocation error: CA certificate invalid: invalid date');
+        return false;
+    }
+
     /* get the private key to sign the new (updated) CRL */
-    $ca_key = new \phpseclib\Crypt\RSA();
-    $ca_key->loadKey($ca_str_key);
-    $ca_cert->setPrivateKey($ca_key);
+    try {
+        $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
+        $ca_cert->setPrivateKey($ca_key);
+    } catch (NoKeyLoadedException $e) {
+        syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
+        return false;
+    }
 
     /* Load the CA for later signature validation */
-    $x509_crl = new \phpseclib\File\X509();
+    $x509_crl = new X509();
     $x509_crl->loadCA($ca_str_crt);
 
     /*
@@ -636,16 +678,18 @@ function crl_update(&$crl)
 
     /* Now validate the CRL to see if everything went well */
     if (!$x509_crl->validateSignature(false)) {
+        syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid');
         return false;
     }
 
     if (is_array($crl['cert']) && (count($crl['cert']) > 0)) {
         foreach ($crl['cert'] as $cert) {
             /* load the certificate in an x509 container to get its serial number and validate its signature */
-            $x509_cert = new \phpseclib\File\X509();
+            $x509_cert = new X509();
             $x509_cert->loadCA($ca_str_crt);
             $raw_cert = $x509_cert->loadX509(base64_decode($cert['crt']));
             if (!$x509_cert->validateSignature(false)) {
+                syslog(LOG_ERR, "Cert revocation error: CA validation failed.");
                 return false;
             }
             /* Get serial number of cert */
@@ -672,10 +716,14 @@ function cert_revoke($cert, &$crl, $reason = CERT_CRL_STATUS_UNSPECIFIED)
     if (!is_crl_internal($crl)) {
         return false;
     }
+    $crl_before = $crl;
     $cert["reason"] = $reason;
     $cert["revoke_time"] = time();
     $crl["cert"][] = $cert;
-    crl_update($crl);
+    if (!crl_update($crl)) {
+        $crl = $crl_before;
+        return false;
+    }
     return true;
 }
 
