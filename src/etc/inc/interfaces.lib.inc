@@ -269,7 +269,7 @@ function legacy_interfaces_details($intf = null)
             foreach (explode(',', $capabilities) as $capability) {
                 $result[$current_interface]["capabilities"][] = strtolower(trim($capability));
             }
-        } elseif (strpos(trim($line), 'options=') !== false) {
+        } elseif (strpos(trim($line), 'options=') === 0) {
             // parse options
             $options = substr($line, strpos($line, '<') + 1, -1);
             foreach (explode(',', $options) as $option) {
@@ -506,13 +506,11 @@ function configure_interface_hardware($ifs, $intf_details = null)
         if (!isset($hwsettings['disablevlanhwfilter']) || $hwsettings['disablevlanhwfilter'] == 1) {
             // probe already selected options
             $selected_opts = [];
-            if (!empty($intf_details['options'])) {
-                foreach ($intf_details['options'] as $opt) {
-                    if ($opt == 'vlan_hwtagging') {
-                        $selected_opts[] = 'vlanhwtag';
-                    } else {
-                        $selected_opts[] = str_replace('_', '', $opt);
-                    }
+            foreach ($intf_details['options'] as $opt) {
+                if ($opt == 'vlan_hwtagging') {
+                    $selected_opts[] = 'vlanhwtag';
+                } else {
+                    $selected_opts[] = str_replace('_', '', $opt);
                 }
             }
             // set one tag at a time to avoid driver issues
