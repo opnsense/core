@@ -727,6 +727,24 @@ function _interfaces_gif_configure($gif)
     }
 }
 
+function interfaces_hardware($verbose = false)
+{
+    if ($verbose) {
+        echo 'Configuring hardware interfaces...';
+        flush();
+    }
+
+    $intf_details = legacy_interfaces_details();
+
+    foreach (array_keys(get_interface_list()) as $device) {
+        configure_interface_hardware($device, $intf_details);
+    }
+
+    if ($verbose) {
+        echo "done.\n";
+    }
+}
+
 function interfaces_configure($verbose = false)
 {
     $interfaces = [];

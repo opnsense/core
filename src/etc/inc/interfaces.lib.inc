@@ -448,7 +448,12 @@ function configure_interface_hardware($ifs, $intf_details = null)
 
     $hwsettings = $config['system'];
 
-    if (strstr($ifs, 'vlan') || strstr($ifs, 'qinq') || strpos($ifs, '/') === 0) {
+    /* XXX this needs fixing, lots of devices are not capable */
+    if (
+        strstr($ifs, 'vlan') || strpos($ifs, 'qinq') === 0 ||
+        strpos($ifs, 'lo') === 0 || strpos($ifs, 'vxlan') === 0 ||
+        strpos($ifs, 'ipsec') === 0 || strpos($ifs, '/') === 0
+    ) {
         /* skip checksumming  */
         return;
     }

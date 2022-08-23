@@ -87,6 +87,7 @@ system_hosts_generate(true);
 system_syslog_start(true);
 
 filter_configure_sync(true, false); /* apply default policy before interface setup */
+interfaces_hardware(true);
 interfaces_configure(true);
 system_resolvconf_generate(true);
 filter_configure_sync(true);
