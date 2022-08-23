@@ -27,7 +27,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('phpseclib/Autoload.php');
+function phpseclib_autoload($namespace, $dir) {
+    $split = '\\';
+    $ns = trim($namespace, DIRECTORY_SEPARATOR.$split);
+
+    return spl_autoload_register(
+        function($class) use ($ns, $dir, $split)
+        {
+            $prefix = $ns.$split;
+            $base_dir = $dir . DIRECTORY_SEPARATOR;
+            $len = strlen($prefix);
+            if (strncmp($prefix, $class, $len)) {
+                return;
+            }
+
+            $relative_class = substr($class, $len);
+
+            $file = $base_dir .
+                str_replace($split, DIRECTORY_SEPARATOR, $relative_class) .
+                '.php';
+
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    );
+}
+
+/* Autoload phpseclib3 and it's dependencies */
+phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
+phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
 
 use phpseclib3\File\X509;
 use phpseclib3\Crypt\PublicKeyLoader;
