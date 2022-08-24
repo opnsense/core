@@ -90,21 +90,13 @@ function filter_core_get_antilockout()
 {
     global $config;
 
-    $lockout_ports = array();
-    $lockout_if = null;
-
     if (isset($config['system']['webgui']['noantilockout'])) {
-        return array();
+        return [];
     }
 
-    if (!empty($config['interfaces']['lan']['if'])) {
-        $lockout_if = 'lan';
-    } elseif (!empty($config['interfaces']['opt1']['if'])) {
-        $lockout_if = 'opt1';
-    } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
-        $lockout_if = 'wan';
-    } else {
-        return array();
+    $lockout_if = get_primary_interface_from_list(array_keys(legacy_config_get_interfaces(['virtual' => false])));
+    if (empty($lockout_if)) {
+        return [];
     }
 
     /*
@@ -118,6 +110,7 @@ function filter_core_get_antilockout()
      *    and no ssh has ever been configured. This is in line
      *    with how the plugin behaves, but probably looks odd.
      */
+    $lockout_ports = [];
     if (empty($config['system']['webgui']['port'])) {
         $lockout_ports[] = $config['system']['webgui']['protocol'] == 'https' ? '443' : '80';
     } else {
@@ -134,13 +127,13 @@ function filter_core_get_antilockout()
     }
 
     if (!count($lockout_ports)) {
-        return array();
+        return [];
     }
 
     sort($lockout_ports);
 
     /* return a convenient one-entry array to iterate over for our callers */
-    return array($lockout_if => $lockout_ports);
+    return [$lockout_if => $lockout_ports];
 }
 
 /**
