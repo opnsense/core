@@ -145,7 +145,7 @@ class ForwardRule extends Rule
 
             // When reflection is enabled our ruleset should cover all
             $interflist = array($tmp['interface']);
-            if (empty($tmp['disabled']) && !$tmp['nordr'] && in_array($tmp['natreflection'], array("purenat", "enable"))) {
+            if (empty($tmp['disabled']) && !$tmp['nordr'] && in_array($tmp['natreflection'] ?? '', ['purenat', 'enable'])) {
                 $is_ipv4 = $this->isIpV4($tmp);
                 $reflinterf = $this->reflectionInterfaces($tmp['interface']);
                 foreach ($reflinterf as $interf) {
