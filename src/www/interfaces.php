@@ -505,10 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
         /* Get wireless modes */
-        $wlanif = get_real_interface($if);
-        if (!does_interface_exist($wlanif)) {
-            interface_wireless_clone($wlanif, $a_interfaces[$if]);
-        }
+        interface_wireless_clone(get_real_interface($a_interfaces[$if]['if']), $a_interfaces[$if]);
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
         $std_wl_copy_fieldnames = array(
           'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna',
@@ -936,11 +933,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_interfaces[$if]['wireless']['mode'] = 'bss';
             }
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
-                if (does_interface_exist(interface_get_wireless_clone($wlanbaseif))) {
-                    $clone_count = 1;
-                } else {
-                    $clone_count = 0;
-                }
+                $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
+                $clone_count = does_interface_exist("{$wlanbaseif}_wlan0") ? 1 : 0;
                 if (!empty($config['wireless']['clone'])) {
                     foreach ($config['wireless']['clone'] as $clone) {
                         if ($clone['if'] == $wlanbaseif) {

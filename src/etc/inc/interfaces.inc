@@ -191,18 +191,12 @@ function interfaces_create_wireless_clones($verbose = false)
 
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         if (isset($config['interfaces'][$if]['wireless'])) {
-            interface_wireless_clone(interface_get_wireless_clone($config['interfaces'][$if]['if']), $config['interfaces'][$if]);
+            interface_wireless_clone(get_real_interface($config['interfaces'][$if]['if']), $config['interfaces'][$if]);
         }
     }
 
     if (isset($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as $clone) {
-            if (empty($clone['cloneif'])) {
-                continue;
-            }
-            if (does_interface_exist($clone['cloneif'])) {
-                continue;
-            }
             interface_wireless_clone($clone['cloneif'], $clone);
         }
     }
@@ -1485,6 +1479,7 @@ function interface_wireless_clone($realif, $wlcfg)
     }
 
     $baseif = interface_get_wireless_base($wlcfg['if']);
+
     if (does_interface_exist($realif)) {
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
         $ifconfig_str = implode(PHP_EOL, $output);
@@ -1508,13 +1503,16 @@ function interface_wireless_clone($realif, $wlcfg)
         legacy_interface_destroy($realif);
 
         log_error("Cloning new wireless interface {$realif}");
+
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret != 0) {
             log_error("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}");
             return false;
         }
+
         file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
     }
+
     return true;
 }
 
@@ -2012,9 +2010,9 @@ EOD;
         $wlregcmd_args = implode(" ", $wlregcmd);
 
         /* build a complete list of the wireless clones for this interface */
-        $clone_list = array();
-        if (does_interface_exist(interface_get_wireless_clone($baseif))) {
-            $clone_list[] = interface_get_wireless_clone($baseif);
+        $clone_list = [];
+        if (does_interface_exist("{$baseif}_wlan0")) {
+            $clone_list[] = "{$baseif}_wlan0";
         }
         if (isset($config['wireless']['clone'])) {
             foreach ($config['wireless']['clone'] as $clone) {
@@ -3437,15 +3435,6 @@ function interface_get_wireless_base($wlif)
     }
 }
 
-function interface_get_wireless_clone($wlif)
-{
-    if (!strstr($wlif, '_wlan')) {
-        return $wlif . '_wlan0';
-    } else {
-        return $wlif;
-    }
-}
-
 function get_real_interface($interface = 'wan', $family = 'all')
 {
     global $config;
@@ -3453,14 +3442,15 @@ function get_real_interface($interface = 'wan', $family = 'all')
     $realif = $interface;
 
     switch ($interface) {
+        /* XXX legacy cruft starts here */
+        case 'enc0':
         case 'openvpn':
         case 'ppp':
-            $realif = $interface;
             break;
         case 'ipsec':
-        case 'enc0':
             $realif = 'enc0';
             break;
+        /* XXX legacy cruft ends here */
         default:
             if (empty($config['interfaces'][$interface])) {
                 /* assume the interface exists, most code does not verify our return value anyway */
@@ -3469,22 +3459,17 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
             $cfg = &config_read_array('interfaces', $interface);
 
+            $realif = $cfg['if'];
+
+            if (isset($cfg['wireless']) && !strstr($cfg['if'], '_wlan')) {
+                $realif .= '_wlan0';
+            }
+
             if ($family == 'inet6') {
                 switch ($cfg['ipaddrv6'] ?? '') {
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
-                        break;
-                    case 'l2tp':
-                    case 'ppp':
-                    case 'pppoe':
-                    case 'pptp':
-                        if (isset($cfg['wireless'])) {
-                            /* XXX in nominal case $cfg['if'] is already correct */
-                            $realif = interface_get_wireless_clone($cfg['if']);
-                        } else {
-                            $realif = $cfg['if'];
-                        }
                         break;
                     default:
                         switch ($cfg['ipaddr'] ?? '') {
@@ -3499,27 +3484,13 @@ function get_real_interface($interface = 'wan', $family = 'all')
                                 }
                                 break;
                             default:
-                                if (isset($cfg['wireless'])) {
-                                    /* XXX in nominal case $cfg['if'] is already correct */
-                                    $realif = interface_get_wireless_clone($cfg['if']);
-                                } else {
-                                    $realif = $cfg['if'];
-                                }
+                                /* already set in IPv4 default case */
                                 break;
                         }
                         break;
                 }
-            } else {
-                // Wireless cloned NIC support (FreeBSD 8+)
-                // interface name format: $parentnic_wlanparentnic#
-                // example: ath0_wlan0
-                if (isset($cfg['wireless'])) {
-                    /* XXX in nominal case $cfg['if'] is already correct */
-                    $realif = interface_get_wireless_clone($cfg['if']);
-                } else {
-                    $realif = $cfg['if'];
-                }
             }
+
             break;
     }
 
