@@ -916,6 +916,12 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
         }
     }
 
+    /* delete null route for delegated prefix */
+    $oldpd = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -i %s -6p', $realifv6)));
+    if (!empty($oldpd)) {
+        mwexecf('/sbin/route -6 delete %s', $oldpd);
+    }
+
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
@@ -2785,13 +2791,20 @@ INFOREQ|REQUEST)
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
+    if [ -n \${PDINFO} ]; then
+      route -6 add \${PDINFO} ::1
+    fi
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    ARGS=\$(/usr/local/sbin/ifctl -i ${wanif} -6p)
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
+    if [ -n \${ARGS} ]; then
+      route -6 delete \${ARGS}
+    fi
     ;;
 *)
     ;;
