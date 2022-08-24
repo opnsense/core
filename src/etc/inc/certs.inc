@@ -658,7 +658,7 @@ function crl_update(&$crl)
     try {
         $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
         $ca_cert->setPrivateKey($ca_key);
-    } catch (NoKeyLoadedException) {
+    } catch (NoKeyLoadedException $e) {
         syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
         return false;
     }
