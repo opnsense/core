@@ -405,7 +405,7 @@ EOD;
             $config['nat']['outbound']['mode'] = 'automatic';
         }
 
-        if (in_array($lanif, $iflist_wlan)) {
+        if (in_array($config['interfaces']['lan']['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'lan', 'wireless');
             $config['interfaces']['lan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['lan']['wireless'])) {
@@ -441,7 +441,7 @@ EOD;
             $config['interfaces']['wan']['blockpriv'] = true;
         }
 
-        if (in_array($wanif, $iflist_wlan)) {
+        if (in_array($config['interfaces']['wan']['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'wan', 'wireless');
             $config['interfaces']['wan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['wan']['wireless'])) {
@@ -457,7 +457,7 @@ EOD;
         config_read_array('interfaces', 'opt' . ($i + 1));
         $config['interfaces']['opt' . ($i + 1)]['if'] = $optif[$i];
 
-        if (in_array($optif[$i], $iflist_wlan)) {
+        if (in_array($config['interfaces']['opt' . ($i + 1)]['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
             $config['interfaces']['opt' . ($i + 1)]['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
