@@ -34,6 +34,40 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+function match_wireless_interface($int)
+{
+    $wireless_prefix = [
+        'an',
+        'ath',
+        'bwi',
+        'bwn',
+        'ipw',
+        'iwi',
+        'iwlwifi',
+        'iwm',
+        'iwn',
+        'malo',
+        'mwl',
+        'ndis',
+        'otus',
+        'ral',
+        'rsu',
+        'rtwn',
+        'rum',
+        'run',
+        'uath',
+        'upgt',
+        'ural',
+        'urtw',
+        'wi',
+        'wlan',
+        'wpi',
+        'zyd',
+    ];
+
+    return preg_match('/^(' . implode('|', $wireless_prefix) . ')/', $int);
+}
+
 function link_interface_to_group($int)
 {
     global $config;

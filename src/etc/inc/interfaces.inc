@@ -91,40 +91,6 @@ function convert_128bit_to_ipv6($ip6bin)
     return $ip6addr;
 }
 
-function match_wireless_interface($int)
-{
-    $wireless_prefix = [
-        'an',
-        'ath',
-        'bwi',
-        'bwn',
-        'ipw',
-        'iwi',
-        'iwlwifi',
-        'iwm',
-        'iwn',
-        'malo',
-        'mwl',
-        'ndis',
-        'otus',
-        'ral',
-        'rsu',
-        'rtwn',
-        'rum',
-        'run',
-        'uath',
-        'upgt',
-        'ural',
-        'urtw',
-        'wi',
-        'wlan',
-        'wpi',
-        'zyd',
-    ];
-
-    return preg_match('/^(' . implode('|', $wireless_prefix) . ')/', $int);
-}
-
 function interfaces_bring_up($interface)
 {
     legacy_interface_flags($interface, 'up');
@@ -132,12 +98,7 @@ function interfaces_bring_up($interface)
 
 function does_interface_exist($interface)
 {
-    $ints = legacy_interface_listget();
-    if (empty($interface) || $ints == null || !in_array($interface, $ints)) {
-        return false;
-    } else {
-        return true;
-    }
+    return !empty($interface) && in_array($interface, legacy_interface_listget());
 }
 
 function interfaces_loopback_configure($verbose = false)
@@ -2070,7 +2031,7 @@ EOD;
 
         /* find which clones are up and bring them down */
         $ifup = legacy_interface_listget('up');
-        $clones_up = array();
+        $clones_up = [];
         foreach ($clone_list as $clone_if) {
             if (in_array($clone_if, $ifup)) {
                 $clones_up[] = $clone_if;
@@ -3523,7 +3484,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
                     case 'ppp':
                     case 'pppoe':
                     case 'pptp':
-                        if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
+                        if (isset($cfg['wireless'])) {
+                            /* XXX in nominal case $cfg['if'] is already correct */
                             $realif = interface_get_wireless_clone($cfg['if']);
                         } else {
                             $realif = $cfg['if'];
@@ -3542,7 +3504,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
                                 }
                                 break;
                             default:
-                                if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
+                                if (isset($cfg['wireless'])) {
+                                    /* XXX in nominal case $cfg['if'] is already correct */
                                     $realif = interface_get_wireless_clone($cfg['if']);
                                 } else {
                                     $realif = $cfg['if'];
@@ -3555,7 +3518,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
                 // Wireless cloned NIC support (FreeBSD 8+)
                 // interface name format: $parentnic_wlanparentnic#
                 // example: ath0_wlan0
-                if (isset($cfg['wireless']) || match_wireless_interface($cfg['if'])) {
+                if (isset($cfg['wireless'])) {
+                    /* XXX in nominal case $cfg['if'] is already correct */
                     $realif = interface_get_wireless_clone($cfg['if']);
                 } else {
                     $realif = $cfg['if'];
@@ -3806,15 +3770,10 @@ function is_interface_wireless($interface)
     global $config;
 
     $friendly = convert_real_interface_to_friendly_interface_name($interface);
-    if (!isset($config['interfaces'][$friendly]['wireless'])) {
-        if (match_wireless_interface($interface)) {
-            config_read_array('interfaces', $friendly, 'wireless');
-            return true;
-        }
-        return false;
-    }
 
-    return true;
+    /* XXX we might consider checking clones if wireless node is not set by default */
+
+    return isset($config['interfaces'][$friendly]['wireless']);
 }
 
 function get_interface_mac($interface, $ifconfig_details = null)
@@ -3889,8 +3848,8 @@ function get_interfaces_info($include_unlinked = false)
     $all_intf_stats = legacy_interface_stats();
     $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
-    $result = array();
-    $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $result = [];
+    $interfaces = legacy_config_get_interfaces(['virtual' => false]);
     $known_interfaces = [];
     foreach (array_keys($interfaces) as $ifdescr) {
         $interfaces[$ifdescr]['if'] = get_real_interface($ifdescr);
@@ -3913,8 +3872,8 @@ function get_interfaces_info($include_unlinked = false)
     }
 
     foreach ($interfaces as $ifdescr => $ifinfo) {
-        $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
-        $ifinfo['statusv6'] = (is_array($ifup) && in_array($ifinfo['ifv6'], $ifup)) ? 'up' : 'down';
+        $ifinfo['status'] = in_array($ifinfo['if'], $ifup) ? 'up' : 'down';
+        $ifinfo['statusv6'] = in_array($ifinfo['ifv6'], $ifup) ? 'up' : 'down';
 
         if (!empty($all_intf_details[$ifinfo['if']])) {
             if (
