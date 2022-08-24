@@ -803,7 +803,7 @@ function get_primary_interface_from_list($iflist = null)
     }
 
     /* we pull the primary entry from a "priority" list: lan, optX or wan */
-    sort($iflist);
+    natsort($iflist);
 
     foreach ($iflist as $if) {
         if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
