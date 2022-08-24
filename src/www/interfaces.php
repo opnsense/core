@@ -257,13 +257,13 @@ function test_wireless_capability($if, $cap)
     return false;
 }
 
-function get_wireless_modes($interface) {
-    /* return wireless modes and channels */
-    $wireless_modes = array();
+/* return wireless modes and channels */
+function get_wireless_modes($interface)
+{
+    $wireless_modes = [];
 
     $cloned_interface = get_real_interface($interface);
-
-    if ($cloned_interface && is_interface_wireless($cloned_interface)) {
+    if ($cloned_interface) {
         $chan_list = "/sbin/ifconfig {$cloned_interface} list chan";
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
@@ -298,15 +298,17 @@ function get_wireless_modes($interface) {
             }
         }
     }
-    return($wireless_modes);
+
+    return $wireless_modes;
 }
 
 /* return channel numbers, frequency, max txpower, and max regulation txpower */
-function get_wireless_channel_info($interface) {
-    $wireless_channels = array();
+function get_wireless_channel_info($interface)
+{
+    $wireless_channels = [];
 
     $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface && is_interface_wireless($cloned_interface)) {
+    if ($cloned_interface) {
         $chan_list = "/sbin/ifconfig {$cloned_interface} list txpower";
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
@@ -321,7 +323,8 @@ function get_wireless_channel_info($interface) {
             }
         }
     }
-    return($wireless_channels);
+
+    return $wireless_channels;
 }
 
 $ifdescrs = legacy_config_get_interfaces(['virtual' => false]);

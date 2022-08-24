@@ -190,9 +190,8 @@ function interfaces_create_wireless_clones($verbose = false)
     }
 
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        $realif = $config['interfaces'][$if]['if'];
-        if (is_interface_wireless($realif)) {
-            interface_wireless_clone(interface_get_wireless_clone($realif), $config['interfaces'][$if]);
+        if (isset($config['interfaces'][$if]['wireless'])) {
+            interface_wireless_clone(interface_get_wireless_clone($config['interfaces'][$if]['if']), $config['interfaces'][$if]);
         }
     }
 
@@ -857,7 +856,7 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
      * interface is down.  They will also use 100% CPU if running after
      * the wireless clone gets deleted.
      */
-    if (!empty($ifcfg['wireless'])) {
+    if (isset($ifcfg['wireless'])) {
         kill_wpasupplicant($realif);
         kill_hostapd($realif);
     }
@@ -1537,10 +1536,6 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX k
         'txpower',
     );
 
-    if (!is_interface_wireless($ifcfg['if'])) {
-        return;
-    }
-
     $baseif = interface_get_wireless_base($ifcfg['if']);
 
     foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
@@ -1607,7 +1602,7 @@ function interface_wireless_configure($if, &$wancfg)
 {
     global $config;
 
-    if (empty($wancfg['wireless'])) {
+    if (!isset($wancfg['wireless'])) {
         return;
     }
 
@@ -3759,23 +3754,6 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
     return $ipv6;
 }
 
-/****f* interfaces/is_interface_wireless
- * NAME
- *   is_interface_wireless - Returns if an interface is wireless
- * RESULT
- *   $tmp       - Returns if an interface is wireless
- ******/
-function is_interface_wireless($interface)
-{
-    global $config;
-
-    $friendly = convert_real_interface_to_friendly_interface_name($interface);
-
-    /* XXX we might consider checking clones if wireless node is not set by default */
-
-    return isset($config['interfaces'][$friendly]['wireless']);
-}
-
 function get_interface_mac($interface, $ifconfig_details = null)
 {
     $intf_details = [];
@@ -4005,7 +3983,7 @@ function get_interfaces_info($include_unlinked = false)
 
         if ($ifinfo['status'] == "up") {
             $wifconfiginfo = array();
-            if (is_interface_wireless($ifdescr)) {
+            if (isset($config['interfaces'][$ifdescr]['wireless'])) {
                 exec("/sbin/ifconfig {$ifinfo['if']} list sta", $wifconfiginfo);
                 array_shift($wifconfiginfo);
             }
