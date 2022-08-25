@@ -1645,7 +1645,7 @@ function interface_wireless_configure($if, &$wancfg)
     /* Make sure it's up */
     $wlcmd[] = "up";
 
-    if (!empty($wlcfg['standard'])) {
+    if (isset($wlcfg['standard'])) {
         /* Set a/b/g standard */
         $standard = str_replace(" Turbo", "", $wlcfg['standard']);
         $wlcmd[] = "mode " . escapeshellarg($standard);
@@ -1659,13 +1659,15 @@ function interface_wireless_configure($if, &$wancfg)
         }
     }
 
-    /* Set ssid */
-    if ($wlcfg['ssid']) {
+    if (isset($wlcfg['ssid'])) {
+        /* Set ssid */
         $wlcmd[] = "ssid " . escapeshellarg($wlcfg['ssid']);
     }
 
-    /* Set 802.11g protection mode */
-    $wlcmd[] = "protmode " . escapeshellarg($wlcfg['protmode']);
+    if (isset($wlcfg['protmode'])) {
+        /* Set 802.11g protection mode */
+        $wlcmd[] = "protmode " . escapeshellarg($wlcfg['protmode']);
+    }
 
     /* set wireless channel value */
     if (isset($wlcfg['channel'])) {
@@ -1692,14 +1694,14 @@ function interface_wireless_configure($if, &$wancfg)
     }
 
     /* Set wireless hostap mode */
-    if ($wlcfg['mode'] == "hostap") {
+    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'hostap') {
         $wlcmd[] = "mediaopt hostap";
     } else {
         $wlcmd[] = "-mediaopt hostap";
     }
 
     /* Set wireless adhoc mode */
-    if ($wlcfg['mode'] == "adhoc") {
+    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'adhoc') {
         $wlcmd[] = "mediaopt adhoc";
     } else {
         $wlcmd[] = "-mediaopt adhoc";
@@ -1750,8 +1752,8 @@ function interface_wireless_configure($if, &$wancfg)
     }
 
     /* set up wep if enabled */
-    $wepset = "";
     if (isset($wlcfg['wep']['enable']) && is_array($wlcfg['wep']['key'])) {
+        $wepset = '';
         switch ($wlcfg['wpa']['auth_algs']) {
             case "1":
                 $wepset .= "authmode open wepmode on ";
@@ -1772,14 +1774,14 @@ function interface_wireless_configure($if, &$wancfg)
         }
         $wlcmd[] = $wepset;
     } else {
-        $wlcmd[] = "authmode open wepmode off ";
+        $wlcmd[] = 'authmode open wepmode off';
     }
 
     kill_wpasupplicant($if);
     kill_hostapd($if);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
-    switch ($wlcfg['mode']) {
+    switch ($wlcfg['mode'] ?? 'bss') {
         case 'bss':
             $authentication = array();
             if (isset($wlcfg['wpa']['enable'])) {
