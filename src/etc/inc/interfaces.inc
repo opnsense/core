@@ -1604,6 +1604,11 @@ function interface_wireless_configure($if, &$wancfg)
         return;
     }
 
+    if (empty($wancfg['wireless'])) {
+        /* if an empty node reset to empty array to avoid PHP 8+ issues */
+        $wancfg['wireless'] = [];
+    }
+
     /* XXX interface_wireless_clone() and interface_sync_wireless_clones() need work */
 
     // Clone wireless nic if needed.
