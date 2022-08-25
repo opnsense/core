@@ -1502,8 +1502,6 @@ function interface_wireless_clone($realif, $wlcfg)
     if ($needs_clone) {
         legacy_interface_destroy($realif);
 
-        log_error("Cloning new wireless interface {$realif}");
-
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret != 0) {
             log_error("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}");
