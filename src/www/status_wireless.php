@@ -86,12 +86,12 @@ include("head.inc");
                 $counter = 0;
                 foreach ($states as $state):
                   /* Split by Mac address for the SSID Field */
-                  $split = preg_split("/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i", $state);
-                  preg_match("/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i", $state, $bssid);
+                  $split = preg_split('/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i', $state, 2);
+                  preg_match('/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i', $state, $bssid);
                   $ssid = $split[0];
                   $bssid = $bssid[0];
                   /* Split the rest by using spaces for this line using the 2nd part */
-                  $split = preg_split("/[ ]+/i", $split[1], 5);
+                  $split = preg_split("/[ ]+/i", $split[1], 6);
                   $channel = $split[1];
                   $rate = $split[2];
                   $rssi = $split[3];
