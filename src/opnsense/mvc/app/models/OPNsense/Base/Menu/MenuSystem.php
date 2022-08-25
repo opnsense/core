@@ -224,7 +224,7 @@ class MenuSystem
                     $iftargets['if'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // Wireless status tab
-                if (!empty($node->wireless)) {
+                if (isset($node->wireless)) {
                     $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // "Firewall: Rules" menu tab...
