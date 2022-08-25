@@ -275,14 +275,10 @@ EOD;
         $i = 0;
 
         while (1) {
-            if ($optif[$i]) {
+            if (isset($optif[$i])) {
                 $i++;
             }
             $io = $i + 1;
-
-            if ($config['interfaces']['opt' . $io]['descr']) {
-                printf("\nOptional interface %s description found: %s", $io, $config['interfaces']['opt' . $io]['descr']);
-            }
 
             printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
                 "(or nothing if finished): ", $io);
@@ -462,11 +458,6 @@ EOD;
             $config['interfaces']['opt' . ($i + 1)]['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
             unset($config['interfaces']['opt' . ($i + 1)]['wireless']);
-        }
-
-        if (empty($config['interfaces']['opt' . ($i + 1)]['descr'])) {
-            $config['interfaces']['opt' . ($i + 1)]['descr'] = "OPT" . ($i + 1);
-            unset($config['interfaces']['opt' . ($i + 1)]['enable']);
         }
     }
 
