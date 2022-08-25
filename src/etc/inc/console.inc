@@ -107,7 +107,9 @@ function _set_networking_interfaces_ports($probe = false)
 
     foreach ($iflist_all as $iface => $ifa) {
         $iflist[$iface] = $ifa;
-        interfaces_bring_up($iface);
+        if (!in_array($iface, $iflist_wlan)) {
+            interfaces_bring_up($iface);
+        }
     }
 
     if ($probe) {
