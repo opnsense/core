@@ -2242,8 +2242,21 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* apply interface hardware settings (tso, lro, ..) */
-    /* XXX maybe spoofmac, media and promisc can live here too? */
     configure_interface_hardware($realhwif, $ifconfig_details);
+
+    /*
+     * Unconditional actions on interface include:
+     *
+     * 1. Disable accepting router advertisements (SLAAC) on IPv4 device
+     * 2. Set interface description on both IPv4 and IPv6 device (if any)
+     *
+     * In most cases the IPv6 device is the same as IPv4.
+     */
+    $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$realif, $interface_descr]);
+    if ($realif != $realifv6) {
+        mwexecf('/sbin/ifconfig %s inet6 description %s', [$realifv6, $interface_descr]);
+    }
 
     switch ($wancfg['ipaddr'] ?? '') {
         case 'dhcp':
@@ -2260,49 +2273,34 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
-    /*
-     * Unconditional actions on interface include:
-     *
-     * 1. Disable accepting router advertisements (SLAAC)
-     * 2. Set interface description
-     */
-    $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$realif, $interface_descr]);
+    switch ($wancfg['ipaddrv6'] ?? '') {
+        case 'slaac':
+        case 'dhcp6':
+            /* XXX move these to tunables maybe as they are global anyway */
+            set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
+            set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
-    if (isset($wancfg['ipaddrv6'])) {
-        switch ($wancfg['ipaddrv6']) {
-            case 'slaac':
-            case 'dhcp6':
-                /* accept router advertisements for this interface */
-                set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-                log_error("Accept router advertisements on interface {$realifv6}");
-                mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
 
-                /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
-                set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
-
-                if (!isset($wancfg['dhcp6usev4iface'])) {
-                    interface_dhcpv6_prepare($interface, $wancfg);
-                    interface_dhcpv6_configure($interface, $wancfg);
-                }
-                break;
-            case '6rd':
-                interface_6rd_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            case '6to4':
-                interface_6to4_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            case 'track6':
-                interface_track6_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            default:
-                if (!isset($wancfg['dhcp6usev4iface'])) {
-                    interface_static6_configure($interface, $wancfg);
-                }
-                break;
-        }
-
-        /* XXX we do not disable accept_rtadv on $realifv6 != $realif where unused */
+            if (!isset($wancfg['dhcp6usev4iface'])) {
+                interface_dhcpv6_prepare($interface, $wancfg);
+                interface_dhcpv6_configure($interface, $wancfg);
+            }
+            break;
+        case '6rd':
+            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case '6to4':
+            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case 'track6':
+            interface_track6_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        default:
+            if (!isset($wancfg['dhcp6usev4iface'])) {
+                interface_static6_configure($interface, $wancfg);
+            }
+            break;
     }
 
     if (!empty($wancfg['mtu'])) {
