@@ -561,23 +561,6 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
 
-    // TODO: move to pptpd plugin when filter.lib.inc is part of the standard release
-    $pptpdcfg = $config['pptpd'];
-    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server') {
-        $fw->registerFilterRule(
-            5,
-            array('direction' => 'in', 'interface' => 'wan', 'statetype' => 'modulate','protocol' => 'tcp',
-                'to' => '(self)', 'to_port' => '1723', 'quick' => false, 'descr' => 'allow pptpd'),
-            $defaults['pass']
-        );
-        $fw->registerFilterRule(
-            5,
-            array('direction' => 'in', 'interface' => 'wan', 'statetype' => 'modulate',
-                'protocol' => 'gre', 'descr' => 'allow pptpd', 'quick' => false),
-            $defaults['pass']
-        );
-    }
-
     // [out from this Firewall, using the selected gateway].
     // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.

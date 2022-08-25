@@ -93,7 +93,6 @@ $areas = array(
     'opendns' => gettext('DNS Filter'),
     'openvpn' => gettext('OpenVPN'),
     'ppps' => gettext('Point-to-Point Devices'),
-    'pptpd' => gettext('PPTP Server'),
     'proxyarp' => gettext('Proxy ARP'),
     'rrddata' => gettext('RRD Data'),
     'snmpd' => gettext('SNMP Server'),
