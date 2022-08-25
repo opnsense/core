@@ -2244,20 +2244,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif, $ifconfig_details);
 
-    /*
-     * Unconditional actions on interface include:
-     *
-     * 1. Disable accepting router advertisements (SLAAC) on IPv4 device
-     * 2. Set interface description on both IPv4 and IPv6 device (if any)
-     *
-     * In most cases the IPv6 device is the same as IPv4.
-     */
-    $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$realif, $interface_descr]);
-    if ($realif != $realifv6) {
-        mwexecf('/sbin/ifconfig %s inet6 description %s', [$realifv6, $interface_descr]);
-    }
-
     switch ($wancfg['ipaddr'] ?? '') {
         case 'dhcp':
             interface_dhcp_configure($interface);
@@ -2273,6 +2259,17 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
+    /*
+     * Unconditional actions on interface include:
+     *
+     * 1. Disable accepting router advertisements (SLAAC) on main device
+     * 2. Set interface description to get more useful ifconfig output
+     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
+     *    already does that so at this point try to be more consistent.
+     */
+    $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
+
     switch ($wancfg['ipaddrv6'] ?? '') {
         case 'slaac':
         case 'dhcp6':
@@ -2280,7 +2277,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
             set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
 
             if (!isset($wancfg['dhcp6usev4iface'])) {
                 interface_dhcpv6_prepare($interface, $wancfg);
@@ -2301,6 +2298,15 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 interface_static6_configure($interface, $wancfg);
             }
             break;
+    }
+
+    /*
+     * In most cases the IPv6 device is the same as IPv4.
+     * If not the safe spot to add a description/up is below
+     * when the interface was most likely created.
+     */
+    if ($realif != $realifv6) {
+        mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
     }
 
     if (!empty($wancfg['mtu'])) {
@@ -2326,7 +2332,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     interfaces_vips_configure($interface);
-    interfaces_bring_up($realif);
 
     /* XXX device plugin hook */
     $gres = link_interface_to_gre($interface);
