@@ -34,14 +34,26 @@ IF=
 
 flush_routes()
 {
-	if [ "${MD}" != "nameserver" -o ! -f "${FILE}" ]; then
+	if [ ! -f ${FILE} ]; then
 		return
 	fi
 
-	for CONTENT in $(cat ${FILE}); do
-		# flush routes here to make sure they are recycled properly
-		route delete -${AF} "${CONTENT}"
-	done
+	case ${MD} in
+	nameserver)
+		# flush host routes here to make sure they are recycled
+		# properly although maybe later we need to avoid this
+		# to not cause an inconsistent routing table state.
+		for CONTENT in $(cat ${FILE}); do
+			route delete -${AF} "${CONTENT}"
+		done
+		;;
+	prefix)
+		# flush null route to delegated prefix
+		route delete -${AF} "$(cat ${FILE})"
+		;;
+	*)
+		;;
+	esac
 }
 
 # default to IPv4 with nameserver mode
@@ -168,7 +180,7 @@ if [ -z "${IF}" ]; then
 	RESULTS=
 
 	# list all interfaces that have the requested file
-	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
+	for FOUND in $(find -s /tmp -name ${FILE#/tmp/}); do
 		FOUND=${FOUND#/tmp/}
 		FOUND=${FOUND%_*}
 		FOUND=${FOUND%:*}
@@ -193,6 +205,10 @@ fi
 
 for CONTENT in ${DO_CONTENTS}; do
 	echo "${CONTENT}" >> ${FILE}
+	# null route handling for delegated prefix
+	if [ ${MD} = "prefix" ]; then
+		route add -${AF} ${CONTENT} ::1
+	fi
 done
 
 if [ -n "${DO_COMMAND}${DO_CONTENT}" ]; then
