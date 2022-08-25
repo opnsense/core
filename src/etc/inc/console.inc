@@ -372,7 +372,7 @@ EOD;
      * XXX Ideally, at this point we'd import the default settings here,
      * not hardcode them.  It was this way before, so fixing for now.
      */
-    if ($lanif) {
+    if ($lanif != '') {
         $new = false;
 
         if (!isset($config['interfaces']['lan'])) {
@@ -427,14 +427,14 @@ EOD;
         unset($config['interfaces']['lan']);
     }
 
-    if ($wanif) {
+    if ($wanif != '') {
         config_read_array('interfaces', 'wan');
         $config['interfaces']['wan']['if'] = $wanif;
         $config['interfaces']['wan']['enable'] = true;
         $config['interfaces']['wan']['ipaddr'] = 'dhcp';
         $config['interfaces']['wan']['ipaddrv6'] = 'dhcp6';
         $config['interfaces']['wan']['blockbogons'] = true;
-        if ($lanif) {
+        if ($lanif != '') {
             $config['interfaces']['wan']['blockpriv'] = true;
         }
 
@@ -453,6 +453,7 @@ EOD;
     for ($i = 0; $i < count($optif); $i++) {
         config_read_array('interfaces', 'opt' . ($i + 1));
         $config['interfaces']['opt' . ($i + 1)]['if'] = $optif[$i];
+        $config['interfaces']['opt' . ($i + 1)]['enable'] = true;
 
         if (in_array($config['interfaces']['opt' . ($i + 1)]['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
