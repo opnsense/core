@@ -2068,7 +2068,6 @@ EOD;
         }
     }
 
-
     if (!empty($standard)) {
         /*
          * The mode must be specified in a separate command before ifconfig
