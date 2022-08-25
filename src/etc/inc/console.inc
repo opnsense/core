@@ -218,16 +218,16 @@ EOD;
 
         if ($wanif == 'a') {
             $wanif = autodetect_interface('WAN', $fp);
-            if (!$wanif) {
+            if ($wanif == '') {
                 continue;
             }
         }
 
         if (!array_key_exists($wanif, $iflist_all)) {
             printf("\nInvalid interface name '%s'\n", $wanif);
-            unset($wanif);
+            $wanif = '';
         }
-    } while (!$wanif);
+    } while ($wanif == '');
 
     do {
         echo "\nEnter the LAN interface name or 'a' for auto-detection\n" .
@@ -248,7 +248,7 @@ EOD;
 
         if ($lanif == 'a') {
             $lanif = autodetect_interface('LAN', $fp);
-            if (!$lanif) {
+            if ($lanif == '') {
                 continue;
             }
         }
@@ -258,15 +258,15 @@ EOD;
             unset($lanif);
         }
 
-        if ($wanif && $lanif == $wanif) {
-            unset($lanif);
+        if ($wanif != '' && $lanif == $wanif) {
+            $lanif = '';
             echo <<<EOD
 
 Error: you cannot assign the same interface name twice!
 
 EOD;
         }
-    } while (!$lanif);
+    } while ($lanif == '');
 
     $done = false;
     while (!$done) {
@@ -298,12 +298,11 @@ EOD;
             }
 
             if ($optif[$i] == 'a') {
-                $ad = autodetect_interface('OPT' . $io, $fp);
-                if (!$ad) {
+                $optif[$i] = autodetect_interface('OPT' . $io, $fp);
+                if ($optif[$i] == '') {
                     unset($optif[$i]);
                     continue;
                 }
-                $optif[$i] = $ad;
             }
 
             if (!array_key_exists($optif[$i], $iflist_all)) {
@@ -313,12 +312,12 @@ EOD;
             }
 
             /* check for double assignments */
-            $ifarr = array_merge(array($lanif, $wanif), $optif);
+            $ifarr = array_merge([$lanif, $wanif], $optif);
             $again = false;
 
             for ($k = 0; $k < (count($ifarr) - 1); $k++) {
                 for ($j = ($k + 1); $j < count($ifarr); $j++) {
-                    if ($ifarr[$k] == $ifarr[$j]) {
+                    if ($ifarr[$k] != '' && $ifarr[$k] == $ifarr[$j]) {
                         $again = true;
                         echo <<<EOD
 
@@ -503,7 +502,7 @@ EOD;
 
     echo "No link-up detected.\n";
 
-    return false;
+    return '';
 }
 
 function lagg_setup($iflist, $fp)
