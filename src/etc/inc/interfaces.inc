@@ -2314,46 +2314,51 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /*
      * Unconditional actions on interface include:
      *
-     * 1. Disable accepting router advertisements (SLAAC)
-     * 2. Set interface description
+     * 1. Disable accepting router advertisements (SLAAC) on main device
+     * 2. Set interface description to get more useful ifconfig output
+     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
+     *    already does that so at this point try to be more consistent.
      */
     $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$realif, $interface_descr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
 
-    if (isset($wancfg['ipaddrv6'])) {
-        switch ($wancfg['ipaddrv6']) {
-            case 'slaac':
-            case 'dhcp6':
-                /* accept router advertisements for this interface */
-                set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-                log_error("Accept router advertisements on interface {$realifv6}");
-                mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled', $realifv6);
+    switch ($wancfg['ipaddrv6'] ?? '') {
+        case 'slaac':
+        case 'dhcp6':
+            /* XXX move these to tunables maybe as they are global anyway */
+            set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
+            set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
-                /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
-                set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
 
-                if (!isset($wancfg['dhcp6usev4iface'])) {
-                    interface_dhcpv6_prepare($interface, $wancfg);
-                    interface_dhcpv6_configure($interface, $wancfg);
-                }
-                break;
-            case '6rd':
-                interface_6rd_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            case '6to4':
-                interface_6to4_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            case 'track6':
-                interface_track6_configure($interface, $wancfg, $reload || $linkup);
-                break;
-            default:
-                if (!isset($wancfg['dhcp6usev4iface'])) {
-                    interface_static6_configure($interface, $wancfg);
-                }
-                break;
-        }
+            if (!isset($wancfg['dhcp6usev4iface'])) {
+                interface_dhcpv6_prepare($interface, $wancfg);
+                interface_dhcpv6_configure($interface, $wancfg);
+            }
+            break;
+        case '6rd':
+            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case '6to4':
+            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case 'track6':
+            interface_track6_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        default:
+            if (!isset($wancfg['dhcp6usev4iface'])) {
+                interface_static6_configure($interface, $wancfg);
+            }
+            break;
+    }
 
-        /* XXX we do not disable accept_rtadv on $realifv6 != $realif where unused */
+    /*
+     * In most cases the IPv6 device is the same as IPv4.
+     * If not the safe spot to add a description/up is below
+     * when the interface was most likely created.
+     */
+    if ($realif != $realifv6) {
+        mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
     }
 
     if (!empty($wancfg['mtu'])) {
@@ -2379,7 +2384,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     interfaces_vips_configure($interface);
-    interfaces_bring_up($realif);
 
     /* XXX device plugin hook */
     $gres = link_interface_to_gre($interface);
