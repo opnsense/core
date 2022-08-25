@@ -1639,18 +1639,24 @@ function interface_wireless_configure($if, &$wancfg)
 
     /* Set all wireless ifconfig variables (split up to get rid of needed checking) */
 
-    $wlcmd = array();
-    $wl_sysctl = array();
+    $wlcmd = [];
+    $wl_sysctl = [];
+
     /* Make sure it's up */
     $wlcmd[] = "up";
-    /* Set a/b/g standard */
-    $standard = str_replace(" Turbo", "", $wlcfg['standard']);
-    $wlcmd[] = "mode " . escapeshellarg($standard);
 
-    /* XXX: Disable ampdu for now on mwl when running in 11n mode
-     * to prevent massive packet loss under certain conditions. */
-    if (preg_match("/^mwl/i", $if) && ($standard == "11ng" || $standard == "11na")) {
-        $wlcmd[] = "-ampdu";
+    if (!empty($wlcfg['standard'])) {
+        /* Set a/b/g standard */
+        $standard = str_replace(" Turbo", "", $wlcfg['standard']);
+        $wlcmd[] = "mode " . escapeshellarg($standard);
+
+        /*
+         * XXX: Disable ampdu for now on mwl when running in 11n mode
+         * to prevent massive packet loss under certain conditions.
+         */
+        if (preg_match("/^mwl/i", $if) && ($standard == "11ng" || $standard == "11na")) {
+            $wlcmd[] = "-ampdu";
+        }
     }
 
     /* Set ssid */
@@ -2062,9 +2068,16 @@ EOD;
         }
     }
 
-    /* The mode must be specified in a separate command before ifconfig
-     * will allow the mode and channel at the same time in the next. */
-    mwexec("/sbin/ifconfig " . escapeshellarg($if) . " mode " . escapeshellarg($standard));
+
+    if (!empty($standard)) {
+        /*
+         * The mode must be specified in a separate command before ifconfig
+         * will allow the mode and channel at the same time in the next.
+         *
+         * XXX but we do not have the standard when wireless was not configured...
+         */
+        mwexec("/sbin/ifconfig " . escapeshellarg($if) . " mode " . escapeshellarg($standard));
+    }
 
     /* configure wireless */
     $wlcmd_args = implode(" ", $wlcmd);
