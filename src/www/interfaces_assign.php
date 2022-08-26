@@ -51,7 +51,7 @@ function link_interface_to_group($int)
     return $result;
 }
 
-function list_interfaces()
+function list_interfaces($devices)
 {
     global $config;
 
@@ -74,6 +74,7 @@ function list_interfaces()
     foreach (get_interface_list() as $key => $intf_item) {
         $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
     }
+
     // collect interfaces from defined config sections
     foreach ($config_sections as $key => $value) {
         $cnf_location = explode(".", $key);
@@ -111,14 +112,13 @@ function list_interfaces()
             }
         }
     }
-    // XXX: get_interface_list() should probably be replaced at some point to avoid traversing through the config
-    //       for all these virtual interfaces
-    $loopbacks = iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems());
-    foreach ($loopbacks as $loopback) {
-        $interfaces["lo".(string)$loopback->deviceId] = array(
-          'descr' => sprintf("lo%s (%s)", $loopback->deviceId,  $loopback->description),
-          'ifdescr' => sprintf("%s", $loopback->description),
-          'section' => 'loopback');
+
+    foreach ($devices as $device) {
+        if (!empty($device['assign'])) {
+            foreach ($device['assign'] as $key => $values) {
+                $interfaces[$key] = $values;
+            }
+        }
     }
 
     // enforce constraints
@@ -146,6 +146,8 @@ function list_interfaces()
 
     return $interfaces;
 }
+
+$a_devices = plugins_devices();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
@@ -183,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['interfaces'][$newifname] = array();
             $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
-            $interfaces = list_interfaces();
+            $interfaces = list_interfaces($a_devices);
             switch ($interfaces[$_POST['if_add']]['section']) {
                 case 'ppps.ppp':
                     $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
@@ -252,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* input validation */
         /* Build a list of the port names so we can see how the interfaces map */
         $portifmap = array();
-        $interfaces = list_interfaces();
+        $interfaces = list_interfaces($a_devices);
         foreach ($interfaces as $portname => $portinfo) {
             $portifmap[$portname] = array();
         }
@@ -299,7 +301,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (count($input_errors) == 0) {
-          $devices = plugins_devices();
           $changes = 0;
 
           foreach ($_POST as $ifname => $ifport) {
@@ -326,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           break;
                   }
 
-                  foreach ($devices as $device) {
+                  foreach ($a_devices as $device) {
                       if (!isset($device['configurable']) || $device['configurable'] == true) {
                           continue;
                       }
@@ -374,7 +375,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 /* collect (unused) interfaces */
-$interfaces = list_interfaces();
+$interfaces = list_interfaces($a_devices);
 legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();

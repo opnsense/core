@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,9 +52,16 @@ function loopback_interfaces()
 
 function loopback_devices()
 {
+    $assign = [];
     $names = [];
 
     foreach (iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems()) as $loopback) {
+        $assign["lo{$loopback->deviceId}"] = [
+            'descr' => sprintf('lo%s (%s)', $loopback->deviceId, $loopback->description),
+            'ifdescr' => sprintf('%s', $loopback->description),
+            'section' => 'loopback'
+        ];
+
         $names[] = "lo{$loopback->deviceId}";
     }
 
@@ -64,6 +71,7 @@ function loopback_devices()
         'pattern' => '^lo',
         'volatile' => true,
         'type' => 'loopback',
+        'assign' => $assign,
         'names' => $names,
     ]];
 }
