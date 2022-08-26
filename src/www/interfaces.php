@@ -505,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
         /* Get wireless modes */
-        interface_wireless_clone(get_real_interface($a_interfaces[$if]['if']), $a_interfaces[$if]);
+        interface_wireless_clone(get_real_interface($if), $a_interfaces[$if]);
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
         $std_wl_copy_fieldnames = array(
           'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna',

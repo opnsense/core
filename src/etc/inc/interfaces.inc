@@ -191,7 +191,7 @@ function interfaces_create_wireless_clones($verbose = false)
 
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         if (isset($config['interfaces'][$if]['wireless'])) {
-            interface_wireless_clone(get_real_interface($config['interfaces'][$if]['if']), $config['interfaces'][$if]);
+            interface_wireless_clone(get_real_interface($if), $config['interfaces'][$if]);
         }
     }
 
