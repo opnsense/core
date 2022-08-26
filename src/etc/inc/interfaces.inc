@@ -132,12 +132,7 @@ function interfaces_bring_up($interface)
 
 function does_interface_exist($interface)
 {
-    $ints = legacy_interface_listget();
-    if (empty($interface) || $ints == null || !in_array($interface, $ints)) {
-        return false;
-    } else {
-        return true;
-    }
+    return !empty($interface) && in_array($interface, legacy_interface_listget());
 }
 
 function interfaces_loopback_configure($verbose = false)
