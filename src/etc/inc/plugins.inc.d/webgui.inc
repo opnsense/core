@@ -411,14 +411,21 @@ ssl.openssl.ssl-conf-cmd = (
 
 EOD;
         } else {
-            $lighty_config .= <<<EOD
-
-ssl.openssl.ssl-conf-cmd = (
-    "MinProtocol" => "TLSv1",
-    "CipherString" => "{$config['system']['webgui']['ssl-ciphers']}"
-)
-
-EOD;
+            // use the same supported ciphers source as system_advanced_admin.php page do (its not a full list. but its openssl defaults)
+            $sys_ciphers = json_decode(configd_run("system ssl ciphers"), true);
+            $tls13_suites = array_keys(array_filter($sys_ciphers, function($val) { return $val['version'] == "TLSv1.3"; }));
+            $suites_selected = explode(":", $config['system']['webgui']['ssl-ciphers']);
+            $tls_suites_selected = array_diff($suites_selected, $tls13_suites);
+            $tls13_suites_selected = array_intersect($tls13_suites,$suites_selected);
+            $lighty_config .= "ssl.openssl.ssl-conf-cmd = (\n";
+            $lighty_config .= "    \"MinProtocol\" => \"TLSv1\"";
+            if ($tls13_suites_selected) {
+                $lighty_config .= ",\n    \"Ciphersuites\" => \"" . implode(":", $tls13_suites_selected) . "\"";
+            }
+            if ($tls_suites_selected) {
+                $lighty_config .= ",\n    \"CipherString\" => \"" . implode(":", $tls_suites_selected) . "\"";
+            }
+            $lighty_config .= "\n)\n";
         }
 
         if (!empty($config['system']['webgui']['ssl-hsts'])) {
