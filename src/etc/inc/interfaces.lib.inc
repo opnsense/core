@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function legacy_interface_listget($flag = '')
+function legacy_interface_listget($flag = 'all')
 {
     $cmd_wlan = 'sysctl -n net.wlan.devices';
     $cmd = '/sbin/ifconfig -l';
-    $ifs_wlan = null;
-    $ifs = null;
+    $ifs_wlan = [];
+    $ifs = [];
 
     exec($cmd_wlan . ' 2>&1', $out_wlan, $ret_wlan);
     if (!$ret_wlan && !empty($out_wlan[0])) {
@@ -40,8 +40,8 @@ function legacy_interface_listget($flag = '')
 
     if ($flag === 'up') {
         $cmd .= 'u';
-    } elseif ($flag === 'down') {
-        $cmd .= 'd';
+    } elseif ($flag === 'wlan') {
+        return ($ifs_wlan);
     }
 
     exec($cmd . ' 2>&1', $out, $ret);
@@ -54,7 +54,7 @@ function legacy_interface_listget($flag = '')
         $ifs = explode(' ', $out[0]);
     }
 
-    if ($ifs_wlan != null) {
+    if (count($ifs_wlan)) {
         $ifs = array_merge($ifs, $ifs_wlan);
     }
 
