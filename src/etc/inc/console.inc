@@ -100,16 +100,14 @@ function _set_networking_interfaces_ports($probe = false)
     $interactive = true;
     $key = null;
 
-    $iflist_all = get_interface_list(false, true);
+    $iflist = get_interface_list(false, true);
     $iflist_wlan = legacy_interface_listget('wlan');
     $iflist_lagg = [];
-    $iflist = [];
+    $iflist_all = [];
 
-    foreach ($iflist_all as $iface => $ifa) {
-        $iflist[$iface] = $ifa;
-        if (!in_array($iface, $iflist_wlan)) {
-            interfaces_bring_up($iface);
-        }
+    foreach ($iflist as $iface => $ifa) {
+        $iflist_all[$iface] = $ifa;
+        interfaces_bring_up($iface);
     }
 
     if ($probe) {
@@ -124,8 +122,6 @@ function _set_networking_interfaces_ports($probe = false)
             echo PHP_EOL;
         }
     }
-
-    $ifnames = array_keys($iflist);
 
     if (!empty($iflist)) {
         echo <<<EOD
@@ -176,6 +172,14 @@ EOD;
         }
     }
 
+    /* add WLAN parents now as LAGG/VLAN are not capable of handling it */
+    foreach ($iflist_wlan as $iface) {
+        $iflist_all[$iface] = [
+            'dmesg' => 'WLAN device parent',
+            'mac' => '00:00:00:00:00:00',
+        ];
+    }
+
     echo <<<EOD
 
 Valid interfaces are:
@@ -183,11 +187,7 @@ Valid interfaces are:
 
 EOD;
 
-    /*
-     * We are checking $iflist here for physical members only, but
-     * iterate over $iflist_all when that sanity check succeeded.
-     */
-    if (empty($iflist)) {
+    if (empty($iflist_all)) {
         echo "No interfaces found!\n";
     } else {
         foreach ($iflist_all as $iface => $ifa) {
@@ -202,6 +202,8 @@ auto-detection. In that case, disconnect all interfaces now before
 hitting 'a' to initiate auto detection.
 
 EOD;
+
+    $ifnames = array_keys($iflist_all); /* only for non-interactive mode */
 
     do {
         echo "\nEnter the WAN interface name or 'a' for auto-detection: ";

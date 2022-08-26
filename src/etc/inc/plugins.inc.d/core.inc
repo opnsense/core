@@ -131,12 +131,16 @@ function core_services()
     return $services;
 }
 
-function core_device_names($key, $sections)
+function core_device_names($key, $sections, $postprocess = null)
 {
     $names = [];
 
     foreach (call_user_func_array('config_read_array', $sections) as $dev) {
         $names[] = $dev[$key];
+    }
+
+    if (is_callable($postprocess)) {
+        $names = $postprocess($names);
     }
 
     return $names;
@@ -172,6 +176,28 @@ function core_devices()
         'type' => 'gre',
     ];
 
+    $devices[] = [
+        'names' => core_device_names('cloneif', ['wireless', 'clone'], function ($names) {
+            global $config;
+
+            /* also need to find implied clones that do not have explicit cloneif set */
+            foreach (array_keys(get_configured_interface_with_descr()) as $if) {
+                if (isset($config['interfaces'][$if]['wireless'])) {
+                    $device = get_real_interface($if);
+                    if (!in_array($device, $names)) {
+                        $names[] = $device;
+                    }
+                }
+            }
+
+            return $names;
+        }),
+        'function' => null, /* XXX */
+        'pattern' => '_wlan',
+        'volatile' => true,
+        'type' => 'wlan',
+    ];
+
     # XXX is a plugin collection...
     $devices[] = array('pattern' => '^cua', 'volatile' => true);
     $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
@@ -186,7 +212,6 @@ function core_devices()
     $devices[] = array('pattern' => '^zt', 'volatile' => true);
     $devices[] = array('pattern' => '_stf', 'volatile' => true);
     $devices[] = array('pattern' => '_vlan|^vlan|^qinq', 'volatile' => true);
-    $devices[] = array('pattern' => '_wlan', 'volatile' => true);
 
     return $devices;
 }

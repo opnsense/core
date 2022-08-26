@@ -581,8 +581,10 @@ function get_interface_list($only_active = false, $include_dmesg = false)
       'vlan',
     ];
 
+    $ifnames_wlan = legacy_interface_listget('wlan');
     $ifnames_up = legacy_interface_listget('up');
     $ifnames = legacy_interface_listget();
+
     $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
     $all_interface_data = legacy_interfaces_details();
 
@@ -601,6 +603,9 @@ function get_interface_list($only_active = false, $include_dmesg = false)
     foreach ($ifnames as $ifname) {
         $tmp_ifnames = preg_split('/\d+/', $ifname);
         if (count(array_intersect($tmp_ifnames, $vfaces))) {
+            continue;
+        }
+        if (in_array($ifname, $ifnames_wlan)) {
             continue;
         }
 

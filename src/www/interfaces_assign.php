@@ -34,15 +34,6 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-function match_wireless_interface($int)
-{
-    global $wireless_devices;
-
-    /* XXX check for wireless clones? */
-
-    return preg_match('/^(' . implode('|', $wireless_devices) . ')/', $int);
-}
-
 function link_interface_to_group($int)
 {
     global $config;
@@ -81,9 +72,6 @@ function list_interfaces()
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
-        if (match_wireless_interface($key)) {
-            continue;
-        }
         $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
     }
     // collect interfaces from defined config sections
@@ -147,19 +135,17 @@ function list_interfaces()
 
     // fixup wireless mess (automatic types have no explicit clones)
     foreach (legacy_config_get_interfaces() as $id => $conf) {
-        if (isset($conf['wireless']) && !isset($interfaces[$conf['if']]) && does_interface_exist($conf['if'])) {
+        if (isset($conf['wireless']) && !isset($interfaces[$conf['if']])) {
             $interfaces[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
-                'section' => 'wireless.doesnotexist',
+                'section' => 'wireless.clone',
             ];
         }
     }
 
     return $interfaces;
 }
-
-$wireless_devices = legacy_interface_listget('wlan');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
@@ -198,12 +184,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
             $interfaces = list_interfaces();
-            if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
-                $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
-            }
-            if (match_wireless_interface($_POST['if_add'])) {
-                $config['interfaces'][$newifname]['wireless'] = [];
-                interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+            switch ($interfaces[$_POST['if_add']]['section']) {
+                case 'ppps.ppp':
+                    $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
+                    break;
+                case 'wireless.clone':
+                    $config['interfaces'][$newifname]['wireless'] = [];
+                    interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+                    break;
+                default:
+                    break;
             }
 
             write_config();
@@ -309,8 +299,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (count($input_errors) == 0) {
-          /* No errors detected, so update the config */
+          $devices = plugins_devices();
           $changes = 0;
+
           foreach ($_POST as $ifname => $ifport) {
               if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
                   $reloadif = false;
@@ -320,11 +311,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $reloadif = true;
                   }
                   $config['interfaces'][$ifname]['if'] = $ifport;
-                  if ($interfaces[$ifport]['section'] == 'ppps.ppp') {
-                      $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
+
+                  switch ($interfaces[$ifport]['section']) {
+                      case 'ppps.ppp':
+                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
+                          break;
+                      case 'wireless.clone':
+                          if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
+                              /* change from implied clone to explicit */
+                              $config['interfaces'][$ifname]['if'] .= '_wlan0';
+                          }
+                          break;
+                      default:
+                          break;
                   }
 
-                  foreach (plugins_devices() as $device) {
+                  foreach ($devices as $device) {
                       if (!isset($device['configurable']) || $device['configurable'] == true) {
                           continue;
                       }
@@ -336,8 +338,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       }
                   }
 
-                  /* check for wireless interfaces, set or clear ['wireless'] */
-                  if (match_wireless_interface($ifport)) {
+                  /* set or clear wireless configuration */
+                  if ($interfaces[$ifport]['section'] == 'wireless.clone') {
                       config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
@@ -385,6 +387,9 @@ foreach ($intfkeys as $portname) {
         $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
     } elseif (empty($ifdetails[$portname])) {
         $interfaces[$portname]['status'] = 'no carrier';
+    } else {
+        /* quirky value to populate status key for virtual interfaces */
+        $interfaces[$portname]['status'] = 'likely up';
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
