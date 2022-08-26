@@ -176,7 +176,28 @@ function core_devices()
         'type' => 'gre',
     ];
 
+    $wlan_assign = [];
+
+    foreach (config_read_array('wireless', 'clone') as $dev) {
+        $wlan_assign[$dev['cloneif']] = [
+            'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'section' => 'wireless.clone',
+        ];
+    }
+
+    foreach (legacy_config_get_interfaces() as $id => $conf) {
+        if (isset($conf['wireless']) && !isset($wlan_assign[$conf['if']])) {
+            $wlan_assign[$conf['if']] = [
+                'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
+                'ifdescr' => gettext('wireless clone'),
+                'section' => 'wireless.clone',
+            ];
+        }
+    }
+
     $devices[] = [
+        'assign' => $wlan_assign,
         'names' => core_device_names('cloneif', ['wireless', 'clone'], function ($names) {
             global $config;
 

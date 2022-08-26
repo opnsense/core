@@ -68,7 +68,6 @@ function list_interfaces($devices)
     $config_sections['openvpn.openvpn-server'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpns', 'key' => 'vpnid', 'format' => 'ovpns%s (OpenVPN Server %s)'];
     $config_sections['ppps.ppp'] = ['descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type'];
     $config_sections['vlans.vlan'] = ['descr' => 'vlanif,descr,if,tag', 'key' => 'vlanif', 'format' => gettext('%s %s (Parent: %s, Tag: %s)')];
-    $config_sections['wireless.clone'] = ['descr' => 'cloneif,descr', 'key' => 'cloneif', 'format' => '%s (%s)'];
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
@@ -130,17 +129,6 @@ function list_interfaces($devices)
                     unset($interfaces[trim($intf)]);
                 }
             }
-        }
-    }
-
-    // fixup wireless mess (automatic types have no explicit clones)
-    foreach (legacy_config_get_interfaces() as $id => $conf) {
-        if (isset($conf['wireless']) && !isset($interfaces[$conf['if']])) {
-            $interfaces[$conf['if']] = [
-                'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
-                'ifdescr' => gettext('wireless clone'),
-                'section' => 'wireless.clone',
-            ];
         }
     }
 
