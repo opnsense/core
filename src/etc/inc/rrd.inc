@@ -129,7 +129,7 @@ function rrd_configure($verbose = false, $bootup = false)
         if (isset($config['openvpn']['openvpn-server'])) {
             foreach ($config['openvpn']['openvpn-server'] as $server) {
                 $serverid = "ovpns" . $server['vpnid'];
-                $ifdescrs[$serverid] = "{$server['description']}";
+                $ifdescrs[$serverid] = $server['description'] ?? "";
             }
         }
 
