@@ -134,6 +134,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!empty($pconfig['ssl-ciphers'])) {
+        // TLS 1.3 validation
+        $ciphers = json_decode(configd_run("system ssl ciphers"), true) ?? [];
+        foreach ($ciphers as $cipher => $settings) {
+            if ($settings['version'] == 'TLSv1.3' && in_array($cipher, $pconfig['ssl-ciphers'])
+                    && !in_array('TLS_AES_128_GCM_SHA256', $pconfig['ssl-ciphers'])) {
+                $input_errors[] = gettext(
+                    "A TLS 1.3-compliant application MUST implement the TLS_AES_128_GCM_SHA256 according to rfc8446"
+                );
+                break;
+            }
+        }
+    }
+
     if (count($input_errors) == 0) {
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
