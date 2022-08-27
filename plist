@@ -294,6 +294,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/LvtemplateController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/PacketCaptureController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/DnsDiagnosticsController.php
@@ -302,10 +303,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/LogController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetworkinsightController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/PacketCaptureController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/dns_diagnostics.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/netflow_capture.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/packetcapture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
@@ -542,6 +545,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/PacketCapture.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/PacketCapture.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Alias.php
@@ -632,6 +637,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netflow.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/networkinsight.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/packetcapture.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
@@ -797,6 +803,7 @@
 /usr/local/opnsense/scripts/firmware/unlock.sh
 /usr/local/opnsense/scripts/firmware/update.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh
+/usr/local/opnsense/scripts/interfaces/capture.py
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/list_arp.py
