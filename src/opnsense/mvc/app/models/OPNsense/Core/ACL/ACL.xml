@@ -137,7 +137,8 @@
     <page-diagnostics-packetcapture>
         <name>Diagnostics: Packet Capture</name>
         <patterns>
-            <pattern>diag_packet_capture.php*</pattern>
+            <pattern>ui/diagnostics/packet_capture</pattern>
+            <pattern>api/diagnostics/packet_capture/*</pattern>
         </patterns>
     </page-diagnostics-packetcapture>
     <page-diagnostics-tables>
