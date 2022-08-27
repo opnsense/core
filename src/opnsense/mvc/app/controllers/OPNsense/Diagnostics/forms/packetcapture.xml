@@ -1,0 +1,14 @@
+<form>
+  <field>
+       <id>packetcapture.settings.interface</id>
+       <label>Interface</label>
+       <type>select_multiple</type>
+       <help>Interfaces to capture.</help>
+    </field>
+    <field>
+       <id>packetcapture.settings.description</id>
+       <label>Description</label>
+       <type>text</type>
+       <help>Optional description to easily find this capture job when more are active.</help>
+    </field>
+</form>

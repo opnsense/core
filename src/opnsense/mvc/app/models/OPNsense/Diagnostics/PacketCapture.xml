@@ -1,0 +1,21 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.1</version>
+    <description>
+        OPNsense Packet Capture
+    </description>
+    <items>
+        <settings>
+            <interface type="InterfaceField">
+                <Required>Y</Required>
+                <default>wan</default>
+                <Multiple>Y</Multiple>
+            </interface>
+            <description type="TextField">
+                <Required>N</Required>
+                <mask>/^(.){1,255}$/u</mask>
+                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+            </description>
+        </settings>
+    </items>
+</model>
