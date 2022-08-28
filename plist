@@ -539,6 +539,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
