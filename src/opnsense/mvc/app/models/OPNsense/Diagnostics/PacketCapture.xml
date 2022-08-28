@@ -6,9 +6,9 @@
     </description>
     <items>
         <settings>
-            <interface type="InterfaceField">
+            <interface type=".\InterfaceField">
                 <Required>Y</Required>
-                <default>wan</default>
+                <AllowDynamic>Y</AllowDynamic>
                 <Multiple>Y</Multiple>
             </interface>
             <description type="TextField">

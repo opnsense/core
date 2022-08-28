@@ -39,6 +39,9 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     protected static $internalModelClass = 'OPNsense\Diagnostics\PacketCapture';
     private static $capture_dir = "/tmp/captures";
 
+    /**
+     * set / create capture job
+     */
     public function setAction()
     {
         $result = parent::setAction();
@@ -47,11 +50,66 @@ class PacketCaptureController extends ApiMutableModelControllerBase
             $result['result'] = 'ok';
             $result['uuid'] = $mdl->settings->generateUUID();
             @mkdir(self::$capture_dir);
+            $nodes = $mdl->settings->getNodes();
+            foreach ($nodes as $key => $value) {
+                if (is_array($value)) {
+                    $items = [];
+                    foreach ($value as $itemkey  => $itemval) {
+                        if (!empty($itemval['selected'])) {
+                            $items[] = $itemkey;
+                        }
+                    }
+                    $nodes[$key] = $items;
+                }
+            }
             file_put_contents(
                 sprintf("%s/%s.json", self::$capture_dir, $result['uuid']),
-                json_encode($mdl->settings->getNodes())
+                json_encode($nodes)
             );
         }
         return $result;
+    }
+
+    /**
+     * start capture job
+     */
+    public function startAction($jobid)
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost()) {
+            $this->sessionClose(); // long running action, close session
+            $payload = json_decode((new Backend())->configdpRun("interface capture start", [$jobid]), true);
+            if (!empty($payload)) {
+                $result = $payload;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * stop capture job
+     */
+    public function stopAction($jobid)
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost()) {
+            $this->sessionClose(); // long running action, close session
+            $payload = json_decode((new Backend())->configdpRun("interface capture stop", [$jobid]), true);
+            if (!empty($payload)) {
+                $result = $payload;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * search current capture jobs
+     */
+    public function searchJobsAction()
+    {
+        $this->sessionClose();
+        $data = json_decode((new Backend())->configdRun('interface capture list'), true);
+        $records = (!empty($data) && !empty($data['jobs'])) ? $data['jobs'] : [];
+        return $this->searchRecordsetBase($records);
     }
 }
