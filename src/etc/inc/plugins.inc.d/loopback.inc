@@ -69,7 +69,7 @@ function loopback_devices()
         'pattern' => '^lo',
         'volatile' => true,
         'type' => 'loopback',
-        'names' =>$names,
+        'names' => $names,
     ]];
 }
 

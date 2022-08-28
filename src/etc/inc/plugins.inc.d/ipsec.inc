@@ -214,8 +214,13 @@ function ipsec_devices()
     $devices = [];
     $names = [];
 
-    foreach (array_keys(ipsec_get_configured_vtis()) as $device) {
-        $names[$device] = null;
+    foreach (ipsec_get_configured_vtis() as $device => $details) {
+        $names[$device] = [
+            'descr' => sprintf('%s (%s)', $device, $details['descr']),
+            'ifdescr' => sprintf('%s', $details['descr']),
+            'section' => 'ipsec',
+            'name' => $device,
+        ];
     }
 
     $devices[] = [
@@ -227,7 +232,7 @@ function ipsec_devices()
         'type' => 'ipsec',
     ];
 
-    $devices[] = ['pattern' => '^enc', 'volatile' => true];
+    $devices[] = ['pattern' => '^enc|^ipsec', 'volatile' => true];
 
     return $devices;
 }
