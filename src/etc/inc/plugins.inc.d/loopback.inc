@@ -59,7 +59,8 @@ function loopback_devices()
         $assign["lo{$loopback->deviceId}"] = [
             'descr' => sprintf('lo%s (%s)', $loopback->deviceId, $loopback->description),
             'ifdescr' => sprintf('%s', $loopback->description),
-            'section' => 'loopback'
+            'name' => "lo{$loopback->deviceId}",
+            'section' => 'loopback',
         ];
 
         $names[] = "lo{$loopback->deviceId}";
@@ -71,8 +72,8 @@ function loopback_devices()
         'pattern' => '^lo',
         'volatile' => true,
         'type' => 'loopback',
+        'names' => array_keys($assign),
         'assign' => $assign,
-        'names' => $names,
     ]];
 }
 
