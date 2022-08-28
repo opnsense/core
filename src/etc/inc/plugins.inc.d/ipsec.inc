@@ -215,7 +215,7 @@ function ipsec_devices()
     $names = [];
 
     foreach (array_keys(ipsec_get_configured_vtis()) as $device) {
-        $names[] = $device;
+        $names[$device] = null;
     }
 
     $devices[] = [

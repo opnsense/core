@@ -131,16 +131,12 @@ function core_services()
     return $services;
 }
 
-function core_device_names($key, $sections, $postprocess = null)
+function core_device_names($key, $sections)
 {
     $names = [];
 
     foreach (call_user_func_array('config_read_array', $sections) as $dev) {
-        $names[] = $dev[$key];
-    }
-
-    if (is_callable($postprocess)) {
-        $names = $postprocess($names);
+        $names[$dev[$key]] = null;
     }
 
     return $names;
@@ -176,10 +172,10 @@ function core_devices()
         'type' => 'gre',
     ];
 
-    $wlan_assign = [];
+    $wlan_names = [];
 
     foreach (config_read_array('wireless', 'clone') as $dev) {
-        $wlan_assign[$dev['cloneif']] = [
+        $wlan_names[$dev['cloneif']] = [
             'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
             'section' => 'wireless.clone',
@@ -189,8 +185,8 @@ function core_devices()
 
     /* also need to find implied clones that do not have explicit cloneif set */
     foreach (legacy_config_get_interfaces() as $id => $conf) {
-        if (isset($conf['wireless']) && !isset($wlan_assign[$conf['if']])) {
-            $wlan_assign[$conf['if']] = [
+        if (isset($conf['wireless']) && !isset($wlan_names[$conf['if']])) {
+            $wlan_names[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
                 'section' => 'wireless.clone',
@@ -203,7 +199,7 @@ function core_devices()
             }
 
             /* return both implicit and explicit clone if implicit clone was given */
-            $wlan_assign[$realif] = [
+            $wlan_names[$realif] = [
                 'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
                 'section' => 'wireless.clone',
@@ -213,9 +209,8 @@ function core_devices()
     }
 
     $devices[] = [
-        'names' => array_keys($wlan_assign),
-        'assign' => $wlan_assign,
         'function' => null, /* XXX needs to handle implied clones as well */
+        'names' => $wlan_names,
         'pattern' => '_wlan',
         'volatile' => true,
         'type' => 'wlan',

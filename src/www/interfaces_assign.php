@@ -113,9 +113,11 @@ function list_interfaces($devices)
     }
 
     foreach ($devices as $device) {
-        if (!empty($device['assign'])) {
-            foreach ($device['assign'] as $key => $values) {
-                $interfaces[$key] = $values;
+        if (!empty($device['names'])) {
+            foreach ($device['names'] as $key => $values) {
+                if (!empty($values)) {
+                    $interfaces[$key] = $values;
+                }
             }
         }
     }

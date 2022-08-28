@@ -39,7 +39,7 @@ function vxlan_devices()
     $names = [];
 
     foreach (iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems()) as $vxlan) {
-        $names[] = "vxlan{$vxlan->deviceId}";
+        $names["vxlan{$vxlan->deviceId}"] = null;
     }
 
     return [[

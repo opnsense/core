@@ -708,7 +708,7 @@ function interfaces_configure($verbose = false)
         if (empty($device['function']) || empty($device['names'])) {
             continue;
         }
-        foreach ($device['names'] as $name) {
+        foreach (array_keys($device['names']) as $name) {
             $devices[$name] = $device['function'];
         }
     }
@@ -2188,7 +2188,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
                 continue;
             }
 
-            if (in_array($realhwif, $device['names'])) {
+            if (in_array($realhwif, array_keys($device['names']))) {
                 log_msg("Device $realhwif requires reload for $interface, configuring now", LOG_ERR);
                 call_user_func_array($device['function'], [$realhwif]);
             }

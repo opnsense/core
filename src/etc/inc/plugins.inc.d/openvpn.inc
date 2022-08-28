@@ -110,7 +110,7 @@ function openvpn_devices()
     foreach (['server', 'client'] as $mode) {
         if (!empty($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
-                $names[] = "ovpn{$mode[0]}{$settings['vpnid']}";
+                $names["ovpn{$mode[0]}{$settings['vpnid']}"] = null;
             }
         }
     }

@@ -84,10 +84,10 @@ if (isset($opts['h'])) {
         if (empty($args[0])) {
             echo $device['type'] . PHP_EOL;
         } elseif ($args[0] == $device['type']) {
-            foreach ($device['names'] as $name) {
+            foreach (array_keys($device['names']) as $name) {
                 echo $name . PHP_EOL;
             }
-        } elseif (in_array($args[0], $device['names'])) {
+        } elseif (in_array($args[0], array_keys($device['names']))) {
             echo "Reconfiguring {$args[0]}...";
             flush();
             call_user_func_array($device['function'], [$args[0]]);
