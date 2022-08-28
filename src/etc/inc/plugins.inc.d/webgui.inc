@@ -413,10 +413,12 @@ EOD;
         } else {
             // use the same supported ciphers source as system_advanced_admin.php page do (its not a full list. but its openssl defaults)
             $sys_ciphers = json_decode(configd_run("system ssl ciphers"), true);
-            $tls13_suites = array_keys(array_filter($sys_ciphers, function($val) { return $val['version'] == "TLSv1.3"; }));
+            $tls13_suites = array_keys(array_filter($sys_ciphers, function ($val) {
+                return $val['version'] == "TLSv1.3";
+            }));
             $suites_selected = explode(":", $config['system']['webgui']['ssl-ciphers']);
             $tls_suites_selected = array_diff($suites_selected, $tls13_suites);
-            $tls13_suites_selected = array_intersect($tls13_suites,$suites_selected);
+            $tls13_suites_selected = array_intersect($tls13_suites, $suites_selected);
             $lighty_config .= "ssl.openssl.ssl-conf-cmd = (\n";
             $lighty_config .= "    \"MinProtocol\" => \"TLSv1\"";
             if ($tls13_suites_selected) {
