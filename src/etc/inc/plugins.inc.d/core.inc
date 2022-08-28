@@ -183,37 +183,39 @@ function core_devices()
             'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
             'section' => 'wireless.clone',
+            'name' => $dev['cloneif'],
         ];
     }
 
+    /* also need to find implied clones that do not have explicit cloneif set */
     foreach (legacy_config_get_interfaces() as $id => $conf) {
         if (isset($conf['wireless']) && !isset($wlan_assign[$conf['if']])) {
             $wlan_assign[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
                 'section' => 'wireless.clone',
+                'name' => $conf['if'],
+            ];
+
+            $realif = get_real_interface($id);
+            if ($realif == $conf['if']) {
+                continue;
+            }
+
+            /* return both implicit and explicit clone if implicit clone was given */
+            $wlan_assign[$realif] = [
+                'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
+                'ifdescr' => gettext('wireless clone'),
+                'section' => 'wireless.clone',
+                'name' => $realif,
             ];
         }
     }
 
     $devices[] = [
+        'names' => array_keys($wlan_assign),
         'assign' => $wlan_assign,
-        'names' => core_device_names('cloneif', ['wireless', 'clone'], function ($names) {
-            global $config;
-
-            /* also need to find implied clones that do not have explicit cloneif set */
-            foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-                if (isset($config['interfaces'][$if]['wireless'])) {
-                    $device = get_real_interface($if);
-                    if (!in_array($device, $names)) {
-                        $names[] = $device;
-                    }
-                }
-            }
-
-            return $names;
-        }),
-        'function' => null, /* XXX */
+        'function' => null, /* XXX needs to handle implied clones as well */
         'pattern' => '_wlan',
         'volatile' => true,
         'type' => 'wlan',
