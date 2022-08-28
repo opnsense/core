@@ -54,7 +54,7 @@ class PacketCaptureController extends ApiMutableModelControllerBase
             foreach ($nodes as $key => $value) {
                 if (is_array($value)) {
                     $items = [];
-                    foreach ($value as $itemkey  => $itemval) {
+                    foreach ($value as $itemkey => $itemval) {
                         if (!empty($itemval['selected'])) {
                             $items[] = $itemkey;
                         }
