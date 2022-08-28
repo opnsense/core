@@ -146,9 +146,20 @@ function core_devices()
 {
     $devices = [];
 
+    $bridge_names = [];
+
+    foreach (config_read_array('bridges', 'bridged') as $dev) {
+        $bridge_names[$dev['bridgeif']] = [
+            'descr' => sprintf('%s (%s)', $dev['bridgeif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'section' => 'bridges.bridged',
+            'name' => $dev['bridgeif'],
+        ];
+    }
+
     $devices[] = [
-        'names' => core_device_names('bridgeif', ['bridges', 'bridged']),
         'function' => 'interfaces_bridge_configure',
+        'names' => $bridge_names,
         'pattern' => '^bridge',
         'volatile' => true,
         'type' => 'bridge',
