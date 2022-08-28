@@ -60,8 +60,6 @@ function list_interfaces($devices)
     // define config sections to fetch interfaces from.
     $config_sections = [];
     /* XXX suppose this should plug into plugins_devices() eventually */
-    $config_sections['gifs.gif'] = ['descr' => 'gifif,remote-addr,descr', 'key' => 'gifif', 'format' => '%s %s (%s)'];
-    $config_sections['gres.gre'] = ['descr' => 'greif,remote-addr,descr', 'key' => 'greif', 'format' => '%s %s (%s)'];
     $config_sections['laggs.lagg'] = ['descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members'];
     $config_sections['openvpn.openvpn-client'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpnc', 'key' => 'vpnid', 'format' => 'ovpnc%s (OpenVPN Client %s)'];
     $config_sections['openvpn.openvpn-server'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpns', 'key' => 'vpnid', 'format' => 'ovpns%s (OpenVPN Server %s)'];

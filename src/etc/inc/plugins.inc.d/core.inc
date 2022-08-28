@@ -131,17 +131,6 @@ function core_services()
     return $services;
 }
 
-function core_device_names($key, $sections)
-{
-    $names = [];
-
-    foreach (call_user_func_array('config_read_array', $sections) as $dev) {
-        $names[$dev[$key]] = null;
-    }
-
-    return $names;
-}
-
 function core_devices()
 {
     $devices = [];
@@ -165,19 +154,41 @@ function core_devices()
         'type' => 'bridge',
     ];
 
+    $gif_names = [];
+
+    foreach (config_read_array('gifs', 'gif') as $dev) {
+        $gif_names[$dev['gifif']] = [
+            'descr' => sprintf('%s %s (%s)', $dev['gifif'], $dev['remote-addr'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'section' => 'gifs.gif',
+            'name' => $dev['gifif'],
+        ];
+    }
+
     $devices[] = [
-        'names' => core_device_names('gifif', ['gifs', 'gif']),
         'function' => 'interfaces_gif_configure',
         'configurable' => false,
+        'names' => $gif_names,
         'pattern' => '^gif',
         'volatile' => true,
         'type' => 'gif',
     ];
 
+    $gre_names = [];
+
+    foreach (config_read_array('gres', 'gre') as $dev) {
+        $gre_names[$dev['greif']] = [
+            'descr' => sprintf('%s %s (%s)', $dev['greif'], $dev['remote-addr'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'section' => 'gres.gre',
+            'name' => $dev['greif'],
+        ];
+    }
+
     $devices[] = [
-        'names' => core_device_names('greif', ['gres', 'gre']),
         'function' => 'interfaces_gre_configure',
         'configurable' => false,
+        'names' => $gre_names,
         'pattern' => '^gre',
         'volatile' => true,
         'type' => 'gre',
