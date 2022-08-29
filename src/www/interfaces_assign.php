@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2004 Jim McBeath
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -51,75 +51,35 @@ function link_interface_to_group($int)
     return $result;
 }
 
-function list_interfaces($devices)
+function list_devices($devices)
 {
     global $config;
 
     $interfaces = [];
 
-    // define config sections to fetch interfaces from.
-    $config_sections = [];
-    /* XXX suppose this should plug into plugins_devices() eventually */
-    $config_sections['laggs.lagg'] = ['descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members'];
-
-    // add physical network interfaces
-    foreach (get_interface_list() as $key => $intf_item) {
-        $interfaces[$key] = ['descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'hardware'];
+    /* add physical network interfaces */
+    foreach (get_interface_list() as $key => $item) {
+        $interfaces[$key] = ['descr' => $key . ' (' . $item['mac'] . ')', 'type' => 'hardware'];
     }
 
-    // collect interfaces from defined config sections
-    foreach ($config_sections as $key => $value) {
-        $cnf_location = explode(".", $key);
-        if (!empty($config[$cnf_location[0]][$cnf_location[1]])) {
-            foreach ($config[$cnf_location[0]][$cnf_location[1]] as $cnf_item) {
-                $interface_item = ['section' => $key];
-                // construct item description
-                $descr = [];
-                foreach (explode(',', $value['descr']) as $fieldname) {
-                    if (isset($cnf_item[trim($fieldname)])) {
-                        $descr[] = $cnf_item[trim($fieldname)];
-                    } else {
-                        $descr[] = "";
-                    }
-                }
-                if (!empty($value['format'])) {
-                    $interface_item['descr'] = vsprintf($value['format'], $descr);
-                } else {
-                    $interface_item['descr'] = implode(" ", $descr);
-                }
-                // copy requested additional fields into temp structure
-                if (isset($value['fields'])) {
-                    foreach (explode(',', $value['fields']) as $fieldname) {
-                        if (isset($cnf_item[$fieldname])) {
-                            $interface_item[$fieldname] = $cnf_item[$fieldname];
-                        }
-                    }
-                }
-                $interface_item['ifdescr'] = !empty($cnf_item['descr']) ? $cnf_item['descr'] : null;
-                $device = $cnf_item[$value['key']];
-                $interfaces[$device] = $interface_item;
-            }
-        }
-    }
-
+    /* add virtual network interfaces */
     foreach ($devices as $device) {
         if (!empty($device['names'])) {
             foreach ($device['names'] as $key => $values) {
                 if (!empty($values)) {
                     $interfaces[$key] = $values;
-                    $interfaces[$key]['section'] = $device['type']; /* XXX rename to 'type' eventually */
+                    $interfaces[$key]['type'] = $device['type'];
                 }
             }
         }
     }
 
-    // enforce constraints
-    foreach ($interfaces as $intf_id => $intf_details) {
-        // LAGG members cannot be assigned
-        if (isset($intf_details['members']) && $intf_details['section'] == 'laggs.lagg') {
-            foreach (explode(',', ($intf_details['members'])) as $intf) {
-                if (isset($interfaces[trim($intf)])) {
-                    unset($interfaces[trim($intf)]);
+    /* enforce constraints */
+    foreach ($interfaces as $id => $details) {
+        if (!empty($details['exclude'])) {
+            foreach ($details['exclude'] as $device) {
+                if (isset($interfaces[$device])) {
+                    unset($interfaces[$device]);
                 }
             }
         }
@@ -129,6 +89,7 @@ function list_interfaces($devices)
 }
 
 $a_devices = plugins_devices();
+$interfaces = list_devices($a_devices);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
@@ -166,8 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['interfaces'][$newifname] = array();
             $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
-            $interfaces = list_interfaces($a_devices);
-            switch ($interfaces[$_POST['if_add']]['section']) {
+            switch ($interfaces[$_POST['if_add']]['type']) {
                 case 'ppp':
                     $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['ipaddr'];
                     break;
@@ -230,14 +190,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header(url_safe('Location: /interfaces_assign.php'));
             exit;
         }
-    } elseif (isset($_POST['Submit'])) {
-        // ** Change interface **
-        /* input validation */
+    } elseif (isset($_POST['Submit'])) { // ** Change interface **
         /* Build a list of the port names so we can see how the interfaces map */
-        $portifmap = array();
-        $interfaces = list_interfaces($a_devices);
+        $portifmap = [];
         foreach ($interfaces as $portname => $portinfo) {
-            $portifmap[$portname] = array();
+            $portifmap[$portname] = [];
         }
 
         /* Go through the list of ports selected by the user,
@@ -294,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
                   $config['interfaces'][$ifname]['if'] = $ifport;
 
-                  switch ($interfaces[$ifport]['section']) {
+                  switch ($interfaces[$ifport]['type']) {
                       case 'ppp':
                           $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['ipaddr'];
                           break;
@@ -321,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
 
                   /* set or clear wireless configuration */
-                  if ($interfaces[$ifport]['section'] == 'wlan') {
+                  if ($interfaces[$ifport]['type'] == 'wlan') {
                       config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
@@ -355,8 +312,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-/* collect (unused) interfaces */
-$interfaces = list_interfaces($a_devices);
 legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();

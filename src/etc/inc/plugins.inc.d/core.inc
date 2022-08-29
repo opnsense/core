@@ -191,6 +191,24 @@ function core_devices()
         'type' => 'gre',
     ];
 
+    $lagg_names = [];
+
+    foreach (config_read_array('laggs', 'lagg') as $dev) {
+        $lagg_names[$dev['laggif']] = [
+            'descr' => sprintf('%s (%s)', $dev['laggif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'exclude' => explode(',', $dev['members']),
+            'name' => $dev['laggif'],
+        ];
+    }
+
+    $devices[] = [
+        'names' => $lagg_names,
+        'pattern' => '^lagg',
+        'volatile' => true,
+        'type' => 'lagg',
+    ];
+
     $ppp_names = [];
 
     foreach (config_read_array('ppps', 'ppp') as $dev) {
@@ -268,7 +286,6 @@ function core_devices()
     ];
 
     # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^lagg', 'volatile' => true);
     $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
     $devices[] = array('pattern' => '^tinc', 'volatile' => true);
     $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);

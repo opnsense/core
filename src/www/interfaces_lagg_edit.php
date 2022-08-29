@@ -140,10 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['proto'] = $pconfig['proto'];
         $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
-        if (in_array($pconfig['use_flowid'], ['0', '1'])) {
+        if (in_array($pconfig['use_flowid'] ?? '', ['0', '1'])) {
             $lagg['use_flowid'] = $pconfig['use_flowid'];
         }
-        if (in_array($pconfig['lacp_strict'], ['0', '1'])) {
+        if (in_array($pconfig['lacp_strict'] ?? '', ['0', '1'])) {
             $lagg['lacp_strict'] = $pconfig['lacp_strict'];
         }
         if (!empty($pconfig['lagghash'])) {
