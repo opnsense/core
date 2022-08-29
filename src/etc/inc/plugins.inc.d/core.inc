@@ -285,14 +285,8 @@ function core_devices()
         'type' => 'wlan',
     ];
 
-    # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
-    $devices[] = array('pattern' => '^tinc', 'volatile' => true);
-    $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
-    $devices[] = array('pattern' => '^ue', 'volatile' => true);
-    $devices[] = array('pattern' => '^wg', 'volatile' => true);
-    $devices[] = array('pattern' => '^zt', 'volatile' => true);
-    $devices[] = array('pattern' => '_stf', 'volatile' => true);
+    /* historic handling of tunnel devices and other unstable things */
+    $devices[] = ['pattern' => '^tap|^tun|^ue', 'volatile' => true];
 
     return $devices;
 }
