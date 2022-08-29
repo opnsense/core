@@ -110,7 +110,12 @@ function openvpn_devices()
     foreach (['server', 'client'] as $mode) {
         if (!empty($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
-                $names["ovpn{$mode[0]}{$settings['vpnid']}"] = null;
+                $names["ovpn{$mode[0]}{$settings['vpnid']}"] = [
+                    'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description']),
+                    'ifdescr' => sprintf('%s', $settings['description']),
+                    'name' => "ovpn{$mode[0]}{$settings['vpnid']}",
+                    'section' => 'openvpn',
+                ];
             }
         }
     }

@@ -61,14 +61,12 @@ function list_interfaces($devices)
     $config_sections = [];
     /* XXX suppose this should plug into plugins_devices() eventually */
     $config_sections['laggs.lagg'] = ['descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members'];
-    $config_sections['openvpn.openvpn-client'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpnc', 'key' => 'vpnid', 'format' => 'ovpnc%s (OpenVPN Client %s)'];
-    $config_sections['openvpn.openvpn-server'] = ['descr' => 'vpnid,description', 'prefix' => 'ovpns', 'key' => 'vpnid', 'format' => 'ovpns%s (OpenVPN Server %s)'];
     $config_sections['ppps.ppp'] = ['descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type'];
     $config_sections['vlans.vlan'] = ['descr' => 'vlanif,descr,if,tag', 'key' => 'vlanif', 'format' => gettext('%s %s (Parent: %s, Tag: %s)')];
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
-        $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
+        $interfaces[$key] = ['descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces'];
     }
 
     // collect interfaces from defined config sections
@@ -101,9 +99,6 @@ function list_interfaces($devices)
                 }
                 $interface_item['ifdescr'] = !empty($cnf_item['descr']) ? $cnf_item['descr'] : null;
                 $device = $cnf_item[$value['key']];
-                if (!empty($value['prefix'])) {
-                    $device = $value['prefix'] . $device;
-                }
                 $interfaces[$device] = $interface_item;
             }
         }
