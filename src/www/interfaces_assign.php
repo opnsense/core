@@ -61,7 +61,6 @@ function list_interfaces($devices)
     $config_sections = [];
     /* XXX suppose this should plug into plugins_devices() eventually */
     $config_sections['laggs.lagg'] = ['descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members'];
-    $config_sections['ppps.ppp'] = ['descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type'];
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
@@ -169,8 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
             $interfaces = list_interfaces($a_devices);
             switch ($interfaces[$_POST['if_add']]['section']) {
-                case 'ppps.ppp':
-                    $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
+                case 'ppp':
+                    $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['ipaddr'];
                     break;
                 case 'wlan':
                     $config['interfaces'][$newifname]['wireless'] = [];
@@ -296,8 +295,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   $config['interfaces'][$ifname]['if'] = $ifport;
 
                   switch ($interfaces[$ifport]['section']) {
-                      case 'ppps.ppp':
-                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
+                      case 'ppp':
+                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['ipaddr'];
                           break;
                       case 'wlan':
                           if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {

@@ -191,6 +191,24 @@ function core_devices()
         'type' => 'gre',
     ];
 
+    $ppp_names = [];
+
+    foreach (config_read_array('ppps', 'ppp') as $dev) {
+        $ppp_names[$dev['if']] = [
+            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'], $dev['username']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'ipaddr' => $dev['type'],
+            'name' => $dev['if'],
+        ];
+    }
+
+    $devices[] = [
+        'pattern' => '^cua|^l2tp|^ppp|^pptp', /* XXX ^cua likely doesn't match since it's a /dev node */
+        'names' => $ppp_names,
+        'volatile' => true,
+        'type' => 'ppp',
+    ];
+
     $vlan_names = [];
 
     foreach (config_read_array('vlans', 'vlan') as $dev) {
@@ -250,12 +268,8 @@ function core_devices()
     ];
 
     # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^cua', 'volatile' => true);
-    $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
     $devices[] = array('pattern' => '^lagg', 'volatile' => true);
     $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
-    $devices[] = array('pattern' => '^ppp', 'volatile' => true);
-    $devices[] = array('pattern' => '^pptp', 'volatile' => true);
     $devices[] = array('pattern' => '^tinc', 'volatile' => true);
     $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
     $devices[] = array('pattern' => '^ue', 'volatile' => true);
