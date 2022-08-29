@@ -191,6 +191,23 @@ function core_devices()
         'type' => 'gre',
     ];
 
+    $vlan_names = [];
+
+    foreach (config_read_array('vlans', 'vlan') as $dev) {
+        $vlan_names[$dev['vlanif']] = [
+            'descr' => sprintf(gettext('%s %s (Parent: %s, Tag: %s)'), $dev['vlanif'], $dev['descr'], $dev['if'], $dev['tag']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['vlanif'],
+        ];
+    }
+
+    $devices[] = [
+        'pattern' => '_vlan|^vlan|^qinq',
+        'names' => $vlan_names,
+        'volatile' => true,
+        'type' => 'vlan',
+    ];
+
     $wlan_names = [];
 
     foreach (config_read_array('wireless', 'clone') as $dev) {
@@ -245,7 +262,6 @@ function core_devices()
     $devices[] = array('pattern' => '^wg', 'volatile' => true);
     $devices[] = array('pattern' => '^zt', 'volatile' => true);
     $devices[] = array('pattern' => '_stf', 'volatile' => true);
-    $devices[] = array('pattern' => '_vlan|^vlan|^qinq', 'volatile' => true);
 
     return $devices;
 }

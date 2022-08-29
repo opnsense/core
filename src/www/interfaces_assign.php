@@ -62,7 +62,6 @@ function list_interfaces($devices)
     /* XXX suppose this should plug into plugins_devices() eventually */
     $config_sections['laggs.lagg'] = ['descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members'];
     $config_sections['ppps.ppp'] = ['descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type'];
-    $config_sections['vlans.vlan'] = ['descr' => 'vlanif,descr,if,tag', 'key' => 'vlanif', 'format' => gettext('%s %s (Parent: %s, Tag: %s)')];
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
