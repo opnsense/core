@@ -141,7 +141,6 @@ function core_devices()
         $bridge_names[$dev['bridgeif']] = [
             'descr' => sprintf('%s (%s)', $dev['bridgeif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
-            'section' => 'bridges.bridged',
             'name' => $dev['bridgeif'],
         ];
     }
@@ -160,7 +159,6 @@ function core_devices()
         $gif_names[$dev['gifif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['gifif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
-            'section' => 'gifs.gif',
             'name' => $dev['gifif'],
         ];
     }
@@ -180,7 +178,6 @@ function core_devices()
         $gre_names[$dev['greif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['greif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
-            'section' => 'gres.gre',
             'name' => $dev['greif'],
         ];
     }
@@ -200,7 +197,6 @@ function core_devices()
         $wlan_names[$dev['cloneif']] = [
             'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
-            'section' => 'wireless.clone',
             'name' => $dev['cloneif'],
         ];
     }
@@ -211,7 +207,6 @@ function core_devices()
             $wlan_names[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
-                'section' => 'wireless.clone',
                 'name' => $conf['if'],
             ];
 
@@ -224,7 +219,6 @@ function core_devices()
             $wlan_names[$realif] = [
                 'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
-                'section' => 'wireless.clone',
                 'name' => $realif,
             ];
         }

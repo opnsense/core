@@ -66,7 +66,7 @@ function list_interfaces($devices)
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
-        $interfaces[$key] = ['descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces'];
+        $interfaces[$key] = ['descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'hardware'];
     }
 
     // collect interfaces from defined config sections
@@ -109,6 +109,7 @@ function list_interfaces($devices)
             foreach ($device['names'] as $key => $values) {
                 if (!empty($values)) {
                     $interfaces[$key] = $values;
+                    $interfaces[$key]['section'] = $device['type']; /* XXX rename to 'type' eventually */
                 }
             }
         }
@@ -172,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 case 'ppps.ppp':
                     $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
                     break;
-                case 'wireless.clone':
+                case 'wlan':
                     $config['interfaces'][$newifname]['wireless'] = [];
                     interface_sync_wireless_clones($config['interfaces'][$newifname], false);
                     break;
@@ -299,7 +300,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       case 'ppps.ppp':
                           $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
                           break;
-                      case 'wireless.clone':
+                      case 'wlan':
                           if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
                               /* change from implied clone to explicit */
                               $config['interfaces'][$ifname]['if'] .= '_wlan0';
@@ -322,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
 
                   /* set or clear wireless configuration */
-                  if ($interfaces[$ifport]['section'] == 'wireless.clone') {
+                  if ($interfaces[$ifport]['section'] == 'wlan') {
                       config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);

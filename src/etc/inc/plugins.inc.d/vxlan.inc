@@ -42,7 +42,6 @@ function vxlan_devices()
         $names["vxlan{$vxlan->deviceId}"] = [
             'descr' => sprintf('vxlan%s %s (VNI %s)', $vxlan->deviceId, $vxlan->vxlanremote, $vxlan->vxlanid),
             'name' => "vxlan{$vxlan->deviceId}",
-            'section' => 'vxlan',
         ];
     }
 

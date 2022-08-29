@@ -59,7 +59,6 @@ function loopback_devices()
             'descr' => sprintf('lo%s (%s)', $loopback->deviceId, $loopback->description),
             'ifdescr' => sprintf('%s', $loopback->description),
             'name' => "lo{$loopback->deviceId}",
-            'section' => 'loopback',
         ];
     }
 

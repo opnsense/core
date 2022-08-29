@@ -114,7 +114,6 @@ function openvpn_devices()
                     'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description']),
                     'ifdescr' => sprintf('%s', $settings['description']),
                     'name' => "ovpn{$mode[0]}{$settings['vpnid']}",
-                    'section' => 'openvpn',
                 ];
             }
         }

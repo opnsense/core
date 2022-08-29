@@ -218,7 +218,6 @@ function ipsec_devices()
         $names[$device] = [
             'descr' => sprintf('%s (%s)', $device, $details['descr']),
             'ifdescr' => sprintf('%s', $details['descr']),
-            'section' => 'ipsec',
             'name' => $device,
         ];
     }
