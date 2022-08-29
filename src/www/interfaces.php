@@ -505,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
         /* Get wireless modes */
-        interface_wireless_clone(get_real_interface($if), $a_interfaces[$if]);
+        _interfaces_wlan_clone(get_real_interface($if), $a_interfaces[$if]);
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
         $std_wl_copy_fieldnames = array(
           'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna',
@@ -945,7 +945,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($clone_count > 1) {
                     $wlanif = get_real_interface($if);
                     $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
-                    if (!interface_wireless_clone("{$wlanif}_", $a_interfaces[$if])) {
+                    if (!_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if])) {
                         $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
                     } else {
                         legacy_interface_destroy("{$wlanif}_");

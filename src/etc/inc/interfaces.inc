@@ -180,29 +180,29 @@ function _interfaces_vlan_configure($vlan)
     interfaces_bring_up($vlan['vlanif']);
 }
 
-function interfaces_create_wireless_clones($verbose = false)
+function interfaces_wlan_clone($device)
 {
     global $config;
 
-    if ($verbose) {
-        echo 'Creating wireless clone interfaces...';
-        flush();
-    }
-
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        if (isset($config['interfaces'][$if]['wireless'])) {
-            interface_wireless_clone(get_real_interface($if), $config['interfaces'][$if]);
+        if (!isset($config['interfaces'][$if]['wireless'])) {
+            continue;
+        }
+        $realif = get_real_interface($if);
+        /* XXX 'if' check only required if parent is still embedded */
+        if ($device == $realif || $device == $config['interfaces'][$if]['if']) {
+            _interfaces_wlan_clone($realif, $config['interfaces'][$if]);
+            return;
         }
     }
 
     if (isset($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as $clone) {
-            interface_wireless_clone($clone['cloneif'], $clone);
+            if ($device == $clone['cloneif']) {
+                _interfaces_wlan_clone($clone['cloneif'], $clone);
+                return;
+            }
         }
-    }
-
-    if ($verbose) {
-        echo "done.\n";
     }
 }
 
@@ -755,7 +755,6 @@ function interfaces_configure($verbose = false)
     }
 
     interfaces_loopback_configure($verbose);
-    interfaces_create_wireless_clones($verbose);
     interfaces_lagg_configure($verbose);
     interfaces_vlan_configure($verbose);
 
@@ -1450,7 +1449,7 @@ function interface_carp_configure($vip)
     }
 }
 
-function interface_wireless_clone($realif, $wlcfg)
+function _interfaces_wlan_clone($realif, $wlcfg)
 {
     /*
      * Check to see if interface has been cloned as of yet.
@@ -1607,10 +1606,10 @@ function interface_wireless_configure($if, &$wancfg)
         $wancfg['wireless'] = [];
     }
 
-    /* XXX interface_wireless_clone() and interface_sync_wireless_clones() need work */
+    /* XXX _interfaces_wlan_clone() and interface_sync_wireless_clones() need work */
 
     // Clone wireless nic if needed.
-    interface_wireless_clone($if, $wancfg);
+    _interfaces_wlan_clone($if, $wancfg);
 
     // Reject inadvertent changes to shared settings in case the interface hasn't been configured.
     interface_sync_wireless_clones($wancfg, false);

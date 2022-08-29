@@ -231,7 +231,7 @@ function core_devices()
     }
 
     $devices[] = [
-        'function' => null, /* XXX needs to handle implied clones as well */
+        'function' => 'interfaces_wlan_clone',
         'names' => $wlan_names,
         'pattern' => '_wlan',
         'volatile' => true,
