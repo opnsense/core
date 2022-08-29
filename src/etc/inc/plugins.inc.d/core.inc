@@ -286,7 +286,7 @@ function core_devices()
     ];
 
     /* historic handling of tunnel devices and other unstable things */
-    $devices[] = ['pattern' => '^tap|^tun|^ue', 'volatile' => true];
+    $devices[] = ['pattern' => '_stf|^tap|^tun|^ue', 'volatile' => true];
 
     return $devices;
 }

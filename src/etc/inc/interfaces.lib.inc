@@ -549,26 +549,23 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         exec('/sbin/dmesg', $dmesg_arr);
     }
 
-    /* list of virtual interface types */
+    /* XXX list of virtual interface types, device 'pattern' actually registers them */
     $vfaces = [
         '_stf',
-        '_vip',
         '_vlan',
         '_wlan',
         'bridge',
         'carp',
         'enc',
-        'faith',
         'gif',
         'gre',
-        'ipfw',
+        'ipfw', /* XXX interface type exists but verly likely unused */
         'ipsec',
         'l2tp',
         'lagg',
         'lo',
         'ng',
-        'ovpnc',
-        'ovpns',
+        'ovpn',
         'pflog',
         'pfsync',
         'plip',
@@ -576,7 +573,6 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         'pppoe',
         'pptp',
         'qinq',
-        'sl',
         'tap',
         'tun',
         'vlan',
