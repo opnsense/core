@@ -580,6 +580,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         'tap',
         'tun',
         'vlan',
+        'vxlan',
     ];
 
     $ifnames_wlan = legacy_interface_listget('wlan');

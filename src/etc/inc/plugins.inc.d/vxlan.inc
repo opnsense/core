@@ -39,7 +39,11 @@ function vxlan_devices()
     $names = [];
 
     foreach (iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems()) as $vxlan) {
-        $names["vxlan{$vxlan->deviceId}"] = null;
+        $names["vxlan{$vxlan->deviceId}"] = [
+            'descr' => sprintf('vxlan%s %s (VNI %s)', $vxlan->deviceId, $vxlan->vxlanremote, $vxlan->vxlanid),
+            'name' => "vxlan{$vxlan->deviceId}",
+            'section' => 'vxlan',
+        ];
     }
 
     return [[
