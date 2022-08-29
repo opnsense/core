@@ -31,8 +31,57 @@
 namespace OPNsense\Diagnostics\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
+
 
 class HostField extends BaseField
 {
-    // TODO: implement validation
+    protected $internalIsContainer = false;
+
+    /**
+     * retrieve field validators for this field type
+     * @return array returns Text/regex validator
+     */
+    public function getValidators()
+    {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            $validators[] = new CallbackValidator(["callback" => function ($data) {
+                $messages = [];
+                $parts = preg_split('/ /', $data, -1, PREG_SPLIT_NO_EMPTY);
+                $tokens = [];
+                foreach ($parts as $part) {
+                    if (Util::isIpAddress($part) || Util::isSubnet($part)) {
+                        $tokens[] = 'net';
+                    } elseif (in_array(strtolower($part), ['and', 'or', 'not'])) {
+                        $tokens[] = strtolower($part);
+                    } else {
+                        // unknown token
+                        $messages[] = sprintf(gettext("invalid token %s"), $part);
+                    }
+                }
+                if (count($messages) > 0) {
+                    return $messages;
+                }
+                // language order
+                for ($i = 0; $i < count($tokens); $i++) {
+                    $this_token = $tokens[$i];
+                    $prev_token = $i > 0 ? $tokens[$i-1] : null;
+                    $next_token = isset($tokens[$i+1]) ? $tokens[$i+1] : null;
+                    if (
+                          ($this_token == 'net' && $prev_token == 'net') ||
+                          ($this_token == 'not' && $next_token != 'net') ||
+                          (in_array($this_token, ['and', 'or']) && $prev_token != 'net') ||
+                          (in_array($this_token, ['and', 'or']) && !in_array($next_token, ['net', 'not']))
+                    ) {
+                        $messages[] = sprintf(gettext("unexpected token at %d (%s)"), $i, $parts[$i]);
+                    }
+                }
+                return $messages;
+            }
+            ]);
+        }
+        return $validators;
+    }
 }

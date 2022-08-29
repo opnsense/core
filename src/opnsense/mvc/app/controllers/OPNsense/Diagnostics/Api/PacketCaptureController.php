@@ -32,12 +32,13 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 class PacketCaptureController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'packetcapture';
     protected static $internalModelClass = 'OPNsense\Diagnostics\PacketCapture';
-    private static $capture_dir = "/tmp/captures";
+    private static $capture_dir = '/tmp/captures';
 
     /**
      * set / create capture job
@@ -59,11 +60,11 @@ class PacketCaptureController extends ApiMutableModelControllerBase
                             $items[] = $itemkey;
                         }
                     }
-                    $nodes[$key] = $items;
+                    $nodes[$key] = implode(',', $items);
                 }
             }
             file_put_contents(
-                sprintf("%s/%s.json", self::$capture_dir, $result['uuid']),
+                sprintf('%s/%s.json', self::$capture_dir, $result['uuid']),
                 json_encode($nodes)
             );
         }
@@ -75,10 +76,10 @@ class PacketCaptureController extends ApiMutableModelControllerBase
      */
     public function startAction($jobid)
     {
-        $result = ["status" => "failed"];
+        $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
-            $this->sessionClose(); // long running action, close session
-            $payload = json_decode((new Backend())->configdpRun("interface capture start", [$jobid]), true);
+            $this->sessionClose();
+            $payload = json_decode((new Backend())->configdpRun('interface capture start', [$jobid]), true);
             if (!empty($payload)) {
                 $result = $payload;
             }
@@ -91,13 +92,58 @@ class PacketCaptureController extends ApiMutableModelControllerBase
      */
     public function stopAction($jobid)
     {
-        $result = ["status" => "failed"];
+        $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
-            $this->sessionClose(); // long running action, close session
-            $payload = json_decode((new Backend())->configdpRun("interface capture stop", [$jobid]), true);
+            $this->sessionClose();
+            $payload = json_decode((new Backend())->configdpRun('interface capture stop', [$jobid]), true);
             if (!empty($payload)) {
                 $result = $payload;
             }
+        }
+        return $result;
+    }
+
+    /**
+     * remove capture job
+     */
+    public function removeAction($jobid)
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $payload = json_decode((new Backend())->configdpRun('interface capture remove', [$jobid]), true);
+            if (!empty($payload)) {
+                $result = $payload;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * stop capture job
+     */
+    public function viewAction($jobid)
+    {
+        $result = ['status' => 'failed'];
+        $this->sessionClose();
+        $detail = 'normal';
+        $payload = json_decode((new Backend())->configdpRun('interface capture view', [$jobid, $detail]), true);
+        if (!empty($payload)) {
+            $result = $payload;
+            if (!empty($result['interfaces'])) {
+                $ifnames = [];
+                foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $node) {
+                    if (!empty((string)$node->descr)) {
+                        $ifnames[(string)$node->if] = (string)$node->descr;
+                    } else {
+                        $ifnames[(string)$node->if] = strtoupper($ifname);
+                    }
+                }
+                foreach ($result['interfaces'] as $key => $data) {
+                    $result['interfaces'][$key]['name'] = !empty($ifnames[$key]) ? $ifnames[$key] : "";
+                }
+            }
+
         }
         return $result;
     }

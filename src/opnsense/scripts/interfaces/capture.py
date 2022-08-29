@@ -50,11 +50,30 @@ def capture_pids(jobid):
     return pids
 
 
+def load_settings(filename):
+    try:
+        return ujson.load(open(filename, 'r'))
+    except ValueError:
+        return {}
+
+def pcap_reader(filename, eargs=None):
+    args = ['/usr/sbin/tcpdump', '-n', '-e', '-r', filename]
+    if eargs:
+        args = args + eargs
+    sp = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in sp.stdout:
+        if not line.startswith(b'reading'):
+            yield line.decode()
+    sp.communicate()
+
+    yield '\n'
+
 if __name__ == '__main__':
     result = dict()
     parser = argparse.ArgumentParser()
     parser.add_argument('--job', help='job id', default=None)
-    parser.add_argument('action', help='action to perfom', choices=['list', 'start', 'stop', 'remove'])
+    parser.add_argument('--detail', help='detail level', choices=['normal', 'medium','high'], default='normal')
+    parser.add_argument('action', help='action to perfom', choices=['list', 'start', 'stop', 'remove', 'view'])
     cmd_args = parser.parse_args()
 
     all_jobs = {}
@@ -67,10 +86,7 @@ if __name__ == '__main__':
         result['status'] = 'ok'
         for jobid in all_jobs:
             this_pids = capture_pids(jobid)
-            try:
-                settings  = ujson.load(open(all_jobs[jobid], 'r'))
-            except ValueError:
-                settings = {}
+            settings = load_settings(all_jobs[jobid])
             settings['id'] = jobid
             settings['status'] = "running" if len(this_pids) > 0 else "stopped"
             result['jobs'].append(settings)
@@ -82,17 +98,53 @@ if __name__ == '__main__':
         else:
             result['status'] = 'ok'
             result['started_processes'] = 0
-            settings = ujson.load(open(all_jobs[cmd_args.job], 'r'))
-            for intf in settings.get('interface', []):
+            settings = load_settings(all_jobs[cmd_args.job])
+            for intf in settings.get('interface', '').split(','):
                 result['started_processes'] += 1
                 args = [
                     '/usr/sbin/daemon',
                     '-f',
                     '/usr/sbin/tcpdump',
                     '-i', intf,
+                    '-n',
                     '-U',
-                    '-w', "%s%s_%s.cap" % (TEMP_DIR, cmd_args.job, intf)
+                    '-w', "%s%s_%s.pcap" % (TEMP_DIR, cmd_args.job, intf)
                 ]
+                if settings.get('promiscuous', '0') == '1':
+                    args.append('-p')
+                if settings.get('snaplen', '').isdigit():
+                    args.append('-s')
+                    args.append(settings.get('snaplen'))
+                if settings.get('count', '').isdigit():
+                    args.append('-c')
+                    args.append(settings.get('count'))
+
+                filters = []
+                if settings.get('fam', 'any') != 'any':
+                    filters.append(settings.get('fam'))
+                if settings.get('protocol', 'any') != 'any':
+                    if settings.get('protocol_not', '0') == '1':
+                        filters.append('proto not %s' % settings.get('protocol'))
+                    else:
+                        filters.append('proto %s' % settings.get('protocol'))
+                if settings.get('host', '') != '':
+                    tokens = []
+                    for token in settings.get('host').split():
+                        if token.lower() in ['and', 'or', 'not']:
+                            tokens.append(token)
+                        elif token.find('/') > -1:
+                            tokens.append('net %s' % token)
+                        else:
+                            tokens.append('host %s' % token)
+                    filters.append('( %s )' % ' '.join(tokens))
+                if settings.get('port', '') != '':
+                    if settings.get('port_not', '0') == '1':
+                        filters.append('port not %s' % settings.get('port'))
+                    else:
+                        filters.append('port %s' % settings.get('port'))
+
+                if len(filters) > 0:
+                    args.append(' and '.join(filters))
                 subprocess.run(args)
     elif cmd_args.action == 'stop' and cmd_args.job in all_jobs:
         result['status'] = 'ok'
@@ -100,5 +152,42 @@ if __name__ == '__main__':
         for pid in capture_pids(cmd_args.job):
             subprocess.run(['kill', pid])
             result['stopped_processes'] += 1
+    elif cmd_args.action == 'remove' and cmd_args.job in all_jobs:
+        result['status'] = 'ok'
+        result['stopped_processes'] = 0
+        for pid in capture_pids(cmd_args.job):
+            subprocess.run(['kill', pid])
+            result['stopped_processes'] += 1
+        for filename in glob.glob("%s%s*" % (TEMP_DIR, cmd_args.job)):
+            os.remove(filename)
+    elif cmd_args.action == 'view' and cmd_args.job in all_jobs:
+        result['settings'] = load_settings(all_jobs[cmd_args.job])
+        result['status'] = 'ok'
+        result['interfaces'] = {}
+        for filename in glob.glob("%s%s*.pcap" % (TEMP_DIR, cmd_args.job)):
+            intf = filename.split('_')[-1].split('.')[0]
+            result['interfaces'][intf] = {'rows': []}
+            args = []
+            if cmd_args.detail == 'normal':
+                args.append('-q')
+            elif cmd_args.detail == 'medium':
+                args.append('-v')
+            elif cmd_args.detail == 'high':
+                args.append('-vv')
+
+            this_record = []
+            for line in pcap_reader(filename, args):
+                if len(line) > 0 and not line[0] in [' ', '\t']:
+                    if this_record and this_record[0].count(' ') > 3:
+                        first_row = this_record[0].split()
+                        result['interfaces'][intf]['rows'].append({
+                            'raw': ''.join(this_record)
+                        })
+                        if len(result['interfaces'][intf]['rows']) > 500:
+                            # max frames reached
+                            break
+                    this_record = [line]
+                else:
+                    this_record.append(line)
 
     print (ujson.dumps(result))
