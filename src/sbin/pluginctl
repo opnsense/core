@@ -88,10 +88,15 @@ if (isset($opts['h'])) {
                 echo $name . PHP_EOL;
             }
         } elseif (in_array($args[0], array_keys($device['names']))) {
-            echo "Reconfiguring {$args[0]}...";
-            flush();
-            call_user_func_array($device['function'], [$args[0]]);
-            echo "done.\n";
+            if (!empty($device['function'])) {
+                echo "Reconfiguring {$args[0]}...";
+                flush();
+                call_user_func_array($device['function'], [$args[0]]);
+                echo "done.\n";
+            } else {
+                echo "Device {$args[0]} cannot be reconfigured\n";
+                exit (1);
+            }
         }
     }
 } elseif (isset($opts['s'])) {
