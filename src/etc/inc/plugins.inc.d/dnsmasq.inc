@@ -42,6 +42,7 @@ function dnsmasq_configure()
         'dns' => array('dnsmasq_configure_do'),
         'hosts' => array('dnsmasq_hosts_generate:0'),
         'local' => array('dnsmasq_configure_do'),
+        'newwanip' => array('dnsmasq_configure_do'),
     );
 }
 
