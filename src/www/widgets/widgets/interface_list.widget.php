@@ -121,13 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!$listed) {
       continue;
     }
-    $ifinfo = $ifsinfo[$ifdescr];
-    $iswireless = is_interface_wireless($ifdescr); ?>
+    $ifinfo = $ifsinfo[$ifdescr]; ?>
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
     <td style="width:15%; word-break: break-word;">
 <?php if (isset($ifinfo['ppplink'])): ?>
       <span title="3g" class="fa fa-mobile text-success"></span>
-<?php elseif ($iswireless): ?>
+<?php elseif (isset($config['interfaces'][$ifdescr]['wireless'])): ?>
 <?php if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'): ?>
       <span title="wlan" class="fa fa-signal text-success"></span>
 <?php else: ?>
