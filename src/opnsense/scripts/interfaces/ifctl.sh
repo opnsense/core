@@ -168,7 +168,7 @@ if [ -z "${IF}" ]; then
 	RESULTS=
 
 	# list all interfaces that have the requested file
-	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
+	for FOUND in $(find -s /tmp -name ${FILE#/tmp/}); do
 		FOUND=${FOUND#/tmp/}
 		FOUND=${FOUND%_*}
 		FOUND=${FOUND%:*}
