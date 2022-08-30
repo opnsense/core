@@ -141,7 +141,7 @@
         </Types>
         <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
-            <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
+            <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
             <Ping url="/diag_ping.php"/>
             <TestPort VisibleName="Port Probe" url="/diag_testport.php"/>
             <Traceroute VisibleName="Trace Route" url="/diag_traceroute.php"/>

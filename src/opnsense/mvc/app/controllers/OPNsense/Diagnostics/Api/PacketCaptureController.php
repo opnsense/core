@@ -120,13 +120,12 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     }
 
     /**
-     * stop capture job
+     * view capture
      */
-    public function viewAction($jobid)
+    public function viewAction($jobid, $detail='normal')
     {
         $result = ['status' => 'failed'];
         $this->sessionClose();
-        $detail = 'normal';
         $payload = json_decode((new Backend())->configdpRun('interface capture view', [$jobid, $detail]), true);
         if (!empty($payload)) {
             $result = $payload;
@@ -143,6 +142,34 @@ class PacketCaptureController extends ApiMutableModelControllerBase
                     $result['interfaces'][$key]['name'] = !empty($ifnames[$key]) ? $ifnames[$key] : "";
                 }
             }
+        }
+        return $result;
+    }
+
+    /**
+     * download pcap(s)
+     */
+    public function downloadAction($jobid)
+    {
+        $this->sessionClose();
+        $payload = json_decode((new Backend())->configdpRun('interface capture archive', [$jobid]), true);
+        if (!empty($payload) && !empty($payload['filename'])) {
+            $this->response->setContentType('application/octet-stream');
+            $this->response->setRawHeader("Content-Disposition: attachment; filename=" . basename($payload['filename']));
+            readfile($payload['filename']);
+        }
+    }
+
+    /**
+     * fetch mac info
+     */
+    public function macInfoAction($macaddr)
+    {
+        $result = ['status' => 'failed'];
+        $this->sessionClose();
+        $payload = json_decode((new Backend())->configdpRun('interface capture macinfo', [$macaddr]), true);
+        if (!empty($payload)) {
+            return $payload;
         }
         return $result;
     }

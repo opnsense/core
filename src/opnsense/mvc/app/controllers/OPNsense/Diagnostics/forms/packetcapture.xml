@@ -2,6 +2,7 @@
     <field>
        <id>packetcapture.settings.interface</id>
        <label>Interface</label>
+       <style>interface_select selectpicker</style>
        <type>select_multiple</type>
        <help>Interfaces to capture.</help>
     </field>

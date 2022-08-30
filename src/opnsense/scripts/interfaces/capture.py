@@ -35,6 +35,8 @@ import subprocess
 import os
 import sys
 import ujson
+import zipfile
+from datetime import datetime
 
 
 def capture_pids(jobid):
@@ -57,7 +59,7 @@ def load_settings(filename):
         return {}
 
 def pcap_reader(filename, eargs=None):
-    args = ['/usr/sbin/tcpdump', '-n', '-e', '-r', filename]
+    args = ['/usr/sbin/tcpdump', '-n', '-e', '-tt', '-r', filename]
     if eargs:
         args = args + eargs
     sp = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -73,7 +75,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--job', help='job id', default=None)
     parser.add_argument('--detail', help='detail level', choices=['normal', 'medium','high'], default='normal')
-    parser.add_argument('action', help='action to perfom', choices=['list', 'start', 'stop', 'remove', 'view'])
+    parser.add_argument(
+        'action',
+        help='action to perfom',
+        choices=['list', 'start', 'stop', 'remove', 'view', 'archive']
+    )
     cmd_args = parser.parse_args()
 
     all_jobs = {}
@@ -180,14 +186,33 @@ if __name__ == '__main__':
                 if len(line) > 0 and not line[0] in [' ', '\t']:
                     if this_record and this_record[0].count(' ') > 3:
                         first_row = this_record[0].split()
-                        result['interfaces'][intf]['rows'].append({
-                            'raw': ''.join(this_record)
-                        })
+                        if first_row[0].replace('.', '').isdigit():
+                            this_record[0] = this_record[0][this_record[0].find(',')+1:].lstrip()
+                            payload = {
+                                'timestamp': datetime.fromtimestamp(float(first_row[0])).isoformat(),
+                                'esrc': first_row[1] if first_row[1].count(':') == 5 else None,
+                                'edst': first_row[3].rstrip(',') if first_row[3].count(':') == 5 > 0 else None,
+                                'raw': ''.join(this_record)
+                            }
+                            if 'IPv4,' in first_row:
+                                payload['fam'] = 'ip'
+                            elif 'IPv6,' in first_row:
+                                payload['fam'] = 'ip6'
+
+                            result['interfaces'][intf]['rows'].append(payload)
                         if len(result['interfaces'][intf]['rows']) > 500:
                             # max frames reached
                             break
                     this_record = [line]
                 else:
                     this_record.append(line)
+    elif cmd_args.action == 'archive' and cmd_args.job in all_jobs:
+        result['filename'] = "%s%s.zip" % (TEMP_DIR, cmd_args.job)
+        result['status'] = 'ok'
+        zfh = zipfile.ZipFile(result['filename'], mode='w')
+        for filename in glob.glob("%s%s*" % (TEMP_DIR, cmd_args.job)):
+            if not filename.endswith('.zip'):
+                zfh.write(filename, os.path.basename(filename))
+        zfh.close()
 
     print (ujson.dumps(result))
