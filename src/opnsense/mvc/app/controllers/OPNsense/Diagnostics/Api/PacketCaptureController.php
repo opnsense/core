@@ -122,7 +122,7 @@ class PacketCaptureController extends ApiMutableModelControllerBase
     /**
      * view capture
      */
-    public function viewAction($jobid, $detail='normal')
+    public function viewAction($jobid, $detail = 'normal')
     {
         $result = ['status' => 'failed'];
         $this->sessionClose();
