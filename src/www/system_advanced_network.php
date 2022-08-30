@@ -247,6 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
         system_sysctl_configure();
+        interfaces_hardware();
     }
 }
 
@@ -404,11 +405,6 @@ include("head.inc");
               <tr>
                 <td>&nbsp;</td>
                 <td><button name="submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <?= gettext('This will take effect after you reboot the machine or reconfigure each interface.') ?>
-                </td>
               </tr>
             </table>
           </div>
