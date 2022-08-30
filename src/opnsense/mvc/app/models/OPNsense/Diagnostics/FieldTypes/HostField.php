@@ -34,7 +34,6 @@ use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Firewall\Util;
 
-
 class HostField extends BaseField
 {
     protected $internalIsContainer = false;
@@ -67,8 +66,8 @@ class HostField extends BaseField
                 // language order
                 for ($i = 0; $i < count($tokens); $i++) {
                     $this_token = $tokens[$i];
-                    $prev_token = $i > 0 ? $tokens[$i-1] : null;
-                    $next_token = isset($tokens[$i+1]) ? $tokens[$i+1] : null;
+                    $prev_token = $i > 0 ? $tokens[$i - 1] : null;
+                    $next_token = isset($tokens[$i + 1]) ? $tokens[$i + 1] : null;
                     if (
                           ($this_token == 'net' && $prev_token == 'net') ||
                           ($this_token == 'not' && $next_token != 'net') ||

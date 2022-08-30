@@ -143,7 +143,6 @@ class PacketCaptureController extends ApiMutableModelControllerBase
                     $result['interfaces'][$key]['name'] = !empty($ifnames[$key]) ? $ifnames[$key] : "";
                 }
             }
-
         }
         return $result;
     }
