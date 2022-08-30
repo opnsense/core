@@ -3879,8 +3879,8 @@ function get_interfaces_info($include_unlinked = false)
     $all_intf_stats = legacy_interface_stats();
     $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
     $ifup = legacy_interface_listget('up');
-    $result = array();
-    $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+    $result = [];
+    $interfaces = legacy_config_get_interfaces(['virtual' => false]);
     $known_interfaces = [];
     foreach (array_keys($interfaces) as $ifdescr) {
         $interfaces[$ifdescr]['if'] = get_real_interface($ifdescr);
@@ -3903,8 +3903,8 @@ function get_interfaces_info($include_unlinked = false)
     }
 
     foreach ($interfaces as $ifdescr => $ifinfo) {
-        $ifinfo['status'] = (is_array($ifup) && in_array($ifinfo['if'], $ifup)) ? 'up' : 'down';
-        $ifinfo['statusv6'] = (is_array($ifup) && in_array($ifinfo['ifv6'], $ifup)) ? 'up' : 'down';
+        $ifinfo['status'] = in_array($ifinfo['if'], $ifup) ? 'up' : 'down';
+        $ifinfo['statusv6'] = in_array($ifinfo['ifv6'], $ifup) ? 'up' : 'down';
 
         if (!empty($all_intf_details[$ifinfo['if']])) {
             if (
@@ -4025,9 +4025,18 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
+        switch ($config['interfaces'][$ifdescr]['ipaddrv6'] ?? '') {
+            case 'dhcp6':
+                $ifinfo['dhcp6link'] = isvalidpid('/var/run/dhcp6c.pid') && file_exists("/var/etc/dhcp6c_{$ifdescr}.conf") ? 'up' : 'down';
+                break;
+            /* XXX more to do here in the future */
+            default:
+                break;
+        }
+
         if ($ifinfo['status'] == "up") {
             $wifconfiginfo = array();
-            if (is_interface_wireless($ifdescr)) {
+            if (isset($config['interfaces'][$ifdescr]['wireless'])) {
                 exec("/sbin/ifconfig {$ifinfo['if']} list sta", $wifconfiginfo);
                 array_shift($wifconfiginfo);
             }
