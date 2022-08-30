@@ -340,11 +340,6 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
-              <tr>
-                <td colspan="2">
-                  <?= gettext('Please note that offloading settings only apply to configured interfaces, so when using e.g. VLAN interfaces make sure to assign and enable the parent as well.') ?>
-                </td>
-              </tr>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">
@@ -405,6 +400,11 @@ include("head.inc");
               <tr>
                 <td>&nbsp;</td>
                 <td><button name="submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <?= gettext('This will take effect after you reboot the machine or reconfigure each interface.') ?>
+                </td>
               </tr>
             </table>
           </div>
