@@ -140,9 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($ciphers as $cipher => $settings) {
             if ($settings['version'] == 'TLSv1.3' && in_array($cipher, $pconfig['ssl-ciphers'])
                     && !in_array('TLS_AES_128_GCM_SHA256', $pconfig['ssl-ciphers'])) {
-                $input_errors[] = gettext(
-                    "A TLS 1.3-compliant application MUST implement the TLS_AES_128_GCM_SHA256 according to rfc8446"
-                );
+                $input_errors[] = gettext('A TLS 1.3-compliant application MUST implement the TLS_AES_128_GCM_SHA256 according to RFC 8446.');
                 break;
             }
         }
