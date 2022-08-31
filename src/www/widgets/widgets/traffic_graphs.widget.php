@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           intersect: false
                       },
                       plugins: {
-                          tooltips: {
+                          tooltip: {
                             mode: 'nearest',
                             intersect: false,
                             callbacks: {
