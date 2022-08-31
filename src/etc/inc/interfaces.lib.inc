@@ -412,7 +412,9 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["vxlan"]["local"] = $line_parts[4];
             if ($line_parts[5] == "group") {
                 $result[$current_interface]["vxlan"]["group"] = $line_parts[6];
+                $result[$current_interface]['vxlan']['remote'] = null;
             } else {
+                $result[$current_interface]['vxlan']['group'] = null;
                 $result[$current_interface]["vxlan"]["remote"] = $line_parts[6];
             }
         }
