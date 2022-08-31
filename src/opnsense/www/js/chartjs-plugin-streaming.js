@@ -1,1314 +1,949 @@
 /*!
- * chartjs-plugin-streaming v1.9.0
+ * chartjs-plugin-streaming v2.0.0
  * https://nagix.github.io/chartjs-plugin-streaming
  * (c) 2017-2021 Akihiko Kusanagi
  * Released under the MIT license
  */
 (function (global, factory) {
-typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('chart.js'), require('moment')) :
-typeof define === 'function' && define.amd ? define(['chart.js', 'moment'], factory) :
-(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ChartStreaming = factory(global.Chart, global.moment));
-}(this, (function (Chart, moment) { 'use strict';
+typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('chart.js'), require('chart.js/helpers')) :
+typeof define === 'function' && define.amd ? define(['chart.js', 'chart.js/helpers'], factory) :
+(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.ChartStreaming = factory(global.Chart, global.Chart.helpers));
+}(this, (function (chart_js, helpers) { 'use strict';
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var Chart__default = /*#__PURE__*/_interopDefaultLegacy(Chart);
-var moment__default = /*#__PURE__*/_interopDefaultLegacy(moment);
-
-var helpers$3 = Chart__default['default'].helpers;
-
-var cancelAnimFrame = (function() {
-	if (typeof window !== 'undefined') {
-		return window.cancelAnimationFrame ||
-			window.webkitCancelAnimationFrame ||
-			window.mozCancelAnimationFrame ||
-			window.oCancelAnimationFrame ||
-			window.msCancelAnimationFrame ||
-			function(id) {
-				return window.clearTimeout(id);
-			};
-	}
+function clamp(value, lower, upper) {
+  return Math.min(Math.max(value, lower), upper);
+}
+function resolveOption(scale, key) {
+  const realtimeOpts = scale.options.realtime;
+  const streamingOpts = scale.chart.options.plugins.streaming;
+  return helpers.valueOrDefault(realtimeOpts[key], streamingOpts[key]);
+}
+function getAxisMap(element, {x, y}, {xAxisID, yAxisID}) {
+  const axisMap = {};
+  helpers.each(x, key => {
+    axisMap[key] = {axisId: xAxisID};
+  });
+  helpers.each(y, key => {
+    axisMap[key] = {axisId: yAxisID};
+  });
+  return axisMap;
+}
+const cancelAnimFrame = (function() {
+  if (typeof window === 'undefined') {
+    return helpers.noop;
+  }
+  return window.cancelAnimationFrame;
 }());
-
-var StreamingHelper = {
-
-	resolveOption(scale, key) {
-		var realtimeOpts = scale.options.realtime;
-		var streamingOpts = scale.chart.options.plugins.streaming;
-		return helpers$3.valueOrDefault(realtimeOpts[key], streamingOpts[key]);
-	},
-
-	startFrameRefreshTimer: function(context, func) {
-		if (!context.frameRequestID) {
-			var frameRefresh = function() {
-				func();
-				context.frameRequestID = helpers$3.requestAnimFrame.call(window, frameRefresh);
-			};
-			context.frameRequestID = helpers$3.requestAnimFrame.call(window, frameRefresh);
-		}
-	},
-
-	stopFrameRefreshTimer: function(context) {
-		var frameRequestID = context.frameRequestID;
-
-		if (frameRequestID) {
-			cancelAnimFrame.call(window, frameRequestID);
-			delete context.frameRequestID;
-		}
-	}
-
-};
-
-function isValid(rawValue) {
-	if (rawValue === null || typeof rawValue === 'undefined') {
-		return false;
-	} else if (typeof rawValue === 'number') {
-		return isFinite(rawValue);
-	}
-	return !!rawValue;
+function startFrameRefreshTimer(context, func) {
+  if (!context.frameRequestID) {
+    const refresh = () => {
+      const nextRefresh = context.nextRefresh || 0;
+      const now = Date.now();
+      if (nextRefresh <= now) {
+        const newFrameRate = helpers.callback(func);
+        const frameDuration = 1000 / (Math.max(newFrameRate, 0) || 30);
+        const newNextRefresh = context.nextRefresh + frameDuration || 0;
+        context.nextRefresh = newNextRefresh > now ? newNextRefresh : now + frameDuration;
+      }
+      context.frameRequestID = helpers.requestAnimFrame.call(window, refresh);
+    };
+    context.frameRequestID = helpers.requestAnimFrame.call(window, refresh);
+  }
+}
+function stopFrameRefreshTimer(context) {
+  const frameRequestID = context.frameRequestID;
+  if (frameRequestID) {
+    cancelAnimFrame.call(window, frameRequestID);
+    delete context.frameRequestID;
+  }
+}
+function stopDataRefreshTimer(context) {
+  const refreshTimerID = context.refreshTimerID;
+  if (refreshTimerID) {
+    clearInterval(refreshTimerID);
+    delete context.refreshTimerID;
+    delete context.refreshInterval;
+  }
+}
+function startDataRefreshTimer(context, func, interval) {
+  if (!context.refreshTimerID) {
+    context.refreshTimerID = setInterval(() => {
+      const newInterval = helpers.callback(func);
+      if (context.refreshInterval !== newInterval && !isNaN(newInterval)) {
+        stopDataRefreshTimer(context);
+        startDataRefreshTimer(context, func, newInterval);
+      }
+    }, interval || 0);
+    context.refreshInterval = interval || 0;
+  }
 }
 
 function scaleValue(scale, value, fallback) {
-	return isValid(value) ?
-		{value: scale.getPixelForValue(value), transitionable: true} :
-		{value: fallback};
+  value = typeof value === 'number' ? value : scale.parse(value);
+  return helpers.isFinite(value) ?
+    {value: scale.getPixelForValue(value), transitionable: true} :
+    {value: fallback};
 }
-
-function updateBoxAnnotation(element) {
-	var chart = element.chartInstance;
-	var options = element.options;
-	var scales = chart.scales;
-	var chartArea = chart.chartArea;
-	var xScaleID = options.xScaleID;
-	var yScaleID = options.yScaleID;
-	var xScale = scales[xScaleID];
-	var yScale = scales[yScaleID];
-	var streaming = element._streaming = {};
-	var min, max, reverse;
-
-	if (xScale) {
-		min = scaleValue(xScale, options.xMin, chartArea.left);
-		max = scaleValue(xScale, options.xMax, chartArea.right);
-		reverse = min.value > max.value;
-
-		if (min.transitionable) {
-			streaming[reverse ? 'right' : 'left'] = {axisId: xScaleID};
-		}
-		if (max.transitionable) {
-			streaming[reverse ? 'left' : 'right'] = {axisId: xScaleID};
-		}
-	}
-
-	if (yScale) {
-		min = scaleValue(yScale, options.yMin, chartArea.top);
-		max = scaleValue(yScale, options.yMax, chartArea.bottom);
-		reverse = min.value > max.value;
-
-		if (min.transitionable) {
-			streaming[reverse ? 'bottom' : 'top'] = {axisId: yScaleID};
-		}
-		if (max.transitionable) {
-			streaming[reverse ? 'top' : 'bottom'] = {axisId: yScaleID};
-		}
-	}
+function updateBoxAnnotation(element, chart, options) {
+  const {scales, chartArea} = chart;
+  const {xScaleID, yScaleID, xMin, xMax, yMin, yMax} = options;
+  const xScale = scales[xScaleID];
+  const yScale = scales[yScaleID];
+  const {top, left, bottom, right} = chartArea;
+  const streaming = element.$streaming = {};
+  if (xScale) {
+    const min = scaleValue(xScale, xMin, left);
+    const max = scaleValue(xScale, xMax, right);
+    const reverse = min.value > max.value;
+    if (min.transitionable) {
+      streaming[reverse ? 'x2' : 'x'] = {axisId: xScaleID};
+    }
+    if (max.transitionable) {
+      streaming[reverse ? 'x' : 'x2'] = {axisId: xScaleID};
+    }
+    if (min.transitionable !== max.transitionable) {
+      streaming.width = {axisId: xScaleID, reverse: min.transitionable};
+    }
+  }
+  if (yScale) {
+    const min = scaleValue(yScale, yMin, top);
+    const max = scaleValue(yScale, yMax, bottom);
+    const reverse = min.value > max.value;
+    if (min.transitionable) {
+      streaming[reverse ? 'y2' : 'y'] = {axisId: yScaleID};
+    }
+    if (max.transitionable) {
+      streaming[reverse ? 'y' : 'y2'] = {axisId: yScaleID};
+    }
+    if (min.transitionable !== max.transitionable) {
+      streaming.height = {axisId: yScaleID, reverse: min.transitionable};
+    }
+  }
 }
-
-function updateLineAnnotation(element) {
-	var chart = element.chartInstance;
-	var options = element.options;
-	var scaleID = options.scaleID;
-	var value = options.value;
-	var scale = chart.scales[scaleID];
-	var streaming = element._streaming = {};
-
-	if (scale) {
-		var isHorizontal = scale.isHorizontal();
-		var pixel = scaleValue(scale, value);
-
-		if (pixel.transitionable) {
-			streaming[isHorizontal ? 'x1' : 'y1'] = {axisId: scaleID};
-			streaming[isHorizontal ? 'x2' : 'y2'] = {axisId: scaleID};
-			streaming[isHorizontal ? 'labelX' : 'labelY'] = {axisId: scaleID};
-		}
-	}
+function updateLineAnnotation(element, chart, options) {
+  const {scales, chartArea} = chart;
+  const {scaleID, value} = options;
+  const scale = scales[scaleID];
+  const {top, left, bottom, right} = chartArea;
+  const streaming = element.$streaming = {};
+  if (scale) {
+    const isHorizontal = scale.isHorizontal();
+    const pixel = scaleValue(scale, value);
+    if (pixel.transitionable) {
+      streaming[isHorizontal ? 'x' : 'y'] = {axisId: scaleID};
+      streaming[isHorizontal ? 'x2' : 'y2'] = {axisId: scaleID};
+    }
+    return isHorizontal ? {top, bottom} : {left, right};
+  }
+  const {xScaleID, yScaleID, xMin, xMax, yMin, yMax} = options;
+  const xScale = scales[xScaleID];
+  const yScale = scales[yScaleID];
+  const clip = {};
+  if (xScale) {
+    const min = scaleValue(xScale, xMin);
+    const max = scaleValue(xScale, xMax);
+    if (min.transitionable) {
+      streaming.x = {axisId: xScaleID};
+    } else {
+      clip.left = left;
+    }
+    if (max.transitionable) {
+      streaming.x2 = {axisId: xScaleID};
+    } else {
+      clip.right = right;
+    }
+  }
+  if (yScale) {
+    const min = scaleValue(yScale, yMin);
+    const max = scaleValue(yScale, yMax);
+    if (min.transitionable) {
+      streaming.y = {axisId: yScaleID};
+    } else {
+      clip.top = top;
+    }
+    if (max.transitionable) {
+      streaming.y2 = {axisId: yScaleID};
+    } else {
+      clip.bottom = bottom;
+    }
+  }
+  return clip;
 }
-
+function updatePointAnnotation(element, chart, options) {
+  const scales = chart.scales;
+  const {xScaleID, yScaleID, xValue, yValue} = options;
+  const xScale = scales[xScaleID];
+  const yScale = scales[yScaleID];
+  const streaming = element.$streaming = {};
+  if (xScale) {
+    const x = scaleValue(xScale, xValue);
+    if (x.transitionable) {
+      streaming.x = {axisId: xScaleID};
+    }
+  }
+  if (yScale) {
+    const y = scaleValue(yScale, yValue);
+    if (y.transitionable) {
+      streaming.y = {axisId: yScaleID};
+    }
+  }
+}
 function initAnnotationPlugin() {
-	var BoxAnnotation = Chart__default['default'].Annotation.types.box;
-	var LineAnnotation = Chart__default['default'].Annotation.types.line;
-	var configureBoxAnnotation = BoxAnnotation.prototype.configure;
-	var configureLineAnnotation = LineAnnotation.prototype.configure;
-
-	BoxAnnotation.prototype.configure = function() {
-		updateBoxAnnotation(this);
-		return configureBoxAnnotation.call(this);
-	};
-
-	LineAnnotation.prototype.configure = function() {
-		updateLineAnnotation(this);
-		return configureLineAnnotation.call(this);
-	};
+  const BoxAnnotation = chart_js.registry.getElement('boxAnnotation');
+  const LineAnnotation = chart_js.registry.getElement('lineAnnotation');
+  const PointAnnotation = chart_js.registry.getElement('pointAnnotation');
+  const resolveBoxAnnotationProperties = BoxAnnotation.prototype.resolveElementProperties;
+  const resolveLineAnnotationProperties = LineAnnotation.prototype.resolveElementProperties;
+  const resolvePointAnnotationProperties = PointAnnotation.prototype.resolveElementProperties;
+  BoxAnnotation.prototype.resolveElementProperties = function(chart, options) {
+    updateBoxAnnotation(this, chart, options);
+    return resolveBoxAnnotationProperties.call(this, chart, options);
+  };
+  LineAnnotation.prototype.resolveElementProperties = function(chart, options) {
+    const chartArea = chart.chartArea;
+    chart.chartArea = updateLineAnnotation(this, chart, options);
+    const properties = resolveLineAnnotationProperties.call(this, chart, options);
+    chart.chartArea = chartArea;
+    return properties;
+  };
+  PointAnnotation.prototype.resolveElementProperties = function(chart, options) {
+    updatePointAnnotation(this, chart, options);
+    return resolvePointAnnotationProperties.call(this, chart, options);
+  };
+}
+function attachChart$1(plugin, chart) {
+  const streaming = chart.$streaming;
+  if (streaming.annotationPlugin !== plugin) {
+    const afterUpdate = plugin.afterUpdate;
+    initAnnotationPlugin();
+    streaming.annotationPlugin = plugin;
+    plugin.afterUpdate = (_chart, args, options) => {
+      const mode = args.mode;
+      const animationOpts = options.animation;
+      if (mode === 'quiet') {
+        options.animation = false;
+      }
+      afterUpdate.call(this, _chart, args, options);
+      if (mode === 'quiet') {
+        options.animation = animationOpts;
+      }
+    };
+  }
+}
+function getElements(chart) {
+  const plugin = chart.$streaming.annotationPlugin;
+  if (plugin) {
+    const state = plugin._getState(chart);
+    return state && state.elements || [];
+  }
+  return [];
+}
+function detachChart$1(chart) {
+  delete chart.$streaming.annotationPlugin;
 }
 
-var AnnotationPlugin = {
-	attachChart(chart) {
-		var streaming = chart.streaming;
+const transitionKeys$1 = {x: ['x', 'caretX'], y: ['y', 'caretY']};
+function update$1(...args) {
+  const me = this;
+  const element = me.getActiveElements()[0];
+  if (element) {
+    const meta = me._chart.getDatasetMeta(element.datasetIndex);
+    me.$streaming = getAxisMap(me, transitionKeys$1, meta);
+  } else {
+    me.$streaming = {};
+  }
+  me.constructor.prototype.update.call(me, ...args);
+}
 
-		if (!streaming.annotationPlugin) {
-			initAnnotationPlugin();
-			streaming.annotationPlugin = true;
-		}
-	},
+const chartStates = new WeakMap();
+function getState(chart) {
+  let state = chartStates.get(chart);
+  if (!state) {
+    state = {originalScaleOptions: {}};
+    chartStates.set(chart, state);
+  }
+  return state;
+}
+function removeState(chart) {
+  chartStates.delete(chart);
+}
+function storeOriginalScaleOptions(chart) {
+  const {originalScaleOptions} = getState(chart);
+  const scales = chart.scales;
+  helpers.each(scales, scale => {
+    const id = scale.id;
+    if (!originalScaleOptions[id]) {
+      originalScaleOptions[id] = {
+        duration: resolveOption(scale, 'duration'),
+        delay: resolveOption(scale, 'delay')
+      };
+    }
+  });
+  helpers.each(originalScaleOptions, (opt, key) => {
+    if (!scales[key]) {
+      delete originalScaleOptions[key];
+    }
+  });
+  return originalScaleOptions;
+}
+function zoomRealTimeScale(scale, zoom, center, limits) {
+  const {chart, axis} = scale;
+  const {minDuration = 0, maxDuration = Infinity, minDelay = -Infinity, maxDelay = Infinity} = limits && limits[axis] || {};
+  const realtimeOpts = scale.options.realtime;
+  const duration = resolveOption(scale, 'duration');
+  const delay = resolveOption(scale, 'delay');
+  const newDuration = clamp(duration * (2 - zoom), minDuration, maxDuration);
+  let maxPercent, newDelay;
+  storeOriginalScaleOptions(chart);
+  if (scale.isHorizontal()) {
+    maxPercent = (scale.right - center.x) / (scale.right - scale.left);
+  } else {
+    maxPercent = (scale.bottom - center.y) / (scale.bottom - scale.top);
+  }
+  newDelay = delay + maxPercent * (duration - newDuration);
+  realtimeOpts.duration = newDuration;
+  realtimeOpts.delay = clamp(newDelay, minDelay, maxDelay);
+  return newDuration !== scale.max - scale.min;
+}
+function panRealTimeScale(scale, delta, limits) {
+  const {chart, axis} = scale;
+  const {minDelay = -Infinity, maxDelay = Infinity} = limits && limits[axis] || {};
+  const delay = resolveOption(scale, 'delay');
+  const newDelay = delay + (scale.getValueForPixel(delta) - scale.getValueForPixel(0));
+  storeOriginalScaleOptions(chart);
+  scale.options.realtime.delay = clamp(newDelay, minDelay, maxDelay);
+  return true;
+}
+function resetRealTimeScaleOptions(chart) {
+  const originalScaleOptions = storeOriginalScaleOptions(chart);
+  helpers.each(chart.scales, scale => {
+    const realtimeOptions = scale.options.realtime;
+    if (realtimeOptions) {
+      const original = originalScaleOptions[scale.id];
+      if (original) {
+        realtimeOptions.duration = original.duration;
+        realtimeOptions.delay = original.delay;
+      } else {
+        delete realtimeOptions.duration;
+        delete realtimeOptions.delay;
+      }
+    }
+  });
+}
+function initZoomPlugin(plugin) {
+  plugin.zoomFunctions.realtime = zoomRealTimeScale;
+  plugin.panFunctions.realtime = panRealTimeScale;
+}
+function attachChart(plugin, chart) {
+  const streaming = chart.$streaming;
+  if (streaming.zoomPlugin !== plugin) {
+    const resetZoom = streaming.resetZoom = chart.resetZoom;
+    initZoomPlugin(plugin);
+    chart.resetZoom = transition => {
+      resetRealTimeScaleOptions(chart);
+      resetZoom(transition);
+    };
+    streaming.zoomPlugin = plugin;
+  }
+}
+function detachChart(chart) {
+  const streaming = chart.$streaming;
+  if (streaming.zoomPlugin) {
+    chart.resetZoom = streaming.resetZoom;
+    removeState(chart);
+    delete streaming.resetZoom;
+    delete streaming.zoomPlugin;
+  }
+}
 
-	getElements(chart) {
-		var annotation = chart.annotation;
-
-		if (annotation) {
-			var elements = annotation.elements;
-			return Object.keys(elements).map(function(id) {
-				return elements[id];
-			});
-		}
-		return [];
-	},
-
-	detachChart(chart) {
-		delete chart.streaming.annotationPlugin;
-	}
+const INTERVALS = {
+  millisecond: {
+    common: true,
+    size: 1,
+    steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
+  },
+  second: {
+    common: true,
+    size: 1000,
+    steps: [1, 2, 5, 10, 15, 30]
+  },
+  minute: {
+    common: true,
+    size: 60000,
+    steps: [1, 2, 5, 10, 15, 30]
+  },
+  hour: {
+    common: true,
+    size: 3600000,
+    steps: [1, 2, 3, 6, 12]
+  },
+  day: {
+    common: true,
+    size: 86400000,
+    steps: [1, 2, 5]
+  },
+  week: {
+    common: false,
+    size: 604800000,
+    steps: [1, 2, 3, 4]
+  },
+  month: {
+    common: true,
+    size: 2.628e9,
+    steps: [1, 2, 3]
+  },
+  quarter: {
+    common: false,
+    size: 7.884e9,
+    steps: [1, 2, 3, 4]
+  },
+  year: {
+    common: true,
+    size: 3.154e10
+  }
 };
-
-var helpers$2 = Chart__default['default'].helpers;
-
-// Ported from chartjs-plugin-zoom 0.7.0 3c187b7
-var zoomNS = Chart__default['default'].Zoom = Chart__default['default'].Zoom || {};
-
-// Ported from chartjs-plugin-zoom 0.7.0 3c187b7
-zoomNS.zoomFunctions = zoomNS.zoomFunctions || {};
-zoomNS.panFunctions = zoomNS.panFunctions || {};
-
-// Ported from chartjs-plugin-zoom 0.7.0 3c187b7
-function rangeMaxLimiter(zoomPanOptions, newMax) {
-	if (zoomPanOptions.scaleAxes && zoomPanOptions.rangeMax &&
-			!helpers$2.isNullOrUndef(zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes])) {
-		var rangeMax = zoomPanOptions.rangeMax[zoomPanOptions.scaleAxes];
-		if (newMax > rangeMax) {
-			newMax = rangeMax;
-		}
-	}
-	return newMax;
-}
-
-// Ported from chartjs-plugin-zoom 0.7.0 3c187b7
-function rangeMinLimiter(zoomPanOptions, newMin) {
-	if (zoomPanOptions.scaleAxes && zoomPanOptions.rangeMin &&
-			!helpers$2.isNullOrUndef(zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes])) {
-		var rangeMin = zoomPanOptions.rangeMin[zoomPanOptions.scaleAxes];
-		if (newMin < rangeMin) {
-			newMin = rangeMin;
-		}
-	}
-	return newMin;
-}
-
-function zoomRealTimeScale(scale, zoom, center, zoomOptions) {
-	var realtimeOpts = scale.options.realtime;
-	var duration = StreamingHelper.resolveOption(scale, 'duration');
-	var delay = StreamingHelper.resolveOption(scale, 'delay');
-	var newDuration = duration * (2 - zoom);
-	var maxPercent, limitedDuration;
-
-	if (scale.isHorizontal()) {
-		maxPercent = (scale.right - center.x) / (scale.right - scale.left);
-	} else {
-		maxPercent = (scale.bottom - center.y) / (scale.bottom - scale.top);
-	}
-	if (zoom < 1) {
-		limitedDuration = rangeMaxLimiter(zoomOptions, newDuration);
-	} else {
-		limitedDuration = rangeMinLimiter(zoomOptions, newDuration);
-	}
-	realtimeOpts.duration = limitedDuration;
-	realtimeOpts.delay = delay + maxPercent * (duration - limitedDuration);
-}
-
-function panRealTimeScale(scale, delta, panOptions) {
-	var realtimeOpts = scale.options.realtime;
-	var delay = StreamingHelper.resolveOption(scale, 'delay');
-	var newDelay = delay + (scale.getValueForPixel(delta) - scale.getValueForPixel(0));
-
-	if (delta > 0) {
-		realtimeOpts.delay = rangeMaxLimiter(panOptions, newDelay);
-	} else {
-		realtimeOpts.delay = rangeMinLimiter(panOptions, newDelay);
-	}
-}
-
-function updateResetZoom(chart) {
-	// For chartjs-plugin-zoom 0.6.6 backward compatibility
-	var zoom = chart.$zoom || {_originalOptions: {}};
-
-	var resetZoom = chart.resetZoom;
-	var update = chart.update;
-	var resetZoomAndUpdate = function() {
-		helpers$2.each(chart.scales, function(scale) {
-			var realtimeOptions = scale.options.realtime;
-			var originalOptions = zoom._originalOptions[scale.id] || scale.originalOptions;
-
-			if (realtimeOptions) {
-				if (originalOptions) {
-					realtimeOptions.duration = originalOptions.realtime.duration;
-					realtimeOptions.delay = originalOptions.realtime.delay;
-				} else {
-					delete realtimeOptions.duration;
-					delete realtimeOptions.delay;
-				}
-			}
-		});
-
-		update.call(chart, {
-			duration: 0
-		});
-	};
-
-	chart.resetZoom = function() {
-		chart.update = resetZoomAndUpdate;
-		resetZoom();
-		chart.update = update;
-	};
-}
-
-function initZoomPlugin() {
-	zoomNS.zoomFunctions.realtime = zoomRealTimeScale;
-	zoomNS.panFunctions.realtime = panRealTimeScale;
-}
-
-var ZoomPlugin = {
-	attachChart(chart) {
-		var streaming = chart.streaming;
-
-		if (!streaming.zoomPlugin) {
-			initZoomPlugin();
-			streaming.resetZoom = chart.resetZoom;
-			updateResetZoom(chart);
-			streaming.zoomPlugin = true;
-		}
-	},
-
-	detachChart(chart) {
-		var streaming = chart.streaming;
-
-		if (streaming.zoomPlugin) {
-			chart.resetZoom = streaming.resetZoom;
-			delete streaming.resetZoom;
-			delete streaming.zoomPlugin;
-		}
-	}
-};
-
-var helpers$1 = Chart__default['default'].helpers;
-var canvasHelpers$1 = helpers$1.canvas;
-var scaleService = Chart__default['default'].scaleService;
-var TimeScale = scaleService.getScaleConstructor('time');
-
-scaleService.getScaleConstructor = function(type) {
-	// For backwards compatibility
-	if (type === 'time') {
-		type = 'realtime';
-	}
-	return this.constructors.hasOwnProperty(type) ? this.constructors[type] : undefined;
-};
-
-// Ported from Chart.js 2.8.0 35273ee.
-var MAX_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
-
-// Ported from Chart.js 2.8.0 35273ee.
-var INTERVALS = {
-	millisecond: {
-		common: true,
-		size: 1,
-		steps: [1, 2, 5, 10, 20, 50, 100, 250, 500]
-	},
-	second: {
-		common: true,
-		size: 1000,
-		steps: [1, 2, 5, 10, 15, 30]
-	},
-	minute: {
-		common: true,
-		size: 60000,
-		steps: [1, 2, 5, 10, 15, 30]
-	},
-	hour: {
-		common: true,
-		size: 3600000,
-		steps: [1, 2, 3, 6, 12]
-	},
-	day: {
-		common: true,
-		size: 86400000,
-		steps: [1, 2, 5]
-	},
-	week: {
-		common: false,
-		size: 604800000,
-		steps: [1, 2, 3, 4]
-	},
-	month: {
-		common: true,
-		size: 2.628e9,
-		steps: [1, 2, 3]
-	},
-	quarter: {
-		common: false,
-		size: 7.884e9,
-		steps: [1, 2, 3, 4]
-	},
-	year: {
-		common: true,
-		size: 3.154e10
-	}
-};
-
-// Ported from Chart.js 2.8.0 35273ee.
-var UNITS = Object.keys(INTERVALS);
-
-// For Chart.js 2.7.x backward compatibility
-var defaultAdapter = {
-	// Ported from Chart.js 2.9.4 707e52a.
-	parse: function(value, format) {
-		if (typeof value === 'string' && typeof format === 'string') {
-			value = moment__default['default'](value, format);
-		} else if (!(value instanceof moment__default['default'])) {
-			value = moment__default['default'](value);
-		}
-		return value.isValid() ? value.valueOf() : null;
-	},
-
-	// Ported from Chart.js 2.9.4 707e52a.
-	add: function(time, amount, unit) {
-		return moment__default['default'](time).add(amount, unit).valueOf();
-	},
-
-	// Ported from Chart.js 2.9.4 707e52a.
-	startOf: function(time, unit, weekday) {
-		time = moment__default['default'](time);
-		if (unit === 'isoWeek') {
-			return time.isoWeekday(weekday).valueOf();
-		}
-		return time.startOf(unit).valueOf();
-	}
-};
-
-// Ported from Chart.js 2.8.0 35273ee. Modified for Chart.js 2.7.x backward compatibility.
-function toTimestamp(scale, input) {
-	var adapter = scale._adapter || defaultAdapter;
-	var options = scale.options.time;
-	var parser = options.parser;
-	var format = parser || options.format;
-	var value = input;
-
-	if (typeof parser === 'function') {
-		value = parser(value);
-	}
-
-	// Only parse if its not a timestamp already
-	if (typeof value !== 'number' && !(value instanceof Number) || !isFinite(value)) {
-		value = typeof format === 'string'
-			? adapter.parse(value, format)
-			: adapter.parse(value);
-	}
-
-	if (value !== null) {
-		return +value;
-	}
-
-	// Labels are in an incompatible format and no `parser` has been provided.
-	// The user might still use the deprecated `format` option for parsing.
-	if (!parser && typeof format === 'function') {
-		value = format(input);
-
-		// `format` could return something else than a timestamp, if so, parse it
-		if (typeof value !== 'number' && !(value instanceof Number) || !isFinite(value)) {
-			value = adapter.parse(value);
-		}
-	}
-
-	return value;
-}
-
-// Ported from Chart.js 2.8.0 35273ee. Modified for Chart.js 2.7.x backward compatibility.
-function parse(scale, input) {
-	if (helpers$1.isNullOrUndef(input)) {
-		return null;
-	}
-
-	var options = scale.options.time;
-	var value = toTimestamp(scale, scale.getRightValue(input));
-	if (value === null) {
-		return value;
-	}
-
-	if (options.round) {
-		value = +(scale._adapter || defaultAdapter).startOf(value, options.round);
-	}
-
-	return value;
-}
-
-// Ported from Chart.js 2.8.0 35273ee.
+const UNITS = Object.keys(INTERVALS);
 function determineStepSize(min, max, unit, capacity) {
-	var range = max - min;
-	var interval = INTERVALS[unit];
-	var milliseconds = interval.size;
-	var steps = interval.steps;
-	var i, ilen, factor;
-
-	if (!steps) {
-		return Math.ceil(range / (capacity * milliseconds));
-	}
-
-	for (i = 0, ilen = steps.length; i < ilen; ++i) {
-		factor = steps[i];
-		if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
-			break;
-		}
-	}
-
-	return factor;
+  const range = max - min;
+  const {size: milliseconds, steps} = INTERVALS[unit];
+  let factor;
+  if (!steps) {
+    return Math.ceil(range / (capacity * milliseconds));
+  }
+  for (let i = 0, ilen = steps.length; i < ilen; ++i) {
+    factor = steps[i];
+    if (Math.ceil(range / (milliseconds * factor)) <= capacity) {
+      break;
+    }
+  }
+  return factor;
 }
-
-// Ported from Chart.js 2.8.0 35273ee.
 function determineUnitForAutoTicks(minUnit, min, max, capacity) {
-	var ilen = UNITS.length;
-	var i, interval, factor;
-
-	for (i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
-		interval = INTERVALS[UNITS[i]];
-		factor = interval.steps ? interval.steps[interval.steps.length - 1] : MAX_INTEGER;
-
-		if (interval.common && Math.ceil((max - min) / (factor * interval.size)) <= capacity) {
-			return UNITS[i];
-		}
-	}
-
-	return UNITS[ilen - 1];
+  const range = max - min;
+  const ilen = UNITS.length;
+  for (let i = UNITS.indexOf(minUnit); i < ilen - 1; ++i) {
+    const {common, size, steps} = INTERVALS[UNITS[i]];
+    const factor = steps ? steps[steps.length - 1] : Number.MAX_SAFE_INTEGER;
+    if (common && Math.ceil(range / (factor * size)) <= capacity) {
+      return UNITS[i];
+    }
+  }
+  return UNITS[ilen - 1];
 }
-
-// Ported from Chart.js 2.8.0 35273ee.
 function determineMajorUnit(unit) {
-	for (var i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
-		if (INTERVALS[UNITS[i]].common) {
-			return UNITS[i];
-		}
-	}
+  for (let i = UNITS.indexOf(unit) + 1, ilen = UNITS.length; i < ilen; ++i) {
+    if (INTERVALS[UNITS[i]].common) {
+      return UNITS[i];
+    }
+  }
 }
-
-// Ported from Chart.js 2.8.0 35273ee. Modified for Chart.js 2.7.x backward compatibility.
-function generate(scale, min, max, capacity) {
-	var adapter = scale._adapter || defaultAdapter;
-	var options = scale.options;
-	var timeOpts = options.time;
-	var minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
-	var major = determineMajorUnit(minor);
-	var stepSize = helpers$1.valueOrDefault(timeOpts.stepSize, timeOpts.unitStepSize);
-	var weekday = minor === 'week' ? timeOpts.isoWeekday : false;
-	var majorTicksEnabled = options.ticks.major.enabled;
-	var interval = INTERVALS[minor];
-	var first = min;
-	var last = max;
-	var ticks = [];
-	var time;
-
-	if (!stepSize) {
-		stepSize = determineStepSize(min, max, minor, capacity);
-	}
-
-	// For 'week' unit, handle the first day of week option
-	if (weekday) {
-		first = +adapter.startOf(first, 'isoWeek', weekday);
-		last = +adapter.startOf(last, 'isoWeek', weekday);
-	}
-
-	// Align first/last ticks on unit
-	first = +adapter.startOf(first, weekday ? 'day' : minor);
-	last = +adapter.startOf(last, weekday ? 'day' : minor);
-
-	// Make sure that the last tick include max
-	if (last < max) {
-		last = +adapter.add(last, 1, minor);
-	}
-
-	time = first;
-
-	if (majorTicksEnabled && major && !weekday && !timeOpts.round) {
-		// Align the first tick on the previous `minor` unit aligned on the `major` unit:
-		// we first aligned time on the previous `major` unit then add the number of full
-		// stepSize there is between first and the previous major time.
-		time = +adapter.startOf(time, major);
-		time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
-	}
-
-	for (; time < last; time = +adapter.add(time, stepSize, minor)) {
-		ticks.push(+time);
-	}
-
-	ticks.push(+time);
-
-	return ticks;
+function addTick(ticks, time, timestamps) {
+  if (!timestamps) {
+    ticks[time] = true;
+  } else if (timestamps.length) {
+    const {lo, hi} = helpers._lookup(timestamps, time);
+    const timestamp = timestamps[lo] >= time ? timestamps[lo] : timestamps[hi];
+    ticks[timestamp] = true;
+  }
 }
-
-var datasetPropertyKeys = [
-	'pointBackgroundColor',
-	'pointBorderColor',
-	'pointBorderWidth',
-	'pointRadius',
-	'pointRotation',
-	'pointStyle',
-	'pointHitRadius',
-	'pointHoverBackgroundColor',
-	'pointHoverBorderColor',
-	'pointHoverBorderWidth',
-	'pointHoverRadius',
-	'backgroundColor',
-	'borderColor',
-	'borderSkipped',
-	'borderWidth',
-	'hoverBackgroundColor',
-	'hoverBorderColor',
-	'hoverBorderWidth',
-	'hoverRadius',
-	'hitRadius',
-	'radius',
-	'rotation'
+const datasetPropertyKeys = [
+  'pointBackgroundColor',
+  'pointBorderColor',
+  'pointBorderWidth',
+  'pointRadius',
+  'pointRotation',
+  'pointStyle',
+  'pointHitRadius',
+  'pointHoverBackgroundColor',
+  'pointHoverBorderColor',
+  'pointHoverBorderWidth',
+  'pointHoverRadius',
+  'backgroundColor',
+  'borderColor',
+  'borderSkipped',
+  'borderWidth',
+  'hoverBackgroundColor',
+  'hoverBorderColor',
+  'hoverBorderWidth',
+  'hoverRadius',
+  'hitRadius',
+  'radius',
+  'rotation'
 ];
-
-function refreshData(scale) {
-	var chart = scale.chart;
-	var id = scale.id;
-	var duration = StreamingHelper.resolveOption(scale, 'duration');
-	var delay = StreamingHelper.resolveOption(scale, 'delay');
-	var ttl = StreamingHelper.resolveOption(scale, 'ttl');
-	var pause = StreamingHelper.resolveOption(scale, 'pause');
-	var onRefresh = StreamingHelper.resolveOption(scale, 'onRefresh');
-	var max = scale.max;
-	var min = Date.now() - (isNaN(ttl) ? duration + delay : ttl);
-	var meta, data, length, i, start, count, removalRange;
-
-	if (onRefresh) {
-		onRefresh(chart);
-	}
-
-	// Remove old data
-	helpers$1.each(chart.data.datasets, function(dataset, datasetIndex) {
-		meta = chart.getDatasetMeta(datasetIndex);
-		if (id === meta.xAxisID || id === meta.yAxisID) {
-			data = dataset.data;
-			length = data.length;
-
-			if (pause) {
-				// If the scale is paused, preserve the visible data points
-				for (i = 0; i < length; ++i) {
-					if (!(scale._getTimeForIndex(i, datasetIndex) < max)) {
-						break;
-					}
-				}
-				start = i + 2;
-			} else {
-				start = 0;
-			}
-
-			for (i = start; i < length; ++i) {
-				if (!(scale._getTimeForIndex(i, datasetIndex) <= min)) {
-					break;
-				}
-			}
-			count = i - start;
-			if (isNaN(ttl)) {
-				// Keep the last two data points outside the range not to affect the existing bezier curve
-				count = Math.max(count - 2, 0);
-			}
-
-			data.splice(start, count);
-			helpers$1.each(datasetPropertyKeys, function(key) {
-				if (helpers$1.isArray(dataset[key])) {
-					dataset[key].splice(start, count);
-				}
-			});
-			helpers$1.each(dataset.datalabels, function(value) {
-				if (helpers$1.isArray(value)) {
-					value.splice(start, count);
-				}
-			});
-			if (typeof data[0] !== 'object') {
-				removalRange = {
-					start: start,
-					count: count
-				};
-			}
-		}
-	});
-	if (removalRange) {
-		chart.data.labels.splice(removalRange.start, removalRange.count);
-	}
-
-	chart.update({
-		preservation: true
-	});
+function clean(scale) {
+  const {chart, id, max} = scale;
+  const duration = resolveOption(scale, 'duration');
+  const delay = resolveOption(scale, 'delay');
+  const ttl = resolveOption(scale, 'ttl');
+  const pause = resolveOption(scale, 'pause');
+  const min = Date.now() - (isNaN(ttl) ? duration + delay : ttl);
+  let i, start, count, removalRange;
+  helpers.each(chart.data.datasets, (dataset, datasetIndex) => {
+    const meta = chart.getDatasetMeta(datasetIndex);
+    const axis = id === meta.xAxisID && 'x' || id === meta.yAxisID && 'y';
+    if (axis) {
+      const controller = meta.controller;
+      const data = dataset.data;
+      const length = data.length;
+      if (pause) {
+        for (i = 0; i < length; ++i) {
+          const point = controller.getParsed(i);
+          if (point && !(point[axis] < max)) {
+            break;
+          }
+        }
+        start = i + 2;
+      } else {
+        start = 0;
+      }
+      for (i = start; i < length; ++i) {
+        const point = controller.getParsed(i);
+        if (!point || !(point[axis] <= min)) {
+          break;
+        }
+      }
+      count = i - start;
+      if (isNaN(ttl)) {
+        count = Math.max(count - 2, 0);
+      }
+      data.splice(start, count);
+      helpers.each(datasetPropertyKeys, key => {
+        if (helpers.isArray(dataset[key])) {
+          dataset[key].splice(start, count);
+        }
+      });
+      helpers.each(dataset.datalabels, value => {
+        if (helpers.isArray(value)) {
+          value.splice(start, count);
+        }
+      });
+      if (typeof data[0] !== 'object') {
+        removalRange = {
+          start: start,
+          count: count
+        };
+      }
+      helpers.each(chart._active, (item, index) => {
+        if (item.datasetIndex === datasetIndex && item.index >= start) {
+          if (item.index >= start + count) {
+            item.index -= count;
+          } else {
+            chart._active.splice(index, 1);
+          }
+        }
+      }, null, true);
+    }
+  });
+  if (removalRange) {
+    chart.data.labels.splice(removalRange.start, removalRange.count);
+  }
 }
-
-function stopDataRefreshTimer(scale) {
-	var realtime = scale.realtime;
-	var refreshTimerID = realtime.refreshTimerID;
-
-	if (refreshTimerID) {
-		clearInterval(refreshTimerID);
-		delete realtime.refreshTimerID;
-		delete realtime.refreshInterval;
-	}
-}
-
-function startDataRefreshTimer(scale) {
-	var realtime = scale.realtime;
-	var interval = StreamingHelper.resolveOption(scale, 'refresh');
-
-	realtime.refreshTimerID = setInterval(function() {
-		var newInterval = StreamingHelper.resolveOption(scale, 'refresh');
-
-		refreshData(scale);
-		if (realtime.refreshInterval !== newInterval && !isNaN(newInterval)) {
-			stopDataRefreshTimer(scale);
-			startDataRefreshTimer(scale);
-		}
-	}, interval);
-	realtime.refreshInterval = interval;
-}
-
 function transition(element, id, translate) {
-	var start = element._start || {};
-	var view = element._view || {};
-	var model = element._model || {};
-
-	helpers$1.each(element._streaming, (item, key) => {
-		if (item.axisId === id) {
-			if (start.hasOwnProperty(key)) {
-				start[key] -= translate;
-			}
-			if (view.hasOwnProperty(key) && view !== start) {
-				view[key] -= translate;
-			}
-			if (model.hasOwnProperty(key) && model !== view) {
-				model[key] -= translate;
-			}
-		}
-	});
+  const animations = element.$animations || {};
+  helpers.each(element.$streaming, (item, key) => {
+    if (item.axisId === id) {
+      const delta = item.reverse ? -translate : translate;
+      const animation = animations[key];
+      if (helpers.isFinite(element[key])) {
+        element[key] -= delta;
+      }
+      if (animation) {
+        animation._from -= delta;
+        animation._to -= delta;
+      }
+    }
+  });
 }
-
 function scroll(scale) {
-	var chart = scale.chart;
-	var realtime = scale.realtime;
-	var id = scale.id;
-	var duration = StreamingHelper.resolveOption(scale, 'duration');
-	var delay = StreamingHelper.resolveOption(scale, 'delay');
-	var isHorizontal = scale.isHorizontal();
-	var length = isHorizontal ? scale.width : scale.height;
-	var now = Date.now();
-
-	// For Chart.js 2.8.x backward compatibility
-	var reverse = scale.options.ticks.reverse || !(isHorizontal || '_reversePixels' in scale);
-
-	var tooltip = chart.tooltip;
-	var annotations = AnnotationPlugin.getElements(chart);
-	var offset = length * (now - realtime.head) / duration;
-	var i, ilen;
-
-	if (isHorizontal === reverse) {
-		offset = -offset;
-	}
-
-	// Shift all the elements leftward or downward
-	helpers$1.each(chart.data.datasets, function(dataset, datasetIndex) {
-		var meta = chart.getDatasetMeta(datasetIndex);
-		var elements = meta.data || [];
-		var element = meta.dataset;
-
-		for (i = 0, ilen = elements.length; i < ilen; ++i) {
-			transition(elements[i], id, offset);
-		}
-		if (element) {
-			transition(element, id, offset);
-		}
-	});
-
-	// Shift all the annotation elements leftward or downward
-	for (i = 0, ilen = annotations.length; i < ilen; ++i) {
-		transition(annotations[i], id, offset);
-	}
-
-	// Shift tooltip leftward or downward
-	transition(tooltip, id, offset);
-
-	scale.max = scale._table[1].time = now - delay;
-	scale.min = scale._table[0].time = scale.max - duration;
-
-	realtime.head = now;
+  const {chart, id, $realtime: realtime} = scale;
+  const duration = resolveOption(scale, 'duration');
+  const delay = resolveOption(scale, 'delay');
+  const isHorizontal = scale.isHorizontal();
+  const length = isHorizontal ? scale.width : scale.height;
+  const now = Date.now();
+  const tooltip = chart.tooltip;
+  const annotations = getElements(chart);
+  let offset = length * (now - realtime.head) / duration;
+  if (isHorizontal === !!scale.options.reverse) {
+    offset = -offset;
+  }
+  helpers.each(chart.data.datasets, (dataset, datasetIndex) => {
+    const meta = chart.getDatasetMeta(datasetIndex);
+    const {data: elements = [], dataset: element} = meta;
+    for (let i = 0, ilen = elements.length; i < ilen; ++i) {
+      transition(elements[i], id, offset);
+    }
+    if (element) {
+      transition(element, id, offset);
+      delete element._path;
+    }
+  });
+  for (let i = 0, ilen = annotations.length; i < ilen; ++i) {
+    transition(annotations[i], id, offset);
+  }
+  if (tooltip) {
+    transition(tooltip, id, offset);
+  }
+  scale.max = now - delay;
+  scale.min = scale.max - duration;
+  realtime.head = now;
 }
-
-var defaultConfig = {
-	position: 'bottom',
-	distribution: 'linear',
-	bounds: 'data',
-	adapters: {},
-	time: {
-		parser: false, // false == a pattern string from http://momentjs.com/docs/#/parsing/string-format/ or a custom callback that converts its argument to a moment
-		unit: false, // false == automatic or override with week, month, year, etc.
-		round: false, // none, or override with week, month, year, etc.
-		displayFormat: false, // DEPRECATED
-		isoWeekday: false, // override week start day - see http://momentjs.com/docs/#/get-set/iso-weekday/
-		minUnit: 'millisecond',
-
-		// defaults to unit's corresponding unitFormat below or override using pattern string from http://momentjs.com/docs/#/displaying/format/
-		displayFormats: {
-			millisecond: 'h:mm:ss.SSS a',
-			second: 'h:mm:ss a',
-			minute: 'h:mm a',
-			hour: 'hA',
-			day: 'MMM D',
-			week: 'll',
-			month: 'MMM YYYY',
-			quarter: '[Q]Q - YYYY',
-			year: 'YYYY'
-		},
-	},
-	realtime: {},
-	ticks: {
-		autoSkip: false,
-		source: 'auto',
-		major: {
-			enabled: true
-		}
-	}
+class RealTimeScale extends chart_js.TimeScale {
+  constructor(props) {
+    super(props);
+    this.$realtime = this.$realtime || {};
+  }
+  init(scaleOpts, opts) {
+    const me = this;
+    super.init(scaleOpts, opts);
+    startDataRefreshTimer(me.$realtime, () => {
+      const chart = me.chart;
+      const onRefresh = resolveOption(me, 'onRefresh');
+      helpers.callback(onRefresh, [chart], me);
+      clean(me);
+      chart.update('quiet');
+      return resolveOption(me, 'refresh');
+    });
+  }
+  update(maxWidth, maxHeight, margins) {
+    const me = this;
+    const {$realtime: realtime, options} = me;
+    const {bounds, offset, ticks: ticksOpts} = options;
+    const {autoSkip, source, major: majorTicksOpts} = ticksOpts;
+    const majorEnabled = majorTicksOpts.enabled;
+    if (resolveOption(me, 'pause')) {
+      stopFrameRefreshTimer(realtime);
+    } else {
+      if (!realtime.frameRequestID) {
+        realtime.head = Date.now();
+      }
+      startFrameRefreshTimer(realtime, () => {
+        const chart = me.chart;
+        const streaming = chart.$streaming;
+        scroll(me);
+        if (streaming) {
+          helpers.callback(streaming.render, [chart]);
+        }
+        return resolveOption(me, 'frameRate');
+      });
+    }
+    options.bounds = undefined;
+    options.offset = false;
+    ticksOpts.autoSkip = false;
+    ticksOpts.source = source === 'auto' ? '' : source;
+    majorTicksOpts.enabled = true;
+    super.update(maxWidth, maxHeight, margins);
+    options.bounds = bounds;
+    options.offset = offset;
+    ticksOpts.autoSkip = autoSkip;
+    ticksOpts.source = source;
+    majorTicksOpts.enabled = majorEnabled;
+  }
+  buildTicks() {
+    const me = this;
+    const duration = resolveOption(me, 'duration');
+    const delay = resolveOption(me, 'delay');
+    const max = me.$realtime.head - delay;
+    const min = max - duration;
+    const maxArray = [1e15, max];
+    const minArray = [-1e15, min];
+    Object.defineProperty(me, 'min', {
+      get: () => minArray.shift(),
+      set: helpers.noop
+    });
+    Object.defineProperty(me, 'max', {
+      get: () => maxArray.shift(),
+      set: helpers.noop
+    });
+    const ticks = super.buildTicks();
+    delete me.min;
+    delete me.max;
+    me.min = min;
+    me.max = max;
+    return ticks;
+  }
+  calculateLabelRotation() {
+    const ticksOpts = this.options.ticks;
+    const maxRotation = ticksOpts.maxRotation;
+    ticksOpts.maxRotation = ticksOpts.minRotation || 0;
+    super.calculateLabelRotation();
+    ticksOpts.maxRotation = maxRotation;
+  }
+  fit() {
+    const me = this;
+    const options = me.options;
+    super.fit();
+    if (options.ticks.display && options.display && me.isHorizontal()) {
+      me.paddingLeft = 3;
+      me.paddingRight = 3;
+      me._handleMargins();
+    }
+  }
+  draw(chartArea) {
+    const me = this;
+    const {chart, ctx} = me;
+    const area = me.isHorizontal() ?
+      {
+        left: chartArea.left,
+        top: 0,
+        right: chartArea.right,
+        bottom: chart.height
+      } : {
+        left: 0,
+        top: chartArea.top,
+        right: chart.width,
+        bottom: chartArea.bottom
+      };
+    me._gridLineItems = null;
+    me._labelItems = null;
+    helpers.clipArea(ctx, area);
+    super.draw(chartArea);
+    helpers.unclipArea(ctx);
+  }
+  destroy() {
+    const realtime = this.$realtime;
+    stopFrameRefreshTimer(realtime);
+    stopDataRefreshTimer(realtime);
+  }
+  _generate() {
+    const me = this;
+    const adapter = me._adapter;
+    const duration = resolveOption(me, 'duration');
+    const delay = resolveOption(me, 'delay');
+    const refresh = resolveOption(me, 'refresh');
+    const max = me.$realtime.head - delay;
+    const min = max - duration;
+    const capacity = me._getLabelCapacity(min);
+    const {time: timeOpts, ticks: ticksOpts} = me.options;
+    const minor = timeOpts.unit || determineUnitForAutoTicks(timeOpts.minUnit, min, max, capacity);
+    const major = determineMajorUnit(minor);
+    const stepSize = timeOpts.stepSize || determineStepSize(min, max, minor, capacity);
+    const weekday = minor === 'week' ? timeOpts.isoWeekday : false;
+    const majorTicksEnabled = ticksOpts.major.enabled;
+    const hasWeekday = helpers.isNumber(weekday) || weekday === true;
+    const interval = INTERVALS[minor];
+    const ticks = {};
+    let first = min;
+    let time, count;
+    if (hasWeekday) {
+      first = +adapter.startOf(first, 'isoWeek', weekday);
+    }
+    first = +adapter.startOf(first, hasWeekday ? 'day' : minor);
+    if (adapter.diff(max, min, minor) > 100000 * stepSize) {
+      throw new Error(min + ' and ' + max + ' are too far apart with stepSize of ' + stepSize + ' ' + minor);
+    }
+    time = first;
+    if (majorTicksEnabled && major && !hasWeekday && !timeOpts.round) {
+      time = +adapter.startOf(time, major);
+      time = +adapter.add(time, ~~((first - time) / (interval.size * stepSize)) * stepSize, minor);
+    }
+    const timestamps = ticksOpts.source === 'data' && me.getDataTimestamps();
+    for (count = 0; time < max + refresh; time = +adapter.add(time, stepSize, minor), count++) {
+      addTick(ticks, time, timestamps);
+    }
+    if (time === max + refresh || count === 1) {
+      addTick(ticks, time, timestamps);
+    }
+    return Object.keys(ticks).sort((a, b) => a - b).map(x => +x);
+  }
+}
+RealTimeScale.id = 'realtime';
+RealTimeScale.defaults = {
+  bounds: 'data',
+  adapters: {},
+  time: {
+    parser: false,
+    unit: false,
+    round: false,
+    isoWeekday: false,
+    minUnit: 'millisecond',
+    displayFormats: {}
+  },
+  realtime: {},
+  ticks: {
+    autoSkip: false,
+    source: 'auto',
+    major: {
+      enabled: true
+    }
+  }
 };
-
-var RealTimeScale = TimeScale.extend({
-	initialize: function() {
-		var me = this;
-
-		TimeScale.prototype.initialize.apply(me, arguments);
-
-		// For backwards compatibility
-		if (me.options.type === 'time' && !me.chart.options.plugins.streaming) {
-			return;
-		}
-
-		me.realtime = me.realtime || {};
-
-		startDataRefreshTimer(me);
-	},
-
-	update: function() {
-		var me = this;
-		var realtime = me.realtime;
-		var options = me.options;
-		var bounds = options.bounds;
-		var distribution = options.distribution;
-		var offset = options.offset;
-		var ticksOpts = options.ticks;
-		var autoSkip = ticksOpts.autoSkip;
-		var source = ticksOpts.source;
-		var minTick = ticksOpts.min;
-		var maxTick = ticksOpts.max;
-		var majorTicksOpts = ticksOpts.major;
-		var majorEnabled = majorTicksOpts.enabled;
-		var minSize;
-
-		// For backwards compatibility
-		if (options.type === 'time' && !me.chart.options.plugins.streaming) {
-			return TimeScale.prototype.update.apply(me, arguments);
-		}
-
-		if (StreamingHelper.resolveOption(me, 'pause')) {
-			StreamingHelper.stopFrameRefreshTimer(realtime);
-		} else {
-			StreamingHelper.startFrameRefreshTimer(realtime, function() {
-				scroll(me);
-			});
-			realtime.head = Date.now();
-		}
-
-		options.bounds = undefined;
-		options.distribution = 'linear';
-		options.offset = false;
-		ticksOpts.autoSkip = false;
-		ticksOpts.source = source === 'auto' ? '' : source;
-		ticksOpts.min = -1e15;
-		ticksOpts.max = 1e15;
-		majorTicksOpts.enabled = true;
-
-		minSize = TimeScale.prototype.update.apply(me, arguments);
-
-		options.bounds = bounds;
-		options.distribution = distribution;
-		options.offset = offset;
-		ticksOpts.autoSkip = autoSkip;
-		ticksOpts.source = source;
-		ticksOpts.min = minTick;
-		ticksOpts.max = maxTick;
-		majorTicksOpts.enabled = majorEnabled;
-
-		return minSize;
-	},
-
-	buildTicks: function() {
-		var me = this;
-		var options = me.options;
-
-		// For backwards compatibility
-		if (options.type === 'time' && !me.chart.options.plugins.streaming) {
-			return TimeScale.prototype.buildTicks.apply(me, arguments);
-		}
-
-		var duration = StreamingHelper.resolveOption(me, 'duration');
-		var delay = StreamingHelper.resolveOption(me, 'delay');
-		var refresh = StreamingHelper.resolveOption(me, 'refresh');
-		var ticksOpts = options.ticks;
-		var source = ticksOpts.source;
-		var timestamps = me._timestamps.data;
-		var max = me.realtime.head - delay;
-		var min = max - duration;
-		var maxArray = [max + refresh, max];
-		var ticks;
-
-		if (source === '') {
-			ticksOpts.source = 'data';
-			me._timestamps.data = generate(me, min, max + refresh, me.getLabelCapacity(min));
-		}
-
-		Object.defineProperty(me, 'min', {
-			get: function() {
-				return min;
-			},
-			set: helpers$1.noop
-		});
-		Object.defineProperty(me, 'max', {
-			get: function() {
-				return maxArray.shift();
-			},
-			set: helpers$1.noop
-		});
-
-		ticks = TimeScale.prototype.buildTicks.apply(me, arguments);
-
-		delete me.min;
-		delete me.max;
-		me.min = min;
-		me.max = max;
-
-		if (source === '') {
-			ticksOpts.source = source;
-			me._timestamps.data = timestamps;
-		}
-
-		me._table = [{time: min, pos: 0}, {time: max, pos: 1}];
-
-		return ticks;
-	},
-
-	calculateTickRotation: function() {
-		var me = this;
-		var options = me.options;
-		var ticksOpts = options.ticks;
-		var maxRotation = ticksOpts.maxRotation;
-
-		// For backwards compatibility
-		if (options.type === 'time' && !me.chart.options.plugins.streaming) {
-			TimeScale.prototype.calculateTickRotation.apply(me, arguments);
-			return;
-		}
-
-		ticksOpts.maxRotation = ticksOpts.minRotation || 0;
-		TimeScale.prototype.calculateTickRotation.apply(me, arguments);
-		ticksOpts.maxRotation = maxRotation;
-	},
-
-	fit: function() {
-		var me = this;
-		var options = me.options;
-
-		TimeScale.prototype.fit.apply(me, arguments);
-
-		// For backwards compatibility
-		if (options.type === 'time' && !me.chart.options.plugins.streaming) {
-			return;
-		}
-
-		if (options.ticks.display && options.display && me.isHorizontal()) {
-			me.paddingLeft = 3;
-			me.paddingRight = 3;
-			me.handleMargins();
-		}
-	},
-
-	draw: function(chartArea) {
-		var me = this;
-		var chart = me.chart;
-
-		// For backwards compatibility
-		if (me.options.type === 'time' && !chart.options.plugins.streaming) {
-			TimeScale.prototype.draw.apply(me, arguments);
-			return;
-		}
-
-		var context = me.ctx;
-		var	clipArea = me.isHorizontal() ?
-			{
-				left: chartArea.left,
-				top: 0,
-				right: chartArea.right,
-				bottom: chart.height
-			} : {
-				left: 0,
-				top: chartArea.top,
-				right: chart.width,
-				bottom: chartArea.bottom
-			};
-
-		me._gridLineItems = null;
-		me._labelItems = null;
-
-		// Clip and draw the scale
-		canvasHelpers$1.clipArea(context, clipArea);
-		TimeScale.prototype.draw.apply(me, arguments);
-		canvasHelpers$1.unclipArea(context);
-	},
-
-	destroy: function() {
-		var me = this;
-
-		// For backwards compatibility
-		if (me.options.type === 'time' && !me.chart.options.plugins.streaming) {
-			return;
-		}
-
-		StreamingHelper.stopFrameRefreshTimer(me.realtime);
-		stopDataRefreshTimer(me);
-	},
-
-	/*
-	 * @private
-	 */
-	_getTimeForIndex: function(index, datasetIndex) {
-		var me = this;
-		var timestamps = me._timestamps;
-		var time = timestamps.datasets[datasetIndex][index];
-		var value;
-
-		if (helpers$1.isNullOrUndef(time)) {
-			value = me.chart.data.datasets[datasetIndex].data[index];
-			if (helpers$1.isObject(value)) {
-				time = parse(me, value);
-			} else {
-				time = parse(me, timestamps.labels[index]);
-			}
-		}
-
-		return time;
-	}
+chart_js.defaults.describe('scale.realtime', {
+  _scriptable: name => name !== 'onRefresh'
 });
 
-scaleService.registerScaleType('realtime', RealTimeScale, defaultConfig);
+var version = "2.0.0";
 
-var helpers = Chart__default['default'].helpers;
-var canvasHelpers = helpers.canvas;
-
-Chart__default['default'].defaults.global.plugins.streaming = {
-	duration: 10000,
-	delay: 0,
-	frameRate: 30,
-	refresh: 1000,
-	onRefresh: null,
-	pause: false,
-	ttl: undefined
-};
-
-// Ported from Chart.js 2.9.4 d6a5ea0. Modified for realtime scale.
-Chart__default['default'].defaults.global.legend.onClick = function(e, legendItem) {
-	var index = legendItem.datasetIndex;
-	var ci = this.chart;
-	var meta = ci.getDatasetMeta(index);
-
-	meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-	ci.update({duration: 0});
-};
-
-function getAxisMap(element, keys, meta) {
-	var axisMap = {};
-
-	helpers.each(keys.x, function(key) {
-		axisMap[key] = {axisId: meta.xAxisID};
-	});
-	helpers.each(keys.y, function(key) {
-		axisMap[key] = {axisId: meta.yAxisID};
-	});
-	return axisMap;
+chart_js.defaults.set('transitions', {
+  quiet: {
+    animation: {
+      duration: 0
+    }
+  }
+});
+const transitionKeys = {x: ['x', 'cp1x', 'cp2x'], y: ['y', 'cp1y', 'cp2y']};
+function update(mode) {
+  const me = this;
+  if (mode === 'quiet') {
+    helpers.each(me.data.datasets, (dataset, datasetIndex) => {
+      const controller = me.getDatasetMeta(datasetIndex).controller;
+      controller._setStyle = function(element, index, _mode, active) {
+        chart_js.DatasetController.prototype._setStyle.call(this, element, index, 'quiet', active);
+      };
+    });
+  }
+  chart_js.Chart.prototype.update.call(me, mode);
+  if (mode === 'quiet') {
+    helpers.each(me.data.datasets, (dataset, datasetIndex) => {
+      delete me.getDatasetMeta(datasetIndex).controller._setStyle;
+    });
+  }
 }
-
-var transitionKeys = {
-	x: ['x', 'controlPointPreviousX', 'controlPointNextX', 'caretX'],
-	y: ['y', 'controlPointPreviousY', 'controlPointNextY', 'caretY']
-};
-
-function updateElements(chart) {
-	helpers.each(chart.data.datasets, function(dataset, datasetIndex) {
-		var meta = chart.getDatasetMeta(datasetIndex);
-		var elements = meta.data || [];
-		var element = meta.dataset;
-		var i, ilen;
-
-		for (i = 0, ilen = elements.length; i < ilen; ++i) {
-			elements[i]._streaming = getAxisMap(elements[i], transitionKeys, meta);
-		}
-		if (element) {
-			element._streaming = getAxisMap(element, transitionKeys, meta);
-		}
-	});
+function render(chart) {
+  const streaming = chart.$streaming;
+  chart.render();
+  if (streaming.lastMouseEvent) {
+    setTimeout(() => {
+      const lastMouseEvent = streaming.lastMouseEvent;
+      if (lastMouseEvent) {
+        chart._eventHandler(lastMouseEvent);
+      }
+    }, 0);
+  }
 }
-
-/**
- * Update the chart keeping the current animation but suppressing a new one
- * @param {object} config - animation options
- */
-function update(config) {
-	var me = this;
-	var preservation = config && config.preservation;
-	var tooltip, lastActive, tooltipLastActive, lastMouseEvent, legend, legendUpdate;
-
-	if (preservation) {
-		tooltip = me.tooltip;
-		lastActive = me.lastActive;
-		tooltipLastActive = tooltip._lastActive;
-		me._bufferedRender = true;
-		legend = me.legend;
-
-		// Skip legend update
-		if (legend) {
-			legendUpdate = legend.update;
-			legend.update = helpers.noop;
-		}
-	}
-
-	Chart__default['default'].prototype.update.apply(me, arguments);
-
-	if (preservation) {
-		me._bufferedRender = false;
-		me._bufferedRequest = null;
-		me.lastActive = lastActive;
-		tooltip._lastActive = tooltipLastActive;
-
-		if (legend) {
-			legend.update = legendUpdate;
-		}
-
-		if (me.animating) {
-			// If the chart is animating, keep it until the duration is over
-			Chart__default['default'].animationService.animations.forEach(function(animation) {
-				if (animation.chart === me) {
-					me.render({
-						duration: (animation.numSteps - animation.currentStep) * 16.66
-					});
-				}
-			});
-		} else {
-			// If the chart is not animating, make sure that all elements are at the final positions
-			me.data.datasets.forEach(function(dataset, datasetIndex) {
-				me.getDatasetMeta(datasetIndex).controller.transition(1);
-			});
-		}
-
-		if (tooltip._active) {
-			tooltip.update(true);
-		}
-
-		lastMouseEvent = me.streaming.lastMouseEvent;
-		if (lastMouseEvent) {
-			me.eventHandler(lastMouseEvent);
-		}
-	}
-}
-
-function tooltipUpdate() {
-	var me = this;
-	var element = me._active && me._active[0];
-	var meta;
-
-	if (element) {
-		meta = me._chart.getDatasetMeta(element._datasetIndex);
-		me._streaming = getAxisMap(me, transitionKeys, meta);
-	} else {
-		me._streaming = {};
-	}
-
-	return Chart__default['default'].Tooltip.prototype.update.apply(me, arguments);
-}
-
-// Draw chart at frameRate
-function drawChart(chart) {
-	var streaming = chart.streaming;
-	var frameRate = chart.options.plugins.streaming.frameRate;
-	var frameDuration = 1000 / (Math.max(frameRate, 0) || 30);
-	var next = streaming.lastDrawn + frameDuration || 0;
-	var now = Date.now();
-	var lastMouseEvent = streaming.lastMouseEvent;
-
-	if (next <= now) {
-		// Draw only when animation is inactive
-		if (!chart.animating && !chart.tooltip._start) {
-			chart.draw();
-		}
-		if (lastMouseEvent) {
-			chart.eventHandler(lastMouseEvent);
-		}
-		streaming.lastDrawn = (next + frameDuration > now) ? next : now;
-	}
-}
-
 var StreamingPlugin = {
-	id: 'streaming',
-
-	beforeInit: function(chart) {
-		var streaming = chart.streaming = chart.streaming || {};
-		var canvas = streaming.canvas = chart.canvas;
-		var mouseEventListener = streaming.mouseEventListener = function(event) {
-			var pos = helpers.getRelativePosition(event, chart);
-			streaming.lastMouseEvent = {
-				type: 'mousemove',
-				chart: chart,
-				native: event,
-				x: pos.x,
-				y: pos.y
-			};
-		};
-
-		canvas.addEventListener('mousedown', mouseEventListener);
-		canvas.addEventListener('mouseup', mouseEventListener);
-	},
-
-	afterInit: function(chart) {
-		chart.update = update;
-		chart.tooltip.update = tooltipUpdate;
-	},
-
-	beforeUpdate: function(chart) {
-		var chartOpts = chart.options;
-		var scalesOpts = chartOpts.scales;
-
-		if (scalesOpts) {
-			helpers.each(scalesOpts.xAxes.concat(scalesOpts.yAxes), function(scaleOpts) {
-				if (scaleOpts.type === 'realtime' || scaleOpts.type === 'time') {
-					// Allow Bézier control to be outside the chart
-					chartOpts.elements.line.capBezierPoints = false;
-				}
-			});
-		}
-
-		if (chart.annotation) {
-			AnnotationPlugin.attachChart(chart);
-		} else {
-			AnnotationPlugin.detachChart(chart);
-		}
-
-		if (chart.resetZoom) {
-			ZoomPlugin.attachChart(chart);
-		} else {
-			ZoomPlugin.detachChart(chart);
-		}
-
-		return true;
-	},
-
-	afterUpdate: function(chart) {
-		var streaming = chart.streaming;
-		var pause = true;
-
-		updateElements(chart);
-
-		// if all scales are paused, stop refreshing frames
-		helpers.each(chart.scales, function(scale) {
-			if (scale instanceof RealTimeScale) {
-				pause &= StreamingHelper.resolveOption(scale, 'pause');
-			}
-		});
-		if (pause) {
-			StreamingHelper.stopFrameRefreshTimer(streaming);
-		} else {
-			StreamingHelper.startFrameRefreshTimer(streaming, function() {
-				drawChart(chart);
-			});
-		}
-	},
-
-	beforeDatasetDraw: function(chart, args) {
-		var meta = args.meta;
-		var chartArea = chart.chartArea;
-		var clipArea = {
-			left: 0,
-			top: 0,
-			right: chart.width,
-			bottom: chart.height
-		};
-		if (meta.xAxisID && meta.controller.getScaleForId(meta.xAxisID) instanceof RealTimeScale) {
-			clipArea.left = chartArea.left;
-			clipArea.right = chartArea.right;
-		}
-		if (meta.yAxisID && meta.controller.getScaleForId(meta.yAxisID) instanceof RealTimeScale) {
-			clipArea.top = chartArea.top;
-			clipArea.bottom = chartArea.bottom;
-		}
-		canvasHelpers.clipArea(chart.ctx, clipArea);
-		return true;
-	},
-
-	afterDatasetDraw: function(chart) {
-		canvasHelpers.unclipArea(chart.ctx);
-	},
-
-	beforeEvent: function(chart, event) {
-		var streaming = chart.streaming;
-
-		if (event.type === 'mousemove') {
-			// Save mousemove event for reuse
-			streaming.lastMouseEvent = event;
-		} else if (event.type === 'mouseout') {
-			// Remove mousemove event
-			delete streaming.lastMouseEvent;
-		}
-		return true;
-	},
-
-	destroy: function(chart) {
-		var streaming = chart.streaming;
-		var canvas = streaming.canvas;
-		var mouseEventListener = streaming.mouseEventListener;
-
-		StreamingHelper.stopFrameRefreshTimer(streaming);
-
-		delete chart.update;
-		delete chart.tooltip.update;
-
-		canvas.removeEventListener('mousedown', mouseEventListener);
-		canvas.removeEventListener('mouseup', mouseEventListener);
-
-		helpers.each(chart.scales, function(scale) {
-			if (scale instanceof RealTimeScale) {
-				scale.destroy();
-			}
-		});
-	}
+  id: 'streaming',
+  version,
+  beforeInit(chart) {
+    const streaming = chart.$streaming = chart.$streaming || {render};
+    const canvas = streaming.canvas = chart.canvas;
+    const mouseEventListener = streaming.mouseEventListener = event => {
+      const pos = helpers.getRelativePosition(event, chart);
+      streaming.lastMouseEvent = {
+        type: 'mousemove',
+        chart: chart,
+        native: event,
+        x: pos.x,
+        y: pos.y
+      };
+    };
+    canvas.addEventListener('mousedown', mouseEventListener);
+    canvas.addEventListener('mouseup', mouseEventListener);
+  },
+  afterInit(chart) {
+    chart.update = update;
+  },
+  beforeUpdate(chart) {
+    const {scales, elements} = chart.options;
+    const tooltip = chart.tooltip;
+    helpers.each(scales, ({type}) => {
+      if (type === 'realtime') {
+        elements.line.capBezierPoints = false;
+      }
+    });
+    if (tooltip) {
+      tooltip.update = update$1;
+    }
+    try {
+      const plugin = chart_js.registry.getPlugin('annotation');
+      attachChart$1(plugin, chart);
+    } catch (e) {
+      detachChart$1(chart);
+    }
+    try {
+      const plugin = chart_js.registry.getPlugin('zoom');
+      attachChart(plugin, chart);
+    } catch (e) {
+      detachChart(chart);
+    }
+  },
+  beforeDatasetUpdate(chart, args) {
+    const {meta, mode} = args;
+    if (mode === 'quiet') {
+      const {controller, $animations} = meta;
+      if ($animations && $animations.visible && $animations.visible._active) {
+        controller.updateElement = helpers.noop;
+        controller.updateSharedOptions = helpers.noop;
+      }
+    }
+  },
+  afterDatasetUpdate(chart, args) {
+    const {meta, mode} = args;
+    const {data: elements = [], dataset: element, controller} = meta;
+    for (let i = 0, ilen = elements.length; i < ilen; ++i) {
+      elements[i].$streaming = getAxisMap(elements[i], transitionKeys, meta);
+    }
+    if (element) {
+      element.$streaming = getAxisMap(element, transitionKeys, meta);
+    }
+    if (mode === 'quiet') {
+      delete controller.updateElement;
+      delete controller.updateSharedOptions;
+    }
+  },
+  beforeDatasetDraw(chart, args) {
+    const {ctx, chartArea, width, height} = chart;
+    const {xAxisID, yAxisID, controller} = args.meta;
+    const area = {
+      left: 0,
+      top: 0,
+      right: width,
+      bottom: height
+    };
+    if (xAxisID && controller.getScaleForId(xAxisID) instanceof RealTimeScale) {
+      area.left = chartArea.left;
+      area.right = chartArea.right;
+    }
+    if (yAxisID && controller.getScaleForId(yAxisID) instanceof RealTimeScale) {
+      area.top = chartArea.top;
+      area.bottom = chartArea.bottom;
+    }
+    helpers.clipArea(ctx, area);
+  },
+  afterDatasetDraw(chart) {
+    helpers.unclipArea(chart.ctx);
+  },
+  beforeEvent(chart, args) {
+    const streaming = chart.$streaming;
+    const event = args.event;
+    if (event.type === 'mousemove') {
+      streaming.lastMouseEvent = event;
+    } else if (event.type === 'mouseout') {
+      delete streaming.lastMouseEvent;
+    }
+  },
+  destroy(chart) {
+    const {scales, $streaming: streaming, tooltip} = chart;
+    const {canvas, mouseEventListener} = streaming;
+    delete chart.update;
+    if (tooltip) {
+      delete tooltip.update;
+    }
+    canvas.removeEventListener('mousedown', mouseEventListener);
+    canvas.removeEventListener('mouseup', mouseEventListener);
+    helpers.each(scales, scale => {
+      if (scale instanceof RealTimeScale) {
+        scale.destroy();
+      }
+    });
+  },
+  defaults: {
+    duration: 10000,
+    delay: 0,
+    frameRate: 30,
+    refresh: 1000,
+    onRefresh: null,
+    pause: false,
+    ttl: undefined
+  },
+  descriptors: {
+    _scriptable: name => name !== 'onRefresh'
+  }
 };
 
-Chart__default['default'].helpers.streaming = StreamingHelper;
+const registerables = [StreamingPlugin, RealTimeScale];
+chart_js.Chart.register(registerables);
 
-Chart__default['default'].plugins.register(StreamingPlugin);
-
-return StreamingPlugin;
+return registerables;
 
 })));

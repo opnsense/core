@@ -26,10 +26,11 @@ POSSIBILITY OF SUCH DAMAGE.
 
 #}
 {% set theme_name = ui_theme|default('opnsense') %}
-<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chart.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/chart.css', theme_name)) }}" rel="stylesheet" />
 
 <style>
@@ -44,6 +45,15 @@ POSSIBILITY OF SUCH DAMAGE.
     'use strict';
 
     $( document ).ready(function() {
+        function set_alpha(color, opacity) {
+            const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
+            return color + op.toString(16).toUpperCase();
+        }
+
+        function limit(number, lower_bound, upper_bound) {
+            return Math.min(Math.max(parseInt(number), lower_bound), upper_bound);
+        }
+
         function format_field(value) {
             if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
@@ -57,6 +67,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 return "";
             }
         }
+
         /**
          * create new traffic chart
          */
@@ -68,7 +79,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     label: init_data.interfaces[intf].name,
                     hidden: true,
                     borderColor: init_data.interfaces[intf].color,
-                    backgroundColor: init_data.interfaces[intf].color,
+                    backgroundColor: set_alpha(init_data.interfaces[intf].color, 0.5),
                     pointHoverBackgroundColor: init_data.interfaces[intf].color,
                     pointHoverBorderColor: init_data.interfaces[intf].color,
                     pointBackgroundColor: init_data.interfaces[intf].color,
@@ -88,19 +99,20 @@ POSSIBILITY OF SUCH DAMAGE.
                       datasets: all_datasets
                   },
                   options: {
-                      legend: {
-                          display: false,
-                      },
-                      title: {
-                          display: true,
-                          text: graph_title
-                      },
                       maintainAspectRatio: false,
+                      elements: {
+                        line: {
+                            fill: true,
+                            cubicInterpolationMode: 'monotone',
+                            clip: 0
+                        }
+                      },
                       scales: {
-                          xAxes: [{
+                          x: {
                               time: {
                                   tooltipFormat:'HH:mm:ss',
                                   unit: 'second',
+                                  stepSize: init_data.interval < 10000 ? 5 : init_data.interval / 1000,
                                   minUnit: 'second',
                                   displayFormats: {
                                       second: 'HH:mm:ss',
@@ -110,25 +122,15 @@ POSSIBILITY OF SUCH DAMAGE.
                               type: 'realtime',
                               realtime: {
                                   duration: 20000,
-                                  refresh: 2000,
-                                  delay: 2000
+                                  refresh: init_data.interval,
+                                  delay: init_data.interval
                               },
-                          }],
-                          yAxes: [{
+                          },
+                          y: {
                               ticks: {
                                   callback: function (value, index, values) {
                                       return format_field(value);
                                   }
-                              }
-                          }]
-                      },
-                      tooltips: {
-                          mode: 'nearest',
-                          intersect: false,
-                          callbacks: {
-                              label: function(tooltipItem, data) {
-                                  let ds = data.datasets[tooltipItem.datasetIndex];
-                                  return ds.label + " : " + format_field(ds.data[tooltipItem.index].y).toString();
                               }
                           }
                       },
@@ -137,11 +139,27 @@ POSSIBILITY OF SUCH DAMAGE.
                           intersect: false
                       },
                       plugins: {
+                          tooltip: {
+                            mode: 'nearest',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ": " + format_field(context.dataset.data[context.dataIndex].y).toString();
+                                }
+                            }
+                          },
+                          title: {
+                            display: true,
+                            text: graph_title
+                          },
+                          legend: {
+                            display: false
+                          },
                           streaming: {
-                              frameRate: 30
+                            frameRate: 30
                           },
                           colorschemes: {
-                              scheme: 'brewer.Paired12'
+                            scheme: 'brewer.Paired12'
                           }
                       }
                   }
@@ -160,7 +178,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     label: init_data.interfaces[intf].name,
                     hidden: true,
                     borderColor: init_data.interfaces[intf].color,
-                    backgroundColor: init_data.interfaces[intf].color,
+                    backgroundColor: set_alpha(init_data.interfaces[intf].color, 0.5),
                     pointHoverBackgroundColor: init_data.interfaces[intf].color,
                     pointHoverBorderColor: init_data.interfaces[intf].color,
                     pointBackgroundColor: init_data.interfaces[intf].color,
@@ -180,19 +198,13 @@ POSSIBILITY OF SUCH DAMAGE.
                       datasets: all_datasets
                   },
                   options: {
-                      legend: {
-                          display: false,
-                      },
-                      title: {
-                          display: true,
-                          text: graph_title
-                      },
                       maintainAspectRatio: false,
                       scales: {
-                          xAxes: [{
+                          x: {
                               time: {
                                   tooltipFormat:'HH:mm:ss',
                                   unit: 'second',
+                                  stepSize: init_data.interval < 10000 ? 5 : init_data.interval / 1000,
                                   minUnit: 'second',
                                   displayFormats: {
                                       second: 'HH:mm:ss',
@@ -202,29 +214,15 @@ POSSIBILITY OF SUCH DAMAGE.
                               type: 'realtime',
                               realtime: {
                                   duration: 40000,
-                                  refresh: 3000,
-                                  delay: 500
+                                  refresh: init_data.interval,
+                                  delay: init_data.interval,
                               },
-                          }],
-                          yAxes: [{
+                          },
+                          y: {
                               ticks: {
                                   callback: function (value, index, values) {
                                       return format_field(value);
                                   }
-                              }
-                          }]
-                      },
-                      tooltips: {
-                          mode: 'nearest',
-                          intersect: false,
-                          callbacks: {
-                              label: function(tooltipItem, data) {
-                                  let ds = data.datasets[tooltipItem.datasetIndex];
-                                  return [
-                                    tooltipItem.xLabel,
-                                    ds.label + " : " + ds.data[tooltipItem.index].address,
-                                    "@ " + format_field(ds.data[tooltipItem.index].y).toString()
-                                  ];
                               }
                           }
                       },
@@ -233,6 +231,28 @@ POSSIBILITY OF SUCH DAMAGE.
                           intersect: false
                       },
                       plugins: {
+                          tooltip: {
+                            mode: 'nearest',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let split = context.formattedValue.split(",")[0]
+                                    let time = split.replace('(', '')
+                                    return [
+                                        time,
+                                        context.dataset.label + ": " + context.dataset.data[context.dataIndex].address,
+                                        "@ " + format_field(context.dataset.data[context.dataIndex].y).toString()
+                                    ];
+                                }
+                            }
+                          },
+                          title: {
+                            display: true,
+                            text: graph_title
+                          },
+                          legend: {
+                            display: false,
+                          },
                           streaming: {
                               frameRate: 30
                           },
@@ -328,10 +348,34 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         }
 
+        // Store references to the charts globally
+        let g_charts = {traffic: [], traffic_top: []};
+
+        $("#intervals").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.diagnostics.traffic.interval", $(this).val());
+            }
+
+            g_charts['interval'] = limit(Number($("#intervals").val()), 500, 10000);
+
+            Object.keys(g_charts).forEach(function(key) {
+                if (Array.isArray(g_charts[key])) {
+                    g_charts[key].forEach(function(chart) {
+                        chart.config.options.scales.x.realtime = {
+                            duration: 20000,
+                            refresh: g_charts['interval'],
+                            delay: g_charts['interval']
+                        };
+                        chart.config.options.scales.x.time.stepSize = g_charts['interval'] < 10000 ? 5 : g_charts['interval'] / 1000;
+                    })
+                }
+            })
+        });
+
         /**
          * startup, fetch initial interface stats and create graphs
          */
-        ajaxGet('/api/diagnostics/traffic/interface',{}, function(data, status){
+        ajaxGet('/api/diagnostics/traffic/interface',{}, function(data, status) {
             // XXX: startup selected interfaces load/save in localStorage in a future version
             let tmp = window.localStorage ? window.localStorage.getItem("api.diagnostics.traffic.interface") : null;
             let selected_interfaces = ['lan', 'wan'];
@@ -357,99 +401,108 @@ POSSIBILITY OF SUCH DAMAGE.
             });
             $('#interfaces').selectpicker('refresh');
 
-            // register traffic update event
-            $( document ).on( "updateTrafficCharts", {
-                charts: [
-                    traffic_graph($("#rxChart"), '{{ lang._('In (bps)') }}', data),
-                    traffic_graph($("#txChart"), '{{ lang._('Out (bps)') }}', data)
-                ]
-            }, function( event, data) {
-                let charts = event.data.charts;
-                for (var i =0 ; i < charts.length; ++i) {
-                    let this_chart = charts[i];
-                    Object.keys(data.interfaces).forEach(function(intf) {
-                        this_chart.config.data.datasets.forEach(function(dataset) {
-                            if (dataset.intf == intf) {
-                                let calc_data = data.interfaces[intf][dataset.src_field];
-                                let elapsed_time = data.time - dataset.last_time;
-                                dataset.hidden = !$("#interfaces").val().includes(intf);
-                                dataset.data.push({
-                                    x: Date.now(),
-                                    y: Math.round(((calc_data - dataset.last_data) / elapsed_time) * 8, 0)
-                                });
-                                dataset.last_time = data.time;
-                                dataset.last_data = calc_data;
-                                return;
-                            }
-                        });
-                    });
-                    this_chart.update();
+            // XXX: limit the amount of minimum interval that can be set
+            $("#intervals").val(2000);
+            if (window.localStorage && window.localStorage.getItem("api.diagnostics.traffic.interval") !== null) {
+                $("#intervals").val(window.localStorage.getItem("api.diagnostics.traffic.interval"));
+            }
+            $('#intervals').selectpicker('refresh');
+
+            data.interval = limit(Number($("#intervals").val()), 500, 10000);
+            g_charts['interval'] = data.interval;
+
+            const chart_types = ["rxChart", "txChart", "rxTopChart", "txTopChart"];
+            chart_types.forEach(function(chart) {
+                /* Create the charts */
+                if (chart.includes('Top')) {
+                    let rxtx = chart.includes('rx') ? '{{ lang._('Top hosts in (bps)') }}' : '{{ lang._('Top hosts out (bps)') }}';
+                    let graph = traffic_top_graph($("#" + chart), rxtx, data);
+                    g_charts['traffic_top'].push(graph);
+                } else {
+                    let rxtx = chart.includes('rx') ? '{{ lang._('In (bps)') }}' : '{{ lang._('Out (bps)') }}';
+                    let graph = traffic_graph($("#" + chart), rxtx, data);
+                    g_charts['traffic'].push(graph);
                 }
             });
-
-            // register traffic update event
-            $( document ).on( "updateTrafficTopCharts", {
-                charts: [
-                    traffic_top_graph($("#rxTopChart"), '{{ lang._('Top hosts in (bps)') }}', data),
-                    traffic_top_graph($("#txTopChart"), '{{ lang._('Top hosts out (bps)') }}', data)
-                ]
-            }, function( event, data) {
-                let charts = event.data.charts;
-                for (var i =0 ; i < charts.length; ++i) {
-                    let this_chart = charts[i];
-                    Object.keys(data).forEach(function(intf) {
-                        this_chart.config.data.datasets.forEach(function(dataset) {
-                            if (dataset.intf == intf) {
-                                let calc_data = data[intf]['records'];
-                                dataset.hidden = !$("#interfaces").val().includes(intf);
-                                for (var i=0; i < data[intf]['records'].length ; ++i) {
-                                    dataset.data.push({
-                                        x: Date.now(),
-                                        y: data[intf]['records'][i]['rate_bits_' + dataset.src_field],
-                                        r: 4,
-                                        address: data[intf]['records'][i]['address']
-                                    });
-                                }
-                                return;
-                            }
-                        });
-                    });
-                    this_chart.update();
-                }
-            });
-
 
             /**
              * poll for new stats and update selected charts
              */
-            (function traffic_poller(){
+            (function traffic_poller() {
                 ajaxGet("/api/diagnostics/traffic/interface", {}, function(data, status) {
                     if (data.interfaces !== undefined) {
-                        $( document ).trigger( "updateTrafficCharts", [ data ] );
+                        update_traffic_charts(g_charts['traffic'], data);
                     }
                 });
-                setTimeout(traffic_poller, 2000);
+                setTimeout(traffic_poller, g_charts['interval']);
             })();
-            (function top_traffic_poller(){
+
+            (function top_traffic_poller() {
                 if ($("#interfaces").val().length > 0) {
                     ajaxGet('/api/diagnostics/traffic/top/' + $("#interfaces").val().join(","), {}, function(data, status){
                         if (status == 'success') {
-                            $( document ).trigger( "updateTrafficTopCharts", [ data ] );
+                            update_top_charts(g_charts['traffic_top'], data);
                             updateTopTable(data);
                             top_traffic_poller();
                         } else {
-                            setTimeout(top_traffic_poller, 2000);
+                            setTimeout(top_traffic_poller, g_charts['interval']);
                         }
                     });
                 }
             })();
         });
 
+        function update_traffic_charts(charts, data) {
+            charts.forEach(function(chart) {
+                Object.keys(data.interfaces).forEach(function(intf) {
+                    chart.config.data.datasets.forEach(function(dataset) {
+                        if (dataset.intf == intf) {
+                            let calc_data = data.interfaces[intf][dataset.src_field];
+                            let elapsed_time = data.time - dataset.last_time;
+                            dataset.hidden = !$("#interfaces").val().includes(intf);
+                            dataset.data.push({
+                                x: Date.now(),
+                                y: Math.round(((calc_data - dataset.last_data) / elapsed_time) * 8, 0)
+                            });
+                            dataset.last_time = data.time;
+                            dataset.last_data = calc_data;
+                            return;
+                        }
+                    });
+                });
+                chart.update('quiet');
+            });
+        }
+
+        function update_top_charts(charts, data) {
+            charts.forEach(function(chart) {
+                Object.keys(data).forEach(function(intf) {
+                    chart.config.data.datasets.forEach(function(dataset) {
+                        if (dataset.intf == intf) {
+                            let calc_data = data[intf]['records'];
+                            dataset.hidden = !$("#interfaces").val().includes(intf);
+                            for (var i=0; i < data[intf]['records'].length ; ++i) {
+                                dataset.data.push({
+                                    x: Date.now(),
+                                    y: data[intf]['records'][i]['rate_bits_' + dataset.src_field],
+                                    r: 4,
+                                    address: data[intf]['records'][i]['address']
+                                });
+                            }
+                            return;
+                        }
+                    });
+                });
+                chart.update('quiet');
+            });
+        }
+
         $("#interfaces").change(function(){
             if (window.localStorage) {
                 window.localStorage.setItem("api.diagnostics.traffic.interface", $(this).val());
             }
         });
+
     });
 
 
@@ -458,15 +511,36 @@ POSSIBILITY OF SUCH DAMAGE.
   .badge-color-1 {
       background: navy !important;
   }
+
+  .left {
+    float: left;
+  }
+
+  .right {
+    float: right;
+  }
+
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="graph_tab" href="#graph">{{ lang._('Graph') }}</a></li>
     <li><a data-toggle="tab" id="gtid_tab" href="#toptalkers">{{ lang._('Top talkers') }}</a></li>
     <div class="pull-right">
-        <select class="selectpicker" id="interfaces" multiple=multiple>
-        </select>
-        &nbsp;
+        <div class="right">
+            <select class="selectpicker" id="interfaces" multiple=multiple>
+            </select>
+            &nbsp;
+        </div>
+        <div class="left">
+            <select class="selectpicker" id="intervals" data-width="auto">
+                <option value="500">500 Milliseconds</option>
+                <option value="1000">1 Second</option>
+                <option value="2000">2 Seconds</option>
+                <option value="5000">5 Seconds</option>
+                <option value="10000">10 Seconds</option>
+            </select>
+            &nbsp;
+        </div>
     </div>
 </ul>
 <div class="tab-content content-box">
