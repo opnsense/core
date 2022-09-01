@@ -28,7 +28,7 @@
       <id>packetcapture.settings.protocol</id>
       <label>Protocol</label>
       <type>dropdown</type>
-      <help>Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only.</help>
+      <help>Select the protocol to capture, Any to omit this filter.</help>
     </field>
     <field>
        <id>packetcapture.settings.host</id>
