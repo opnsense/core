@@ -1,16 +1,16 @@
 /*!
  * chartjs-plugin-colorschemes v0.4.0
  * https://nagix.github.io/chartjs-plugin-colorschemes
- * (c) 2019 Akihiko Kusanagi
+ * (c) 2022 Akihiko Kusanagi
  * Released under the MIT license
  */
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('chart.js')) :
 typeof define === 'function' && define.amd ? define(['chart.js'], factory) :
 (global = global || self, global.ChartColorSchemes = factory(global.Chart));
-}(this, function (Chart) { 'use strict';
+}(this, (function (Chart) { 'use strict';
 
-Chart = Chart && Chart.hasOwnProperty('default') ? Chart['default'] : Chart;
+Chart = Chart && Object.prototype.hasOwnProperty.call(Chart, 'default') ? Chart['default'] : Chart;
 
 // eslint-disable-next-line one-var
 var
@@ -318,6 +318,7 @@ var
 	SetThree12 = ['#8dd3c7', '#ffffb3', '#bebada', '#fb8072', '#80b1d3', '#fdb462', '#b3de69', '#fccde5', '#d9d9d9', '#bc80bd', '#ccebc5', '#ffed6f'];
 
 var brewer = /*#__PURE__*/Object.freeze({
+__proto__: null,
 YlGn3: YlGn3,
 YlGn4: YlGn4,
 YlGn5: YlGn5,
@@ -721,6 +722,7 @@ var
 	YellowOrange6 = ['#f0a22e', '#a5644e', '#b58b80', '#c3986d', '#a19574', '#c17529'];
 
 var office = /*#__PURE__*/Object.freeze({
+__proto__: null,
 Adjacency6: Adjacency6,
 Advantage6: Advantage6,
 Angles6: Angles6,
@@ -942,6 +944,7 @@ var
 	ClassicRedGreenLight11 = ['#ffb2b6', '#fcbdc0', '#f8c7c9', '#f2d1d2', '#ecdbdc', '#e5e5e5', '#dde6d9', '#d4e6cc', '#cae6c0', '#c1e6b4', '#b7e6a7'];
 
 var tableau = /*#__PURE__*/Object.freeze({
+__proto__: null,
 Tableau10: Tableau10,
 Tableau20: Tableau20,
 ColorBlind10: ColorBlind10,
@@ -1037,11 +1040,17 @@ var hoverReset = Chart.DatasetController.prototype.removeHoverStyle.length === 2
 
 var EXPANDO_KEY = '$colorschemes';
 
-Chart.defaults.global.plugins.colorschemes = {
+// pluginBase snippet fixes the chartjs 3 incompatibility, and is backwards-compatible
+// by Github user gebrits (https://github.com/gebrits/chartjs-plugin-colorschemes)
+//
+// Chartjs 2 => Chart.defaults.global
+// Chartjs 3 => Chart.defaults
+const pluginBase = Chart.defaults.global || Chart.defaults;
+pluginBase.plugins.colorschemes = {
 	scheme: 'brewer.Paired12',
 	fillAlpha: 0.5,
 	reverse: false,
-	override: false
+	overrideExisting: false
 };
 
 function getScheme(scheme) {
@@ -1071,11 +1080,17 @@ function getScheme(scheme) {
 var ColorSchemesPlugin = {
 	id: 'colorschemes',
 
-	beforeUpdate: function(chart, options) {
+	beforeUpdate: function(chart, args, options) {
+		// Please note that in v3, the args argument was added. It was not used before it was added,
+		// so we just check if it is not actually our options object
+		if (options === undefined) {
+			options = args;
+		}
+
 		var scheme = getScheme(options.scheme);
 		var fillAlpha = options.fillAlpha;
 		var reverse = options.reverse;
-		var override = options.override;
+		var override = options.overrideExisting;
 		var custom = options.custom;
 		var schemeClone, customResult, length, colorIndex, color;
 
@@ -1140,6 +1155,17 @@ var ColorSchemesPlugin = {
 						});
 					}
 					break;
+				// For bar chart backgroundColor (including fillAlpha) and borderColor are set
+				case 'bar':
+					if (typeof dataset.backgroundColor === 'undefined' || override) {
+						dataset[EXPANDO_KEY].backgroundColor = dataset.backgroundColor;
+						dataset.backgroundColor = helpers.color(color).alpha(fillAlpha).rgbString();
+					}
+					if (typeof dataset.borderColor === 'undefined' || override) {
+						dataset[EXPANDO_KEY].borderColor = dataset.borderColor;
+						dataset.borderColor = color;
+					}
+					break;
 				// For the other chart, only backgroundColor is set
 				default:
 					if (typeof dataset.backgroundColor === 'undefined' || override) {
@@ -1186,10 +1212,11 @@ var ColorSchemesPlugin = {
 	}
 };
 
-Chart.plugins.register(ColorSchemesPlugin);
+const registerPlugin = Chart.register || Chart.plugins.register;
+registerPlugin(ColorSchemesPlugin);
 
 Chart.colorschemes = colorschemes;
 
 return ColorSchemesPlugin;
 
-}));
+})));

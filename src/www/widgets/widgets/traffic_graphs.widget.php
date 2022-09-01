@@ -53,10 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 ?>
-<script src="<?=cache_safe('/ui/js/moment-with-locales.min.js');?>"></script>
 <script src="<?=cache_safe('/ui/js/chart.min.js');?>"></script>
 <script src="<?=cache_safe('/ui/js/chartjs-plugin-streaming.min.js');?>"></script>
 <script src="<?=cache_safe('/ui/js/chartjs-plugin-colorschemes.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/moment-with-locales.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-adapter-moment.js');?>"></script>
 <link rel="stylesheet" type="text/css" href="<?=cache_safe(get_themed_filename('/css/chart.css'));?>" rel="stylesheet" />
 
 <script>
@@ -64,6 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
    * page setup
    */
   $("#dashboard_container").on("WidgetsReady", function() {
+        function set_alpha(color, opacity) {
+            const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
+            return color + op.toString(16).toUpperCase();
+        }
+
         function format_field(value) {
             if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
@@ -77,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 return "";
             }
         }
+
         /**
          * create new traffic chart
          */
@@ -108,15 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       datasets: all_datasets
                   },
                   options: {
-                      legend: {
-                          display: false,
-                      },
-                      title: {
-                          display: false
-                      },
                       maintainAspectRatio: false,
+                      elements: {
+                          line: {
+                            fill: true,
+                            cubicInterpolationMode: 'monotone',
+                            clip: 0
+                          }
+                      },
                       scales: {
-                          xAxes: [{
+                          x: {
                               time: {
                                   tooltipFormat:'HH:mm:ss',
                                   unit: 'second',
@@ -132,22 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                   refresh: 5000,
                                   delay: 5000
                               },
-                          }],
-                          yAxes: [{
+                          },
+                          y: {
                               ticks: {
                                   callback: function (value, index, values) {
                                       return format_field(value);
                                   }
-                              }
-                          }]
-                      },
-                      tooltips: {
-                          mode: 'nearest',
-                          intersect: false,
-                          callbacks: {
-                              label: function(tooltipItem, data) {
-                                  let ds = data.datasets[tooltipItem.datasetIndex];
-                                  return ds.label + " : " + format_field(ds.data[tooltipItem.index].y).toString();
                               }
                           }
                       },
@@ -156,6 +154,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           intersect: false
                       },
                       plugins: {
+                          tooltip: {
+                            mode: 'nearest',
+                            intersect: false,
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return context.dataset.label + ": " + format_field(context.dataset.data[context.dataIndex].y).toString();
+                                }
+                            }
+                          },
+                          legend: {
+                              display: false,
+                          },
+                          title: {
+                              display: false
+                          },
                           streaming: {
                               frameRate: 30
                           },
