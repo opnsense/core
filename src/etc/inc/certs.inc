@@ -677,8 +677,13 @@ function crl_update(&$crl)
     $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
 
     /* Now validate the CRL to see if everything went well */
-    if (!$x509_crl->validateSignature(false)) {
-        syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid');
+    try {
+        if (!$x509_crl->validateSignature(false)) {
+            syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid');
+            return false;
+        }
+    } catch (Exception $e) {
+        syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid ' . $e);
         return false;
     }
 
