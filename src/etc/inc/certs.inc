@@ -645,7 +645,7 @@ function crl_update(&$crl)
         return false;
     }
 
-    if (!class_exists("X509")) {
+    if (!class_exists(X509::class)) {
         syslog(LOG_ERR, 'Cert revocation error: phpseclib3 not loaded');
         return false;
     }
