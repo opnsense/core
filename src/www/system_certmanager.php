@@ -99,7 +99,7 @@ function parse_csr($csr_str)
         return array('parse_success' => false);
     }
 
-    $x509_lib = new \phpseclib\File\X509();
+    $x509_lib = new \phpseclib3\File\X509();
     $csr = $x509_lib->loadCSR($csr_str);
     if ($csr === false) {
         return array('parse_success' => false);
