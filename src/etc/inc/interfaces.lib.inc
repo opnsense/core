@@ -561,7 +561,7 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         'enc',
         'gif',
         'gre',
-        'ipfw', /* XXX interface type exists but verly likely unused */
+        'ipfw', /* ipfw logging device, not enabled by default */
         'ipsec',
         'l2tp',
         'lagg',
