@@ -153,9 +153,9 @@ function legacy_bridge_member($ifs, $member)
     }
 }
 
-function legacy_vlan_tag($ifs, $member, $tag, $pcp)
+function legacy_vlan_tag($ifs, $member, $tag, $pcp, $proto)
 {
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp ' . escapeshellarg($pcp);
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp ' . escapeshellarg($pcp) . ' vlanproto ' . escapeshellarg($proto);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
@@ -182,6 +182,17 @@ function legacy_vlan_pcp($ifs, $pcp)
         log_error('The command `' . $cmd . '\' failed to execute');
     }
 }
+
+function legacy_vlan_proto($ifs, $proto)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlanproto ' . escapeshellarg($proto);
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+    }
+}
+
 
 function legacy_interface_stats($ifs = null)
 {

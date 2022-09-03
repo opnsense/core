@@ -158,7 +158,15 @@ function interfaces_vlan_configure($verbose = false)
         }
     });
 
+    /* requested vlan protocol, when the vlan has vlans as children, the 802.1ad (QinQ) proto should be used */
+    $all_parents = [];
     foreach ($config['vlans']['vlan'] as $vlan) {
+        if (!in_array($vlan['vlanif'], $all_parents)) {
+            $all_parents[] = $vlan['vlanif'];
+        }
+    }
+    foreach ($config['vlans']['vlan'] as $vlan) {
+        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
         _interfaces_vlan_configure($vlan);
     }
 
@@ -175,7 +183,7 @@ function _interfaces_vlan_configure($vlan)
     legacy_interface_destroy($vlan['vlanif']);
     legacy_interface_create('vlan', $vlan['vlanif']);
 
-    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp']);
+    legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp'], $vlan['proto']);
 
     interfaces_bring_up($vlan['vlanif']);
 }

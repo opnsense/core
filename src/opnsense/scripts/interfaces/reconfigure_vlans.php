@@ -34,6 +34,7 @@ require_once("util.inc");
 
 // gather all relevant vlan's (new/updated and removed) into a single list
 $all_vlans = [];
+$all_parents = [];
 $vfilename = "/tmp/.vlans.removed";
 if (file_exists($vfilename) && filesize($vfilename) > 0) {
     $handle = fopen($vfilename, "r+");
@@ -53,6 +54,9 @@ if (file_exists($vfilename) && filesize($vfilename) > 0) {
 if (!empty($config['vlans']['vlan'])) {
     foreach ($config['vlans']['vlan'] as $vlan) {
         $all_vlans[$vlan['vlanif']] = $vlan;
+        if (!in_array($vlan['vlanif'], $all_parents)) {
+            $all_parents[] = $vlan['vlanif'];
+        }
     }
 }
 
@@ -63,6 +67,7 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
     }
     if (isset($all_vlans[$ifname])) {
         $vlan = $all_vlans[$ifname];
+        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
         $cvlan = $ifdetails['vlan'];
         if (empty($vlan)) {
             // option 1: removed vlan
@@ -72,10 +77,15 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
             // XXX: legacy code used interface_configure() in these cases, but since you can't change a tag or a parent
             //      for an assigned interface. At the moment that doesn't seem to make much sense
             legacy_vlan_remove_tag($vlan['vlanif']);
-            legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp']);
-        } elseif ($vlan['pcp'] != $cvlan['pcp']) {
-            // option 3: only pcp changed, which can be altered instantly
-            legacy_vlan_pcp($vlan['vlanif'], $vlan['pcp']);
+            legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp'], $vlan['proto']);
+        } elseif ($vlan['pcp'] != $cvlan['pcp'] || $vlan['proto'] != $cvlan['proto']) {
+            // option 3: only pcp or proto changed, which can be altered instantly
+            if ($vlan['pcp'] != $cvlan['pcp']) {
+                legacy_vlan_pcp($vlan['vlanif'], $vlan['pcp']);
+            }
+            if ($vlan['proto'] != $cvlan['proto']) {
+                legacy_vlan_proto($vlan['vlanif'], $vlan['proto']);
+            }
         }
         unset($all_vlans[$ifname]);
     }
@@ -84,6 +94,7 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
 // configure new
 foreach ($all_vlans as $ifname => $vlan) {
     if (!empty($vlan)) {
+        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
         _interfaces_vlan_configure($vlan);
     }
 }
