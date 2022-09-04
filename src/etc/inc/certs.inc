@@ -708,7 +708,14 @@ function crl_update(&$crl)
         }
     }
     $x509_crl->setSerialNumber($crl['serial'], 10);
-    $x509_crl->setEndDate('+' . $crl['lifetime'] . ' days');
+    /* consider dates after 2050 lifetime in GeneralizedTime format (rfc5280#section-4.1.2.5) */
+    $date = new \DateTimeImmutable('+' . $crl['lifetime'] . ' days', new \DateTimeZone(@date_default_timezone_get()));
+    if ((int)$date->format("Y") < 2050) {
+        $x509_crl->setEndDate($date);
+    } else {
+        $x509_crl->setEndDate('lifetime');
+    }
+
     $new_crl = $x509_crl->signCRL($ca_cert, $x509_crl);
     $crl_text = $x509_crl->saveCRL($new_crl) . PHP_EOL;
 
@@ -808,7 +815,7 @@ function is_openvpn_server_crl($crlref)
 
 function is_crl_internal($crl)
 {
-    return (!(!empty($crl['text']) && empty($crl['cert'])) || ($crl["crlmethod"] == "internal"));
+    return (!(!empty($crl['text']) && empty($crl['cert'])) || ($crl["crlmethod"] ?? '' == "internal"));
 }
 
 function cert_get_cn($crt, $isref = false)
