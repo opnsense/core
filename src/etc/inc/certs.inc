@@ -60,6 +60,7 @@ phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
 
 use phpseclib3\File\X509;
 use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
 use phpseclib3\Exception\NoKeyLoadedException;
 
 define("CERT_CRL_STATUS_NOSTATUS", -1);
@@ -662,6 +663,7 @@ function crl_update(&$crl)
     /* get the private key to sign the new (updated) CRL */
     try {
         $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
+        $ca_key = $ca_key->withPadding(RSA::ENCRYPTION_PKCS1 | RSA::SIGNATURE_PKCS1);
         $ca_cert->setPrivateKey($ca_key);
     } catch (NoKeyLoadedException $e) {
         syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
