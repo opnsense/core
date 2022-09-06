@@ -700,8 +700,13 @@ function crl_update(&$crl)
             $x509_cert = new X509();
             $x509_cert->loadCA($ca_str_crt);
             $raw_cert = $x509_cert->loadX509(base64_decode($cert['crt']));
-            if (!$x509_cert->validateSignature(false)) {
-                syslog(LOG_ERR, "Cert revocation error: CA validation failed.");
+            try {
+                if (!$x509_cert->validateSignature(false)) {
+                    syslog(LOG_ERR, "Cert revocation error: Revoked certificate validation failed.");
+                    return false;
+                }
+            } catch (Exception $e) {
+                syslog(LOG_ERR, 'Cert revocation error: Revoked certificate validation failed ' . $e);
                 return false;
             }
             /* Get serial number of cert */
