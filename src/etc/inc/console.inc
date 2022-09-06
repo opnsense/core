@@ -100,12 +100,13 @@ function _set_networking_interfaces_ports($probe = false)
     $interactive = true;
     $key = null;
 
-    $iflist_all = get_interface_list(false, true);
+    $iflist = get_interface_list(false, true);
+    $iflist_wlan = legacy_interface_listget('wlan');
     $iflist_lagg = [];
-    $iflist = [];
+    $iflist_all = [];
 
-    foreach ($iflist_all as $iface => $ifa) {
-        $iflist[$iface] = $ifa;
+    foreach ($iflist as $iface => $ifa) {
+        $iflist_all[$iface] = $ifa;
         interfaces_bring_up($iface);
     }
 
@@ -121,8 +122,6 @@ function _set_networking_interfaces_ports($probe = false)
             echo PHP_EOL;
         }
     }
-
-    $ifnames = array_keys($iflist);
 
     if (!empty($iflist)) {
         echo <<<EOD
@@ -173,6 +172,14 @@ EOD;
         }
     }
 
+    /* add WLAN parents now as LAGG/VLAN are not capable of handling it */
+    foreach ($iflist_wlan as $iface) {
+        $iflist_all[$iface] = [
+            'dmesg' => 'WLAN device parent',
+            'mac' => '00:00:00:00:00:00',
+        ];
+    }
+
     echo <<<EOD
 
 Valid interfaces are:
@@ -180,11 +187,7 @@ Valid interfaces are:
 
 EOD;
 
-    /*
-     * We are checking $iflist here for physical members only, but
-     * iterate over $iflist_all when that sanity check succeeded.
-     */
-    if (empty($iflist)) {
+    if (empty($iflist_all)) {
         echo "No interfaces found!\n";
     } else {
         foreach ($iflist_all as $iface => $ifa) {
@@ -199,6 +202,8 @@ auto-detection. In that case, disconnect all interfaces now before
 hitting 'a' to initiate auto detection.
 
 EOD;
+
+    $ifnames = array_keys($iflist_all); /* only for non-interactive mode */
 
     do {
         echo "\nEnter the WAN interface name or 'a' for auto-detection: ";
@@ -217,16 +222,16 @@ EOD;
 
         if ($wanif == 'a') {
             $wanif = autodetect_interface('WAN', $fp);
-            if (!$wanif) {
+            if ($wanif == '') {
                 continue;
             }
         }
 
         if (!array_key_exists($wanif, $iflist_all)) {
             printf("\nInvalid interface name '%s'\n", $wanif);
-            unset($wanif);
+            $wanif = '';
         }
-    } while (!$wanif);
+    } while ($wanif == '');
 
     do {
         echo "\nEnter the LAN interface name or 'a' for auto-detection\n" .
@@ -247,7 +252,7 @@ EOD;
 
         if ($lanif == 'a') {
             $lanif = autodetect_interface('LAN', $fp);
-            if (!$lanif) {
+            if ($lanif == '') {
                 continue;
             }
         }
@@ -257,15 +262,15 @@ EOD;
             unset($lanif);
         }
 
-        if ($wanif && $lanif == $wanif) {
-            unset($lanif);
+        if ($wanif != '' && $lanif == $wanif) {
+            $lanif = '';
             echo <<<EOD
 
 Error: you cannot assign the same interface name twice!
 
 EOD;
         }
-    } while (!$lanif);
+    } while ($lanif == '');
 
     $done = false;
     while (!$done) {
@@ -274,14 +279,10 @@ EOD;
         $i = 0;
 
         while (1) {
-            if ($optif[$i]) {
+            if (isset($optif[$i])) {
                 $i++;
             }
             $io = $i + 1;
-
-            if ($config['interfaces']['opt' . $io]['descr']) {
-                printf("\nOptional interface %s description found: %s", $io, $config['interfaces']['opt' . $io]['descr']);
-            }
 
             printf("\nEnter the Optional interface %s name or 'a' for auto-detection\n" .
                 "(or nothing if finished): ", $io);
@@ -301,12 +302,11 @@ EOD;
             }
 
             if ($optif[$i] == 'a') {
-                $ad = autodetect_interface('OPT' . $io, $fp);
-                if (!$ad) {
+                $optif[$i] = autodetect_interface('OPT' . $io, $fp);
+                if ($optif[$i] == '') {
                     unset($optif[$i]);
                     continue;
                 }
-                $optif[$i] = $ad;
             }
 
             if (!array_key_exists($optif[$i], $iflist_all)) {
@@ -316,12 +316,12 @@ EOD;
             }
 
             /* check for double assignments */
-            $ifarr = array_merge(array($lanif, $wanif), $optif);
+            $ifarr = array_merge([$lanif, $wanif], $optif);
             $again = false;
 
             for ($k = 0; $k < (count($ifarr) - 1); $k++) {
                 for ($j = ($k + 1); $j < count($ifarr); $j++) {
-                    if ($ifarr[$k] == $ifarr[$j]) {
+                    if ($ifarr[$k] != '' && $ifarr[$k] == $ifarr[$j]) {
                         $again = true;
                         echo <<<EOD
 
@@ -374,7 +374,7 @@ EOD;
      * XXX Ideally, at this point we'd import the default settings here,
      * not hardcode them.  It was this way before, so fixing for now.
      */
-    if ($lanif) {
+    if ($lanif != '') {
         $new = false;
 
         if (!isset($config['interfaces']['lan'])) {
@@ -404,7 +404,7 @@ EOD;
             $config['nat']['outbound']['mode'] = 'automatic';
         }
 
-        if (match_wireless_interface($lanif)) {
+        if (in_array($config['interfaces']['lan']['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'lan', 'wireless');
             $config['interfaces']['lan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['lan']['wireless'])) {
@@ -429,18 +429,18 @@ EOD;
         unset($config['interfaces']['lan']);
     }
 
-    if ($wanif) {
+    if ($wanif != '') {
         config_read_array('interfaces', 'wan');
         $config['interfaces']['wan']['if'] = $wanif;
         $config['interfaces']['wan']['enable'] = true;
         $config['interfaces']['wan']['ipaddr'] = 'dhcp';
         $config['interfaces']['wan']['ipaddrv6'] = 'dhcp6';
         $config['interfaces']['wan']['blockbogons'] = true;
-        if ($lanif) {
+        if ($lanif != '') {
             $config['interfaces']['wan']['blockpriv'] = true;
         }
 
-        if (match_wireless_interface($wanif)) {
+        if (in_array($config['interfaces']['wan']['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'wan', 'wireless');
             $config['interfaces']['wan']['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['wan']['wireless'])) {
@@ -455,17 +455,13 @@ EOD;
     for ($i = 0; $i < count($optif); $i++) {
         config_read_array('interfaces', 'opt' . ($i + 1));
         $config['interfaces']['opt' . ($i + 1)]['if'] = $optif[$i];
+        $config['interfaces']['opt' . ($i + 1)]['enable'] = true;
 
-        if (match_wireless_interface($optif[$i])) {
+        if (in_array($config['interfaces']['opt' . ($i + 1)]['if'], $iflist_wlan)) {
             config_read_array('interfaces', 'opt' . ($i + 1), 'wireless');
             $config['interfaces']['opt' . ($i + 1)]['if'] .= '_wlan0';
         } elseif (isset($config['interfaces']['opt' . ($i + 1)]['wireless'])) {
             unset($config['interfaces']['opt' . ($i + 1)]['wireless']);
-        }
-
-        if (empty($config['interfaces']['opt' . ($i + 1)]['descr'])) {
-            $config['interfaces']['opt' . ($i + 1)]['descr'] = "OPT" . ($i + 1);
-            unset($config['interfaces']['opt' . ($i + 1)]['enable']);
         }
     }
 
@@ -511,7 +507,7 @@ EOD;
 
     echo "No link-up detected.\n";
 
-    return false;
+    return '';
 }
 
 function lagg_setup($iflist, $fp)
