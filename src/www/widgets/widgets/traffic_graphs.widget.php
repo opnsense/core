@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             mode: 'nearest',
                             intersect: false,
                             callbacks: {
-                                label: function(tooltipItem, data) {
+                                label: function(context) {
                                     return context.dataset.label + ": " + format_field(context.dataset.data[context.dataIndex].y).toString();
                                 }
                             }
