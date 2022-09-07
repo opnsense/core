@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo -n "Generating configuration: "
-configctl template reload \*
+configctl -w 3 template reload \*
