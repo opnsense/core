@@ -206,9 +206,7 @@ function system_resolvconf_generate($verbose = false)
             continue;
         }
 
-        $host = !empty($dnsserver['host']) ? $dnsserver['host'] : $dnsserver;
-        $resolvconf .= "nameserver {$host}\n";
-
+        $resolvconf .= "nameserver {$dnsserver['host']}\n";
         $routes[$dnsserver['host']] = $dnsserver['gateway'];
     }
 
