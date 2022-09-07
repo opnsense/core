@@ -193,7 +193,6 @@ function legacy_vlan_proto($ifs, $proto)
     }
 }
 
-
 function legacy_interface_stats($ifs = null)
 {
     if ($ifs != null) {
