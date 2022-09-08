@@ -96,14 +96,22 @@ if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
     plugins_configure('dhcp', false, ['inet6']);
 }
 
-link_interface_to_track6($interface, true);
+/* XXX handling reloads for tracked interfaces is difficult, for now reload multiple times */
+$interfaces = array_keys(link_interface_to_track6($interface, true));
+array_unshift($interfaces, $interface);
 
-system_routing_configure(false, $interface);
+foreach ($interfaces as $interface) {
+    system_routing_configure(false, $interface);
+}
+
 filter_configure_sync();
 
 /* register IP change not before this point as basic connectivity is needed */
 @file_put_contents($cacheip_file, $ip . PHP_EOL);
 
-plugins_configure('vpn', false, array($interface));
-plugins_configure('newwanip', false, array($interface));
+foreach ($interfaces as $interface) {
+    plugins_configure('vpn', false, [$interface]);
+    plugins_configure('newwanip', false, [$interface]);
+}
+
 rrd_configure();
