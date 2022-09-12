@@ -37,6 +37,9 @@ sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
 
 if __name__ == '__main__':
+    # do we use reverse DNS lookup ?
+    arp_arg = '-an' if '-r' in sys.argv else '-a'
+
     # index mac database (shipped with netaddr)
     macdb = dict()
     with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
@@ -55,9 +58,10 @@ if __name__ == '__main__':
             dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
-    sp = subprocess.run(['/usr/sbin/arp', '-an', '--libxo','json'], capture_output=True, text=True)
+    sp = subprocess.run(['/usr/sbin/arp', arp_arg, '--libxo','json'], capture_output=True, text=True)
     libxo_out = ujson.loads(sp.stdout)
     arp_cache = libxo_out['arp']['arp-cache'] if 'arp' in libxo_out and 'arp-cache' in libxo_out['arp'] else []
+
     for src_record in arp_cache:
         if 'incomplete' in src_record and src_record['incomplete'] is True:
             continue
@@ -70,7 +74,7 @@ if __name__ == '__main__':
             'permanent': src_record['permanent'] if 'permanent' in src_record else False,
             'type': src_record['type'],
             'manufacturer': '',
-            'hostname': ''
+            'hostname': src_record['hostname'] if src_record['hostname'] != '?' else ''
         }
         if record['mac'][0:8] in macdb:
             record['manufacturer'] = macdb[record['mac'][0:8]]
@@ -79,7 +83,7 @@ if __name__ == '__main__':
         result.append(record)
 
     # handle command line argument (type selection)
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
+    if len(sys.argv) > 1 and 'json' in sys.argv:
         print(ujson.dumps(result))
     else:
         # output plain text (console)
