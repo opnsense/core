@@ -37,21 +37,14 @@ sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
 
 
-# do we use reverse DNS lookup (only when hostanme is not found in our dhcp leases) ?
-use_dns = True
-
-# translate IP address into hostname, using a DNS PTR lookup.
-import socket
-def dns_ptr_lookup(addr):
-    try:
-        name,alias,adlist= socket.gethostbyaddr(addr)
-        return name
-    except socket.herror:
-        return ''
-
-
-
 if __name__ == '__main__':
+
+    # do we use reverse DNS lookup ?
+    if len(sys.argv) > 1 and '-r' in sys.argv:
+        arp_arg=''
+    else:
+        arp_arg='n'
+
     # index mac database (shipped with netaddr)
     macdb = dict()
     with open("%s/eui/oui.txt" % os.path.dirname(netaddr.__file__)) as fh_macdb:
@@ -70,7 +63,7 @@ if __name__ == '__main__':
             dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
-    sp = subprocess.run(['/usr/sbin/arp', '-an', '--libxo','json'], capture_output=True, text=True)
+    sp = subprocess.run(['/usr/sbin/arp', '-a'+arp_arg, '--libxo','json'], capture_output=True, text=True)
     libxo_out = ujson.loads(sp.stdout)
     arp_cache = libxo_out['arp']['arp-cache'] if 'arp' in libxo_out and 'arp-cache' in libxo_out['arp'] else []
     for src_record in arp_cache:
@@ -91,12 +84,12 @@ if __name__ == '__main__':
             record['manufacturer'] = macdb[record['mac'][0:8]]
         if record['ip'] in dhcp_leases:
             record['hostname'] = dhcp_leases[record['ip']]['hostname']
-        if use_dns is True and  record['hostname'] == '':
-            record['hostname'] = dns_ptr_lookup(record['ip'])
+        if record['hostname'] == '' and not src_record['hostname'] =='?' :
+            record['hostname'] = src_record['hostname']
         result.append(record)
 
     # handle command line argument (type selection)
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
+    if len(sys.argv) > 1 and 'json' in sys.argv:
         print(ujson.dumps(result))
     else:
         # output plain text (console)
