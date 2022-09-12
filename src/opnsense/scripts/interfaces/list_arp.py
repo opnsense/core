@@ -36,6 +36,21 @@ import netaddr
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
 
+
+# do we use reverse DNS lookup (only when hostanme is not found in our dhcp leases) ?
+use_dns = True
+
+# translate IP address into hostname, using a DNS PTR lookup.
+import socket
+def dns_ptr_lookup(addr):
+    try:
+        name,alias,adlist= socket.gethostbyaddr(addr)
+        return name
+    except socket.herror:
+        return ''
+
+
+
 if __name__ == '__main__':
     # index mac database (shipped with netaddr)
     macdb = dict()
@@ -76,6 +91,8 @@ if __name__ == '__main__':
             record['manufacturer'] = macdb[record['mac'][0:8]]
         if record['ip'] in dhcp_leases:
             record['hostname'] = dhcp_leases[record['ip']]['hostname']
+        if use_dns is True and  record['hostname'] == '':
+            record['hostname'] = dns_ptr_lookup(record['ip'])
         result.append(record)
 
     # handle command line argument (type selection)
