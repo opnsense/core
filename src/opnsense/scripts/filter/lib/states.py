@@ -190,11 +190,21 @@ def query_top(rule_label, filter_str):
             else:
                 idx = 4
 
+            pows =  {
+                'K': 1,
+                'M': 2,
+                'G': 3,
+            }
+            time_marks =  {
+                'm': 60,
+                'h': 3600,
+                'd': 86400,
+            }
             record['state'] = parts[idx]
             record['age'] = parts[idx+1]
             record['expire'] = parts[idx+2]
             record['pkts'] = int(parts[idx+3]) if parts[idx+3].isdigit() else 0
-            record['bytes'] = int(parts[idx+4]) if parts[idx+4].isdigit() else 0
+            record['bytes'] = int(parts[idx+4]) if parts[idx+4].isdigit() else 0 if parts[idx+4] == '*' else int(parts[idx+4][:-1])*pow(1024, pows[parts[idx+4][-1]])
             record['avg'] = int(parts[idx+5]) if parts[idx+5].isdigit() else 0
             record['rule'] = parts[idx+6]
             if record['rule'] in rule_labels:
@@ -204,8 +214,15 @@ def query_top(rule_label, filter_str):
                 record['label'] = None
                 record['descr'] = None
             for timefield in ['age', 'expire']:
-                tmp = record[timefield].split(':')
-                record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2]) if len(tmp) > 2 else 0
+                if ':' in record[timefield]:
+                    tmp = record[timefield].split(':')
+                    record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2]) if len(tmp) > 2 else 0
+                elif record[timefield].isdigit():
+                    record[timefield] = int(record[timefield])
+                elif any(time_mark in record[timefield] for time_mark in list(time_marks.keys())):
+                    record[timefield] = int(record[timefield][:-1])*time_marks[record[timefield][-1]]
+                else:
+                    record[timefield] = 0
 
             search_line = " ".join(str(item) for item in filter(None, record.values()))
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
