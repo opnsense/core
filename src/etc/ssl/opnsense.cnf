@@ -206,11 +206,9 @@ subjectKeyIdentifier=hash
 
 authorityKeyIdentifier=keyid:always,issuer
 
-# This is what PKIX recommends but some broken software chokes on critical
-# extensions.
-#basicConstraints = critical,CA:true
-# So we do this instead.
-basicConstraints = CA:true
+# basicConstraints (rfc5280): Conforming CAs MUST include this extension in all CA certificates that contain public
+# keys used to validate digital signatures on certificates and MUST mark the extension as critical in such certificates.
+basicConstraints = critical, CA:true
 # keyUsage (rfc5280): Conforming CAs MUST include this extension in certificates that contain public keys
 # that are used to validate digital signatures on other public key certificates or CRLs.
 # When present, conforming CAs SHOULD mark this extension as critical.
