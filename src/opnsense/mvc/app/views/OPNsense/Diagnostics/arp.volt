@@ -41,12 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     multiSelect: false
                 });
             }
-            let resolve = '';
-            if ($("#resolve").prop("checked")) {
-                resolve = "yes";
-            }
-
-            ajaxGet("/api/diagnostics/interface/getArp", {resolve:resolve}, function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getArp", {resolve:$("#resolve").prop("checked") ? 'yes': 'no'}, function (data, status) {
                         if (status == "success") {
                             $("#grid-arp").bootgrid('append', data);
                         }

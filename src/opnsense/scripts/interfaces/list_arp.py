@@ -36,22 +36,9 @@ import netaddr
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
 
-import re
-def natural_sort(list, key=lambda s:s):
-    def get_alphanum_key_func(key):
-        convert = lambda text: int(text) if text.isdigit() else text 
-        return lambda s: [convert(c) for c in re.split('([0-9]+)', key(s))]
-    sort_key = get_alphanum_key_func(key)
-    list.sort(key=sort_key)
-
-
 if __name__ == '__main__':
-
     # do we use reverse DNS lookup ?
-    if len(sys.argv) > 1 and '-r' in sys.argv:
-        arp_arg=''
-    else:
-        arp_arg='n'
+    arp_arg = '-an' if '-r' in sys.argv else '-a'
 
     # index mac database (shipped with netaddr)
     macdb = dict()
@@ -71,11 +58,10 @@ if __name__ == '__main__':
             dhcp_leases[lease['address']]  = {'hostname': lease['client-hostname']}
 
     # parse arp output
-    sp = subprocess.run(['/usr/sbin/arp', '-a'+arp_arg, '--libxo','json'], capture_output=True, text=True)
+    sp = subprocess.run(['/usr/sbin/arp', arp_arg, '--libxo','json'], capture_output=True, text=True)
     libxo_out = ujson.loads(sp.stdout)
     arp_cache = libxo_out['arp']['arp-cache'] if 'arp' in libxo_out and 'arp-cache' in libxo_out['arp'] else []
-    natural_sort(arp_cache, key=lambda s: s['ip-address']) 
-    
+
     for src_record in arp_cache:
         if 'incomplete' in src_record and src_record['incomplete'] is True:
             continue
@@ -88,14 +74,12 @@ if __name__ == '__main__':
             'permanent': src_record['permanent'] if 'permanent' in src_record else False,
             'type': src_record['type'],
             'manufacturer': '',
-            'hostname': ''
+            'hostname': src_record['hostname'] if src_record['hostname'] != '?' else ''
         }
         if record['mac'][0:8] in macdb:
             record['manufacturer'] = macdb[record['mac'][0:8]]
         if record['ip'] in dhcp_leases:
             record['hostname'] = dhcp_leases[record['ip']]['hostname']
-        if record['hostname'] == '' and not src_record['hostname'] =='?' :
-            record['hostname'] = src_record['hostname']
         result.append(record)
 
     # handle command line argument (type selection)
