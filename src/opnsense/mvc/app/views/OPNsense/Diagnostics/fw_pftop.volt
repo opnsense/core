@@ -64,9 +64,9 @@
                             bytes: function(column, row) {
                                 if (!isNaN(row[column.id]) && row[column.id] > 0) {
                                     let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-                                    let ndx = Math.floor(Math.log(row[column.id]) / Math.log(1000) );
+                                    let ndx = Math.floor(Math.log(row[column.id]) / Math.log(1024) );
                                     if (ndx > 0) {
-                                        return  (row[column.id] / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                                        return  (row[column.id] / Math.pow(1024, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
                                     } else {
                                         return row[column.id].toFixed(2);
                                     }
