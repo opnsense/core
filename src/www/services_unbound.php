@@ -296,7 +296,7 @@ include_once("head.inc");
                         <td><a id="help_for_reglladdr6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv6 Link-local') ?></td>
                         <td>
                           <input name="reglladdr6" type="checkbox" id="reglladdr6" value="yes" <?= !empty($pconfig['reglladdr6']) ? 'checked="checked"' : '' ?>/>
-                          <?= gettext('Disable Register IPv6 link-local addresses') ?>
+                          <?= gettext('Do not register IPv6 link-local addresses') ?>
                           <div class="hidden" data-for="help_for_reglladdr6">
                             <?= gettext("If this option is set, then IPv6 link-local " .
                             "addresses will not be registered in Unbound, preventing " .
