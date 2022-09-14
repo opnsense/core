@@ -204,7 +204,12 @@ def query_top(rule_label, filter_str):
             record['age'] = parts[idx+1]
             record['expire'] = parts[idx+2]
             record['pkts'] = int(parts[idx+3]) if parts[idx+3].isdigit() else 0
-            record['bytes'] = int(parts[idx+4]) if parts[idx+4].isdigit() else 0 if parts[idx+4] == '*' else int(parts[idx+4][:-1])*pow(1024, pows[parts[idx+4][-1]])
+            if parts[idx+4].isdigit():
+                record['bytes'] = int(parts[idx+4])
+            elif parts[idx+4][:-1].isdigit() and parts[idx+4][-1] in pows:
+                record['bytes'] = int(parts[idx+4][:-1])*pow(1024, pows[parts[idx+4][-1]])
+            else:
+                record['bytes'] = 0
             record['avg'] = int(parts[idx+5]) if parts[idx+5].isdigit() else 0
             record['rule'] = parts[idx+6]
             if record['rule'] in rule_labels:
@@ -219,7 +224,7 @@ def query_top(rule_label, filter_str):
                     record[timefield] = int(tmp[0]) * 3600 + int(tmp[1]) * 60 + int(tmp[2]) if len(tmp) > 2 else 0
                 elif record[timefield].isdigit():
                     record[timefield] = int(record[timefield])
-                elif any(time_mark in record[timefield] for time_mark in list(time_marks.keys())):
+                elif record[timefield][-1] in time_marks and record[timefield][:-1].isdigit():
                     record[timefield] = int(record[timefield][:-1])*time_marks[record[timefield][-1]]
                 else:
                     record[timefield] = 0
