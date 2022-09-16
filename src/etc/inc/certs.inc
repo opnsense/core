@@ -663,7 +663,9 @@ function crl_update(&$crl)
     /* get the private key to sign the new (updated) CRL */
     try {
         $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
-        $ca_key = $ca_key->withPadding(RSA::ENCRYPTION_PKCS1 | RSA::SIGNATURE_PKCS1);
+        if (method_exists($ca_key, 'withPadding')) {
+            $ca_key = $ca_key->withPadding(RSA::ENCRYPTION_PKCS1 | RSA::SIGNATURE_PKCS1);
+        }
         $ca_cert->setPrivateKey($ca_key);
     } catch (NoKeyLoadedException $e) {
         syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
