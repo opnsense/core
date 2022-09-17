@@ -831,7 +831,6 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);
-                crl_update($crl);
                 openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
             }
             if ($settings['tls']) {
@@ -1536,7 +1535,6 @@ function openvpn_refresh_crls()
                 case 'server_user':
                     if (!empty($settings['crlref'])) {
                         $crl = lookup_crl($settings['crlref']);
-                        crl_update($crl);
                         $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
                         file_put_contents($fpath, base64_decode($crl['text']));
                         @chmod($fpath, 0644);

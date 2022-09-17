@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($act == "exp") {
-        crl_update($thiscrl); // XXX: is this necessary?
         $exp_name = urlencode("{$thiscrl['descr']}.crl");
         $exp_data = base64_decode($thiscrl['text']);
         $exp_size = strlen($exp_data);
