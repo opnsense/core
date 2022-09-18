@@ -82,10 +82,11 @@ class Backend
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @param int $connect_timeout connect timeout in seconds
+     * @param string $timeout_resp custom respone on timeout
      * @return string
      * @throws \Exception
      */
-    public function configdRun($event, $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdRun($event, $detach = false, $timeout = 120, $connect_timeout = 10, $timeout_resp = null)
     {
         $endOfStream = chr(0) . chr(0) . chr(0);
         $errorOfStream = 'Execute error';
@@ -134,7 +135,7 @@ class Backend
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
                 $this->getLogger()->error("Timeout (" . $timeout . ") executing : " . $event);
-                return null;
+                return $timeout_resp;
             } elseif (feof($stream)) {
                 $this->getLogger()->error("Configd disconnected while executing : " . $event);
                 return null;
