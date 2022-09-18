@@ -39,7 +39,7 @@ import requests
 def uri_reader(uri):
     req_opts = {
         'url': uri,
-        'timeout': 120,
+        'timeout': 5,
         'stream': True
     }
     try:
