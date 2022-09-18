@@ -44,14 +44,23 @@ class ServiceController extends ApiMutableServiceControllerBase
         $this->sessionClose();
         $backend = new Backend();
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = json_decode(trim($backend->configdRun(static::$internalServiceName . ' dnsbl')), true);
+        $timeout = 120;
+        $response = json_decode(trim($backend->configdRun(static::$internalServiceName . ' dnsbl', false, $timeout, 10, json_encode(array('status' => 'timeout')))), true);
         if ($response !== null) {
-            $response['status'] = "OK";
-            $response['status_msg'] = sprintf(
-                gettext("Added %d and removed %d resource records."),
-                $response['additions'],
-                $response['removals']
-            );
+            if ($response['status'] == 'timeout') {
+                $response['status'] = "WARNING";
+                $response['status_msg'] = sprintf(
+                    gettext("WARNING!\nThe execution time exceeded the timeout of %d seconds.\nCheck the logs to make sure the action completed successfully."),
+                    $timeout
+                );
+            } else {
+                $response['status'] = "OK";
+                $response['status_msg'] = sprintf(
+                    gettext("Added %d and removed %d resource records."),
+                    $response['additions'],
+                    $response['removals']
+                );
+            }
             return $response;
         }
 
