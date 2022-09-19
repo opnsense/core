@@ -42,7 +42,10 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     {
         $tmp = $this->request->getPost('vlan');
         $prefix = (strpos($tmp['if'], 'vlan') === false ? 'vlan' : 'qinq');
-        if ($current != null && (string)$current->vlanif == "{$tmp['if']}_vlan{$tmp['tag']}") {
+        if (!empty($tmp['vlanif'])) {
+            // user provided vlan name, field validation applies so we may just paste it in here
+            return $tmp['vlanif'];
+        } elseif ($current != null && (string)$current->vlanif == "{$tmp['if']}_vlan{$tmp['tag']}") {
             /* keep legacy naming */
             return "{$tmp['if']}_vlan{$tmp['tag']}";
         } elseif (
@@ -55,7 +58,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             /* auto-number new device */
             $ifid = 0;
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
-                if (strpos((string)$node->vlanif, $prefix) === 0) {
+                if (preg_match("/^{$prefix}[\d]+$/", (string)$node->vlanif)) {
                     $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
                 }
             }
@@ -88,8 +91,8 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $new_vlanif = $this->generateVlanIfName($node);
         $children = 0;
-        foreach ($this->getModel()->vlan->iterateItems() as $node) {
-            if ((string)$node->if == $old_vlanif) {
+        foreach ($this->getModel()->vlan->iterateItems() as $cnode) {
+            if ((string)$cnode->if == $old_vlanif) {
                 $children++;
             }
         }
@@ -117,7 +120,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                 $result = [
                   "result" => "failed",
                   "validations" => [
-                      "vlan.if" => gettext("Interface is assigned and you cannot change the parent while assigned.")
+                      "vlan.vlanif" => gettext("Interface is assigned and you cannot change the device name while assigned.")
                   ]
                 ];
             }

@@ -28,8 +28,51 @@
 
 namespace OPNsense\Interfaces;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 class Vlan extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $all_nodes = $this->getFlatNodes();
+        foreach ($all_nodes as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                // the item container may have different validations attached.
+                $parent = $node->getParentNode();
+                // perform plugin specific validations
+                switch ($node->getInternalXMLTagName()) {
+                    case 'vlanif':
+                        $prefix = (strpos((string)$parent->if, 'vlan') === false ? 'vlan' : 'qinq');
+                        if ((string)$node == "{$parent->if}_vlan{$parent->tag}") {
+                            // legacy device name
+                            break;
+                        } elseif (!(strpos((string)$node, (string)$prefix) === 0)) {
+                            $messages->appendMessage(new Message(
+                                sprintf(gettext('The device name prefix "%s" is required.'), (string)$prefix),
+                                $key
+                            ));
+                        } elseif (!preg_match("/^{$prefix}0([0-9\.]){1,16}$/", (string)$node)) {
+                            $messages->appendMessage(new Message(
+                                sprintf(
+                                    gettext(
+                                        'Only a maximum of 15 characters is allowed starting with "%s0" combined with ' .
+                                        'numeric characters and dots, e.g. "%s0.1.104".'
+                                    ),
+                                    $prefix,
+                                    $prefix
+                                ),
+                                $key
+                            ));
+                        }
+                        break;
+                }
+            }
+        }
+        return $messages;
+    }
 }
