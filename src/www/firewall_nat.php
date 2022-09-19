@@ -83,18 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('natconf');
         clear_subsystem_dirty('filter');
-    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
-        // delete nat rule and associated rule if it exists
-        if (isset($a_nat[$id]['associated-rule-id'])) {
-            delete_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule']);
-            mark_subsystem_dirty('filter');
+    }  elseif (isset($pconfig['act']) &&  in_array($pconfig['act'], ['del', 'del_x'])) {
+        if ($pconfig['act'] == 'del') {
+            $pconfig['rule'] = isset($id) ? [$id] : [];
+        } elseif (empty($pconfig['rule'])) {
+            $pconfig['rule'] = [];
         }
-        unset($a_nat[$id]);
-        write_config();
-        mark_subsystem_dirty('natconf');
-        header(url_safe('Location: /firewall_nat.php'));
-        exit;
-    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         /* delete selected rules */
         foreach ($pconfig['rule'] as $rulei) {
             if (isset($a_nat[$rulei])) {
@@ -111,12 +105,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
-    } elseif (isset($pconfig['act']) && in_array($pconfig['act'], array('toggle_enable', 'toggle_disable')) && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
-        foreach ($pconfig['rule'] as $rulei) {
-            $a_nat[$rulei]['disabled'] = $pconfig['act'] == 'toggle_disable';
+    } elseif (isset($pconfig['act']) && in_array($pconfig['act'], ['toggle', 'toggle_enable', 'toggle_disable'])) {
+        if ($pconfig['act'] == 'toggle') {
+            $pconfig['rule'] = isset($id) ? [$id] : [];
+        } elseif (empty($pconfig['rule'])) {
+            $pconfig['rule'] = [];
         }
-        write_config();
-        mark_subsystem_dirty('filter');
+        foreach ($pconfig['rule'] as $rulei) {
+            if ($pconfig['act'] == 'toggle') {
+                $a_nat[$rulei]['disabled'] = !$a_nat[$rulei]['disabled'];
+            } else {
+                $a_nat[$rulei]['disabled'] = $pconfig['act'] == 'toggle_disable';
+            }
+            $natent = $a_nat[$rulei];
+            if (!empty($natent['associated-rule-id']) && !empty($config['filter']['rule'])) {
+                foreach ($config['filter']['rule'] as $key => &$item){
+                    if (isset($item['associated-rule-id']) && $item['associated-rule-id'] == $natent['associated-rule-id']) {
+                        $item['disabled'] = $natent['disabled'];
+                        break;
+                    }
+                }
+            }
+        }
+        write_config('Firewall: NAT: Outbound, toggle NAT rule');
+        mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move') {
@@ -129,17 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $a_nat = legacy_move_config_list_items($a_nat, $id,  $pconfig['rule']);
         }
         write_config();
-        mark_subsystem_dirty('natconf');
-        header(url_safe('Location: /firewall_nat.php'));
-        exit;
-    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
-        // toggle item
-        if(isset($a_nat[$id]['disabled'])) {
-            unset($a_nat[$id]['disabled']);
-        } else {
-            $a_nat[$id]['disabled'] = true;
-        }
-        write_config('Firewall: NAT: Outbound, toggle NAT rule');
         mark_subsystem_dirty('natconf');
         header(url_safe('Location: /firewall_nat.php'));
         exit;
@@ -382,7 +383,7 @@ $( document ).ready(function() {
 <?php               $nnats = 0;
                     foreach ($a_nat as $natent):
 ?>
-                    <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>" ondblclick="document.location='firewall_nat_edit.php?id=<?=$nnats;?>';">
+                    <tr class="rule <?=isset($natent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($natent['category']) ? $natent['category'] : "";?>">
                       <td>
                         <input class="rule_select" type="checkbox" name="rule[]" value="<?=$nnats;?>"  />
                       </td>
