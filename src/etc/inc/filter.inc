@@ -145,28 +145,9 @@ function ifgroup_setup()
     }
 }
 
-/**
- * XXX: replace with check on interfaces section (see pf_interfaces)
- */
-function is_interface_group($if)
-{
-    global $config;
-
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $groupentry) {
-            if ($groupentry['ifname'] === $if) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
-    $sched_kill_states = array(); // kill states for schedules
 
     if ($verbose) {
         echo 'Configuring firewall.';
@@ -187,51 +168,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
-
-    if (isset($config['filter']['rule'])) {
-        // register user rules
-        foreach ($config['filter']['rule'] as $rule) {
-            // calculate a hash for this area so we can track this rule, we should replace this
-            // with uuid's on the rules like the new style models do eventually.
-            $rule_hash = OPNsense\Firewall\Util::calcRuleHash($rule);
-            $rule['label'] = $rule_hash;
-            $sched = '';
-            $descr = '';
-
-            if (!empty($rule['sched'])) {
-                $sched = "({$rule['sched']})";
-            }
-            if (!empty($rule['descr'])) {
-                $descr = ": {$rule['descr']}";
-            }
-
-            $rule['descr'] = "{$sched}{$descr}";
-            if (isset($rule['floating'])) {
-                $prio = 200000;
-            } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], array("l2tp", "pptp", "pppoe", "enc0", "openvpn"))) {
-                $prio = 300000;
-            } else {
-                $prio = 400000;
-            }
-            /* is a time based rule schedule attached? */
-            if (!empty($rule['sched']) && !empty($config['schedules'])) {
-                foreach ($config['schedules']['schedule'] as $sched) {
-                    if ($sched['name'] == $rule['sched']) {
-                        if (!filter_get_time_based_rule_status($sched)) {
-                            if (!isset($config['system']['schedule_states'])) {
-                                $sched_kill_states[] = $rule['label'];
-                            }
-                            /* disable rule, suffix label to mark end of schedule */
-                            $rule['disabled'] = true;
-                            $rule['descr'] = "[FIN]" . $rule['descr'];
-                        }
-                        break;
-                    }
-                }
-            }
-            $fw->registerFilterRule($prio, $rule);
-        }
-    }
+    // register user rules, returns kill states for schedules
+    $sched_kill_states = filter_core_rules_user($fw);
 
     // manual outbound nat rules
     if (

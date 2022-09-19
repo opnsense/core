@@ -596,3 +596,66 @@ function filter_core_rules_system($fw, $defaults)
         }
     }
 }
+
+/**
+ * register user rules, returns kill states for schedules
+ */
+function filter_core_rules_user($fw)
+{
+    global $config;
+
+    $sched_kill_states = [];
+
+    $ifgroups = ["l2tp", "pptp", "pppoe", "enc0", "openvpn"];
+    if (isset($config['ifgroups']['ifgroupentry'])) {
+        foreach ($config['ifgroups']['ifgroupentry'] as $groupentry) {
+            $ifgroups[] = $groupentry['ifname'];
+        }
+    }
+
+    if (isset($config['filter']['rule'])) {
+        // register user rules
+        foreach ($config['filter']['rule'] as $rule) {
+            // calculate a hash for this area so we can track this rule, we should replace this
+            // with uuid's on the rules like the new style models do eventually.
+            $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);
+            $sched = '';
+            $descr = '';
+
+            if (!empty($rule['sched'])) {
+                $sched = "({$rule['sched']})";
+            }
+            if (!empty($rule['descr'])) {
+                $descr = ": {$rule['descr']}";
+            }
+
+            $rule['descr'] = "{$sched}{$descr}";
+            if (isset($rule['floating'])) {
+                $prio = 200000;
+            } elseif (in_array($rule['interface'], $ifgroups)) {
+                $prio = 300000;
+            } else {
+                $prio = 400000;
+            }
+            /* is a time based rule schedule attached? */
+            if (!empty($rule['sched']) && !empty($config['schedules'])) {
+                foreach ($config['schedules']['schedule'] as $sched) {
+                    if ($sched['name'] == $rule['sched']) {
+                        if (!filter_get_time_based_rule_status($sched)) {
+                            if (!isset($config['system']['schedule_states'])) {
+                                $sched_kill_states[] = $rule['label'];
+                            }
+                            /* disable rule, suffix label to mark end of schedule */
+                            $rule['disabled'] = true;
+                            $rule['descr'] = "[FIN]" . $rule['descr'];
+                        }
+                        break;
+                    }
+                }
+            }
+            $fw->registerFilterRule($prio, $rule);
+        }
+    }
+
+    return $sched_kill_states;
+}
