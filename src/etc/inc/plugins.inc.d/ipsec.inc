@@ -1739,7 +1739,7 @@ function ipsec_get_configured_vtis()
                     $descr = $ph1ent['descr'] ?? '';
                 }
                 $intfnm = sprintf("ipsec%s", $reqid);
-                if (empty($tunnels[$intfnm])) {
+                if (empty($configured_intf[$intfnm])) {
                     $configured_intf[$intfnm] = ['reqid' => $reqid];
                     $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
                     $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
