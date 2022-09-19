@@ -28,8 +28,44 @@
 
 namespace OPNsense\Interfaces;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 class Vlan extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $all_nodes = $this->getFlatNodes();
+        foreach ($all_nodes as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                // the item container may have different validations attached.
+                $parent = $node->getParentNode();
+                // perform plugin specific validations
+                switch ($node->getInternalXMLTagName()) {
+                    case 'vlanif':
+                        $prefix = (strpos((string)$parent->if, 'vlan') === false ? 'vlan' : 'qinq');
+                        if ((string)$node == "{$parent->if}_vlan{$parent->tag}") {
+                            // legacy device name
+                            break;
+                        } elseif (!(strpos((string)$node, (string)$prefix) === 0)) {
+                            $messages->appendMessage(new Message(
+                                sprintf(gettext("device name does not match type (e.g. %s_xxx)."), (string)$prefix) ,
+                                $key
+                            ));
+                        } elseif (!preg_match("/^([a-zA-Z0-9_]){1,16}$/", (string)$node)) {
+                            $messages->appendMessage(new Message(
+                                gettext("Invalid device name, only up to 16 alphanumeric characters are supported."),
+                                $key
+                            ));
+                        }
+                        break;
+                }
+            }
+        }
+        return $messages;
+    }
 }

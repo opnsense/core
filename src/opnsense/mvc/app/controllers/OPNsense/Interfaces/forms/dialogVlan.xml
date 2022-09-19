@@ -2,7 +2,12 @@
     <field>
         <id>vlan.vlanif</id>
         <label>Device</label>
-        <type>info</type>
+        <type>text</type>
+        <help>
+          Leave empty to generate a device name for you. Custom names are possible,
+          but only if the start of the name matches the type and contains standard alphanumeric characters
+          or underscores (e.g. vlan_1_2_3, qinq_1_2_3).
+        </help>
     </field>
     <field>
         <id>vlan.if</id>
