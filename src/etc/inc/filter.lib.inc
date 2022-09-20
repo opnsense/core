@@ -615,10 +615,14 @@ function filter_core_rules_user($fw)
 
     if (isset($config['filter']['rule'])) {
         // register user rules
-        foreach ($config['filter']['rule'] as $rule) {
+        foreach ($config['filter']['rule'] as $idx => $rule) {
             // calculate a hash for this area so we can track this rule, we should replace this
             // with uuid's on the rules like the new style models do eventually.
             $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);
+
+            $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
+            $rule['#ref'] = sprintf('firewall_rules_edit.php?if=%s&id=%s', $intf, $idx);
+            $rule['seq'] = $idx;  // current rule sequence (used as id in firewall pages)
             $sched = '';
             $descr = '';
 

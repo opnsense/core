@@ -35,6 +35,7 @@ $a_filter = &config_read_array('filter', 'rule');
 $fw = filter_core_get_initialized_plugin_system();
 filter_core_bootstrap($fw);
 plugins_firewall($fw);
+filter_core_rules_user($fw);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['rid'])) {
@@ -44,23 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($rule->getRef()) && $rid == $rule->getLabel()) {
                 if (strpos($rule->getRef(), '?if=') !== false) {
                     $parts = parse_url($rule->getRef());
+                    parse_str($parts['query'], $query);
                     if (!empty($parts['fragment'])) {
-                        parse_str($parts['query'], $query);
-                        $params = [$parts['path'], $query['if'], $parts['fragment']];
-                        header(url_safe('Location: /%s?if=%s#%s', $params));
+                        header(url_safe('Location: /%s?if=%s#%s', [$parts['path'], $query['if'], $parts['fragment']]));
+                    } elseif (!empty($query['if']) && !empty($query['id'])) {
+                        // firewall index reference
+                        header(url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]));
                     }
                 } else {
                     header(sprintf('Location: /%s', $rule->getRef()));
                 }
-                exit;
-            }
-        }
-        // search user defined rules
-        foreach ($a_filter as $idx => $rule) {
-            $rule_hash = OPNsense\Firewall\Util::calcRuleHash($rule);
-            if ($rule_hash === $rid) {
-                $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
-                header(url_safe('Location: /firewall_rules_edit.php?if=%s&id=%s', array($intf, $idx)));
                 exit;
             }
         }
