@@ -86,9 +86,14 @@ function filter_rules_sort()
             return strnatcmp($a['interface'], $b['interface']);
         }
     });
-    /* strip the sequence numbers again */
+    /* strip the sequence numbers again, add uuid's where not available */
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         unset($config['filter']['rule'][$i]['seq']);
+        if (empty($config['filter']['rule'][$i]['@attributes'])
+            && empty($config['filter']['rule'][$i]['@attributes']['uuid'])
+        ) {
+            $config['filter']['rule'][$i]['@attributes'] = ['uuid' => generate_uuid()];
+        }
     }
 }
 

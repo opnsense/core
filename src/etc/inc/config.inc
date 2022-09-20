@@ -273,6 +273,24 @@ function legacy_config_get_interfaces($filters = array())
 }
 
 /**
+ * legacy helper to generate a uuid in a similar fashion as the model code would.
+ */
+function generate_uuid()
+{
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff)
+    );
+}
+
+/**
  * parse stored json content, return empty when not found or expired
  */
 function get_cached_json_content($filename, $ttl = 3600)

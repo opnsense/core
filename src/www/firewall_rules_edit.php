@@ -582,9 +582,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ( isset($a_filter[$id]['created']) && is_array($a_filter[$id]['created']) ) {
                 $filterent['created'] = $a_filter[$id]['created'];
             }
+            if (!empty($a_filter[$id]['@attributes']) && !empty($a_filter[$id]['@attributes']['uuid'])) {
+                $filterent['@attributes'] = $a_filter[$id]['@attributes'];
+            } else {
+                $filterent['@attributes'] = ['uuid' => generate_uuid()];
+            }
             $a_filter[$id] = $filterent;
         } else {
             $filterent['created'] = make_config_revision_entry();
+            $filterent['@attributes'] = ['uuid' => generate_uuid()];
             if (isset($after)) {
                 array_splice($a_filter, $after+1, 0, array($filterent));
             } else {
