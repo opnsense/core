@@ -324,7 +324,7 @@
                         $('#product_time_check').text("{{ lang._('N/A') }}");
                     }
                 } else {
-                    $('#' + key).text(value);
+                    $('#' + key).text(value).closest('tr').show();
                 }
             });
 
@@ -831,6 +831,12 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Version') }}</td>
                                 <td id="product_version"></td>
+                                <td></td>
+                            </tr>
+                            <tr style='display:none'>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('License valid to') }}</td>
+                                <td id="product_license_valid_to"></td>
                                 <td></td>
                             </tr>
                             <tr>

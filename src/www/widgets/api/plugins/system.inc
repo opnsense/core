@@ -153,24 +153,32 @@ function system_api_disk()
     return $result;
 }
 
-function system_api_versions()
+function system_api_versions($product)
 {
     global $g;
 
     $result = array();
-
-    $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);
+    if (!empty($product['product_license_valid_to'])) {
+        $result[] = sprintf(
+            gettext('%s %s-%s (licensed until %s)'),
+            $g['product_name'],
+            $g['product_version'],
+            $g['product_arch'],
+            $product['product_license_valid_to']
+        );
+    } else {
+        $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);
+    }
     $result[] = php_uname('s') . ' ' . php_uname('r');
     $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
 
     return $result;
 }
 
-function system_api_firmware()
+function system_api_firmware($product)
 {
     $ret = gettext('Click to check for updates.');
 
-    $product = json_decode(configd_run('firmware product'), true);
     $current = explode('_', $product['product_version'])[0];
 
     /* information from changelog, more accurate for production release */
@@ -199,8 +207,8 @@ function system_api_firmware()
 function system_api()
 {
     $result = array();
-
-    $result['versions'] = system_api_versions();
+    $product = json_decode(configd_run('firmware product'), true);
+    $result['versions'] = system_api_versions($product);
     $result['cpu'] = system_api_cpu_stats();
     $result['date_frmt'] = date("D M j G:i:s T Y");
     $result['date_time'] = time();
@@ -209,7 +217,7 @@ function system_api()
     $result['config'] = system_api_config();
     $result['kernel'] = system_api_kernel();
     $result['disk'] = system_api_disk();
-    $result['firmware'] = system_api_firmware();
+    $result['firmware'] = system_api_firmware($product);
 
     return $result;
 }

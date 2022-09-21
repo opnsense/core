@@ -40,6 +40,7 @@
 JSONFILE="/tmp/pkg_upgrade.json"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
+LICENSEFILE="/usr/local/opnsense/license.json"
 TEE="/usr/bin/tee -a"
 
 CUSTOMPKG=${1}
@@ -86,6 +87,13 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
+    echo "done" >> ${LOCKFILE}
+fi
+
+# business subscriptions come with a license, fetch the metadata so product.php is able to use it
+if opnsense-update -M | egrep -iq '\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\/'; then
+    echo -n "Fetching license information, please wait... " >> ${LOCKFILE}
+    fetch -qT 5 -o $LICENSEFILE  "`opnsense-update -M`/subscription"
     echo "done" >> ${LOCKFILE}
 fi
 
