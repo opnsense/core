@@ -28,6 +28,7 @@
  */
 
 $metafile = '/usr/local/opnsense/version/core';
+$licensefile = $metafile . '.license';
 
 $ret = json_decode(@file_get_contents($metafile), true);
 if ($ret != null) {
@@ -40,6 +41,17 @@ if ($ret != null) {
     $ret['product_log'] = empty(trim(shell_exec('opnsense-update -G'))) ? 0 : 1;
     $ret['product_repos'] = implode(', ', $repos);
     $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
+    $ret['product_license'] = [];
+    /* for business editions, collect license information */
+    if (file_exists($licensefile)) {
+        $payload = file_get_contents($licensefile);
+        $payload = $payload !== false ? json_decode($payload, true) : null;
+        if (is_array($payload)) {
+            foreach ($payload as $key => $val) {
+                $ret['product_license'][$key] = $val;
+            }
+        }
+    }
     ksort($ret);
 } else {
     $ret = [];

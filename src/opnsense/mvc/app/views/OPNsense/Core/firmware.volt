@@ -328,6 +328,15 @@
                 }
             });
 
+            if (data['product']['product_license'] != undefined) {
+                $.each(data['product']['product_license'], function(key, value) {
+                    $('#product_license_' + key).text(value).closest('tr').show();
+                });
+                if (!Object.keys(data['product']['product_license']).length) {
+                    $('[id^=product_license_]').closest('tr').hide();
+                }
+            }
+
             $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (reset === true) {
@@ -873,6 +882,12 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Checked on') }}</td>
                                 <td id="product_time_check"></td>
+                                <td></td>
+                            </tr>
+                            <tr style='display:none'>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Licensed until') }}</td>
+                                <td id="product_license_valid_to"></td>
                                 <td></td>
                             </tr>
                             <tr>
