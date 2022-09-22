@@ -49,7 +49,7 @@ $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout", "adaptivestart"
                   , "adaptiveend", "max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "reply-to","tcpflags1"
-                  ,"tcpflags2") as $fieldname) {
+                  ,"tcpflags2", "tos") as $fieldname) {
 
         if (strlen($item[$fieldname]) > 0) {
             return true;
@@ -131,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'tcpflags2',
         'tcpflags_any',
         'type',
+        'tos'
     );
 
     $pconfig = array();
@@ -451,6 +452,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
     }
 
+    if (!empty($pconfig['tos']) && !in_array($pconfig['tos'], get_tos_values())) {
+        $input_errors[] = gettext('Match TOS/DSCP value invalid.');
+    }
+
     if (!empty($pconfig['overload']) && !is_alias($pconfig['overload'])) {
         $input_errors[] = gettext('Max new connections overload table should be a valid alias.');
     }
@@ -544,6 +549,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['prio']) && $pconfig['prio'] !== '') {
             $filterent['prio'] = $pconfig['prio'];
         }
+
+        if (isset($pconfig['tos']) && $pconfig['tos'] !== '') {
+            $filterent['tos'] = $pconfig['tos'];
+        }
+
         // XXX: Always store quick, so none existent can have a different functional meaning than an empty value.
         //      Not existent means previous defaults (empty + floating --> non quick, empty + non floating --> quick)
         $filterent['quick'] = !empty($pconfig['quick']) ? 1 : 0;
@@ -1468,6 +1478,21 @@ endforeach;?>
                         </select>
                         <div class="hidden" data-for="help_for_prio">
                           <?=gettext('Only match packets which have the given queueing priority assigned.');?>
+                        </div>
+                      </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_tos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext('Match TOS / DSCP'); ?></td>
+                      <td>
+                        <select name="tos">
+<?php foreach (get_tos_values(gettext('Any')) as $tos => $value): ?>
+                            <option value="<?=$tos;?>"<?=$pconfig['tos'] == $tos ? ' selected="selected"' : '';?>>
+                              <?=$value;?>
+                            </option>
+<?php endforeach ?>
+                        </select>
+                        <div class="hidden" data-for="help_for_tos">
+                          <?=gettext('Only match packets which have the given TOS/DSCP value assigned.');?>
                         </div>
                       </td>
                   </tr>

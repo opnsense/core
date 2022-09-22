@@ -58,6 +58,7 @@ class FilterRule extends Rule
         'state' => 'parseState',
         'set-prio' => 'parsePlain, set prio ',
         'prio' => 'parsePlain, prio ',
+        'tos' => 'parsePlain, tos ',
         'tag' => 'parsePlain, tag ',
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
