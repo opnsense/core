@@ -452,7 +452,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
     }
 
-    if (!empty($pconfig['tos']) && !in_array($pconfig['tos'], get_tos_values())) {
+    if (!empty($pconfig['tos']) && !isset(get_tos_values()[$pconfig['tos']])) {
         $input_errors[] = gettext('Match TOS/DSCP value invalid.');
     }
 
