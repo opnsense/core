@@ -43,7 +43,7 @@ if ($ret != null) {
     $ret['product_repos'] = implode(', ', $repos);
     $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
     // for business editions, collect license information
-    if (preg_match('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i',  $product_mirror) && file_exists($licensefile)) {
+    if (preg_match('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', $product_mirror) && file_exists($licensefile)) {
         $payload = file_get_contents($licensefile);
         $payload = $payload !== false ? json_decode($payload, true) : null;
         if (is_array($payload)) {

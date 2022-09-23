@@ -58,7 +58,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             /* auto-number new device */
             $ifid = 0;
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
-                if (preg_match("/^({$prefix})(\d)*$/i",(string)$node->vlanif)) {
+                if (preg_match("/^({$prefix})(\d)*$/i", (string)$node->vlanif)) {
                     $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
                 }
             }
