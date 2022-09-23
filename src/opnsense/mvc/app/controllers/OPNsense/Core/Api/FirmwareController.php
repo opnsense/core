@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -139,19 +139,19 @@ class FirmwareController extends ApiControllerBase
                     switch (isset($matches[2]) ? strtolower($matches[2]) : 'b') {
                         case 'p':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 't':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'g':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'm':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         case 'k':
                             $factor *= 1024;
-                            /* FALLTROUGH */
+                            /* FALLTHROUGH */
                         default:
                             break;
                     }
@@ -338,7 +338,7 @@ class FirmwareController extends ApiControllerBase
     /**
      * Retrieve specific changelog in text and html format
      * @param string $version changelog to retrieve
-     * @return array correspondng changelog in both formats
+     * @return array corresponding changelog in both formats
      * @throws \Exception
      */
     public function changelogAction($version)
@@ -351,7 +351,7 @@ class FirmwareController extends ApiControllerBase
 
         $this->sessionClose(); // long running action, close session
 
-        $filter = new \Phalcon\Filter([
+        $filter = new \OPNsense\Phalcon\Filter\Filter([
             'version' => function ($value) {
                 return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
             }
@@ -370,6 +370,28 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * Retrieve upgrade log hidden in system
+     * @return string with upgrade log
+     * @throws \Exception
+     */
+    public function logAction($clear)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = ['status' => 'failure'];
+
+        if ($this->request->isPost()) {
+            $text = trim($backend->configdRun('firmware log ' . (empty($clear) ? 'show' : 'clear')));
+            $response['status'] = 'ok';
+            if (!empty($text)) {
+                $response['log'] = $text;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * Retrieve specific license for package in text format
      * @param string $package package to retrieve
      * @return array with all possible licenses
@@ -383,7 +405,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -554,7 +576,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -624,7 +646,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -654,7 +676,7 @@ class FirmwareController extends ApiControllerBase
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -682,7 +704,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -715,7 +737,7 @@ class FirmwareController extends ApiControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }
@@ -736,7 +758,7 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * retrieve exectution status
+     * retrieve execution status
      */
     public function runningAction()
     {
@@ -786,7 +808,7 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             // sanitize package name
-            $filter = new \Phalcon\Filter([
+            $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'scrub' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
                 }

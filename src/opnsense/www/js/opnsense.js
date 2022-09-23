@@ -254,7 +254,7 @@ function ajaxGet(url,sendData,callback) {
  */
 function watchScrollPosition() {
     function current_location() {
-        // concat url pieces to indentify this page and parameters
+        // concat url pieces to identify this page and parameters
         return window.location.href.replace(/\/|\:|\.|\?|\#/gi, '');
     }
 

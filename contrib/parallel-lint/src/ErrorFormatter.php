@@ -1,8 +1,10 @@
 <?php
 namespace JakubOnderka\PhpParallelLint;
 
-use JakubOnderka\PhpConsoleColor\ConsoleColor;
-use JakubOnderka\PhpConsoleHighlighter\Highlighter;
+use JakubOnderka\PhpConsoleColor\ConsoleColor as OldConsoleColor;
+use JakubOnderka\PhpConsoleHighlighter\Highlighter as OldHighlighter;
+use PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor;
+use PHP_Parallel_Lint\PhpConsoleHighlighter\Highlighter;
 
 class ErrorFormatter
 {
@@ -111,15 +113,26 @@ class ErrorFormatter
     protected function getColoredCodeSnippet($filePath, $lineNumber, $linesBefore = 2, $linesAfter = 2)
     {
         if (
-            !class_exists('\JakubOnderka\PhpConsoleHighlighter\Highlighter') ||
-            !class_exists('\JakubOnderka\PhpConsoleColor\ConsoleColor')
+            class_exists('\PHP_Parallel_Lint\PhpConsoleHighlighter\Highlighter')
+            && class_exists('\PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor')
         ) {
-            return $this->getCodeSnippet($filePath, $lineNumber, $linesBefore, $linesAfter);
+            // Highlighter and ConsoleColor 1.0+.
+            $colors = new ConsoleColor();
+            $colors->setForceStyle($this->forceColors);
+            $highlighter = new Highlighter($colors);
+        } else if (
+            class_exists('\JakubOnderka\PhpConsoleHighlighter\Highlighter')
+            && class_exists('\JakubOnderka\PhpConsoleColor\ConsoleColor')
+        ) {
+            // Highlighter and ConsoleColor < 1.0.
+            $colors = new OldConsoleColor();
+            $colors->setForceStyle($this->forceColors);
+            $highlighter = new OldHighlighter($colors);
         }
 
-        $colors = new ConsoleColor();
-        $colors->setForceStyle($this->forceColors);
-        $highlighter = new Highlighter($colors);
+        if (isset($colors, $highlighter) === false) {
+            return $this->getCodeSnippet($filePath, $lineNumber, $linesBefore, $linesAfter);
+        }
 
         $fileContent = file_get_contents($filePath);
         return $highlighter->getCodeSnippet($fileContent, $lineNumber, $linesBefore, $linesAfter);

@@ -192,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // noexpand, only used for proxyarp
             $vipent['noexpand'] = true;
         }
-        if (empty($pconfig['bind'])) {
+        if (empty($pconfig['bind']) && ($pconfig['mode'] == 'ipalias' || $pconfig['mode'] == 'carp')) {
             // nobind, only used for ipalias/carp
             $vipent['nobind'] = true;
         }

@@ -30,10 +30,25 @@ set -e
 
 # prepare and startup unbound, so we can easily background it
 
-chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key
+DOMAIN=${1}
+
+# if the root.key file is missing or damaged, run unbound-anchor
+if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
+	# unbound-anchor has undefined behaviour if file is corrupted, start clean
+	rm -f /var/unbound/root.key
+
+	# if we are in forwarding mode, prefer to use the configured system nameservers
+	if [ -s /var/unbound/resolv.conf.root ]; then
+		OPT_RESOLVE="-Rf /var/unbound/resolv.conf.root"
+	fi
+
+	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
+	# always let this succeed
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE} || true
+fi
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
-    chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
 fi
 
 for FILE in $(find /var/unbound/etc -depth 1); do
@@ -48,3 +63,7 @@ chown -R unbound:unbound /var/unbound
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
 /usr/local/opnsense/scripts/unbound/cache.sh load
+
+if [ -n "${DOMAIN}" ]; then
+	/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
+fi

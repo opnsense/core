@@ -147,7 +147,7 @@ function restore_config_section_xmlrpc($new_config)
     $old_config = $config;
 
     // Some sections should just be copied and not merged, namely if there's a risk of attributes being removed
-    // without being seen by the remote remote (backup) side.
+    // without being seen by the remote (backup) side.
     // (ipsec, openvpn, nat can probably moved out later by specifying a better path to the attribute)
     $sync_full = array('ipsec', 'wol', 'dnsmasq', 'load_balancer', 'openvpn', 'nat', 'dhcpd', 'dhcpv6');
     $sync_full_done = array();

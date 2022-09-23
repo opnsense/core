@@ -245,7 +245,7 @@ div.content-box.wizard {
 }
 
 .page-content-main section[class^="col-"] + section[class^="col-"]{
-  padding-top: ($grid-gutter-width/2);
+  padding-top: calc($grid-gutter-width/2);
 }
 
 .brand-logo{

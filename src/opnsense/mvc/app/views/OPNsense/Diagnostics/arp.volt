@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     multiSelect: false
                 });
             }
-            ajaxGet("/api/diagnostics/interface/getArp", {}, function (data, status) {
+            ajaxGet("/api/diagnostics/interface/getArp", {resolve:$("#resolve").prop("checked") ? 'yes': 'no'}, function (data, status) {
                         if (status == "success") {
                             $("#grid-arp").bootgrid('append', data);
                         }
@@ -101,18 +101,33 @@ POSSIBILITY OF SUCH DAMAGE.
             </div>
             <div  class="col-sm-12">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-default" id="flushModal">
-                                <span>{{ lang._('Flush') }}</span>
-                                <span class="fa fa-trash"></span>
-                            </button>
-                            <button id="refresh" type="button" class="btn btn-default">
-                                <span>{{ lang._('Refresh') }}</span>
-                                <span class="fa fa-refresh"></span>
-                            </button>
-                        </div>
-                    </div>
+                    <table class="table">
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="resolve" name="resolve" value="yes">
+                            </td>
+                            <td>
+                                <strong><?=gettext("Name resolution");?></strong>
+                                <p class="text-muted">
+                                    <small>
+                                        {{ lang._('Enable this to attempt to resolve names when displaying the tables. By enabling name resolution, the query may take longer.') }}
+                                    </small>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <button type="button" class="btn btn-default" id="flushModal">
+                                        <span>{{ lang._('Flush') }}</span>
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                    <button id="refresh" type="button" class="btn btn-default">
+                                        <span>{{ lang._('Refresh') }}</span>
+                                        <span class="fa fa-refresh"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <hr/>
             </div>

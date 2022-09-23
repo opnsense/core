@@ -78,7 +78,7 @@ function init()
 
     loadColumns.call(this); // Loads columns from HTML thead tag
     this.selection = this.options.selection && this.identifier != null;
-    this.rowCount = localStorage.getItem('rowCount[' + this.uid + ']') || this.rowCount;
+    this.rowCount = parseInt(localStorage.getItem('rowCount[' + this.uid + ']')) || this.rowCount;
     loadRows.call(this); // Loads rows from HTML tbody tag if ajax is false
     prepareTable.call(this);
     renderTableHeader.call(this);

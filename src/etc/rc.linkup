@@ -34,6 +34,12 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("system.inc");
 
+exit_on_bootup();
+
+if ($argc < 3) {
+    exit;
+}
+
 function handle_argument_group($action, $realif)
 {
     global $config;
@@ -52,61 +58,29 @@ function handle_argument_group($action, $realif)
         return;
     }
 
-    $ipaddr = '0.0.0.0';
-    $ip6addr = '::';
-
-    if (isset($config['interfaces'][$interface]['ipaddr'])) {
-        $ipaddr = $config['interfaces'][$interface]['ipaddr'];
-    }
-
-    if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
-        $ip6addr = $config['interfaces'][$interface]['ipaddrv6'];
-    }
-
-    $is_static = is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr);
-
     switch ($action) {
         case 'stop':
             log_error(sprintf(
-                "DEVD: Ethernet detached event for %s %s(%s)",
-                $is_static ? 'static' : 'dynamic',
+                "DEVD: Ethernet detached event for %s(%s)",
                 $interface,
                 $realif
             ));
-            if ($is_static) {
-                interfaces_staticarp_configure($interface);
-            } else {
-                interface_bring_down($interface);
-                filter_configure();
-            }
+            interface_bring_down($interface);
+            filter_configure(false, false);
             break;
         case 'start':
             log_error(sprintf(
-                "DEVD: Ethernet attached event for %s %s(%s)",
-                $is_static ? 'static' : 'dynamic',
+                "DEVD: Ethernet attached event for %s(%s)",
                 $interface,
                 $realif
             ));
-            if ($is_static) {
-                interfaces_staticarp_configure($interface);
-                configdp_run('interface newip', array($realif));
-            } else {
-                interface_configure(false, $interface, true, true);
-                filter_configure();
-            }
+            interface_configure(false, $interface, true, true);
+            filter_configure(false, false);
             break;
         default:
             log_error("DEVD: The action parameter passed is wrong ($action)");
             break;
     }
-}
-
-if (file_exists('/var/run/booting')) {
-    exit;
-}
-
-if ($argc < 3) {
-    exit;
 }
 
 handle_argument_group($argv[1], $argv[2]);

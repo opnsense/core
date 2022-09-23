@@ -84,14 +84,12 @@ foreach ($iflist as $ifname => $ifcfg) {
             break;
     }
 
-
     $realif = get_real_interface($ifname);
-    $network = null;
-    if (!empty($ifdetails[$realif]['ipv4'][0])) {
-        $network = $ifdetails[$realif]['ipv4'][0]['ipaddr'] . "/" .  $ifdetails[$realif]['ipv4'][0]['subnetbits'];
-    }
 
-    list ($primary6,, $bits6) = interfaces_primary_address6($ifname, $ifdetails);
+    list ($primary,, $bits) = interfaces_primary_address($ifname, $ifdetails);
+    $network = "{$primary}/{$bits}";
+
+    list ($primary6,, $bits6) = interfaces_prefix_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$bits6}";
 
     $tobanner = "{$ifcfg['descr']} ({$realif})";
@@ -100,7 +98,7 @@ foreach ($iflist as $ifname => $ifcfg) {
 
     $v6first = false;
 
-    if (!empty($network)) {
+    if ($network != '/') {
         printf("v4%s: %s", $class, $network);
     } else {
         $v6first = true;

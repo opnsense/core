@@ -73,8 +73,11 @@ include("head.inc");
 <?php
             $mac_man = json_decode(configd_run('interface list macdb json'), true);
             $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
-            $vmstat_interupts = json_decode(configd_run('system list interrupts json'), true);
+            $vmstat_interrupts = json_decode(configd_run('system list interrupts json'), true);
             foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):
+              if ($ifinfo['if'] == 'pfsync0') {
+                continue;
+              }
               $ifpfcounters = $pfctl_counters[$ifinfo['if']];
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
@@ -117,43 +120,31 @@ include("head.inc");
                     <tr>
                       <td style="width:22%"><?= gettext("Status") ?></td>
                       <td style="width:78%"><?= $ifinfo['status'] ?>
-<?php                   if (empty($ifinfo['enable'])): ?>
+<?php if (empty($ifinfo['enable'])): ?>
                           <i class="fa fa-warning" title="<?=gettext("administrative disabled");?>" data-toggle="tooltip"></i>
-<?php                   endif; ?>
+<?php endif ?>
                       </td>
                     </tr>
-<?php
-                    if (!empty($ifinfo['dhcplink']) && !empty($ifinfo['enable'])): ?>
+<?php if ((!empty($ifinfo['dhcplink']) || !empty($ifinfo['dhcp6link'])) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td> <?=gettext("DHCP");?></td>
                       <td>
                         <form name="dhcplink_form" method="post">
                           <input type="hidden" name="if" value="<?= $ifdescr ?>" />
-                          <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
-                          <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <input type="hidden" name="status" value="<?= ($ifinfo['dhcplink'] == "up" || $ifinfo['dhcp6link'] == "up") ? gettext("up") : gettext("down") ?>" />
+                          <?php if (!empty($ifinfo['dhcplink'])): ?>
+                            <?= gettext("DHCPv4 ") ?><?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <?php endif ?>
+                          <?php if (!empty($ifinfo['dhcp6link'])): ?>
+                            <?= gettext("DHCPv6 ") ?><?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
+                          <?php endif ?>
                           <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
-                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
+                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= ($ifinfo['dhcplink'] == "up" || $ifinfo['dhcp6link'] == "up") ? gettext("Release") : gettext("Renew") ?></button>
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['dhcp6link']) && !empty($ifinfo['enable'])): ?>
-                    <tr>
-                      <td> <?=gettext("DHCP6");?></td>
-                      <td>
-                        <form name="dhcp6link_form" method="post">
-                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
-                          <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
-                          <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
-                          <button type="submit" name="submit" class="btn btn-primary btn-xs" value="remote"><?= gettext('Reload') ?></button>
-                          <button type="submit" name="submit" class="btn btn-xs" value="local"><?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?></button>
-                        </form>
-                      </td>
-                    </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['pppoelink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['pppoelink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
@@ -166,9 +157,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['pptplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['pptplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?= gettext("PPTP") ?></td>
                       <td>
@@ -181,9 +171,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['l2tplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
@@ -196,9 +185,8 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['ppplink']) && !empty($ifinfo['enable'])): ?>
                     <tr>
                       <td><?=gettext("PPP"); ?></td>
                       <td>
@@ -215,16 +203,14 @@ include("head.inc");
                         </form>
                       </td>
                     </tr>
-<?php
-                    endif;
-                    if (!empty($ifinfo['ppp_uptime']) || !empty($ifinfo['ppp_uptime_accumulated'])): ?>
+<?php endif ?>
+<?php if (!empty($ifinfo['ppp_uptime']) || !empty($ifinfo['ppp_uptime_accumulated'])): ?>
                     <tr>
                       <td><?= empty($ifinfo['ppp_uptime_accumulated']) ? gettext("Uptime") : gettext("Uptime (historical)") ?></td>
                       <td><?= $ifinfo['ppp_uptime_accumulated'] ?> <?= $ifinfo['ppp_uptime'] ?></td>
                     </tr>
-<?php
-                    endif;
-                    if ($ifinfo['macaddr']): ?>
+<?php endif ?>
+<?php if ($ifinfo['macaddr']): ?>
                     <tr>
                       <td><?=gettext("MAC address");?></td>
                       <td>
@@ -236,19 +222,17 @@ include("head.inc");
                         ?>
                       </td>
                     </tr>
-<?php
-                  endif;
-                  if ($ifinfo['mtu']): ?>
+<?php endif ?>
+<?php if ($ifinfo['mtu']): ?>
                   <tr>
                     <td><?=gettext("MTU");?></td>
                     <td>
                       <?=$ifinfo['mtu'];?>
                     </td>
                   </tr>
-<?php
-                endif;
-                if ($ifinfo['status'] != "down"):
-                  if ($ifinfo['dhcplink'] != "down" && $ifinfo['pppoelink'] != "down" && $ifinfo['pptplink'] != "down"):
+<?php endif ?>
+                <?php if ($ifinfo['status'] != 'down'):
+                  if (($ifinfo['dhcplink'] ?? '') != 'down' && ($ifinfo['pppoelink'] ?? '') != 'down' && ($ifinfo['pptplink'] ?? '') != 'down'):
                     if (!empty($ifinfo['ipaddr'])):?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
@@ -270,7 +254,7 @@ include("head.inc");
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
                       <td><?= gettext('IPv4 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway']) ?> <?= $ifinfo['gateway'] ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -296,16 +280,16 @@ include("head.inc");
                       </td>
                     </tr>
 <?php endif ?>
-<?php if (array_key_exists('pdinfo', $ifinfo)): ?>
+<?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
                       <td><?= gettext('IPv6 delegated prefix') ?></td>
-                      <td><?= $ifinfo['pdinfo'] ?></td>
+                      <td><?= $ifinfo['prefixv6'] ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext('IPv6 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -456,8 +440,8 @@ include("head.inc");
                     </tr>
 <?php
                   endif;
-                  if (!empty($vmstat_interupts['interrupt_map'][$ifinfo['if']])):
-                      $intrpts = $vmstat_interupts['interrupt_map'][$ifinfo['if']];?>
+                  if (!empty($vmstat_interrupts['interrupt_map'][$ifinfo['if']])):
+                      $intrpts = $vmstat_interrupts['interrupt_map'][$ifinfo['if']];?>
                     <tr>
                       <td><?= gettext("Interrupts") ?></td>
                       <td>
@@ -474,9 +458,9 @@ include("head.inc");
                         foreach ($intrpts as $intrpt):?>
                         <tr>
                           <td><?=$intrpt;?></td>
-                          <td><?=implode(' ', $vmstat_interupts['interrupts'][$intrpt]['devices']);?></td>
-                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['total'];?></td>
-                          <td><?=$vmstat_interupts['interrupts'][$intrpt]['rate'];?></td>
+                          <td><?=implode(' ', $vmstat_interrupts['interrupts'][$intrpt]['devices']);?></td>
+                          <td><?=$vmstat_interrupts['interrupts'][$intrpt]['total'];?></td>
+                          <td><?=$vmstat_interrupts['interrupts'][$intrpt]['rate'];?></td>
                         </tr>
 <?php
                         endforeach; ?>

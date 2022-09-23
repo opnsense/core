@@ -118,7 +118,7 @@ class Category extends BaseModel
 
     /**
      * collect unique categories from rules and updates the model with auto generated items.
-     * XXX: if this operation turns out to be a bottleneck, we should move the maintance responsibiliy to the caller
+     * XXX: if this operation turns out to be a bottleneck, we should move the maintenance responsibility to the caller
      *      for the item in question (rule update)
      * @return bool true if changed
      */

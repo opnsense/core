@@ -61,8 +61,14 @@ class M1_0_1 extends BaseModelMigration
                     'server' => $old_host->rr == 'A' || $old_host->rr == 'AAAA' ? $old_host->ip : null,
                     'mxprio' => $old_host->rr == 'MX' ? $old_host->mxprio : null,
                     'mx' => $old_host->rr == 'MX' ? $old_host->mx : null,
-                    'description' => !empty($old_host->descr) ? $old_host->descr : null
+                    'description' => !empty($old_host->descr) ? substr($old_host->descr, 0, 255) : null
                 ];
+                if (strpos($host_data['hostname'], '_') !== false) {
+                    // legacy module accepted invalid hostnames with underscores.
+                    $host_data['enabled'] = 0;
+                    $host_data['hostname'] = str_replace('_', 'x', $host_data['hostname']);
+                    $host_data['description'] = sprintf("disabled invalid record %s", $host_data['hostname']);
+                }
 
                 $new_host->setNodes($host_data);
 
@@ -72,16 +78,15 @@ class M1_0_1 extends BaseModelMigration
 
                 $uuid = $new_host->getAttribute('uuid');
                 foreach ($old_host->aliases->item as $old_alias) {
-                    if (!empty($old_alias->domain)) {
-                        $new_alias = $model->aliases->alias->add();
-                        $alias_data = [
-                            'enabled' => 1,
-                            'host' => $uuid,
-                            'domain' => $old_alias->domain,
-                            'hostname' => !empty($old_alias->host) ? $old_alias->host : null
-                        ];
-                        $new_alias->setNodes($alias_data);
-                    }
+                    $new_alias = $model->aliases->alias->add();
+                    $alias_data = [
+                        'enabled' => 1,
+                        'host' => $uuid,
+                        'domain' => !empty($old_alias->domain) ? $old_alias->domain : null,
+                        'hostname' => !empty($old_alias->host) ? $old_alias->host : null,
+                        'description' => !empty($old_alias->descr) ? substr($old_alias->descr, 0, 255) : null
+                    ];
+                    $new_alias->setNodes($alias_data);
                 }
             }
         }
@@ -93,7 +98,7 @@ class M1_0_1 extends BaseModelMigration
                     'enabled' => 1,
                     'domain' => $old_domain->domain,
                     'server' => $old_domain->ip,
-                    'description' => !empty($old_domain->descr) ? $old_domain->descr : null
+                    'description' => !empty($old_domain->descr) ? substr($old_domain->descr, 0, 255) : null
                 ];
                 $new_domain->setNodes($domain_data);
             }

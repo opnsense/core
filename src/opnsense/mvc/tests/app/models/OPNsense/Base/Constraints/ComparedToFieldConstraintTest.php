@@ -40,17 +40,17 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
     // lesser then
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_no_error()
     {
-        $validator = new \Phalcon\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(null, $messages);
+        $this->assertEquals(0, $messages->count());
         $this->assertEquals(true, $ret);
     }
 
     public function test_if_it_validates_number_ranges_correctly_with_lt_and_error()
     {
-        $validator = new \Phalcon\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(3, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
@@ -60,17 +60,17 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
     // greater then
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_no_error()
     {
-        $validator = new \Phalcon\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(5, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(null, $messages);
+        $this->assertEquals(0, $messages->count());
         $this->assertEquals(true, $ret);
     }
 
     public function test_if_it_validates_number_ranges_correctly_with_gt_and_error()
     {
-        $validator = new \Phalcon\Validation();
+        $validator = new \OPNsense\Base\Validation();
         $validate = $this->make_validator(2, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
@@ -82,8 +82,8 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
      * @param $node_value integer field content
      * @param $other_field_value integer field content
      * @param $field string name of the field
-     * @param $operator string see the related documentaton
-     * @return ComparedToFieldConstraint the created contraint
+     * @param $operator string see the related documentation
+     * @return ComparedToFieldConstraint the created constraint
      */
     private function make_validator($node_value, $other_field_value, $field, $operator)
     {

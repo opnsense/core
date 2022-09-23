@@ -31,7 +31,7 @@ namespace OPNsense\Base\FieldTypes;
 use OPNsense\Core\Config;
 
 /**
- * Class LegacyLinkField field, read only referal to a config item in the legacy configuration.
+ * Class LegacyLinkField field, read only referral to a config item in the legacy configuration.
  * @package OPNsense\Base\FieldTypes
  */
 class LegacyLinkField extends BaseField

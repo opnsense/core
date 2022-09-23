@@ -226,7 +226,7 @@
 // the nav the full height of the horizontal nav (above 768px).
 
 .navbar-nav {
-  margin: ($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
+  margin: calc($navbar-padding-vertical / 2) (-$navbar-padding-horizontal);
 
   > li > a {
     padding-top:    10px;
@@ -362,7 +362,7 @@
     @include navbar-vertical-align($input-height-small);
   }
   &.btn-xs {
-    @include navbar-vertical-align(22);
+    @include navbar-vertical-align(22px);
   }
 }
 

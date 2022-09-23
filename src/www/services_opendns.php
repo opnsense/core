@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif ($config['opendns']['enable']) {
             $config['system']['dnsserver'] = array();
             $v4_server = array('208.67.222.222', '208.67.220.220');
-            $v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
+            $v6_server = array('2620:119:35::35', '2620:119:53::53');
             if (isset($config['system']['prefer_ipv4'])) {
                 $config['system']['dnsserver'][] = $v4_server[0];
                 $config['system']['dnsserver'][] = $v4_server[1];

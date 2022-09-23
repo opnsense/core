@@ -151,17 +151,21 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
     $feed->handle_content_type();
     $feed->strip_htmltags();
     $counter = 1;
-    foreach ($feed->get_items() as $item) {
-        echo "<a target='blank' href='" . $item->get_permalink() . "'>" . $item->get_title() . "</a><br />";
-        $content = $item->get_content();
-        $content = strip_tags($content);
-        echo textLimit($content, $rsswidgettextlength) . "<br />";
-        echo "Source: <a target='_blank' href='" . $item->get_permalink() . "'>".$feed->get_title()."</a><br />";
-        $counter++;
-        if ($counter > $max_items) {
-            break;
+    try {
+        foreach ($feed->get_items() as $item) {
+            echo "<a target='blank' href='" . $item->get_permalink() . "'>" . $item->get_title() . "</a><br />";
+            $content = $item->get_content();
+            $content = strip_tags($content);
+            echo textLimit($content, $rsswidgettextlength) . "<br />";
+            echo "Source: <a target='_blank' href='" . $item->get_permalink() . "'>".$feed->get_title()."</a><br />";
+            $counter++;
+            if ($counter > $max_items) {
+                break;
+            }
+            echo "<hr/>";
         }
-        echo "<hr/>";
+    } catch (Error $e) {
+        echo gettext("Unable to fetch rss feed");
     }
 ?>
 </div>

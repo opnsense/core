@@ -77,7 +77,7 @@ function generate_new_duid($duid_type)
             $new_duid = $new_duid.':'.$mac;
             break;
         case '3': //UUID
-            $type = "\x00\x00\x00\x04".openssl_random_pseudo_bytes(16);
+            $type = "\x00\x00\x00\x04".random_bytes(16);
             for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
                 $count++;
@@ -87,7 +87,7 @@ function generate_new_duid($duid_type)
             }
             break;
         case '4': //EN - Using Opnsense PEN!!!
-            $type = "\x00\x02\x00\x00\xD2\x6D".openssl_random_pseudo_bytes(8);
+            $type = "\x00\x02\x00\x00\xD2\x6D".random_bytes(8);
             for ($count = 0; $count < strlen($type); ) {
                 $new_duid .= bin2hex( $type[$count]);
                 $count++;
@@ -247,6 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
         system_sysctl_configure();
+        interfaces_hardware();
     }
 }
 
@@ -337,11 +338,6 @@ include("head.inc");
                   <div class="hidden" data-for="help_for_sharednet">
                     <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
                   </div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <?= gettext('Please note that offloading settings only apply to configured interfaces, so when using e.g. VLAN interfaces make sure to assign and enable the parent as well.') ?>
                 </td>
               </tr>
             </table>

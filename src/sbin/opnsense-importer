@@ -24,7 +24,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-INSTALL="/.probe.for.install.media"
+INSTALL="/.probe.for.readonly"
 MNT="/tmp/hdrescue"
 SHELL="/bin/sh"
 WAIT="........."
@@ -37,6 +37,7 @@ fi
 DO_BOOT=
 DO_MANUAL=
 DO_PASSWORD=
+DO_VERBOSE=
 DO_ZFS=
 
 bootstrap_and_exit()
@@ -73,7 +74,7 @@ bootstrap_and_exit()
 	exit "${RET}"
 }
 
-while getopts bmpz OPT; do
+while getopts bmpzV OPT; do
 	case ${OPT} in
 	b)
 		DO_BOOT="-b"
@@ -83,6 +84,9 @@ while getopts bmpz OPT; do
 		;;
 	p)
 		DO_PASSWORD="-p"
+		;;
+	V)
+		DO_VERBOSE="-V"
 		;;
 	z)
 		DO_ZFS="-z"
@@ -94,7 +98,11 @@ while getopts bmpz OPT; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
+
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
+fi
 
 DO_DEV=${1}
 
@@ -141,7 +149,7 @@ zfs_unload()
 
 zfs_probe()
 {
-	zpool import -aNf 2> /dev/null
+	zpool import -aNf > /dev/null 2> /dev/null
 
 	zpool get -H cachefile | while read ZPOOL ZMORE; do
 		ZGUID=$(zpool get -H guid ${ZPOOL} | awk '{ print $3 }')
@@ -157,13 +165,26 @@ import_start()
 {
 	local DEV=${1}
 
+	# We are going to make an educated guess about the enclosed
+	# file system.  The types "msdos" and "cd9660" are meant as
+	# fallbacks to try, but by no means meant to be correct.
+	# Correctness stems from the selection of the device given,
+	# so that e.g. a CD will not have any attached partitions,
+	# but we do not actually check for the device node name.
+
+	export PART=
+	export TYPE=
+	export POOL=
+
 	if [ -e "/dev/${DEV}s1a" ]; then
 		# MBR UFS
 		export PART="/dev/${DEV}s1a"
+		export TYPE="ufs"
 		return 0
 	elif [ -e "/dev/${DEV}p3" ]; then
 		# GPT UFS
 		export PART="/dev/${DEV}p3"
+		export TYPE="ufs"
 		return 0
 	elif [ "$(echo ${POOLS} | grep -c "^${DEV} ")" != "0" ]; then
 		# ZFS POOL
@@ -172,12 +193,17 @@ import_start()
 	elif [ -e "/dev/${DEV}s1" ]; then
 		# MBR MSDOS
 		export PART="/dev/${DEV}s1"
-		export MSDOS="yes"
+		export TYPE="msdos"
 		return 0
 	elif [ -e "/dev/${DEV}p1" ]; then
 		# GPT MSDOS
 		export PART="/dev/${DEV}p1"
-		export MSDOS="yes"
+		export TYPE="msdos"
+		return 0
+	elif [ -e "/dev/${DEV}" ]; then
+		# ISO 9660
+		export PART="/dev/${DEV}"
+		export TYPE="cd9660"
 		return 0
 	fi
 
@@ -185,10 +211,7 @@ import_start()
 }
 
 
-DEV=
 DEVS=
-PART=
-POOL=
 POOLS=
 
 if [ -n "${DO_ZFS}" ]; then
@@ -258,18 +281,14 @@ while : ; do
 
 	mkdir -p ${MNT}
 
-	if [ -n "${PART}" ]; then
+	if [ -n "${PART}" -a -n "${TYPE}" ]; then
 		echo "Starting import for partition '${PART}'."
 		echo
 
-		TYPE="ufs"
-
-		if [ -z "${MSDOS}" ]; then
+		if [ "${TYPE}" = "ufs" ]; then
 			echo -n "Running fsck..."
 			fsck -t ${TYPE} -y ${PART} > /dev/null
 			echo "done."
-		else
-			TYPE="msdosfs"
 		fi
 
 		if ! mount -t ${TYPE} ${PART} ${MNT}; then
@@ -285,9 +304,7 @@ while : ; do
 			echo "The pool could not be mounted."
 			POOL=
 		fi
-	fi
-
-	if [ -z "${PART}" -a -z "${POOL}" ]; then
+	else
 		if [ -n "${DO_DEV}" ]; then
 			bootstrap_and_exit 1
 		fi
@@ -296,8 +313,9 @@ while : ; do
 	fi
 
 	if [ -n "${DO_MANUAL}" ]; then
-		echo "# Manual shell mode, old file system available at ${MNT}"
+		echo "# Manual shell mode, selected file system available at ${MNT}"
 		${SHELL}
+		break
 	elif [ -n "${DO_PASSWORD}" ]; then
 		if [ -f "${MNT}/usr/local/sbin/opnsense-shell" ]; then
 			mount -t devfs devfs ${MNT}/dev
@@ -347,7 +365,7 @@ while : ; do
 		done
 
 		for FILE in $(find /conf/sshd -type f -name '*key'); do
-			# fixup permissions in MSDOS case
+			# fixup possibly unsupported file system permissions
 			chmod 600 ${FILE}
 		done
 

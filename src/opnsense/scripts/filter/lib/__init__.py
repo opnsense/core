@@ -93,7 +93,7 @@ class AsyncDNSResolver:
     def add(self, hostname):
         self._request_queue.append(hostname)
 
-    async def request_ittr(self, loop):
+    async def request_ittr(self):
         dnsResolver = Resolver()
         dnsResolver.timeout = 2
         collected_errors = set()
@@ -131,7 +131,7 @@ class AsyncDNSResolver:
             start_time = time.time()
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            asyncio.run(self.request_ittr(loop))
+            asyncio.run(self.request_ittr())
             loop.close()
             syslog.syslog(syslog.LOG_NOTICE, 'resolving %d hostnames (%d addresses) for %s took %.2f seconds' % (
                 self._domains_queued, len(self._response), self._origin, time.time() - start_time

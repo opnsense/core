@@ -75,7 +75,7 @@ class SquidExtLogFormat(NewBaseLogFormat):
     def line(self):
         tmp = re.match(squid_ext_timeformat, self._line)
         grp = tmp.group(1)
-        return line.replace(grp, '')
+        return self._line.replace(grp, '')
 
 
 class SquidJsonLogFormat(NewBaseLogFormat):

@@ -51,7 +51,10 @@
               sorting:false,
               rowSelect: false,
               selection: false,
-              rowCount:[20,50,100,200,500,1000,-1],
+              rowCount:[20,50,100,200,500,1000,5000],
+              labels: {
+                  infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
+              },
               formatters:{
                   page: function (column, row) {
                       if ($("input.search-field").val() !== "" || $('#severity_filter').val().length > 0) {
@@ -65,7 +68,7 @@
               requestHandler: function(request){
                   if ( $('#severity_filter').val().length > 0) {
                       let selectedSeverity = $('#severity_filter').val();
-                      // get selected severities or severeties below or equal to selected
+                      // get selected severities or severities below or equal to selected
                       request['severity'] = filter_exact ? selectedSeverity : severities.slice(0,severities.indexOf(selectedSeverity) + 1);
                   }
                   return request;

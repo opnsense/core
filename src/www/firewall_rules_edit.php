@@ -49,7 +49,7 @@ $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
 function FormSetAdvancedOptions(&$item) {
     foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout", "adaptivestart"
                   , "adaptiveend", "max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "reply-to","tcpflags1"
-                  ,"tcpflags2") as $fieldname) {
+                  ,"tcpflags2", "tos") as $fieldname) {
 
         if (strlen($item[$fieldname]) > 0) {
             return true;
@@ -131,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'tcpflags2',
         'tcpflags_any',
         'type',
+        'tos'
     );
 
     $pconfig = array();
@@ -246,6 +247,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['reply-to']) && $pconfig['reply-to'] != '__disable__') {
         $input_errors[] = gettext("You can not assign a reply-to destination to a rule that applies to IPv4 and IPv6");
+    } elseif (!empty($pconfig['gateway']) && !empty($pconfig['reply-to']) && $pconfig['reply-to'] != '__disable__') {
+        $input_errors[] = gettext('You can not assign a reply-to destination to a rule that uses a gateway.');
     } elseif (!empty($pconfig['reply-to']) && is_ipaddr($gateways->getAddress($pconfig['reply-to']))) {
         if ($pconfig['ipprotocol'] == "inet6" && !is_ipaddrv6($gateways->getAddress($pconfig['reply-to']))) {
             $input_errors[] = gettext('You can not assign the IPv4 reply-to destination to an IPv6 filter rule.');
@@ -449,6 +452,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Priority match must be an integer between 0 and 7.');
     }
 
+    if (!empty($pconfig['tos']) && !isset(get_tos_values()[$pconfig['tos']])) {
+        $input_errors[] = gettext('Match TOS/DSCP value invalid.');
+    }
+
     if (!empty($pconfig['overload']) && !is_alias($pconfig['overload'])) {
         $input_errors[] = gettext('Max new connections overload table should be a valid alias.');
     }
@@ -542,6 +549,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['prio']) && $pconfig['prio'] !== '') {
             $filterent['prio'] = $pconfig['prio'];
         }
+
+        if (isset($pconfig['tos']) && $pconfig['tos'] !== '') {
+            $filterent['tos'] = $pconfig['tos'];
+        }
+
         // XXX: Always store quick, so none existent can have a different functional meaning than an empty value.
         //      Not existent means previous defaults (empty + floating --> non quick, empty + non floating --> quick)
         $filterent['quick'] = !empty($pconfig['quick']) ? 1 : 0;
@@ -580,9 +592,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ( isset($a_filter[$id]['created']) && is_array($a_filter[$id]['created']) ) {
                 $filterent['created'] = $a_filter[$id]['created'];
             }
+            if (!empty($a_filter[$id]['@attributes']) && !empty($a_filter[$id]['@attributes']['uuid'])) {
+                $filterent['@attributes'] = $a_filter[$id]['@attributes'];
+            } else {
+                $filterent['@attributes'] = ['uuid' => generate_uuid()];
+            }
             $a_filter[$id] = $filterent;
         } else {
             $filterent['created'] = make_config_revision_entry();
+            $filterent['@attributes'] = ['uuid' => generate_uuid()];
             if (isset($after)) {
                 array_splice($a_filter, $after+1, 0, array($filterent));
             } else {
@@ -1460,6 +1478,21 @@ endforeach;?>
                         </select>
                         <div class="hidden" data-for="help_for_prio">
                           <?=gettext('Only match packets which have the given queueing priority assigned.');?>
+                        </div>
+                      </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                      <td><a id="help_for_tos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext('Match TOS / DSCP'); ?></td>
+                      <td>
+                        <select name="tos">
+<?php foreach (get_tos_values(gettext('Any')) as $tos => $value): ?>
+                            <option value="<?=$tos;?>"<?=$pconfig['tos'] == $tos ? ' selected="selected"' : '';?>>
+                              <?=$value;?>
+                            </option>
+<?php endforeach ?>
+                        </select>
+                        <div class="hidden" data-for="help_for_tos">
+                          <?=gettext('Only match packets which have the given TOS/DSCP value assigned.');?>
                         </div>
                       </td>
                   </tr>

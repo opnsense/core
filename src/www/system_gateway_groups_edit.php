@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['item'] = &$a_gateway_groups[$configId]['item'];
         $pconfig['descr'] = $a_gateway_groups[$configId]['descr'];
         $pconfig['trigger'] = $a_gateway_groups[$configId]['trigger'];
+        $pconfig['poolopts'] = $a_gateway_groups[$configId]['poolopts'];
     } else {
         $pconfig['name'] = null;
         $pconfig['descr'] = null;
@@ -103,6 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
     }
+    if (!empty($pconfig['poolopts']) && !in_array($pconfig['poolopts'], ['round-robin', 'round-robin sticky-address'])) {
+        $input_errors[] = gettext("Invalid pool option specified");
+    }
     if (count($pconfig['item']) == 0) {
         $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
     }
@@ -112,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $gateway_group['name'] = $pconfig['name'];
         $gateway_group['item'] = $pconfig['item'];
         $gateway_group['trigger'] = $pconfig['trigger'];
+        $gateway_group['poolopts']  = $pconfig['poolopts'];
         $gateway_group['descr'] = $pconfig['descr'];
 
         if (isset($id)) {
@@ -236,6 +241,27 @@ $( document ).ready(function() {
                       </select>
                       <div data-for="help_for_triggerlvl" class="hidden">
                         <?=gettext("When to trigger exclusion of a member"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                    <td>
+                      <select name="poolopts" class="selectpicker">
+                        <option value="" <?=empty($pconfig['poolopts']) ? "selected=\"selected\"" : ""; ?>>
+                          <?=gettext("Default");?>
+                        </option>
+                        <option value="round-robin" <?=$pconfig['poolopts'] == "round-robin" ? "selected=\"selected\"" : ""; ?>>
+                          <?=gettext("Round Robin");?>
+                        </option>
+                        <option value="round-robin sticky-address" <?=$pconfig['poolopts'] == "round-robin sticky-address" ? "selected=\"selected\"" : ""; ?>>
+                          <?=gettext("Round Robin with Sticky Address");?>
+                        </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_poolopts">
+                        <li> <?=gettext("Default: Round Robin, Sticky Address determined by advanced settings");?></li>
+                        <li> <?=gettext("Round Robin: Loops through the translation addresses.");?></li>
+                        <li> <?=gettext("Sticky Address: The Sticky Address option can be used with the Round Robin pool type to ensure that a particular source address is always mapped to the same translation address.");?></li>
                       </div>
                     </td>
                   </tr>

@@ -42,7 +42,7 @@ function rrd_create($rrdcreatecmd)
     return $rrdcreatereturn;
 }
 
-function rrd_configure($verbose = false)
+function rrd_configure($verbose = false, $bootup = false)
 {
     global $config;
 
@@ -129,7 +129,7 @@ function rrd_configure($verbose = false)
         if (isset($config['openvpn']['openvpn-server'])) {
             foreach ($config['openvpn']['openvpn-server'] as $server) {
                 $serverid = "ovpns" . $server['vpnid'];
-                $ifdescrs[$serverid] = "{$server['description']}";
+                $ifdescrs[$serverid] = $server['description'] ?? "";
             }
         }
 
@@ -161,7 +161,7 @@ function rrd_configure($verbose = false)
             }
 
             /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if (file_exists("/var/run/booting")) {
+            if ($bootup) {
                 mwexec("$rrdtool update $rrddbpath$ifname$traffic N:U:U:U:U:U:U:U:U");
             }
 
@@ -194,7 +194,7 @@ function rrd_configure($verbose = false)
             }
 
             /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if (file_exists("/var/run/booting")) {
+            if ($bootup) {
                 mwexec("$rrdtool update $rrddbpath$ifname$packets N:U:U:U:U:U:U:U:U");
             }
 
@@ -223,7 +223,7 @@ function rrd_configure($verbose = false)
                 }
 
                 /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if (file_exists("/var/run/booting")) {
+                if ($bootup) {
                     mwexec("$rrdtool update $rrddbpath$ifname$wireless N:U:U:U");
                 }
 
@@ -248,7 +248,7 @@ function rrd_configure($verbose = false)
                 }
 
                 /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if (file_exists("/var/run/booting")) {
+                if ($bootup) {
                     mwexec("$rrdtool update $rrddbpath$ifname$vpnusers N:U");
                 }
 
@@ -288,7 +288,7 @@ function rrd_configure($verbose = false)
                 }
 
                 /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-                if (file_exists("/var/run/booting")) {
+                if ($bootup) {
                     mwexec("$rrdtool update $rrddbpath$ifname$cellular N:U:U:U");
                 }
 
@@ -320,7 +320,7 @@ function rrd_configure($verbose = false)
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if (file_exists("/var/run/booting")) {
+        if ($bootup) {
             mwexec("$rrdtool update $rrddbpath$ifname$states N:U:U:U:U:U");
         }
 
@@ -354,7 +354,7 @@ function rrd_configure($verbose = false)
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if (file_exists("/var/run/booting")) {
+        if ($bootup) {
             mwexec("$rrdtool update $rrddbpath$ifname$proc N:U:U:U:U:U");
         }
 
@@ -391,7 +391,7 @@ function rrd_configure($verbose = false)
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if (file_exists("/var/run/booting")) {
+        if ($bootup) {
             mwexec("$rrdtool update $rrddbpath$ifname$mem N:U:U:U:U:U");
         }
 
@@ -427,7 +427,7 @@ function rrd_configure($verbose = false)
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if (file_exists("/var/run/booting")) {
+        if ($bootup) {
             mwexec("$rrdtool update $rrddbpath$ifname$mbuf N:U:U:U:U");
         }
 
@@ -468,7 +468,7 @@ function rrd_configure($verbose = false)
             }
 
             /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-            if (file_exists("/var/run/booting")) {
+            if ($bootup) {
                 mwexec("$rrdtool update $rrddbpath$ntpd N:U:U:U:U:U:U");
             }
             /* the ntp stats gathering function. */
@@ -513,7 +513,7 @@ function rrd_configure($verbose = false)
         }
 
         /* enter UNKNOWN values in the RRD so it knows we rebooted. */
-        if (file_exists("/var/run/booting")) {
+        if ($bootup) {
             mwexec("$rrdtool update $rrddbpath$ifname$cputemp N:U");
         }
 
@@ -593,9 +593,8 @@ EOD;
     }
 }
 
-function rrd_create_gateway_quality($rrd_file)
+function rrd_create_gateway_quality($rrd_file, $unknown = false)
 {
-    $unknown = file_exists('/var/run/booting');
     $rrdtool = '/usr/local/bin/rrdtool';
 
     $rrdinterval = 60;

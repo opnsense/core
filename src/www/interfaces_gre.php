@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 $a_gres = &config_read_array('gres', 'gre') ;
+$a_aliaslist = get_configured_ip_aliases_list();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
@@ -117,11 +118,16 @@ legacy_html_escape_form_data($a_gres);
                   foreach ($a_gres as $gre): ?>
                     <tr>
                       <td>
-<?php if (is_ipaddr($gre['if'])): ?>
-<?php   $interface = convert_real_interface_to_friendly_interface_name(guess_interface_from_ip($gre['if'])); ?>
-<?php else: ?>
-<?php   $interface = explode('_vip', $gre['if'])[0]; ?>
-<?php endif ?>
+<?php
+$interface = explode('_vip', $gre['if'])[0]; /* required for fallback if alias does not exist */
+if (is_ipaddr($gre['if'])) {
+    foreach ($a_aliaslist as $ip => $int) {
+        if ($ip == $gre['if']) {
+            $interface = $int;
+            break;
+        }
+    }
+} ?>
                         <?= html_safe(convert_friendly_interface_to_friendly_descr($interface)) ?>
                       </td>
                       <td><?=$gre['remote-addr'];?></td>

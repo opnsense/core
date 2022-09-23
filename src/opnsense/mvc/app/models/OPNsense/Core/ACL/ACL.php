@@ -31,7 +31,7 @@
 namespace OPNsense\Core\ACL;
 
 /**
- * Class ACL, access control list wrappper
+ * Class ACL, access control list wrapper
  * @package OPNsense\Core
  */
 class ACL

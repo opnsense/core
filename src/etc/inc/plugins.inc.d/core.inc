@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2021 Deciso B.V.
+ * Copyright (C) 2018-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -133,29 +133,160 @@ function core_services()
 
 function core_devices()
 {
-    $devices = array();
+    $devices = [];
 
-    # XXX is a plugin collection...
-    $devices[] = array('pattern' => '^bridge', 'volatile' => true);
-    $devices[] = array('pattern' => '^cua', 'volatile' => true);
-    $devices[] = array('pattern' => '^enc', 'volatile' => true);
-    $devices[] = array('pattern' => '^gif', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^gre', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^ipsec', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^l2tp', 'volatile' => true);
-    $devices[] = array('pattern' => '^lagg', 'volatile' => true);
-    $devices[] = array('pattern' => '^ocvpn', 'volatile' => true);
-    $devices[] = array('pattern' => '^ovpn', 'volatile' => true, 'configurable' => false);
-    $devices[] = array('pattern' => '^ppp', 'volatile' => true);
-    $devices[] = array('pattern' => '^pptp', 'volatile' => true);
-    $devices[] = array('pattern' => '^tinc', 'volatile' => true);
-    $devices[] = array('pattern' => '^tun|^tap', 'volatile' => true);
-    $devices[] = array('pattern' => '^ue', 'volatile' => true);
-    $devices[] = array('pattern' => '^wg', 'volatile' => true);
-    $devices[] = array('pattern' => '^zt', 'volatile' => true);
-    $devices[] = array('pattern' => '_stf', 'volatile' => true);
-    $devices[] = array('pattern' => '_vlan', 'volatile' => true);
-    $devices[] = array('pattern' => '_wlan', 'volatile' => true);
+    $bridge_names = [];
+
+    foreach (config_read_array('bridges', 'bridged') as $dev) {
+        $bridge_names[$dev['bridgeif']] = [
+            'descr' => sprintf('%s (%s)', $dev['bridgeif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['bridgeif'],
+        ];
+    }
+
+    $devices[] = [
+        'function' => 'interfaces_bridge_configure',
+        'names' => $bridge_names,
+        'pattern' => '^bridge',
+        'volatile' => true,
+        'type' => 'bridge',
+    ];
+
+    $gif_names = [];
+
+    foreach (config_read_array('gifs', 'gif') as $dev) {
+        $gif_names[$dev['gifif']] = [
+            'descr' => sprintf('%s %s (%s)', $dev['gifif'], $dev['remote-addr'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['gifif'],
+        ];
+    }
+
+    $devices[] = [
+        'function' => 'interfaces_gif_configure',
+        'configurable' => false,
+        'names' => $gif_names,
+        'pattern' => '^gif',
+        'volatile' => true,
+        'type' => 'gif',
+    ];
+
+    $gre_names = [];
+
+    foreach (config_read_array('gres', 'gre') as $dev) {
+        $gre_names[$dev['greif']] = [
+            'descr' => sprintf('%s %s (%s)', $dev['greif'], $dev['remote-addr'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['greif'],
+        ];
+    }
+
+    $devices[] = [
+        'function' => 'interfaces_gre_configure',
+        'configurable' => false,
+        'names' => $gre_names,
+        'pattern' => '^gre',
+        'volatile' => true,
+        'type' => 'gre',
+    ];
+
+    $lagg_names = [];
+
+    foreach (config_read_array('laggs', 'lagg') as $dev) {
+        $lagg_names[$dev['laggif']] = [
+            'descr' => sprintf('%s (%s)', $dev['laggif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'exclude' => explode(',', $dev['members']),
+            'name' => $dev['laggif'],
+        ];
+    }
+
+    $devices[] = [
+        'names' => $lagg_names,
+        'pattern' => '^lagg',
+        'volatile' => true,
+        'type' => 'lagg',
+    ];
+
+    $ppp_names = [];
+
+    foreach (config_read_array('ppps', 'ppp') as $dev) {
+        $ppp_names[$dev['if']] = [
+            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'], $dev['username']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'ipaddr' => $dev['type'],
+            'name' => $dev['if'],
+        ];
+    }
+
+    $devices[] = [
+        'pattern' => '^cua|^l2tp|^ppp|^pptp', /* XXX ^cua likely doesn't match since it's a /dev node */
+        'names' => $ppp_names,
+        'volatile' => true,
+        'type' => 'ppp',
+    ];
+
+    $vlan_names = [];
+
+    foreach (config_read_array('vlans', 'vlan') as $dev) {
+        $vlan_names[$dev['vlanif']] = [
+            'descr' => sprintf(gettext('%s %s (Parent: %s, Tag: %s)'), $dev['vlanif'], $dev['descr'], $dev['if'], $dev['tag']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['vlanif'],
+        ];
+    }
+
+    $devices[] = [
+        'pattern' => '_vlan|^vlan|^qinq',
+        'names' => $vlan_names,
+        'volatile' => true,
+        'type' => 'vlan',
+    ];
+
+    $wlan_names = [];
+
+    foreach (config_read_array('wireless', 'clone') as $dev) {
+        $wlan_names[$dev['cloneif']] = [
+            'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
+            'ifdescr' => sprintf('%s', $dev['descr']),
+            'name' => $dev['cloneif'],
+        ];
+    }
+
+    /* also need to find implied clones that do not have explicit cloneif set */
+    foreach (legacy_config_get_interfaces() as $id => $conf) {
+        if (isset($conf['wireless']) && !isset($wlan_names[$conf['if']])) {
+            $wlan_names[$conf['if']] = [
+                'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
+                'ifdescr' => gettext('wireless clone'),
+                'name' => $conf['if'],
+            ];
+
+            $realif = get_real_interface($id);
+            if ($realif == $conf['if']) {
+                continue;
+            }
+
+            /* return both implicit and explicit clone if implicit clone was given */
+            $wlan_names[$realif] = [
+                'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
+                'ifdescr' => gettext('wireless clone'),
+                'name' => $realif,
+            ];
+        }
+    }
+
+    $devices[] = [
+        'function' => 'interfaces_wlan_clone',
+        'names' => $wlan_names,
+        'pattern' => '_wlan',
+        'volatile' => true,
+        'type' => 'wlan',
+    ];
+
+    /* historic handling of tunnel devices and other unstable things */
+    $devices[] = ['pattern' => '_stf|^tap|^tun|^ue', 'volatile' => true];
 
     return $devices;
 }
@@ -205,20 +336,6 @@ function core_cron()
         );
     }
 
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'weekly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '*', '*', '0');
-                break;
-            case 'monthly':
-                $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system ssl dhparam', '30', '3', '1', '*', '*');
-                break;
-            default:
-                /* cron job operated by user manually or RFC 7919 */
-                break;
-        }
-    }
-
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
             $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup', 0, 1);
@@ -236,8 +353,6 @@ function core_syslog()
     $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
     $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
-    $logfacilities['filter'] = array('facility' => array('filterlog'));
-    $logfacilities['gateways'] = array('facility' => array('dpinger'));
     $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
     $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
@@ -249,23 +364,6 @@ function core_syslog()
     $logfacilities['wireless'] = array('facility' => array('hostapd'));
 
     return $logfacilities;
-}
-
-function core_interfaces()
-{
-    return [
-        'lo0' => [
-            'descr' => gettext('Loopback'),
-            'enable' => true,
-            'if' => 'lo0',
-            'ipaddr' => '127.0.0.1',
-            'ipaddrv6' => '::1',
-            'subnet' => '8',
-            'subnetv6' => '128',
-            'type' => 'none',
-            'virtual' => true,
-        ]
-    ];
 }
 
 /**
@@ -377,15 +475,16 @@ function core_xmlrpc_sync()
 
 function core_configure()
 {
-    return array(
-        'user_changed' => array('core_user_changed_groups:2'),
-    );
+    return [
+        'dns_reload' => ['system_resolvconf_generate', 'system_hosts_generate'],
+        'user_changed' => ['core_user_changed_groups:2'],
+    ];
 }
 
 /**
  * user changed event, synchronize attached system groups for requested user
  */
-function core_user_changed_groups($verbose = false, $username)
+function core_user_changed_groups($unused, $username)
 {
     global $config;
     if (is_array($config['system']['user'])) {

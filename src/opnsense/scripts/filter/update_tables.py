@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -55,8 +55,14 @@ class AliasParser(object):
             :return: None
         """
         self._aliases = dict()
+        external_aliases = list()
         alias_parameters = dict()
         alias_parameters['known_aliases'] = [x.text for x in self._source_tree.iterfind('table/name')]
+        for line in  subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True).stdout.strip().split('\n'):
+            alias_name = line.strip()
+            if alias_name not in alias_parameters['known_aliases']:
+                alias_parameters['known_aliases'].append(alias_name)
+                external_aliases.append(alias_name)
 
         # parse general alias settings
         conf_general = self._source_tree.find('general')
@@ -64,10 +70,18 @@ class AliasParser(object):
             if conf_general.find('ssl_no_verify') is not None and conf_general.find('ssl_no_verify').text == "1":
                 alias_parameters['ssl_no_verify'] = True
 
-        # loop through aliases
+        # loop through user defined aliases
         for elem in self._source_tree.iterfind('table'):
             alias = Alias(elem, **alias_parameters)
             self._aliases[alias.get_name()] = alias
+
+        # attach external aliases which aren't defined via the gui
+        for alias_name in external_aliases:
+            elem = ET.Element("table")
+            ET.SubElement(elem, 'type').text = 'external'
+            ET.SubElement(elem, 'name').text = alias_name
+            ET.SubElement(elem, 'ttl').text = '1'
+            self._aliases[alias_name] = Alias(elem, **alias_parameters)
 
     def get_alias_deps(self, alias, alias_deps=None):
         """ recursive fetch all alias dependencies
@@ -106,6 +120,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     inputargs = parser.parse_args()
+    syslog.openlog('firewall', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
     # make sure our target directory exists
     if not os.path.isdir('/var/db/aliastables'):
         os.makedirs('/var/db/aliastables')
@@ -125,7 +140,6 @@ if __name__ == '__main__':
 
     registered_aliases = set()
     for alias in aliases:
-        registered_aliases.add(alias.get_name())
         # fetch alias content including dependencies
         alias_name = alias.get_name()
         alias_content = alias.resolve()
@@ -136,41 +150,46 @@ if __name__ == '__main__':
                 if rel_alias:
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
                     alias_content += rel_alias.resolve()
-        # when the alias or any of it's dependencies has changed, generate new
-        if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
-            open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
 
         alias_pf_content = list()
-        sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
-        for line in sp.stdout.strip().split('\n'):
-            line = line.strip()
-            if line:
-                alias_pf_content.append(line)
-        if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired) and alias.get_parser():
-            # if the alias is changed, expired or the one in memory has a different number of items, load table
-            # (but only if we know how to handle this alias type)
-            if len(alias_content) == 0:
-                # flush when target is empty
-                subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'], capture_output=True)
-            else:
-                # replace table contents with collected alias
-                sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
-                                     '/var/db/aliastables/%s.txt' % alias_name], capture_output=True, text=True)
+        if alias.get_parser():
+            registered_aliases.add(alias.get_name())
 
-                error_output = sp.stderr.strip()
-                if error_output.find('pfctl: ') > -1:
-                    error_message = "Error loading alias [%s]: %s {current_size: %d, new_size: %d}" % (
-                        alias_name,
-                        error_output.replace('pfctl: ', ''),
-                        len(alias_pf_content),
-                        len(alias_content),
-                    )
-                    result['status'] = 'error'
-                    if 'messages' not in result:
-                        result['messages'] = list()
-                    if error_output not in result['messages']:
-                        result['messages'].append(error_message)
-                        syslog.syslog(syslog.LOG_NOTICE, error_message)
+            # when the alias or any of it's dependencies has changed, generate new
+            if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
+                open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
+
+            # only try to replace the contents of this alias if we're responsible for it (know how to parse)
+            sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'show'], capture_output=True, text=True)
+            tmp = sp.stdout.strip()
+            if len(tmp) > 0:
+                for line in tmp.split('\n'):
+                    alias_pf_content.append(line.strip())
+
+            if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired):
+                # if the alias is changed, expired or the one in memory has a different number of items, load table
+                if len(alias_content) == 0:
+                    # flush when target is empty
+                    subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'flush'], capture_output=True)
+                else:
+                    # replace table contents with collected alias
+                    sp = subprocess.run(['/sbin/pfctl', '-t', alias_name, '-T', 'replace', '-f',
+                                         '/var/db/aliastables/%s.txt' % alias_name], capture_output=True, text=True)
+
+                    error_output = sp.stderr.strip()
+                    if error_output.find('pfctl: ') > -1:
+                        error_message = "Error loading alias [%s]: %s {current_size: %d, new_size: %d}" % (
+                            alias_name,
+                            error_output.replace('pfctl: ', ''),
+                            len(alias_pf_content),
+                            len(alias_content),
+                        )
+                        result['status'] = 'error'
+                        if 'messages' not in result:
+                            result['messages'] = list()
+                        if error_output not in result['messages']:
+                            result['messages'].append(error_message)
+                            syslog.syslog(syslog.LOG_NOTICE, error_message)
 
     # cleanup removed aliases
     to_remove = dict()

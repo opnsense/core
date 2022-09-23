@@ -55,7 +55,7 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
 
 <script>
     $(window).on("load", function() {
-        function fetch_gateway_statusses(){
+        function fetch_gateway_statuses(){
             ajaxGet('/api/routes/gateway/status', {}, function(data, status) {
                 if (data.items !== undefined) {
                     $.each(data.items, function(key, gateway) {
@@ -114,9 +114,9 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
                     });
                 }
             });
-            setTimeout(fetch_gateway_statusses, 5000);
+            setTimeout(fetch_gateway_statuses, 5000);
         }
-        fetch_gateway_statusses();
+        fetch_gateway_statuses();
     });
 </script>
 

@@ -41,11 +41,11 @@ class DependConstraint extends BaseConstraint
      * Executes validation, expects a list of fields in "addFields" which to check for content.
      * Fields are concerned empty if boolean false or containing an empty string
      *
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         if ($node) {

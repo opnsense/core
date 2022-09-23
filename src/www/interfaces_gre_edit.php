@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gres[] = $gre;
             }
             write_config();
-            interface_gre_configure($gre);
+            interfaces_gre_configure($gre['greif']);
             ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
             if ($confif != '') {
@@ -113,7 +113,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-    hook_ipv4v6('ipv4v6net', 'network-id');
+    hook_ipv4v6('ipv4v6net', 'network-id', '128');
   });
 </script>
 <?php include("fbegin.inc"); ?>

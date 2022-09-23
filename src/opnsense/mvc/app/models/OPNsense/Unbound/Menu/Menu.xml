@@ -8,7 +8,8 @@
                 <All url="/services_unbound_acls.php*" visibility="hidden"/>
             </ACL>
             <Blocklist order="50" url="/ui/unbound/dnsbl/index"/>
-            <Dot VisibleName="DNS over TLS" order="60" url="/ui/unbound/dot/index"/>
+            <Forward VisibleName="Query Forwarding" order="60" url="/ui/unbound/forward"/>
+            <Dot VisibleName="DNS over TLS" order="70" url="/ui/unbound/dot"/>
             <Statistics order="90" url="/ui/unbound/stats"/>
             <LogFile VisibleName="Log File" order="100" url="/ui/diagnostics/log/core/resolver"/>
         </Unbound>

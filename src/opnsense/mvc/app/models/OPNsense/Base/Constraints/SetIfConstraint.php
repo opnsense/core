@@ -29,7 +29,7 @@
 namespace OPNsense\Base\Constraints;
 
 /**
- * validate if a field is set depening on the setting of another field
+ * validate if a field is set depending on the setting of another field
  * containing a specific value
  * Class SetIfConstraint
  * @package OPNsense\Base\Constraints
@@ -45,11 +45,11 @@ class SetIfConstraint extends BaseConstraint
      *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
      *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
      *
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');

@@ -249,52 +249,6 @@ function service_control_restart($name, $extras)
     return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars($name));
 }
 
-function list_dh_parameters()
-{
-    global $config;
-
-    $available = array(1024, 2048, 4096);
-
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'rfc7919':
-                $available = array(2048, 3072, 4096);
-                break;
-            default:
-                /* XXX whatever we have on the disk */
-                break;
-        }
-    }
-
-    return $available;
-}
-
-function get_dh_parameters($bits)
-{
-    global $config;
-
-    $file = "/usr/local/etc/dh-parameters.{$bits}";
-
-    if (!empty($config['system']['dhparamusage'])) {
-        switch ($config['system']['dhparamusage']) {
-            case 'rfc7919':
-                return "{$file}.rfc7919";
-            default:
-                break;
-        }
-    }
-
-    if (empty($config['system']['dhparamusage']) || !file_exists($file)) {
-        /*
-         * Use the sample file if the normal file is MIA
-         * or when the renew interval is not set:
-         */
-        $file .= '.sample';
-    }
-
-    return $file;
-}
-
 function is_subsystem_dirty($subsystem = '')
 {
     return file_exists("/tmp/{$subsystem}.dirty");
@@ -331,7 +285,6 @@ function lock($lock, $op = LOCK_SH)
     }
 }
 
-
 /* unlock configuration file */
 function unlock($cfglckkey = null)
 {
@@ -339,6 +292,32 @@ function unlock($cfglckkey = null)
         flock($cfglckkey, LOCK_UN);
         fclose($cfglckkey);
     }
+}
+
+function exit_on_bootup($callback = null, $arguments = [])
+{
+    $bootflag = '/var/run/booting';
+
+    /* make sure file exists */
+    @touch($bootflag);
+
+    $fp = fopen($bootflag, 'r');
+    if (!$fp) {
+        /* log possible error and adjust exist code */
+        log_error("exit_on_bootup(): error opening $bootflag");
+        exit(1);
+    }
+
+    if (!flock($fp, LOCK_SH | LOCK_NB)) {
+        if ($callback) {
+            call_user_func_array($callback, $arguments);
+        }
+        /* intentionally we exit here to avoid future cleverness WRT bootup handing */
+        exit(0);
+    }
+
+    /* let the script run if we made sure we are up and running */
+    fclose($fp);
 }
 
 /* validate non-negative numeric string, or equivalent numeric variable */
@@ -533,6 +512,29 @@ function find_smallest_cidr6($ips)
     return 128 - $bits;
 }
 
+/* merge IPv6 address prefix of default size 64 with suffix */
+function merge_ipv6_address($prefix, $suffix, $size = 64)
+{
+    $size = 128 - $size;
+
+    $prefix_bits = unpack('N*', inet_pton($prefix));
+    $suffix_bits = unpack('N*', inet_pton($suffix));
+    $mask = [
+        1 => (0xffffffff << max($size - 96, 0)) & 0xffffffff,
+        2 => (0xffffffff << max($size - 64, 0)) & 0xffffffff,
+        3 => (0xffffffff << max($size - 32, 0)) & 0xffffffff,
+        4 => (0xffffffff << $size) & 0xffffffff,
+    ];
+
+    $result = '';
+
+    for ($pos = 1; $pos <= 4; $pos += 1) {
+        $result .=  sprintf('%08x', ($prefix_bits[$pos] & $mask[$pos]) | ($suffix_bits[$pos] & (~$mask[$pos] & 0xffffffff)));
+    }
+
+    return Net_IPv6::compress(implode(':', str_split($result, 4)));
+}
+
 /* returns true if $ipaddr is a valid dotted IPv4 address or an IPv6 */
 function is_ipaddr($ipaddr)
 {
@@ -584,13 +586,13 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return preg_match("/^fe[89ab][0-9a-f]:/i", $ipaddr);
+    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr);
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
 function is_literalipaddrv6($ipaddr)
 {
-    if (preg_match("/\[([0-9a-f:]+)\]/i", $ipaddr, $match)) {
+    if (preg_match('/\[([0-9a-f:]+)\]/i', $ipaddr, $match)) {
         $ipaddr = $match[1];
     } else {
         return false;
@@ -702,15 +704,7 @@ function is_macaddr($macaddr, $partial = false)
 /* returns true if $port is a valid TCP/UDP port */
 function is_port($port)
 {
-    if (getservbyname($port, "tcp") || getservbyname($port, "udp")) {
-        return true;
-    }
-    if (!ctype_digit($port)) {
-        return false;
-    } elseif ((intval($port) < 1) || (intval($port) > 65535)) {
-        return false;
-    }
-    return true;
+    return OPNsense\Firewall\Util::isPort($port, false);
 }
 
 /* returns true if $portrange is a valid TCP/UDP portrange ("<port>:<port>") */
@@ -789,9 +783,9 @@ function get_configured_ip_aliases_list()
 
 function get_configured_interface_with_descr()
 {
-    $iflist = array();
+    $iflist = [];
 
-    foreach (legacy_config_get_interfaces(array('virtual' => false)) as $if => $ifdetail) {
+    foreach (legacy_config_get_interfaces(['virtual' => false]) as $if => $ifdetail) {
         if (isset($ifdetail['enable'])) {
             $iflist[$if] = $ifdetail['descr'];
         }
@@ -800,21 +794,41 @@ function get_configured_interface_with_descr()
     return $iflist;
 }
 
+function get_primary_interface_from_list($iflist = null)
+{
+    $ret = null;
+
+    if ($iflist === null) {
+        $iflist = array_keys(get_configured_interface_with_descr());
+    }
+
+    /* we pull the primary entry from a "priority" list: lan, optX or wan */
+    natsort($iflist);
+
+    foreach ($iflist as $if) {
+        if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
+            $ret = $if;
+            break;
+        }
+    }
+
+    return $ret;
+}
+
 /*
  *   get_configured_ip_addresses() - Return a list of all configured
  *   interfaces IP Addresses (ipv4+ipv6)
- *
  */
 function get_configured_ip_addresses()
 {
-    $ip_array = array();
+    $ip_array = [];
 
     foreach (legacy_interfaces_details() as $ifname => $if) {
-        foreach (array('ipv4', 'ipv6') as $iptype) {
+        foreach (['ipv4', 'ipv6'] as $iptype) {
             if (!empty($if[$iptype])) {
                 foreach ($if[$iptype] as $addr) {
                     if (!empty($addr['ipaddr'])) {
-                        $scope = $addr['link-local'] ? "%{$ifname}" : '';
+                        $scope = !empty($addr['link-local']) ? "%{$ifname}" : '';
                         $ip_array[$addr['ipaddr'] . $scope] = $ifname;
                     }
                 }
@@ -823,107 +837,6 @@ function get_configured_ip_addresses()
     }
 
     return $ip_array;
-}
-
-/*
- *   get_interface_list() - Return a list of all physical interfaces
- *   along with MAC, IPv4 and status.
- *
- *   $only_active = false -- interfaces that are available in the system
- *                  true  -- interfaces that are physically connected
- *
- *   $include_dmesg = false -- skip probing dmesg for more information
- *                    true  -- probe dmesg for more information
- */
-function get_interface_list($only_active = false, $include_dmesg = false)
-{
-    $dmesg_arr = [];
-    $iflist = [];
-
-    if ($include_dmesg) {
-        exec('/sbin/dmesg', $dmesg_arr);
-    }
-
-    /* list of virtual interface types */
-    $vfaces = [
-      '_stf',
-      '_vip',
-      '_vlan',
-      '_wlan',
-      'bridge',
-      'carp',
-      'enc',
-      'faith',
-      'gif',
-      'gre',
-      'ipfw',
-      'l2tp',
-      'lagg',
-      'lo',
-      'ng',
-      'ovpnc',
-      'ovpns',
-      'pflog',
-      'pfsync',
-      'plip',
-      'ppp',
-      'pppoe',
-      'pptp',
-      'sl',
-      'tap',
-      'tun',
-    ];
-
-    $ifnames_up = legacy_interface_listget('up');
-    $ifnames = legacy_interface_listget();
-    $all_interfaces = legacy_config_get_interfaces(['virtual' => false]);
-    $all_interface_data = legacy_interfaces_details();
-
-    if ($only_active) {
-        $_ifnames = [];
-        $all_stats = legacy_interface_stats();
-        foreach ($ifnames as $ifname) {
-            $ifinfo = $all_stats[$ifname];
-            if (!empty($ifinfo['link state']) && $ifinfo['link state'] == '2') {
-                $_ifnames[] = $ifname;
-            }
-        }
-        $ifnames = $_ifnames;
-    }
-
-    foreach ($ifnames as $ifname) {
-        $tmp_ifnames = preg_split('/\d+/', $ifname);
-        if (count(array_intersect($tmp_ifnames, $vfaces))) {
-            continue;
-        }
-
-        $ifdata = !empty($all_interface_data[$ifname]) ? $all_interface_data[$ifname] : [];
-        $toput = [
-          'up' => in_array($ifname, $ifnames_up),
-          'ipaddr' => !empty($ifdata['ipv4'][0]['ipaddr']) ? $ifdata['ipv4'][0]['ipaddr'] : null,
-          'mac' => !empty($ifdata['macaddr']) ? $ifdata['macaddr'] : null,
-          'dmesg' => '',
-        ];
-
-        foreach ($all_interfaces as $name => $int) {
-            if ($int['if'] == $ifname) {
-                $toput['friendly'] = $name;
-                break;
-            }
-        }
-
-        foreach ($dmesg_arr as $dmesg_line) {
-            $dmesg = [];
-            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
-                $toput['dmesg'] = $dmesg[1];
-                break;
-            }
-        }
-
-        $iflist[$ifname] = $toput;
-    }
-
-    return $iflist;
 }
 
 /****f* util/log_error
@@ -948,7 +861,7 @@ function log_error($error)
 * RESULT
 *   null
 ******/
-function log_msg($msg, $prio = LOG_ERR)
+function log_msg($msg, $prio = LOG_WARNING)
 {
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
@@ -1201,32 +1114,36 @@ function get_single_sysctl($name)
  * Set sysctl OID's listed as key/value pairs and return
  * an array with keys set for those that succeeded
  */
-function set_sysctl($values)
+function set_sysctl($values, $filter = true)
 {
+    $ret = [];
+
     if (empty($values)) {
-        return array();
+        return $ret;
     }
 
     $sysctls = null;
-    exec('/sbin/sysctl -WaN', $list, $success);
-    if ($success == 0) {
-        $sysctls = $list;
+
+    if ($filter) {
+        exec('/sbin/sysctl -WaN', $list, $success);
+        if ($success == 0) {
+            $sysctls = $list;
+        }
     }
 
-    $value_list = array();
+    $value_list = [];
     foreach ($values as $key => $value) {
-        if ($sysctls != null && !in_array($key, $sysctls)) {
+        if ($sysctls !== null && !in_array($key, $sysctls)) {
             continue;
         }
-        $value_list[] = escapeshellarg($key) . "=" . escapeshellarg($value);
+        $value_list[] = escapeshellarg($key) . '=' . escapeshellarg($value);
     }
 
     if (count($value_list)) {
         exec('/sbin/sysctl ' . implode(' ', $value_list), $output);
 
-        $ret = array();
         foreach ($output as $line) {
-            $line = explode(": ", $line, 2);
+            $line = explode(': ', $line, 2);
             if (count($line) == 2) {
                 $ret[$line[0]] = true;
             }
@@ -1239,18 +1156,10 @@ function set_sysctl($values)
 /*
  * set_single_sysctl($name, $value)
  * Wrapper to set_sysctl() to make it simple to set only one sysctl
- * returns boolean meaning if it suceed
  */
 function set_single_sysctl($name, $value)
 {
-    if (empty($name)) {
-        return false;
-    }
-    $result = set_sysctl(array($name => $value));
-    if (!isset($result[$name]) || $result[$name] != $value) {
-        return false;
-    }
-    return true;
+    set_sysctl([$name => $value], false);
 }
 
 /****f* util/is_URL
@@ -1290,16 +1199,6 @@ function get_staticroutes($returnsubnetsonly = false)
     return $allstaticroutes;
 }
 
-function prefer_ipv4_or_ipv6()
-{
-    global $config;
-
-    mwexecf(
-        '/etc/rc.d/ip6addrctl %s',
-        isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
-    );
-}
-
 function is_fqdn($fqdn)
 {
     $hostname = false;
@@ -1326,7 +1225,7 @@ function is_install_media()
      * Despite unionfs underneath, / is still not writeable,
      * making the following the perfect test for install media.
      */
-    $file = '/.probe.for.install.media';
+    $file = '/.probe.for.readonly';
 
     if (file_exists($file)) {
         return false;

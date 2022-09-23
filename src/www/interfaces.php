@@ -238,13 +238,32 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
  * End of import
  ***************************************************************************************************************/
 
-function get_wireless_modes($interface) {
-    /* return wireless modes and channels */
-    $wireless_modes = array();
+function test_wireless_capability($if, $cap)
+{
+    $caps = ['hostap' => 'HOSTAP', 'adhoc' => 'IBSS'];
+
+    if (!isset($caps[$cap])) {
+        return false;
+    }
+
+    exec(sprintf('/sbin/ifconfig %s list caps', escapeshellarg($if)), $lines);
+
+    foreach ($lines as $line) {
+        if (preg_match("/^drivercaps=.*<.*{$caps[$cap]}.*>$/", $line)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* return wireless modes and channels */
+function get_wireless_modes($interface)
+{
+    $wireless_modes = [];
 
     $cloned_interface = get_real_interface($interface);
-
-    if ($cloned_interface && is_interface_wireless($cloned_interface)) {
+    if ($cloned_interface) {
         $chan_list = "/sbin/ifconfig {$cloned_interface} list chan";
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
@@ -279,15 +298,17 @@ function get_wireless_modes($interface) {
             }
         }
     }
-    return($wireless_modes);
+
+    return $wireless_modes;
 }
 
 /* return channel numbers, frequency, max txpower, and max regulation txpower */
-function get_wireless_channel_info($interface) {
-    $wireless_channels = array();
+function get_wireless_channel_info($interface)
+{
+    $wireless_channels = [];
 
     $cloned_interface = get_real_interface($interface);
-    if ($cloned_interface && is_interface_wireless($cloned_interface)) {
+    if ($cloned_interface) {
         $chan_list = "/sbin/ifconfig {$cloned_interface} list txpower";
         $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
         $format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
@@ -302,13 +323,17 @@ function get_wireless_channel_info($interface) {
             }
         }
     }
-    return($wireless_channels);
+
+    return $wireless_channels;
 }
 
-$ifdescrs = legacy_config_get_interfaces(array('virtual' => false));
+$ifdescrs = legacy_config_get_interfaces(['virtual' => false]);
 
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
+
+$a_cert = isset($config['cert']) ? $config['cert'] : array();
+$a_ca = isset($config['ca']) ? $config['ca'] : array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
@@ -319,8 +344,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    $pconfig = array();
-    $std_copy_fieldnames = array(
+    $pconfig = [];
+    $std_copy_fieldnames = [
         'adv_dhcp6_authentication_statement_algorithm',
         'adv_dhcp6_authentication_statement_authname',
         'adv_dhcp6_authentication_statement_protocol',
@@ -392,7 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
-    );
+    ];
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
     }
@@ -476,13 +501,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (isset($a_interfaces[$if]['wireless'])) {
+        config_read_array('interfaces', $if, 'wireless');
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
         /* Get wireless modes */
-        $wlanif = get_real_interface($if);
-        if (!does_interface_exist($wlanif)) {
-            interface_wireless_clone($wlanif, $a_interfaces[$if]);
-        }
+        _interfaces_wlan_clone(get_real_interface($if), $a_interfaces[$if]);
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
         $std_wl_copy_fieldnames = array(
           'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna',
@@ -508,8 +531,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (isset($a_interfaces[$if]['wireless']['wpa']) && is_array($a_interfaces[$if]['wireless']['wpa'])) {
             $std_wl_wpa_copy_fieldnames = array(
-              'debug_mode', 'macaddr_acl', 'auth_algs', 'wpa_mode', 'wpa_key_mgmt', 'wpa_pairwise',
-              'wpa_group_rekey', 'wpa_gmk_rekey', 'passphrase', 'ext_wpa_sw'
+              'debug_mode', 'macaddr_acl', 'auth_algs', 'wpa_mode', 'wpa_eap_method', 'wpa_eap_p2_auth', 'wpa_key_mgmt', 'wpa_pairwise',
+              'wpa_eap_cacertref', 'wpa_eap_cltcertref', 'wpa_group_rekey', 'wpa_gmk_rekey', 'identity', 'passphrase', 'ext_wpa_sw'
             );
             foreach ($std_wl_wpa_copy_fieldnames as $fieldname) {
                 $pconfig[$fieldname] = isset($a_interfaces[$if]['wireless']['wpa'][$fieldname]) ? $a_interfaces[$if]['wireless']['wpa'][$fieldname] : null;
@@ -520,7 +543,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['wpa_strict_rekey'] = isset($a_interfaces[$if]['wireless']['wpa']['wpa_strict_rekey']);
             $pconfig['wpa_enable'] = isset($a_interfaces[$if]['wireless']['wpa']['enable']);
         }
-        if (is_array($a_interfaces[$if]['wireless']['wep']) && is_array($a_interfaces[$if]['wireless']['wep']['key'])) {
+        if (!empty($a_interfaces[$if]['wireless']['wep']['key'])) {
             $i = 1;
             foreach ($a_interfaces[$if]['wireless']['wep']['key'] as $wepkey) {
                 $pconfig['key' . $i] = $wepkey['value'];
@@ -540,7 +563,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
         $if = $_POST['if'];
-        // read physcial interface name from config.xml
+        // read physical interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
     }
     $ifgroup = !empty($_GET['group']) ? $_GET['group'] : '';
@@ -559,10 +582,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 system_routing_configure();
-                plugins_configure('monitor');
                 filter_configure();
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    plugins_configure('newwanip', false, array($ifapply));
+                    plugins_configure('newwanip', false, [$ifapply]);
                 }
                 rrd_configure();
             }
@@ -584,6 +606,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_interfaces[$if]['lock']);
         }
         if (isset($a_interfaces[$if]['wireless'])) {
+            config_read_array('interfaces', $if, 'wireless');
             interface_sync_wireless_clones($a_interfaces[$if], false);
         }
         $a_interfaces[$if]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
@@ -700,7 +723,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $reqdfieldsn = array(gettext("IPv6 address"),gettext("Subnet bit count"),gettext("Gateway"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
-            case "dhcp6":
+            case 'dhcp6':
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
                 }
@@ -735,7 +758,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
-            case "track6":
+            case 'track6':
                 if (!empty($pconfig['track6-prefix-id--hex']) && !ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                     $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
                 } elseif (!empty($pconfig['track6-interface'])) {
@@ -866,15 +889,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = sprintf(gettext('The MTU must be greater than %s bytes and less than %s.'), $mtu_low, $mtu_high);
             }
 
-            if (strstr($a_interfaces[$if]['if'], '_vlan')) {
+            if (strstr($a_interfaces[$if]['if'], 'vlan') || strstr($a_interfaces[$if]['if'], 'qinq')) {
                 list ($parentif) = interface_parent_devices($if);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
-                    $input_errors[] = gettext("MTU of a vlan should not be bigger than parent interface.");
+                    $input_errors[] = gettext("MTU of a VLAN should not be bigger than parent interface.");
                 }
             } else {
                 foreach ($config['interfaces'] as $idx => $ifdata) {
-                    if ($idx == $if || !strstr($ifdata['if'], '_vlan')) {
+                    if ($idx == $if || !strstr($ifdata['if'], 'vlan') || !strstr($ifdata['if'], 'qinq')) {
                         continue;
                     }
 
@@ -896,6 +919,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           Wireless interface
         */
         if (isset($a_interfaces[$if]['wireless'])) {
+            config_read_array('interfaces', $if, 'wireless');
             $reqdfields = array("mode");
             $reqdfieldsn = array(gettext("Mode"));
             if ($pconfig['mode'] == 'hostap') {
@@ -904,14 +928,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-            // check_wireless_mode (more wireless weirness)
-            // validations shouldn't perform actual actions, needs serious fixing at some point
+            /* XXX validations should not even perform temporary actions, needs serious fixing at some point */
+            if (empty($a_interfaces[$if]['wireless']['mode'])) {
+                $a_interfaces[$if]['wireless']['mode'] = 'bss';
+            }
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
-                if (does_interface_exist(interface_get_wireless_clone($wlanbaseif))) {
-                    $clone_count = 1;
-                } else {
-                    $clone_count = 0;
-                }
+                $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
+                $clone_count = does_interface_exist("{$wlanbaseif}_wlan0") ? 1 : 0;
                 if (!empty($config['wireless']['clone'])) {
                     foreach ($config['wireless']['clone'] as $clone) {
                         if ($clone['if'] == $wlanbaseif) {
@@ -920,15 +943,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 if ($clone_count > 1) {
-                      $wlanif = get_real_interface($if);
-                      $old_wireless_mode = $a_interfaces[$if]['wireless']['mode'];
-                      $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
-                      if (!interface_wireless_clone("{$wlanif}_", $a_interfaces[$if])) {
-                          $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
-                      } else {
-                          mwexec("/sbin/ifconfig " . escapeshellarg($wlanif) . "_ destroy");
-                      }
-                  }
+                    $wlanif = get_real_interface($if);
+                    $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
+                    if (!_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if])) {
+                        $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
+                    } else {
+                        legacy_interface_destroy("{$wlanif}_");
+                    }
+                }
             }
 
             /* loop through keys and enforce size */
@@ -982,8 +1004,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $new_ppp_config = array();
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
-            $new_config["if"] = $old_config["if"];
-            if (!empty($old_config['wireless'])) {
+            $new_config['if'] = $old_config['if'];
+            if (isset($old_config['wireless'])) {
                 $new_config['wireless'] = $old_config['wireless'];
             }
             //
@@ -1239,9 +1261,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['wireless']['wpa']['auth_algs'] = $pconfig['auth_algs'];
                 $new_config['wireless']['wpa']['wpa_mode'] = $pconfig['wpa_mode'];
                 $new_config['wireless']['wpa']['wpa_key_mgmt'] = $pconfig['wpa_key_mgmt'];
+                $new_config['wireless']['wpa']['wpa_eap_method'] = $pconfig['wpa_eap_method'];
+                $new_config['wireless']['wpa']['wpa_eap_p2_auth'] = $pconfig['wpa_eap_p2_auth'];
+                $new_config['wireless']['wpa']['wpa_eap_cacertref'] = $pconfig['wpa_eap_cacertref'];
+                $new_config['wireless']['wpa']['wpa_eap_cltcertref'] = $pconfig['wpa_eap_cltcertref'];
                 $new_config['wireless']['wpa']['wpa_pairwise'] = $pconfig['wpa_pairwise'];
                 $new_config['wireless']['wpa']['wpa_group_rekey'] = $pconfig['wpa_group_rekey'];
                 $new_config['wireless']['wpa']['wpa_gmk_rekey'] = $pconfig['wpa_gmk_rekey'];
+                $new_config['wireless']['wpa']['identity'] = $pconfig['identity'];
                 $new_config['wireless']['wpa']['passphrase'] = $pconfig['passphrase'];
                 $new_config['wireless']['wpa']['ext_wpa_sw'] = $pconfig['ext_wpa_sw'];
                 $new_config['wireless']['wpa']['mac_acl_enable'] = !empty($pconfig['mac_acl_enable']);
@@ -1281,7 +1308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 // todo: it's probably better to choose one place to store wireless data
-                //       this construction implements a lot of weirness (more info interface_sync_wireless_clones)
+                //       this construction implements a lot of weirdness (more info interface_sync_wireless_clones)
                 $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
                 if (!empty($pconfig['persistcommonwireless'])) {
                     config_read_array('wireless', 'interfaces', $wlanbaseif);
@@ -1355,6 +1382,7 @@ legacy_html_escape_form_data($pconfig);
 
 // some wireless settings require additional details to build the listbox
 if (isset($a_interfaces[$if]['wireless'])) {
+    config_read_array('interfaces', $if, 'wireless');
     $wl_modes = get_wireless_modes($if);
     $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
     preg_match("/^(.*?)([0-9]*)$/", $wlanbaseif, $wlanbaseif_split);
@@ -1383,9 +1411,73 @@ include("head.inc");
           } else {
               $("#allcfg").hide();
           }
+          toggle_wirelesscfg();
+      }
+      function toggle_wirelesscfg() {
+          switch ($("#mode").prop('value')) {
+              case 'hostap':
+                  $(".cfg-wireless-bss").hide();
+                  $(".cfg-wireless-adhoc").hide();
+                  $(".cfg-wireless-ap").show();
+                  break;
+              case 'bss':
+                  $(".cfg-wireless-ap").hide();
+                  $(".cfg-wireless-adhoc").hide();
+                  $(".cfg-wireless-bss").show();
+                  break;
+              case 'adhoc':
+                  $(".cfg-wireless-ap").hide();
+                  $(".cfg-wireless-bss").hide();
+                  $(".cfg-wireless-adhoc").show();
+                  break;
+          }
+
+          if ($("#wep_enable").prop('checked')) {
+              $(".cfg-wireless-wep").show();
+          }
+          else {
+              $(".cfg-wireless-wep").hide();
+          }
+
+          if ($("#wpa_enable").prop('checked')) {
+              $(".cfg-wireless-wpa").show();
+              if ($("#mode").prop('value') == "hostap") {
+                $(".cfg-wireless-ap-wpa").show();
+              }
+              else {
+                $(".cfg-wireless-ap-wpa").hide();
+              }
+          }
+          else {
+              $(".cfg-wireless-wpa").hide();
+              $(".cfg-wireless-ap-wpa").hide();
+          }
+
+          if ($("#wpa_enable").prop('checked') &&
+            $("#wpa_key_mgmt").prop('value') == "WPA-EAP" &&
+            $("#mode").prop('value') == "bss") {
+              $(".cfg-wireless-eap").show();
+          }
+          else {
+              $(".cfg-wireless-eap").hide();
+          }
+
+          if ($("#mode").prop('value') == "hostap" &&
+            $("#wpa_enable").prop('checked') &&
+            $("#ieee8021x").prop('checked')) {
+              $(".cfg-wireless-ieee8021x").show();
+          }
+          else {
+              $(".cfg-wireless-ieee8021x").hide();
+          }
       }
       // when disabled, hide settings.
       $("#enable").click(toggle_allcfg);
+      $("#mode").change(toggle_wirelesscfg);
+      $("#wep_enable").click(toggle_wirelesscfg);
+      $("#wpa_enable").click(toggle_wirelesscfg);
+      $("#wpa_key_mgmt").change(toggle_wirelesscfg);
+      $("#ieee8021x").click(toggle_wirelesscfg);
       toggle_allcfg();
 
       //
@@ -1935,7 +2027,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwite global settings"); ?></td>
+                          <td style="width:22%"><a id="help_for_hw_settings_overwrite" href="#" class="showhelp"> <i class="fa fa-info-circle"></i></a> <?=gettext("Overwrite global settings"); ?></td>
                           <td style="width:78%">
                             <input id="hw_settings_overwrite" name="hw_settings_overwrite" type="checkbox" value="yes" <?=!empty($pconfig['hw_settings_overwrite']) ? 'checked="checked"' : '' ?>/>
                             <div class="hidden" data-for="help_for_hw_settings_overwrite">
@@ -2687,7 +2779,7 @@ include("head.inc");
                           <td>
                             <select name="dhcp6-ia-pd-len" class="selectpicker" data-style="btn-default" id="dhcp6-ia-pd-len">
 <?php
-                            foreach(array(
+                            foreach([
                               0 => '64',
                               1 => '63',
                               2 => '62',
@@ -2706,7 +2798,7 @@ include("head.inc");
                               15 => '49',
                               16 => '48',
                               'none' => gettext('None'),
-                            ) as $bits => $length): ?>
+                            ] as $bits => $length): ?>
                               <option value="<?=$bits;?>" <?= "{$bits}" === "{$pconfig['dhcp6-ia-pd-len']}" ? 'selected="selected"' : '' ?>>
                                   <?=$length;?>
                               </option>
@@ -3000,7 +3092,7 @@ include("head.inc");
                             if (empty($pconfig['track6-prefix-id'])) {
                                 $pconfig['track6-prefix-id'] = 0;
                             }
-                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex']: sprintf("%x", $pconfig['track6-prefix-id']);?>
+                            $track6_prefix_id_hex = !empty($pconfig['track6-prefix-id--hex']) ? $pconfig['track6-prefix-id--hex'] : sprintf("%x", $pconfig['track6-prefix-id']); ?>
                             <div class="input-group" style="max-width:348px">
                               <div class="input-group-addon">0x</div>
                               <input name="track6-prefix-id--hex" type="text" class="form-control" id="track6-prefix-id--hex" value="<?= $track6_prefix_id_hex ?>" />
@@ -3188,27 +3280,27 @@ include("head.inc");
 <?php
                               endforeach;?>
                             </select>
+                            <br />
                             <div class="hidden" data-for="help_for_regdomain">
-                              <?=gettext("Note: Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work."); ?>
+                              <?=gettext("Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work."); ?>
                             </div>
-
-                            <br /><br />
+                            <br />
                             <?=gettext("Country (listed with country code and regulatory domain)"); ?><br />
                             <select name="regcountry" class="selectpicker" data-size="10" data-style="btn-default" id="regcountry">
                               <option <?=empty($pconfig['regcountry']) ? "selected=\"selected\"" : ""; ?> value=""><?=gettext("Default"); ?></option>
 <?php
                             foreach($wl_countries as $wl_country_key => $wl_country):?>
                               <option value="<?=$wl_countries_attr[$wl_country_key]['ID'];?>" <?=$pconfig['regcountry'] == $wl_countries_attr[$wl_country_key]['ID'] ?  "selected=\"selected\" " : "";?> >
-                                  <?=$wl_country['name'];?> -- ( <?=$wl_countries_attr[$wl_country_key]['ID'];?> <?=strtoupper($wl_countries_attr[$wl_country_key]['rd'][0]['REF']);?> )
+                                  <?=$wl_country['name'];?> (<?=$wl_countries_attr[$wl_country_key]['ID'];?> <?=strtoupper($wl_countries_attr[$wl_country_key]['rd'][0]['REF']);?>)
                               </option>
 <?php
                             endforeach;?>
                             </select>
                             <br />
                             <div class="hidden" data-for="help_for_regdomain">
-                              <?=gettext("Note: Any country setting other than \"Default\" will override the regulatory domain setting"); ?>.
+                              <?=gettext("Any country setting other than \"Default\" will override the regulatory domain setting"); ?>.
                             </div>
-                            <br /><br />
+                            <br />
                             <?=gettext("Location"); ?><br />
                             <select name="reglocation" class="selectpicker" data-style="btn-default" id="reglocation">
                               <option <?=empty($pconfig['reglocation']) ? "selected=\"selected\"" : ""; ?> value=""><?=gettext("Default"); ?></option>
@@ -3216,7 +3308,6 @@ include("head.inc");
                               <option <?=$pconfig['reglocation'] == 'outdoor' ? "selected=\"selected\"" : ""; ?> value="outdoor"><?=gettext("Outdoor"); ?></option>
                               <option <?=$pconfig['reglocation'] == 'anywhere' ? "selected=\"selected\"" : ""; ?> value="anywhere"><?=gettext("Anywhere"); ?></option>
                             </select>
-                            <br /><br />
                             <div class="hidden" data-for="help_for_regdomain">
                               <?=gettext("These settings may affect which channels are available and the maximum transmit power allowed on those channels. Using the correct settings to comply with local regulatory requirements is recommended."); ?>
                               <br />
@@ -3224,24 +3315,31 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                      <thead>
                         <tr>
                           <th colspan="2"><?=gettext("Network-specific wireless configuration");?></th>
                         </tr>
+                      </thead>
+                      <tbody>
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode"); ?></td>
                           <td>
                             <select name="mode" class="selectpicker" data-style="btn-default" id="mode">
-<?php
-                              if (interfaces_test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
-                              <option <?=$pconfig['mode'] == 'hostap' ? "selected=\"selected\"" : "";?> value="hostap"><?=gettext("Access Point"); ?></option>
-<?php
-                              endif; ?>
                               <option <?=$pconfig['mode'] == 'bss' ? "selected=\"selected\"" : "";?> value="bss"><?=gettext("Infrastructure (BSS)"); ?></option>
-<?php
-                              if (interfaces_test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
+<?php if (test_wireless_capability(get_real_interface($pconfig['if']), 'adhoc')): ?>
                               <option <?=$pconfig['mode'] == 'adhoc' ? "selected=\"selected\"" : "";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)"); ?></option>
-<?php
-                              endif; ?>
+<?php endif ?>
+<?php if (test_wireless_capability(get_real_interface($pconfig['if']), 'hostap')): ?>
+                              <option <?=$pconfig['mode'] == 'hostap' ? "selected=\"selected\"" : "";?> value="hostap"><?=gettext("Access Point"); ?></option>
+<?php endif ?>
                             </select>
                           </td>
                         </tr>
@@ -3286,7 +3384,7 @@ include("head.inc");
                         </tr>
 <?php
                         endif; ?>
-                        <tr>
+                        <tr class="cfg-wireless-ap">
                           <td><a id="help_for_apbridge_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow intra-BSS communication"); ?></td>
                           <td>
                             <input name="apbridge_enable" type="checkbox" value="yes"  id="apbridge_enable" <?=!empty($pconfig['apbridge_enable']) ? "checked=\"checked\"" : "";?> />
@@ -3306,7 +3404,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ap cfg-wireless-adhoc">
                           <td><a id="help_for_hidessid_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable Hide SSID"); ?></td>
                           <td>
                             <input name="hidessid_enable" type="checkbox" id="hidessid_enable" value="yes" <?=!empty($pconfig['hidessid_enable']) ? "checked=\"checked\"" : "";?> />
@@ -3319,8 +3417,8 @@ include("head.inc");
                           <td><a id="help_for_wep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WEP"); ?></td>
                           <td>
                             <input name="wep_enable" type="checkbox" id="wep_enable" value="yes" <?= $pconfig['wep_enable'] ? "checked=\"checked\"" : ""; ?> />
-                            <strong><?=gettext("Enable WEP"); ?></strong>
-                            <table class="table table-condensed">
+                            <label for="wep_enable"><?=gettext("Enable WEP"); ?></label>
+                            <table class="table table-condensed cfg-wireless-wep">
                               <tr>
                                 <td></td>
                                 <td></td>
@@ -3370,19 +3468,31 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_wpa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA"); ?></td>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA"); ?></td>
                           <td>
                             <input name="wpa_enable" type="checkbox" id="wpa_enable" value="yes" <?php if ($pconfig['wpa_enable']) echo "checked=\"checked\""; ?> />
-                            <strong><?=gettext("Enable WPA"); ?></strong>
-                            <hr/>
-                            <?=gettext("WPA Pre-Shared Key"); ?><br/>
+                            <label for="wpa_enable"><?=gettext("Enable WPA"); ?></label>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-eap">
+                          <td><a id="help_for_wpa_identity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA EAP Identity"); ?></td>
+                          <td>
+                            <input name="identity" type="text" id="identity" value="<?=$pconfig['identity'];?>" />
+                            <div class="hidden" data-for="help_for_wpa_identity">
+                              <?=gettext("Only relevant when Extended Authentication Protocol (EAP) is used."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-wpa">
+                          <td><a id="help_for_wpa_passphrase" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WPA Pre-Shared Key/EAP Password"); ?></td>
+                          <td>
                             <input name="passphrase" type="text" id="passphrase" value="<?=$pconfig['passphrase'];?>" />
-                            <div class="hidden" data-for="help_for_wpa_enable">
+                            <div class="hidden" data-for="help_for_wpa_passphrase">
                               <?=gettext("Passphrase must be from 8 to 63 characters."); ?>
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Mode"); ?></td>
                           <td>
                             <select name="wpa_mode" class="selectpicker" data-style="btn-default" id="wpa_mode">
@@ -3392,18 +3502,87 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Key Management Mode"); ?></td>
                           <td>
                             <select name="wpa_key_mgmt" class="selectpicker" data-style="btn-default" id="wpa_key_mgmt">
                               <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-PSK' ? "selected=\"selected\"" : "";?> value="WPA-PSK"><?=gettext("Pre-Shared Key"); ?></option>
-                              <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-EAP"><?=gettext("Extensible Authentication Protocol"); ?></option>
+                              <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-EAP"><?=gettext("Extensible Authentication Protocol (EAP)"); ?></option>
                               <option <?=$pconfig['wpa_key_mgmt'] == 'WPA-PSK WPA-EAP' ? "selected=\"selected\"" : "";?> value="WPA-PSK WPA-EAP"><?=gettext("Both"); ?></option>
                             </select>
                           </td>
                         </tr>
-                        <tr>
-                          <td><a id="help_for_auth_algs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication"); ?></td>
+                        <tr class="cfg-wireless-eap">
+                          <td><a id="help_for_eap_method" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Method"); ?></td>
+                          <td>
+                            <select name="wpa_eap_method" class="selectpicker" data-style="btn-default" id="wpa_eap_method">
+                              <option <?=$pconfig['wpa_eap_method'] == 'PEAP' ? "selected=\"selected\"" : "";?> value="PEAP"><?=gettext("Protected Extensible Authentication Protocol (PEAP)"); ?></option>
+                              <option <?=$pconfig['wpa_eap_method'] == 'TLS' ? "selected=\"selected\"" : "";?> value="TLS"><?=gettext("Transport Layer Security (TLS)"); ?></option>
+                              <option <?=$pconfig['wpa_eap_method'] == 'TTLS' ? "selected=\"selected\"" : "";?> value="TTLS"><?=gettext("Tunneled Transport Layer Security (TTLS)"); ?></option>
+                            </select>
+                            <div class="hidden" data-for="help_for_eap_method">
+                              <?=gettext("Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-eap">
+                          <td><a id="help_for_p2_auth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP Phase 2 Authentication"); ?></td>
+                          <td>
+                            <select name="wpa_eap_p2_auth" class="selectpicker" data-style="btn-default" id="eap_p2_auth">
+                              <option <?=$pconfig['wpa_eap_p2_auth'] == 'MD5' ? "selected=\"selected\"" : "";?> value="MD5"><?=gettext("MD5"); ?></option>
+                              <option <?=$pconfig['wpa_eap_p2_auth'] == 'MSCHAPv2' ? "selected=\"selected\"" : "";?> value="MSCHAPv2"><?=gettext("MSCHAPv2"); ?></option>
+                            </select>
+                            <div class="hidden" data-for="help_for_p2_auth">
+                              <?=gettext("Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management."); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-eap">
+                          <td><a id="help_for_cacertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS CA Certificate"); ?></td>
+                          <td>
+                            <select name="wpa_eap_cacertref" class="selectpicker" data-style="btn-default">
+                              <option value="" <?=empty($pconfig['wpa_eap_cacertref']) ? "selected=\"selected\"" : "";?>><?=gettext("Do not verify server"); ?></option>
+          <?php foreach ($a_ca as $ca): ?>
+                              <option value="<?=$ca['refid'];?>" <?=$pconfig['wpa_eap_cacertref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
+                                <?=$ca['descr'];?>
+                              </option>
+          <?php endforeach ?>
+                            </select>
+                            <div class='hidden' data-for="help_for_cacertref">
+                              <?=gettext('Certificate authority used to verify the access point\'s TLS certificate. Only relevant for infrastructure mode (BSS) if Extensible Authentication Protocol (EAP) is used for key management.');?><br />
+                              <?=sprintf(
+                                gettext('The %scertificate authority manager%s can be used to ' .
+                                'create or import certificat authorities if required.'),
+                                '<a href="/system_camanager.php">', '</a>'
+                              );?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-eap">
+                          <td><a id="help_for_clientcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EAP TLS Client Certificate"); ?></td>
+                          <td>
+                            <select name="wpa_eap_cltcertref" class="selectpicker" data-style="btn-default">
+                              <option value="" <?=empty($pconfig['wpa_eap_cltcertref']) ? "selected=\"selected\"" : "";?>><?=gettext("none"); ?></option>
+          <?php foreach ($a_cert as $cert): ?>
+          <?php if (isset($cert['prv'])): ?>
+                              <option value="<?=$cert['refid'];?>" <?=$pconfig['wpa_eap_cltcertref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
+                                <?=$cert['descr'];?>
+                              </option>
+          <?php endif ?>
+          <?php endforeach ?>
+                            </select>
+                            <div class='hidden' data-for="help_for_clientcertref">
+                              <?=gettext('Certificate used for authentication towards the access point. Only relevant for infrastructure mode (BSS) if EAP with TLS is used for key management.');?><br />
+                              <?=sprintf(
+                                gettext('The %scertificate manager%s can be used to ' .
+                                'create or import certificates if required.'),
+                                '<a href="/system_certmanager.php">', '</a>'
+                              );?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="cfg-wireless-ap">
+                          <td><a id="help_for_auth_algs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access Point Authentication"); ?></td>
                           <td>
                             <select name="auth_algs" class="selectpicker" data-style="btn-default" id="auth_algs">
                               <option <?=$pconfig['auth_algs'] == '1' ? "selected=\"selected\"" : "";?> value="1"><?=gettext("Open System Authentication"); ?></option>
@@ -3411,11 +3590,11 @@ include("head.inc");
                               <option <?=$pconfig['auth_algs'] == '3' ? "selected=\"selected\"" : "";?> value="3"><?=gettext("Both"); ?></option>
                             </select>
                             <div class="hidden" data-for="help_for_auth_algs">
-                              <?=gettext("Note: Shared Key Authentication requires WEP."); ?>
+                              <?=gettext("Note: Shared Key Authentication requires WEP. Only relevant for access point mode."); ?>
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPA Pairwise"); ?></td>
                           <td>
                             <select name="wpa_pairwise" class="selectpicker" data-style="btn-default" id="wpa_pairwise">
@@ -3425,7 +3604,7 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_group_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key Rotation"); ?></td>
                           <td>
                             <input name="wpa_group_rekey" type="text" id="wpa_group_rekey" value="<?=!empty($pconfig['wpa_group_rekey']) ? $pconfig['wpa_group_rekey'] : "60";?>" />
@@ -3434,7 +3613,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_gmk_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Master Key Regeneration"); ?></td>
                           <td>
                             <input name="wpa_gmk_rekey" type="text" id="wpa_gmk_rekey" value="<?=!empty($pconfig['wpa_gmk_rekey']) ? $pconfig['wpa_gmk_rekey'] : "3600";?>" />
@@ -3443,7 +3622,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-wpa">
                           <td><a id="help_for_wpa_strict_rekey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict Key Regeneration"); ?></td>
                           <td>
                             <input name="wpa_strict_rekey" type="checkbox" value="yes"  id="wpa_strict_rekey" <?php if ($pconfig['wpa_strict_rekey']) echo "checked=\"checked\""; ?> />
@@ -3452,7 +3631,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ap-wpa">
                           <td><a id="help_for_ieee8021x" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable IEEE802.1X Authentication"); ?></td>
                           <td>
                             <input name="ieee8021x" type="checkbox" value="yes"  id="ieee8021x" <?=!empty($pconfig['ieee8021x']) ? "checked=\"checked\"" : "";?> />
@@ -3462,7 +3641,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server IP Address"); ?></td>
                           <td>
                             <input name="auth_server_addr" id="auth_server_addr" type="text" value="<?=$pconfig['auth_server_addr'];?>" />
@@ -3471,7 +3650,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Port"); ?></td>
                           <td>
                             <input name="auth_server_port" id="auth_server_port" type="text" value="<?=$pconfig['auth_server_port'];?>" />
@@ -3480,13 +3659,13 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("802.1X Server Shared Secret"); ?></td>
                           <td>
                             <input name="auth_server_shared_secret" id="auth_server_shared_secret" type="text" value="<?=$pconfig['auth_server_shared_secret'];?>" />
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_addr2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server IP Address (2)"); ?></td>
                           <td>
                             <input name="auth_server_addr2" id="auth_server_addr2" type="text" value="<?=$pconfig['auth_server_addr2'];?>" />
@@ -3496,7 +3675,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_port2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Port (2)"); ?></td>
                           <td>
                             <input name="auth_server_port2" id="auth_server_port2" type="text" value="<?=$pconfig['auth_server_port2'];?>" />
@@ -3506,7 +3685,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><a id="help_for_auth_server_shared_secret2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.1X Server Shared Secret (2)"); ?></td>
                           <td>
                             <input name="auth_server_shared_secret2" id="auth_server_shared_secret2" type="text" value="<?=$pconfig['auth_server_shared_secret2'];?>" />
@@ -3515,7 +3694,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
+                        <tr class="cfg-wireless-ieee8021x">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("802.1X Roaming Preauth"); ?></td>
                           <td>
                             <input name="rsn_preauth" id="rsn_preauth" type="checkbox" value="yes" <?=!empty($pconfig['rsn_preauth']) ? "checked=\"checked\"" : ""; ?> />

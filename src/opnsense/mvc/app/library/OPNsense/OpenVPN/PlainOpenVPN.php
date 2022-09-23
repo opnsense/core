@@ -81,7 +81,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
      */
     public function getFileType()
     {
-        return "text/plain";
+        return "text/ovpn";
     }
 
     /**
@@ -128,7 +128,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
                 $conf[] = "remote-cert-tls server";
             }
         }
-        if (!empty($this->config['cryptoapi'])) {
+        if (!empty($this->config['cryptoapi']) && !empty($this->config['client_cn'])) {
             $conf[] = "cryptoapicert \"SUBJ:{$this->config['client_cn']}\"";
         }
         if (in_array($this->config['mode'], array('server_user', 'server_tls_user'))) {

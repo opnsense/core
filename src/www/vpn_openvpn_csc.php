@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
  *
@@ -33,7 +33,7 @@ require_once("plugins.inc.d/openvpn.inc");
 
 $all_form_fields = "custom_options,disable,common_name,block,description
     ,tunnel_network,tunnel_networkv6,local_network,local_networkv6,remote_network
-    ,remote_networkv6,gwredir,push_reset,dns_domain,dns_server1
+    ,remote_networkv6,gwredir,push_reset,dns_domain,dns_domain_search,dns_server1
     ,dns_server2,dns_server3,dns_server4,ntp_server1,ntp_server2
     ,netbios_enable,netbios_ntype,netbios_scope,wins_server1
     ,wins_server2,ovpn_servers";
@@ -150,6 +150,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The field 'DNS Server #4' must contain a valid IP address");
             }
         }
+        if (!empty($pconfig['dns_domain_search'])) {
+            $tmp_ok_domain = 0;
+            $tmp_nok_domain = 0;
+            foreach (explode(",", $pconfig['dns_domain_search'] ?? "") as $domain) {
+                if (is_domain($domain)) {
+                    $tmp_ok_domain++;
+                } else {
+                    $tmp_nok_domain++;
+                }
+            }
+            if ($tmp_nok_domain > 0) {
+                $input_errors[] = gettext("The field 'DNS Domain search list' must contain valid domain names");
+            } elseif ($tmp_ok_domain > 10) {
+                $input_errors[] = gettext("The field 'DNS Domain search list' may contain max 10 entries");
+            }
+        }
 
         if (!empty($pconfig['ntp_server_enable'])) {
             if (!empty($pconfig['ntp_server1']) && !is_ipaddr(trim($pconfig['ntp_server1']))) {
@@ -201,7 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (isset($id)) {
-                $old_csc_cn = $a_csc[$id]['common_name'];
                 $a_csc[$id] = $csc;
             } else {
                 $a_csc[] = $csc;
@@ -294,6 +309,15 @@ $( document ).ready(function() {
       }
   });
 
+  $("#dns_domain_search_enable").change(function(){
+      if ($("#dns_domain_search_enable").is(':checked')) {
+          $("#dns_domain_search_data").show();
+      } else {
+          $("#dns_domain_search_data").hide();
+      }
+  });
+  $("#dns_domain_search_enable").change();
+
   $("#dns_server_enable").change(function(){
       if ($("#dns_server_enable").is(":checked")) {
           $("#dns_server_data").show();
@@ -331,6 +355,7 @@ $( document ).ready(function() {
 
   // init form (old stuff)
   if (document.iform != undefined) {
+    $("#dns_domain_search_enable").change();
     $("#dns_domain_enable").change();
     $("#dns_server_enable").change();
     $("#wins_server_enable").change();
@@ -438,13 +463,16 @@ include("fbegin.inc");
                     <td>
                       <input name="tunnel_network" type="text" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                       <div class="hidden" data-for="help_for_tunnel_network">
-                        <?=gettext("This is the IPv4 virtual network used for private " .
-                                                "communications between this client and the " .
-                                                "server expressed using CIDR (eg. 10.0.8.0/24). " .
-                                                "The first network address is assumed to be the " .
-                                                "server address and the second network address " .
-                                                "will be assigned to the client virtual " .
-                                                "interface"); ?>.
+                        <?=sprintf(
+                            gettext(
+                              "This defines the %s network used for this client in CIDR format, the addressing depends on ".
+                              "the device mode (tun, tap) and the choice for topology. <br/><br/>".
+                              "When topology is unset for a server in tun mode, the  first network address is ".
+                              "assumed to be the server address and the second network address will be assigned to the client virtual ".
+                              "interface. </br><br/>".
+                              "Otherwise the configured address is used for this clients virtual interface using the configured netmask."
+                            ),
+                            gettext("IPv4"));?>
                       </div>
                     </td>
                   </tr>
@@ -453,13 +481,16 @@ include("fbegin.inc");
                     <td>
                       <input name="tunnel_networkv6" type="text" value="<?=$pconfig['tunnel_networkv6'];?>" />
                       <div class="hidden" data-for="help_for_tunnel_networkv6">
-                          <?=gettext("This is the IPv6 virtual network used for private " .
-                                                "communications between this server and client " .
-                                                "hosts expressed using CIDR (eg. fe80::/64). " .
-                                                "The first network address will be assigned to " .
-                                                "the server virtual interface. The remaining " .
-                                                "network addresses can optionally be assigned " .
-                                                "to connecting clients. (see Address Pool)"); ?>
+                        <?=sprintf(
+                            gettext(
+                              "This defines the %s network used for this client in CIDR format, the addressing depends on ".
+                              "the device mode (tun, tap) and the choice for topology. <br/><br/>".
+                              "When topology is unset for a server in tun mode, the  first network address is ".
+                              "assumed to be the server address and the second network address will be assigned to the client virtual ".
+                              "interface. </br><br/>".
+                              "Otherwise the configured address is used for this clients virtual interface using the configured netmask."
+                            ),
+                            gettext("IPv6"));?>
                       </div>
                     </td>
                   </tr>
@@ -552,6 +583,20 @@ include("fbegin.inc");
                       </div>
                       <div class="hidden" data-for="help_for_dns_domain">
                         <?=gettext("Provide a default domain name to clients"); ?><br />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width:22%"><a id="help_for_dns_domain_search" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Domain search list"); ?></td>
+                    <td>
+                      <input name="dns_domain_search_enable" type="checkbox" id="dns_domain_search_enable" value="yes" <?=!empty($pconfig['dns_domain_search']) ? "checked=\"checked\"" : "" ;?> />
+                      <div id="dns_domain_search_data">
+                          <input name="dns_domain_search" type="text" class="form-control unknown" value="<?=htmlspecialchars($pconfig['dns_domain_search']);?>" />
+                      </div>
+                      <div class="hidden" data-for="help_for_dns_domain_search">
+                        <span>
+                            <?=gettext("Add name to the domain search list. Repeat this option to add more entries. Expressed as a comma-separated list up to 10 domains are supported."); ?><br />
+                        </span>
                       </div>
                     </td>
                   </tr>

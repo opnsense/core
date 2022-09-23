@@ -28,11 +28,10 @@
 
 namespace OPNsense\Base\Constraints;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use OPNsense\Base\BaseValidator;
 use Phalcon\Messages\Message;
 
-abstract class BaseConstraint extends AbstractValidator implements ValidatorInterface
+abstract class BaseConstraint extends BaseValidator
 {
     /**
      * check if field is empty  (either boolean field as false or an empty field)
@@ -51,10 +50,10 @@ abstract class BaseConstraint extends AbstractValidator implements ValidatorInte
     }
 
     /**
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param $attribute
      */
-    protected function appendMessage(\Phalcon\Validation $validator, $attribute)
+    protected function appendMessage($validator, $attribute)
     {
         $message = $this->getOption('ValidationMessage');
         $name = $this->getOption('name');

@@ -30,7 +30,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use Phalcon\Filter;
+use OPNsense\Phalcon\Filter\Filter;
 
 /**
  * @inherit
@@ -59,7 +59,8 @@ class LogController extends ApiControllerBase
                 return ["status" => "ok"];
             } else {
                 // fetch query parameters (limit results to prevent out of memory issues)
-                $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+                $itemsPerPage = $this->request->getPost('rowCount', 'int', -1);
+                $itemsPerPage = min($itemsPerPage == -1 ? 5000 : $itemsPerPage, 9999);
                 $currentPage = $this->request->getPost('current', 'int', 1);
 
                 if ($this->request->getPost('searchPhrase', 'string', '') != "") {

@@ -49,7 +49,6 @@ if (isset($opts['m']) && isset($opts['f'])) {
     } else {
         $basename = "/var/log/{$mname}/{$fname}";
     }
-    $filename = "{$basename}.log";
 
     if (is_dir($basename)) {
         foreach (glob("{$basename}/{$fname}_*.log") as $filename) {
@@ -58,17 +57,10 @@ if (isset($opts['m']) && isset($opts['f'])) {
         system_syslog_start();
     }
 
+    // non syslog files, in case service doesn't use our default syslog naming
+    $filename = "{$basename}.log";
     if (is_file($filename)) {
-        /* preserve file ownership and permissions
-           XXX: not sure if this is still needed, at least it's not consistent with how directories are reset now.
-         */
-        if (file_exists($filename)) {
-            $handle = fopen($filename, 'r+');
-            if ($handle) {
-                ftruncate($handle, 0);
-                fclose($handle);
-            }
-        }
+        @unlink($filename);
         system_syslog_start();
         // XXX: should probably add some plugin hook for this.
         if ($fname == 'dhcpd' && $mname == 'core') {

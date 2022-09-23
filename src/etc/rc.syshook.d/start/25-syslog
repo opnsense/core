@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Restart syslog here to make use of dynamic addressing which might
+# have been missing during rc.bootup runtime due to blocking dynamic
+# backend scripts.
+
+configctl -dq syslog restart

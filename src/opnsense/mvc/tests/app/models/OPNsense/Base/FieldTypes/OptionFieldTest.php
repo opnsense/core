@@ -50,7 +50,7 @@ class OptionFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new OptionField();
         $field->setRequired("Y");

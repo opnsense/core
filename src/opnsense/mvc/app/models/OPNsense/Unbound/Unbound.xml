@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -55,13 +55,37 @@
             <whitelists type="CSVListField">
                 <Required>N</Required>
             </whitelists>
+            <address type="NetworkField">
+                <Required>N</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+            </address>
         </dnsbl>
+        <forwarding>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>N</Required>
+            </enabled>
+        </forwarding>
         <dots>
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
                     <default>1</default>
                 </enabled>
+                <type type="OptionField">
+                    <Required>Y</Required>
+                    <default>dot</default>
+                    <OptionValues>
+                        <dot>DNS over TLS</dot>
+                        <forward>Forward</forward>
+                    </OptionValues>
+                </type>
+                <domain type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                </domain>
                 <server type="NetworkField">
                     <Required>Y</Required>
                 </server>
@@ -81,7 +105,7 @@
                 </enabled>
                 <hostname type="HostnameField">
                     <Required>N</Required>
-                    <WildcardAllowed>Y</WildcardAllowed>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
@@ -149,7 +173,7 @@
                 </server>
                 <description type="TextField">
                     <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </host>
@@ -165,7 +189,8 @@
                         <host>
                             <source>OPNsense.Unbound.Unbound</source>
                             <items>hosts.host</items>
-                            <display>domain</display>
+                            <display>hostname,domain</display>
+                            <display_format>%s.%s</display_format>
                         </host>
                     </Model>
                     <Required>Y</Required>
@@ -179,7 +204,7 @@
                             <check></check>
                         </check001>
                     </Constraints>
-                    <WildcardAllowed>Y</WildcardAllowed>
+                    <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Constraints>
@@ -193,6 +218,11 @@
                     <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
             </alias>
         </aliases>
         <domains>
@@ -201,17 +231,17 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
-                <domain type="TextField">
+                <domain type=".\UnboundDomainField">
                     <Required>Y</Required>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
-                <server type="NetworkField">
+                <server type=".\UnboundServerField">
                     <Required>Y</Required>
+                    <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
                 <description type="TextField">
                     <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </domain>

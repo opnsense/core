@@ -115,7 +115,7 @@ class Helpers(object):
             a list. The configuration doesn't know if a non repeating item is supposed to be a list of items, this makes
             it explicit.
         :param tag: tag in dot notation (section.item)
-        :param sortBy: resort result by specfied key
+        :param sortBy: resort result by specified key
         :return: []
         """
         result = self.getNodeByTag(tag)

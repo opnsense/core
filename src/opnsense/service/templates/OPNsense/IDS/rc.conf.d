@@ -1,7 +1,7 @@
 {# Macro import #}
 {% from 'OPNsense/Macros/interface.macro' import physical_interface %}
 {% if not helpers.empty('OPNsense.IDS.general.enabled') %}
-suricata_var_script="/usr/local/opnsense/scripts/suricata/setup.sh"
+suricata_setup="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
 {% if OPNsense.IDS.general.ips|default("0") == "1" %}
 # IPS mode, switch to netmap

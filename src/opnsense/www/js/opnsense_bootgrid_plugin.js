@@ -82,7 +82,7 @@ $.fn.UIBootgrid = function (params) {
             },
             "command-info": {
                 method: this_grid.command_info,
-                requires: ['get']
+                requires: ['info']
             },
             "command-toggle": {
                 method: this_grid.command_toggle,
@@ -140,7 +140,11 @@ $.fn.UIBootgrid = function (params) {
         // merge additional options (if any)
         if (params['options'] !== undefined) {
             $.each(params['options'],  function(key, value) {
-                gridopt[key] = value;
+                if (typeof(value) === 'object' && Array.isArray(value) == false) {
+                    gridopt[key] = Object.assign({}, gridopt[key], value);
+                } else {
+                    gridopt[key] = value;
+                }
             });
         }
 

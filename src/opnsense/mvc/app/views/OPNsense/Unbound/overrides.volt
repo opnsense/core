@@ -100,6 +100,9 @@ $( document ).ready(function() {
                 del:'/api/unbound/settings/delHostAlias/',
                 toggle:'/api/unbound/settings/toggleHostAlias/',
                 options: {
+                    labels: {
+                        noResults: "{{ lang._('No results found for selected host or none selected') }}"
+                    },
                     selection: true,
                     multiSelect: true,
                     rowSelect: true,
@@ -246,6 +249,7 @@ $( document ).ready(function() {
             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
             <th data-column-id="hostname" data-type="string">{{ lang._('Host') }}</th>
             <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
+            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
         </tr>
         </thead>

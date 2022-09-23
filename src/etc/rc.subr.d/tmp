@@ -42,7 +42,15 @@ fi
 mkdir -p /tmp
 
 if [ ${USE_MFS_TMP} -ne 0 ]; then
-	mount -t tmpfs -o mode=01777 tmpfs /tmp
+	MAX_MFS_TMP=$(grep 'max_mfs_tmp' /conf/config.xml | sed 's/[^>]*>\([^<]*\)<.*/\1/')
+	MAX_MEM_SYS=$(sysctl -n hw.physmem)
+
+	if [ -z "${MAX_MFS_TMP}" ]; then
+		# cap to 50% by default to avoid swapping
+		MAX_MFS_TMP=50
+	fi
+
+	mount -t tmpfs -o mode=01777,size=$((MAX_MEM_SYS / 100 * MAX_MFS_TMP)) tmpfs /tmp
 else
 	rm -rf /tmp/*
 	chmod 1777 /tmp

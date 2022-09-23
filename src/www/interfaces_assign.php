@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2004 Jim McBeath
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -51,79 +51,35 @@ function link_interface_to_group($int)
     return $result;
 }
 
-function list_interfaces()
+function list_devices($devices)
 {
     global $config;
 
     $interfaces = [];
 
-    // define config sections to fetch interfaces from.
-    $config_sections = array();
-    $config_sections['wireless.clone'] = array('descr' => 'cloneif,descr', 'key' => 'cloneif', 'format' => '%s (%s)');
-    $config_sections['vlans.vlan'] = array('descr' => 'tag,if,descr', 'format' => gettext('vlan %s on %s') . ' (%s)', 'key' => 'vlanif');
-    $config_sections['bridges.bridged'] = array('descr' => 'bridgeif, descr', 'key' => 'bridgeif', 'format' => '%s (%s)');
-    $config_sections['gifs.gif'] = array('descr' => 'remote-addr,descr', 'key' => 'gifif', 'format' => 'gif %s (%s)');
-    $config_sections['gres.gre'] = array('descr' => 'remote-addr,descr', 'key' => 'greif', 'format' => 'gre %s (%s)');
-    $config_sections['laggs.lagg'] = array('descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members');
-    $config_sections['ppps.ppp'] = array('descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type');
-
-    // add physical network interfaces
-    foreach (get_interface_list() as $key => $intf_item) {
-        if (match_wireless_interface($key)) {
-            continue;
-        }
-        $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
+    /* add physical network interfaces */
+    foreach (get_interface_list() as $key => $item) {
+        $interfaces[$key] = ['descr' => $key . ' (' . $item['mac'] . ')', 'type' => 'hardware'];
     }
-    // collect interfaces from defined config sections
-    foreach ($config_sections as $key => $value) {
-        $cnf_location = explode(".", $key);
-        if (!empty($config[$cnf_location[0]][$cnf_location[1]])) {
-            foreach ($config[$cnf_location[0]][$cnf_location[1]] as $cnf_item) {
-                $interface_item = array("section" => $key);
-                // construct item description
-                $descr = array();
-                foreach (explode(',', $value['descr']) as $fieldname) {
-                    if (isset($cnf_item[trim($fieldname)])) {
-                        $descr[] = $cnf_item[trim($fieldname)];
-                    } else {
-                        $descr[] = "";
-                    }
+
+    /* add virtual network interfaces */
+    foreach ($devices as $device) {
+        if (!empty($device['names'])) {
+            foreach ($device['names'] as $key => $values) {
+                if (!empty($values)) {
+                    $interfaces[$key] = $values;
+                    $interfaces[$key]['type'] = $device['type'];
                 }
-                if (!empty($value['format'])) {
-                    $interface_item['descr'] = vsprintf($value['format'], $descr);
-                } else {
-                    $interface_item['descr'] = implode(" ", $descr);
-                }
-                // copy requested additional fields into temp structure
-                if (isset($value['fields'])) {
-                    foreach (explode(',', $value['fields']) as $fieldname) {
-                        if (isset($cnf_item[$fieldname])) {
-                            $interface_item[$fieldname] = $cnf_item[$fieldname];
-                        }
-                    }
-                }
-                $interface_item['ifdescr'] = !empty($cnf_item['descr']) ? $cnf_item['descr'] : null;
-                $interfaces[$cnf_item[$value['key']]] = $interface_item;
             }
         }
     }
-    // XXX: get_interface_list() should probably be replaced at some point to avoid traversing through the config
-    //       for all these virtual interfaces
-    $loopbacks = iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems());
-    foreach ($loopbacks as $loopback) {
-        $interfaces["lo".(string)$loopback->deviceId] = array(
-          'descr' => sprintf("lo%s (%s)", $loopback->deviceId,  $loopback->description),
-          'ifdescr' => sprintf("%s", $loopback->description),
-          'section' => 'loopback');
-    }
 
-    // enforce constraints
-    foreach ($interfaces as $intf_id => $intf_details) {
-        // LAGG members cannot be assigned
-        if (isset($intf_details['members']) && $intf_details['section'] == 'laggs.lagg') {
-            foreach (explode(',', ($intf_details['members'])) as $intf) {
-                if (isset($interfaces[trim($intf)])) {
-                    unset($interfaces[trim($intf)]);
+    /* enforce constraints */
+    foreach ($interfaces as $id => $details) {
+        if (!empty($details['exclude'])) {
+            foreach ($details['exclude'] as $device) {
+                if (isset($interfaces[$device])) {
+                    unset($interfaces[$device]);
                 }
             }
         }
@@ -132,42 +88,59 @@ function list_interfaces()
     return $interfaces;
 }
 
+$a_devices = plugins_devices();
+$interfaces = list_devices($a_devices);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
-        /* if interface is already used redirect */
         foreach (legacy_config_get_interfaces() as $ifname => $ifdata) {
+            /* if interface is already used redirect */
             if ($ifdata['if'] == $_POST['if_add']) {
                 header(url_safe('Location: /interfaces_assign.php'));
                 exit;
             }
         }
 
-        /* find next free optional interface number */
-        for ($i = 1; $i <= count($config['interfaces']); $i++) {
-            if (empty($config['interfaces']["opt{$i}"])) {
+        $is_ppp = false;
+        foreach (config_read_array('ppps', 'ppp') as $ppp) {
+            if ($ppp['if'] = $_POST['if_add']) {
+                $is_ppp = true;
                 break;
             }
         }
 
-        $newifname = 'opt' . $i;
-        $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
-        $config['interfaces'][$newifname] = array();
-        $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
-        $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
-        $interfaces = list_interfaces();
-        if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
-            $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
-        }
-        if (match_wireless_interface($_POST['if_add'])) {
-            $config['interfaces'][$newifname]['wireless'] = array();
-            interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+        if (!$is_ppp && !does_interface_exist($_POST['if_add'])) {
+            $input_errors[] = sprintf(gettext('The interface "%s" does not exist. Make sure to apply its configuration first.'), $_POST['if_add']);
         }
 
-        write_config();
-        header(url_safe('Location: /interfaces_assign.php'));
-        exit;
+        if (count($input_errors) == 0) {
+            /* find next free optional interface number */
+            for ($i = 1; $i <= count($config['interfaces']); $i++) {
+                if (empty($config['interfaces']["opt{$i}"])) {
+                    break;
+                }
+            }
+
+            $newifname = 'opt' . $i;
+            $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
+            $config['interfaces'][$newifname] = array();
+            $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
+            $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
+            switch ($interfaces[$_POST['if_add']]['type']) {
+                case 'ppp':
+                    $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['ipaddr'];
+                    break;
+                case 'wlan':
+                    $config['interfaces'][$newifname]['wireless'] = [];
+                    interface_sync_wireless_clones($config['interfaces'][$newifname], false);
+                    break;
+                default:
+                    break;
+            }
+
+            write_config();
+        }
     } elseif (!empty($_POST['id']) && !empty($_POST['action']) && $_POST['action'] == 'del' & !empty($config['interfaces'][$_POST['id']]) ) {
         // ** Delete interface **
         $id = $_POST['id'];
@@ -217,14 +190,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header(url_safe('Location: /interfaces_assign.php'));
             exit;
         }
-    } elseif (isset($_POST['Submit'])) {
-        // ** Change interface **
-        /* input validation */
+    } elseif (isset($_POST['Submit'])) { // ** Change interface **
         /* Build a list of the port names so we can see how the interfaces map */
-        $portifmap = array();
-        $interfaces = list_interfaces();
+        $portifmap = [];
         foreach ($interfaces as $portname => $portinfo) {
-            $portifmap[$portname] = array();
+            $portifmap[$portname] = [];
         }
 
         /* Go through the list of ports selected by the user,
@@ -269,8 +239,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (count($input_errors) == 0) {
-          /* No errors detected, so update the config */
           $changes = 0;
+
           foreach ($_POST as $ifname => $ifport) {
               if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
                   $reloadif = false;
@@ -280,11 +250,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $reloadif = true;
                   }
                   $config['interfaces'][$ifname]['if'] = $ifport;
-                  if ($interfaces[$ifport]['section'] == 'ppps.ppp') {
-                      $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
+
+                  switch ($interfaces[$ifport]['type']) {
+                      case 'ppp':
+                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['ipaddr'];
+                          break;
+                      case 'wlan':
+                          if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
+                              /* change from implied clone to explicit */
+                              $config['interfaces'][$ifname]['if'] .= '_wlan0';
+                          }
+                          break;
+                      default:
+                          break;
                   }
 
-                  foreach (plugins_devices() as $device) {
+                  foreach ($a_devices as $device) {
                       if (!isset($device['configurable']) || $device['configurable'] == true) {
                           continue;
                       }
@@ -296,8 +277,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       }
                   }
 
-                  /* check for wireless interfaces, set or clear ['wireless'] */
-                  if (match_wireless_interface($ifport)) {
+                  /* set or clear wireless configuration */
+                  if ($interfaces[$ifport]['type'] == 'wlan') {
                       config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
@@ -308,9 +289,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
                   }
 
-
                   if ($reloadif) {
-                      if (match_wireless_interface($ifport)) {
+                      if (isset($config['interfaces'][$ifname]['wireless'])) {
                           interface_sync_wireless_clones($config['interfaces'][$ifname], false);
                       }
                       /* Reload all for the interface. */
@@ -332,8 +312,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-/* collect (unused) interfaces */
-$interfaces = list_interfaces();
 legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 $all_interfaces = legacy_config_get_interfaces();
@@ -344,6 +322,11 @@ foreach ($intfkeys as $portname) {
     $portused = false;
     if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
         $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
+    } elseif (empty($ifdetails[$portname])) {
+        $interfaces[$portname]['status'] = 'no carrier';
+    } else {
+        /* quirky value to populate status key for virtual interfaces */
+        $interfaces[$portname]['status'] = 'likely up';
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
@@ -414,7 +397,12 @@ include("head.inc");
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th><?=gettext("Interface"); ?></th>
+                      <th><?=gettext("Interface"); ?>
+                          (<?=gettext("ID"); ?>
+                          <span data-toggle="tooltip" title="<?=gettext("Technical identifier of the interface, used by hasync for example");?>">
+                            <i  style="cursor: pointer;" class="fa fa-question-circle" data-toggle="collapse" ></i>
+                          </span>)
+                      </th>
                       <th><?=gettext("Network port"); ?></th>
                       <th></th>
                     </tr>
@@ -426,6 +414,7 @@ include("head.inc");
                       <tr>
                         <td>
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
+                          (<?=$ifname;?>)
                         </td>
                         <td>
                           <select name="<?=$ifname;?>" id="<?=$ifname;?>"  class="selectpicker" data-size="10">

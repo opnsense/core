@@ -4,7 +4,7 @@ namespace JakubOnderka\PhpParallelLint;
 
 class Application
 {
-    const VERSION = '1.3.1';
+    const VERSION = '1.3.2';
 
     // Return codes
     const SUCCESS = 0,
@@ -77,25 +77,29 @@ class Application
 Options:
     -p <php>                Specify PHP-CGI executable to run (default: 'php').
     -s, --short             Set short_open_tag to On (default: Off).
-    -a, -asp                Set asp_tags to On (default: Off).
+    -a, --asp               Set asp_tags to On (default: Off).
     -e <ext>                Check only files with selected extensions separated by comma.
                             (default: php,php3,php4,php5,phtml,phpt)
+    -j <num>                Run <num> jobs in parallel (default: 10).
     --exclude               Exclude a file or directory. If you want exclude multiple items,
                             use multiple exclude parameters.
-    -j <num>                Run <num> jobs in parallel (default: 10).
-    --colors                Enable colors in console output. (disables auto detection of color support)
+    --colors                Enable colors in console output.
+                            (disables auto detection of color support)
     --no-colors             Disable colors in console output.
     --no-progress           Disable progress in console output.
-    --json                  Output results as JSON string.
-    --gitlab                Output results for the GitLab Code Quality Widget.
     --checkstyle            Output results as Checkstyle XML.
+    --json                  Output results as JSON string
+                            (requires PHP 5.4).
+    --gitlab                Output results for the GitLab Code Quality Widget
+                            (requires PHP 5.4).
     --blame                 Try to show git blame for row with error.
     --git <git>             Path to Git executable to show blame message (default: 'git').
     --stdin                 Load files and folder to test from standard input.
     --ignore-fails          Ignore failed tests.
+    --show-deprecated       Show deprecations (default: Off).
     --syntax-error-callback File with syntax error callback for ability to modify error
     -h, --help              Print this help.
-    -V, --version           Display this application version
+    -V, --version           Display the application version
 
 HELP;
     }

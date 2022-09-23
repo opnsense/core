@@ -1,31 +1,29 @@
 <?php
 
-/**
- *    Copyright (C) 2015 Deciso B.V.
+/*
+ * Copyright (C) 2015-2022 Deciso B.V.
+ * All rights reserved.
  *
- *    All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
  *
- *    Redistribution and use in source and binary forms, with or without
- *    modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
  *
- *    1. Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
- *    2. Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *
- *    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- *    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- *    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- *    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- *    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- *    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- *    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- *    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *    POSSIBILITY OF SUCH DAMAGE.
- *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace OPNsense\Base;
@@ -39,6 +37,78 @@ use OPNsense\Auth\AuthenticationFactory;
  */
 class ApiControllerBase extends ControllerRoot
 {
+    /***
+     * Recordset (array in array) search wrapper
+     * @param string $path path to search, relative to this model
+     * @param array $fields fieldnames to search through in result
+     * @param string|null $defaultSort default sort field name
+     * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
+     * @return array
+     */
+    protected function searchRecordsetBase(
+        $records,
+        $fields = null,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL
+    ) {
+        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
+        $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
+        $currentPage = intval($this->request->getPost('current', 'int', 1));
+        $offset = ($currentPage - 1) * $itemsPerPage;
+        $entry_keys = array_keys($records);
+        $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
+
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+            $keys = array_keys($this->request->getPost('sort'));
+            $order = $this->request->getPost('sort')[$keys[0]];
+            $keys = array_column($records, $keys[0]);
+            if (!empty($keys)) {
+                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $records);
+            }
+        } elseif (!empty($defaultSort)) {
+            $keys = array_column($records, $defaultSort);
+            if (!empty($keys)) {
+                array_multisort($keys, SORT_ASC, $sort_flags, $records);
+            }
+        }
+
+        $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
+            if (is_callable($filter_funct) && !$filter_funct($record)) {
+                // not applicable according to $filter_funct()
+                return false;
+            } elseif (!empty($searchPhrase)) {
+                foreach ($records[$key] as $itemkey => $itemval) {
+                    if (
+                        !is_array($itemval) &&
+                        stripos((string)$itemval, $searchPhrase) !== false &&
+                        (empty($fields) || in_array($itemkey, $fields))
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        $formatted = array_map(function ($value) use (&$records) {
+            foreach ($records[$value] as $ekey => $evalue) {
+                $item[$ekey] = $evalue;
+            }
+            return $item;
+        }, array_slice($entry_keys, $offset, $itemsPerPage));
+
+        return [
+           'total' => count($entry_keys),
+           'rowCount' => count($formatted),
+           'current' => $currentPage,
+           'rows' => $formatted,
+        ];
+    }
+
     /**
      * parse raw json type content to POST data depending on content type
      * (only for api calls)
@@ -80,16 +150,9 @@ class ApiControllerBase extends ControllerRoot
      * @param $errline The fourth parameter is optional, errline, which
      *                 contains the line number the error was raised at, as an
      *                 integer.
-     * @param $errcontext The fifth parameter is optional, errcontext, which
-     *                    is an array that points to the active symbol table
-     *                    at the point the error occurred. In other words,
-     *                    errcontext will contain an array of every variable
-     *                    that existed in the scope the error was triggered
-     *                    in. User error handler must not modify error
-     *                    context.
      * @throws \Exception
      */
-    public function APIErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
+    public function APIErrorHandler($errno, $errstr, $errfile, $errline)
     {
         if ($errno & error_reporting()) {
             $msg = "Error at $errfile:$errline - $errstr (errno=$errno)";
@@ -147,6 +210,12 @@ class ApiControllerBase extends ControllerRoot
                                 $this->getLogger()->error("uri " . $_SERVER['REQUEST_URI'] .
                                     " not accessible for user " . $authResult['username'] . " using api key " .
                                     $apiKey);
+                                // not authenticated
+                                $this->response->setStatusCode(403, "Forbidden");
+                                $this->response->setContentType('application/json', 'UTF-8');
+                                $this->response->setJsonContent(['status'  => 403,'message' => 'Forbidden']);
+                                $this->response->send();
+                                return false;
                             } else {
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
@@ -192,17 +261,18 @@ class ApiControllerBase extends ControllerRoot
             // not authenticated
             $this->response->setStatusCode(401, "Unauthorized");
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setJsonContent(array(
-                'status'  => 401,
-                'message' => 'Authentication Failed',
-            ));
+            $this->response->setJsonContent(['status'  => 401, 'message' => 'Authentication Failed']);
             $this->response->send();
             return false;
         } else {
             // handle UI ajax requests
             // use session data and ACL to validate request.
             if (!$this->doAuth()) {
-                $this->response->setStatusCode(401, "Unauthorized");
+                if (!$this->session->has("Username")) {
+                    $this->response->setStatusCode(401, "Unauthorized");
+                } else {
+                    $this->response->setStatusCode(403, "Forbidden");
+                }
                 return false;
             }
 

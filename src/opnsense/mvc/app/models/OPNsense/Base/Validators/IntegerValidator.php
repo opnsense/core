@@ -30,28 +30,27 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use OPNsense\Base\BaseValidator;
 use Phalcon\Messages\Message;
 
 /**
  * Class IntegerValidator
  * @package OPNsense\Base\Validators
  */
-class IntegerValidator extends AbstractValidator implements ValidatorInterface
+class IntegerValidator extends BaseValidator
 {
     /**
     * Executes Integer validation
     *
-    * @param \Phalcon\Validation $validator
+    * @param $validator
     * @param string $attribute
     * @return boolean
     */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $value = $validator->getValue($attribute);
         $msg = $this->getOption('message');
-        if (ctype_digit(strval(($value))) == false or (string)((int)$value) !== (string)$value) {
+        if (filter_var($value, FILTER_VALIDATE_INT) === false) {
             $validator->appendMessage(new Message($msg, $attribute, 'IntegerValidator'));
             return false;
         }

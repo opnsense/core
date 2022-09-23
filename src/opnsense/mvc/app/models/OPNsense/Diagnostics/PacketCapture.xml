@@ -1,0 +1,63 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.1</version>
+    <description>
+        OPNsense Packet Capture
+    </description>
+    <items>
+        <settings>
+            <interface type=".\InterfaceField">
+                <Required>Y</Required>
+                <AllowDynamic>Y</AllowDynamic>
+                <Multiple>Y</Multiple>
+            </interface>
+            <description type="TextField">
+                <Required>N</Required>
+                <mask>/^(.){1,255}$/u</mask>
+                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+            </description>
+            <promiscuous type="BooleanField">
+              <default>0</default>
+              <Required>Y</Required>
+            </promiscuous>
+            <fam type="OptionField">
+                <Required>Y</Required>
+                <OptionValues>
+                    <any>any</any>
+                    <ip>IPv4 Only</ip>
+                    <ip6>IPv6 Only</ip6>
+                </OptionValues>
+            </fam>
+            <protocol_not type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </protocol_not>
+            <protocol type="ProtocolField">
+                <Required>Y</Required>
+                <default>any</default>
+            </protocol>
+            <host type=".\HostField">
+                <Required>N</Required>
+            </host>
+            <port_not type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </port_not>
+            <port type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+            </port>
+            <snaplen type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>262144</MaximumValue>
+            </snaplen>
+            <count type="IntegerField">
+                <Required>Y</Required>
+                <default>100</default>
+                <MinimumValue>0</MinimumValue>
+            </count>
+        </settings>
+    </items>
+</model>

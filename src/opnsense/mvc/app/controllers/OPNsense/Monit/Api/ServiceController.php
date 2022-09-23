@@ -47,19 +47,19 @@ class ServiceController extends ApiMutableServiceControllerBase
      * test monit configuration
      * @return array
      */
-    public function configtestAction()
+    public function checkAction()
     {
         if ($this->request->isPost()) {
             $result['status'] = 'ok';
             $this->sessionClose();
             $backend = new Backend();
-            $result['function'] = "configtest";
+            $result['function'] = 'check';
             $result['template'] = trim($backend->configdRun('template reload OPNsense/Monit'));
             if ($result['template'] != 'OK') {
                 $result['result'] = "Template error: " . $result['template'];
                 return $result;
             }
-            $result['result'] = trim($backend->configdRun('monit configtest'));
+            $result['result'] = trim($backend->configdRun('monit check'));
             return $result;
         } else {
             return array('status' => 'failed');
@@ -78,7 +78,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             $result['status'] = 'failed';
             $backend = new Backend();
             $status = $this->statusAction();
-            $result = $this->configtestAction();
+            $result = $this->checkAction(); /* XXX this overwrites the reconfigure $result */
             if ((string)$this->getModel()->general->enabled == '1') {
                 if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
                     if ($status['status'] != 'running') {

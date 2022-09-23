@@ -102,16 +102,16 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+<?php
+      if ($dhcpd_enabled) {
+        print_info_box(gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.'));
+      } else {
+?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="content-box">
             <form method="post" name="iform" id="iform">
-<?php
-            if ($dhcpd_enabled) {
-              print_content_box(gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.'));
-            } else {
-?>
               <div>
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
@@ -176,10 +176,10 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-              <?php } ?>
             </form>
           </div>
         </section>
+        <?php } ?>
       </div>
     </div>
   </section>

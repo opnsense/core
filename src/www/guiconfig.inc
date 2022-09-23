@@ -31,6 +31,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+if (file_exists('/var/run/development')) {
+    ini_set('display_errors', 0);
+}
+
 require_once("util.inc");
 require_once("config.inc");
 
@@ -86,7 +90,7 @@ function get_themed_filename($url)
 
 require_once("authgui.inc");
 
-/* Reserved table names to avoid colision */
+/* Reserved table names to avoid collision */
 $reserved_table_names = [
     'bogons',
     'bogonsv6',
@@ -207,18 +211,6 @@ function print_alert_box($msg, $alert = 'warning', $button = '')
 EOFnp;
 }
 
-function print_content_box($msg)
-{
-    echo <<<EOFnp
-<div class="table-responsive">
-  <table class="table table-striped">
-     <tr><td>{$msg}</td></tr>
-  </table>
-</div>
-
-EOFnp;
-}
-
 function print_info_box_apply($msg, $alert = 'info')
 {
     $iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
@@ -295,7 +287,7 @@ function get_std_save_message($plain = false)
         }
         return sprintf(
             gettext("The changes have been applied successfully, ".
-                    "remember to update your backup server in %sSystem: High availablity: status%s"),
+                    "remember to update your backup server in %sSystem: High availability: status%s"),
             $lnk_start, $lnk_end
         );
     } else {
@@ -471,7 +463,7 @@ if (!$timezone) {
 
 date_default_timezone_set($timezone);
 
-function get_crash_report($pedantic = false)
+function get_crash_report()
 {
     if (!userIsAdmin($_SESSION['Username'])) {
         return;
@@ -484,22 +476,12 @@ function get_crash_report($pedantic = false)
     );
     $skip_files = array('.', '..', 'minfree', 'bounds', '');
     $PHP_errors_log = '/tmp/PHP_errors.log';
-    $excludes = array();
     $count = 0;
 
-    if (!$pedantic) {
-        $excludes[] = 'PHP Notice:';
-    }
-
     if (file_exists($PHP_errors_log)) {
-        $extra = '';
-        foreach ($excludes as $exclude) {
-            $extra .= sprintf('/usr/bin/grep -v %s | ', escapeshellarg($exclude));
-        }
         $total = shell_exec(sprintf(
-            '/bin/cat %s | %s /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-            $PHP_errors_log,
-            $extra
+            '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
+            $PHP_errors_log
         ));
         if ($total > 0) {
             $count++;
@@ -520,47 +502,16 @@ function get_crash_report($pedantic = false)
     return $savemsg;
 }
 
-function get_menu_messages()
+function get_menu_user()
 {
     global $config;
 
-    $menu_messages = '';
-
-    if (are_notices_pending()) {
-        $notices = get_notices();
-
-        if (is_array($notices)) {
-            $notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
-
-            $notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
-
-            foreach ($notices as $key => $value) {
-                $date = date("m-d-y H:i:s", $key);
-                $noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
-                $noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
-                $alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
-                $notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)." ]</a></li>";
-            }
-
-            $notice_msgs .="</ul>";
-
-            if (count($notices) == 1) {
-                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
-            } else {
-                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
-            }
-            $menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
-        }
-    } else {
-        $menu_messages .= sprintf(
-          '<span class="navbar-text">%s@%s.%s</span>',
-          $_SESSION['Username'],
-          $config['system']['hostname'],
-          $config['system']['domain']
-        );
-    }
-
-    return $menu_messages;
+    return sprintf(
+      '<span class="navbar-text">%s@%s.%s</span>',
+      $_SESSION['Username'],
+      $config['system']['hostname'],
+      $config['system']['domain']
+    );
 }
 
 function service_control_icon($service, $xs = false)

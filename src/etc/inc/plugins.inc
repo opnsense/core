@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -167,7 +167,8 @@ function plugins_interfaces()
 {
     global $config;
 
-    $stale_interfaces = array();
+    $stale_interfaces = [];
+    $changed = false;
 
     // mark previous dynamic registrations stale
     if (isset($config['interfaces'])) {
@@ -199,11 +200,15 @@ function plugins_interfaces()
                     } else {
                         $intf_config = &config_read_array('interfaces', $intf_ref);
                     }
-                    $intf_config['internal_dynamic'] = true;
+                    if (!isset($intf_config['internal_dynamic'])) {
+                        $intf_config['internal_dynamic'] = true;
+                        $changed = true;
+                    }
                     // traverse and diff interface properties with known configuration
                     foreach ($intf_data as $prop_name => $prop_value) {
                         if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || $intf_config[$prop_name] != $prop_value) {
                             $intf_config[$prop_name] = $prop_value;
+                            $changed = true;
                         }
                     }
                 }
@@ -215,8 +220,11 @@ function plugins_interfaces()
     foreach ($stale_interfaces as $intf_ref => $no_data) {
         if (isset($config['interfaces'][$intf_ref])) {
             unset($config['interfaces'][$intf_ref]);
+            $changed = true;
         }
     }
+
+    return $changed;
 }
 
 function plugins_firewall($fw)
@@ -258,7 +266,12 @@ function plugins_configure($hook, $verbose = false, $args = array())
                          * given by the plugin, which allows to securely
                          * pull more info from the configure call spot.
                          */
-                        list($argf, $argc) = explode(':', $task);
+                        if (substr_count($task, ':')) {
+                            list($argf, $argc) = explode(':', $task);
+                        } else {
+                            $argf = $task;
+                            $argc = null;
+                        }
                         if (empty($argc) || !is_numeric($argc)) {
                             $argc = 1;
                         }
@@ -271,7 +284,11 @@ function plugins_configure($hook, $verbose = false, $args = array())
                             $argf,
                             implode(',', array_slice($args, 0, $argc))
                         ));
-                        call_user_func_array($argf, array_slice($args, 0, $argc));
+                        try {
+                            call_user_func_array($argf, array_slice($args, 0, $argc));
+                        } catch (\Error $e) {
+                            error_log($e);
+                        }
                     }
                 }
             }
@@ -301,7 +318,12 @@ function plugins_run($hook, $verbose = false, $args = array())
                      * given by the plugin, which allows to securely
                      * pull more info from the configure call spot.
                      */
-                    list($argf, $argc) = explode(':', $task);
+                    if (substr_count($task, ':')) {
+                        list($argf, $argc) = explode(':', $task);
+                    } else {
+                        $argf = $task;
+                        $argc = null;
+                    }
                     if (empty($argc) || !is_numeric($argc)) {
                         $argc = 1;
                     }
@@ -314,7 +336,11 @@ function plugins_run($hook, $verbose = false, $args = array())
                         $argf,
                         implode(',', array_slice($args, 0, $argc))
                     ));
-                    $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                    try {
+                        $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                    } catch (\Error $e) {
+                        error_log($e);
+                    }
                 }
             }
         }

@@ -256,36 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     );
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['deleteip']) && is_ipaddr($_POST['deleteip'])) {
-        killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
-        $leasesfile = '/var/dhcpd/var/db/dhcpd.leases'; /* XXX needs wrapper */
-        $fin = @fopen($leasesfile, "r");
-        $fout = @fopen($leasesfile.".new", "w");
-        if ($fin) {
-            $ip_to_remove = $_POST['deleteip'];
-            $lease = '';
-            while (($line = fgets($fin, 4096)) !== false) {
-                $fields = explode(' ', $line);
-                if ($fields[0] == 'lease') {
-                    // lease segment, record ip
-                    $lease = trim($fields[1]);
-                }
-
-                if ($lease != $ip_to_remove) {
-                    fputs($fout, $line);
-                }
-
-                if ($line == "}\n") {
-                    // end of segment
-                    $lease = '';
-                }
-            }
-            fclose($fin);
-            fclose($fout);
-            @unlink($leasesfile);
-            @rename($leasesfile.".new", $leasesfile);
-
-            dhcpd_dhcp4_configure();
-        }
+        configdp_run('dhcpd remove lease', [$_POST['deleteip']]);
     }
     exit;
 }
@@ -428,7 +399,7 @@ legacy_html_escape_form_data($leases);
                   <td class="text-nowrap">
 <?php if (!empty($data['if'])): ?>
 <?php if ($data['type'] == 'dynamic'): ?>
-                      <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>&amp;ipaddr=<?=$data['ip'];?>">
+                      <a class="btn btn-default btn-xs" href="services_dhcp_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>">
                         <i class="fa fa-plus fa-fw" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>"></i>
                       </a>
 <?php if ($data['online'] != 'online'):?>

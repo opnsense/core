@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ddnsupdate', 'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver');
+      'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpd'][$if]['staticmap'][$id][$fieldname];
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mapent = array();
         $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'ddnsupdate', 'tftp', 'bootfilename', 'winsserver', 'dnsserver');
+          'ddnsdomain', 'tftp', 'bootfilename', 'winsserver', 'dnsserver');
 
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -226,7 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // boolean
         $mapent['arp_table_static_entry'] = !empty($pconfig['arp_table_static_entry']);
-        $mapent['ddnsupdate'] = !empty($pconfig['ddnsupdate']);
 
         // arrays
         $mapent['winsserver'] = array();
@@ -284,11 +283,6 @@ include("head.inc");
 <body>
 <script>
 //<![CDATA[
-  function show_ddns_config() {
-    $("#showddnsbox").hide();
-    $("#showddns").show();
-  }
-
   function show_ntp_config() {
     $("#showntpbox").hide();
     $("#showntp").show();
@@ -464,17 +458,11 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
+                  <td><a id="help_for_ddnsdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic DNS domain') ?></td>
                   <td>
-                    <div id="showddnsbox">
-                      <input type="button" onclick="show_ddns_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Dynamic DNS");?>
-                    </div>
-                    <div id="showddns" style="display:none">
-                      <input type="checkbox" value="yes" name="ddnsupdate" id="ddnsupdate" <?=!empty($pconfig['ddnsupdate']) ? "checked=\"checked\"" : ""; ?> />
-                      <b><?=gettext("Enable registration of DHCP client names in DNS.");?></b><br />
-                      <?=gettext("Note: Leave blank to disable dynamic DNS registration.");?><br />
-                      <?=gettext("Enter the dynamic DNS domain which will be used to register client names in the DNS server.");?>
-                      <input name="ddnsdomain" type="text" id="ddnsdomain" size="20" value="<?=$pconfig['ddnsdomain'];?>" />
+                    <input name="ddnsdomain" type="text" id="ddnsdomain" size="20" value="<?= html_safe($pconfig['ddnsdomain']) ?>" />
+                    <div class="hidden" data-for="help_for_ddnsdomain">
+                      <?= gettext('Enter the dynamic DNS domain which will be used to register this client in the DNS server.') ?>
                     </div>
                   </td>
                 </tr>

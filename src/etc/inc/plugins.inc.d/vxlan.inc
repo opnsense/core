@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,27 +29,40 @@
 function vxlan_configure()
 {
     return array(
-        'vxlan_prepare' => array('vxlan_configure_interface'),
-        'newwanip' => array('vxlan_configure_interface'),
+        'newwanip' => array('vxlan_configure_do'),
+        'vxlan' => array('vxlan_configure_do'),
     );
 }
 
 function vxlan_devices()
 {
-    $devices = array();
+    $names = [];
 
-    $devices[] = array('pattern' => '^vxlan', 'volatile' => true, 'configurable' => true);
+    foreach (iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems()) as $vxlan) {
+        $names["vxlan{$vxlan->deviceId}"] = [
+            'descr' => sprintf('vxlan%s %s (VNI %s)', $vxlan->deviceId, $vxlan->vxlanremote, $vxlan->vxlanid),
+            'name' => "vxlan{$vxlan->deviceId}",
+        ];
+    }
 
-    return $devices;
+    return [[
+        'function' => 'vxlan_configure_device',
+        'configurable' => true,
+        'pattern' => '^vxlan',
+        'volatile' => true,
+        'type' => 'vxlan',
+        'names' => $names,
+    ]];
 }
 
-function vxlan_configure_interface($verbose = false)
+function vxlan_configure_do($verbose = false, $device = null)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $interfaces_details = legacy_interfaces_details();
     $configured_devices = array();
     $changed_devices = array();
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems());
+
     if ($verbose && !empty($vxlans)) {
         echo 'Configuring VXLAN interfaces...';
         flush();
@@ -68,18 +81,26 @@ function vxlan_configure_interface($verbose = false)
 
     // (re)configure vxlan devices
     foreach ($vxlans as $vxlan) {
+        $device_name = "vxlan{$vxlan->deviceId}";
+
+        if ($device !== null && $device != $device_name) {
+            $configured_devices[] = $device_name;
+            continue;
+        }
+
         if (!in_array((string)$vxlan->vxlanlocal, $known_addresses)) {
             // skip when interface address is not assigned (yet)
             continue;
         }
-        $device_name = "vxlan{$vxlan->deviceId}";
+
         $configured_devices[] = $device_name;
-        $current_settings = array(
-            "vxlanid" => null,
-            "vxlanlocal" => null,
-            "vxlanremote" => null,
-            "vxlangroup" => null
-        );
+        $current_settings = [
+            'vxlanid' => null,
+            'vxlanlocal' => null,
+            'vxlanremote' => null,
+            'vxlangroup' => null,
+        ];
+
         if (empty($interfaces_details[$device_name])) {
             // new device
             mwexecf('/sbin/ifconfig vxlan create name %s', array($device_name));
@@ -117,7 +138,8 @@ function vxlan_configure_interface($verbose = false)
             $changed_devices[] = $device_name;
         }
     }
-    // destroy non existing interfaces
+
+    // destroy nonexistent interfaces
     foreach ($interfaces_details as $intf => $data) {
         if (strpos($intf, "vxlan") === 0) {
             if (!in_array($intf, $configured_devices)) {
@@ -125,9 +147,11 @@ function vxlan_configure_interface($verbose = false)
             }
         }
     }
+
     if ($verbose && !empty($vxlans)) {
         echo "done.\n";
     }
+
     // configure interface when device has changed
     foreach ($changed_devices as $device_name) {
         $friendly_if = convert_real_interface_to_friendly_interface_name($device_name);
@@ -135,4 +159,9 @@ function vxlan_configure_interface($verbose = false)
             interface_configure($verbose, $friendly_if);
         }
     }
+}
+
+function vxlan_configure_device($device)
+{
+    vxlan_configure_do(false, $device);
 }

@@ -29,7 +29,6 @@
 namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
 /**
@@ -38,48 +37,6 @@ use OPNsense\Core\Config;
  */
 class TunnelController extends ApiControllerBase
 {
-    /***
-     * generic legacy search action, reads post variables for filters and page navigation.
-     */
-    private function search($records)
-    {
-        $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
-        $currentPage = intval($this->request->getPost('current', 'int', 1));
-        $offset = ($currentPage - 1) * $itemsPerPage;
-        $entry_keys = array_keys($records);
-        if ($this->request->hasPost('searchPhrase') && $this->request->getPost('searchPhrase') !== '') {
-            $searchPhrase = (string)$this->request->getPost('searchPhrase');
-            $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $records) {
-                foreach ($records[$key] as $itemval) {
-                    if (stripos($itemval, $searchPhrase) !== false) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-        }
-        $formatted = array_map(function ($value) use (&$records) {
-            foreach ($records[$value] as $ekey => $evalue) {
-                $item[$ekey] = $evalue;
-            }
-            return $item;
-        }, array_slice($entry_keys, $offset, $itemsPerPage));
-
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
-            $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($formatted, $keys[0]);
-            array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $formatted);
-        }
-
-        return [
-           'total' => count($entry_keys),
-           'rowCount' => $itemsPerPage,
-           'current' => $currentPage,
-           'rows' => $formatted,
-        ];
-    }
-
     /***
      * search phase 1 entries in legacy config returning a standard structure as we use in the mvc variant
      */
@@ -97,7 +54,7 @@ class TunnelController extends ApiControllerBase
               'cast128' => 'CAST128',
               'des' => 'DES'
         ];
-        $ph1authmethos = [
+        $ph1authmethods = [
             'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
             'xauth_rsa_server' => 'Mutual RSA + Xauth',
             'xauth_psk_server' => 'Mutual PSK + Xauth',
@@ -145,14 +102,14 @@ class TunnelController extends ApiControllerBase
                     "id" => intval((string)$p1->ikeid),   // ikeid should be unique
                     "seqid" => $idx,
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
-                    "protocol" => $p1->protocol == "inet" ? "IPv4" : "IPv6",
+                    "protocol" => $p1->protocol == "inet46" ? "IPv4+6" : ($p1->protocol == "inet6" ? "IPv6" : "IPv4"),
                     "iketype" => $ph1type[(string)$p1->iketype],
                     "interface" => !empty($ifs[$interface]) ? $ifs[$interface] : $interface,
                     "remote_gateway" => (string)$p1->{"remote-gateway"},
                     "mobile" => !empty((string)$p1->mobile),
                     "mode" => (string)$p1->mode,
                     "proposal" => $ph1proposal,
-                    "authentication" => $ph1authmethos[(string)$p1->authentication_method],
+                    "authentication" => $ph1authmethods[(string)$p1->authentication_method],
                     "description" => (string)$p1->descr
                 ];
                 $item['type'] = "{$item['protocol']} {$item['iketype']}";
@@ -160,7 +117,7 @@ class TunnelController extends ApiControllerBase
                 $idx++;
             }
         }
-        return $this->search($items);
+        return $this->searchRecordsetBase($items);
     }
 
     /***
@@ -280,6 +237,7 @@ class TunnelController extends ApiControllerBase
                     "id" => $p2idx,
                     "uniqid" => (string)$p2->uniqid, // XXX: a bit convoluted, should probably replace id at some point
                     "ikeid" => $ikeid,
+                    "reqid" => (string)$p2->reqid,
                     "enabled" => empty((string)$p2->disabled) ? "1" : "0",
                     "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
                     "mode" => $p2mode,
@@ -292,7 +250,7 @@ class TunnelController extends ApiControllerBase
                 $p2idx++;
             }
         }
-        return $this->search($items);
+        return $this->searchRecordsetBase($items);
     }
 
     /**

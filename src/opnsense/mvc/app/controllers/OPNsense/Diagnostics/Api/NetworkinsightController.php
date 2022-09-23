@@ -86,14 +86,28 @@ class NetworkinsightController extends ApiControllerBase
             if ($graph_data != null) {
                 ksort($graph_data);
                 $timeseries = array();
+                // collect all measurement classes (interface and direction) as the output structure should
+                // zero out unknown series.
+                $timeserie_keys = [];
                 foreach ($graph_data as $timeserie => $timeserie_data) {
                     foreach ($timeserie_data as $timeserie_key => $payload) {
+                        if (!in_array($timeserie_key, $timeserie_keys)) {
+                            $timeserie_keys[] = $timeserie_key;
+                        }
+                    }
+                }
+                foreach ($graph_data as $timeserie => $timeserie_data) {
+                    foreach ($timeserie_keys as $timeserie_key) {
+                        $payload = !empty($timeserie_data[$timeserie_key]) ? $timeserie_data[$timeserie_key] : [];
                         if (!isset($timeseries[$timeserie_key])) {
                             $timeseries[$timeserie_key] = array();
                         }
                         // measure value
                         $measure_val = 0;
-                        if ($measure == "octets") {
+                        if (empty($payload)) {
+                            // missing measurement, return 0 for timeserie
+                            $measure_val = 0;
+                        } elseif ($measure == "octets") {
                             $measure_val = $payload['octets'];
                         } elseif ($measure == "packets") {
                             $measure_val = $payload['packets'];
@@ -105,7 +119,7 @@ class NetworkinsightController extends ApiControllerBase
                             $measure_val = $payload['packets'] / $payload['resolution'];
                         }
                         // add to timeseries
-                        $timeseries[$timeserie_key][] = array((int)$timeserie * 1000, $measure_val);
+                        $timeseries[$timeserie_key][] = [(int)$timeserie * 1000, $measure_val];
                     }
                 }
                 foreach ($timeseries as $timeserie_key => $data) {

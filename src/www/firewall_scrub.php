@@ -248,7 +248,7 @@ $( document ).ready(function() {
                       <td>
                         <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" data-for="help_for_scrub_interface_disable">
-                          <?=gettext("Disable all default interface scrubing rules,".
+                          <?=gettext("Disable all default interface scrubbing rules,".
                                      " mss clamping will also be disabled when you check this.".
                                      " Detailed settings specified below will still be used.");?>
                         </div>

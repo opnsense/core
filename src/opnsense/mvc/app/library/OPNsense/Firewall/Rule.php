@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -246,15 +246,19 @@ abstract class Rule
                     $rule[$target] = 'any';
                 } elseif (!empty($rule[$tag]['network'])) {
                     $network_name = $rule[$tag]['network'];
-                    $matches = "";
+                    $matches = '';
                     if ($network_name == '(self)') {
-                        $rule[$target] = "(self)";
+                        $rule[$target] = $network_name;
                     } elseif (preg_match("/^(wan|lan|opt[0-9]+)ip$/", $network_name, $matches)) {
                         if (!empty($interfaces[$matches[1]]['if'])) {
-                            $rule[$target] = "({$interfaces["{$matches[1]}"]['if']})";
+                            $rule[$target] = "({$interfaces[$matches[1]]['if']})";
                         }
                     } elseif (!empty($interfaces[$network_name]['if'])) {
                         $rule[$target] = "({$interfaces[$network_name]['if']}:network)";
+                        if ($rule['ipprotocol'] == 'inet6' && $this instanceof FilterRule && $rule['interface'] == $network_name) {
+                            /* historically pf(4) excludes link-local on :network to avoid anti-spoof overlap */
+                            $rule[$target] .= ',fe80::/10';
+                        }
                     } elseif (Util::isIpAddress($rule[$tag]['network']) || Util::isSubnet($rule[$tag]['network'])) {
                         $rule[$target] = $rule[$tag]['network'];
                     } elseif (Util::isAlias($rule[$tag]['network'])) {
@@ -276,10 +280,12 @@ abstract class Rule
                     $rule[$target] = "!" . $rule[$target];
                 }
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
-                    $port = str_replace('-', ':', $rule[$tag]['port']);
+                    $port = !empty($rule[$tag]['port']) ? str_replace('-', ':', $rule[$tag]['port']) : null;
                     if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
                         // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
                         $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
+                    } elseif ($port == 'any') {
+                        $port = null;
                     }
                     if (Util::isPort($port)) {
                         $rule[$target . "_port"] = $port;

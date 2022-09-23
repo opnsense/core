@@ -102,17 +102,18 @@ class Plugin
     {
         $this->gateways = $gateways;
         foreach ($gateways->gatewaysIndexedByName(false, true) as $key => $gw) {
-            if (!empty($gw['gateway_interface']) || Util::isIpAddress($gw['gateway'])) {
-                if (Util::isIpAddress($gw['gateway'])) {
-                    $logic = "route-to ( {$gw['if']} {$gw['gateway']} )";
+            if (!empty($gw['gateway_interface']) || Util::isIpAddress($gw['gateway'] ?? null)) {
+                $this->gatewayMapping[$key] = [
+                    "interface" => $gw['if'],
+                    "proto" => $gw['ipprotocol'],
+                    "type" => "gateway"
+                ];
+                if (!empty($gw['gateway']) && Util::isIpAddress($gw['gateway'])) {
+                    $this->gatewayMapping[$key]['logic'] = "route-to ( {$gw['if']} {$gw['gateway']} )";
+                    $this->gatewayMapping[$key]['gateway'] = $gw['gateway'];
                 } else {
-                    $logic = "route-to {$gw['if']}";
+                    $this->gatewayMapping[$key]['logic'] = "route-to {$gw['if']}";
                 }
-                $this->gatewayMapping[$key] = array("logic" => $logic,
-                                                    "interface" => $gw['if'],
-                                                    "gateway" => $gw['gateway'],
-                                                    "proto" => $gw['ipprotocol'],
-                                                    "type" => "gateway");
             }
         }
     }
@@ -146,11 +147,15 @@ class Plugin
                 }
                 if (count($routeto) > 0) {
                     $routetologic = "route-to {" . implode(' ', $routeto) . "}";
-                    if (count($routeto) > 1) {
+                    if (!empty($gwgr[0]['poolopts'])) {
+                        // Since Gateways->getGroups() returns detail items, we have no other choice than
+                        // to copy top level attributes into the details if they matter (poolopts)
+                        $routetologic .= " {$gwgr[0]['poolopts']} ";
+                    } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                    }
-                    if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
-                        $routetologic .= " sticky-address ";
+                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                            $routetologic .= " sticky-address ";
+                        }
                     }
                     $this->gatewayMapping[$key] = array("logic" => $routetologic,
                                                         "proto" => $proto,

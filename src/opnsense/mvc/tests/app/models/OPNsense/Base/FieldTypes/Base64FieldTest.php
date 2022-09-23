@@ -45,7 +45,7 @@ class Base64FieldTest extends Field_Framework_TestCase
 
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new Base64Field();
         $field->setRequired("Y");

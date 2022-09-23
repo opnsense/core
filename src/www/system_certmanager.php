@@ -29,12 +29,6 @@
 
 require_once('guiconfig.inc');
 require_once('system.inc');
-require_once('phpseclib/File/X509.php');
-require_once('phpseclib/File/ASN1.php');
-require_once('phpseclib/Math/BigInteger.php');
-require_once('phpseclib/File/ASN1/Element.php');
-require_once('phpseclib/Crypt/RSA.php');
-require_once('phpseclib/Crypt/Hash.php');
 
 function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg, $extns)
 {
@@ -105,7 +99,7 @@ function parse_csr($csr_str)
         return array('parse_success' => false);
     }
 
-    $x509_lib = new \phpseclib\File\X509();
+    $x509_lib = new \phpseclib3\File\X509();
     $csr = $x509_lib->loadCSR($csr_str);
     if ($csr === false) {
         return array('parse_success' => false);
@@ -1034,7 +1028,7 @@ include("head.inc");
                         BootstrapDialog.show({
                                 type:BootstrapDialog.TYPE_DANGER,
                                 title: "<?= gettext("Unknown Error");?>",
-                                message: "<?= gettext("Unknown error occured. Try again.");?>",
+                                message: "<?= gettext("Unknown error occurred. Try again.");?>",
                                 buttons: [
                                     {
                                         label: "<?=gettext("OK");?>",
@@ -1465,7 +1459,7 @@ $( document ).ready(function() {
                           <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $key_usages['nonRepudiation']; ?>, <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
                           <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment']; ?></li>
                           <li><strong><?= gettext('Combined Client/Server Certificate'); ?></strong>: <?= $key_usages['nonRepudiation']; ?>, <?= $key_usages['digitalSignature']; ?>, <?= $key_usages['keyEncipherment'];?></li>
-                          <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraits.'); ?></i></li>
+                          <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraints.'); ?></i></li>
                         </ul>
                       </div>
                     </td>
@@ -1488,7 +1482,7 @@ $( document ).ready(function() {
                         <li><strong><?= gettext('Client Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.2']; ?></li>
                         <li><strong><?= gettext('Server Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.1'] ?>, <?= $extended_key_usages['1.3.6.1.5.5.8.2.2']; ?></li>
                         <li><strong><?= gettext('Combined Client/Server Certificate'); ?></strong>: <?= $extended_key_usages['1.3.6.1.5.5.7.3.2']; ?>, <?= $extended_key_usages['1.3.6.1.5.5.7.3.1'] ?>, <?= $extended_key_usages['1.3.6.1.5.5.8.2.2']; ?></li>
-                        <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraits.'); ?></i></li>
+                        <li><strong><?= gettext('Certificate Authority'); ?></strong>: <i><?= gettext('None. Just add CA option in basicConstraints.'); ?></i></li>
                       </ul>
                     </div>
                     </td>

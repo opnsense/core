@@ -63,29 +63,20 @@ echo "done.\n";
  */
 convert_config();
 
-/*
- * Now mute console messages from kernel for this script, it
- * has consequences for printing bootup info and can clobber
- * stty probing during interface auto-detection.
- */
-system_console_mute();
-
 system_devd_configure(true);
 system_login_configure(true);
 
 /*
- *  Determine if we need to throw an interface exception
- *  and ask the user to reassign interfaces.  This will
- *  avoid a reboot and thats a good thing.
+ * Determine if we need to throw an interface exception
+ * and ask the user to reassign interfaces.  This will
+ * avoid a reboot and thats a good thing.
  */
 if (is_interface_mismatch()) {
     echo "\nDefault interfaces not found -- Running interface assignment option.\n";
     while (!set_networking_interfaces_ports(true));
 }
 
-/* loopback device is required early for syslog */
-interfaces_loopback_configure(true);
-
+interfaces_loopback_configure(true); /* loopback device is required early for syslog */
 system_kernel_configure(true);
 system_sysctl_configure(true);
 system_timezone_configure(true);
@@ -95,38 +86,25 @@ system_hostname_configure(true);
 system_hosts_generate(true);
 system_syslog_start(true);
 
+filter_configure_sync(true, false); /* apply default policy before interface setup */
+interfaces_hardware(true);
 interfaces_configure(true);
-
 system_resolvconf_generate(true);
 filter_configure_sync(true);
 plugins_configure('early', true);
-system_routing_configure(true);
+system_routing_configure(true, null, false);
 
 system_hosts_generate(true);
 plugins_configure('dhcp', true);
 plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
-prefer_ipv4_or_ipv6();
-plugins_configure('monitor', true);
+plugins_configure('monitor', true, [null, true]);
 filter_configure_sync(true);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
-rrd_configure(true);
+rrd_configure(true, true);
 
-/* XXX this seems misplaced */
-system_powerd_configure(true);
-
-/*
- * Give syslog a kick after everything else has been
- * initialized, otherwise it can occasionally fail to
- * route syslog messages properly on both IPv4 and IPv6.
- *
- * XXX dynamic addressing might not be set up here yet,
- * because these events are blocked by /var/run/booting
- */
-system_syslog_start(true);
-
-system_console_unmute();
+system_powerd_configure(true); /* XXX this seems misplaced */
 
 exit(0);

@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -28,7 +28,7 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	22.1
+CORE_ABI?=	22.7
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
 CORE_NICKNAME?=	Not Yet
@@ -93,6 +93,9 @@ CORE_VERSION?=	${CORE_COMMIT:[1]}
 CORE_REVISION?=	${CORE_COMMIT:[2]}
 CORE_HASH?=	${CORE_COMMIT:[3]}
 
+CORE_DEVEL?=	master
+CORE_STABLE?=	stable/${CORE_ABI}
+
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
 CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}
 
@@ -130,16 +133,15 @@ CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
-			dhcpleases \
 			dnsmasq \
 			dpinger \
 			expiretable \
 			filterlog \
-			ifinfo \
-			iftop \
 			flock \
 			flowd \
 			hostapd \
+			ifinfo \
+			iftop \
 			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			lighttpd \
@@ -159,12 +161,10 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-filter \
 			php${CORE_PHP}-gettext \
 			php${CORE_PHP}-google-api-php-client \
-			php${CORE_PHP}-json \
 			php${CORE_PHP}-ldap \
-			php${CORE_PHP}-openssl \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
-			php${CORE_PHP}-phalcon4 \
+			php${CORE_PHP}-phalcon \
 			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
 			php${CORE_PHP}-simplexml \
@@ -174,11 +174,12 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-zlib \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython2 \
+			py${CORE_PYTHON}-dnspython \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON}-vici \
 			radvd \
 			rrdtool \
 			samplicator \
@@ -196,13 +197,8 @@ WRKSRC?=${WRKDIR}/src
 PKGDIR?=${WRKDIR}/pkg
 MFCDIR?=${WRKDIR}/mfc
 
-WANTS=		p5-File-Slurp php${CORE_PHP}-pear-PHP_CodeSniffer \
-		phpunit7-php${CORE_PHP} py${CORE_PYTHON}-pycodestyle
-
-.for WANT in ${WANTS}
-want-${WANT}:
-	@${PKG} info ${WANT} > /dev/null
-.endfor
+debug:
+	@${VERSIONBIN} ${@} > /dev/null
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
@@ -249,9 +245,8 @@ manifest:
 	@echo "}"
 
 .if ${.TARGETS:Mupgrade}
-PKG_FORMAT?=	tar
-.else
-PKG_FORMAT?=	txz
+# lighter package format for quick completion
+PKG_FORMAT?=	-f tar
 .endif
 
 PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
@@ -329,7 +324,7 @@ package: plist-check package-check clean-wrksrc
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@PORTSDIR=${.CURDIR} ${PKG} create -f ${PKG_FORMAT} -v -m ${WRKSRC} \
+	@PORTSDIR=${.CURDIR} ${PKG} create ${PKG_FORMAT} -v -m ${WRKSRC} \
 	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
 
 upgrade-check:
@@ -337,15 +332,15 @@ upgrade-check:
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
-	@if [ "$$(${VERSIONBIN} -v)" = "${CORE_PKGVERSION}" ]; then \
-		echo "Installed version already matches ${CORE_PKGVERSION}" >&2; \
+	@if [ "$$(${VERSIONBIN} -vH)" = "${CORE_PKGVERSION} ${CORE_HASH}" ]; then \
+		echo "Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
 		exit 1; \
 	fi
 
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
-	@${PKG} add ${PKGDIR}/*.${PKG_FORMAT}
-	@pluginctl webgui
+	@${PKG} add ${PKGDIR}/*.pkg
+	@${.CURDIR}/src/sbin/pluginctl -c webgui
 
 lint-shell:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
@@ -391,10 +386,10 @@ sweep:
 
 STYLEDIRS?=	src/etc/inc src/opnsense
 
-style-python: want-py${CORE_PYTHON}-pycodestyle
+style-python: debug
 	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
 
-style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-php: debug
 	@: > ${WRKDIR}/style.out
 .for STYLEDIR in ${STYLEDIRS}
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} \
@@ -407,23 +402,17 @@ style-php: want-php${CORE_PHP}-pear-PHP_CodeSniffer
 	@cat ${WRKDIR}/style.out | ${PAGER}
 	@rm ${WRKDIR}/style.out
 
-style-fix: want-php${CORE_PHP}-pear-PHP_CodeSniffer
+style-fix: debug
 .for STYLEDIR in ${STYLEDIRS}
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
 
 style: style-python style-php
 
-license: want-p5-File-Slurp
+license: debug
 	@${.CURDIR}/Scripts/license > ${.CURDIR}/LICENSE
 
 sync: license plist-fix
-
-dhparam:
-.for BITS in 1024 2048 4096
-	${OPENSSL} dhparam -out \
-	    ${.CURDIR}/src/etc/dh-parameters.${BITS}.sample ${BITS}
-.endfor
 
 ARGS=	diff mfc
 
@@ -442,53 +431,70 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endfor
 
 ensure-stable:
-	@if ! git show-ref --verify --quiet refs/heads/stable/${CORE_ABI}; then \
-		git update-ref refs/heads/stable/${CORE_ABI} refs/remotes/origin/stable/${CORE_ABI}; \
-		git config branch.stable/${CORE_ABI}.merge refs/heads/stable/${CORE_ABI}; \
-		git config branch.stable/${CORE_ABI}.remote origin; \
+	@if ! git show-ref --verify --quiet refs/heads/${CORE_STABLE}; then \
+		git update-ref refs/heads/${CORE_STABLE} refs/remotes/origin/${CORE_STABLE}; \
+		git config branch.${CORE_STABLE}.merge refs/heads/${CORE_STABLE}; \
+		git config branch.${CORE_STABLE}.remote origin; \
 	fi
 
 diff: ensure-stable
-	@git diff --stat -p stable/${CORE_ABI} ${.CURDIR}/${diff_ARGS:[1]}
+	@if [ "$$(git tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
+		git diff --stat -p ${diff_ARGS:[1]}; \
+	else \
+		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
+	fi
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
 .if exists(${MFC})
 	@cp -r ${MFC} ${MFCDIR}
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@rm -rf ${MFC}
+	@mkdir -p $$(dirname ${MFC})
 	@mv ${MFCDIR}/$$(basename ${MFC}) ${MFC}
 	@git add -f .
 	@if ! git diff --quiet HEAD; then \
-		git commit -m "${MFC}: sync with master"; \
+		git commit -m "${MFC}: sync with ${CORE_DEVEL}"; \
 	fi
 .else
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@if ! git cherry-pick -x ${MFC}; then \
 		git cherry-pick --abort; \
 	fi
 .endif
-	@git checkout master
+	@git checkout ${CORE_DEVEL}
 .endfor
 
 stable:
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 
-master:
-	@git checkout master
+devel ${CORE_DEVEL}:
+	@git checkout ${CORE_DEVEL}
 
 rebase:
-	@git checkout stable/${CORE_ABI}
+	@git checkout ${CORE_STABLE}
 	@git rebase -i
-	@git checkout master
+	@git checkout ${CORE_DEVEL}
 
-test: want-phpunit7-php${CORE_PHP}
+log: ensure-stable
+	@git log --stat -p ${CORE_STABLE}
+
+push:
+	@git checkout ${CORE_STABLE}
+	@git push
+	@git checkout ${CORE_DEVEL}
+
+migrate:
+	@src/opnsense/mvc/script/run_migrations.php
+
+test: debug
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
 		exit 1; \
 	fi
 	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
-	    phpunit --configuration PHPunit.xml
+	    phpunit --configuration PHPunit.xml || true; \
+	    rm -f .phpunit.result.cache
 
 checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \

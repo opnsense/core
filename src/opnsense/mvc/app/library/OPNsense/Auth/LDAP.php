@@ -593,8 +593,8 @@ class LDAP extends Base implements IAuthConnector
             $this->lastAuthProperties['dn'] = $user_dn;
             if ($this->ldapReadProperties) {
                 $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', 'memberOf']);
-                $info = @ldap_get_entries($this->ldapHandle, $sr);
-                if ($info['count'] != 0) {
+                $info = $sr !== false ? @ldap_get_entries($this->ldapHandle, $sr) : [];
+                if (!empty($info['count'])) {
                     foreach ($info[0] as $ldap_key => $ldap_value) {
                         if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
                             if (isset($ldap_value['count'])) {

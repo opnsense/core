@@ -58,6 +58,7 @@ class FilterRule extends Rule
         'state' => 'parseState',
         'set-prio' => 'parsePlain, set prio ',
         'prio' => 'parsePlain, prio ',
+        'tos' => 'parsePlain, tos ',
         'tag' => 'parsePlain, tag ',
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
@@ -130,7 +131,7 @@ class FilterRule extends Rule
                     $rule['reply'] = "reply-to {$if} ";
                 }
             }
-        } elseif (!isset($rule['disablereplyto']) && $rule['direction'] != 'any') {
+        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any') {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
@@ -209,7 +210,7 @@ class FilterRule extends Rule
                 }
             }
             // restructure state settings for easier output parsing
-            if (!empty($rule['statetype']) && ($rule['type'] == 'pass' || empty($rule['type']))) {
+            if (!empty($rule['statetype']) && (empty($rule['type']) || $rule['type'] == 'pass')) {
                 $rule['state'] = array('type' => 'keep', 'options' => array());
                 switch ($rule['statetype']) {
                     case 'none':
@@ -232,7 +233,7 @@ class FilterRule extends Rule
                             $rule['state']['options'][] = $state_tag . " " . $rule[$state_tag];
                         }
                     }
-                    if (is_numeric($rule['adaptivestart']) && is_numeric($rule['adaptiveend'])) {
+                    if (!empty($rule['adaptivestart']) && is_numeric($rule['adaptivestart']) && is_numeric($rule['adaptiveend'])) {
                         $rule['state']['options'][] = "adaptive.start " . $rule['adaptivestart'] . ", adaptive.end " . $rule['adaptiveend'];
                     }
                     if (!empty($rule['statetimeout'])) {
@@ -246,7 +247,7 @@ class FilterRule extends Rule
                 }
             }
             // icmp-type switch (ipv4/ipv6)
-            if ($rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
+            if (!empty($rule['protocol']) && $rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
                 if ($rule['ipprotocol'] == 'inet') {
                     $rule['icmp-type'] = $rule['icmptype'];
                 } elseif ($rule['ipprotocol'] == 'inet6') {

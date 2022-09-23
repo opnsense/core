@@ -38,12 +38,10 @@ require_once("interfaces.inc");
 function crypto_modules()
 {
     $modules = array(
-        'aesni' => gettext('AES-NI CPU-based Acceleration'),
-        'glxsb' => gettext('AMD Geode LX Security Block'),
         'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
         'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
+        'qat' => gettext('Intel QuickAssist Technology'),
         'safe' => gettext('SafeNet Crypto Accelerator'),
-        'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
     );
     $available = array();
 
@@ -76,12 +74,13 @@ function thermal_modules()
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
-    $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
+    $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? explode(',', $config['system']['crypto_hardware']) : [];
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['use_mfs_var'] = isset($config['system']['use_mfs_var']);
+    $pconfig['max_mfs_var'] = $config['system']['max_mfs_var'] ?? null;
     $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
+    $pconfig['max_mfs_tmp'] = $config['system']['max_mfs_tmp'] ?? null;
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
-    $pconfig['dhparamusage'] = !empty($config['system']['dhparamusage']) ? $config['system']['dhparamusage'] : null;
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
@@ -104,8 +103,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], crypto_modules())) {
-        $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
+    if (!empty($pconfig['crypto_hardware'])) {
+        if (count(array_intersect($pconfig['crypto_hardware'], crypto_modules())) == count($pconfig['crypto_hardware'])) {
+            $input_errors[] = gettext('Please select a valid Cryptographic Accelerator.');
+        }
+    } else {
+        $pconfig['crypto_hardware'] = [];
+    }
+
+    if (isset($pconfig['max_mfs_var']) && $pconfig['max_mfs_var'] != '') {
+        if (!is_numeric($pconfig['max_mfs_var'])) {
+            $input_errors[] = gettext('Memory usage percentage is not a number.');
+        } else if ($pconfig['max_mfs_var'] < 0 || $pconfig['max_mfs_var'] > 100) {
+            $input_errors[] = gettext('Memory usage percentage out of bounds.');
+        }
+    }
+
+    if (isset($pconfig['max_mfs_tmp']) && $pconfig['max_mfs_tmp'] != '') {
+        if (!is_numeric($pconfig['max_mfs_tmp'])) {
+            $input_errors[] = gettext('Memory usage percentage is not a number.');
+        } else if ($pconfig['max_mfs_tmp'] < 0 || $pconfig['max_mfs_tmp'] > 100) {
+            $input_errors[] = gettext('Memory usage percentage out of bounds.');
+        }
     }
 
     if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], thermal_modules())) {
@@ -123,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['powerd_battery_mode'] = $pconfig['powerd_battery_mode'];
         $config['system']['powerd_normal_mode'] = $pconfig['powerd_normal_mode'];
 
-        if ($pconfig['crypto_hardware']) {
-            $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
+        if (!empty($pconfig['crypto_hardware'])) {
+            $config['system']['crypto_hardware'] = implode(',', $pconfig['crypto_hardware']);
         } elseif (isset($config['system']['crypto_hardware'])) {
             unset($config['system']['crypto_hardware']);
         }
@@ -141,10 +160,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['use_mfs_var']);
         }
 
+        if (isset($pconfig['max_mfs_var']) && $pconfig['max_mfs_var'] != '') {
+            $pconfig['max_mfs_var'] = trim($pconfig['max_mfs_var']);
+            $config['system']['max_mfs_var'] = $pconfig['max_mfs_var'];
+        } elseif (isset($config['system']['max_mfs_var'])) {
+            unset($config['system']['max_mfs_var']);
+        }
+
         if (!empty($pconfig['use_mfs_tmp'])) {
             $config['system']['use_mfs_tmp'] = true;
         } elseif (isset($config['system']['use_mfs_tmp'])) {
             unset($config['system']['use_mfs_tmp']);
+        }
+
+        if (isset($pconfig['max_mfs_tmp']) && $pconfig['max_mfs_tmp'] != '') {
+            $pconfig['max_mfs_tmp'] = trim($pconfig['max_mfs_tmp']);
+            $config['system']['max_mfs_tmp'] = $pconfig['max_mfs_tmp'];
+        } elseif (isset($config['system']['max_mfs_tmp'])) {
+            unset($config['system']['max_mfs_tmp']);
         }
 
         if (!empty($pconfig['use_swap_file'])) {
@@ -178,13 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['captiveportalbackup']);
         }
 
-        if (!empty($pconfig['dhparamusage'])) {
-            $config['system']['dhparamusage'] = $pconfig['dhparamusage'];
-        } elseif (isset($config['system']['dhparamusage'])) {
-            unset($config['system']['dhparamusage']);
-        }
-
-        // System Sounds
         if (!empty($pconfig['disablebeep'])) {
             $config['system']['disablebeep'] = true;
         } elseif (isset($config['system']['disablebeep'])) {
@@ -235,30 +261,11 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_dhparamusage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Diffie-Hellman parameters') ?></td>
-                <td>
-                  <select name="dhparamusage" class="selectpicker" data-style="btn-default" id="dhparamusage">
-                    <option value="" <?= $pconfig['dhparamusage'] == '' ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
-                    <option value="rfc7919" <?= $pconfig['dhparamusage'] == 'rfc7919' ? "selected='selected'" : '' ?>><?=gettext('RFC 7919') ?></option>
-                    <option value="weekly" <?= $pconfig['dhparamusage'] == 'weekly' ? "selected='selected'" : '' ?>><?=gettext('Weekly renewal') ?></option>
-                    <option value="monthly" <?= $pconfig['dhparamusage'] == 'monthly' ? "selected='selected'" : '' ?>><?=gettext('Monthly renewal') ?></option>
-                    <option value="custom" <?= $pconfig['dhparamusage'] == 'custom' ? "selected='selected'" : '' ?>><?=gettext('Custom renewal') ?></option>
-                  </select>
-                  <div class="hidden" data-for="help_for_dhparamusage">
-                    <?=gettext('Diffie-Hellman parameters are statically provided and updated at least twice per year in software updates. ' .
-                               'RFC 7919 predefines static recommendations instead, which are commonly known and verfiable by clients. ' .
-                               'You can choose to regenerate unqiue parameters locally instead according to a predefined or custom schedule. ' .
-                               'In case of custom renewal make sure to set up the respective cron job or rotate the files in some other way.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
                 <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Hardware acceleration') ?></td>
                 <td>
-                  <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
-                    <option value=""><?=gettext("None"); ?></option>
+                  <select name="crypto_hardware[]" id="crypto_hardware" class="selectpicker" multiple="multiple" data-style="btn-default" title="<?= html_safe(gettext('None')) ?>">
 <?php foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr): ?>
-                    <option value="<?= html_safe($cryptomod_name) ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
+                    <option value="<?= html_safe($cryptomod_name) ?>" <?= in_array($cryptomod_name, $pconfig['crypto_hardware']) ? 'selected="selected"' : '' ?>>
                       <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
                     </option>
 <?php endforeach ?>
@@ -484,13 +491,22 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var RAM disk'); ?></td>
+                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var/log RAM disk'); ?></td>
                 <td>
-                  <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?=!empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext("Use memory file system for /var"); ?>
+                  <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?= !empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '' ?>/>
+                  <?= gettext('Use memory file system for /var/log') ?>
                   <div class="hidden" data-for="help_for_use_mfs_var">
-                    <?=gettext("Set this if you wish to use /var as a RAM disk (memory file system disks) " .
-                      "rather than using the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
+                    <?= gettext('Set this if you wish to use /var/log as a RAM disk (memory file system disks) ' .
+                      'rather than using the hard disk. Setting this will cause the log data to be lost on reboot.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_max_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var/log RAM usage'); ?></td>
+                <td>
+                  <input name="max_mfs_var" type="text" id="max_mfs_var" placeholder="50" value="<?= html_safe($pconfig['max_mfs_var']) ?>"/>
+                  <div class="hidden" data-for="help_for_max_mfs_var">
+                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited, which will additionally include all swap space.') ?>
                   </div>
                 </td>
               </tr>
@@ -501,6 +517,15 @@ include("head.inc");
                   <?=gettext('Use memory file system for /tmp'); ?>
                   <div class="hidden" data-for="help_for_use_mfs_tmp">
                     <?= gettext('Set this if you wish to use /tmp as a RAM disk (memory file system disk) rather than using the hard disk.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_max_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM usage'); ?></td>
+                <td>
+                  <input name="max_mfs_tmp" type="text" id="max_mfs_tmp" placeholder="50" value="<?= html_safe($pconfig['max_mfs_tmp']) ?>"/>
+                  <div class="hidden" data-for="help_for_max_mfs_tmp">
+                    <?= gettext('Percentage of RAM used for the respective memory disk. A value of "0" means unlimited, which will additionally include all swap space.') ?>
                   </div>
                 </td>
               </tr>

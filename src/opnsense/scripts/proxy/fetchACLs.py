@@ -272,7 +272,7 @@ class DomainSorter(object):
 def filename_in_ignorelist(bfilename, filename_ext):
     """ ignore certain files from processing.
         :param bfilename: basefilename to inspect
-        :param filename_ext: extention of the filename
+        :param filename_ext: extension of the filename
     """
     if filename_ext in ['pdf', 'txt', 'doc']:
         return True

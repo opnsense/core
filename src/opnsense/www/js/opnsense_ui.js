@@ -571,11 +571,11 @@ $.fn.SimpleActionButton = function (params) {
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || data['status'].toLowerCase().trim() != 'ok') && data['status']) {
+                    if ((status != "success" || ('status' in data && data['status'].toLowerCase().trim() != 'ok')) && data['status']) {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
-                              message: data['status'],
+                              message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
                     }

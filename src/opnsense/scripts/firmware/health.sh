@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -216,6 +216,25 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 set_check kernel
 set_check base
+
+echo ">>> Check installed repositories" | ${TEE} ${LOCKFILE}
+(opnsense-verify -l 2>&1) | ${TEE} ${LOCKFILE}
+
+echo ">>> Check installed plugins" | ${TEE} ${LOCKFILE}
+PLUGINS=$(pkg query -g '%n %v' 'os-*' 2>&1)
+if [ -n "${PLUGINS}" ]; then
+	(echo "${PLUGINS}") | ${TEE} ${LOCKFILE}
+else
+	echo "No plugins found." | ${TEE} ${LOCKFILE}
+fi
+
+echo ">>> Check locked packages" | ${TEE} ${LOCKFILE}
+LOCKED=$(pkg lock -lq 2>&1)
+if [ -n "${LOCKED}" ]; then
+	(echo "${LOCKED}") | ${TEE} ${LOCKFILE}
+else
+	echo "No locks found." | ${TEE} ${LOCKFILE}
+fi
 
 echo ">>> Check for missing package dependencies" | ${TEE} ${LOCKFILE}
 (pkg check -dan 2>&1) | ${TEE} ${LOCKFILE}

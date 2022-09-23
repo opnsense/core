@@ -135,11 +135,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[Hint at default settings for serial console in case the autodetect is not working]]></descr>
-      <tunable>hw.uart.console</tunable>
-      <value>default</value>
-    </item>
-    <item>
       <descr><![CDATA[Enable TCP extended debugging]]></descr>
       <tunable>net.inet.tcp.log_debug</tunable>
       <value>default</value>
@@ -210,7 +205,7 @@
     <optimization>normal</optimization>
     <hostname>OPNsense</hostname>
     <domain>localdomain</domain>
-    <dnsallowoverride/>
+    <dnsallowoverride>1</dnsallowoverride>
     <group>
       <name>admins</name>
       <description><![CDATA[System Administrators]]></description>
@@ -248,12 +243,13 @@
     <bogons>
       <interval>monthly</interval>
     </bogons>
-    <crypto_hardware>aesni</crypto_hardware>
     <pf_share_forward>1</pf_share_forward>
     <lb_use_sticky>1</lb_use_sticky>
     <ssh>
       <group>admins</group>
     </ssh>
+    <rrdbackup>-1</rrdbackup>
+    <netflowbackup>-1</netflowbackup>
   </system>
   <interfaces>
     <wan>

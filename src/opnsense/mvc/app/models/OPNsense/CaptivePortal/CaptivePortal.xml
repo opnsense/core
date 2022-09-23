@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         Captive portal application model
     </description>
@@ -25,6 +25,7 @@
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                     </filters>
+                    <ValidationMessage>At least one interface must be selected</ValidationMessage>
                 </interfaces>
                 <authservers type="AuthenticationServerField">
                     <Required>N</Required>
@@ -84,6 +85,10 @@
                     <default>0</default>
                     <Required>Y</Required>
                 </transparentHTTPSProxy>
+                <extendedPreAuthData type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </extendedPreAuthData>
                 <template type="ModelRelationField">
                     <Model>
                         <template>

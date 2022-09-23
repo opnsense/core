@@ -33,6 +33,8 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$event_arg = count($argv) >= 1 ? $argv[1] : '';
+exit_on_bootup();
+
+$event_arg = count($argv) > 1 ? $argv[1] : '';
 
 filter_configure_sync(true, $event_arg != 'skip_alias');

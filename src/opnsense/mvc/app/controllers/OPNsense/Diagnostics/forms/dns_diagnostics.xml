@@ -1,0 +1,14 @@
+<form>
+    <field>
+       <id>dns.settings.hostname</id>
+       <label>Hostname or IP</label>
+       <type>text</type>
+       <help><![CDATA[Hostname or address to resolve.]]></help>
+    </field>
+    <field>
+       <id>dns.settings.server</id>
+       <label>Server</label>
+       <type>text</type>
+       <help><![CDATA[Optional DNS server address.]]></help>
+    </field>
+</form>

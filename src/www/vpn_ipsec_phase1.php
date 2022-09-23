@@ -537,6 +537,9 @@ include("head.inc");
             $(".auth_opt :input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
                 case 'eap-tls':
+                    $(".auth_eap_tls_caref").show();
+                    $(".auth_eap_tls_caref :input").prop( "disabled", false );
+                    /* FALLTHROUGH */
                 case 'psk_eap-tls':
                 case 'eap-mschapv2':
                 case 'rsa_eap-mschapv2':
@@ -699,6 +702,9 @@ include("head.inc");
                       <select name="protocol">
                       <?php
                       $protocols = array("inet" => "IPv4", "inet6" => "IPv6");
+                      if (!empty($pconfig['mobile'])) {
+                          $protocols["inet46"] = "IPv4+6";
+                      }
                       foreach ($protocols as $protocol => $name) :
                       ?>
                         <option value="<?=$protocol;?>"  <?=$protocol == $pconfig['protocol'] ? "selected=\"selected\"" : "";?> >
@@ -916,9 +922,10 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_eap_tls_caref">
-                    <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate Authority"); ?></td>
+                    <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote Certificate Authority"); ?></td>
                     <td>
                       <select name="caref">
+                          <option value=""><?=gettext("none");?></option>
                       <?php
                     $config__ca = isset($config['ca']) ? $config['ca'] : array();
                         foreach ($config__ca as $ca) :

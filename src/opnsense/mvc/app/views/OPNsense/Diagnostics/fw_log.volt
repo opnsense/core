@@ -29,8 +29,13 @@
 
     $( document ).ready(function() {
         var field_type_icons = {
-          'pass': 'fa-play', 'block': 'fa-ban', 'in': 'fa-arrow-right',
-          'out': 'fa-arrow-left', 'rdr': 'fa-exchange', 'nat': 'fa-exchange'
+          'binat': 'fa-exchange',
+          'block': 'fa-ban',
+          'in': 'fa-arrow-right',
+          'nat': 'fa-exchange',
+          'out': 'fa-arrow-left',
+          'pass': 'fa-play',
+          'rdr': 'fa-exchange'
         };
         var interface_descriptions = {};
         let hostnameMap = {};
@@ -210,7 +215,10 @@
 
 
         function fetch_log() {
-            var record_spec = [];
+            let record_spec = [];
+            // Overfetch for limited display scope to increase the chance of being able to find matches.
+            // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
+            let max_rows = Math.max(1000, parseInt($("#limit").val()));
             // read heading, contains field specs
             $("#grid-log > thead > tr > th ").each(function () {
                 record_spec.push({
@@ -222,12 +230,13 @@
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
-            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': $("#limit").val()}, function(data, status) {
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows}, function(data, status) {
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
                 } else if (data !== undefined && data.length > 0) {
                     let record;
+                    let trs = [];
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             var log_tr = $("<tr>");
@@ -280,32 +289,18 @@
                                 log_tr.addClass('fw_pass');
                             } else if (record['action'] == 'block') {
                                 log_tr.addClass('fw_block');
-                            } else if (record['action'] == 'rdr' || record['action'] == 'nat') {
+                            } else if (record['action'] == 'rdr' || record['action'] == 'nat' || record['action'] == 'binat') {
                                 log_tr.addClass('fw_nat');
                             }
-                            $("#grid-log > tbody > tr:first").before(log_tr);
+                            trs.unshift(log_tr);
                         }
                     }
+                    $("#grid-log > tbody > tr:first").before(trs);
                     // apply filter after load
                     apply_filter();
 
                     // limit output, try to keep max X records on screen.
-                    var tr_count = 0;
-                    var visible_count = 0;
-                    var max_rows = parseInt($("#limit").val());
-                    $("#grid-log > tbody > tr").each(function(){
-                        if ($(this).is(':visible')) {
-                            ++visible_count;
-                            if (visible_count > max_rows) {
-                               // more then [max_rows] visible, safe to remove the rest
-                               $(this).remove();
-                            }
-                        } else if (tr_count > max_rows) {
-                            // invisible rows starting at [max_rows] rownumber
-                            $(this).remove();
-                        }
-                        ++tr_count;
-                    });
+                    $("#grid-log > tbody > tr:gt("+max_rows+")").remove();
 
                     // bind info buttons
                     $(".act_info").unbind('click').click(function(){
@@ -411,6 +406,8 @@
         function apply_filter()
         {
             let filters = [];
+            let visible_rows = 0;
+            let max_rows = parseInt($("#limit").val());
             $("#filters > span.badge").each(function(){
                 filters.push($(this).data('filter'));
             });
@@ -457,8 +454,9 @@
                         is_matched = is_matched || this_condition_match;
                     }
                 }
-                if (is_matched) {
+                if (is_matched && visible_rows <= max_rows) {
                     selected_tr.show();
+                    visible_rows += 1;
                 } else {
                     selected_tr.hide();
                 }

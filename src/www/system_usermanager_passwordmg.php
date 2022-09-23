@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['request_otp_seed'])) {
         if ($user_allow_gen_token && $userFound) {
-            $new_seed = Base32\Base32::encode(openssl_random_pseudo_bytes(20));
+            $new_seed = Base32\Base32::encode(random_bytes(20));
             $config['system']['user'][$userindex[$username]]['otp_seed'] = $new_seed;
             write_config();
             $otp_url = "otpauth://totp/";

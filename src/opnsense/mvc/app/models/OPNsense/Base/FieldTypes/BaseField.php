@@ -31,7 +31,7 @@ namespace OPNsense\Base\FieldTypes;
 use Exception;
 use Generator;
 use InvalidArgumentException;
-use Phalcon\Validation\Validator\PresenceOf;
+use OPNsense\Phalcon\Filter\Validation\Validator\PresenceOf;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
@@ -42,7 +42,6 @@ use SimpleXMLElement;
  * @property-read string $__reference this tag absolute reference (node.subnode.subnode)
  * @property-read string $__type this tag's class Name ( example TextField )
  * @property-read string $__Ixx get tag by index/name even if the name is a number
- * @property-read array $__items this node's children
  */
 abstract class BaseField
 {
@@ -270,7 +269,7 @@ abstract class BaseField
 
     /**
      * Reflect default getter to internal child nodes.
-     * Implements the special attribute __items to return all items and __reference to identify the field in this model.
+     * Implements __reference to identify the field in this model.
      * @param string $name property name
      * @return mixed
      */
@@ -278,13 +277,6 @@ abstract class BaseField
     {
         if (isset($this->internalChildnodes[$name])) {
             return $this->internalChildnodes[$name];
-        } elseif ($name == '__items') {
-            // return all (no virtual/hidden) items
-            $result = array();
-            foreach ($this->iterateItems() as $key => $value) {
-                $result[$key] = $value;
-            }
-            return $result;
         } elseif ($name == '__reference') {
             return $this->internalReference;
         } elseif ($name == '__type') {
@@ -372,6 +364,14 @@ abstract class BaseField
     }
 
     /**
+     * force field to act as unchanged (skip validations)
+     */
+    public function markUnchanged()
+    {
+        $this->internalInitialValue = $this->internalValue;
+    }
+
+    /**
      * check if field content has changed
      * @return bool change indicator
      */
@@ -427,7 +427,7 @@ abstract class BaseField
     }
 
     /**
-     * check for existance of child attribute
+     * check for existence of child attribute
      * @return bool if child exists
      */
     public function hasChild($name)
@@ -498,7 +498,7 @@ abstract class BaseField
                 $parentNode = $this->getParentNode();
                 if (count($parts) == 2) {
                     $tagName = $parts[0];
-                    if (isset($parentNode->__items[$tagName])) {
+                    if (isset($parentNode->$tagName) && !$parentNode->$tagName->getInternalIsVirtual()) {
                         $ref_constraint = $parentNode->$tagName->getConstraintByName($parts[1]);
                         if ($ref_constraint != null) {
                             $result[] = $ref_constraint;
@@ -629,7 +629,7 @@ abstract class BaseField
         // add new items to array type objects
         if ($this->isArrayType()) {
             foreach ($data as $dataKey => $dataValue) {
-                if (!isset($this->__items[$dataKey])) {
+                if (!isset($this->$dataKey)) {
                     $node = $this->add();
                     $node->setNodes($dataValue);
                 }

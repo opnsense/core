@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
     $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
     $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
+    $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -134,6 +135,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!empty($pconfig['ssl-ciphers'])) {
+        // TLS 1.3 validation
+        $ciphers = json_decode(configd_run("system ssl ciphers"), true) ?? [];
+        foreach ($ciphers as $cipher => $settings) {
+            if ($settings['version'] == 'TLSv1.3' && in_array($cipher, $pconfig['ssl-ciphers'])
+                    && !in_array('TLS_AES_128_GCM_SHA256', $pconfig['ssl-ciphers'])) {
+                $input_errors[] = gettext('A TLS 1.3-compliant application MUST implement the TLS_AES_128_GCM_SHA256 according to RFC 8446.');
+                break;
+            }
+        }
+    }
+
     if (count($input_errors) == 0) {
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
@@ -147,7 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             (empty($pconfig['ocsp-staple'])) != empty($config['system']['webgui']['ocsp-staple']) ||
-            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']);
+            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
+            ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -155,6 +169,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+
+        if (!empty($pconfig['deployment'])) {
+            $config['system']['deployment'] = $pconfig['deployment'];
+        } elseif (isset($config['system']['deployment'])) {
+            unset($config['system']['deployment']);
+        }
 
         if (!empty($pconfig['ssl-hsts'])) {
             $config['system']['webgui']['ssl-hsts'] = true;
@@ -681,7 +701,7 @@ $(document).ready(function() {
                   <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable access log"); ?>
                   <div class="hidden" data-for="help_for_httpaccesslog">
-                    <?=gettext("Enable access logging on the webinterface for debugging and analysis purposes.") ?>
+                    <?=gettext("Enable access logging on the web GUI for debugging and analysis purposes.") ?>
                   </div>
                 </td>
               </tr>
@@ -737,7 +757,7 @@ $(document).ready(function() {
 <?php endforeach ?>
                   </select>
                   <div class="hidden" data-for="help_for_sshlogingroup">
-                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-adminstrators as every user can access system files using SSH or SFTP.') ?>
+                    <?= gettext('Select the allowed groups for remote login. The "wheel" group is always set for recovery purposes and an additional local group can be selected at will. Do not yield remote access to non-administrators as every user can access system files using SSH or SFTP.') ?>
                   </div>
                 </td>
               </tr>
@@ -917,12 +937,13 @@ $(document).ready(function() {
                 <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                 <td>
                   <select name="serialspeed" id="serialspeed" class="selectpicker">
-                    <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
-                    <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
-                    <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
-                    <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
-                    <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
-                    <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
+                    <option value="1500000" <?= $pconfig['serialspeed'] == '1500000' ? 'selected="selected"' : '' ?>>1500000</option>
+                    <option value="115200" <?= $pconfig['serialspeed'] == '115200' || empty($pconfig['serialspeed']) ? 'selected="selected"' : '' ?>>115200</option>
+                    <option value="57600" <?= $pconfig['serialspeed'] == '57600' ? 'selected="selected"' : '' ?>>57600</option>
+                    <option value="38400" <?= $pconfig['serialspeed'] == '38400' ? 'selected="selected"' : '' ?>>38400</option>
+                    <option value="19200" <?= $pconfig['serialspeed'] == '19200' ? 'selected="selected"' : '' ?>>19200</option>
+                    <option value="14400" <?= $pconfig['serialspeed'] == '14400' ? 'selected="selected"' : '' ?>>14400</option>
+                    <option value="9600" <?= $pconfig['serialspeed'] == '9600' ? 'selected="selected"' : '' ?>>9600</option>
                   </select>
                   <div class="hidden" data-for="help_for_serialspeed">
                     <?=gettext("Allows selection of different speeds for the serial console port."); ?>
@@ -1036,6 +1057,30 @@ $(document).ready(function() {
                   </select>
                   <div class="hidden" data-for="help_for_user_allow_gen_token">
                     <?= gettext('Permit users to generate their own OTP seed in the password page.') ?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Deployment') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_deployment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deployment type")?></td>
+                <td>
+                  <select name="deployment" class="selectpicker">
+                    <option value="" <?= empty($pconfig['deployment']) ? 'selected="selected"' : '' ?>>
+                      <?=gettext("Production");?>
+                    </option>
+                    <option value="development" <?= $pconfig['deployment'] == 'development' ? 'selected="selected"' : '' ?>>
+                      <?=gettext("Development");?>
+                    </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_deployment">
+                    <?=gettext("Set the deployment type of this OPNsense instance.");?></br>
                   </div>
                 </td>
               </tr>

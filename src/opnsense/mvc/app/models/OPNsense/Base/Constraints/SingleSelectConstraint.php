@@ -40,11 +40,11 @@ class SingleSelectConstraint extends BaseConstraint
     /**
      * Executes validation
      *
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         if ($node) {

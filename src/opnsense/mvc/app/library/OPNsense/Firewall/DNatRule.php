@@ -114,7 +114,7 @@ class DNatRule extends Rule
             // yield reflection rdr rules when enabled
             $interface = $rule['interface'];
             $reflinterf = $this->reflectionInterfaces($interface);
-            if (!$rule['disabled'] && $rule['natreflection'] == "enable") {
+            if (empty($rule['disabled']) && ($rule['natreflection'] ?? "") == "enable") {
                 foreach ($reflinterf as $interf) {
                     $is_ipv4 = $this->isIpV4($rule);
                     if (
@@ -129,7 +129,7 @@ class DNatRule extends Rule
             }
 
             // yield reflection nat rules when enabled, but only for interfaces with networks configured
-            if (!$rule['disabled'] && !empty($rule['enablenatreflectionhelper'])) {
+            if (empty($rule['disabled']) && !empty($rule['enablenatreflectionhelper'])) {
                 $reflinterf[] = $interface;
                 foreach ($reflinterf as $interf) {
                     if (!empty($this->interfaceMapping[$interf])) {

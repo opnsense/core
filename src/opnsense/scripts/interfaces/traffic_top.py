@@ -27,6 +27,7 @@
 
 """
 import argparse
+import asyncio
 import decimal
 import subprocess
 import os
@@ -34,6 +35,8 @@ import sys
 import math
 import ujson
 import netaddr
+import dns.resolver
+from dns.asyncresolver import Resolver
 from concurrent.futures import ThreadPoolExecutor
 from netaddr import IPNetwork, IPAddress, AddrFormatError
 
@@ -79,6 +82,31 @@ def to_bformat(value):
     ndx = math.floor(math.log(value) / math.log(1000)) if value > 0 else 0
     return  "%s %s" % (round(value / math.pow(1000, ndx), 2), fileSizeTypes[ndx])
 
+class AsyncLookup:
+    def __init__(self):
+        self._results = {}
+
+    async def request_ittr(self, addresses):
+        self._results = {}
+        dnsResolver = Resolver()
+        dnsResolver.timeout = 2
+        tasks = []
+        for address in addresses:
+            tasks.append(dnsResolver.resolve_address(address))
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        for response in responses:
+            if type(response) is dns.resolver.Answer:
+                addr = ".".join(reversed(response.canonical_name.to_text().replace('.in-addr.arpa.', '').split('.')))
+                for item in response.response.answer:
+                    if type(item) is dns.rrset.RRset and len(item.items) > 0:
+                        self._results[addr] = str(list(item.items)[0])
+
+    def collect(self, addresses):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        asyncio.run(self.request_ittr(addresses))
+        loop.close()
+        return self._results
 
 if __name__ == '__main__':
     result = dict()
@@ -152,7 +180,9 @@ if __name__ == '__main__':
 
         # XXX: sort output, limit output results to max 200 (safety precaution)
         top_hosts = sorted(agg_results.values(), key=lambda x: x['rate_bits'], reverse=True)[:200]
+        reverse_lookup = AsyncLookup().collect([x['address'] for x in top_hosts])
         for host in top_hosts:
+            host['rname'] = reverse_lookup[host['address']] if host['address'] in reverse_lookup else ""
             host['rate_in'] = to_bformat(host['rate_bits_in'])
             host['rate_out'] = to_bformat(host['rate_bits_out'])
             host['rate'] = to_bformat(host['rate_bits'])

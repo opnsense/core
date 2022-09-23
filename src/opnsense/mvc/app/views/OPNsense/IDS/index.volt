@@ -131,7 +131,6 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         function addAlertQryFilters(request) {
             var selected_logfile =$('#alert-logfile').find("option:selected").val();
-            var selected_max_entries =$('#alert-logfile-max').find("option:selected").val();
             var search_phrase = $("#inputSearchAlerts").val();
 
             // add loading overlay
@@ -144,7 +143,6 @@ POSSIBILITY OF SUCH DAMAGE.
             if ( selected_logfile != "none") {
                 request['fileid'] = selected_logfile;
             }
-            request['rowCount'] = selected_max_entries;
             request['searchPhrase'] = search_phrase;
             return request;
         }
@@ -411,10 +409,11 @@ POSSIBILITY OF SUCH DAMAGE.
                             options:{
                                 multiSelect:false,
                                 selection:false,
-                                templates : {
-                                    header: ""
-                                },
+                                rowCount: [7,50,100,250,500,1000,5000],
                                 requestHandler:addAlertQryFilters,
+                                labels: {
+                                    infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
+                                },
                                 formatters:{
                                     info: function (column, row) {
                                         return "<button type=\"button\" class=\"btn btn-xs btn-default command-alertinfo bootgrid-tooltip\" title=\"{{ lang._('View') }}\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-pencil fa-fw\"></span></button> ";
@@ -436,6 +435,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         });
                 // tooltip wide fields in alert grid
                 grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
+                    $("#grid-alerts-header-extra").children().each(function(){
+                        $(this).prependTo($("#grid-alerts-header > .row > .actionBar"));
+                    });
+                    $("#grid-alerts-header > .row > .actionBar > .search.form-group:last").hide();
+                    $("#grid-alerts-header > .row > .actionBar > .actions.btn-group > .btn.btn-default").hide();
                     $("#grid-alerts > tbody > tr > td").each(function(){
                         if ($(this).outerWidth() < $(this)[0].scrollWidth) {
                             var grid_td = $("<span/>");
@@ -899,26 +903,13 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="alerts" class="tab-pane fade in">
         <!-- tab page "alerts" -->
-        <div id="grid-alerts-header" class="bootgrid-header container-fluid">
-            <div class="row">
-                <div class="col-sm-12 actionBar">
-                    <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
-                    <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
-                    <select id="alert-logfile-max" class="selectpicker" data-width="80px">
-                        <option value="7">7</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="250">250</option>
-                        <option value="500">500</option>
-                        <option value="1000">1000</option>
-                        <option value="-1">{{ lang._('All') }}</option>
-                    </select>
-                    <div class="search form-group">
-                        <div class="input-group">
-                            <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
-                            <span id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
-                        </div>
-                    </div>
+        <div id="grid-alerts-header-extra">
+            <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
+            <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
+            <div class="search form-group">
+                <div class="input-group">
+                    <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
+                    <span id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
                 </div>
             </div>
         </div>

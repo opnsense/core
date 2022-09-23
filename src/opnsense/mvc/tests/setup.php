@@ -26,15 +26,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\Di;
+use OPNsense\Phalcon\Di\Di;
 use Phalcon\Di\FactoryDefault;
-
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 /**
  * Read the configuration
  */
+
 $config = include __DIR__ . "/app/config/config.php";
 
 /**

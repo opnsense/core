@@ -71,7 +71,7 @@ add_new_address() {
 	$LOGGER "New Routers ($interface): $new_routers"
 
 	if [ -n "$new_routers" ] && [ "$new_routers" != "255.255.255.255" ]; then
-		echo $new_routers > /tmp/${interface}_router
+		/usr/local/sbin/ifctl -i ${interface} -4rd -a ${new_routers}
 	fi
 }
 
@@ -131,8 +131,8 @@ delete_old_routes() {
 	# one here.  We don't so just delete the default route if it's
 	# through our interface.
 	if is_default_interface; then
-		route delete default >/dev/null 2>&1
-		rm -f /tmp/${interface}_router
+		#route delete default >/dev/null 2>&1
+		/usr/local/sbin/ifctl -i ${interface} -4rd
 	fi
 
 	if [ -n "$old_static_routes" ]; then
@@ -140,7 +140,8 @@ delete_old_routes() {
 		while [ $# -gt 1 ]; do
 			route delete "$1" "$2"
 			shift; shift
-			rm -f /tmp/${interface}_router
+			# XXX makes no sense to call multiple times
+			/usr/local/sbin/ifctl -i ${interface} -4rd
 		done
 	fi
 
@@ -178,19 +179,19 @@ add_new_routes() {
 	EXISTSGW=`/bin/ls -l /tmp/*_defaultgw | /usr/bin/wc -l`
 	# Only allow the default route to be overridden if it's on our own interface
 	if [ -f "/tmp/${interface}_defaultgw" -o $EXISTSGW -eq 0 ]; then
-		route delete default
+		#route delete default
 		for router in $new_routers; do
 			if [ "$new_ip_address" = "$router" -o "$router" = "255.255.255.255" ]; then
 				route add default -iface $interface
 				echo route add default -iface $interface | $LOGGER
 				# NOTE: Do not activate this for all ones address since pf(4) will try to forward packets to it.
 				if [ "$new_ip_address" = "$router" ]; then
-					echo $router > /tmp/${interface}_router
+					/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
 				fi
 			else
 				route add default $router
 				echo route add default $router | $LOGGER
-				echo $router > /tmp/${interface}_router
+				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
 			fi
 			ADDED_ROUTE=yes
 			# 2nd and subsequent default routers error out, so explicitly
@@ -204,8 +205,9 @@ add_new_routes() {
 		set $new_static_routes
 		while [ $# -gt 1 ]; do
 			route add $1 $2
-			if [ "$ADDED_ROUTE" = "no" ]; then
-				echo $2 > /tmp/${interface}_router
+			if [ "${ADDED_ROUTE}" = "no" ]; then
+				# XXX WTF?
+				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${2}
 			fi
 			shift; shift
 		done
@@ -215,34 +217,13 @@ add_new_routes() {
 add_new_resolv_conf() {
 	$LOGGER "Creating resolv.conf"
 
-	if [ -f "/tmp/${interface}_nameserver" ]; then
-		# Remove old entries
-		for nameserver in $(cat /tmp/${interface}_nameserver); do
-			route delete $nameserver >/dev/null 2>&1
-		done
-	fi
+	ARGS="-i ${interface} -4nd"
+	for nameserver in ${new_domain_name_servers}; do
+		ARGS="${ARGS} -a ${nameserver}"
+	done
+	/usr/local/sbin/ifctl ${ARGS}
 
-	rm -f /tmp/${interface}_nameserver
-	rm -f /tmp/${interface}_searchdomain
-
-	if [ "$(pluginctl -g system.dnsallowoverride)" != "1" ]; then
-	        # prevent installing DNS information when not allowed
-		return 0
-	fi
-
-	if [ -n "$new_domain_name_servers" ]; then
-		for nameserver in $new_domain_name_servers; do
-			# Add a route to the nameserver out the correct interface
-			# so that mulitple wans work correctly with multiple dns
-			# also backup the nameserver for later route removal
-			echo $nameserver >> /tmp/${interface}_nameserver
-			route add $nameserver -iface $interface
-		done
-	fi
-
-	if [ -n "$new_domain_name" ]; then
-		echo $new_domain_name > /tmp/${interface}_searchdomain
-	fi
+	/usr/local/sbin/ifctl -i ${interface} -4sd ${new_domain_name:+"-a ${new_domain_name}"}
 
 	return 0
 }
@@ -309,7 +290,7 @@ MEDIUM)
 PREINIT)
 	delete_old_alias
 	$IFCONFIG $interface inet alias 0.0.0.0 netmask 255.0.0.0 broadcast 255.255.255.255 up
-	rm -f /tmp/${interface}_router
+	/usr/local/sbin/ifctl -i ${interface} -4rd
 	;;
 
 ARPCHECK|ARPSEND)
@@ -345,7 +326,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_resolv_conf
 	#fi
 	if [ "$changes" = "yes" ] ; then
-		/usr/local/etc/rc.newwanip $interface
+		/usr/local/sbin/configctl -d interface newip $interface
 	fi
 	;;
 
@@ -388,11 +369,11 @@ TIMEOUT)
 			fi
 			add_new_routes
 			if ! is_default_interface; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 			if add_new_resolv_conf; then
-				/usr/local/etc/rc.newwanip $interface
+				/usr/local/sbin/configctl -d interface newip $interface
 				exit_with_hooks 0
 			fi
 		fi

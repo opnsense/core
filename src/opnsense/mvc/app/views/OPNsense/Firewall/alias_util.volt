@@ -103,7 +103,7 @@
                     }
                 }],
                 onshown: function(dialogRef) {
-                    // Remove all pre-existing event listeners, just to be sure.
+                    // Remove all preexisting event listeners, just to be sure.
                     $('#ip-search').off();
                     $('#ip-search').on('click', function(event) {
                         if (!$("#ip-search > span").hasClass('fa-search')) {

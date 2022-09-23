@@ -39,7 +39,7 @@ import datetime
 import glob
 from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from log_helper import reverse_log_reader, fetch_clog
+from log_helper import reverse_log_reader
 import argparse
 
 if __name__ == '__main__':
@@ -68,7 +68,7 @@ if __name__ == '__main__':
             filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
             for filename in sorted(filenames, reverse=True):
                 log_filenames.append(filename)
-        # legacy log output is always stiched last
+        # legacy log output is always stashed last
         log_filenames.append("%s.log" % log_basename)
         if inputargs.module != 'core':
             log_filenames.append("/var/log/%s_%s.log" % (inputargs.module, os.path.basename(inputargs.filename)))
@@ -87,13 +87,9 @@ if __name__ == '__main__':
             filter_regexp = re.compile('.*')
 
         row_number = 0
-        for log_filename in log_filenames:
-            if os.path.exists(log_filename):
-                format_container = FormatContainer(log_filename)
-                try:
-                    filename = fetch_clog(log_filename)
-                except Exception as e:
-                    filename = log_filename
+        for filename in log_filenames:
+            if os.path.exists(filename):
+                format_container = FormatContainer(filename)
                 for rec in reverse_log_reader(filename):
                     row_number += 1
                     if rec['line'] != "" and filter_regexp.match(('%s' % rec['line']).lower()):

@@ -30,24 +30,23 @@
 
 namespace OPNsense\Base\Validators;
 
-use Phalcon\Validation\AbstractValidator;
-use Phalcon\Validation\ValidatorInterface;
+use OPNsense\Base\BaseValidator;
 use Phalcon\Messages\Message;
 
 /**
  * Class MinMaxValidator
  * @package OPNsense\Base\Validators
  */
-class MinMaxValidator extends AbstractValidator implements ValidatorInterface
+class MinMaxValidator extends BaseValidator
 {
     /**
     * Executes MinMax validation
     *
-    * @param \Phalcon\Validation $validator
+    * @param $validator
     * @param string $attribute
     * @return boolean
     */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $value = $validator->getValue($attribute);
 

@@ -45,7 +45,7 @@ certs		= $dir/certs		# Where the issued certs are kept
 crl_dir		= $dir/crl		# Where the issued crl are kept
 database	= $dir/index.txt	# database index file.
 #unique_subject	= no			# Set to 'no' to allow creation of
-					# several ctificates with same subject.
+					# several certificates with same subject.
 new_certs_dir	= $dir/newcerts		# default place for new certs.
 
 certificate	= $dir/cacert.pem	# The CA certificate
@@ -56,7 +56,7 @@ crl		= $dir/crl.pem		# The current CRL
 private_key	= $dir/private/cakey.pem# The private key
 RANDFILE	= $dir/private/.rand	# private random number file
 
-x509_extensions	= usr_cert		# The extentions to add to the cert
+x509_extensions	= usr_cert		# The extensions to add to the cert
 
 # Comment out the following two lines for the "traditional"
 # (and highly broken) format.
@@ -108,7 +108,7 @@ default_bits		= 1024
 default_keyfile		= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
-x509_extensions	= v3_ca	# The extentions to add to the self signed cert
+x509_extensions	= v3_ca	# The extensions to add to the self signed cert
 
 # Passwords for private keys if not present they will be prompted for
 # input_password = secret
@@ -206,11 +206,13 @@ subjectKeyIdentifier=hash
 
 authorityKeyIdentifier=keyid:always,issuer
 
-# This is what PKIX recommends but some broken software chokes on critical
-# extensions.
-#basicConstraints = critical,CA:true
-# So we do this instead.
-basicConstraints = CA:true
+# basicConstraints (rfc5280): Conforming CAs MUST include this extension in all CA certificates that contain public
+# keys used to validate digital signatures on certificates and MUST mark the extension as critical in such certificates.
+basicConstraints = critical, CA:true
+# keyUsage (rfc5280): Conforming CAs MUST include this extension in certificates that contain public keys
+# that are used to validate digital signatures on other public key certificates or CRLs.
+# When present, conforming CAs SHOULD mark this extension as critical.
+keyUsage = critical, cRLSign, digitalSignature, keyCertSign
 
 ###OPNsense:subjectAltName###
 

@@ -214,7 +214,7 @@ class HandlerClient(threading.Thread):
             pass
         except Exception:
             print(traceback.format_exc())
-            syslog_error('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
+            syslog_notice('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
                 result, exec_command, exec_action, exec_params, self.message_uuid, traceback.format_exc()
             ))
         finally:
@@ -260,7 +260,11 @@ class ActionHandler(object):
 
             # traverse config directory and open all filenames starting with actions_
             cnf = configparser.RawConfigParser()
-            cnf.read(config_filename)
+            try:
+                cnf.read(config_filename)
+            except configparser.Error:
+                syslog_error('exception occurred while reading "%s": %s' % (config_filename, traceback.format_exc(0)))
+
             for section in cnf.sections():
                 # map configuration data on object
                 action_obj = Action(config_environment=self.config_environment)

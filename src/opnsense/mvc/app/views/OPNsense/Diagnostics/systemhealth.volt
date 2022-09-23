@@ -273,7 +273,7 @@
                 var stepsize = data["d3"]["stepSize"];
                 var scale = "{{ lang._('seconds') }}";
                 var dtformat = '%m/%d %H:%M';
-                var visable_time=to-from;
+                var visible_time=to-from;
 
                 // set defaults based on stepsize
                 if (stepsize >= 86400) {
@@ -291,11 +291,11 @@
                 }
 
                 // if we have a focus area then change the x-scale to reflect current view
-                if (visable_time >= (86400*7)) { // one week
+                if (visible_time >= (86400*7)) { // one week
                     dtformat = '\'%y w%U%';
-                } else if (visable_time >= (3600*48)) { // 48 hours
+                } else if (visible_time >= (3600*48)) { // 48 hours
                     dtformat = '\'%y d%j%';
-                } else if (visable_time >= (60*maxitems)) { // max minutes
+                } else if (visible_time >= (60*maxitems)) { // max minutes
                     dtformat = '%H:%M';
                 }
 
@@ -336,7 +336,7 @@
                 }
 
                 // Create tables (general and detail)
-                if ($('input:radio[name=show_table]:checked').val() == 1) { // check if togle table is on
+                if ($('input:radio[name=show_table]:checked').val() == 1) { // check if toggle table is on
                     table_head = "<th>#</th>";
                     if ($('input:radio[name=toggle_time]:checked').val() == 1) {
                         table_head += "<th>{{ lang._('full date & time') }}</th>";

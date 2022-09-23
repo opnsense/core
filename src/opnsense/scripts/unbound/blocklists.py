@@ -39,7 +39,7 @@ import requests
 def uri_reader(uri):
     req_opts = {
         'url': uri,
-        'timeout': 120,
+        'timeout': 5,
         'stream': True
     }
     try:
@@ -85,6 +85,7 @@ if __name__ == '__main__':
         r'^(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
         r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))$'
     )
+    destination_address = '0.0.0.0'
 
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
@@ -113,6 +114,8 @@ if __name__ == '__main__':
             syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
 
         # fetch all blocklists
+        if cnf.has_section('settings') and cnf.has_option('settings', 'address'):
+            destination_address = cnf.get('settings', 'address')
         if cnf.has_section('blocklists'):
             for blocklist in cnf['blocklists']:
                 file_stats = {'uri': cnf['blocklists'][blocklist], 'skip' : 0, 'blocklist': 0, 'lines' :0}
@@ -144,9 +147,8 @@ if __name__ == '__main__':
     # write out results
     with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
         if blocklist_items:
-            unbound_outf.write('server:\n')
             for entry in blocklist_items:
-                unbound_outf.write("local-data: \"%s A 0.0.0.0\"\n" % entry)
+                unbound_outf.write("local-data: \"%s A %s\"\n" % (entry, destination_address))
 
     syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
         time.time() - startup_time, len(blocklist_items)

@@ -121,13 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!$listed) {
       continue;
     }
-    $ifinfo = $ifsinfo[$ifdescr];
-    $iswireless = is_interface_wireless($ifdescr); ?>
+    $ifinfo = $ifsinfo[$ifdescr]; ?>
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
     <td style="width:15%; word-break: break-word;">
 <?php if (isset($ifinfo['ppplink'])): ?>
       <span title="3g" class="fa fa-mobile text-success"></span>
-<?php elseif ($iswireless): ?>
+<?php elseif (isset($config['interfaces'][$ifdescr]['wireless'])): ?>
 <?php if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'): ?>
       <span title="wlan" class="fa fa-signal text-success"></span>
 <?php else: ?>
@@ -161,12 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php endif ?>
     </td>
     <td style="width:35%; word-break: break-word;">
-      <?= empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']) ?>
+      <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
     <td style="width:45%; word-break: break-word;">
       <?= htmlspecialchars($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= htmlspecialchars(isset($config['interfaces'][$ifdescr]['dhcp6prefixonly']) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+      <?= htmlspecialchars(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
     </td>
   </tr>
 <?php endforeach ?>

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2020 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -207,13 +207,13 @@ zlib.output_compression = Off
 zlib.output_compression_level = 1
 include_path = "/usr/local/etc/inc:/usr/local/www:/usr/local/opnsense/mvc:/usr/local/opnsense/contrib:/usr/local/share/pear:/usr/local/share"
 ignore_repeated_errors = on
-error_reporting = E_ALL ^ (E_NOTICE | E_DEPRECATED | E_STRICT)
+error_reporting = E_ALL ^ (E_WARNING | E_NOTICE | E_DEPRECATED | E_STRICT | E_CORE_WARNING | E_COMPILE_WARNING)
 display_errors=on
+display_startup_errors=off
 log_errors=on
 error_log=/tmp/PHP_errors.log
 date.timezone="Etc/UTC"
 session.save_path=/var/lib/php/sessions
-pcre.jit=0
 
 EOF;
 
@@ -264,11 +264,17 @@ function recover_rebuild()
 
 function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $php_ini)
 {
-    echo "===> Restoring /etc/group\n";
-    file_put_contents('/etc/group', $etc_group);
+    $partial_restore = [
+        '/etc/group' => $etc_group,
+        '/etc/master.passwd' => $etc_master_passwd,
+    ];
 
-    echo "===> Restoring /etc/master.passwd\n";
-    file_put_contents('/etc/master.passwd', $etc_master_passwd);
+    foreach ($partial_restore as $file => $content) {
+        if (!file_exists($file) || filesize($file) === 0) {
+            echo "===> Restoring $file\n";
+            file_put_contents($file, $content);
+        }
+    }
 
     echo "===> Restoring /etc/shells\n";
     file_put_contents('/etc/shells', $etc_shells);

@@ -43,12 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
-    $pconfig['forwarding'] = isset($a_unboundcfg['forwarding']);
+    $pconfig['noarecords'] = isset($a_unboundcfg['noarecords']);
     $pconfig['reglladdr6'] = empty($a_unboundcfg['noreglladdr6']);
     $pconfig['regdhcp'] = isset($a_unboundcfg['regdhcp']);
     $pconfig['regdhcpstatic'] = isset($a_unboundcfg['regdhcpstatic']);
     $pconfig['txtsupport'] = isset($a_unboundcfg['txtsupport']);
     $pconfig['cacheflush'] = isset($a_unboundcfg['cacheflush']);
+    $pconfig['noregrecords'] = isset($a_unboundcfg['noregrecords']);
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
     $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
@@ -112,12 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // boolean values
+            $a_unboundcfg['noregrecords'] = !empty($pconfig['noregrecords']);
             $a_unboundcfg['cacheflush'] = !empty($pconfig['cacheflush']);
             $a_unboundcfg['dns64'] = !empty($pconfig['dns64']);
+            $a_unboundcfg['noarecords'] = !empty($pconfig['noarecords']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
-            $a_unboundcfg['forwarding'] = !empty($pconfig['forwarding']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
             $a_unboundcfg['regdhcpstatic'] = !empty($pconfig['regdhcpstatic']);
@@ -248,6 +250,12 @@ include_once("head.inc");
                             <?= gettext("If no DNS64 prefix is specified, the default prefix " .
                             "64:ff9b::/96 (RFC 6052) will be used."); ?>
                           </div>
+                          <input name="noarecords" type="checkbox" id="noarecords" value="yes" <?=!empty($pconfig['noarecords']) ? 'checked="checked"' : '';?> />
+                          <?= gettext('Enable AAAA-only mode') ?>
+                          <div class="hidden" data-for="help_for_dns64">
+                            <?= gettext("If this option is set, Unbound will remove all A " .
+                            "records from the answer section of all responses."); ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -298,6 +306,20 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
+                          <td><a id="help_for_noregrecords" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('System A/AAAA records') ?></td>
+                          <td>
+                              <input name="noregrecords" type="checkbox" id="noregrecords" value="yes" <?= !empty($pconfig['noregrecords']) ? 'checked="checked"' : '' ?>/>
+                              <?= gettext('Do not register system A/AAAA records') ?>
+                              <div class="hidden" data-for="help_for_noregrecords">
+                                  <?= sprintf(gettext("If this option is set, then no A/AAAA records for " .
+                                  "the configured listen interfaces will be generated. " .
+                                  "If desired, you can manually add them in %sUnbound DNS: Overrides%s. " .
+                                  "Use this to control which interface IP addresses are mapped to the system host/domain name " .
+                                  "as well as to restrict the amount of information exposed in replies to queries for the system host/domain name ."), '<a href="ui/unbound/overrides/">', '</a>'); ?>
+                              </div>
+                          </td>
+                      </tr>
+                      <tr>
                         <td><a id="help_for_txtsupport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TXT Comment Support");?></td>
                         <td>
                           <input name="txtsupport" type="checkbox" value="yes" <?=!empty($pconfig['txtsupport']) ? 'checked="checked"' : '';?> />
@@ -314,16 +336,6 @@ include_once("head.inc");
                           <?= gettext('Flush DNS cache during reload') ?>
                           <div class="hidden" data-for="help_for_cacheflush">
                             <?= gettext('If this option is set, the DNS cache will be flushed during each daemon reload. This is the default behavior for Unbound, but may be undesired when multiple dynamic interfaces require frequent reloading.') ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
-                        <td>
-                          <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? 'checked="checked"' : '';?> />
-                          <?= gettext('Enable Forwarding Mode') ?>
-                          <div class="hidden" data-for="help_for_forwarding">
-                            <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
                           </div>
                         </td>
                       </tr>
@@ -379,14 +391,10 @@ include_once("head.inc");
                       </tr>
                       <tr>
                         <td colspan="2">
-                          <?= sprintf(gettext('If Unbound is enabled, the DHCP'.
+                          <?= gettext('If Unbound is enabled, the DHCP'.
                           ' service (if enabled) will automatically serve the LAN IP'.
                           ' address as a DNS server to DHCP clients so they will use'.
-                          ' Unbound resolver. If forwarding is enabled, Unbound'.
-                          ' will use the DNS servers entered in %sSystem: General setup%s'.
-                          ' or those obtained via DHCP or PPP on WAN if the "Allow'.
-                          ' DNS server list to be overridden by DHCP/PPP on WAN"'.
-                          ' is checked.'),'<a href="system_general.php">','</a>');?>
+                          ' Unbound resolver.');?>
                         </td>
                       </tr>
                     </tbody>

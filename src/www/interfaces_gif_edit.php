@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_gifs[] = $gif;
             }
             write_config();
-            interface_gif_configure($gif);
+            interfaces_gif_configure($gif['gifif']);
             ifgroup_setup();
             $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
             if ($confif != '') {
@@ -143,7 +143,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-    hook_ipv4v6('ipv4v6net', 'network-id');
+    hook_ipv4v6('ipv4v6net', 'network-id', '128');
   });
 </script>
 <?php include("fbegin.inc"); ?>

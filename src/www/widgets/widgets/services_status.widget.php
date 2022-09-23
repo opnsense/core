@@ -53,7 +53,7 @@ if (isset($_POST['servicestatusfilter'])) {
       </thead>
       <tbody>
         <tr>
-          <td><input type="text" name="servicestatusfilter" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?>" /></td>
+          <td><input type="text" name="servicestatusfilter" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?? '' ?>" /></td>
         </tr>
         <tr>
           <td>
@@ -75,7 +75,7 @@ if (isset($_POST['servicestatusfilter'])) {
   </thead>
   <tbody>
 <?php
-  $skipservices = explode(",", $config['widgets']['servicestatusfilter']);
+  $skipservices = explode(',', $config['widgets']['servicestatusfilter'] ?? '');
   if (count($services) > 0):
       foreach ($services as $service):
           if (!$service['name'] || in_array($service['name'], $skipservices)) {

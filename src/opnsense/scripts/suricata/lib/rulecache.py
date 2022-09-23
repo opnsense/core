@@ -225,7 +225,7 @@ class RuleCache(object):
                 if last_mtime == results[0][0] and len(all_rule_files) == results[0][1] and table_count == 5:
                     return False
             except sqlite3.DatabaseError:
-                # if some reason the cache is unreadble, continue and report changed
+                # if some reason the cache is unreadable, continue and report changed
                 pass
         return True
 

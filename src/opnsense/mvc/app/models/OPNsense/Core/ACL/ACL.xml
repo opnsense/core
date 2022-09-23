@@ -40,6 +40,13 @@
             <pattern>crash_reporter.php*</pattern>
         </patterns>
     </page-diagnostics-crash-reporter>
+    <page-system-status>
+        <name>System: Status</name>
+        <patterns>
+            <pattern>api/core/system/status</pattern>
+            <pattern>api/core/system/dismissStatus</pattern>
+        </patterns>
+    </page-system-status>
     <page-dashboard-all>
         <name>Dashboard (all)</name>
         <patterns>
@@ -130,7 +137,8 @@
     <page-diagnostics-packetcapture>
         <name>Diagnostics: Packet Capture</name>
         <patterns>
-            <pattern>diag_packet_capture.php*</pattern>
+            <pattern>ui/diagnostics/packet_capture</pattern>
+            <pattern>api/diagnostics/packet_capture/*</pattern>
         </patterns>
     </page-diagnostics-packetcapture>
     <page-diagnostics-tables>
@@ -144,14 +152,15 @@
         <name>Diagnostics: Firewall statistics</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/statistics</pattern>
-            <pattern>api/diagnostics/firewall/pf_statistcs/*</pattern>
+            <pattern>api/diagnostics/firewall/pf_statistics/*</pattern>
         </patterns>
     </page-diagnostics-pf-info>
     <page-diagnostics-system-pftop>
         <name>Diagnostics: Firewall sessions</name>
         <patterns>
             <pattern>ui/diagnostics/firewall/pf_top*</pattern>
-            <pattern>api/diagnostics/firewall/pf_top*</pattern>
+            <pattern>api/diagnostics/firewall/query_pf_top</pattern>
+            <pattern>api/diagnostics/firewall/list_rule_ids</pattern>
         </patterns>
     </page-diagnostics-system-pftop>
     <page-diagnostics-ping>
@@ -269,6 +278,7 @@
         <patterns>
             <pattern>firewall_rules.php*</pattern>
             <pattern>api/firewall/category/searchItem*</pattern>
+            <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-firewall-rules>
     <page-firewall-rules-edit>
@@ -308,6 +318,13 @@
             <pattern>firewall_virtual_ip.php*</pattern>
         </patterns>
     </page-firewall-virtualipaddresses>
+    <page-diagnostics-logs-firewall-general>
+        <name>Diagnostics: Log: Firewall: General</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/firewall/*</pattern>
+            <pattern>api/diagnostics/log/core/firewall/*</pattern>
+        </patterns>
+    </page-diagnostics-logs-firewall-general>
     <page-diagnostics-logs-firewall-plain>
         <name>Diagnostics: Logs: Firewall: Plain View</name>
         <patterns>
@@ -410,18 +427,6 @@
             <pattern>interfaces_ppps_edit.php*</pattern>
         </patterns>
     </page-interfaces-ppps-edit>
-    <page-interfaces-vlan>
-        <name>Interfaces: VLAN</name>
-        <patterns>
-            <pattern>interfaces_vlan.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan>
-    <page-interfaces-vlan-edit>
-        <name>Interfaces: VLAN: Edit</name>
-        <patterns>
-            <pattern>interfaces_vlan_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-vlan-edit>
     <page-interfaces>
         <name>Interfaces: WAN</name>
         <patterns>

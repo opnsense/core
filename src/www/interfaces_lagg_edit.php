@@ -140,10 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['proto'] = $pconfig['proto'];
         $lagg['mtu'] = $pconfig['mtu'];
         $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
-        if (in_array($pconfig['use_flowid'], ['0', '1'])) {
+        if (in_array($pconfig['use_flowid'] ?? '', ['0', '1'])) {
             $lagg['use_flowid'] = $pconfig['use_flowid'];
         }
-        if (in_array($pconfig['lacp_strict'], ['0', '1'])) {
+        if (in_array($pconfig['lacp_strict'] ?? '', ['0', '1'])) {
             $lagg['lacp_strict'] = $pconfig['lacp_strict'];
         }
         if (!empty($pconfig['lagghash'])) {
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_laggs[] = $lagg;
             }
             write_config();
-            interface_lagg_configure($lagg);
+            _interfaces_lagg_configure($lagg);
             $confif = convert_real_interface_to_friendly_interface_name($lagg['laggif']);
             if ($confif != '') {
                 interface_configure(false, $confif);
@@ -331,7 +331,7 @@ legacy_html_escape_form_data($pconfig);
                     <td><a id="help_for_lagghash" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash Layers"); ?>
                     <td>
                         <select name="lagghash[]" title="<?=gettext("Default");?>" multiple="multiple" class="selectpicker proto proto_lacp proto_loadbalance">
-                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst mac address and optional vlan number."); ?></option>
+                            <option value="l2" <?=in_array('l2', $pconfig['lagghash']) ? "selected=\"selected\"": ""?> ><?=gettext("L2: src/dst MAC address and optional VLAN number."); ?></option>
                             <option value="l3" <?=in_array('l3', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L3: src/dst address for IPv4 or IPv6."); ?></option>
                             <option value="l4" <?=in_array('l4', $pconfig['lagghash']) ? "selected=\"selected\"": ""?>><?=gettext("L4: src/dst port for TCP/UDP/SCTP."); ?></option>
                         </select>

@@ -1593,6 +1593,7 @@
           $window = $(window),
           pos = that.$newElement.offset(),
           $container = $(that.options.container),
+          $header = $('header'),
           containerPos;
 
       if (that.options.container && !$container.is('body')) {
@@ -1601,6 +1602,9 @@
         containerPos.left += parseInt($container.css('borderLeftWidth'));
       } else {
         containerPos = { top: 0, left: 0 };
+        if ($header) {
+          containerPos.top += $header.outerHeight();
+        }
       }
 
       var winPad = that.options.windowPadding;

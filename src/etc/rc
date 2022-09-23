@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -43,11 +43,36 @@ export HOME PATH REQUESTS_CA_BUNDLE
 
 echo "Mounting filesystems..."
 
+grow_partition()
+{
+	local DEV=$(echo "${1}" | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
+	local IDX=${1##"${DEV}p"}
+
+	if [ "${IDX}" = "${1}" ]; then
+		# assume schema ada0a used by nano images
+		IDX=1
+	fi
+
+	if [ -n "${DEV}" -a "${DEV}" != "${1}" -a \
+	    -n "${IDX}" -a "${IDX}" != "${1}" ]; then
+		gpart recover ${DEV}
+		gpart resize -i ${IDX} ${DEV}
+	fi
+}
+
 # tunefs may refuse otherwise
 mount -fr / 2> /dev/null
 
-GROWFS_MARKER=/.probe.for.growfs.nano
+GROWFS_MARKER=/.probe.for.growfs
 ROOT_IS_UFS=
+ROOT_IS_ZFS=$(
+	df -hT | while read FS TYPE SIZE USED AVAIL CAP MOUNT MORE; do
+		if [ "${TYPE}" = "zfs" -a "${MOUNT}" = "/" ]; then
+			echo ${FS%%/*}
+			return
+		fi
+	done
+)
 
 while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	# only tune our own file systems
@@ -55,10 +80,15 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		continue;
 	fi
 
-	# marker for running fsck in a bit
-	if [ "${FS_MNT}" = "/" ]; then
-		ROOT_IS_UFS=yes
+	# normalize devices names
+	FS_LABEL=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
+	if [ -n "${FS_LABEL}" ]; then
+		FS_PART=$(glabel status -as | awk '$1 == "'${FS_LABEL}'" { print $3 }')
+	else
+		FS_PART=${FS_PART##/dev/}
 	fi
+
+	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^[a-z]+[0-9]+/) { print substr( $0, RSTART, RLENGTH )}')
 
 	if echo "${FS_MORE}" | grep -iq nosoft; then
 		# appending "# nosoft" to the /etc/fstab entry
@@ -69,19 +99,7 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		tunefs -n enable ${FS_MNT}
 	fi
 
-	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
-	if [ -n "${FS_DEV}" ]; then
-		FS_DEV=$(glabel status -as | grep ${FS_DEV} | awk 'match($3, /^[a-z]+[0-9]+/) { print substr( $3, RSTART, RLENGTH )}')
-		if [ "${FS_MNT}" = "/" -a -f ${GROWFS_MARKER} ]; then
-			# hammertime!
-			gpart recover ${FS_DEV}
-			gpart resize -i 1 ${FS_DEV}
-			growfs -y ${FS_MNT}
-		fi
-	fi
-	if [ -z "${FS_DEV}" ]; then
-		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/[a-z]+[0-9]+/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
-	fi
+	# trim fun if possible
 	if [ -n "${FS_DEV}" ]; then
 		FS_TRIM=$(camcontrol identify ${FS_DEV} | grep TRIM | awk '{ print $5; }')
 		if [ "${FS_TRIM}" = "yes" ]; then
@@ -95,7 +113,28 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 			fi
 		fi
 	fi
+
+	# marker for running fsck or growfs in a bit
+	if [ "${FS_MNT}" = "/" ]; then
+		ROOT_IS_UFS=${FS_PART}
+	fi
+
 done < /etc/fstab
+
+if [ -f ${GROWFS_MARKER} ]; then
+	# hammertime!
+	if [ -n "${ROOT_IS_UFS}" ]; then
+		grow_partition ${ROOT_IS_UFS}
+		growfs -y "/"
+	elif [ -n "${ROOT_IS_ZFS}" ]; then
+		zpool list -Hv ${ROOT_IS_ZFS} | while read NAME MORE; do
+			if [ "${NAME}" != "${ROOT_IS_ZFS}" ]; then
+				grow_partition ${NAME}
+				zpool online -e ${ROOT_IS_ZFS} ${NAME}
+			fi
+		done
+	fi
+fi
 
 attempts=0
 while [ ${attempts} -lt 3 ]; do
@@ -113,6 +152,7 @@ done
 
 if kldstat -qm zfs; then
 	mount -uw /
+	zpool import -Na
 	zfs mount -va
 	# maybe there is a mountpoint in fstab
 	# that requires ZFS to be fully set up
@@ -146,9 +186,6 @@ fi
 
 # run the config importer during early startup
 /usr/local/sbin/opnsense-importer -b
-
-# enable console output if it was muted
-/sbin/conscontrol mute off > /dev/null
 
 # all sorts of maintenance tasks for /var
 /usr/local/etc/rc.subr.d/var
@@ -192,15 +229,13 @@ echo "done."
 
 # Let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-touch /var/run/booting
-/usr/local/etc/rc.bootup || exit 1
-rm /var/run/booting
+/usr/local/bin/flock -n -o /var/run/booting /usr/local/etc/rc.bootup || exit 1
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
 
 echo -n "Root file system: "
-mount | grep ' on / ' | awk '{ print $1 }'
+mount | awk '$3 == "/" { print $1 }'
 date
 
 /usr/local/sbin/opnsense-shell banner

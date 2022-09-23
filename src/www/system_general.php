@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system'][$dnsgwname] = "none";
             if (!empty($pconfig[$dnsgwname])) {
                 // The indexes used to save the item don't have to correspond to the ones in the config, but since
-                // we always redirect after save, the configuration content is read after a successfull change.
+                // we always redirect after save, the configuration content is read after a successful change.
                 $outdnscounter++;
                 $outdnsgwname="dns{$outdnscounter}gw";
                 $config['system'][$outdnsgwname] = $thisdnsgwname;
@@ -228,7 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_timezone_configure();
         system_trust_configure();
 
-        prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
         system_resolvconf_generate();
@@ -399,7 +398,7 @@ $( document ).ready(function() {
                 <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
                 <div class="hidden" data-for="help_for_prefer_ipv4">
                   <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-                                      "IPv6 will be used, if you check this option, IPv4 will be " .
+                                      "IPv6 will be used. If you check this option, IPv4 will be " .
                                       "used instead of IPv6."); ?>
                 </div>
               </td>

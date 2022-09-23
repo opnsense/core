@@ -43,6 +43,25 @@
                         request['type'] = $('#type_filter').val();
                     }
                     return request;
+                },
+                formatters: {
+                    "commands": function (column, row) {
+                        if (row.uuid.includes('-') === true) {
+                            // exclude buttons for internal aliases (which uses names instead of valid uuid's)
+                            return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
+                                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                        }
+                    },
+                    "rowtoggle": function (column, row) {
+                        if (!row.uuid.includes('-')) {
+                            return '<span class="fa fa-fw fa-check-square-o"></span>';
+                        } else if (parseInt(row[column.id], 2) === 1) {
+                            return '<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o command-toggle bootgrid-tooltip" data-value="1" data-row-id="' + row.uuid + '"></span>';
+                        } else {
+                            return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
+                        }
+                    },
                 }
             }
         });
@@ -57,7 +76,9 @@
             ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
-                    $("#network_content").append($("<option/>").val(alias).text(value));
+                    let $opt = $("<option/>").val(alias).text(value.name);
+                    $opt.data('subtext', value.description);
+                    $("#network_content").append($opt);
                 });
                 $("#network_content").selectpicker('refresh');
             });
@@ -213,6 +234,11 @@
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
                     break;
+                case 'asn':
+                    $("#alias_type_default").show();
+                    $("#alias\\.proto").selectpicker('show');
+                    $("#copy-paste").show();
+                    break;
                 case 'external':
                     break;
                 case 'networkgroup':
@@ -226,7 +252,7 @@
                     break;
                 case 'urltable':
                     $("#row_alias\\.updatefreq").show();
-                    /* FALLTROUGH */
+                    /* FALLTHROUGH */
                 default:
                     $("#alias_type_default").show();
                     $("#alias\\.proto").selectpicker('hide');
@@ -500,13 +526,15 @@
                             <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
-                                <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
                                 <option value="url">{{ lang._('URL (IPs)') }}</option>
                                 <option value="urltable">{{ lang._('URL Table (IPs)') }}</option>
                                 <option value="geoip">{{ lang._('GeoIP') }}</option>
                                 <option value="networkgroup">{{ lang._('Network group') }}</option>
+                                <option value="mac">{{ lang._('MAC address') }}</option>
+                                <option value="asn">{{ lang._('BGP ASN') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
+                                <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
                         </div>

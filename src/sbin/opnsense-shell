@@ -43,7 +43,7 @@ while getopts c: OPT; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
 
 # Beyond this point the console menu yields no value to scripting,
 # so we can check for root to avoid permission errors later on.
@@ -63,9 +63,9 @@ defaults)
 	shift
 	exec ${CMD_DEFAULTS} "${@}"
 	;;
-update)
+firmware)
 	shift
-	exec ${CMD_UPDATE} "${@}"
+	exec ${CMD_FIRMWARE} "${@}"
 	;;
 halt)
 	shift

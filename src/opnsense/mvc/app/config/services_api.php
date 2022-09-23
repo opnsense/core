@@ -27,10 +27,9 @@
  */
 
 // Service definition for API
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\Mvc\View;
-use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Manager;
 use Phalcon\Session\Adapter\Stream;
 use OPNsense\Core\Config;
@@ -71,7 +70,7 @@ $di->setShared('session', function () {
     ]);
     $session->setAdapter($files);
     $session->start();
-    // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
+    // Set session response cookie, unfortunately we need to read the config here to determine if secure option is
     // a valid choice.
     $cnf = Config::getInstance();
     if ((string)$cnf->object()->system->webgui->protocol == 'https') {
@@ -79,7 +78,7 @@ $di->setShared('session', function () {
     } else {
         $secure = false;
     }
-    setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+    setcookie(session_name(), session_id(), 0, '/', '', $secure, true);
 
     return $session;
 });

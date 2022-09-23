@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\InterfaceField;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use OPNsense\Core\Config;
 
 class InterfaceFieldTest extends Field_Framework_TestCase
@@ -70,7 +70,7 @@ class InterfaceFieldTest extends Field_Framework_TestCase
      */
     public function testSelectHasNoParents()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new InterfaceField();
@@ -111,7 +111,7 @@ class InterfaceFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetWithUnknownValue()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("CsvListValidator");
         // init field
         $field = new InterfaceField();
@@ -140,7 +140,7 @@ class InterfaceFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetOnSingleValue()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new InterfaceField();

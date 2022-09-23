@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -25,14 +25,18 @@
 
 DO_COMMAND=cat
 DO_LIST=
+DO_NAME=
 
-while getopts fl OPT; do
+while getopts fln OPT; do
 	case ${OPT} in
 	f)
 		DO_COMMAND="tail -F -n0"
 		;;
 	l)
 		DO_LIST="-l"
+		;;
+	n)
+		DO_NAME="-n"
 		;;
 	*)
 		echo "Usage: man ${0##*/}" >&2
@@ -41,7 +45,7 @@ while getopts fl OPT; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
 
 LOGTYPE=${1:-system}
 
@@ -53,6 +57,13 @@ if [ -n "${DO_LIST}" ]; then
 		DIR=$(dirname ${LOG})
 		echo ${DIR##*/}
 	done
+	exit
+fi
+
+if [ -n "${DO_NAME}" ]; then
+	if [ -e "${LOGFILE}" ]; then
+		echo ${LOGFILE}
+	fi
 	exit
 fi
 

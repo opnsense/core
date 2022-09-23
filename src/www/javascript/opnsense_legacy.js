@@ -30,24 +30,12 @@
  *    shared components to use with legacy pages
  */
 
-function notice_action(action,msgid) {
-  jQuery.ajax({
-    type: 'post',
-    cache: false,
-    url: 'index.php',
-    data: {closenotice: msgid},
-    success: function(response) {
-      jQuery('#menu_messages').html(response);
-    }
-  });
-}
-
 /**
  * hook on change events to network inputs, to maximize the subnet to 24 on ipv4 addresses
  * @param classname: classname to hook on to, select list of netmasks
  * @param data_id: data field reference to network input field
  */
-function hook_ipv4v6(classname, data_id)
+function hook_ipv4v6(classname, data_id, prefixlen)
 {
     $("select."+classname).each(function(){
         var selectlist_id = $(this).attr('id');
@@ -61,7 +49,7 @@ function hook_ipv4v6(classname, data_id)
                         $("#"+selectlist_id+' option[value=' + i + ']').show()
                     }
                     if ((type === undefined && val == '') || type === '4') {
-                        net = '64';
+                        net = prefixlen == undefined ? '64' : prefixlen;
                     }
                     type = '6';
                 } else {
@@ -182,7 +170,7 @@ function window_highlight_table_option()
 
 
 /**
- * load fireall categories and hook change events.
+ * load firewall categories and hook change events.
  * in order to use this partial the html template should contain the following:
  * - a <select> with the id "fw_category" to load categories in
  * - <tr/> entities with class "rule" to identify the rows to filter

@@ -155,9 +155,6 @@ if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserve
 if (!empty($input_errors)) {
     $stepid--;
 } else {
-    if (isset($config['unbound']['forwarding'])) {
-        unset($config['unbound']['forwarding']);
-    }
     if (isset($config['dnsmasq']['enable'])) {
         unset($config['dnsmasq']['enable']);
     }
@@ -455,7 +452,7 @@ if (!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddres
     $input_errors[] = gettext('Invalid PPTP Local IP address.');
 }
 if (!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
-    $input_errors[] = gettext('Invalid PPTP Remopte IP address.');
+    $input_errors[] = gettext('Invalid PPTP Remote IP address.');
 }
 if (!empty($input_errors)) {
     $stepid--;

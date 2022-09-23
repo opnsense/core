@@ -27,18 +27,65 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-$openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
+function phpseclib_autoload($namespace, $dir)
+{
+    $split = '\\';
+    $ns = trim($namespace, DIRECTORY_SEPARATOR . $split);
 
-$openssl_crl_status = array(
-  OCSP_REVOKED_STATUS_NOSTATUS              => "No Status (default)",
-  OCSP_REVOKED_STATUS_UNSPECIFIED           => "Unspecified",
-  OCSP_REVOKED_STATUS_KEYCOMPROMISE         => "Key Compromise",
-  OCSP_REVOKED_STATUS_CACOMPROMISE          => "CA Compromise",
-  OCSP_REVOKED_STATUS_AFFILIATIONCHANGED    => "Affiliation Changed",
-  OCSP_REVOKED_STATUS_SUPERSEDED            => "Superseded",
-  OCSP_REVOKED_STATUS_CESSATIONOFOPERATION  => "Cessation of Operation",
-  OCSP_REVOKED_STATUS_CERTIFICATEHOLD       => "Certificate Hold"
-);
+    return spl_autoload_register(
+        function ($class) use ($ns, $dir, $split) {
+            $prefix = $ns . $split;
+            $base_dir = $dir . DIRECTORY_SEPARATOR;
+            $len = strlen($prefix);
+            if (strncmp($prefix, $class, $len)) {
+                return;
+            }
+
+            $relative_class = substr($class, $len);
+
+            $file = $base_dir .
+                str_replace($split, DIRECTORY_SEPARATOR, $relative_class) .
+                '.php';
+
+            if (file_exists($file)) {
+                require_once $file;
+            }
+        }
+    );
+}
+
+/* Autoload phpseclib3 and it's dependencies */
+phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
+phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
+
+use phpseclib3\File\X509;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
+use phpseclib3\Exception\NoKeyLoadedException;
+
+define("CERT_CRL_STATUS_NOSTATUS", -1);
+define("CERT_CRL_STATUS_UNSPECIFIED", 0);
+define("CERT_CRL_STATUS_KEYCOMPROMISE", 1);
+define("CERT_CRL_STATUS_CACOMPROMISE", 2);
+define("CERT_CRL_STATUS_AFFILIATIONCHANGED", 3);
+define("CERT_CRL_STATUS_SUPERSEDED", 4);
+define("CERT_CRL_STATUS_CESSATIONOFOPERATION", 5);
+define("CERT_CRL_STATUS_CERTIFICATEHOLD", 6);
+
+function crl_status_code()
+{
+    /* Array index 0 is a description, index 1 is the key used by phpseclib */
+    return array(
+        CERT_CRL_STATUS_NOSTATUS              => ["No Status (default)", "unspecified"],
+        CERT_CRL_STATUS_UNSPECIFIED           => ["Unspecified", "unspecified"],
+        CERT_CRL_STATUS_KEYCOMPROMISE         => ["Key Compromise", "keyCompromise"],
+        CERT_CRL_STATUS_CACOMPROMISE          => ["CA Compromise", "cACompromise"],
+        CERT_CRL_STATUS_AFFILIATIONCHANGED    => ["Affiliation Changed", "affiliationChanged"],
+        CERT_CRL_STATUS_SUPERSEDED            => ["Superseded", "superseded"],
+        CERT_CRL_STATUS_CESSATIONOFOPERATION  => ["Cessation of Operation", "cessationOfOperation"],
+        CERT_CRL_STATUS_CERTIFICATEHOLD       => ["Certificate Hold", "certificateHold"]
+    );
+}
 
 function &lookup_ca($refid)
 {
@@ -209,7 +256,7 @@ function cert_import(&$cert, $crt_str, $key_str)
     return true;
 }
 
-function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns)
+function cert_create(&$cert, $caref, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
 {
     $ca = &lookup_ca($caref);
     if (!$ca) {
@@ -587,24 +634,106 @@ function crl_update(&$crl)
         return false;
     }
     // If we have text but no certs, it was imported and cannot be updated.
-    if (($crl["method"] != "internal") && (!empty($crl['text']) && empty($crl['cert']))) {
+    if (!is_crl_internal($crl)) {
         return false;
     }
+
     $crl['serial']++;
     $ca_str_crt = base64_decode($ca['crt']);
     $ca_str_key = base64_decode($ca['prv']);
-    $crl_res = openssl_crl_new($ca_str_crt, $crl['serial'], $crl['lifetime']);
+    if (!openssl_x509_check_private_key($ca_str_crt, $ca_str_key)) {
+        syslog(LOG_ERR, "Cert revocation error: CA keys mismatch");
+        return false;
+    }
+
+    if (!class_exists(X509::class)) {
+        syslog(LOG_ERR, 'Cert revocation error: phpseclib3 not loaded');
+        return false;
+    }
+
+    /* Load in the CA's cert */
+    $ca_cert = new X509();
+    $ca_cert->loadX509($ca_str_crt);
+
+    if (!$ca_cert->validateDate()) {
+        syslog(LOG_ERR, 'Cert revocation error: CA certificate invalid: invalid date');
+        return false;
+    }
+
+    /* get the private key to sign the new (updated) CRL */
+    try {
+        $ca_key = PublicKeyLoader::loadPrivateKey($ca_str_key);
+        if (method_exists($ca_key, 'withPadding')) {
+            $ca_key = $ca_key->withPadding(RSA::ENCRYPTION_PKCS1 | RSA::SIGNATURE_PKCS1);
+        }
+        $ca_cert->setPrivateKey($ca_key);
+    } catch (NoKeyLoadedException $e) {
+        syslog(LOG_ERR, 'Cert revocation error: Unable to load CA private key');
+        return false;
+    }
+
+    /* Load the CA for later signature validation */
+    $x509_crl = new X509();
+    $x509_crl->loadCA($ca_str_crt);
+
+    /*
+     * create empty CRL. A quirk with phpseclib is that in order to correctly sign
+     * a new CRL, a CA must be loaded using a separate X509 container, which is passed
+     * to signCRL(). However, to validate the resulting signature, the original X509
+     * CRL container must load the same CA using loadCA() with a direct reference
+     * to the CA's public cert.
+     */
+    $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
+
+    /* Now validate the CRL to see if everything went well */
+    try {
+        if (!$x509_crl->validateSignature(false)) {
+            syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid');
+            return false;
+        }
+    } catch (Exception $e) {
+        syslog(LOG_ERR, 'Cert revocation error: CRL signature invalid ' . $e);
+        return false;
+    }
+
     if (is_array($crl['cert']) && (count($crl['cert']) > 0)) {
         foreach ($crl['cert'] as $cert) {
-            openssl_crl_revoke_cert($crl_res, base64_decode($cert["crt"]), $cert["revoke_time"], $cert["reason"]);
+            /* load the certificate in an x509 container to get its serial number and validate its signature */
+            $x509_cert = new X509();
+            $x509_cert->loadCA($ca_str_crt);
+            $raw_cert = $x509_cert->loadX509(base64_decode($cert['crt']));
+            try {
+                if (!$x509_cert->validateSignature(false)) {
+                    syslog(LOG_ERR, "Cert revocation error: Revoked certificate validation failed.");
+                    return false;
+                }
+            } catch (Exception $e) {
+                syslog(LOG_ERR, 'Cert revocation error: Revoked certificate validation failed ' . $e);
+                return false;
+            }
+            /* Get serial number of cert */
+            $sn = $raw_cert['tbsCertificate']['serialNumber']->toString();
+            $x509_crl->setRevokedCertificateExtension($sn, 'id-ce-cRLReasons', crl_status_code()[$cert["reason"]][1]);
         }
     }
-    openssl_crl_export($crl_res, $crl_text, $ca_str_key);
+    $x509_crl->setSerialNumber($crl['serial'], 10);
+    /* consider dates after 2050 lifetime in GeneralizedTime format (rfc5280#section-4.1.2.5) */
+    $date = new \DateTimeImmutable('+' . $crl['lifetime'] . ' days', new \DateTimeZone(@date_default_timezone_get()));
+    if ((int)$date->format("Y") < 2050) {
+        $x509_crl->setEndDate($date);
+    } else {
+        $x509_crl->setEndDate('lifetime');
+    }
+
+    $new_crl = $x509_crl->signCRL($ca_cert, $x509_crl);
+    $crl_text = $x509_crl->saveCRL($new_crl) . PHP_EOL;
+
+    /* Update the CRL */
     $crl['text'] = base64_encode($crl_text);
-    return $crl_res;
+    return true;
 }
 
-function cert_revoke($cert, &$crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
+function cert_revoke($cert, &$crl, $reason = CERT_CRL_STATUS_UNSPECIFIED)
 {
     if (is_cert_revoked($cert, $crl['refid'])) {
         return true;
@@ -613,10 +742,14 @@ function cert_revoke($cert, &$crl, $reason = OCSP_REVOKED_STATUS_UNSPECIFIED)
     if (!is_crl_internal($crl)) {
         return false;
     }
+    $crl_before = $crl;
     $cert["reason"] = $reason;
     $cert["revoke_time"] = time();
     $crl["cert"][] = $cert;
-    crl_update($crl);
+    if (!crl_update($crl)) {
+        $crl = $crl_before;
+        return false;
+    }
     return true;
 }
 
@@ -691,7 +824,7 @@ function is_openvpn_server_crl($crlref)
 
 function is_crl_internal($crl)
 {
-    return (!(!empty($crl['text']) && empty($crl['cert'])) || ($crl["method"] == "internal"));
+    return (!(!empty($crl['text']) && empty($crl['cert'])) || ($crl["crlmethod"] ?? '' == "internal"));
 }
 
 function cert_get_cn($crt, $isref = false)

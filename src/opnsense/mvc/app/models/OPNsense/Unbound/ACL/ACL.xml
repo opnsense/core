@@ -21,7 +21,24 @@
         <name>Services: Unbound DNS: Edit Host and Domain Override</name>
         <patterns>
             <pattern>ui/unbound/overrides/*</pattern>
-            <pattern>api/unbound/overrides/*</pattern>
+            <pattern>api/unbound/settings/searchHostOverride/*</pattern>
+            <pattern>api/unbound/settings/getHostOverride/*</pattern>
+            <pattern>api/unbound/settings/setHostOverride/*</pattern>
+            <pattern>api/unbound/settings/addHostOverride/*</pattern>
+            <pattern>api/unbound/settings/delHostOverride/*</pattern>
+            <pattern>api/unbound/settings/toggleHostOverride/*</pattern>
+            <pattern>api/unbound/settings/searchHostAlias/*</pattern>
+            <pattern>api/unbound/settings/getHostAlias/*</pattern>
+            <pattern>api/unbound/settings/setHostAlias/*</pattern>
+            <pattern>api/unbound/settings/addHostAlias/*</pattern>
+            <pattern>api/unbound/settings/delHostAlias/*</pattern>
+            <pattern>api/unbound/settings/toggleHostAlias/*</pattern>
+            <pattern>api/unbound/settings/searchDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/getDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/setDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/addDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/delDomainOverride/*</pattern>
+            <pattern>api/unbound/settings/toggleDomainOverride/*</pattern>
         </patterns>
     </page-services-dnsresolver-overrides>
     <page-diagnostics-logs-resolver>

@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\AuthGroupField;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use OPNsense\Core\Config;
 
 class AuthGroupFieldTest extends Field_Framework_TestCase
@@ -61,8 +61,8 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
         $field = new AuthGroupField();
         $field->eventPostLoading();
 
-        $this->assertContains('100', array_keys($field->getNodeData()));
-        $this->assertContains('100', array_keys($field->getNodeData()));
+        $this->assertContains(100, array_keys($field->getNodeData()));
+        $this->assertContains(100, array_keys($field->getNodeData()));
     }
 
     /**
@@ -70,7 +70,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetWithUnknownValue()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("CsvListValidator");
         // init field
         $field = new AuthGroupField();
@@ -99,7 +99,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
      */
     public function testSelectSetOnSingleValue()
     {
-        $this->expectException(\Phalcon\Validation\Exception::class);
+        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("InclusionIn");
         // init field
         $field = new AuthGroupField();

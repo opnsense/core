@@ -43,10 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig = array();
     // set defaults
-    $pconfig['interface'] = "wan";
+    $pconfig['interface'] = 'wan';
     if (isset($configId)) {
       // copy 1-to-1 attributes
-      foreach (array('disabled','interface','descr', 'category') as $fieldname) {
+      foreach (array('disabled','interface','descr','log','category') as $fieldname) {
           if (isset($a_npt[$configId][$fieldname])) {
               $pconfig[$fieldname] = $a_npt[$configId][$fieldname];
           }
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // initialize empty form values
-    foreach (array('disabled','interface','descr','src','srcmask','dst') as $fieldname) {
+    foreach (array('disabled','interface','descr','src','srcmask','dst','log') as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
@@ -100,37 +100,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-      $natent = array();
+       $natent = [];
 
-      $natent['disabled'] = isset($pconfig['disabled']) ? true:false;
-      $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
-      $natent['descr'] = $pconfig['descr'];
-      $natent['interface'] = $pconfig['interface'];
-      pconfig_to_address(
-          $natent['source'], trim($pconfig['src']), $pconfig['srcmask']
-      );
+       $natent['disabled'] = isset($pconfig['disabled']) ? true : false;
+       $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
+       $natent['descr'] = $pconfig['descr'];
+       $natent['interface'] = $pconfig['interface'];
+       $natent['log'] = !empty($pconfig['log']);
 
-      pconfig_to_address(
-          $natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']
-      );
+       pconfig_to_address($natent['source'], trim($pconfig['src']), $pconfig['srcmask']);
+       pconfig_to_address($natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']);
 
-      if (isset($id)) {
-          $a_npt[$id] = $natent;
-      } elseif (isset($after)) {
-          array_splice($a_npt, $after+1, 0, array($natent));
-      } else {
-          $a_npt[] = $natent;
-      }
-      OPNsense\Core\Config::getInstance()->fromArray($config);
-      $catmdl = new OPNsense\Firewall\Category();
-      if ($catmdl->sync()) {
-          $catmdl->serializeToConfig();
-          $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
-      }
-      write_config();
-      mark_subsystem_dirty('natconf');
-      header(url_safe('Location: /firewall_nat_npt.php'));
-      exit;
+       if (isset($id)) {
+           $a_npt[$id] = $natent;
+       } elseif (isset($after)) {
+           array_splice($a_npt, $after+1, 0, array($natent));
+       } else {
+           $a_npt[] = $natent;
+       }
+
+       OPNsense\Core\Config::getInstance()->fromArray($config);
+       $catmdl = new OPNsense\Firewall\Category();
+       if ($catmdl->sync()) {
+           $catmdl->serializeToConfig();
+           $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
+       }
+
+       write_config();
+       mark_subsystem_dirty('natconf');
+
+       header(url_safe('Location: /firewall_nat_npt.php'));
+       exit;
     }
 }
 
@@ -168,8 +168,8 @@ $( document ).ready(function() {
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <?= gettext('Disable this rule') ?>
                       <div class="hidden" data-for="help_for_disabled">
-                        <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                       </div>
                     </td>
@@ -222,6 +222,13 @@ $( document ).ready(function() {
                       <div class="hidden" data-for="help_for_dst">
                         <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Log') ?></td>
+                    <td>
+                      <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
+                      <?= gettext('Log packets that are handled by this rule') ?><br/>
                     </td>
                   </tr>
                   <tr>

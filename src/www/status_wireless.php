@@ -83,29 +83,29 @@ include("head.inc");
                 /* Skip Header */
                 array_shift($states);
 
-                $counter=0;
-                foreach($states as $state):
+                $counter = 0;
+                foreach ($states as $state):
                   /* Split by Mac address for the SSID Field */
-                  $split = preg_split("/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i", $state);
-                  preg_match("/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i", $state, $bssid);
-                  $ssid = htmlspecialchars($split[0]);
+                  $split = preg_split('/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i', $state, 2);
+                  preg_match('/([0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f]\:[0-9a-f][[0-9a-f])/i', $state, $bssid);
+                  $ssid = $split[0];
                   $bssid = $bssid[0];
                   /* Split the rest by using spaces for this line using the 2nd part */
-                  $split = preg_split("/[ ]+/i", $split[1]);
+                  $split = preg_split("/[ ]+/i", $split[1], 6);
                   $channel = $split[1];
                   $rate = $split[2];
                   $rssi = $split[3];
                   $int = $split[4];
-                  $caps = "$split[5] $split[6] $split[7] $split[8] $split[9] $split[10] $split[11] ";
+                  $caps = $split[5];
 ?>
                   <tr>
-                    <td><?=$ssid;?></td>
-                    <td><?=$bssid;?></td>
-                    <td><?=$channel;?></td>
-                    <td><?=$rate;?></td>
-                    <td><?=$rssi;?></td>
-                    <td><?=$int;?></td>
-                    <td><?=$caps;?></td>
+                    <td><?= html_safe($ssid) ?></td>
+                    <td><?= html_safe($bssid) ?></td>
+                    <td><?= html_safe($channel) ?></td>
+                    <td><?= html_safe($rate) ?></td>
+                    <td><?= html_safe($rssi) ?></td>
+                    <td><?= html_safe($int) ?></td>
+                    <td><?= html_safe($caps) ?></td>
                   </tr>
 <?php
                   endforeach;?>

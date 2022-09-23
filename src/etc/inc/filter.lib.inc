@@ -90,21 +90,13 @@ function filter_core_get_antilockout()
 {
     global $config;
 
-    $lockout_ports = array();
-    $lockout_if = null;
-
     if (isset($config['system']['webgui']['noantilockout'])) {
-        return array();
+        return [];
     }
 
-    if (!empty($config['interfaces']['lan']['if'])) {
-        $lockout_if = 'lan';
-    } elseif (!empty($config['interfaces']['opt1']['if'])) {
-        $lockout_if = 'opt1';
-    } elseif (count(get_configured_interface_with_descr()) == 1 && !empty($config['interfaces']['wan']['if'])) {
-        $lockout_if = 'wan';
-    } else {
-        return array();
+    $lockout_if = get_primary_interface_from_list(array_keys(legacy_config_get_interfaces(['virtual' => false])));
+    if (empty($lockout_if)) {
+        return [];
     }
 
     /*
@@ -118,6 +110,7 @@ function filter_core_get_antilockout()
      *    and no ssh has ever been configured. This is in line
      *    with how the plugin behaves, but probably looks odd.
      */
+    $lockout_ports = [];
     if (empty($config['system']['webgui']['port'])) {
         $lockout_ports[] = $config['system']['webgui']['protocol'] == 'https' ? '443' : '80';
     } else {
@@ -134,33 +127,34 @@ function filter_core_get_antilockout()
     }
 
     if (!count($lockout_ports)) {
-        return array();
+        return [];
     }
 
     sort($lockout_ports);
 
     /* return a convenient one-entry array to iterate over for our callers */
-    return array($lockout_if => $lockout_ports);
+    return [$lockout_if => $lockout_ports];
 }
 
 /**
  * recursively collect port alias(es) contents
  * @param string|null $aliasname alias name, or null to fetch all aliases
  * @param array $aliases aliases already parsed (prevent deadlock)
+ * @param array $all_aliases all known alias names
  * @return array containing ports
  * @throws \OPNsense\Base\ModelException
  */
-function filter_core_get_port_alias($aliasname, $aliases = array(), $aliasObject = null)
+function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = null, $all_aliases = [])
 {
-    $response = array();
+    $response = [];
     $aliases[] = $aliasname;
     $aliasObject = $aliasObject == null ? (new \OPNsense\Firewall\Alias()) : $aliasObject;
     foreach ($aliasObject->aliasIterator() as $aliased) {
-        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port') {
-            foreach (explode("\n", $aliased['content']) as $address) {
-                if (is_alias($address)) {
+        if ($aliasname == $aliased['name'] && $aliased['type'] == 'port' && !empty($aliased['enabled'])) {
+            foreach ($aliased['content'] as $address) {
+                if (in_array($address, $all_aliases)) {
                     if (!in_array($address, $aliases)) {
-                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject) as $port) {
+                        foreach (filter_core_get_port_alias($address, $aliases, $aliasObject, $all_aliases) as $port) {
                             if (!in_array($port, $response)) {
                                 $response[] = $port;
                             }
@@ -225,7 +219,7 @@ function filter_core_rules_system($fw, $defaults)
     // default Deny rule (when no other rules match)
     $fw->registerFilterRule(
         1,
-        array('ipprotocol' => 'inet46', 'descr' => 'Default deny rule', 'quick' => false),
+        array('ipprotocol' => 'inet46', 'descr' => 'Default deny / state violation rule', 'quick' => false),
         $defaults['block']
     );
 
@@ -265,21 +259,24 @@ function filter_core_rules_system($fw, $defaults)
             'to' => 'ff02::/16', 'direction' => 'in' ),
         $defaults['pass']
     );
-    // block all targetting port 0
+    // block all targeting port 0
     foreach (array('from_port', 'to_port') as $target) {
         $fw->registerFilterRule(
             1,
             array('ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
-                'descr' => 'block all targetting port 0'),
+                'descr' => 'block all targeting port 0'),
             $defaults['block']
         );
     }
     // CARP defaults
-    $fw->registerFilterRule(
-        1,
-        array('protocol' => 'carp', 'direction' => 'any', 'descr' => 'CARP defaults', '#ref' => 'firewall_virtual_ip.php'),
-        $defaults['pass']
-    );
+    foreach (['ff02::12', '224.0.0.18'] as $to) {
+        $fw->registerFilterRule(
+            1,
+            ['protocol' => 'carp', 'direction' => 'any', 'to' => $to, 'descr' => 'CARP defaults',
+                '#ref' => 'firewall_virtual_ip.php'],
+            $defaults['pass']
+        );
+    }
 
     // Lockout rules
     $fw->registerFilterRule(
@@ -527,8 +524,8 @@ function filter_core_rules_system($fw, $defaults)
                 break;
         }
     }
-    // loopback
-    $fw->registerFilterRule(5, array('interface' => 'lo0', 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
+    // loopback. dont log internal communications
+    $fw->registerFilterRule(5, array('interface' => 'lo0', 'log' => false, 'descr' => 'pass loopback', 'statetype' => 'none'), $defaults['pass']);
     // out from this Firewall
     $fw->registerFilterRule(
         5,
@@ -541,7 +538,7 @@ function filter_core_rules_system($fw, $defaults)
         $fw->registerFilterRule(
             5,
             array('direction' => 'out', 'statetype' => 'keep', 'quick' => false, 'interface' => 'enc0',
-                '#ref' => '/ui/ipsec/tunnels',
+                '#ref' => 'ui/ipsec/tunnels',
                 'descr' => 'IPsec internal host to host'),
             $defaults['pass']
         );
@@ -560,23 +557,6 @@ function filter_core_rules_system($fw, $defaults)
                 'descr' => 'anti-lockout rule',
                 '#ref' => 'system_advanced_firewall.php#noantilockout'
             ),
-            $defaults['pass']
-        );
-    }
-
-    // TODO: move to pptpd plugin when filter.lib.inc is part of the standard release
-    $pptpdcfg = $config['pptpd'];
-    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server') {
-        $fw->registerFilterRule(
-            5,
-            array('direction' => 'in', 'interface' => 'wan', 'statetype' => 'modulate','protocol' => 'tcp',
-                'to' => '(self)', 'to_port' => '1723', 'quick' => false, 'descr' => 'allow pptpd'),
-            $defaults['pass']
-        );
-        $fw->registerFilterRule(
-            5,
-            array('direction' => 'in', 'interface' => 'wan', 'statetype' => 'modulate',
-                'protocol' => 'gre', 'descr' => 'allow pptpd', 'quick' => false),
             $defaults['pass']
         );
     }
@@ -615,4 +595,71 @@ function filter_core_rules_system($fw, $defaults)
             }
         }
     }
+}
+
+/**
+ * register user rules, returns kill states for schedules
+ */
+function filter_core_rules_user($fw)
+{
+    global $config;
+
+    $sched_kill_states = [];
+
+    $ifgroups = ["l2tp", "pptp", "pppoe", "enc0", "openvpn"];
+    if (isset($config['ifgroups']['ifgroupentry'])) {
+        foreach ($config['ifgroups']['ifgroupentry'] as $groupentry) {
+            $ifgroups[] = $groupentry['ifname'];
+        }
+    }
+
+    if (isset($config['filter']['rule'])) {
+        // register user rules
+        foreach ($config['filter']['rule'] as $idx => $rule) {
+            // calculate a hash for this area so we can track this rule, we should replace this
+            // with uuid's on the rules like the new style models do eventually.
+            $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);
+
+            $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
+            $rule['#ref'] = sprintf('firewall_rules_edit.php?if=%s&id=%s', $intf, $idx);
+            $rule['seq'] = $idx;  // current rule sequence (used as id in firewall pages)
+            $sched = '';
+            $descr = '';
+
+            if (!empty($rule['sched'])) {
+                $sched = "({$rule['sched']})";
+            }
+            if (!empty($rule['descr'])) {
+                $descr = ": {$rule['descr']}";
+            }
+
+            $rule['descr'] = "{$sched}{$descr}";
+            if (isset($rule['floating'])) {
+                $prio = 200000;
+            } elseif (in_array($rule['interface'], $ifgroups)) {
+                $prio = 300000;
+            } else {
+                $prio = 400000;
+            }
+            /* is a time based rule schedule attached? */
+            if (!empty($rule['sched']) && !empty($config['schedules'])) {
+                foreach ($config['schedules']['schedule'] as $sched) {
+                    if ($sched['name'] == $rule['sched']) {
+                        if (!filter_get_time_based_rule_status($sched)) {
+                            if (!isset($config['system']['schedule_states'])) {
+                                $sched_kill_states[] = $rule['label'];
+                            }
+                            /* disable rule, suffix label to mark end of schedule */
+                            $rule['disabled'] = true;
+                            $rule['descr'] = "[FIN]" . $rule['descr'];
+                        }
+                        break;
+                    }
+                }
+            }
+            $fw->registerFilterRule($prio, $rule);
+        }
+    }
+
+    return $sched_kill_states;
 }

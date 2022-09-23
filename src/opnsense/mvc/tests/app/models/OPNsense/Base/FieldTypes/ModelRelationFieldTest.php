@@ -34,7 +34,7 @@ require_once __DIR__ . '/../BaseModel/TestModel.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\ModelRelationField;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use OPNsense\Core\Config;
 
 class ModelRelationFieldTest extends Field_Framework_TestCase
@@ -86,7 +86,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("5ea2a35c-b02b-485a-912b-d077e639bf9f,60e1bc02-6817-4940-bbd3-61d0cf439a8a");
-        $this->assertEquals($this->validate($field), ['Phalcon\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn']);
     }
 
     /**
@@ -123,7 +123,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("");
-        $this->assertEquals($this->validate($field), ['Phalcon\Validation\Validator\PresenceOf']);
+        $this->assertEquals($this->validate($field), ['OPNsense\Phalcon\Filter\Validation\Validator\PresenceOf']);
     }
 
     /**
@@ -209,7 +209,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * Selecting none option, while blank desciption override.
+     * Selecting none option, while blank description override.
      * Defined blank description should pass through to value, and show selected.
      * Needs not required (default), and multiple false (default)
      */
@@ -231,7 +231,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * Selecting none option, while blank desciption override.
+     * Selecting none option, while blank description override.
      * Empty Blank description should get override with word "none"
      * Needs not required (default), and multiple false (default)
      */
@@ -267,7 +267,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("XX5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['Phalcon\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn']);
     }
 
     /**
@@ -324,7 +324,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("4d0e2835-7a19-4a19-8c23-e12383827594,5ea2a35c-b02b-485a-912b-d077e639bf9f");
-        $this->assertEquals($this->validate($field), ['Phalcon\Validation\Validator\InclusionIn']);
+        $this->assertEquals($this->validate($field), ['OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn']);
     }
 
     /**
@@ -385,7 +385,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
     /**
      * Selecting none and valid, with multiple, with sorting, required false (default).
      */
-    public function testSortedNoneWithMulitpleOk()
+    public function testSortedNoneWithMultipleOk()
     {
         $field = new ModelRelationField();
         $field->setMultiple("Y");

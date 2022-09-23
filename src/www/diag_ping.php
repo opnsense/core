@@ -50,26 +50,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     if (count($input_errors) == 0) {
-        $command = '/sbin/ping';
+        $args = [];
         switch ($pconfig['ipproto']) {
             case 'ipv6':
                 list ($ifaddr) = interfaces_primary_address6($pconfig['interface']);
-                $command .= '6';
+                $args[] = '-6';
                 break;
             case 'ipv6-ll':
-                $command .= '6';
+                $args[] = '-6';
                 list ($ifaddr) = interfaces_scoped_address6($pconfig['interface']);
                 break;
             default:
+                $args[] = '-4';
                 list ($ifaddr) = interfaces_primary_address($pconfig['interface']);
                 break;
         }
-        $srcip = '';
         if (!empty($ifaddr)) {
-            $srcip = exec_safe('-S %s ', $ifaddr);
+            $args[] = exec_safe('-S %s ', $ifaddr);
         }
+        $args[] = exec_safe('-c %s %s', [$pconfig['count'], $pconfig['host']]);
         // execute ping command and catch both stdout and stderr
-        $cmd_action = "{$command} {$srcip}" . exec_safe('-c %s %s', array($pconfig['count'], $pconfig['host']));
+        $cmd_action = '/sbin/ping ' . implode(' ', $args);
         $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
         if (is_resource($process)) {
              $cmd_output = "# $cmd_action\n";

@@ -20,15 +20,10 @@ if [ "${AF}" = "inet" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/tmp/${IF}_nameserver" ]; then
-		# Remove old entries
-		for nameserver in $(cat /tmp/${IF}_nameserver); do
-			route delete ${nameserver}
-		done
-		rm -f /tmp/${IF}_nameserver
-	fi
+	/usr/local/sbin/ifctl -i ${IF} -4nd
+	/usr/local/sbin/ifctl -i ${IF} -4rd
 
-	rm -f /tmp/${IF}_router
+	/usr/local/sbin/configctl -d interface newip ${IF}
 elif [ "${AF}" = "inet6" ]; then
 	if [ -s "/tmp/${IF}_defaultgwv6" ]; then
 		GW=$(head -n 1 /tmp/${IF}_defaultgwv6)
@@ -39,25 +34,19 @@ elif [ "${AF}" = "inet6" ]; then
 		route delete -${AF} default "${GW}"
 	fi
 
-	if [ -f "/tmp/${IF}_nameserverv6" ]; then
-		for nameserver in $(cat /tmp/${IF}_nameserverv6); do
-			route delete ${nameserver}
-		done
-		rm -f /tmp/${IF}_nameserverv6
-	fi
-
-	rm -f /tmp/${IF}_routerv6
-
 	# remove previous SLAAC addresses as the ISP may
 	# not respond to these in the upcoming session
 	ifconfig ${IF} | grep -e autoconf -e deprecated | while read FAMILY ADDR MORE; do
 		ifconfig ${IF} ${FAMILY} ${ADDR} -alias
 	done
+
+	/usr/local/sbin/ifctl -i ${IF} -6nd
+	/usr/local/sbin/ifctl -i ${IF} -6rd
+
+	/usr/local/sbin/configctl -d interface newipv6 ${IF}
 fi
 
-/usr/local/sbin/configctl -d dns reload
-
-UPTIME=$(opnsense/scripts/interfaces/ppp-uptime.sh ${IF})
+UPTIME=$(/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ${IF})
 if [ -n "${UPTIME}" -a -f "/conf/${IF}.log" ]; then
 	echo $(date -j +%Y.%m.%d-%H:%M:%S) ${UPTIME} >> /conf/${IF}.log
 fi

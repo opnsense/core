@@ -41,6 +41,16 @@ use OPNsense\Firewall\Util;
 class Alias extends BaseModel
 {
     /**
+     * cache iteration items
+     */
+    private $aliasIteratorCache = [];
+
+    /**
+     * alias name cache
+     */
+    private $aliasReferenceCache = [];
+
+    /**
      * return locations where aliases can be used inside the configuration
      * @return array alias source map
      */
@@ -103,6 +113,15 @@ class Alias extends BaseModel
     }
 
     /**
+     * flush cached objects and references
+     */
+    public function flushCache()
+    {
+        $this->aliasIteratorCache = [];
+        $this->aliasReferenceCache = [];
+    }
+
+    /**
      * Return all places an alias seems to be used
      * @param string $name alias name
      * @return array hashmap with references where this alias is used
@@ -158,39 +177,57 @@ class Alias extends BaseModel
 
     /**
      * return aliases as array
+     * @param $flush flush cached objects from previous call
      * @return Generator with aliases
      */
-    public function aliasIterator()
+    public function aliasIterator($flush = false)
     {
-        $use_legacy = true;
-        foreach ($this->aliases->alias->iterateItems() as $alias) {
-            $record = array();
-            foreach ($alias->iterateItems() as $key => $value) {
-                $record[$key] = (string)$value;
-            }
-            yield $record;
-            $use_legacy = false;
+        if ($flush) {
+            // flush cache
+            $this->aliasIteratorCache = [];
         }
-        // MVC not used (yet) return legacy type aliases
-        if ($use_legacy) {
-            $cfgObj = Config::getInstance()->object();
-            if (!empty($cfgObj->aliases->alias)) {
-                foreach ($cfgObj->aliases->children() as $alias) {
-                    $alias = (array)$alias;
-                    $alias['content'] = !empty($alias['address']) ? str_replace(" ", "\n", $alias['address']) : null;
-                    yield $alias;
+        foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
+            if (empty($this->aliasIteratorCache[$uuid])) {
+                $this->aliasIteratorCache[$uuid] = [];
+                foreach ($alias->iterateItems() as $key => $value) {
+                    $this->aliasIteratorCache[$uuid][$key] = (string)$value;
+                }
+                // parse content into separate items for easier reading. items are separated by \n
+                if ((string)$alias->content == "") {
+                    $this->aliasIteratorCache[$uuid]['content'] = [];
+                } else {
+                    $this->aliasIteratorCache[$uuid]['content'] = explode("\n", (string)$alias->content);
                 }
             }
+            yield $this->aliasIteratorCache[$uuid];
         }
     }
 
-    public function getByName($name)
+    public function getByName($name, $flush = false)
     {
-        foreach ($this->aliases->alias->iterateItems() as $alias) {
-            if ((string)$alias->name == $name) {
+        if ($flush) {
+            // Flush false negative results (searched earlier, didn't exist at the time) as positive matches will
+            // always be resolved.
+            $this->aliasReferenceCache = [];
+        }
+        // cache alias uuid references, but always validate existence before return.
+        if (isset($this->aliasReferenceCache[$name])) {
+            $uuid = $this->aliasReferenceCache[$name];
+            if ($uuid === false) {
+                return null;
+            }
+            $alias = $this->getNodeByReference('aliases.alias.' . $uuid);
+            if ($alias != null && (string)$alias->name == $name) {
                 return $alias;
             }
         }
+        foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
+            if ((string)$alias->name == $name) {
+                $this->aliasReferenceCache[$name] = $uuid;
+                return $alias;
+            }
+        }
+        $this->aliasReferenceCache[$name] = false;
         return null;
     }
 }

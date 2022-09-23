@@ -1,0 +1,110 @@
+.\"
+.\" Copyright (c) 2022 Franco Fichtner <franco@opnsense.org>
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.Dd July 25, 2022
+.Dt IFCTL 8
+.Os
+.Sh NAME
+.Nm ifctl
+.Nd Interface helper utility
+.Sh SYNOPSIS
+.Nm
+.Op Fl i Ar device
+.Op Fl 46
+.Op Fl nprs
+.Op Fl a Ar data | Fl c | Fl d | Fl l
+.Sh DESCRIPTION
+The
+.Nm
+utility will display or modify network device related data used by dynamic
+connections.
+.Pp
+If none of
+.Sq Fl c ,
+.Sq Fl d
+or
+.Sq Fl a
+are given the current data is returned instead of modifying it.
+In this case a special interface suffix
+.Sq :slaac
+is supported as a fallback option and read if no data file was found
+for the exact interface match.
+During modification using any option mentioned above, however, the
+.Sq :slaac
+suffix must be given explicitly through the
+.Sq Fl i
+parameter.
+.Pp
+The options are as follows:
+.Bl -tag -width ".Fl i Ar interface" -offset indent
+.It Fl 4
+Use IPv4 mode.
+This is the default.
+.It Fl 6
+Use IPv6 mode.
+.It Fl a
+Append data to the currently selected device data.
+The option can be used multiple times in the same command invoke
+to append data at once.
+Note that
+.Sq Fl d
+will be executed first when given in the same command invoke.
+.It Fl c
+Clear all registed data of the selected device.
+.It Fl d
+Delete the specified data of the selected device.
+.It Fl i Ar device
+Select the
+.Ar device
+to operate on.
+Special suffix
+.Sq :slaac
+given creates a fallback configuration file only to be read
+if no exact match for the selected interface exists.
+If none was given
+.Nm
+list the available devices.
+.It Fl l
+List mode turns the output into the storage files available for reading.
+For implementational reasons the address family selector is ignored when
+not using the interface option
+.Sq Fl i .
+.It Fl n
+Use name server mode.
+This is the default.
+.It Fl p
+Use prefix delegation mode.
+.It Fl r
+Use router mode.
+.It Fl s
+Use search domain mode.
+.It Fl V
+Set debug mode for shell script output.
+.El
+.Sh EXIT STATUS
+.Ex -std
+.Sh AUTHORS
+.An Franco Fichtner Aq Mt franco@opnsense.org

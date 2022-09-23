@@ -541,8 +541,8 @@ class SimplePie_Parse_Date
 	 */
 	public function __construct()
 	{
-		$this->day_pcre = '(' . implode(array_keys($this->day), '|') . ')';
-		$this->month_pcre = '(' . implode(array_keys($this->month), '|') . ')';
+		$this->day_pcre = '(' . implode('|', array_keys($this->day)) . ')';
+		$this->month_pcre = '(' . implode('|', array_keys($this->month)) . ')';
 
 		static $cache;
 		if (!isset($cache[get_class($this)]))
@@ -690,7 +690,7 @@ class SimplePie_Parse_Date
 			}
 
 			// Convert the number of seconds to an integer, taking decimals into account
-			$second = round($match[6] + $match[7] / pow(10, strlen($match[7])));
+			$second = round((int)$match[6] + (int)$match[7] / pow(10, strlen($match[7])));
 
 			return gmmktime($match[4], $match[5], $second, $match[2], $match[3], $match[1]) - $timezone;
 		}

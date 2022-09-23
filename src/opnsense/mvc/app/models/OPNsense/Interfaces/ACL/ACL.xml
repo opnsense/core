@@ -13,4 +13,11 @@
             <pattern>api/interfaces/loopback</pattern>
         </patterns>
     </page-interfaces-loopback>
+    <page-interfaces-vlan-edit>
+        <name>Interfaces: VLAN</name>
+        <patterns>
+          <pattern>ui/interfaces/vlan</pattern>
+          <pattern>api/interfaces/vlan</pattern>
+        </patterns>
+    </page-interfaces-vlan-edit>
 </acl>

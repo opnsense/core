@@ -222,7 +222,7 @@ include("head.inc");
 <script>
   $( document ).ready(function() {
     /**
-     * Additional BOOTP/DHCP Options extenable table
+     * Additional BOOTP/DHCP Options extendable table
      */
     function removeRow() {
         if ( $('#maintable > tbody > tr').length == 1 ) {
@@ -250,11 +250,33 @@ include("head.inc");
     if ($("#has_advanced").val() != "" ) {
        $(".advanced_opt").show();
     }
-    $("#show_advanced_opt").click(function(e){
+    $("#show_advanced_opt").click(function (e) {
         e.preventDefault();
         $(".advanced_opt").show();
         $(this).closest('tr').hide();
     });
+    function toggle_dns(toggle) {
+        if ($("#radisablerdnss").is(':checked') || $("#rasamednsasdhcp6").is(':checked')) {
+            $(".opt_dns").hide();
+        } else {
+            $(".opt_dns").show();
+        }
+    }
+    $("#radisablerdnss").click(function () {
+         var checkbox = $("#rasamednsasdhcp6");
+         if ($(this).is(':checked') && checkbox.is(':checked')) {
+             checkbox.prop('checked', 0);
+         }
+         toggle_dns();
+    });
+    $("#rasamednsasdhcp6").click(function () {
+         var checkbox = $("#radisablerdnss");
+         if ($(this).is(':checked') && checkbox.is(':checked')) {
+             checkbox.prop('checked', 0);
+         }
+         toggle_dns();
+    });
+    toggle_dns();
 });
 </script>
 
@@ -411,6 +433,19 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_radisablerdnss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS options') ?></td>
+                    <td>
+                      <input name="rasamednsasdhcp6" id="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
+                      <?= gettext('Use the DNS configuration of the DHCPv6 server') ?>
+                      <br/>
+                      <input name="radisablerdnss" id="radisablerdnss" type="checkbox" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
+                      <?= gettext('Do not send any DNS configuration to clients') ?>
+                      <div class="hidden" data-for="help_for_radisablerdnss">
+                        <?= gettext('Control the behavior of the embedded DNS configuration (RFC 8106). Leave unchecked to use a custom DNS configuration.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="opt_dns" style="display:none">
                     <td><a id="help_for_radns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
                     <td>
                       <input name="radns1" type="text" value="<?=$pconfig['radns1'];?>" /><br />
@@ -418,15 +453,9 @@ include("head.inc");
                       <div class="hidden" data-for="help_for_radns">
                         <?= gettext('Leave blank to use the system default DNS servers: This interface IP address if a DNS service is enabled or the configured global DNS servers.') ?>
                       </div>
-                      <br />
-                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <?= gettext('Use the DNS settings of the DHCPv6 server') ?>
-                      <br />
-                      <input name="radisablerdnss" type="checkbox" id="radisablerdnss" value="yes" <?=!empty($pconfig['radisablerdnss']) ? 'checked="checked"' : '' ?> />
-                      <?= gettext('Do not send DNS settings to clients') ?>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="opt_dns" style="display:none">
                     <td><a id="help_for_radomainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
                     <td>
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />

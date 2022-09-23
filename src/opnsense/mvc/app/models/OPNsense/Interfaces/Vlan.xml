@@ -1,0 +1,59 @@
+<model>
+    <mount>/vlans</mount>
+    <version>1.0.0</version>
+    <description>
+        VLAN configuration
+    </description>
+    <items>
+        <vlan type="ArrayField">
+            <if type=".\VlanInterfaceField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>tag.check001</reference>
+                    </check001>
+                </Constraints>
+            </if>
+            <tag type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4094</MaximumValue>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Tag should be unique for this interface</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                        <addFields>
+                            <field1>if</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </tag>
+            <pcp type="OptionField">
+                <Required>Y</Required>
+                <default>0</default>
+                <OptionValues>
+                    <pcp1 value="1">Background (1, lowest)</pcp1>
+                    <pcp0 value="0">Best Effort (0, default)</pcp0>
+                    <pcp2 value="2">Excellent Effort (2)</pcp2>
+                    <pcp3 value="3">Critical Applications (3)</pcp3>
+                    <pcp4 value="4">Video (4)</pcp4>
+                    <pcp5 value="5">Voice (5)</pcp5>
+                    <pcp6 value="6">Internetwork Control (6)</pcp6>
+                    <pcp7 value="7">Network Control (7, highest)</pcp7>
+                </OptionValues>
+            </pcp>
+            <descr type="TextField">
+              <Required>N</Required>
+            </descr>
+            <vlanif type="TextField">
+              <Required>Y</Required>
+              <Constraints>
+                <check001>
+                    <ValidationMessage>The interface name should be unique.</ValidationMessage>
+                    <type>UniqueConstraint</type>
+                </check001>
+              </Constraints>
+            </vlanif>
+        </vlan>
+    </items>
+</model>

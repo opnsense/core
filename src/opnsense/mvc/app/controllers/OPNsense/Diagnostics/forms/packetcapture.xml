@@ -1,0 +1,80 @@
+<form>
+    <field>
+       <id>packetcapture.settings.interface</id>
+       <label>Interface</label>
+       <style>interface_select selectpicker</style>
+       <type>select_multiple</type>
+       <help>Interfaces to capture.</help>
+    </field>
+    <field>
+      <id>packetcapture.settings.promiscuous</id>
+      <label>Promiscuous</label>
+      <type>checkbox</type>
+      <help>When set, the system will capture all traffic present on the interface in stead of the traffic heading to the firewall.</help>
+    </field>
+    <field>
+      <id>packetcapture.settings.fam</id>
+      <label>Address Family</label>
+      <type>dropdown</type>
+      <help>Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only.</help>
+    </field>
+    <field>
+      <id>packetcapture.settings.protocol_not</id>
+      <label>Invert Protocol</label>
+      <type>checkbox</type>
+      <help>invert protocol (not)</help>
+    </field>
+    <field>
+      <id>packetcapture.settings.protocol</id>
+      <label>Protocol</label>
+      <type>dropdown</type>
+      <help>Select the protocol to capture, Any to omit this filter.</help>
+    </field>
+    <field>
+       <id>packetcapture.settings.host</id>
+       <label>Host Address</label>
+       <type>text</type>
+       <help>
+         This value is either the Source or Destination IP address or subnet in CIDR notation.
+         The packet capture will look for this address in either field.
+         Matching can be negated by preceding the value with "not".
+         Multiple IP addresses or CIDR subnets may be specified as boolean expression.
+         If you leave this field blank, all packets on the specified interface will be captured.
+
+         Example: not 10.0.0.0/24 not and not 11.0.0.1
+       </help>
+    </field>
+    <field>
+      <id>packetcapture.settings.port_not</id>
+      <label>Invert Port</label>
+      <type>checkbox</type>
+      <help>invert port (not)</help>
+    </field>
+    <field>
+       <id>packetcapture.settings.port</id>
+       <label>Port</label>
+       <type>text</type>
+       <help>The port can be either the source or destination port. The packet capture will look for this port in either field.</help>
+    </field>
+    <field>
+       <id>packetcapture.settings.snaplen</id>
+       <label>Packet Length</label>
+       <type>text</type>
+       <help>The Packet length is the number of bytes of each packet that will be captured. Default value is 0, which will capture the entire frame regardless of its size.</help>
+    </field>
+    <field>
+       <id>packetcapture.settings.count</id>
+       <label>Count</label>
+       <type>text</type>
+       <help>
+         This is the number of packets the packet capture will grab. Default value is 100.
+         Enter 0 (zero) for no count limit.
+       </help>
+    </field>
+    <field>
+       <id>packetcapture.settings.description</id>
+       <label>Description</label>
+       <type>text</type>
+       <help>Select the protocol to capture, or Any.</help>
+    </field>
+</form>

@@ -29,7 +29,7 @@
 #
 # connection: error|unauthenticated|misconfigured|unresolved|ok
 # repository: error|untrusted|unsigned|revoked|incomplete|forbidden|ok
-# last_ckeck: <date_time_stamp>
+# last_check: <date_time_stamp>
 # download_size: <size_of_total_downloads>[,<size_of_total_downloads>]
 # new_packages: array with { name: <package_name>, version: <package_version> }
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
@@ -40,6 +40,7 @@
 JSONFILE="/tmp/pkg_upgrade.json"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
+LICENSEFILE="/usr/local/opnsense/license.json"
 TEE="/usr/bin/tee -a"
 
 CUSTOMPKG=${1}
@@ -64,7 +65,7 @@ repository="error"
 sets_upgraded=
 upgrade_needs_reboot="0"
 
-product_suffix="-$(pluginctl -g system.firmware.type)"
+product_suffix="-$(/usr/local/sbin/pluginctl -g system.firmware.type)"
 if [ "${product_suffix}" = "-" ]; then
     product_suffix=
 fi
@@ -86,6 +87,13 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
 if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
+    echo "done" >> ${LOCKFILE}
+fi
+
+# business subscriptions come with a license, fetch the metadata so product.php is able to use it
+if opnsense-update -M | egrep -iq '\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\/'; then
+    echo -n "Fetching license information, please wait... " >> ${LOCKFILE}
+    fetch -qT 5 -o $LICENSEFILE  "`opnsense-update -M`/subscription"
     echo "done" >> ${LOCKFILE}
 fi
 
@@ -298,9 +306,9 @@ else
         fi
 
         if [ -n "${base_to_reboot}" ]; then
-            base_to_delete="$(opnsense-version -v base)"
+            base_to_delete="$(opnsense-update -vb)"
             base_is_size="$(opnsense-update -bfSr ${base_to_reboot})"
-            if [ "${base_to_reboot}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
+            if [ "${base_to_reboot}${force_all}" != "${base_to_delete}" -a -n "${base_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
@@ -309,7 +317,6 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${base_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${base_to_reboot}\"}"
-                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
                 needs_reboot="1"
             fi
         fi
@@ -321,9 +328,9 @@ else
         fi
 
         if [ -n "${kernel_to_reboot}" ]; then
-            kernel_to_delete="$(opnsense-version -v kernel)"
+            kernel_to_delete="$(opnsense-update -vk)"
             kernel_is_size="$(opnsense-update -fkSr ${kernel_to_reboot})"
-            if [ "${kernel_to_reboot}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
+            if [ "${kernel_to_reboot}${force_all}" != "${kernel_to_delete}" -a -n "${kernel_is_size}" ]; then
                 # XXX this could be a downgrade or reinstall
                 if [ -n "${packages_upgraded}" ]; then
                     packages_upgraded=${packages_upgraded}","
@@ -332,7 +339,6 @@ else
                 packages_upgraded=${packages_upgraded}"\"repository\":\"${product_repo}\","
                 packages_upgraded=${packages_upgraded}"\"current_version\":\"${kernel_to_delete}\","
                 packages_upgraded=${packages_upgraded}"\"new_version\":\"${kernel_to_reboot}\"}"
-                upgrade_needs_reboot="1" # XXX remove faulty value in 22.1.x
                 needs_reboot="1"
             fi
         fi
@@ -345,30 +351,27 @@ if [ -n "${packages_is_size}" ]; then
 
     upgrade_major_message=$(sed -e 's/"/\\&/g' -e "s/%%UPGRADE_RELEASE%%/${upgrade_major_version}/g" /usr/local/opnsense/data/firmware/upgrade.html 2> /dev/null | tr '\n' ' ')
 
-    # XXX replace with opnsense-update -vp
-    packages_to_delete="$(opnsense-version -v pkgs)"
+    packages_to_delete="$(opnsense-update -vp)"
     if [ "${packages_to_delete}" != "${upgrade_major_version}" ]; then
         sets_upgraded="{\"name\":\"packages\",\"size\":\"${packages_is_size}\",\"current_version\":\"${packages_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
-        upgrade_needs_reboot="1" # provided for API convenience only
+        upgrade_needs_reboot="1"
     fi
 
-    # XXX replace with opnsense-update -vk
-    kernel_to_delete="$(opnsense-version -v kernel)"
+    kernel_to_delete="$(opnsense-update -vk)"
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
         if [ -n "${kernel_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
-            upgrade_needs_reboot="1" # provided for API convenience only
+            upgrade_needs_reboot="1"
         fi
     fi
 
-    # XXX replace with opnsense-update -vb
-    base_to_delete="$(opnsense-version -v base)"
+    base_to_delete="$(opnsense-update -vb)"
     if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
         base_is_size="$(opnsense-update -SRb)"
         if [ -n "${base_is_size}" ]; then
             sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
-            upgrade_needs_reboot="1" # provided for API convenience only
+            upgrade_needs_reboot="1"
         fi
     fi
 fi

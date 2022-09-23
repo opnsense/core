@@ -303,7 +303,7 @@ class Template(object):
     def iter_modules(self, module_name):
         """
         :param module_name: module name in dot notation ( company.module ), may use wildcards
-        :return: templates matching paterns
+        :return: templates matching patterns
         """
         for template_name in sorted(self.list_modules()):
             wildcard_pos = module_name.find('*')

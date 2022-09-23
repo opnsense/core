@@ -32,7 +32,6 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false,
-    $window = $(window),
     winHeight = $(window).height(),
     mouse = 'mouseenter mouseleave',
     layer1_a = $('#mainmenu > div > a'),
@@ -45,7 +44,7 @@ $(document).ready(function () {
     footH = $('.page-foot').height(),
     headerH = $('.navbar').height(),
     li_itemH = $('a.list-group-item').height(),
-    navHeight = (countA * 70) + ((footH + headerH) - (20 + countA)),
+    navHeight = (countA * 70) + ((footH + headerH) - (li_itemH + countA)),
     events = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -53,16 +52,16 @@ $(document).ready(function () {
             if (that.next('div').hasClass('in')) {
                 /* no action needed */
             } else {
-                var offsetTop = that.offset().top;
-                var winscrTop = $window.scrollTop();
-                var divHeight = that.next('div').height();
-                var divTop = (offsetTop - winscrTop);
-                var currentHeight = (divTop + divHeight);
-                var thatTrigger = that.trigger('click');
+                var offsetTop = that.offset().top,
+                winscrTop = $(window).scrollTop(),
+                divHeight = that.next('div').height(),
+                divTop = (offsetTop - winscrTop),
+                currentHeight = (divTop + divHeight),
+                thatTrigger = that.trigger('click');
                 close_submenu(this);
                 if (currentHeight > (winHeight - li_itemH)) {
-                    var divPos = ((divHeight - li_itemH) > divTop) ? -(((divHeight - li_itemH) - divTop)) : 3;
-                    var viewresult = that.next('div').css('margin-top', -divHeight - (that.is('a') ? divPos : 0));
+                    var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
+                    viewresult = that.next('div').css('margin-top', - divHeight - divPos);
                 }
             }
         },

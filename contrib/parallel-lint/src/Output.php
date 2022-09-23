@@ -441,7 +441,7 @@ class CheckstyleOutput implements Output
                     sprintf(
                         '        <error line="%d" severity="ERROR" message="%s" source="%s" />',
                         $fileError['line'],
-                        $fileError['message'],
+                        htmlspecialchars($fileError['message'], ENT_COMPAT, 'UTF-8'),
                         $fileError['source']
                     ) .
                     PHP_EOL
@@ -456,14 +456,17 @@ class CheckstyleOutput implements Output
 
 class TextOutputColored extends TextOutput
 {
-    /** @var \JakubOnderka\PhpConsoleColor\ConsoleColor */
+    /** @var \PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor|\JakubOnderka\PhpConsoleColor\ConsoleColor */
     private $colors;
 
     public function __construct(IWriter $writer, $colors = Settings::AUTODETECT)
     {
         parent::__construct($writer);
 
-        if (class_exists('\JakubOnderka\PhpConsoleColor\ConsoleColor')) {
+        if (class_exists('\PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor')) {
+            $this->colors = new \PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor();
+            $this->colors->setForceStyle($colors === Settings::FORCED);
+        } else if (class_exists('\JakubOnderka\PhpConsoleColor\ConsoleColor')) {
             $this->colors = new \JakubOnderka\PhpConsoleColor\ConsoleColor();
             $this->colors->setForceStyle($colors === Settings::FORCED);
         }
@@ -472,11 +475,14 @@ class TextOutputColored extends TextOutput
     /**
      * @param string $string
      * @param string $type
-     * @throws \JakubOnderka\PhpConsoleColor\InvalidStyleException
+     * @throws \PHP_Parallel_Lint\PhpConsoleColor\InvalidStyleException|\JakubOnderka\PhpConsoleColor\InvalidStyleException
      */
     public function write($string, $type = self::TYPE_DEFAULT)
     {
-        if (!$this->colors instanceof \JakubOnderka\PhpConsoleColor\ConsoleColor) {
+        if (
+            !$this->colors instanceof \PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor
+            && !$this->colors instanceof \JakubOnderka\PhpConsoleColor\ConsoleColor
+        ) {
             parent::write($string, $type);
         } else {
             switch ($type) {

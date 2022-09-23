@@ -27,6 +27,49 @@
 <script>
 
     $( document ).ready(function() {
+        $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
+        /* Handle retrieval and saving of the single system forwarding checkbox */
+        let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
+        mapDataToFormUI(data_get_map).done(function(data) {
+            /* only called on page load */
+            if (data.frm_ForwardingSettings.unbound.forwarding.enabled == "1") {
+                toggleNameservers(true);
+            }
+        });
+
+        $(".forwarding-enabled").click(function() {
+            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
+
+            let checked = ($(this).is(':checked'));
+            toggleNameservers(checked);
+        });
+
+        function toggleNameservers(checked) {
+            if (checked) {
+                ajaxGet(url="/api/unbound/settings/getNameservers", {}, callback=function(data, status) {
+                    $('tr[id="row_unbound.forwarding.info"]').removeClass('hidden');
+                    if (data.length && !data.includes('')) {
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
+                            "<span>{{ lang._('The following nameservers are used:') }}</span>"
+                        );
+                        $('span[id="unbound.forwarding.info"]').append(
+                            "<div><b>" + data.join(", ") + "</b></div>"
+                        );
+                    } else {
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
+                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: General setup</a></span>"
+                        );
+                    }
+
+                });
+            } else {
+                $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
+                $('div[id="control_label_unbound.forwarding.info"]').children().not(':first').remove();
+                $('span[id="unbound.forwarding.info"]').children().remove();
+            }
+        }
+
+
         /**
          * inline open dialog, go back to previous page on exit
          */
@@ -61,12 +104,13 @@
             });
 
         }
+
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
 
         $("#grid-dot").UIBootgrid(
-                {   'search':'/api/unbound/settings/searchDot',
+                {   'search':'/api/unbound/settings/searchDot/',
                     'get':'/api/unbound/settings/getDot/',
                     'set':'/api/unbound/settings/setDot/',
                     'add':'/api/unbound/settings/addDot/',
@@ -74,6 +118,15 @@
                     'toggle':'/api/unbound/settings/toggleDot/'
                 }
         );
+
+        $("div.actionBar").parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Custom forwarding') }}</div>'));
+
+        /* Hide/unhide verify field based on type */
+        if ("{{selected_forward}}" == "forward") {
+            $('tr[id="row_dot.verify"]').addClass('hidden');
+        } else {
+            $('tr[id="row_dot.verify"]').removeClass('hidden');
+        }
 
         {% if (selected_uuid|default("") != "") %}
             openDialog('{{selected_uuid}}');
@@ -93,19 +146,31 @@
 
 </script>
 
+<style>
+    .theading-text {
+        font-weight: 800;
+        font-style: bold;
+    }
+</style>
 
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#grid-dot">{{ lang._('Servers') }}</a></li>
-</ul>
-<div class="tab-content content-box">
+<div class="tab-content content-box col-xs-12 __mb">
+    {# include base forwarding form #}
+    {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
+</div>
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
+<div class="tab-content content-box col-xs-12 __mb">
     <div id="dot" class="tab-pane fade in active">
         <table id="grid-dot" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
+            <tr>
             <thead>
             <tr>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
                 <th data-column-id="server" data-type="string">{{ lang._('Address') }}</th>
                 <th data-column-id="port" data-type="int">{{ lang._('Port') }}</th>
+                {% if (selected_forward|default("") == "") %}
                 <th data-column-id="verify" data-type="int">{{ lang._('Hostname') }}</th>
+                {% endif %}
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>
@@ -121,7 +186,13 @@
                 </td>
             </tr>
             </tfoot>
+            </tr>
         </table>
+    </div>
+    <div id="infosection" class="tab-content col-xs-12 __mb">
+        {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
+        are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
+        in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
     <div class="col-md-12">
         <hr/>

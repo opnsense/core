@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn;
 use OPNsense\Base\Validators\CsvListValidator;
 
 /**
@@ -95,13 +95,22 @@ class ModelRelationField extends BaseListField
                 }
 
                 $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
-                $displayKey = $modelData['display'];
+                $displayKeys = explode(',', $modelData['display']);
+                $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
                 $groups = array();
 
                 $searchItems = $modelObj->getNodeByReference($modelData['items']);
                 if (!empty($searchItems)) {
                     foreach ($modelObj->getNodeByReference($modelData['items'])->iterateItems() as $node) {
-                        if (!isset($node->getAttributes()['uuid']) || $node->$displayKey == null) {
+                        $descriptions = [];
+                        foreach ($displayKeys as $displayKey) {
+                            if ($node->$displayKey != null) {
+                                $descriptions[] = (string)$node->$displayKey;
+                            } else {
+                                $descriptions[] = "";
+                            }
+                        }
+                        if (!isset($node->getAttributes()['uuid'])) {
                             continue;
                         }
 
@@ -126,8 +135,10 @@ class ModelRelationField extends BaseListField
                         }
 
                         $uuid = $node->getAttributes()['uuid'];
-                        self::$internalCacheOptionList[$this->internalCacheKey][$uuid] =
-                            (string)$node->$displayKey;
+                        self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
+                            $displayFormat,
+                            $descriptions
+                        );
                     }
                 }
                 unset($modelObj);

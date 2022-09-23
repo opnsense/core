@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,29 @@ class Gateways
             }
         }
         return $result;
+    }
+
+    /**
+     * return dynamic router address from file-based location created via ifctl utility
+     * @param string $realif underlying network device name
+     * @param string $ipproto inet/inet6 type
+     * @return string $router IP address
+     */
+    private function getRouterFromFile($realif, $ipproto = 'inet')
+    {
+        $fsuffix = $ipproto == 'inet6' ? 'v6' : '';
+        $router = null;
+
+        /* some types have fallback files we are looking for in order */
+        foreach (['', ':slaac'] as $isuffix) {
+            $file = "/tmp/{$realif}{$isuffix}_router{$fsuffix}";
+            if (file_exists($file)) {
+                $router = trim(@file_get_contents($file));
+                break;
+            }
+        }
+
+        return $router;
     }
 
     /**
@@ -200,8 +223,7 @@ class Gateways
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'], ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
-                    $fsuffix = $ipproto == "inet6" ? "v6" : "";
+                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'] ?? null, ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
@@ -235,12 +257,11 @@ class Gateways
                             }
                         }
                     }
-                    // dynamic gateways dump their address in /tmp/[IF]_router[FSUFFIX]
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         // if name is already taken, don't try to add a new (virtual) entry
                         null;
-                    } elseif (file_exists("/tmp/{$realif}_router{$fsuffix}")) {
-                        $thisconf['gateway'] = trim(@file_get_contents("/tmp/{$realif}_router{$fsuffix}"));
+                    } elseif (($router = $this->getRouterFromFile($realif, $ipproto)) != null) {
+                        $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
                             $thisconf['monitor'] = $thisconf['gateway'];
                         }
@@ -258,7 +279,7 @@ class Gateways
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (
                         $ipproto == 'inet6'
-                            && in_array($ifcfg['ipaddrv6'], array('slaac', 'dhcp6', '6to4', '6rd'))
+                            && in_array($ifcfg['ipaddrv6'] ?? null, ['slaac', 'dhcp6', '6to4', '6rd'])
                     ) {
                         // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
@@ -290,7 +311,7 @@ class Gateways
 
     /**
      * determine default gateway, exclude gateways in skip list
-     * since getGateways() is correcly ordered, we just need to find the first active, not down gateway
+     * since getGateways() is correctly ordered, we just need to find the first active, not down gateway
      * @param array|null $skip list of gateways to ignore
      * @param string $ipproto inet/inet6 type
      * @return string type name
@@ -359,9 +380,9 @@ class Gateways
         foreach ($this->getGateways() as $gateway) {
             if ($gateway['name'] == $name && !empty($gateway['gateway'])) {
                 $result = $gateway['gateway'];
-                if (strtolower(substr($gateway['gateway'], 0, 5)) == "fe80:") {
-                    // link local, suffix interface
-                    $result .= "%{$gw['if']}";
+                if (preg_match('/^fe[89ab][0-9a-f]:/i', $gateway['gateway'])) {
+                    /* link-local, suffix interface */
+                    $result .= "%{$gateway['if']}";
                 }
                 return $result;
             }
@@ -481,6 +502,7 @@ class Gateways
                                 $gateway_item = [
                                     'int' => $gateway['if'],
                                     'gwip' => $gateway['gateway'],
+                                    'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
                                     'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
                                 ];
                                 $all_tiers[$tieridx][] = $gateway_item;
@@ -489,7 +511,7 @@ class Gateways
                                 }
                             }
                         }
-                        // exit when tier has (a) usuable gateway(s)
+                        // exit when tier has (a) usable gateway(s)
                         if (!empty($result[(string)$gw_group->name])) {
                             break;
                         }

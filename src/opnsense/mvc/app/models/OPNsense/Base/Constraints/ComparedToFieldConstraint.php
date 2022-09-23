@@ -45,11 +45,11 @@ class ComparedToFieldConstraint extends BaseConstraint
      *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
      *   &lt;operator&gt;operator to check; one of gt|gte|lt|lte|eq|neq&lt;/operator&gt;
      *
-     * @param \Phalcon\Validation $validator
+     * @param $validator
      * @param string $attribute
      * @return boolean
      */
-    public function validate(\Phalcon\Validation $validator, $attribute): bool
+    public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
         $field_name = $this->getOption('field');
@@ -67,7 +67,7 @@ class ComparedToFieldConstraint extends BaseConstraint
             }
 
             if (
-                !$this->is_contraint_fulfilled(
+                !$this->is_constraint_fulfilled(
                     $operator,
                     floatval((string)$node),
                     floatval((string)$other_node_content)
@@ -83,9 +83,9 @@ class ComparedToFieldConstraint extends BaseConstraint
      * @param $operator string one of gt|gte|lt|lte|eq|neq
      * @param $our_value float the value of this field
      * @param $foreign_value float the value of the referenced field
-     * @return bool if the contraint is fulfilled
+     * @return bool if the constraint is fulfilled
      */
-    private function is_contraint_fulfilled($operator, $our_value, $foreign_value)
+    private function is_constraint_fulfilled($operator, $our_value, $foreign_value)
     {
         switch ($operator) {
             case 'gt':

@@ -60,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
+    $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
+    $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
+    $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -85,6 +88,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['maximumtableentries']) && !is_numericint($pconfig['maximumtableentries'])) {
         $input_errors[] = gettext("The Firewall Maximum Table Entries value must be an integer.");
+    }
+
+    if (!empty($pconfig['syncookies'])) {
+        if (!in_array($pconfig['syncookies'], ['always', 'adaptive'])) {
+            $input_errors[] = sprintf(gettext("Unknown syncookie type %s.", $pconfig['syncookies']));
+        }
+        if ($pconfig['syncookies'] == 'adaptive' && (empty($pconfig['syncookies_adaptstart']) || empty($pconfig['syncookies_adaptend']))) {
+            $input_errors[] = gettext("Syncookie Adaptive values must be set together.");
+        }
+        if (!empty($pconfig['syncookies_adaptstart']) && !is_numericint($pconfig['syncookies_adaptstart'])) {
+            $input_errors[] = gettext("Syncookie Adaptive Start value must be an integer.");
+        }
+        if (!empty($pconfig['syncookies_adaptend']) && !is_numericint($pconfig['syncookies_adaptend'])) {
+            $input_errors[] = gettext("Syncookie Adaptive End value must be an integer.");
+        }
+        if (!empty($pconfig['syncookies_adaptend']) && !empty($pconfig['syncookies_adaptstart']) && $pconfig['syncookies_adaptstart'] < $pconfig['syncookies_adaptend']) {
+            $input_errors[] = gettext("Syncookie Adaptive Start must be a higher value than End.");
+        }
     }
     if (count($input_errors) == 0) {
         if (!empty($pconfig['pf_share_forward'])) {
@@ -211,6 +232,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['ip_change_kill_states']);
         }
 
+        if (!empty($pconfig['syncookies'])) {
+            $config['system']['syncookies'] = $pconfig['syncookies'];
+            $config['system']['syncookies_adaptstart'] = $pconfig['syncookies_adaptstart'];
+            $config['system']['syncookies_adaptend'] = $pconfig['syncookies_adaptend'];
+        } else {
+            unset($config['system']['syncookies']);
+            unset($config['system']['syncookies_adaptstart']);
+            unset($config['system']['syncookies_adaptend']);
+        }
+
         write_config();
 
         $savemsg = get_std_save_message();
@@ -228,6 +259,14 @@ include("head.inc");
 <script>
     $( document ).ready(function() {
         window_highlight_table_option();
+        $("#syncookies").change(function(){
+            if ($(this).val() == 'adaptive') {
+                $("#syncookies_adaptive").show();
+            } else {
+                $("#syncookies_adaptive").hide();
+            }
+        });
+        $("#syncookies").change();
     });
 </script>
 <body>
@@ -636,6 +675,57 @@ include("head.inc");
                   <?= gettext('Reset all states when a dynamic IP address changes.') ?>
                   <div class="hidden" data-for="help_for_ip_change_kill_states">
                     <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('Anti DDOS') ?></strong></td>
+                <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_for_syncookies" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable syncookies");?></td>
+                <td>
+                  <select name="syncookies" id="syncookies" class="selectpicker">
+                    <option value="" <?= empty($pconfig['syncookies']) ? "selected=\"selected\"" : ""; ?>>
+                      <?=gettext("never (default)");?>
+                    </option>
+                    <option value="always" <?=$pconfig['syncookies']=="always" ? "selected=\"selected\"" : ""; ?>>
+                      <?=gettext("always");?>
+                    </option>
+                    <option value="adaptive" <?=$pconfig['syncookies']=="adaptive" ? "selected=\"selected\"" : ""; ?>>
+                      <?=gettext("adaptive");?>
+                    </option>
+                  </select>
+                  <div id="syncookies_adaptive">
+                    <br/>
+                    <table class="table table-condensed" style="width:348px;">
+                        <thead>
+                          <tr>
+                              <th colspan="2"><?=gettext("Statetable usage");?><th>
+                          </tr>
+                          <tr>
+                            <th><?=gettext("Start (%)");?></th>
+                            <th><?=gettext("End (%)");?></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <input name="syncookies_adaptstart" type="text" value="<?=$pconfig['syncookies_adaptstart']; ?>" />
+                            </td>
+                            <td>
+                              <input name="syncookies_adaptend" type="text" value="<?=$pconfig['syncookies_adaptend']; ?>" />
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="hidden" data-for="help_for_syncookies">
+                      <?=gettext("When syncookies are active, pf will answer each incoming TCP SYN with a syncookie SYNACK, without allocating any resources.");?>
                   </div>
                 </td>
               </tr>

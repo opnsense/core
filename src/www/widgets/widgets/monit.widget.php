@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     header(url_safe('Location: /index.php'));
     exit;
 }
+legacy_html_escape_form_data($pconfig);
 
 ?>
 
@@ -146,9 +147,8 @@ $( document ).ready(function() {
          }
          <?php
             // apply search filter
-            if (isset($config['widgets']['monitsearch'])) {
-               echo '$("#grid-monit").bootgrid("search", "' .
-                        $config['widgets']['monitsearch'] . '");';
+            if (!empty($pconfig['monitsearch'])) {
+               echo '$("#grid-monit").bootgrid("search", "' .$pconfig['monitsearch'] . '");';
             }
          ?>
          setTimeout(monitStatusPoll, pollInterval);
@@ -181,7 +181,7 @@ $( document ).ready(function() {
                   </div>
                </td>
                <td>
-                  <input type="text" class="form-control" size="25" name="monitheight" id="monitheight" value="<?= $config['widgets']['monitheight'] ?>" />
+                  <input type="text" class="form-control" size="25" name="monitheight" id="monitheight" value="<?= $pconfig['monitheight'] ?>" />
                </td>
             </tr>
             <tr>
@@ -191,7 +191,7 @@ $( document ).ready(function() {
                   </div>
                </td>
                <td>
-                  <input type="text" class="form-control" size="25" name="monitsearch" id="monitsearch" value="<?= $config['widgets']['monitsearch'] ?>" />
+                  <input type="text" class="form-control" size="25" name="monitsearch" id="monitsearch" value="<?= $pconfig['monitsearch'] ?>" />
                </td>
             </tr>
             <tr>

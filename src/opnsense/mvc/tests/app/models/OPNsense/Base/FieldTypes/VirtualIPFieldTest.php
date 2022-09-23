@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\VirtualIPField;
-use Phalcon\DI\FactoryDefault;
+use Phalcon\Di\FactoryDefault;
 use OPNsense\Core\Config;
 
 class VirtualIPFieldTest extends Field_Framework_TestCase

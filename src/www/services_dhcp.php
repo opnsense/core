@@ -49,6 +49,7 @@ function validate_partial_mac_list($maclist)
 function reconfigure_dhcpd()
 {
     system_hosts_generate();
+    plugins_configure('hosts');
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp4_configure();
     clear_subsystem_dirty('staticmaps');
@@ -58,7 +59,7 @@ $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'fail
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
-  'filename32arm', 'filename64arm', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
+  'filename32arm', 'filename64arm', 'filenameipxe', 'rootpath', 'netmask', 'numberoptions', 'interface_mtu', 'wpad', 'omapi', 'omapiport',
   'omapialgorithm', 'omapikey', 'minsecs');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -435,6 +436,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act ==  "del") {
         if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
+            if (isset($config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr'])) {
+                configdp_run('interface remove arp', [
+                    $config['dhcpd'][$if]['staticmap'][$_POST['id']]['ipaddr']
+                ]);
+            }
             unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
             write_config();
             if (isset($config['dhcpd'][$if]['enable'])) {
@@ -516,7 +522,7 @@ include("head.inc");
 <script>
   $( document ).ready(function() {
     /**
-     * Additional BOOTP/DHCP Options extenable table
+     * Additional BOOTP/DHCP Options extendable table
      */
     function removeRow() {
         if ( $('#numberoptions_table > tbody > tr').length == 1 ) {
@@ -596,15 +602,15 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if (isset($config['dhcrelay']['enable'])): ?>
+          <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
+        <?php else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('staticmaps')): ?><br/>
         <?php print_info_box_apply(gettext("The static mapping configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-            <?php if (isset($config['dhcrelay']['enable'])): ?>
-              <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
-            <?php else: ?>
             <div class="tab-content content-box col-xs-12">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
@@ -988,8 +994,10 @@ include("head.inc");
                           <input name="filename32arm" type="text" id="filename32arm" value="<?=$pconfig['filename32arm'];?>" /><br />
                           <?=gettext('Set ARM UEFI (64-bit) filename');?>
                           <input name="filename64arm" type="text" id="filename64arm" value="<?=$pconfig['filename64arm'];?>" /><br />
+                          <?=gettext('Set iPXE boot filename');?>
+                          <input name="filenameipxe" type="text" id="filenameipxe" value="<?=$pconfig['filenameipxe'];?>" /><br />
                           <?= gettext('You need both a filename and a boot server configured for this to work.') ?><br/>
-                          <br/><br/>
+                          <br/>
                           <?=gettext('Set root-path string');?>
                           <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />
                           <?=gettext("Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname");?>
@@ -1178,10 +1186,10 @@ include("head.inc");
                         <?=htmlspecialchars($mapent['ipaddr']);?>
                       </td>
                       <td>
-                        <?=htmlspecialchars($mapent['hostname']);?>
+                        <?=htmlspecialchars($mapent['hostname'] ?? '');?>
                       </td>
                       <td>
-                        <?=htmlspecialchars($mapent['descr']);?>
+                        <?=htmlspecialchars($mapent['descr'] ?? '');?>
                       </td>
                       <td class="text-nowrap">
                         <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><i class="fa fa-pencil fa-fw"></i></a>
@@ -1197,10 +1205,8 @@ include("head.inc");
               </div>
             </div>
           </section>
-<?php
-          endif; ?>
-<?php
-        endif; ?>
+          <?php endif ?>
+          <?php endif ?>
       </div>
     </div>
   </section>

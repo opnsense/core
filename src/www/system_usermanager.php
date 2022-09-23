@@ -292,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
          * format may be used. to keep it simple for the enduser, we only
          * claim to accept MM/DD/YYYY as inputs. Advanced users may use inputs
          * like "+1 day", which will be converted to MM/DD/YYYY based on "now".
-         * Otherwhise such an entry would lead to an invalid expiration data.
+         * Otherwise such an entry would lead to an invalid expiration data.
          */
         if (!empty($pconfig['expires'])) {
             try {
@@ -342,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
             if (!empty($pconfig['gen_otp_seed'])) {
                 // generate 160bit base32 encoded secret
-                $userent['otp_seed'] = Base32\Base32::encode(openssl_random_pseudo_bytes(20));
+                $userent['otp_seed'] = Base32\Base32::encode(random_bytes(20));
             } else {
                 $userent['otp_seed'] = trim($pconfig['otp_seed']);
             }

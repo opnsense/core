@@ -52,6 +52,8 @@ function isAuthLocalIP($http_host)
     }
     $address_in_list = function ($interface_list_ips, $http_host) {
         foreach ($interface_list_ips as $ilips => $ifname) {
+            // remove scope from link-local IPv6 addresses
+            $ilips = preg_replace('/%.*/', '', $ilips);
             if (strcasecmp($http_host, $ilips) == 0) {
                 return true;
             }
@@ -157,21 +159,6 @@ function &getGroupEntry($name)
     }
 
     return array();
-}
-
-function &getGroupEntryByGID($gid)
-{
-    global $config;
-
-    if (isset($config['system']['group'])) {
-        foreach ($config['system']['group'] as & $group) {
-            if ($group['gid'] == $gid) {
-                return $group;
-            }
-        }
-    }
-
-    return false;
 }
 
 function get_user_privileges(&$user)
@@ -293,10 +280,6 @@ function local_sync_accounts()
         }
     }
 
-    /* make sure the all group exists */
-    $allgrp = getGroupEntryByGID(1998);
-    local_group_set($allgrp, true);
-
     /* sync all local users */
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
@@ -380,14 +363,16 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     /* read from pw db if not provided (batch mode) */
     if ($userattrs === null) {
-        $fd = popen("/usr/sbin/pw usershow -n {$user_name} 2>&1", "r");
+        $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
         $pwread = fgets($fd);
         pclose($fd);
-        $userattrs = explode(":", trim($pwread));
+        if (substr_count($pwread, ':')) {
+            $userattrs = explode(':', trim($pwread));
+        }
     }
 
     /* determine add or mod */
-    if (empty($userattrs) || $userattrs[0] != $user['name'] || !strncmp($pwread, 'pw:', 3)) {
+    if ($userattrs === null || $userattrs[0] != $user['name']) {
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
@@ -426,7 +411,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $keys = base64_decode($user['authorizedkeys']);
         $keys = preg_split('/[\n\r]+/', $keys);
         $keys[] = '';
-        $keys = implode($keys, "\n");
+        $keys = implode("\n", $keys);
         @file_put_contents("{$user_home}/.ssh/authorized_keys", $keys);
         @chown("{$user_home}/.ssh/authorized_keys", $user_name);
     } else {
@@ -452,8 +437,7 @@ function local_user_set_password(&$user, $password = null)
 {
     if ($password == null) {
         /* generate a random password */
-        $bytes = openssl_random_pseudo_bytes(50);
-        $password = pack('H*', bin2hex($bytes));
+        $password = random_bytes(50);
     }
 
     $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 10 ]);
@@ -556,7 +540,7 @@ function local_group_del_user($user)
     }
 }
 
-function local_group_set($group, $reset = false)
+function local_group_set($group)
 {
     if (!isset($group['name']) || !isset($group['gid'])) {
         return;
@@ -566,7 +550,7 @@ function local_group_set($group, $reset = false)
     $group_gid = $group['gid'];
     $group_members = '';
 
-    if (!$reset && !empty($group['member']) && count($group['member']) > 0) {
+    if (!empty($group['member']) && count($group['member']) > 0) {
         $group_members = implode(',', $group['member']);
     }
 

@@ -43,10 +43,8 @@ function cert_unrevoke($cert, &$crl)
                 if (!isset($crl['method'])) {
                     $crl['method'] = "internal";
                 }
-                crl_update($crl);
-            } else {
-                crl_update($crl);
             }
+            crl_update($crl);
             return true;
         }
     }
@@ -75,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if ($act == "exp") {
-        crl_update($thiscrl);
         $exp_name = urlencode("{$thiscrl['descr']}.crl");
         $exp_data = base64_decode($thiscrl['text']);
         $exp_size = strlen($exp_data);
@@ -170,12 +167,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!count($input_errors)) {
-            $reason = (empty($pconfig['crlreason'])) ? OCSP_REVOKED_STATUS_UNSPECIFIED : $pconfig['crlreason'];
-            cert_revoke($cert, $crl, $reason);
-            plugins_configure('crl');
-            write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
-            header(url_safe('Location: /system_crlmanager.php'));
-            exit;
+            $reason = (empty($pconfig['crlreason'])) ? CERT_CRL_STATUS_UNSPECIFIED : $pconfig['crlreason'];
+            if (cert_revoke($cert, $crl, $reason)) {
+                plugins_configure('crl');
+                write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
+                header(url_safe('Location: /system_crlmanager.php'));
+                exit;
+            } else {
+                $savemsg = gettext("Cannot revoke certificate. See general log for details.") . "<br />";
+                $act="edit";
+            }
         }
     } else {
         $input_errors = array();
@@ -219,6 +220,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if ($pconfig['crlmethod'] == "internal") {
+                 /* check if new CRL CA have private key and it match public key so this CA can sign anything */
+                if (isset($pconfig['caref']) && !isset($id)) {
+                    $cacert = lookup_ca($pconfig['caref']);
+                    $ca_str_crt = base64_decode($cacert['crt']);
+                    $ca_str_key = base64_decode($cacert['prv']);
+                    if (!openssl_x509_check_private_key($ca_str_crt, $ca_str_key)) {
+                        syslog(LOG_ERR, "CRL error: CA keys mismatch");
+                        $savemsg = gettext("Cannot create CRL for this CA. CA keys mismatch or key missing.") . "<br />";
+                        $act="edit";
+                    }
+                }
+
                 $crl['serial'] = empty($pconfig['serial']) ? 9999 : $pconfig['serial'];
                 $crl['lifetime'] = empty($pconfig['lifetime']) ? 9999 : $pconfig['lifetime'];
                 $crl['cert'] = array();
@@ -228,10 +241,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_crl[] = $crl;
             }
 
-            write_config(sprintf('Saved CRL %s', $crl['descr']));
-            plugins_configure('crl');
-            header(url_safe('Location: /system_crlmanager.php'));
-            exit;
+            if (!isset($savemsg)) {
+                write_config(sprintf('Saved CRL %s', $crl['descr']));
+                plugins_configure('crl');
+                header(url_safe('Location: /system_crlmanager.php'));
+                exit;
+            }
         }
     }
 
@@ -437,7 +452,7 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
                 <td>
-                  <textarea name="crltext" id="crltext" cols="65" rows="7"><?=$thiscrl['text'];?></textarea>
+                  <textarea name="crltext" id="crltext" cols="65" rows="7"><?=base64_decode($thiscrl['text']);?></textarea>
                   <div class="hidden" data-for="help_for_crltext">
                     <?=gettext("Paste a Certificate Revocation List in X.509 CRL format here.");?>
                   </div>
@@ -486,7 +501,7 @@ include("head.inc");
                 foreach ($thiscrl['cert'] as $cert) :?>
                 <tr>
                   <td><?=$cert['descr']; ?></td>
-                  <td><?=$openssl_crl_status[$cert["reason"]]; ?></td>
+                  <td><?=crl_status_code()[$cert["reason"]][0]; ?></td>
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
                     <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
@@ -544,8 +559,8 @@ include("head.inc");
                   <td colspan="3" style="text-align:left">
                     <select name='crlreason' id='crlreason' class="selectpicker" data-style="btn-default">
 <?php
-                  foreach ($openssl_crl_status as $code => $reason) :?>
-                    <option value="<?= $code ?>"><?=$reason?></option>
+                  foreach (crl_status_code() as $code => $reason) :?>
+                    <option value="<?= $code ?>"><?=$reason[0]?></option>
 <?php
                   endforeach;?>
                     </select>
@@ -598,7 +613,7 @@ include("head.inc");
                     </a>
 <?php
                   else :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;method=existing" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
                       <i class="fa fa-plus fa-fw"></i>
                     </a>
 <?php

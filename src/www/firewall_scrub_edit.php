@@ -29,36 +29,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-/**
- * Return array of possible TOS values
- */
-function filter_tos_values()
-{
-    $ret = array(
-        '' => gettext('Do not change'),
-        'lowdelay' => gettext('lowdelay'),
-        'critical' => gettext('critical'),
-        'inetcontrol' => gettext('inetcontrol'),
-        'netcontrol' => gettext('netcontrol'),
-        'throughput' => gettext('throughput'),
-        'reliability' => gettext('reliability'),
-        'ef' => 'EF',
-    );
-
-    foreach (array(11, 12, 13, 21, 22, 23, 31, 32, 33, 41 ,42, 43) as $val) {
-        $ret["af$val"] = "AF$val";
-    }
-
-    foreach (range(0, 7) as $val) {
-        $ret["cs$val"] = "CS$val";
-    }
-
-    foreach (range(0, 255) as $val) {
-        $ret['0x' . dechex($val)] = sprintf('0x%02X', $val);
-    }
-
-    return $ret;
-}
 
 /**
  * fetch list of selectable networks to use in form
@@ -610,7 +580,7 @@ include("head.inc");
                       <td style="width:78%">
                           <select name="set-tos" class="selectpicker" data-size="5" data-width="auto"  data-live-search="true">
 <?php
-                            foreach (filter_tos_values() as $tos_value => $tos_label): ?>
+                            foreach (get_tos_values(gettext('Do not change')) as $tos_value => $tos_label): ?>
                             <option value="<?= $tos_value ?>" <?= $tos_value == $pconfig['set-tos'] ? 'selected="selected"' : '' ?>>
                                 <?= $tos_label ?>
                             </option>

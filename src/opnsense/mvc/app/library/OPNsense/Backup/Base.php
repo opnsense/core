@@ -52,21 +52,23 @@ abstract class Base
         $hash = 'sha512';
         $pbkdf2 = '100000';
 
+        file_put_contents($file, $pass);
         file_put_contents("{$file}.dec", $data);
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass pass:%s',
+                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s',
                 escapeshellarg($cipher),
                 escapeshellarg($hash),
                 escapeshellarg($pbkdf2),
                 escapeshellarg("{$file}.dec"),
                 escapeshellarg("{$file}.enc"),
-                escapeshellarg($pass)
+                escapeshellarg($file)
             ),
             $unused,
             $retval
         );
         @unlink("{$file}.dec");
+        @unlink($file);
 
         if (file_exists("{$file}.enc") && !$retval) {
             $version = trim(shell_exec('opnsense-version -Nv'));
@@ -133,21 +135,23 @@ abstract class Base
 
         $data = implode("\n", $data);
 
+        file_put_contents($file, $pass);
         file_put_contents("{$file}.enc", base64_decode($data));
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass pass:%s',
+                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass file:%s',
                 escapeshellarg($cipher),
                 escapeshellarg($hash),
                 $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),
                 escapeshellarg("{$file}.enc"),
                 escapeshellarg("{$file}.dec"),
-                escapeshellarg($pass)
+                escapeshellarg($file)
             ),
             $unused,
             $retval
         );
         @unlink("{$file}.enc");
+        @unlink($file);
 
         if (file_exists("{$file}.dec") && !$retval) {
             $result = file_get_contents("{$file}.dec");

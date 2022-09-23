@@ -83,7 +83,7 @@ class CPBackgroundProcess(object):
                             self.db.del_client(zoneid, session['sessionId'])
                     if sessions_deleted == len(sessions) or len(sessions) == 0:
                         # when there's no session active, add a new one
-                        # (only administrative, the sync process will add it if neccesary)
+                        # (only administrative, the sync process will add it if necessary)
                         if ip_address is not None:
                             self.db.add_client(zoneid, "---ip---", "", ip_address, "")
                         else:
@@ -227,7 +227,7 @@ def main():
                     capture_output=True
                 )
             except OSError:
-                # if accounting script crashes don't exit backgroung process
+                # if accounting script crashes don't exit background process
                 pass
 
             # sleep

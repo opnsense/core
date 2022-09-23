@@ -36,7 +36,7 @@ class Config(object):
     _cnf_filename = "/usr/local/etc/captiveportal.conf"
 
     def __init__(self):
-        """ consctruct new config object
+        """ construct new config object
         """
         self.last_updated = 0
         self._conf_handle = None

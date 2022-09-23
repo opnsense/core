@@ -510,7 +510,7 @@ input[type="checkbox"] {
   // `position: relative;` on them. Also accounts for the grid gutter padding.
   .has-feedback control-feedback {
     top: 0;
-    right: ($grid-gutter-width / 2);
+    right: calc($grid-gutter-width / 2);
   }
 
   // Form group sizes

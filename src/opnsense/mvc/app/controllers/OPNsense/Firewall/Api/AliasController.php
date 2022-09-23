@@ -69,7 +69,7 @@ class AliasController extends ApiMutableModelControllerBase
      * Update alias with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setItemAction($uuid)
@@ -90,7 +90,7 @@ class AliasController extends ApiMutableModelControllerBase
      * Add new alias and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function addItemAction()
@@ -109,12 +109,13 @@ class AliasController extends ApiMutableModelControllerBase
         $response = $this->getBase("alias", "aliases.alias", $uuid);
         $selected_aliases = array_keys($response['alias']['content']);
         foreach ($this->getModel()->aliasIterator() as $alias) {
-            // external aliases can't be nested (always empty according to our administration)
-            if (!in_array($alias['name'], $selected_aliases) && $alias['type'] != "external") {
+            if (!in_array($alias['name'], $selected_aliases)) {
                 $response['alias']['content'][$alias['name']] = [
                   "selected" => 0, "value" => $alias['name']
                 ];
             }
+            // append descriptions
+            $response['alias']['content'][$alias['name']]['description'] = $alias['description'];
         }
         return $response;
     }
@@ -140,7 +141,7 @@ class AliasController extends ApiMutableModelControllerBase
      * Delete alias by uuid, save contents to tmp for removal on apply
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\UserException when unable to delete
      */
@@ -167,7 +168,7 @@ class AliasController extends ApiMutableModelControllerBase
      * @param string $uuid id to toggled
      * @param string|null $enabled set enabled by default
      * @return array status
-     * @throws \Phalcon\Validation\Exception when field validations fail
+     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleItemAction($uuid, $enabled = null)
@@ -216,10 +217,13 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function listNetworkAliasesAction()
     {
-        $result = array();
+        $result = [];
         foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
             if (!in_array((string)$alias->type, ['external', 'port'])) {
-                $result[(string)$alias->name] = (string)$alias->name;
+                $result[(string)$alias->name] = [
+                    "name" => (string)$alias->name,
+                    "description" => (string)$alias->description
+                ];
             }
         }
         ksort($result);
@@ -302,7 +306,8 @@ class AliasController extends ApiMutableModelControllerBase
                 // save into model
                 $uuid_mapping = array();
                 foreach ($data['aliases']['alias'] as $uuid => $content) {
-                    if (is_array($content) && !empty($content['name'])) {
+                    $type = !empty($content['type']) ? $content['type'] : "";
+                    if (is_array($content) && !empty($content['name']) && $type != 'internal') {
                         $node = $this->getModel()->getByName($content['name']);
                         if ($node == null) {
                             $node = $this->getModel()->aliases->alias->Add();

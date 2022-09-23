@@ -111,17 +111,6 @@ class AliasUtilController extends ApiControllerBase
             });
         }
 
-        if (
-            $this->request->hasPost('sort') &&
-            is_array($this->request->getPost('sort')) &&
-            array_key_exists('ip', $this->request->getPost('sort')) &&
-            $this->request->getPost('sort')['ip'] === 'desc'
-        ) {
-            rsort($entry_keys);
-        } else {
-            sort($entry_keys);
-        }
-
         $formatted_full = array_map(function ($value) use (&$entries) {
             $item = ['ip' => $value];
             foreach ($entries[$value] as $ekey => $evalue) {
@@ -130,15 +119,16 @@ class AliasUtilController extends ApiControllerBase
             return $item;
         }, $entry_keys);
 
-        if (
-            $this->request->hasPost('sort') &&
-            is_array($this->request->getPost('sort')) &&
-            !array_key_exists('ip', $this->request->getPost('sort'))
-        ) {
+        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
             $sortcolumn = array_key_first($this->request->getPost('sort'));
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
             if (!empty(array_column($formatted_full, $sortcolumn))) {
-                array_multisort(array_column($formatted_full, $sortcolumn), $sort_order == 'asc' ? SORT_ASC : SORT_DESC, $formatted_full);
+                array_multisort(
+                    array_column($formatted_full, $sortcolumn),
+                    $sort_order == 'asc' ? SORT_ASC : SORT_DESC,
+                    SORT_NATURAL,
+                    $formatted_full
+                );
             }
         }
 
@@ -265,7 +255,7 @@ class AliasUtilController extends ApiControllerBase
                 $backend->configdpRun("filter add table", array($alias, $address));
                 return array("status" => "done");
             } else {
-                return array("status" => "failed", "status_msg" => sprintf("non existing alias %s", $alias));
+                return array("status" => "failed", "status_msg" => sprintf("nonexistent alias %s", $alias));
             }
         } else {
             return array("status" => "failed");

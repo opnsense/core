@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ class AccessController extends ApiControllerBase
         $backend = new Backend();
         $allClientsRaw = $backend->configdpRun(
             "captiveportal list_clients",
-            array($zoneid, 'json')
+            [$zoneid, 'json']
         );
         $allClients = json_decode($allClientsRaw, true);
         if ($allClients != null) {
@@ -65,9 +65,19 @@ class AccessController extends ApiControllerBase
         }
 
         // return Unauthorized including authentication requirements
-        $result = array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp());
+        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp()];
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
+        if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
+            $arps = json_decode($backend->configdRun("interface list arp json"), true);
+            if ($arps != null) {
+                foreach ($arps as $arp) {
+                    if (!empty($arp['ip'] && $arp['ip'] == $result['ipAddress'])) {
+                        $result['macAddress'] = $arp['mac'];
+                    }
+                }
+            }
+        }
         if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
             // no authentication needed, logon without username/password
             $result['authType'] = 'none';
@@ -82,14 +92,10 @@ class AccessController extends ApiControllerBase
      */
     private function getClientIp()
     {
-        // determine orginal sender of this request
-        $trusted_proxy = array(); // optional, not implemented
+        // determine original sender of this request
         if (
             $this->request->getHeader('X-Forwarded-For') != "" &&
-            (
-            explode('.', $this->request->getClientAddress())[0] == '127' ||
-            in_array($this->request->getClientAddress(), $trusted_proxy)
-            )
+            explode('.', $this->request->getClientAddress())[0] == '127'
         ) {
             // use X-Forwarded-For header to determine real client
             return $this->request->getHeader('X-Forwarded-For');
@@ -123,7 +129,7 @@ class AccessController extends ApiControllerBase
         $clientIp = $this->getClientIp();
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
-            return array();
+            return [];
         } elseif ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();
@@ -148,7 +154,7 @@ class AccessController extends ApiControllerBase
                             // try this auth method
                             $isAuthenticated = $authServer->authenticate(
                                 $userName,
-                                $this->request->getPost("password", "string")
+                                $this->request->getPost("password")
                             );
 
                             // check group when group enforcement is set
@@ -180,13 +186,13 @@ class AccessController extends ApiControllerBase
                         $backend = new Backend();
                         $CPsession = $backend->configdpRun(
                             "captiveportal allow",
-                            array(
+                            [
                                 (string)$cpZone->zoneid,
                                 $userName,
                                 $clientIp,
                                 $authServerName,
                                 'json'
-                            )
+                            ]
                         );
                         $CPsession = json_decode($CPsession, true);
                         // push session restrictions, if they apply
@@ -212,12 +218,12 @@ class AccessController extends ApiControllerBase
                     }
                 } else {
                     $this->getLogger("captiveportal")->info("DENY " . $userName .  " (" . $clientIp . ") zone " . $zoneid);
-                    return array("clientState" => 'NOT_AUTHORIZED', "ipAddress" => $clientIp);
+                    return ["clientState" => 'NOT_AUTHORIZED', "ipAddress" => $clientIp];
                 }
             }
         }
 
-        return array("clientState" => 'UNKNOWN', "ipAddress" => $clientIp);
+        return ["clientState" => 'UNKNOWN', "ipAddress" => $clientIp];
     }
 
 
@@ -231,7 +237,7 @@ class AccessController extends ApiControllerBase
     {
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
-            return array();
+            return [];
         } else {
             $this->sessionClose();
             $clientSession = $this->clientSession((string)$zoneid);
@@ -244,7 +250,7 @@ class AccessController extends ApiControllerBase
                 $backend = new Backend();
                 $statusRAW = $backend->configdpRun(
                     "captiveportal disconnect",
-                    array($zoneid, $clientSession['sessionId'], 'json')
+                    [$zoneid, $clientSession['sessionId'], 'json']
                 );
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
@@ -255,7 +261,7 @@ class AccessController extends ApiControllerBase
                 }
             }
         }
-        return array("clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp());
+        return ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
     }
 
     /**
@@ -268,7 +274,7 @@ class AccessController extends ApiControllerBase
     {
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
-            return array();
+            return [];
         } elseif ($this->request->isPost() || $this->request->isGet()) {
             $this->sessionClose();
             $clientSession = $this->clientSession((string)$zoneid);

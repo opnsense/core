@@ -36,7 +36,6 @@ openlog($g['product_id'], LOG_ODELAY, LOG_USER);
 register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
-require_once("notices.inc");
 require_once("legacy_bindings.inc");
 require_once("certs.inc");
 
@@ -100,6 +99,14 @@ function convert_config($verbose = false)
         mwexecf($cmd);
     }
 
+    /* register pluggable interfaces */
+    $cmd = '/usr/local/sbin/pluginctl -i';
+    if ($verbose) {
+        passthru($cmd);
+    } else {
+        mwexecf($cmd);
+    }
+
     /* factory reset on release type and plugins if necessary */
     $cmd = '/usr/local/opnsense/scripts/firmware/register.php resync_factory';
     if ($verbose) {
@@ -155,7 +162,7 @@ function write_config($desc = '', $backup = true)
         return -1;
     }
 
-    /* on succesfull save, serialize config back to global */
+    /* on successful save, serialize config back to global */
     $config = $cnf->toArray(listtags());
 
     return $config;
@@ -263,6 +270,24 @@ function legacy_config_get_interfaces($filters = array())
     });
 
     return $interfaces;
+}
+
+/**
+ * legacy helper to generate a uuid in a similar fashion as the model code would.
+ */
+function generate_uuid()
+{
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff)
+    );
 }
 
 /**
