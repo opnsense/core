@@ -1,3 +1,4 @@
+advanced.conf:/var/unbound/advanced.conf
 blocklists.conf:/tmp/unbound-blocklists.conf
 dot.conf:/usr/local/etc/unbound.opnsense.d/dot.conf
 private_domains.conf:/var/unbound/private_domains.conf

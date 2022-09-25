@@ -313,6 +313,7 @@ pidfile: /var/run/unbound.pid
 root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
+include: /var/unbound/advanced.conf
 verbosity: {$verbosity}
 extended-statistics: {$extended_statistics}
 log-queries: {$log_queries}
