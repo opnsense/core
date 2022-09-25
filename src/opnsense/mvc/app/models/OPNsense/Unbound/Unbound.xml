@@ -1,11 +1,101 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
         </service_enabled>
+        <advanced>
+            <hideidentity type="BooleanField">
+                <default>0</default>
+            </hideidentity>
+            <hideversion type="BooleanField">
+                <default>0</default>
+            </hideversion>
+            <prefetch type="BooleanField">
+                <default>0</default>
+            </prefetch>
+            <prefetchkey type="BooleanField">
+                <default>0</default>
+            </prefetchkey>
+            <dnssecstripped type="BooleanField">
+                <default>0</default>
+            </dnssecstripped>
+            <serveexpired type="BooleanField">
+                <default>0</default>
+            </serveexpired>
+            <serveexpiredreplyttl type="NumericField">
+            </serveexpiredreplyttl>
+            <serveexpiredttl type="NumericField">
+            </serveexpiredttl>
+            <serveexpiredttlreset type="BooleanField">
+                <default>0</default>
+            </serveexpiredttlreset>
+            <serveexpiredclienttimeout type="NumericField">
+            </serveexpiredclienttimeout>
+            <qnameminstrict type="BooleanField">
+                <default>0</default>
+            </qnameminstrict>
+            <extendedstatistics type="BooleanField">
+                <default>0</default>
+            </extendedstatistics>
+            <logqueries type="BooleanField">
+                <default>0</default>
+            </logqueries>
+            <logreplies type="BooleanField">
+                <default>0</default>
+            </logreplies>
+            <logtagqueryreply type="BooleanField">
+                <default>0</default>
+            </logtagqueryreply>
+            <logverbosity type="OptionField">
+                <default>1</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="0">Level 0</opt1>
+                    <opt2 value="1">Level 1 (Default)</opt2>
+                    <opt3 value="2">Level 2</opt3>
+                    <opt4 value="3">Level 3</opt4>
+                    <opt5 value="4">Level 4</opt5>
+                    <opt6 value="5">Level 5</opt6>
+                </OptionValues>
+            </logverbosity>
+            <privatedomain type="CSVListField">
+                <Required>N</Required>
+            </privatedomain>
+            <insecuredomain type="CSVListField">
+                <Required>N</Required>
+            </insecuredomain>
+            <msgcachesize type="TextField">
+                <Mask>/[0-9]+[kmg]?/i</Mask>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+            </msgcachesize>
+            <rrsetcachesize type="TextField">
+                <Mask>/[0-9]+[kmg]?/i</Mask>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+            </rrsetcachesize>
+            <outgoingnumtcp type="NumericField">
+            </outgoingnumtcp>
+            <incomingnumtcp type="NumericField">
+            </incomingnumtcp>
+            <numqueriesperthread type="NumericField">
+            </numqueriesperthread>
+            <outgoingrange type="NumericField">
+            </outgoingrange>
+            <jostletimeout type="NumericField">
+            </jostletimeout>
+            <cachemaxttl type="NumericField">
+            </cachemaxttl>
+            <cacheminttl type="NumericField">
+            </cacheminttl>
+            <infrahostttl type="NumericField">
+            </infrahostttl>
+            <infracachenumhosts type="NumericField">
+            </infracachenumhosts>
+            <unwantedreplythreshold type="NumericField">
+            </unwantedreplythreshold>
+        </advanced>
         <dnsbl>
             <enabled type="BooleanField">
                 <default>0</default>
@@ -246,13 +336,5 @@
                 </description>
             </domain>
         </domains>
-        <miscellaneous>
-            <privatedomain type="CSVListField">
-                    <Required>N</Required>
-            </privatedomain>
-            <insecuredomain type="CSVListField">
-                    <Required>N</Required>
-            </insecuredomain>
-        </miscellaneous>
     </items>
 </model>

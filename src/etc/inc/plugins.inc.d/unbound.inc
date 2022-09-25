@@ -140,15 +140,6 @@ function unbound_generate_config()
         $module_config .= 'iterator';
     }
 
-    $qnameminstrict = '';
-    if (!empty($config['unbound']['qnameminstrict'])) {
-        $qnameminstrict = <<<EOF
-qname-minimisation: yes
-qname-minimisation-strict: yes
-
-EOF;
-    }
-
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
         $private_addr = <<<EOF
 # For DNS Rebinding prevention
@@ -230,27 +221,6 @@ EOF;
     unbound_acls_config();
 
     $port = is_port($config['unbound']['port'] ?? null) ? $config['unbound']['port'] : '53';
-    $hide_id = !empty($config['unbound']['hideidentity']) ? "yes" : "no";
-    $hide_version = !empty($config['unbound']['hideversion']) ? "yes" : "no";
-    $prefetch = !empty($config['unbound']['prefetch']) ? "yes" : "no";
-    $prefetch_key = !empty($config['unbound']['prefetchkey']) ? "yes" : "no";
-    $outgoing_num_tcp = !empty($config['unbound']['outgoing_num_tcp']) ? $config['unbound']['outgoing_num_tcp'] : "10";
-    $incoming_num_tcp = !empty($config['unbound']['incoming_num_tcp']) ? $config['unbound']['incoming_num_tcp'] : "10";
-    $num_queries_per_thread = !empty($config['unbound']['num_queries_per_thread']) ? $config['unbound']['num_queries_per_thread'] : "4096";
-    $outgoing_range = $num_queries_per_thread * 2;
-    $jostle_timeout = !empty($config['unbound']['jostle_timeout']) ? $config['unbound']['jostle_timeout'] : "200";
-    $cache_max_ttl = !empty($config['unbound']['cache_max_ttl']) ? $config['unbound']['cache_max_ttl'] : "86400";
-    $cache_min_ttl = !empty($config['unbound']['cache_min_ttl']) ? $config['unbound']['cache_min_ttl'] : "0";
-    $infra_host_ttl = !empty($config['unbound']['infra_host_ttl']) ? $config['unbound']['infra_host_ttl'] : "900";
-    $infra_cache_numhosts = !empty($config['unbound']['infra_cache_numhosts']) ? $config['unbound']['infra_cache_numhosts'] : "10000";
-    $unwanted_reply_threshold = !empty($config['unbound']['unwanted_reply_threshold']) && is_numeric($config['unbound']['unwanted_reply_threshold']) ? $config['unbound']['unwanted_reply_threshold'] : "0";
-    $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
-    $extended_statistics = !empty($config['unbound']['extended_statistics']) ? 'yes' : 'no';
-    $log_queries = !empty($config['unbound']['log_queries']) ? 'yes' : 'no';
-    $msgcachesize = !empty($config['unbound']['msgcachesize']) ? $config['unbound']['msgcachesize'] : 4;
-    $rrsetcachesize = $msgcachesize * 2;
-    $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
-    $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -313,44 +283,23 @@ pidfile: /var/run/unbound.pid
 root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
-verbosity: {$verbosity}
-extended-statistics: {$extended_statistics}
-log-queries: {$log_queries}
-hide-identity: {$hide_id}
-hide-version: {$hide_version}
+include: /var/unbound/advanced.conf
 harden-referral-path: no
 do-ip4: yes
 do-ip6: {$do_ip6}
 do-udp: yes
 do-tcp: yes
 do-daemonize: yes
-so-reuseport: ${so_reuseport}
+so-reuseport: {$so_reuseport}
 module-config: "{$module_config}"
-cache-max-ttl: {$cache_max_ttl}
-cache-min-ttl: {$cache_min_ttl}
-harden-dnssec-stripped: {$dnssecstripped}
-serve-expired: {$serveexpired}
-outgoing-num-tcp: {$outgoing_num_tcp}
-incoming-num-tcp: {$incoming_num_tcp}
-num-queries-per-thread: {$num_queries_per_thread}
-outgoing-range: {$outgoing_range}
-infra-host-ttl: {$infra_host_ttl}
-infra-cache-numhosts: {$infra_cache_numhosts}
-unwanted-reply-threshold: {$unwanted_reply_threshold}
-jostle-timeout: {$jostle_timeout}
-msg-cache-size: {$msgcachesize}m
-rrset-cache-size: {$rrsetcachesize}m
 {$optimization['number_threads']}
 {$optimization['msg_cache_slabs']}
 {$optimization['rrset_cache_slabs']}
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
-{$qnameminstrict}
 {$anchor_file}
 {$forward_local}
 {$dns64_config}
-prefetch: {$prefetch}
-prefetch-key: {$prefetch_key}
 
 # Interface IP(s) to bind to
 {$bindints}
