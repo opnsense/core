@@ -56,26 +56,35 @@ class Alias extends BaseModel
      */
     private function getAliasSource()
     {
-        $sources = array();
-        $sources[] = array(array('filter', 'rule'), array('source', 'address'));
-        $sources[] = array(array('filter', 'rule'), array('destination', 'address'));
-        $sources[] = array(array('filter', 'rule'), array('source', 'port'));
-        $sources[] = array(array('filter', 'rule'), array('destination', 'port'));
-        $sources[] = array(array('nat', 'rule'), array('source', 'address'));
-        $sources[] = array(array('nat', 'rule'), array('source', 'port'));
-        $sources[] = array(array('nat', 'rule'), array('destination', 'address'));
-        $sources[] = array(array('nat', 'rule'), array('destination', 'port'));
-        $sources[] = array(array('nat', 'rule'), array('target'));
-        $sources[] = array(array('nat', 'rule'), array('local-port'));
-        $sources[] = array(array('nat', 'onetoone'), array('destination', 'address'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('source', 'network'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('sourceport'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('destination', 'network'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('dstport'));
-        $sources[] = array(array('nat', 'outbound', 'rule'), array('target'));
-        $sources[] = array(array('load_balancer', 'lbpool'), array('port'));
-        $sources[] = array(array('load_balancer', 'virtual_server'), array('port'));
-        $sources[] = array(array('staticroutes', 'route'), array('network'));
+        $sources = [];
+        $sources[] = [['filter', 'rule'], ['source', 'address']];
+        $sources[] = [['filter', 'rule'], ['destination', 'address']];
+        $sources[] = [['filter', 'rule'], ['source', 'port']];
+        $sources[] = [['filter', 'rule'], ['destination', 'port']];
+        $sources[] = [['nat', 'rule'], ['source', 'address']];
+        $sources[] = [['nat', 'rule'], ['source', 'port']];
+        $sources[] = [['nat', 'rule'], ['destination', 'address']];
+        $sources[] = [['nat', 'rule'], ['destination', 'port']];
+        $sources[] = [['nat', 'rule'], ['target']];
+        $sources[] = [['nat', 'rule'], ['local-port']];
+        $sources[] = [['nat', 'onetoone'], ['destination', 'address']];
+        $sources[] = [['nat', 'outbound', 'rule'], ['source', 'network']];
+        $sources[] = [['nat', 'outbound', 'rule'], ['sourceport']];
+        $sources[] = [['nat', 'outbound', 'rule'], ['destination', 'network']];
+        $sources[] = [['nat', 'outbound', 'rule'], ['dstport']];
+        $sources[] = [['nat', 'outbound', 'rule'], ['target']];
+        $sources[] = [['load_balancer', 'lbpool'], ['port']];
+        $sources[] = [['load_balancer', 'virtual_server'], ['port']];
+        $sources[] = [['staticroutes', 'route'], ['network']];
+        // os-firewall plugin paths
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['destination_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['source_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['source_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_net']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_port']];
 
         return $sources;
     }
