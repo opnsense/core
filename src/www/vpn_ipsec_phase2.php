@@ -180,7 +180,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['ealgos'] = ['aes256gcm16'];
         $pconfig['hash-algorithm-option'] = ['hmac_sha256'];
         $pconfig['pfsgroup'] = "0";
-        $pconfig['lifetime'] = "3600";
         $pconfig['uniqid'] = uniqid();
 
         // init empty

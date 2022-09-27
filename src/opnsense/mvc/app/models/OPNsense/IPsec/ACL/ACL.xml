@@ -54,7 +54,8 @@
     <page-status-ipsec-leases>
         <name>Status: IPsec: Leasespage</name>
         <patterns>
-            <pattern>diag_ipsec_leases.php*</pattern>
+            <pattern>ui/ipsec/leases</pattern>
+            <pattern>api/ipsec/leases/*</pattern>
         </patterns>
     </page-status-ipsec-leases>
     <page-status-ipsec-sad>

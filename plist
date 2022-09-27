@@ -329,6 +329,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/dialogUserDefined.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
@@ -337,6 +338,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SadController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SessionsController.php
@@ -658,6 +660,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/pre_shared_keys.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sad.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sessions.volt
@@ -1818,7 +1821,6 @@
 /usr/local/www/diag_backup.php
 /usr/local/www/diag_confbak.php
 /usr/local/www/diag_defaults.php
-/usr/local/www/diag_ipsec_leases.php
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/diag_ping.php
 /usr/local/www/diag_testport.php

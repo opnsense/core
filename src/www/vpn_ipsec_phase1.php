@@ -143,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['encryption-algorithm'] = ["name" => "aes256gcm16"];
         $pconfig['hash-algorithm'] = ['sha256'];
         $pconfig['dhgroup'] = array('14');
-        $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['installpolicy'] = true;
         $pconfig['authservers'] = array();
@@ -1104,15 +1103,6 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Lifetime"); ?></td>
-                    <td>
-                      <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
-                      <div class="hidden" data-for="help_for_lifetime">
-                        <?=gettext("seconds"); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td colspan="2"><b><?=gettext("Advanced Options"); ?></b></td>
                   </tr>
                   <tr>
@@ -1278,6 +1268,15 @@ endforeach; ?>
                           "How many attempts should be made to negotiate a connection, or a replacement for one, before giving up (default 3). ".
                           "Leave empty for default, -1 for forever or any positive integer for the number of tries"
                         ); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Lifetime"); ?></td>
+                    <td>
+                      <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
+                      <div class="hidden" data-for="help_for_lifetime">
+                        <?=gettext("seconds"); ?>
                       </div>
                     </td>
                   </tr>
