@@ -292,23 +292,23 @@ function get_zoneinfo()
 
 function get_searchdomains()
 {
-    $search_list = glob('/tmp/*_searchdomain*');
     $syscfg = config_read_array('system');
     $master_list = [];
+    $search_list = [];
 
-    if (!isset($syscfg['dnsallowoverride'])) {
-        /* do not return domains as required by configuration */
-        $search_list = [];
+    if (isset($syscfg['dnsallowoverride'])) {
+        /* return domains as required by configuration */
+        $list = trim(shell_exec('/usr/local/sbin/ifctl -sl'));
+        if (!empty($list)) {
+            $search_list = explode("\n", $list);
+        }
     }
 
-    if (is_array($search_list)) {
-        foreach ($search_list as $fdns) {
-            $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            if (!is_array($contents)) {
-                continue;
-            }
+    foreach ($search_list as $fdns) {
+        $contents = file($fdns, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (is_array($contents)) {
             foreach ($contents as $dns) {
-                if (!empty($dns) && is_hostname($dns)) {
+                if (is_fqdn($dns)) {
                     $master_list[] = $dns;
                 }
             }
