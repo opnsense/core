@@ -160,7 +160,7 @@ function webgui_configure_do($verbose = false, $interface = '')
 
 function webgui_create_selfsigned($verbose = false)
 {
-    global $config, $g;
+    global $config;
 
     $a_ca = &config_read_array('ca');
     $a_cert = &config_read_array('cert');
@@ -172,7 +172,7 @@ function webgui_create_selfsigned($verbose = false)
 
     log_error('Creating TLS certificate for this host');
 
-    $cert = array();
+    $cert = [];
     $cert['refid'] = uniqid();
     $cert['descr'] = 'Web GUI TLS certificate';
 
@@ -184,7 +184,7 @@ function webgui_create_selfsigned($verbose = false)
         '-newkey rsa:4096 -sha256 -days 397 -nodes -x509 ' .
         '-subj "/CN="%s"/C=NL/ST=Zuid-Holland/L=Middelharnis/O="%s" self-signed web certificate" ' .
         '-addext "subjectAltName = DNS:"%s -keyout /tmp/ssl.key -out /tmp/ssl.crt',
-        array($dns, $g['product_name'], $dns)
+        [$dns, product::getInstance()->name(), $dns]
     );
 
     $crt = file_get_contents('/tmp/ssl.crt');
