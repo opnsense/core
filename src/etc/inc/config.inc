@@ -57,7 +57,8 @@ final class product
         throw new Exception('Cannot unserialize singleton');
     }
 
-    public function __call($name, $arguments) {
+    public function __call($name, $arguments)
+    {
         if (!empty(self::$data['product_' . $name])) {
             return self::$data['product_' . $name];
         }
