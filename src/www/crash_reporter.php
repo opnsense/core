@@ -63,14 +63,15 @@ function upload_crash_report($files, $agent)
 include('head.inc');
 
 $plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
+$product = product::getInstance();
 
 $crash_report_header = sprintf(
     "%s %s\n%s %s %s\n%sTime %s\n%s\n%s\nPHP %s\n",
     php_uname('v'),
-    $g['product_arch'],
-    $g['product_name'],
-    $g['product_version'],
-    $g['product_hash'],
+    $product->arch(),
+    $product->name(),
+    $product->version(),
+    $product->hash(),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
     trim(shell_exec('/usr/local/bin/openssl version')),
@@ -82,7 +83,7 @@ if (isset($_SERVER['HTTP_USER_AGENT'])) {
     $crash_report_header = "User-Agent {$_SERVER['HTTP_USER_AGENT']}\n{$crash_report_header}";
 }
 
-$user_agent = "{$g['product_name']}/{$g['product_version']}";
+$user_agent = "{$product->name()}/{$product->version()}";
 $crash_reports = [];
 $has_crashed = false;
 $is_prod = empty($config['system']['deployment']);

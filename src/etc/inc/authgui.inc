@@ -309,9 +309,8 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
  */
 function display_error_form($text)
 {
-    global $g;
-
     $themename = htmlspecialchars(get_current_theme());
+    $product = product::getInstance();
 
     ?><!doctype html>
 <html lang="en" class="no-js">
@@ -326,7 +325,7 @@ function display_error_form($text)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?= gettext('Error') ?> | <?= $g['product_name'] ?></title>
+    <title><?= gettext('Error') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
@@ -347,9 +346,10 @@ function display_error_form($text)
 
 function display_login_form($Login_Error)
 {
-    global $config, $g;
+    global $config;
 
     $themename = htmlspecialchars(get_current_theme());
+    $product = product::getInstance();
 
     setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
@@ -365,7 +365,7 @@ function display_login_form($Login_Error)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?= gettext('Login') ?> | <?= $g['product_name'] ?></title>
+    <title><?= gettext('Login') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
@@ -421,8 +421,8 @@ function display_login_form($Login_Error)
 
       </main>
       <div class="login-foot text-center">
-        <a target="_blank" href="<?=$g['product_website']?>"><?=$g['product_name']?></a> (c) <?=$g['product_copyright_years']?>
-        <a target="_blank" href="<?=$g['product_copyright_url']?>"><?=$g['product_copyright_owner']?></a>
+        <a target="_blank" href="<?= $product->website() ?>"><?= $product->name() ?></a> (c) <?= $product->copyright_years() ?>
+        <a target="_blank" href="<?= $product->copyright_url() ?>"><?= $product->copyright_owner() ?></a>
       </div>
 
     </div>
