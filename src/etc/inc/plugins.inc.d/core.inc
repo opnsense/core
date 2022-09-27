@@ -375,9 +375,10 @@ function core_xmlrpc_sync()
 
 function core_configure()
 {
-    return array(
-        'user_changed' => array('core_user_changed_groups:2'),
-    );
+    return [
+        'dns_reload' => ['system_resolvconf_generate', 'system_hosts_generate'],
+        'user_changed' => ['core_user_changed_groups:2'],
+    ];
 }
 
 /**
