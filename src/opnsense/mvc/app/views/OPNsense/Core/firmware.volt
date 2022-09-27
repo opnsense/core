@@ -324,9 +324,18 @@
                         $('#product_time_check').text("{{ lang._('N/A') }}");
                     }
                 } else {
-                    $('#' + key).text(value).closest('tr').show();
+                    $('#' + key).text(value);
                 }
             });
+
+            if (data['product']['product_license'] != undefined) {
+                $.each(data['product']['product_license'], function(key, value) {
+                    $('#product_license_' + key).text(value).closest('tr').show();
+                });
+                if (!Object.keys(data['product']['product_license']).length) {
+                    $('[id^=product_license_]').closest('tr').hide();
+                }
+            }
 
             $("#statustab_progress").removeClass("fa fa-spinner fa-pulse");
 

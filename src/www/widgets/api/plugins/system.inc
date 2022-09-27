@@ -158,13 +158,13 @@ function system_api_versions($product)
     global $g;
 
     $result = array();
-    if (!empty($product['product_license_valid_to'])) {
+    if (!empty($product['product_license']['valid_to'])) {
         $result[] = sprintf(
             gettext('%s %s-%s (licensed until %s)'),
             $g['product_name'],
             $g['product_version'],
             $g['product_arch'],
-            $product['product_license_valid_to']
+            $product['product_license']['valid_to']
         );
     } else {
         $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);

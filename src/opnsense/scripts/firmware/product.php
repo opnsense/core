@@ -28,27 +28,27 @@
  */
 
 $metafile = '/usr/local/opnsense/version/core';
-$licensefile = '/usr/local/opnsense/license.json';
+$licensefile = $metafile . '.license';
 
 $ret = json_decode(@file_get_contents($metafile), true);
 if ($ret != null) {
-    $product_mirror = trim(shell_exec('opnsense-update -M'));
     $ret['product_crypto'] = trim(shell_exec('opnsense-version -f'));
     $ret['product_latest'] = trim(shell_exec('/usr/local/opnsense/scripts/firmware/latest.php'));
-    $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/${SUBSCRIPTION}/', $product_mirror);
+    $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/${SUBSCRIPTION}/', trim(shell_exec('opnsense-update -M')));
     $ret['product_time'] = date('D M j H:i:s T Y', filemtime('/usr/local/opnsense/www/index.php'));
     $repos = explode("\n", trim(shell_exec('opnsense-verify -l')));
     sort($repos);
     $ret['product_log'] = empty(trim(shell_exec('opnsense-update -G'))) ? 0 : 1;
     $ret['product_repos'] = implode(', ', $repos);
     $ret['product_check'] = json_decode(@file_get_contents('/tmp/pkg_upgrade.json'), true);
-    // for business editions, collect license information
-    if (preg_match('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', $product_mirror) && file_exists($licensefile)) {
+    $ret['product_license'] = [];
+    /* for business editions, collect license information */
+    if (file_exists($licensefile)) {
         $payload = file_get_contents($licensefile);
         $payload = $payload !== false ? json_decode($payload, true) : null;
         if (is_array($payload)) {
             foreach ($payload as $key => $val) {
-                $ret['product_license_' . $key] = $val;
+                $ret['product_license'][$key] = $val;
             }
         }
     }
