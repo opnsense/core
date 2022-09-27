@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -9,45 +9,54 @@
         <advanced>
             <hideidentity type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </hideidentity>
             <hideversion type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </hideversion>
             <prefetch type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </prefetch>
             <prefetchkey type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </prefetchkey>
             <dnssecstripped type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </dnssecstripped>
             <serveexpired type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </serveexpired>
-            <qnameinstrict type="BooleanField">
+            <qnameminstrict type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
-            </qnameinstrict>
+            </qnameminstrict>
             <extendedstatistics type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </extendedstatistics>
             <logqueries type="BooleanField">
                 <default>0</default>
-                <Required>N</Required>
             </logqueries>
-            <msgcachesize type="OptionField">
-                <Required>N</Required>
-                <default>opt1</default>
+            <logreplies type="BooleanField">
+                <default>0</default>
+            </logreplies>
+            <logtagqueryreply type="BooleanField">
+                <default>0</default>
+            </logtagqueryreply>
+            <logverbosity type="OptionField">
+                <default>1</default>
+                <Required>Y</Required>
                 <OptionValues>
-                    <opt1 value="4">4 MB</opt1>
+                    <opt1 value="0">Level 0</opt1>
+                    <opt2 value="1">Level 1 (Default)</opt2>
+                    <opt3 value="2">Level 2</opt3>
+                    <opt4 value="3">Level 3</opt4>
+                    <opt5 value="4">Level 4</opt5>
+                    <opt6 value="5">Level 5</opt6>
+                </OptionValues>
+            </logverbosity>
+            <msgcachesize type="OptionField">
+                <default>4</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="4">4 MB (Default)</opt1>
                     <opt2 value="10">10 MB</opt2>
                     <opt3 value="20">20 MB</opt3>
                     <opt4 value="50">50 MB</opt4>
@@ -57,11 +66,11 @@
                 </OptionValues>
             </msgcachesize>
             <outgoingnumtcp type="OptionField">
-                <Required>N</Required>
-                <default>opt2</default>
+                <default>10</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="0">0</opt1>
-                    <opt2 value="10">10</opt2>
+                    <opt2 value="10">10 (Default)</opt2>
                     <opt3 value="20">20</opt3>
                     <opt4 value="30">30</opt4>
                     <opt5 value="40">40</opt5>
@@ -69,11 +78,11 @@
                 </OptionValues>
             </outgoingnumtcp>
             <incomingnumtcp type="OptionField">
-                <Required>N</Required>
-                <default>opt2</default>
+                <default>10</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="0">0</opt1>
-                    <opt2 value="10">10</opt2>
+                    <opt2 value="10">10 (Default)</opt2>
                     <opt3 value="20">20</opt3>
                     <opt4 value="30">30</opt4>
                     <opt5 value="40">40</opt5>
@@ -81,60 +90,59 @@
                 </OptionValues>
             </incomingnumtcp>
             <numqueriesperthread type="OptionField">
-                <Required>N</Required>
-                <default>opt4</default>
+                <default>4096</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="512">512</opt1>
                     <opt2 value="1024">1024</opt2>
                     <opt3 value="2048">2048</opt3>
-                    <opt4 value="4096">4096</opt4>
+                    <opt4 value="4096">4096 (Default)</opt4>
                     <opt5 value="8192">8192</opt5>
                 </OptionValues>
             </numqueriesperthread>
             <jostletimeout type="OptionField">
-                <Required>N</Required>
-                <default>opt2</default>
+                <default>200</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="100">100</opt1>
-                    <opt2 value="200">200</opt2>
+                    <opt2 value="200">200 (Default)</opt2>
                     <opt3 value="500">500</opt3>
                     <opt4 value="1000">1000</opt4>
                 </OptionValues>
             </jostletimeout>
             <cachemaxttl type="NumericField">
-                <Required>N</Required>
                 <default>86400</default>
             </cachemaxttl>
             <cacheminttl type="NumericField">
-                <Required>N</Required>
                 <default>0</default>
             </cacheminttl>
             <infrahostttl type="OptionField">
-                <Required>N</Required>
-                <default>opt5</default>
+                <default>900</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="60">1 minute</opt1>
                     <opt2 value="120">2 minutes</opt2>
                     <opt3 value="300">5 minutes</opt3>
                     <opt4 value="600">10 minutes</opt4>
-                    <opt5 value="900">15 minutes</opt5>
+                    <opt5 value="900">15 minutes (Default)</opt5>
                 </OptionValues>
             </infrahostttl>
             <infracachenumhosts type="OptionField">
-                <Required>N</Required>
-                <default>opt3</default>
+                <default>10000</default>
+                <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="1000">1000</opt1>
                     <opt2 value="5000">5000</opt2>
-                    <opt3 value="10000">10000</opt3>
+                    <opt3 value="10000">10000 (Default)</opt3>
                     <opt4 value="20000">20000</opt4>
                     <opt5 value="50000">50000</opt5>
                 </OptionValues>
             </infracachenumhosts>
             <unwantedreplythreshold type="OptionField">
-                <Required>N</Required>
-                <BlankDesc>Disabled</BlankDesc>
+                <default>0</default>
+                <Required>Y</Required>
                 <OptionValues>
+                    <opt1 value="0">Disabled (Default)</opt1>
                     <opt1 value="5000000">5 million</opt1>
                     <opt2 value="10000000">10 million</opt2>
                     <opt3 value="20000000">20 million</opt3>
@@ -142,18 +150,6 @@
                     <opt5 value="50000000">50 million</opt5>
                 </OptionValues>
             </unwantedreplythreshold>
-            <logverbosity type="OptionField">
-                <Required>N</Required>
-                <default>opt2</default>
-                <OptionValues>
-                    <opt1 value="0">Level 0</opt1>
-                    <opt2 value="1">Level 1</opt2>
-                    <opt3 value="2">Level 2</opt3>
-                    <opt4 value="3">Level 3</opt4>
-                    <opt5 value="4">Level 4</opt5>
-                    <opt6 value="5">Level 5</opt6>
-                </OptionValues>
-            </logverbosity>
         </advanced>
         <dnsbl>
             <enabled type="BooleanField">

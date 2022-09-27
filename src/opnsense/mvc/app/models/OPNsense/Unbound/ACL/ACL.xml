@@ -11,13 +11,6 @@
             <pattern>services_unbound_acls.php*</pattern>
         </patterns>
     </page-services-dnsresolver-acls>
-    <page-services-dnsresolver-advanced>
-        <name>Services: Unbound DNS: Advanced</name>
-        <patterns>
-            <pattern>ui/unbound/advanced/*</pattern>
-            <pattern>api/unbound/advanced/*</pattern>
-        </patterns>
-    </page-services-dnsresolver-advanced>
     <page-services-dnsresolver-overrides>
         <name>Services: Unbound DNS: Edit Host and Domain Override</name>
         <patterns>

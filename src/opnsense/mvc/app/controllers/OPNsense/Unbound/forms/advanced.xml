@@ -48,7 +48,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.qnameinstrict</id>
+        <id>unbound.advanced.qnameminstrict</id>
         <label>Strict QNAME Minimisation</label>
         <type>checkbox</type>
         <help>
@@ -70,6 +70,38 @@
         <type>checkbox</type>
         <help>
             If enabled, prints one line per query to the log, with the log timestamp and IP address, name, type and class.
+            Note that it takes time to print these lines, which makes the server (significantly) slower. Odd
+            (nonprintable) characters in names are printed as '?'.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.logreplies</id>
+        <label>Log Replies</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, prints one line per reply to the log, with the log timestamp and IP address, name, type,
+            class, return code, time to resolve, whether the reply is from the cache and the response size.
+            Note that it takes time to print these lines, which makes the server (significantly) slower. Odd
+            (nonprintable) characters in names are printed as '?'.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.logtagqueryreply</id>
+        <label>Tag Queries and Replies</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, prints the word 'query: ' and 'reply: ' with logged queries and replies. This makes filtering
+            logs easier.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.logverbosity</id>
+        <label>Log Level Verbosity</label>
+        <type>dropdown</type>
+        <help>
+            Select the log verbosity. Level 0 means no verbosity, only errors. Level 1 gives operational information.
+            Level 2 gives detailed operational information. Level 3 gives query level information, output per query.
+            Level 4 gives algorithm level information. Level 5 logs client identification for cache misses.
         </help>
     </field>
     <field>
@@ -79,7 +111,6 @@
         <help>
             Size of the message cache. The message cache stores DNS rcodes and validation statuses.
             The RRSet cache will automatically be set to twice this amount. The RRSet cache contains the actual RR data.
-            The default is 4 megabytes.
         </help>
     </field>
     <field>
@@ -87,7 +118,7 @@
         <label>Outgoing TCP Buffers</label>
         <type>dropdown</type>
         <help>
-            The number of outgoing TCP buffers to allocate per thread. The default value is 10.
+            The number of outgoing TCP buffers to allocate per thread.
             If 0 is selected then no TCP queries, to authoritative servers, are done.
         </help>
     </field>
@@ -96,7 +127,7 @@
         <label>Incoming TCP Buffers</label>
         <type>dropdown</type>
         <help>
-            The number of incoming TCP buffers to allocate per thread. The default value is 10.
+            The number of incoming TCP buffers to allocate per thread.
             If 0 is selected then no TCP queries, from clients, are accepted.
         </help>
     </field>
@@ -115,7 +146,7 @@
         <type>dropdown</type>
         <help>
             This timeout is used for when the server is very busy. This protects against denial of service by
-            slow queries or high query rates. The default value is 200 milliseconds.
+            slow queries or high query rates.
         </help>
     </field>
     <field>
@@ -147,7 +178,7 @@
         <type>dropdown</type>
         <help>
             Time to live for entries in the host cache. The host cache contains roundtrip timing and EDNS
-            support information. The default is 15 minutes.
+            support information.
         </help>
     </field>
     <field>
@@ -155,7 +186,7 @@
         <label>Number of Hosts to cache</label>
         <type>dropdown</type>
         <help>
-            Number of hosts for which information is cached. The default is 10000.
+            Number of hosts for which information is cached.
         </help>
     </field>
     <field>
@@ -169,15 +200,5 @@
             The default is disabled, but if enabled a value of 10 million is suggested.
         </help>
     </field>
-    <field>
-        <id>unbound.advanced.logverbosity</id>
-        <label>Log Level Verbosity</label>
-        <type>dropdown</type>
-        <help>
-            Select the log verbosity. Level 0 means no verbosity, only errors. Level 1 gives operational information.
-            Level 2 gives detailed operational information. Level 3 gives query level information, output per query.
-            Level 4 gives algorithm level information. Level 5 logs client identification for cache misses.
-            Default is level 1.
-        </help>
-    </field>
 </form>
+
