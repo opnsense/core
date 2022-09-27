@@ -54,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['cloneif'] = $a_clones[$id]['cloneif'];
         $pconfig['mode'] = $a_clones[$id]['mode'];
         $pconfig['descr'] = $a_clones[$id]['descr'];
+    } else {
+        $pconfig = ['if' => '', 'cloneif' => '', 'mode' => 'bss', 'descr' => ''];
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
@@ -153,12 +155,8 @@ include("head.inc");
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Parent interface");?></td>
                   <td>
                     <select name="if" class="selectpicker">
-<?php foreach (get_interface_list() as $ifn => $ifinfo): ?>
-<?php if (match_wireless_interface($ifn)): ?>
-                      <option value="<?= $ifn ?>" <?= $ifn == $pconfig['if'] ? 'selected="selected"' : '' ?>>
-                          <?= html_safe($ifn) ?>
-                      </option>
-<?php endif ?>
+<?php foreach (legacy_interface_listget('wlan') as $ifn): ?>
+                      <option value="<?= $ifn ?>" <?= $ifn == $pconfig['if'] ? 'selected="selected"' : '' ?>><?= html_safe($ifn) ?></option>
 <?php endforeach ?>
                     </select>
                   </td>
