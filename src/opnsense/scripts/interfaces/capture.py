@@ -121,7 +121,7 @@ if __name__ == '__main__':
                 if settings.get('snaplen', '').isdigit():
                     args.append('-s')
                     args.append(settings.get('snaplen'))
-                if settings.get('count', '').isdigit():
+                if settings.get('count', '').isdigit() and int(settings.get('count')) > 0:
                     args.append('-c')
                     args.append(settings.get('count'))
 
