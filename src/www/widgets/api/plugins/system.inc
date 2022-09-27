@@ -155,20 +155,14 @@ function system_api_disk()
 
 function system_api_versions($product)
 {
-    global $g;
+    $result = [];
 
-    $result = array();
+    $result[] = sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']);
+
     if (!empty($product['product_license']['valid_to'])) {
-        $result[] = sprintf(
-            gettext('%s %s-%s (licensed until %s)'),
-            $g['product_name'],
-            $g['product_version'],
-            $g['product_arch'],
-            $product['product_license']['valid_to']
-        );
-    } else {
-        $result[] = sprintf('%s %s-%s', $g['product_name'], $g['product_version'], $g['product_arch']);
+        $result[] = sprintf(gettext('(licensed until %s)'), $product['product_license']['valid_to']);
     }
+
     $result[] = php_uname('s') . ' ' . php_uname('r');
     $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
 
