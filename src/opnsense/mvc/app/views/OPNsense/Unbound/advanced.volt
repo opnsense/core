@@ -28,12 +28,19 @@
     $( document ).ready(function() {
         var data_get_map = {'frm_AdvancedSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
-           //formatTokenizersUI();
+           formatTokenizersUI();
            $('.selectpicker').selectpicker('refresh');
-           console.log(data);
         });
 
-        $("#reconfigureAct").SimpleActionButton();
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function() {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_AdvancedSettings', function(){
+                  dfObj.resolve();
+              });
+              return dfObj;
+            }
+        });
 
         updateServiceControlUI('unbound');
     });

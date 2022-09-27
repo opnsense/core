@@ -620,6 +620,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -1878,7 +1879,6 @@
 /usr/local/www/services_router_advertisements.php
 /usr/local/www/services_unbound.php
 /usr/local/www/services_unbound_acls.php
-/usr/local/www/services_unbound_advanced.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_habackup.php
