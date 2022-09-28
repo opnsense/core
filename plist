@@ -151,6 +151,7 @@
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/syslog-ng.conf.d/legacy.conf
 /usr/local/etc/unbound.opnsense.d/README
+/usr/local/etc/unbound.opnsense.d/miscellaneous.conf
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
