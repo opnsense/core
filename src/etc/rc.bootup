@@ -36,7 +36,7 @@ echo "done.\n";
 echo "Initializing...";
 flush();
 
-$inc_files = array(
+$inc_files = [
     'config.inc',
     'console.inc',
     'auth.inc',
@@ -45,7 +45,7 @@ $inc_files = array(
     'system.inc',
     'filter.inc',
     'rrd.inc',
-);
+];
 
 foreach ($inc_files as $inc_file) {
     require_once $inc_file;
@@ -83,18 +83,19 @@ system_timezone_configure(true);
 system_firmware_configure(true);
 system_trust_configure(true);
 system_hostname_configure(true);
+system_resolvconf_generate(true);
 system_hosts_generate(true);
 system_syslog_start(true);
 
 filter_configure_sync(true, false); /* apply default policy before interface setup */
 interfaces_hardware(true);
 interfaces_configure(true);
-system_resolvconf_generate(true);
+system_resolvconf_generate(true); /* requires runtime interface configuration */
+system_hosts_generate(true); /* requires runtime interface configuration */
 filter_configure_sync(true);
 plugins_configure('early', true);
 system_routing_configure(true, null, false);
 
-system_hosts_generate(true);
 plugins_configure('dhcp', true);
 plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
