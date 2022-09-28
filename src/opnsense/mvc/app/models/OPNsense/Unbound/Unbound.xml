@@ -40,6 +40,12 @@
             <logtagqueryreply type="BooleanField">
                 <default>0</default>
             </logtagqueryreply>
+            <privatedomain type="CSVListField">
+                <Required>N</Required>
+            </privatedomain>
+            <insecuredomain type="CSVListField">
+                <Required>N</Required>
+            </insecuredomain>
             <logverbosity type="OptionField">
                 <default>1</default>
                 <Required>Y</Required>
@@ -391,13 +397,5 @@
                 </description>
             </domain>
         </domains>
-        <miscellaneous>
-            <privatedomain type="CSVListField">
-                    <Required>N</Required>
-            </privatedomain>
-            <insecuredomain type="CSVListField">
-                    <Required>N</Required>
-            </insecuredomain>
-        </miscellaneous>
     </items>
 </model>

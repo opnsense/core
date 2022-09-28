@@ -95,6 +95,25 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.privatedomain</id>
+        <label>Private Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of domains to mark as private. These domains and all its subdomains are allowed to contain
+            private addresses.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.insecuredomain</id>
+        <label>Insecure Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to mark as insecure. DNSSEC chain of trust is ignored towards the domain name.</help>
+    </field>
+    <field>
         <id>unbound.advanced.logverbosity</id>
         <label>Log Level Verbosity</label>
         <type>dropdown</type>
