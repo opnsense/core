@@ -118,7 +118,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
      * @param string $type (rsa, ecdsa)
      * @return array
      */
-    public function genKeyPairAction($type, $size=null)
+    public function genKeyPairAction($type, $size = null)
     {
         $certtype = null;
         $keylength = null;

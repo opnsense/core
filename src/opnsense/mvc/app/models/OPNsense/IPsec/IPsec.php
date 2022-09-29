@@ -87,7 +87,7 @@ class IPsec extends BaseModel
             if (!empty((string)$keyPair->{$type . 'Key'})) {
                 try {
                     $Keys[$type] = $this->parseCryptographicKey(
-                        (string)$keyPair->{$type.'Key'},
+                        (string)$keyPair->{$type . 'Key'},
                         $type
                     );
                 } catch (\Exception $e) {
