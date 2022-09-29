@@ -158,13 +158,12 @@ function system_api_versions($product)
     $result = [];
 
     $result[] = sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']);
-
-    if (!empty($product['product_license']['valid_to'])) {
-        $result[] = sprintf(gettext('(licensed until %s)'), $product['product_license']['valid_to']);
-    }
-
     $result[] = php_uname('s') . ' ' . php_uname('r');
     $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
+
+    if (!empty($product['product_license']['valid_to'])) {
+        $result[] = gettext('Licensed until') . ' ' . $product['product_license']['valid_to'];
+    }
 
     return $result;
 }

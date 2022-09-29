@@ -842,12 +842,6 @@
                                 <td id="product_version"></td>
                                 <td></td>
                             </tr>
-                            <tr style='display:none'>
-                                <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('License valid to') }}</td>
-                                <td id="product_license_valid_to"></td>
-                                <td></td>
-                            </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Architecture') }}</td>
@@ -888,6 +882,12 @@
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Checked on') }}</td>
                                 <td id="product_time_check"></td>
+                                <td></td>
+                            </tr>
+                            <tr style='display:none'>
+                                <td style="width: 20px;"></td>
+                                <td style="width: 150px;">{{ lang._('Licensed until') }}</td>
+                                <td id="product_license_valid_to"></td>
                                 <td></td>
                             </tr>
                             <tr>

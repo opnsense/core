@@ -770,6 +770,11 @@ function system_firmware_configure($verbose = false)
     /* rewrite the config via the defaults and possible arguments */
     mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
 
+    /* clear the license file when no subscription key is set */
+    if (empty(trim(shell_exec('/usr/local/sbin/opnsense-update -K')))) {
+        @unlink('/usr/local/opnsense/version/core.license');
+    }
+
     if ($verbose) {
         echo "done.\n";
     }
