@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2022 Deciso B.V.
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * All rights reserved.
  *
@@ -57,55 +58,47 @@ class IPsec extends BaseModel
                 }
             }
         }
-
+        // for all changed keypairs, validate contents in full (prevent pub-key update not matching priv key anymore)
         foreach ($keyPairs as $key => $node) {
-            $this->validateKeyPair($key, $node, $messages);
+            if (!empty((string)$node->keyType)) {
+                $props = $this->validateKeyPair($key, $node, $messages);
+                // XXX: although it's a bit obscure to update the model on validation, these two fields are
+                //      contain data collected during the validation process.
+                $node->keySize = $props['keySize'];
+                $node->keyFingerprint = $props['keyFingerprint'];
+            }
         }
 
         return $messages;
     }
 
     /**
-     * Validates a keyPair instance within a model. This method does change the model contents by replacing the public
-     * and private key contents with a sanitized representation as well as storing the key size and fingerprint.
+     * Validates a keyPair instance within a model.
      * @param $nodeKey string Fully-qualified key of the keyPair instance within a model
      * @param $keyPair \OPNsense\Base\FieldTypes\BaseField Field instance of a keyPair
      * @param $messages \Phalcon\Messages\Messages Validation message group
+     * @return array key size and fingerprint
      */
     private function validateKeyPair($nodeKey, $keyPair, $messages)
     {
-        $publicKey = $privateKey = null;
-        if (empty((string)$keyPair->keyType)) {
-            return;
-        }
-
-        // Validate public key
-        if (!empty((string)$keyPair->publicKey)) {
-            try {
-                $publicKey = $this->parseCryptographicKey(
-                    (string)$keyPair->publicKey,
-                    (string)$keyPair->keyType . '-public'
-                );
-            } catch (\Exception $e) {
-                $messages->appendMessage(new Message($e->getMessage(), $nodeKey . '.publicKey'));
-            }
-        }
-
-        // Validate private key
-        if (!empty((string)$keyPair->privateKey)) {
-            try {
-                $privateKey = $this->parseCryptographicKey(
-                    (string)$keyPair->privateKey,
-                    (string)$keyPair->keyType . '-private'
-                );
-            } catch (\Exception $e) {
-                $messages->appendMessage(new Message($e->getMessage(), $nodeKey . '.privateKey'));
+        $Keys = ['public' => null, 'private' => null];
+        foreach (['public', 'private'] as $type) {
+            // Validate $type key
+            if (!empty((string)$keyPair->{$type.'Key'})) {
+                try {
+                    $Keys[$type] = $this->parseCryptographicKey(
+                        (string)$keyPair->{$type.'Key'},
+                        (string)$keyPair->keyType . "-{$type}"
+                    );
+                } catch (\Exception $e) {
+                    $messages->appendMessage(new Message($e->getMessage(), $nodeKey . ".{$type}Key"));
+                }
             }
         }
 
         // Compare SHA1 fingerprint of public and private keys to check if they belong to each other
-        if ($publicKey && $privateKey) {
-            if ($publicKey['fingerprint'] !== $privateKey['fingerprint']) {
+        if ($Keys['public'] && $Keys['private']) {
+            if ($Keys['public']['fingerprint'] !== $Keys['private']['fingerprint']) {
                 $messages->appendMessage(new Message(
                     gettext('This private key does not belong to the given public key.'),
                     $nodeKey . '.privateKey'
@@ -113,11 +106,10 @@ class IPsec extends BaseModel
             }
         }
 
-        // Store sanitized representation of keys and cache key statistics
-        $keyPair->publicKey = $publicKey ? $publicKey['pem'] : (string)$keyPair->publicKey;
-        $keyPair->privateKey = $privateKey ? $privateKey['pem'] : (string)$keyPair->privateKey;
-        $keyPair->keySize = $publicKey ? $publicKey['size'] : 0;
-        $keyPair->keyFingerprint = $publicKey ? $publicKey['fingerprint'] : '';
+        return [
+            'keySize' => $Keys['public'] ? $Keys['public']['size'] : 0,
+            'keyFingerprint' => $Keys['public'] ? $Keys['public']['fingerprint'] : ''
+        ];
     }
 
     /**
@@ -193,8 +185,7 @@ class IPsec extends BaseModel
             'resource' => $key,
             'size' => $keyDetails['bits'],
             'fingerprint' => $keyFingerprint,
-            'type' => $keyType,
-            'pem' => $keySanitized
+            'type' => $keyType
         ];
     }
 }
