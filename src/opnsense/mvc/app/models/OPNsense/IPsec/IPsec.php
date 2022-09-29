@@ -87,8 +87,8 @@ class IPsec extends BaseModel
             if (!empty((string)$keyPair->{$type . 'Key'})) {
                 try {
                     $Keys[$type] = $this->parseCryptographicKey(
-                        (string)$keyPair->{$type . 'Key'},
-                        (string)$keyPair->keyType . "-{$type}"
+                        (string)$keyPair->{$type.'Key'},
+                        $type
                     );
                 } catch (\Exception $e) {
                     $messages->appendMessage(new Message($e->getMessage(), $nodeKey . ".{$type}Key"));
@@ -121,9 +121,9 @@ class IPsec extends BaseModel
     public function parseCryptographicKey($keyString, $keyType)
     {
         // Attempt to load key with correct type
-        if ($keyType === 'rsa-public') {
+        if ($keyType == 'public') {
             $key = openssl_pkey_get_public($keyString);
-        } elseif ($keyType === 'rsa-private') {
+        } elseif ($keyType === 'private') {
             $key = openssl_pkey_get_private($keyString);
         } else {
             throw new \InvalidArgumentException(sprintf(
@@ -152,16 +152,16 @@ class IPsec extends BaseModel
         }
 
         // Verify given public key is valid for usage with Strongswan
-        if ($keyDetails['type'] !== OPENSSL_KEYTYPE_RSA) {
+        if (!in_array($keyDetails['type'], [OPENSSL_KEYTYPE_RSA, OPENSSL_KEYTYPE_EC])) {
             throw new \InvalidArgumentException(sprintf(
-                gettext('Unsupported OpenSSL key type [%d] for %s key, expected RSA.'),
+                gettext('Unsupported OpenSSL key type [%d] for %s key, expected RSA or EC.'),
                 $keyDetails['type'],
                 $keyType
             ));
         }
 
         // Fetch sanitized PEM representation of key
-        if ($keyType === 'rsa-private') {
+        if ($keyType === 'private') {
             if (!openssl_pkey_export($key, $keySanitized, null)) {
                 throw new \RuntimeException(sprintf(
                     gettext('Could not generate sanitized %s key in PEM format: %s'),

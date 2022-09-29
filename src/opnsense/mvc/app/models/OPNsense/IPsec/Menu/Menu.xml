@@ -11,7 +11,7 @@
             <Keys order="30" VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
                 <Edit url="/vpn_ipsec_keys_edit.php*" visibility="hidden"/>
             </Keys>
-            <KeyPairs order="40" VisibleName="RSA Key Pairs" url="/ui/ipsec/key-pairs" />
+            <KeyPairs order="40" VisibleName="Key Pairs" url="/ui/ipsec/key-pairs" />
             <Settings order="50" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
             <Status order="60" VisibleName="Status Overview" url="/ui/ipsec/sessions"/>
             <Leases order="70" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>

@@ -9,7 +9,11 @@
         <id>keyPair.keyType</id>
         <label>Key Type</label>
         <type>dropdown</type>
-        <help>Select the type of the key pair. Currently RSA is the only supported type.</help>
+        <width>100px</width>
+        <help>
+          Select the type of the key pair.
+          To generate a new one, select the number of bit and press the button next to the size selector.
+        </help>
     </field>
     <field>
         <id>keyPair.publicKey</id>

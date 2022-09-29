@@ -79,6 +79,30 @@
     // Refresh status of legacy subsystem when grid has changed
     $grid.on('loaded.rs.jquery.bootgrid', updateLegacyStatus);
     updateServiceControlUI('ipsec');
+    // move "generate key" inside form dialog
+    $("#row_keyPair\\.keyType > td:eq(1) > div:last").before($("#keygen_div").detach().show());
+    // hook key generation option selection and action
+    $("#keyPair\\.keyType").change(function(){
+        let ktype = $(this).val();
+        $("#keysize").find("option").hide();
+        $("#keysize").find("option[data-type='" + ktype + "']").show();
+        if (ktype == 'rsa') {
+            $("#keysize").val("2048");
+        } else {
+            $("#keysize").val("384");
+        }
+        $("#keysize").selectpicker('refresh');
+    });
+    $("#keygen").click(function(){
+        let ktype = $("#keyPair\\.keyType").val();
+        let ksize = $("#keysize").val();
+        ajaxGet("/api/ipsec/key-pairs/gen_key_pair/" + ktype + "/" + ksize, {}, function(data, status){
+            if (data.status && data.status === 'ok') {
+                $("#keyPair\\.publicKey").val(data.pubkey);
+                $("#keyPair\\.privateKey").val(data.privkey);
+            }
+        });
+    })
   });
 </script>
 
@@ -94,6 +118,21 @@
     </div>
 </div>
 <div class="content-box">
+    <span id="keygen_div" style="display:none" class="pull-right">
+          <select id="keysize" class="selectpicker" data-width="100px">
+              <option data-type='rsa' value="1024">1024</option>
+              <option data-type='rsa' value="2048">2048</option>
+              <option data-type='rsa' value="3072">3072</option>
+              <option data-type='rsa' value="4096">4096</option>
+              <option data-type='rsa' value="8192">8192</option>
+              <option data-type='ecdsa' value="256">256</option>
+              <option data-type='ecdsa' value="384">384</option>
+              <option data-type='ecdsa' value="521">521</option>
+          </select>
+          <button id="keygen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new.') }}" data-toggle="tooltip">
+            <i class="fa fa-fw fa-gear"></i>
+          </button>
+    </span>
     <table id="grid-key-pairs" class="table table-condensed table-hover table-striped" data-editDialog="DialogKeyPair">
         <thead>
         <tr>
