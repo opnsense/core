@@ -84,10 +84,10 @@ class IPsec extends BaseModel
         $Keys = ['public' => null, 'private' => null];
         foreach (['public', 'private'] as $type) {
             // Validate $type key
-            if (!empty((string)$keyPair->{$type.'Key'})) {
+            if (!empty((string)$keyPair->{$type . 'Key'})) {
                 try {
                     $Keys[$type] = $this->parseCryptographicKey(
-                        (string)$keyPair->{$type.'Key'},
+                        (string)$keyPair->{$type . 'Key'},
                         (string)$keyPair->keyType . "-{$type}"
                     );
                 } catch (\Exception $e) {
