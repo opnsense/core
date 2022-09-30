@@ -26,10 +26,18 @@
 
 <script>
     $( document ).ready(function() {
+        function row_toggle() {
+            $parent_row = $('.serveexpired_child').closest('tr');
+            $parent_row.find('div:first').css('padding-left', '20px');
+            $('.serveexpired_parent').is(':checked') ? $parent_row.removeClass("hidden") : $parent_row.addClass("hidden");
+
+        }
+
         var data_get_map = {'frm_AdvancedSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
-           formatTokenizersUI();
-           $('.selectpicker').selectpicker('refresh');
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+            row_toggle();
         });
 
         $("#reconfigureAct").SimpleActionButton({
@@ -40,6 +48,10 @@
               });
               return dfObj;
             }
+        });
+
+        $('.serveexpired_parent').click(function(){
+            row_toggle();
         });
 
         updateServiceControlUI('unbound');

@@ -67,6 +67,17 @@ class M1_0_3 extends BaseModelMigration
         $legacy_config = array();
         foreach ($config->unbound->children() as $key => $value) {
             if (in_array($key, $this->legacy_format) && !empty((string)$value)) {
+                if ($key == 'msgcachesize') {
+                    $legacy_config[$key] = (string)$value . 'm';
+                    /* Mimic legacy behaviour for the msg cache size value (if applied) */
+                    $legacy_config['rrsetcachesize'] = ($value * 2) . 'm';
+                    continue;
+                }
+
+                if ($key == 'num_queries_per_thread') {
+                    $legacy_config['outgoingrange'] = $value * 2;
+                }
+
                 /* handle differing keys, underscore got removed in model transition */
                 $legacy_config[str_replace('_', '', $key)] = (string)$value;
             }
