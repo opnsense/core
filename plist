@@ -150,6 +150,7 @@
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
+/usr/local/etc/unbound.opnsense.d/miscellaneous.conf
 /usr/local/libexec/opnsense-auth
 /usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
@@ -1064,7 +1065,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/miscellaneous.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf

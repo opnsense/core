@@ -25,6 +25,15 @@
             <serveexpired type="BooleanField">
                 <default>0</default>
             </serveexpired>
+            <serveexpiredreplyttl type="NumericField">
+            </serveexpiredreplyttl>
+            <serveexpiredttl type="NumericField">
+            </serveexpiredttl>
+            <serveexpiredttlreset type="BooleanField">
+                <default>0</default>
+            </serveexpiredttlreset>
+            <serveexpiredclienttimeout type="NumericField">
+            </serveexpiredclienttimeout>
             <qnameminstrict type="BooleanField">
                 <default>0</default>
             </qnameminstrict>
@@ -52,103 +61,39 @@
                     <opt6 value="5">Level 5</opt6>
                 </OptionValues>
             </logverbosity>
-            <msgcachesize type="OptionField">
-                <default>4</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="4">4 MB (Default)</opt1>
-                    <opt2 value="10">10 MB</opt2>
-                    <opt3 value="20">20 MB</opt3>
-                    <opt4 value="50">50 MB</opt4>
-                    <opt5 value="100">100 MB</opt5>
-                    <opt6 value="250">250 MB</opt6>
-                    <opt7 value="512">512 MB</opt7>
-                </OptionValues>
+            <privatedomain type="CSVListField">
+                <Required>N</Required>
+            </privatedomain>
+            <insecuredomain type="CSVListField">
+                <Required>N</Required>
+            </insecuredomain>
+            <msgcachesize type="TextField">
+                <Mask>/[0-9]+[kmg]?/i</Mask>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
             </msgcachesize>
-            <outgoingnumtcp type="OptionField">
-                <default>10</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="0">0</opt1>
-                    <opt2 value="10">10 (Default)</opt2>
-                    <opt3 value="20">20</opt3>
-                    <opt4 value="30">30</opt4>
-                    <opt5 value="40">40</opt5>
-                    <opt6 value="50">50</opt6>
-                </OptionValues>
+            <rrsetcachesize type="TextField">
+                <Mask>/[0-9]+[kmg]?/i</Mask>
+                <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
+            </rrsetcachesize>
+            <outgoingnumtcp type="NumericField">
             </outgoingnumtcp>
-            <incomingnumtcp type="OptionField">
-                <default>10</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="0">0</opt1>
-                    <opt2 value="10">10 (Default)</opt2>
-                    <opt3 value="20">20</opt3>
-                    <opt4 value="30">30</opt4>
-                    <opt5 value="40">40</opt5>
-                    <opt6 value="50">50</opt6>
-                </OptionValues>
+            <incomingnumtcp type="NumericField">
             </incomingnumtcp>
-            <numqueriesperthread type="OptionField">
-                <default>4096</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="512">512</opt1>
-                    <opt2 value="1024">1024</opt2>
-                    <opt3 value="2048">2048</opt3>
-                    <opt4 value="4096">4096 (Default)</opt4>
-                    <opt5 value="8192">8192</opt5>
-                </OptionValues>
+            <numqueriesperthread type="NumericField">
             </numqueriesperthread>
-            <jostletimeout type="OptionField">
-                <default>200</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="100">100</opt1>
-                    <opt2 value="200">200 (Default)</opt2>
-                    <opt3 value="500">500</opt3>
-                    <opt4 value="1000">1000</opt4>
-                </OptionValues>
+            <outgoingrange type="NumericField">
+            </outgoingrange>
+            <jostletimeout type="NumericField">
             </jostletimeout>
             <cachemaxttl type="NumericField">
-                <default>86400</default>
             </cachemaxttl>
             <cacheminttl type="NumericField">
-                <default>0</default>
             </cacheminttl>
-            <infrahostttl type="OptionField">
-                <default>900</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="60">1 minute</opt1>
-                    <opt2 value="120">2 minutes</opt2>
-                    <opt3 value="300">5 minutes</opt3>
-                    <opt4 value="600">10 minutes</opt4>
-                    <opt5 value="900">15 minutes (Default)</opt5>
-                </OptionValues>
+            <infrahostttl type="NumericField">
             </infrahostttl>
-            <infracachenumhosts type="OptionField">
-                <default>10000</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="1000">1000</opt1>
-                    <opt2 value="5000">5000</opt2>
-                    <opt3 value="10000">10000 (Default)</opt3>
-                    <opt4 value="20000">20000</opt4>
-                    <opt5 value="50000">50000</opt5>
-                </OptionValues>
+            <infracachenumhosts type="NumericField">
             </infracachenumhosts>
-            <unwantedreplythreshold type="OptionField">
-                <default>0</default>
-                <Required>Y</Required>
-                <OptionValues>
-                    <opt1 value="0">Disabled (Default)</opt1>
-                    <opt1 value="5000000">5 million</opt1>
-                    <opt2 value="10000000">10 million</opt2>
-                    <opt3 value="20000000">20 million</opt3>
-                    <opt4 value="40000000">40 million</opt4>
-                    <opt5 value="50000000">50 million</opt5>
-                </OptionValues>
+            <unwantedreplythreshold type="NumericField">
             </unwantedreplythreshold>
         </advanced>
         <dnsbl>
@@ -391,13 +336,5 @@
                 </description>
             </domain>
         </domains>
-        <miscellaneous>
-            <privatedomain type="CSVListField">
-                    <Required>N</Required>
-            </privatedomain>
-            <insecuredomain type="CSVListField">
-                    <Required>N</Required>
-            </insecuredomain>
-        </miscellaneous>
     </items>
 </model>

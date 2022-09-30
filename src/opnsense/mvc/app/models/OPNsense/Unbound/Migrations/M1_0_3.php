@@ -33,6 +33,29 @@ use OPNsense\Core\Config;
 
 class M1_0_3 extends BaseModelMigration
 {
+    private $legacy_format = array(
+        'outgoing_num_tcp',
+        'incoming_num_tcp',
+        'num_queries_per_thread',
+        'jostle_timeout',
+        'cache_max_ttl',
+        'cache_min_ttl',
+        'infra_host_ttl',
+        'infra_cache_numhosts',
+        'unwanted_reply_threshold',
+        'log_verbosity',
+        'extended_statistics',
+        'log_queries',
+        'hideidentity',
+        'hideversion',
+        'prefetch',
+        'prefetchkey',
+        'dnssecstripped',
+        'serveexpired',
+        'qnameminstrict',
+        'msgcachesize'
+    );
+
     /**
      * Migrate older models into shared model
      * @param $model
@@ -41,34 +64,44 @@ class M1_0_3 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
 
-        $legacy_format = array(
-            'outgoing_num_tcp',
-            'incoming_num_tcp',
-            'num_queries_per_thread',
-            'jostle_timeout',
-            'cache_max_ttl',
-            'cache_min_ttl',
-            'infra_host_ttl',
-            'infra_cache_numhosts',
-            'unwanted_reply_threshold',
-            'log_verbosity',
-            'extended_statistics',
-            'log_queries'
-        );
-
         $legacy_config = array();
         foreach ($config->unbound->children() as $key => $value) {
-            if (in_array($key, $legacy_format) && !empty((string)$value)) {
-                /* handle differing keys */
+            if (in_array($key, $this->legacy_format) && !empty((string)$value)) {
+                if ($key == 'msgcachesize') {
+                    $legacy_config[$key] = (string)$value . 'm';
+                    /* Mimic legacy behaviour for the msg cache size value (if applied) */
+                    $legacy_config['rrsetcachesize'] = ($value * 2) . 'm';
+                    continue;
+                }
+
+                if ($key == 'num_queries_per_thread') {
+                    $legacy_config['outgoingrange'] = $value * 2;
+                }
+
+                /* handle differing keys, underscore got removed in model transition */
                 $legacy_config[str_replace('_', '', $key)] = (string)$value;
             }
+        }
 
-            if (array_key_exists($key, $model->advanced->getNodes()) && !empty((string)$value)) {
-                /* handle matching keys */
-                $legacy_config[$key] = (string)$value;
+        foreach (['privatedomain', 'insecuredomain'] as $misc_node) {
+            $node_value = (string)$config->OPNsense->unboundplus->miscellaneous->$misc_node;
+            if (!empty($node_value)) {
+                $legacy_config[$misc_node] = $node_value;
             }
         }
 
         $model->advanced->setNodes($legacy_config);
+    }
+
+    /**
+     * cleanup old config after config save
+     * @param $model
+     */
+    public function post($model)
+    {
+        $config = Config::getInstance()->object();
+        foreach ($this->legacy_format as $node) {
+            unset($config->unbound->$node);
+        }
     }
 }
