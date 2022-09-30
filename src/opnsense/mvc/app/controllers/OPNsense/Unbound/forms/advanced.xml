@@ -65,7 +65,7 @@
         <type>text</type>
         <style>serveexpired_child</style>
         <help>
-            Limits the serving of exired responses to the configured amount of seconds after expiration.
+            Limits the serving of expired responses to the configured amount of seconds after expiration.
             A value of 0 disables the limit. A suggested value per RFC 8767	is between 86400 (1 day) and 259200 (3	days).
         </help>
     </field>
@@ -115,7 +115,7 @@
         <help>
             If enabled, prints one line per query to the log, with the log timestamp and IP address, name, type and class.
             Note that it takes time to print these lines, which makes the server (significantly) slower. Odd
-            (nonprintable) characters in names are printed as '?'.
+            (non-printable) characters in names are printed as '?'.
         </help>
     </field>
     <field>
@@ -126,7 +126,7 @@
             If enabled, prints one line per reply to the log, with the log timestamp and IP address, name, type,
             class, return code, time to resolve, whether the reply is from the cache and the response size.
             Note that it takes time to print these lines, which makes the server (significantly) slower. Odd
-            (nonprintable) characters in names are printed as '?'.
+            (non-printable) characters in names are printed as '?'.
         </help>
     </field>
     <field>
@@ -256,7 +256,7 @@
         <help>
             Configure a minimum Time to live in seconds for RRsets and messages in the cache.
             If the minimum value kicks in, the data is cached for longer than
-            the domain owner intended, and thus less queries are made to look up the data.
+            the domain owner intended, and thus fewer queries are made to look up the data.
             The 0 value ensures the data in the cache is as the domain owner intended.
             High values can lead to trouble as the data in the cache might not match up with the actual data anymore.
         </help>
