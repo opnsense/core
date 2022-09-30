@@ -68,11 +68,11 @@
                 <Required>N</Required>
             </insecuredomain>
             <msgcachesize type="TextField">
-                <Mask>/[0-9]+[kmg]{0,1}/i</Mask>
+                <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
             </msgcachesize>
             <rrsetcachesize type="TextField">
-                <Mask>/[0-9]+[kmg]{0,1}/i</Mask>
+                <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
             </rrsetcachesize>
             <outgoingnumtcp type="NumericField">
