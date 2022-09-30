@@ -270,7 +270,7 @@ function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $p
     ];
 
     /* make sure the temporary user does not linger */
-    mwexec('pw userdel installer', true);
+    exec('/usr/sbin/pw userdel installer');
 
     foreach ($partial_restore as $file => $content) {
         if (!file_exists($file) || filesize($file) === 0) {
