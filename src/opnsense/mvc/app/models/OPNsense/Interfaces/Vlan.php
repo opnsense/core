@@ -56,7 +56,7 @@ class Vlan extends BaseModel
                                 sprintf(gettext('The device name prefix "%s" is required.'), (string)$prefix),
                                 $key
                             ));
-                        } elseif (!preg_match("/^{$prefix}0([0-9\.]){1,16}$/", (string)$node)) {
+                        } elseif (!preg_match("/^{$prefix}0([0-9\.]){1,10}$/", (string)$node)) {
                             $messages->appendMessage(new Message(
                                 sprintf(
                                     gettext(
