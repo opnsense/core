@@ -330,17 +330,20 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/forms/generalSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SessionsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/TunnelController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/KeyPairsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SadController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SessionsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/SpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/TunnelsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogKeyPair.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogPSK.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -576,6 +579,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VlanInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
@@ -654,6 +658,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/key_pairs.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/IPsec/pre_shared_keys.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sad.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/sessions.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
@@ -1907,8 +1912,6 @@
 /usr/local/www/system_usermanager_import_ldap.php
 /usr/local/www/system_usermanager_passwordmg.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php
-/usr/local/www/vpn_ipsec_keys.php
-/usr/local/www/vpn_ipsec_keys_edit.php
 /usr/local/www/vpn_ipsec_mobile.php
 /usr/local/www/vpn_ipsec_phase1.php
 /usr/local/www/vpn_ipsec_phase2.php

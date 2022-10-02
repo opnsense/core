@@ -8,9 +8,7 @@
             <Mobile order="20" VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php">
                 <Act url="/vpn_ipsec_mobile.php*" visibility="hidden"/>
             </Mobile>
-            <Keys order="30" VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
-                <Edit url="/vpn_ipsec_keys_edit.php*" visibility="hidden"/>
-            </Keys>
+            <Keys order="30" VisibleName="Pre-Shared Keys" url="/ui/ipsec/pre_shared_keys/"/>
             <KeyPairs order="40" VisibleName="Key Pairs" url="/ui/ipsec/key-pairs" />
             <Settings order="50" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
             <Status order="60" VisibleName="Status Overview" url="/ui/ipsec/sessions"/>

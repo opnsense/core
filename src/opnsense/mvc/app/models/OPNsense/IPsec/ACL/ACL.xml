@@ -34,7 +34,8 @@
     <page-vpn-ipsec-editkeys>
         <name>VPN: IPsec: Edit Pre-Shared Keys</name>
         <patterns>
-            <pattern>vpn_ipsec_keys_edit.php*</pattern>
+            <pattern>api/ipsec/pre_shared_keys</pattern>
+            <pattern>ui/ipsec/pre_shared_keys</pattern>
         </patterns>
     </page-vpn-ipsec-editkeys>
     <page-vpn-ipsec-mobile>
@@ -43,12 +44,6 @@
             <pattern>vpn_ipsec_mobile.php*</pattern>
         </patterns>
     </page-vpn-ipsec-mobile>
-    <page-vpn-ipsec-listkeys>
-        <name>VPN: IPsec: Pre-Shared Keys List</name>
-        <patterns>
-            <pattern>vpn_ipsec_keys.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-listkeys>
     <page-status-ipsec>
         <name>Status: IPsec</name>
         <patterns>

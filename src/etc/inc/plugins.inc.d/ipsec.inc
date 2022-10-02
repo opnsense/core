@@ -1280,28 +1280,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
             }
         }
 
-        /* Add user PSKs */
-        if (!empty($config['system']['user'])) {
-            foreach ($config['system']['user'] as $user) {
-                if (!empty($user['ipsecpsk'])) {
-                    $pskconf .= "{$user['name']} : PSK 0s" . base64_encode($user['ipsecpsk']) . "\n";
-                }
-            }
-            unset($user);
-        }
-
-        /* add PSKs for mobile clients */
-        if (isset($ipseccfg['mobilekey'])) {
-            foreach ($ipseccfg['mobilekey'] as $key) {
-                if (trim(strtolower($key['ident'])) == 'any') {
-                    $ident = '%any';
-                } else {
-                    $ident = $key['ident'];
-                }
-                $identType = !empty($key['type']) ? $key['type'] : "PSK";
-                $pskconf .= "{$ident} : {$identType} 0s" . base64_encode($key['pre-shared-key']) . "\n";
-            }
-            unset($key);
+        $mdl = new \OPNsense\IPsec\IPsec();
+        foreach ($mdl->preSharedKeys->preSharedKey->iterateItems() as $psk) {
+            $pskconf .= "{$psk->ident} : {$psk->keyType} 0s" . base64_encode((string)$psk->Key) . "\n";
         }
 
         $pskconf .= "\ninclude ipsec.secrets.opnsense.d/*.secrets\n";

@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         OPNsense IPsec
     </description>
@@ -33,5 +33,31 @@
                 <keyFingerprint type="TextField"/>
             </keyPair>
         </keyPairs>
+        <preSharedKeys>
+            <preSharedKey type="ArrayField">
+                <ident type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([a-zA-Z0-9@\.\-]*)/u</mask>
+                    <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Another entry with the same identifier already exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </ident>
+                <keyType type="OptionField">
+                    <Required>Y</Required>
+                    <default>PSK</default>
+                    <OptionValues>
+                        <PSK>PSK</PSK>
+                        <EAP>EAP</EAP>
+                    </OptionValues>
+                </keyType>
+                <Key type="TextField">
+                    <Required>N</Required>
+                </Key>
+            </preSharedKey>
+        </preSharedKeys>
     </items>
 </model>

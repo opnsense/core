@@ -1,0 +1,18 @@
+<form>
+    <field>
+        <id>preSharedKey.ident</id>
+        <label>Identifier</label>
+        <type>text</type>
+        <help>This can be either an IP address, fully qualified domain name or an email address.</help>
+    </field>
+    <field>
+        <id>preSharedKey.Key</id>
+        <label>Pre-Shared Key</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>preSharedKey.keyType</id>
+        <label>Type</label>
+        <type>dropdown</type>
+    </field>
+</form>
