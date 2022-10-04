@@ -27,6 +27,5 @@
 
 set -e
 
-cp /usr/local/etc/unbound.opnsense.d/*.conf /var/unbound/etc/
 /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2>&1 | \
     sed -e 's/^unbound-checkconf:[[:space:]]//g'
