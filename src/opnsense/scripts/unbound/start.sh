@@ -59,6 +59,9 @@ for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); d
 	cp ${FILE} /var/unbound/etc/
 done
 
+# preload the blocklist cache so the dnsbl hook can properly diff on it
+cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache 2> /dev/null || true
+
 chown -R unbound:unbound /var/unbound
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf

@@ -379,8 +379,6 @@ function unbound_configure_do($verbose = false, $unused = '')
         }
     }
 
-    copy('/usr/local/etc/unbound.opnsense.d/dnsbl.conf', '/tmp/unbound_dnsbl.cache');
-
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
     if ($verbose) {
