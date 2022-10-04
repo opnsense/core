@@ -55,11 +55,13 @@ class M1_0_1 extends BaseModelMigration
         }
         if (isset($cnf->ipsec->mobilekey)) {
             foreach ($cnf->ipsec->mobilekey as $mobilekey) {
-                $all_idents[(string)$mobilekey->ident] = [
-                    'ident' => (string)$mobilekey->ident,
-                    'Key' => (string)$mobilekey->{'pre-shared-key'},
-                    'keyType' => !empty((string)$mobilekey->type) ? (string)$mobilekey->type : 'PSK'
-                ];
+                if (!empty((string)$mobilekey->ident) && !empty((string)$mobilekey->{'pre-shared-key'})) {
+                    $all_idents[(string)$mobilekey->ident] = [
+                        'ident' => (string)$mobilekey->ident,
+                        'Key' => (string)$mobilekey->{'pre-shared-key'},
+                        'keyType' => !empty((string)$mobilekey->type) ? (string)$mobilekey->type : 'PSK'
+                    ];
+                }
             }
             unset($cnf->ipsec->mobilekey);
         }
