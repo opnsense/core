@@ -32,6 +32,10 @@ set -e
 
 DOMAIN=${1}
 
+for FILE in $(find /var/unbound/etc -depth 1); do
+	rm -rf ${FILE}
+done
+
 # if the root.key file is missing or damaged, run unbound-anchor
 if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
 	# unbound-anchor has undefined behaviour if file is corrupted, start clean
@@ -51,16 +55,12 @@ if [ ! -f /var/unbound/unbound_control.key ]; then
 	chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
 fi
 
-for FILE in $(find /var/unbound/etc -depth 1); do
-	rm -rf ${FILE}
-done
-
 for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); do
 	cp ${FILE} /var/unbound/etc/
 done
 
 # preload the blocklist cache so the dnsbl hook can properly diff on it
-cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache 2> /dev/null || true
+cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache || true
 
 chown -R unbound:unbound /var/unbound
 
