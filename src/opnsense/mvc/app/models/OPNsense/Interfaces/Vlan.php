@@ -60,7 +60,7 @@ class Vlan extends BaseModel
                             $messages->appendMessage(new Message(
                                 sprintf(
                                     gettext(
-                                        "A maximum of 16 characters is allowed starting with %s0 combined with " .
+                                        "A maximum of 15 characters is allowed starting with %s0 combined with " .
                                         "numeric characters and dots[.], e.g. (%s.1.104)"
                                     ),
                                     $prefix,
