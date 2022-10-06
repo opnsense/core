@@ -2625,9 +2625,7 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     mwexecf('/sbin/ifconfig %s inet6 %s/%s', array($stfiface, $rd6prefix, $rd6prefixlen));
     mwexecf('/sbin/ifconfig %s stfv4br %s', array($stfiface, $wancfg['gateway-6rd']));
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
-
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$rd6brgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$rd6brgw}\n");
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2715,9 +2713,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     legacy_interface_mtu($stfiface, $mtu);
 
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
-
-    file_put_contents("/tmp/{$stfiface}_routerv6", "{$stfbrgw}\n");
-    file_put_contents("/tmp/{$stfiface}_defaultgwv6", "{$stfbrgw}\n");
+    mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
@@ -2907,8 +2903,6 @@ if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
     /usr/local/sbin/ifctl -i \${1} -6rd -a \${2}
-    # XXX stop modifying defaultgw files in scripts
-    echo \${2} > /tmp/\${1}_defaultgwv6
 fi
 if [ -f /var/run/dhcp6c.pid ]; then
     if ! /bin/pkill -0 -F /var/run/dhcp6c.pid; then
