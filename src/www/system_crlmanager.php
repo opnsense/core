@@ -235,6 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $crl['serial'] = empty($pconfig['serial']) ? 9999 : $pconfig['serial'];
                 $crl['lifetime'] = empty($pconfig['lifetime']) ? 9999 : $pconfig['lifetime'];
                 $crl['cert'] = array();
+                crl_update($crl);
             }
 
             if (!isset($id)) {
