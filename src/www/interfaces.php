@@ -2113,7 +2113,7 @@ include("head.inc");
 
 <?php
                                     for ($i = 32; $i > 0; $i--):?>
-                                    <option value="<?=$i;?>" <?=$i == $pconfig['subnet'] ? "selected=\"selected\"" : "";?>><?=$i;?></option>
+                                    <option value="<?=$i;?>" <?=($i == $pconfig['subnet'] || ($pconfig['subnet'] == "" && $i == 24)) ? "selected=\"selected\"" : "";?>><?=$i;?></option>
 <?php
                                     endfor;?>
                                   </select>
