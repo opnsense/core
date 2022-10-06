@@ -75,7 +75,7 @@ class ApiControllerBase extends ControllerRoot
         }
 
         $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
-            if (is_callable($filter_funct) && !$filter_funct($record)) {
+            if (is_callable($filter_funct) && !$filter_funct($records[$key])) {
                 // not applicable according to $filter_funct()
                 return false;
             } elseif (!empty($searchPhrase)) {
