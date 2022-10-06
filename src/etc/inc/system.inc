@@ -544,14 +544,6 @@ function system_default_route($gateway, $family, $interface, $far = false)
     }
 
     if ($family == 'inet') {
-        foreach (glob('/tmp/*_defaultgw') as $to_delete) {
-            log_error("ROUTING: removing {$to_delete}");
-            @unlink($to_delete);
-        }
-
-        log_error("ROUTING: creating /tmp/{$realif}_defaultgw using '{$gateway}'");
-        @file_put_contents("/tmp/{$realif}_defaultgw", "{$gateway}\n");
-
         if (!$far) {
             list (, $network) = interfaces_primary_address($interface);
             if (ip_in_subnet($gateway, $network)) {
@@ -561,14 +553,6 @@ function system_default_route($gateway, $family, $interface, $far = false)
             }
         }
     } else {
-        foreach (glob('/tmp/*_defaultgwv6') as $to_delete) {
-            log_error("ROUTING: removing {$to_delete}");
-            @unlink($to_delete);
-        }
-
-        log_error("ROUTING: creating /tmp/{$realif}_defaultgwv6 using '{$gateway}'");
-        @file_put_contents("/tmp/{$realif}_defaultgwv6", "{$gateway}\n");
-
         /* IPv6 does not support far gateway notion */
         $realif = null;
     }
@@ -580,12 +564,12 @@ function system_default_route($gateway, $family, $interface, $far = false)
         return;
     }
 
-    mwexecf('/sbin/route delete -%s default', array($family), true);
+    mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
-        mwexecf('/sbin/route delete -%s %s -interface %s', array($family, $gateway, $realif), true);
-        mwexecf('/sbin/route add -%s %s -interface %s', array($family, $gateway, $realif));
+        mwexecf('/sbin/route delete -%s %s -interface %s', [$family, $gateway, $realif], true);
+        mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $realif]);
     }
-    mwexecf('/sbin/route add -%s default %s', array($family, $gateway));
+    mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
 function system_routing_configure($verbose = false, $interface = null, $monitor = true)

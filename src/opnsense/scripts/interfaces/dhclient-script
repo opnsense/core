@@ -132,7 +132,6 @@ delete_old_routes() {
 	# through our interface.
 	if is_default_interface; then
 		#route delete default >/dev/null 2>&1
-		/usr/local/sbin/ifctl -i ${interface} -4rd
 	fi
 
 	if [ -n "$old_static_routes" ]; then
@@ -140,10 +139,10 @@ delete_old_routes() {
 		while [ $# -gt 1 ]; do
 			route delete "$1" "$2"
 			shift; shift
-			# XXX makes no sense to call multiple times
-			/usr/local/sbin/ifctl -i ${interface} -4rd
 		done
 	fi
+
+	/usr/local/sbin/ifctl -i ${interface} -4rd
 
 	arp_flush
 }
@@ -175,38 +174,20 @@ add_new_routes() {
 		return
 	fi
 
-	ADDED_ROUTE=no
-	EXISTSGW=`/bin/ls -l /tmp/*_defaultgw | /usr/bin/wc -l`
-	# Only allow the default route to be overridden if it's on our own interface
-	if [ -f "/tmp/${interface}_defaultgw" -o $EXISTSGW -eq 0 ]; then
-		#route delete default
-		for router in $new_routers; do
-			if [ "$new_ip_address" = "$router" -o "$router" = "255.255.255.255" ]; then
-				route add default -iface $interface
-				echo route add default -iface $interface | $LOGGER
-				# NOTE: Do not activate this for all ones address since pf(4) will try to forward packets to it.
-				if [ "$new_ip_address" = "$router" ]; then
-					/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
-				fi
-			else
-				route add default $router
-				echo route add default $router | $LOGGER
-				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
-			fi
-			ADDED_ROUTE=yes
-			# 2nd and subsequent default routers error out, so explicitly
-			# stop processing the list after the first one.
-			break
-		done
-	fi
+	for router in $new_routers; do
+		/usr/local/sbin/ifctl -i ${interface} -4rd -a ${router}
+
+		# 2nd and subsequent default routers error out, so explicitly
+		# stop processing the list after the first one.
+		break
+	done
 
 	if [ -n "$new_static_routes" ]; then
 		$LOGGER "New Static Routes ($interface): $new_static_routes"
 		set $new_static_routes
 		while [ $# -gt 1 ]; do
 			route add $1 $2
-			if [ "${ADDED_ROUTE}" = "no" ]; then
-				# XXX WTF?
+			if [ -z "$(/usr/local/sbin/ifctl -i ${interface} -4r)" ]; then
 				/usr/local/sbin/ifctl -i ${interface} -4rd -a ${2}
 			fi
 			shift; shift
