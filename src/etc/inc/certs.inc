@@ -824,7 +824,7 @@ function is_openvpn_server_crl($crlref)
 
 function is_crl_internal($crl)
 {
-    return (!(!empty($crl['text']) && empty($crl['cert'])) || ($crl["crlmethod"] ?? '' == "internal"));
+    return $crl["crlmethod"] ?? '' == "internal";
 }
 
 function cert_get_cn($crt, $isref = false)

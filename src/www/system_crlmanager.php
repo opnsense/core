@@ -237,6 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $crl['cert'] = array();
             }
 
+            crl_update($crl);
             if (!isset($id)) {
                 $a_crl[] = $crl;
             }
