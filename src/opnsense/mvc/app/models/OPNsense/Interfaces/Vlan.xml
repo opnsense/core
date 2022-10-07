@@ -20,7 +20,7 @@
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
-                        <ValidationMessage>Tag should be unique for this interface</ValidationMessage>
+                        <ValidationMessage>Tag for this device must be unique.</ValidationMessage>
                         <type>UniqueConstraint</type>
                         <addFields>
                             <field1>if</field1>
@@ -49,7 +49,7 @@
               <Required>Y</Required>
               <Constraints>
                 <check001>
-                    <ValidationMessage>The interface name should be unique.</ValidationMessage>
+                    <ValidationMessage>The device name must be unique.</ValidationMessage>
                     <type>UniqueConstraint</type>
                 </check001>
               </Constraints>
