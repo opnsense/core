@@ -161,8 +161,17 @@ function setFormData(parent,data) {
                         // if the input field is JSON data, serialize the data into the field
                         targetNode.data('data', node[keypart]);
                     } else {
+                        // unwrap selected item if given as list
+                        if (typeof node[keypart] === 'object') {
+                            $.each(node[keypart], function (indxItem, keyItem) {
+                                if (keyItem["selected"] != "0") {
+                                    targetNode.val(htmlDecode(indxItem));
+                                }
+                            });
                         // regular input type
-                        targetNode.val(htmlDecode(node[keypart]));
+                        } else {
+                            targetNode.val(htmlDecode(node[keypart]));
+                        }
                     }
                     targetNode.change();
                 }

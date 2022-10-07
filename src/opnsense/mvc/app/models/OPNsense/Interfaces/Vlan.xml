@@ -45,7 +45,7 @@
             <descr type="TextField">
               <Required>N</Required>
             </descr>
-            <vlanif type="TextField">
+            <vlanif type=".\VlanDeviceField">
               <Required>Y</Required>
               <Constraints>
                 <check001>
