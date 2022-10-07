@@ -120,7 +120,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                 $result = [
                   "result" => "failed",
                   "validations" => [
-                      "vlan.if" => gettext("Interface is assigned and you cannot change the parent while assigned.")
+                      "vlan.vlanif" => gettext("Interface is assigned and you cannot change the device name while assigned.")
                   ]
                 ];
             }
