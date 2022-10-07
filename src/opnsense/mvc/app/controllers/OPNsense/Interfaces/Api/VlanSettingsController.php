@@ -82,7 +82,20 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase('vlan', ['vlanif', 'if', 'tag', 'pcp', 'descr'], 'vlanif');
+        $ifnames = [];
+        $configHandle = Config::getInstance()->object();
+        if (!empty($configHandle->interfaces)) {
+            foreach ($configHandle->interfaces->children() as $ifname => $node) {
+                $ifnames[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
+            }
+        }
+        $results = $this->searchBase('vlan', ['vlanif', 'if', 'tag', 'pcp', 'descr'], 'vlanif');
+        foreach ($results['rows'] as &$record) {
+            if (isset($ifnames[$record['vlanif']])) {
+                $record['vlanif'] = sprintf("%s [%s]", $record['vlanif'], $ifnames[$record['vlanif']]);
+            }
+        }
+        return $results;
     }
 
     public function setItemAction($uuid)
