@@ -91,8 +91,8 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $new_vlanif = $this->generateVlanIfName($node);
         $children = 0;
-        foreach ($this->getModel()->vlan->iterateItems() as $node) {
-            if ((string)$node->if == $old_vlanif) {
+        foreach ($this->getModel()->vlan->iterateItems() as $cnode) {
+            if ((string)$cnode->if == $old_vlanif) {
                 $children++;
             }
         }
