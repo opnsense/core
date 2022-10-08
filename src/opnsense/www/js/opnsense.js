@@ -180,11 +180,19 @@ function setFormData(parent,data) {
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent).find("[id]").each(function() {
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
+            let message = validationErrors[$(this).prop('id')];
+            $("span[id='help_block_" + $(this).prop('id') + "']").empty();
+            if (typeof message === 'object') {
+                for (let i=0 ; i < message.length ; ++i)  {
+                    $("span[id='help_block_" + $(this).prop('id') + "']").append($("<div>").text(message[i]));
+                }
+            } else {
+                $("span[id='help_block_" + $(this).prop('id') + "']").text(message);
+            }
             $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
-            $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
             $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
-            $("span[id='help_block_" + $(this).prop('id') + "']").text("");
+            $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
 }
