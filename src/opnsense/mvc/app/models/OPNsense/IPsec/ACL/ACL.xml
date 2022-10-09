@@ -48,7 +48,7 @@
         <name>Status: IPsec</name>
         <patterns>
             <pattern>ui/ipsec/sessions</pattern>
-            <pattern>api/ipsec/sessions</pattern>
+            <pattern>api/ipsec/sessions/*</pattern>
         </patterns>
     </page-status-ipsec>
     <page-status-ipsec-leases>
