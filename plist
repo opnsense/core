@@ -1007,6 +1007,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.conf
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd.rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd_aggregate.rc.conf.d
+/usr/local/opnsense/service/templates/OPNsense/Netflow/flowd_aggregate.yaml
 /usr/local/opnsense/service/templates/OPNsense/Netflow/netflow.conf
 /usr/local/opnsense/service/templates/OPNsense/Netflow/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Proxy/+TARGETS
