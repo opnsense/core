@@ -105,6 +105,8 @@ class AliasContentField extends BaseField
     private function getCountryCodes()
     {
         if (empty(self::$internalCountryCodes)) {
+            // Maxmind's country code 6255148 (EU Unclassified)
+            self::$internalCountryCodes[] = 'EU';
             foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
                 $line = trim($line);
                 if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
