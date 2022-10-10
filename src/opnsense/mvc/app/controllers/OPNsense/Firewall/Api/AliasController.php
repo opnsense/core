@@ -182,7 +182,12 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function listCountriesAction()
     {
-        $result = array();
+        $result = [
+            'EU' => [
+                'name' => gettext('Unclassified'),
+                'region' => 'Europe'
+            ]
+        ];
 
         foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
             $line = trim($line);

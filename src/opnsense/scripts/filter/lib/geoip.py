@@ -90,8 +90,11 @@ def download_geolite():
                         locations = zf.open(file_handles[result['locations_filename']]).read()
                         for line in locations.decode().split('\n'):
                             parts = line.split(',')
-                            if len(parts) > 4 and len(parts[4]) >= 1 and len(parts[4]) <= 3:
-                                country_codes[parts[0]] = parts[4]
+                            if len(parts) > 4 and parts[0].isdigit():
+                                if len(parts[4]) >= 1:
+                                    country_codes[parts[0]] = parts[4]
+                                elif parts[2] == 'EU':
+                                    country_codes[parts[0]] = parts[2]
                         # process all details into files per country / protocol
                         for proto in ['IPv4', 'IPv6']:
                             if result['address_sources'][proto] is not None:
