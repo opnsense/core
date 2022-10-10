@@ -68,7 +68,7 @@ abstract class BaseListField extends BaseField
     protected function getValidationMessage()
     {
         if ($this->internalValidationMessage == null) {
-            return "option not in list";
+            return gettext('option not in list');
         } else {
             return $this->internalValidationMessage;
         }
