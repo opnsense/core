@@ -48,4 +48,81 @@
       <advanced>true</advanced>
       <help><![CDATA[Expire idle flows.]]></help>
    </field>
+   <field>
+    <id>netflow.collect.history.FlowInterfaceTotals._30</id>
+    <label>Interface Totals History (30 sec.)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 30 sec. resolution. Default is 86400 sec. (24 hours).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowInterfaceTotals._300</id>
+    <label>Interface Totals History (5 min.)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 300 sec. resolution. Default is 604800 sec. (7 days).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowInterfaceTotals._3600</id>
+    <label>Interface Totals History (1 hour)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for 3600 sec. resolution. Default is 2678400 sec. (31 days).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowInterfaceTotals._86400</id>
+    <label>Interface Totals History (24 hours)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 86400 sec. resolution. Default is 31536000 sec. (365 days).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowDstPortTotals._300</id>
+    <label>Destinations Ports Totals History (5 min.)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 300 sec. resolution. Default is 3600 sec. (1 hour).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowDstPortTotals._3600</id>
+    <label>Destinations Ports Totals History (1 hour)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 3600 sec. resolution. Default is 86400 sec. (24 hours).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowDstPortTotals._86400</id>
+    <label>Destinations Ports Totals History (24 hours)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 86400 sec. resolution. Default is 31536000 sec. (365 days).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowSourceAddrTotals._300</id>
+    <label>Source Address Totals History (5 min.)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 300 sec. resolution. Default is 3600 sec. (1 hour).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowSourceAddrTotals._3600</id>
+    <label>Source Address Totals History (1 hour)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 3600 sec. resolution. Default is 86400 sec. (24 hours).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowSourceAddrTotals._86400</id>
+    <label>Source Address Totals History (24 hours)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 86400 sec. resolution. Default is 31536000 sec. (365 days).]]></help>
+   </field>
+   <field>
+    <id>netflow.collect.history.FlowSourceAddrDetails._86400</id>
+    <label>Source Address Details History (24 hours)</label>
+    <type>text</type>
+    <advanced>true</advanced>
+    <help><![CDATA[Seconds of history to keep for the 86400 sec. resolution. Default is 5356800 sec. (62 days).]]></help>
+   </field>
 </form>
