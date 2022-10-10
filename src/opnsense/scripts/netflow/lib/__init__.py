@@ -25,6 +25,7 @@
 """
 import sys
 
+SECONDS_PER_DAY = 60*60*24
 
 def load_config(config_yaml=None):
     """ setup configuration object
@@ -51,6 +52,27 @@ class Config(object):
     flowd_source = '/var/log/flowd.log'
     database_dir = '/var/netflow'
     single_pass = False
+    history = {
+        'FlowInterfaceTotals': {
+            30: SECONDS_PER_DAY, # 24 hours
+            300: SECONDS_PER_DAY*7, # 7 days
+            3600: SECONDS_PER_DAY*31, # 31 days
+            86400: SECONDS_PER_DAY*365 # 365 days
+        },
+        'FlowDstPortTotals': {
+            300: 60*60, # 1 hour
+            3600: SECONDS_PER_DAY, # 24 hours
+            86400: SECONDS_PER_DAY*365 # 365 days
+        },
+        'FlowSourceAddrTotals': {
+            300: 60*60, # 1 hour
+            3600: SECONDS_PER_DAY, # 24 hours
+            86400: SECONDS_PER_DAY*365 # 365 days
+        },
+        'FlowSourceAddrDetails': {
+            86400: SECONDS_PER_DAY*62 # 62 days
+        }
+    }
 
     def __init__(self, **kwargs):
         for key in kwargs:
