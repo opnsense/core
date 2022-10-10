@@ -173,22 +173,21 @@ class BaseFlowAggregator(object):
             # next start time
             start_time += self.resolution
 
-    def cleanup(self, do_vacuum=False):
+    def cleanup(self, history, do_vacuum=False):
         """ cleanup timeserie table
+        :param history: seconds of history to keep
         :param do_vacuum: vacuum database
         :return: None
         """
-        if self.is_db_open() and 'timeserie' in self._known_targets \
-                and self.resolution in self.history_per_resolution():
+        if self.is_db_open() and 'timeserie' in self._known_targets:
             self._update_cur.execute('select max(mtime) as "[timestamp]" from timeserie')
             last_timestamp = self._update_cur.fetchall()[0][0]
             if type(last_timestamp) == datetime.datetime:
-                expire = self.history_per_resolution()[self.resolution]
-                expire_timestamp = last_timestamp - datetime.timedelta(seconds=expire)
+                expire_timestamp = last_timestamp - datetime.timedelta(seconds=history)
                 if last_timestamp > datetime.datetime.now():
                     # if data recorded seems to be in the future, use current timestamp for cleanup
                     # (prevent current data being removed)
-                    expire_timestamp = datetime.datetime.now() - datetime.timedelta(seconds=expire)
+                    expire_timestamp = datetime.datetime.now() - datetime.timedelta(seconds=history)
 
                 self._update_cur.execute('delete from timeserie where mtime < :expire', {'expire': expire_timestamp})
                 self.commit()
