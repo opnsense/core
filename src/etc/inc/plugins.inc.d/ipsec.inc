@@ -1264,12 +1264,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         // cleanup legacy ipsec.conf files
-        if (is_file("/usr/local/etc/ipsec.conf") && is_dir("/usr/local/etc/ipsec.d")) {
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator("/usr/local/etc/ipsec.d")) as $x) {
-                if (is_file($x)) {
-                    @unlink($x);
-                }
-            }
+        if (is_dir("/usr/local/etc/ipsec.d")) {
+            mwexec("rm -rf /usr/local/etc/ipsec.d");
             @unlink("/usr/local/etc/ipsec.conf");
             @unlink("/usr/local/etc/ipsec.secrets");
         }
