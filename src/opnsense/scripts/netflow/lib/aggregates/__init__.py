@@ -49,21 +49,6 @@ class BaseFlowAggregator(object):
         """
         return list()
 
-    @classmethod
-    def history_per_resolution(cls):
-        """ history to keep in seconds per sample resolution
-        :return: dict sample resolution / expire time (seconds)
-        """
-        return dict()
-
-    @classmethod
-    def seconds_per_day(cls, days):
-        """
-        :param days: number of days
-        :return: number of seconds
-        """
-        return 60*60*24*days
-
     def __init__(self, resolution, database_dir='/var/netflow'):
         """ construct new flow sample class
         :return: None
