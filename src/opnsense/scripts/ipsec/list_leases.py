@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2022 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,21 +29,48 @@
     list ipsec pools and leases
 """
 
+import argparse
 import subprocess
 import ujson
 
-result = dict()
+# sample pool output from swanctl:
+# pools_text = """
+# defaultv4            192.168.99.0                        1 / 2 / 254
+#   10.18.0.1                      offline  'user1'
+#   10.18.0.2                      online   'user2'
+#   10.18.0.3                      offline  'user3'
+# defaultv6            fe80::20c:29ff:feaf:8196       0 / 0 / 22052457
+# """
+
+result = {'pools': {}}
 if __name__ == '__main__':
-    sp = subprocess.run(['/usr/local/sbin/ipsec', 'leases'], capture_output=True, text=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--leases', action='store_true')
+    cmd_args = parser.parse_args()
+    args = ['/usr/local/sbin/swanctl', '--list-pools']
+    if cmd_args.leases:
+        args.append('--leases')
+        result['leases'] = []
+    pools_text = subprocess.run(args, capture_output=True, text=True).stdout.strip()
+
     current_pool=None
-    for line in sp.stdout.strip().split('\n'):
-        if line.find('Leases in pool') > -1:
-            current_pool = line.split("'")[1]
-            result[current_pool] = {'items': []}
-            result[current_pool]['usage'] = line.split(',')[1].split(':')[1].strip()
-            result[current_pool]['online'] = line.split(',')[2].strip().split(' ')[0]
-        elif current_pool is not None and line.find('line') > -1:
-            lease = {'address': line.split()[0], 'status': line.split()[1], 'user': line.split("'")[1]}
-            result[current_pool] ['items'].append(lease)
+    for line in pools_text.split('\n'):
+        parts = line.split()
+        if cmd_args.leases and line.startswith('  ') and current_pool is not None and len(parts) >= 3:
+            result['leases'].append({
+                'pool': current_pool['name'],
+                'address': parts[0],
+                'online': parts[1] == 'online',
+                'user': parts[2][1:-1]
+            })
+        elif len(parts) > 3 and parts[-1].isdigit():
+            current_pool = {
+                'name': parts[0],
+                'net': parts[1],
+                'online': int(parts[2]),
+                'offline': int(parts[4]),
+                'size': int(parts[6])
+            }
+            result['pools'][parts[0]] = current_pool
 
 print(ujson.dumps(result))
