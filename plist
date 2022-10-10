@@ -56,8 +56,6 @@
 /usr/local/etc/inc/xmlrpc/legacy.inc
 /usr/local/etc/inc/xmlrpc/service.inc
 /usr/local/etc/inc/xmlrpc/test.inc
-/usr/local/etc/ipsec.opnsense.d/README
-/usr/local/etc/ipsec.secrets.opnsense.d/README
 /usr/local/etc/lighttpd_webgui/conf.d/README
 /usr/local/etc/lighttpd_webgui/conf.d/extforward.conf.example
 /usr/local/etc/netflow.conf.example

@@ -411,9 +411,10 @@ function ipsec_parse_phase2($ikeid)
                 }
             } else {
                 $result['type'] = 'transport';
-                if (!((($ph1ent['authentication_method'] == "xauth_psk_server") ||
+                if (
+                    !((($ph1ent['authentication_method'] == "xauth_psk_server") ||
                     ($ph1ent['authentication_method'] == "pre_shared_key")) && isset($ph1ent['mobile']))
-                ){
+                ) {
                     $result['local_ts'][] = ipsec_get_phase1_src($ph1ent);
                 }
                 if (!isset($ph1ent['mobile'])) {
@@ -1464,7 +1465,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 }
 
                 // XXX: should enforce explicit choice in the gui, it's also a phase 2 property in reality
-                if (!empty($ph1ent['auto']) && $ph1ent['auto'] != 'add' ) {
+                if (!empty($ph1ent['auto']) && $ph1ent['auto'] != 'add') {
                     $start_action = $ph1ent['auto'];
                 } elseif (isset($ph1ent['mobile']) || ($ph1ent['auto'] ?? '')  == 'add') {
                     $start_action = 'none';
@@ -1496,7 +1497,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     }
                 }
 
-                if (isset($ph1ent['tunnel_isolation'])
+                if (
+                    isset($ph1ent['tunnel_isolation'])
                     || (!isset($ph1ent['mobile']) && ($ph1ent['iketype'] ?? 'ikev1') == 'ikev1')
                 ) {
                     $this_conn = $connection;
@@ -1511,7 +1513,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
                             if (isset($parsed_phase2[$fieldname][$idx]) && $parsed_phase2[$fieldname][$idx] != null) {
                                 if (is_array($parsed_phase2[$fieldname][$idx])) {
                                     $this_conn['children'][$child_id][$fieldname] = join(
-                                      ',', $parsed_phase2[$fieldname][$idx]
+                                        ',',
+                                        $parsed_phase2[$fieldname][$idx]
                                     );
                                 } else {
                                     $this_conn['children'][$child_id][$fieldname] = $parsed_phase2[$fieldname][$idx] . " s";
