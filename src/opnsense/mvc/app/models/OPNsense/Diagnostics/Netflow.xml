@@ -41,6 +41,82 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enable>
+            <history>
+                <FlowInterfaceTotals>
+                    <_30 type="IntegerField">
+                        <default>86400</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_30>
+                    <_300 type="IntegerField">
+                        <default>604800</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_300>
+                    <_3600 type="IntegerField">
+                        <default>2678400</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_3600>
+                    <_86400 type="IntegerField">
+                        <default>31536000</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_86400>
+                </FlowInterfaceTotals>
+                <FlowDstPortTotals>
+                    <_300 type="IntegerField">
+                        <default>3600</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_300>
+                    <_3600 type="IntegerField">
+                        <default>86400</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_3600>
+                    <_86400 type="IntegerField">
+                        <default>31536000</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_86400>
+                </FlowDstPortTotals>
+                <FlowSourceAddrTotals>
+                    <_300 type="IntegerField">
+                        <default>3600</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_300>
+                    <_3600 type="IntegerField">
+                        <default>86400</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_3600>
+                    <_86400 type="IntegerField">
+                        <default>31536000</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_86400>
+                </FlowSourceAddrTotals>
+                <FlowSourceAddrDetails>
+                    <_86400 type="IntegerField">
+                        <default>5356800</default>
+                        <Required>Y</Required>
+                        <MinimumValue>0</MinimumValue>
+                        <ValidationMessage>Must be an integer value greater than zero.</ValidationMessage>
+                    </_86400>
+                </FlowSourceAddrDetails>
+            </history>
         </collect>
         <activeTimeout type="IntegerField">
             <default>1800</default>
