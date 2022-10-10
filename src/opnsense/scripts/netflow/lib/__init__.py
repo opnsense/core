@@ -33,7 +33,7 @@ def load_config(config_yaml=None):
     """
     if config_yaml:
         import yaml
-        cnf_input = yaml.load(open(config_yaml, 'r'))
+        cnf_input = yaml.safe_load(open(config_yaml, 'r'))
     else:
         cnf_input = dict()
 
