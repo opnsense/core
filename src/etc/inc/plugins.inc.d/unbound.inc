@@ -107,7 +107,9 @@ function unbound_generate_config()
         return;
     }
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', '/usr/local/lib/python3.9');
+    $pythonv = readlink('/usr/local/bin/python3');
+
+    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', "/usr/local/lib/{$pythonv}");
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
@@ -117,7 +119,6 @@ function unbound_generate_config()
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     }
 
-    $pythonv = readlink('/usr/local/bin/python3');
     $python_dir = "/usr/local/lib/{$pythonv}";
     $chroot_python_dir = "/var/unbound{$python_dir}";
 
