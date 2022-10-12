@@ -625,6 +625,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -1068,6 +1069,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/advanced.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/dnsbl_module.py
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf

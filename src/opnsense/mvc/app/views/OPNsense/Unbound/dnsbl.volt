@@ -27,10 +27,21 @@
 
 <script>
    $(document).ready(function() {
+       function nxdomain_toggle() {
+           $('input[id="unbound.dnsbl.nxdomain"]').is(':checked') ?
+               $('input[id="unbound.dnsbl.address"]').attr('disabled', 'disabled') :
+               $('input[id="unbound.dnsbl.address"]').removeAttr('disabled');
+       }
+
        var data_get_map = {'frm_dnsbl_settings':"/api/unbound/settings/get"};
        mapDataToFormUI(data_get_map).done(function(data){
            formatTokenizersUI();
            $('.selectpicker').selectpicker('refresh');
+
+           $('input[id="unbound.dnsbl.nxdomain"]').click(function() {
+               nxdomain_toggle();
+           });
+           nxdomain_toggle();
        });
 
        $("#saveAct").SimpleActionButton({
@@ -40,11 +51,6 @@
                   dfObj.resolve();
               });
               return dfObj;
-          },
-          onAction: function(data, status) {
-              if (data['status'].toLowerCase().trim() == 'ok') {
-                  $("#responseMsg").removeClass("hidden").html(data['status_msg']);
-              }
           }
       });
 
@@ -52,15 +58,13 @@
    });
 </script>
 
-<div class="alert alert-info hidden" role="alert" id="responseMsg"></div>
-
 <div class="content-box" style="padding-bottom: 1.5em;">
     {{ partial("layout_partials/base_form",['fields':dnsblForm,'id':'frm_dnsbl_settings'])}}
     <div class="col-md-12">
         <hr />
         <button class="btn btn-primary" id="saveAct"
                 data-endpoint='/api/unbound/service/dnsbl'
-                data-label="{{ lang._('Download & Apply') }}"
+                data-label="{{ lang._('Apply') }}"
                 data-error-title="{{ lang._('Error updating blocklists') }}"
                 type="button">
         </button>

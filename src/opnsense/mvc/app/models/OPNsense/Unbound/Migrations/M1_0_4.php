@@ -1,8 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +26,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound\Api;
+namespace OPNsense\Unbound\Migrations;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Backend;
 
-class ServiceController extends ApiMutableServiceControllerBase
+class M1_0_4 extends BaseModelMigration
 {
-    protected static $internalServiceClass = '\OPNsense\Unbound\Unbound';
-    protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
-    protected static $internalServiceEnabled = 'service_enabled';
-    protected static $internalServiceName = 'unbound';
-
-    public function dnsblAction()
+    public function post($model)
     {
-        $this->sessionClose();
-        $backend = new Backend();
-        $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
-        return array('status' => $response);
+        /* ensure an existing blocklist is migrated during version upgrade */
+        if (!file_exists('/var/unbound/data/dnsbl.json')) {
+            $backend = new Backend();
+            $backend->configdRun('unbound dnsbl');
+        }
     }
 }

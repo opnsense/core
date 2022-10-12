@@ -107,7 +107,7 @@ function unbound_generate_config()
         return;
     }
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', '/usr/local/lib/python3.9');
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
@@ -115,6 +115,14 @@ function unbound_generate_config()
 
     if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
+    }
+
+    $pythonv = readlink('/usr/local/bin/python3');
+    $python_dir = "/usr/local/lib/{$pythonv}";
+    $chroot_python_dir = "/var/unbound{$python_dir}";
+
+    if (mwexec("/sbin/mount | grep {$chroot_python_dir}")) {
+        mwexec("/sbin/mount -r -t nullfs {$python_dir} {$chroot_python_dir}");
     }
 
     $optimization = unbound_optimization();
@@ -134,10 +142,10 @@ function unbound_generate_config()
         $module_config .= 'dns64 ';
     }
     if (isset($config['unbound']['dnssec'])) {
-        $module_config .= 'validator iterator';
+        $module_config .= 'python validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
-        $module_config .= 'iterator';
+        $module_config .= 'python iterator';
     }
 
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
@@ -324,6 +332,9 @@ include: /var/unbound/host_entries.conf
 include: /var/unbound/etc/*.conf
 
 {$forward_conf}
+
+python:
+python-script: dnsbl_module.py
 
 remote-control:
     control-enable: yes
