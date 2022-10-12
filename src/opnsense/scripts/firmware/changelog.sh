@@ -74,11 +74,12 @@ changelog_fetch()
 		${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
 	fi
 
-	opnsense-verify -q ${DESTDIR}/changelog.txz
-
-	changelog_remove
-
-	tar -C ${DESTDIR} -xJf ${DESTDIR}/changelog.txz
+	if opnsense-verify -q ${DESTDIR}/changelog.txz; then
+		changelog_remove
+		tar -C ${DESTDIR} -xJf ${DESTDIR}/changelog.txz
+	else
+		rm -f ${DESTDIR}/changelog.txz ${DESTDIR}/changelog.txz.sig
+	fi
 }
 
 changelog_show()
