@@ -1265,11 +1265,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
         }
 
         // cleanup legacy ipsec.conf files
-        if (is_dir("/usr/local/etc/ipsec.d")) {
-            mwexec("rm -rf /usr/local/etc/ipsec.d");
-            @unlink("/usr/local/etc/ipsec.conf");
-            @unlink("/usr/local/etc/ipsec.secrets");
-        }
+        mwexec("rm -rf /usr/local/etc/ipsec.d");
+        @unlink("/usr/local/etc/ipsec.conf");
+        @unlink("/usr/local/etc/ipsec.secrets");
 
         ipsec_write_strongswan_conf();
         ipsec_write_cas();
