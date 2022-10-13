@@ -234,6 +234,9 @@
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
+                } else if (last_digest != '' && $("#grid-log > tbody > tr").length == 1){
+                    // $("#limit").change(); called, this request should be discarted (data grid reset)
+                    return;
                 } else if (data !== undefined && data.length > 0) {
                     let record;
                     let trs = [];
