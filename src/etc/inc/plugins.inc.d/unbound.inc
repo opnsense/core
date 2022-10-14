@@ -122,7 +122,7 @@ function unbound_generate_config()
     $python_dir = "/usr/local/lib/{$pythonv}";
     $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    if (mwexec("/sbin/mount | grep {$chroot_python_dir}")) {
+    if (mwexec("/sbin/mount | grep {$chroot_python_dir}", true)) {
         mwexec("/sbin/mount -r -t nullfs {$python_dir} {$chroot_python_dir}");
     }
 
