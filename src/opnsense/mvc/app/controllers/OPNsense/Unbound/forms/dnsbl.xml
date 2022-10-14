@@ -33,6 +33,16 @@
         <label>Destination Address</label>
         <type>text</type>
         <advanced>true</advanced>
-        <help>Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0)</help>
+        <help>
+            Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0).
+            Not used when "Return NXDOMAIN" is checked.
+        </help>
+    </field>
+    <field>
+        <id>unbound.dnsbl.nxdomain</id>
+        <label>Return NXDOMAIN</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Use the DNS response code NXDOMAIN instead of a destination address.</help>
     </field>
 </form>

@@ -35,6 +35,7 @@ import time
 import fcntl
 from configparser import ConfigParser
 import requests
+import json
 
 def uri_reader(uri):
     req_opts = {
@@ -86,10 +87,14 @@ if __name__ == '__main__':
         r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))$'
     )
     destination_address = '0.0.0.0'
+    rcode = 'NOERROR'
 
     startup_time = time.time()
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
-    blocklist_items = set()
+    blocklist_items = {
+        'data': {},
+        'config': {}
+    }
     if os.path.exists('/tmp/unbound-blocklists.conf'):
         cnf = ConfigParser()
         cnf.read('/tmp/unbound-blocklists.conf')
@@ -114,8 +119,11 @@ if __name__ == '__main__':
             syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
 
         # fetch all blocklists
-        if cnf.has_section('settings') and cnf.has_option('settings', 'address'):
-            destination_address = cnf.get('settings', 'address')
+        if cnf.has_section('settings'):
+            if cnf.has_option('settings', 'address'):
+                blocklist_items['config']['dst_addr'] = cnf.get('settings', 'address')
+            if cnf.has_option('settings', 'rcode'):
+                blocklist_items['config']['rcode'] = cnf.get('settings', 'rcode')
         if cnf.has_section('blocklists'):
             for blocklist in cnf['blocklists']:
                 file_stats = {'uri': cnf['blocklists'][blocklist], 'skip' : 0, 'blocklist': 0, 'lines' :0}
@@ -135,7 +143,9 @@ if __name__ == '__main__':
                         else:
                             if domain_pattern.match(domain):
                                 file_stats['blocklist'] += 1
-                                blocklist_items.add(entry)
+                                # We write an empty dictionary as value for now.
+                                # In the future we might want to add context per fqdn
+                                blocklist_items['data'][entry] = {}
                             else:
                                 file_stats['skip'] += 1
 
@@ -145,10 +155,14 @@ if __name__ == '__main__':
                 )
 
     # write out results
-    with open("/usr/local/etc/unbound.opnsense.d/dnsbl.conf", 'w') as unbound_outf:
+    if not os.path.exists('/var/unbound/data'):
+        os.makedirs('/var/unbound/data')
+    with open("/var/unbound/data/dnsbl.json.new", 'w') as unbound_outf:
         if blocklist_items:
-            for entry in blocklist_items:
-                unbound_outf.write("local-data: \"%s A %s\"\n" % (entry, destination_address))
+            json.dump(blocklist_items, unbound_outf)
+
+    # atomically replace the current dnsbl so unbound can pick up on it
+    os.replace('/var/unbound/data/dnsbl.json.new', '/var/unbound/data/dnsbl.json')
 
     syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
         time.time() - startup_time, len(blocklist_items)

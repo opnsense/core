@@ -62,6 +62,7 @@ function unbound_services()
     $pconfig['description'] = gettext('Unbound DNS');
     $pconfig['php']['restart'] = array('unbound_configure_do');
     $pconfig['php']['start'] = array('unbound_configure_do');
+    $pconfig['php']['stop'] = array('unbound_service_stop');
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 
@@ -99,23 +100,41 @@ function unbound_optimization()
     return $optimization;
 }
 
+function unbound_service_stop()
+{
+    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
+
+    if (empty($config['unbound']['cacheflush'])) {
+        if (isvalidpid('/var/run/unbound.pid')) {
+            configd_run('unbound cache dump');
+        }
+    } else {
+        unbound_cache_flush();
+    }
+
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound.pid', 'TERM', true);
+
+    mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
+    mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
+}
+
 function unbound_generate_config()
 {
     global $config;
 
-    if (!unbound_enabled()) {
-        return;
-    }
+    $pythonv = readlink('/usr/local/bin/python3');
+    $python_dir = "/usr/local/lib/{$pythonv}";
+    $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+    $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', $python_dir];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
     }
 
-    if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
-        mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
-    }
+    mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
+    mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
 
     $optimization = unbound_optimization();
 
@@ -134,10 +153,10 @@ function unbound_generate_config()
         $module_config .= 'dns64 ';
     }
     if (isset($config['unbound']['dnssec'])) {
-        $module_config .= 'validator iterator';
+        $module_config .= 'python validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
-        $module_config .= 'iterator';
+        $module_config .= 'python iterator';
     }
 
     $private_addr = "";
@@ -303,6 +322,9 @@ include: /var/unbound/etc/*.conf
 
 {$forward_conf}
 
+python:
+python-script: dnsbl_module.py
+
 remote-control:
     control-enable: yes
     control-interface: 127.0.0.1
@@ -326,29 +348,18 @@ function unbound_cache_flush()
 function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
-    $domain = '';
 
-    if (empty($config['unbound']['cacheflush'])) {
-        if (isvalidpid('/var/run/unbound.pid')) {
-            configd_run('unbound cache dump');
-        }
-    } else {
-        unbound_cache_flush();
-    }
-
-    unbound_generate_config();
-
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    unbound_service_stop();
 
     if (!unbound_enabled()) {
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting Unbound DNS...';
-        flush();
-    }
+    service_log('Starting Unbound DNS...', $verbose);
+
+    unbound_generate_config();
+
+    $domain = '';
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -359,9 +370,7 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function unbound_add_host_entries($ifconfig_details = null)

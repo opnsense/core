@@ -57,8 +57,8 @@ for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); d
 	cp ${FILE} /var/unbound/etc/
 done
 
-# preload the blocklist cache so the dnsbl hook can properly diff on it
-cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache
+# XXX remove obsolete file, last used in 22.7
+rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
 
 chown -R unbound:unbound /var/unbound
 
