@@ -77,7 +77,7 @@ $.fn.UIBootgrid = function (params) {
             },
             "delete": {
                 method: this_grid.command_delete,
-                classname: 'fa fa-fwfa-trash-o',
+                classname: 'fa fa-fw fa-trash-o',
                 requires: ['del'],
                 sequence: 500
             },
