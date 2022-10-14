@@ -27,21 +27,10 @@
 
 <script>
    $(document).ready(function() {
-       function nxdomain_toggle() {
-           $('input[id="unbound.dnsbl.nxdomain"]').is(':checked') ?
-               $('input[id="unbound.dnsbl.address"]').attr('disabled', 'disabled') :
-               $('input[id="unbound.dnsbl.address"]').removeAttr('disabled');
-       }
-
        var data_get_map = {'frm_dnsbl_settings':"/api/unbound/settings/get"};
        mapDataToFormUI(data_get_map).done(function(data){
            formatTokenizersUI();
            $('.selectpicker').selectpicker('refresh');
-
-           $('input[id="unbound.dnsbl.nxdomain"]').click(function() {
-               nxdomain_toggle();
-           });
-           nxdomain_toggle();
        });
 
        $("#saveAct").SimpleActionButton({

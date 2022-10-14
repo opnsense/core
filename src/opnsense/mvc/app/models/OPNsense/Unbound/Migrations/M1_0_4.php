@@ -37,8 +37,7 @@ class M1_0_4 extends BaseModelMigration
     {
         /* ensure an existing blocklist is migrated during version upgrade */
         if (!file_exists('/var/unbound/data/dnsbl.json')) {
-            $backend = new Backend();
-            $backend->configdRun('unbound dnsbl');
+            (new Backend())->configdRun('unbound dnsbl');
         }
     }
 }

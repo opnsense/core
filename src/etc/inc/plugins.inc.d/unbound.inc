@@ -109,7 +109,7 @@ function unbound_generate_config()
 
     $pythonv = readlink('/usr/local/bin/python3');
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', "/usr/local/lib/{$pythonv}");
+    $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', "/usr/local/lib/{$pythonv}"];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
