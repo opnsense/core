@@ -141,6 +141,7 @@
 /usr/local/etc/rc.syshook.d/start/25-syslog
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
+/usr/local/etc/rc.syshook.d/start/90-dnsbl
 /usr/local/etc/rc.syshook.d/start/95-beep
 /usr/local/etc/rc.syshook.d/stop/05-beep
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
@@ -625,7 +626,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
