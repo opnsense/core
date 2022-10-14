@@ -139,6 +139,7 @@
 /usr/local/etc/rc.syshook.d/start/25-syslog
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
+/usr/local/etc/rc.syshook.d/start/90-dnsbl
 /usr/local/etc/rc.syshook.d/start/95-beep
 /usr/local/etc/rc.syshook.d/stop/05-beep
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
@@ -1069,6 +1070,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/advanced.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/blocklists.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/dnsbl_module.py
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf

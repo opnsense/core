@@ -150,6 +150,10 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
             </address>
+            <nxdomain type="BooleanField">
+                <Required>N</Required>
+                <default>0</default>
+            </nxdomain>
         </dnsbl>
         <forwarding>
             <enabled type="BooleanField">
