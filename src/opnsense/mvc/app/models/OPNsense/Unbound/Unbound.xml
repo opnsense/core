@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.4</version>
+    <version>1.0.3</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
