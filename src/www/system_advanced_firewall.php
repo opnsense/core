@@ -674,7 +674,7 @@ include("head.inc");
                   <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
                   <?= gettext('Reset all states when a dynamic IP address changes.') ?>
                   <div class="hidden" data-for="help_for_ip_change_kill_states">
-                    <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
+                    <?=gettext("On IPv4 address changes in dynamic setups, this option flushes the entire state table instead of just states related to the old address, e.g. to allow VoIP servers to re-register.");?>
                   </div>
                 </td>
               </tr>
