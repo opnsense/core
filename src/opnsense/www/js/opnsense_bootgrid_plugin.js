@@ -129,11 +129,10 @@ $.fn.UIBootgrid = function (params) {
             multiSelect: true,
             rowCount:[7,14,20,50,100,-1],
             url: params['search'],
-//	      XXX: needs some work in a couple of controllers to enable
-//            ajaxSettings: {
-//                contentType: 'application/json;charset=UTF-8',
-//                dataType: "json",
-//            },
+            ajaxSettings: {
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+            },
             requestHandler: function (request) {
                 return JSON.stringify(request);
             },
@@ -201,6 +200,16 @@ $.fn.UIBootgrid = function (params) {
             $.each(params['options'],  function(key, value) {
                 if (typeof(value) === 'object' && Array.isArray(value) == false) {
                     gridopt[key] = Object.assign({}, gridopt[key], value);
+                } else if (key == 'requestHandler'){
+                    gridopt[key] = function(request) {
+                        let response = value(request);
+                        // automatic type conversion, we expect a json (string) as result
+                        if (typeof(response) === 'string') {
+                            return response;
+                        } else {
+                            return JSON.stringify(response);
+                        }
+                    };
                 } else {
                     gridopt[key] = value;
                 }

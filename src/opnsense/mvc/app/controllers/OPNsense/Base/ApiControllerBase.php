@@ -60,7 +60,11 @@ class ApiControllerBase extends ControllerRoot
         $entry_keys = array_keys($records);
         $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !empty($this->request->getPost('sort'))
+        ) {
             $keys = array_keys($this->request->getPost('sort'));
             $order = $this->request->getPost('sort')[$keys[0]];
             $keys = array_column($records, $keys[0]);
