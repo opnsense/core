@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <items>
         <service_enabled type="LegacyLinkField">
             <Source>unbound.enable</Source>
@@ -64,6 +64,13 @@
             <privatedomain type="CSVListField">
                 <Required>N</Required>
             </privatedomain>
+            <privateaddress type="NetworkField">
+                <Required>N</Required>
+                <FieldSeparator>,</FieldSeparator>
+                <WildcardEnabled>N</WildcardEnabled>
+                <default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</default>
+                <asList>Y</asList>
+            </privateaddress>
             <insecuredomain type="CSVListField">
                 <Required>N</Required>
             </insecuredomain>

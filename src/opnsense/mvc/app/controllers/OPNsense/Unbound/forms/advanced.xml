@@ -160,6 +160,21 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.privateaddress</id>
+        <label>Rebind protection networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+          These are addresses on your private network, and are not allowed to be returned for public internet names.
+          Any occurrence of such addresses are removed from DNS answers.
+          Additionally, the DNSSEC validator may mark the answers bogus.
+          This protects against so-called DNS Rebinding.
+
+          (Only applicable when DNS rebind check is enabled in System->Settings->Administration)
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.insecuredomain</id>
         <label>Insecure Domains</label>
         <type>select_multiple</type>
