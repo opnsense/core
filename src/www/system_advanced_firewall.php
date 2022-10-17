@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
-    $pconfig['ip_change_kill_states'] = isset($config['system']['ip_change_kill_states']);
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
     $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
@@ -224,12 +223,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['skip_rules_gw_down'] = true;
         } elseif (isset($config['system']['skip_rules_gw_down'])) {
             unset($config['system']['skip_rules_gw_down']);
-        }
-
-        if (!empty($pconfig['ip_change_kill_states'])) {
-            $config['system']['ip_change_kill_states'] = true;
-        } elseif (isset($config['system']['ip_change_kill_states'])) {
-            unset($config['system']['ip_change_kill_states']);
         }
 
         if (!empty($pconfig['syncookies'])) {
@@ -665,16 +658,6 @@ include("head.inc");
                   <?=gettext("Verify HTTPS certificates when downloading alias URLs");?>
                   <div class="hidden" data-for="help_for_checkaliasesurlcert">
                     <?=gettext("Make sure the certificate is valid for all HTTPS addresses on aliases. If it's not valid or is revoked, do not download it.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_ip_change_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic state reset') ?></td>
-                <td>
-                  <input name="ip_change_kill_states" type="checkbox" value="yes" <?=!empty($pconfig['ip_change_kill_states']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Reset all states when a dynamic IP address changes.') ?>
-                  <div class="hidden" data-for="help_for_ip_change_kill_states">
-                    <?=gettext("This option flushes the entire state table on IPv4 address changes in dynamic setups to e.g. allow VoIP servers to re-register.");?>
                   </div>
                 </td>
               </tr>
