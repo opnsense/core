@@ -33,7 +33,7 @@
         <help>
             The Common Name of the DNS server (e.g. dns.example.com). This field is required to verify its TLS certificate.
             DNS-over-TLS is susceptible to man-in-the-middle attacks unless certificates can be verified.
-            Leave empty to accept self-signed (and potentially fraudulent) certificates.
+            Leave empty to accept self-signed yet also potentially fraudulent certificates.
         </help>
     </field>
 </form>
