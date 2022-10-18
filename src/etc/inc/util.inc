@@ -320,6 +320,31 @@ function exit_on_bootup($callback = null, $arguments = [])
     fclose($fp);
 }
 
+/**
+ * service logger with additional boot-time performance logging
+ * @param $message string message to log
+ * @param $verbose boolean verbose|bool (send to console),
+ * @return void
+ */
+function service_log(string $message, bool $verbose = true): void
+{
+    if ($verbose) {
+        echo $message;
+        flush();
+    }
+
+    if (product::getInstance()->booting()) {
+        $bt = debug_backtrace();
+        $caller = !empty($bt[1]['function']) ? $bt[1]['function'] : 'unknown';
+
+        file_put_contents('/var/log/boot.log', implode(' ', [
+            (new DateTime())->format('c'),
+            $caller . '[' . getmypid() . ']',
+            rtrim($message) . PHP_EOL
+        ]), FILE_APPEND | LOCK_EX);
+    }
+}
+
 /* validate non-negative numeric string, or equivalent numeric variable */
 function is_numericint($arg)
 {

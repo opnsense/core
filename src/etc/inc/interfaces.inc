@@ -2213,10 +2213,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     /* XXX mpd5 $realhwif may be a device node path */
 
-    if ($verbose) {
-        echo sprintf('Configuring %s interface...', $wandescr);
-        flush();
-    }
+    service_log(sprintf('Configuring %s interface...', $wandescr), $verbose);
 
     if (!empty($wancfg['ipaddr'])) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
@@ -2382,9 +2379,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* XXX may be called twice since also tied to dhcp configure */
     interfaces_staticarp_configure($interface, $ifconfig_details);
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 
     if ($reload) {
         system_routing_configure($verbose, $interface);
