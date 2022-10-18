@@ -317,7 +317,7 @@ $.fn.UIBootgrid = function (params) {
         event.stopPropagation();
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            let uuid = $(this).data("row-id");
+            let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
             let saveDlg = $("#btn_"+editDlg+"_save").unbind('click');
             this_grid.show_edit_dialog(event, params['get'] + uuid).done(function(){
                 saveDlg.unbind('click').click(function(){
