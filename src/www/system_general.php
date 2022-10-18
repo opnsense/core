@@ -304,7 +304,7 @@ $( document ).ready(function() {
                 <div class="hidden" data-for="help_for_domain">
                   <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Use the special-purpose home.arpa domain instead."); ?>
                   <br />
-                  <?=sprintf(gettext("e.g. %example.net, london-office.example.com, home.arpa, etc.%s"),'<em>','</em>') ?>
+                  <?=sprintf(gettext("e.g. %sexample.net, branch.example.com, home.arpa, etc.%s"),'<em>','</em>') ?>
                 </div>
               </td>
             </tr>
