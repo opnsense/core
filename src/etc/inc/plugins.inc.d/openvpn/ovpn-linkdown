@@ -1,6 +1,4 @@
 #!/bin/sh
 
-/sbin/pfctl -i ${1} -Fs
-
 /usr/local/sbin/ifctl -4ci ${1}
 /usr/local/sbin/ifctl -6ci ${1}
