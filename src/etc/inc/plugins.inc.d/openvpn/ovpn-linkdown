@@ -2,5 +2,5 @@
 
 /sbin/pfctl -i ${1} -Fs
 
-/bin/rm -f /tmp/${1}_router
-/bin/rm -f /tmp/${1}_routerv6
+/usr/local/sbin/ifctl -4ci ${1}
+/usr/local/sbin/ifctl -6ci ${1}
