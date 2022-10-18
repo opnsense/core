@@ -1176,6 +1176,12 @@ EOD;
                     }
                 }
 
+                // custom static map host config
+                if (!empty($sm['custom'])) {
+                    $dhcpdconf .= $sm['custom'];
+                    $dhcpdconf .= "\n";
+                }
+
                 $dhcpdconf .= "}\n";
             }
         }

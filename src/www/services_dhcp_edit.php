@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('mac', 'cid', 'hostname', 'filename', 'rootpath', 'descr', 'arp_table_static_entry',
       'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'winsserver', 'dnsserver', 'ddnsdomain',
-      'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver');
+      'ntpserver', 'tftp', 'bootfilename', 'ipaddr', 'winsserver', 'dnsserver', 'custom');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpd'][$if]['staticmap'][$id][$fieldname];
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $mapent = array();
         $config_copy_fieldnames = array('mac', 'cid', 'ipaddr', 'hostname', 'descr', 'filename', 'rootpath',
           'arp_table_static_entry', 'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist',
-          'ddnsdomain', 'tftp', 'bootfilename', 'winsserver', 'dnsserver');
+          'ddnsdomain', 'tftp', 'bootfilename', 'winsserver', 'dnsserver', 'custom');
 
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -291,6 +291,11 @@ include("head.inc");
   function show_tftp_config() {
     $("#showtftpbox").hide();
     $("#showtftp").show();
+  }
+
+  function show_custom_config() {
+    $("#showcustombox").hide();
+    $("#showcustom").show();
   }
 //]]>
 </script>
@@ -493,6 +498,27 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
+
+                <tr>
+                  <td><i class="fa fa-info-circle"></i> <?= gettext('Custom configuration') ?></td>
+                  <td>
+                  <div id="showcustombox">
+                      <input type="button" onclick="show_custom_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show custom configuration");?>
+                    </div>
+                    <div id="showcustom" style="display:none">
+                        <textarea name="custom" id="custom" class="form-control" cols="65" rows="6"><?= $pconfig['custom'] ?></textarea>
+                        <?= gettext('Enter any custom configuration for this static mapping.') ?>
+                        <br />
+                        <?= gettext('The values you enter here are not sanity-checked. You can break things.') ?>
+                        <br />
+                        <?= gettext('Please refer to ISC DHCP 4.4 dhcpd.conf man page for host-specific parameters.') ?>
+                    </div>
+                  </td>
+                </tr>
+
+
+
+
                 <tr>
                   <td></td>
                   <td>
