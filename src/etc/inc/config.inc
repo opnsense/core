@@ -46,6 +46,12 @@ final class product
     private function __construct()
     {
         self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
+
+        /* boot detection via exit_on_bootup()  */
+        $bootflag = '/var/run/booting';
+        @touch($bootflag);
+        $fp = fopen($bootflag, 'r');
+        self::$data['product_booting'] = $fp && !flock($fp, LOCK_SH | LOCK_NB);
     }
 
     private function __clone()

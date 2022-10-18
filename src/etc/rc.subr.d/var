@@ -141,3 +141,6 @@ mkdir -p /var/lib/php/sessions
 chown root:wheel /var/lib/php/sessions
 chmod 750 /var/lib/php/sessions
 rm -f /var/lib/php/sessions/sess_*
+
+# prep boog log
+: > /var/log/boot.log
