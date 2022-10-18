@@ -302,9 +302,9 @@ $( document ).ready(function() {
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                 <div class="hidden" data-for="help_for_domain">
-                  <?=gettext("Do not use 'local' as a domain name. It will cause local hosts running mDNS (avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."); ?>
+                  <?=gettext("Do not use 'local' as your internal domain name. It is reserved for and will interfere with mDNS (avahi, bonjour, etc.). Use the special-purpose home.arpa domain instead."); ?>
                   <br />
-                  <?=sprintf(gettext("e.g. %smycorp.com, home, office, private, etc.%s"),'<em>','</em>') ?>
+                  <?=sprintf(gettext("e.g. %sexample.net, branch.example.com, home.arpa, etc.%s"),'<em>','</em>') ?>
                 </div>
               </td>
             </tr>
