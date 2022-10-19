@@ -80,8 +80,8 @@ class AliasUtilController extends ApiControllerBase
         $result = json_decode($backend->configdRun("filter list tables json"));
         if ($result !== null) {
             // return sorted (case insensitive)
-            natcasesort($result);
             $result = array_values($result);
+            natcasesort($result);
         }
         return $result;
     }
