@@ -62,7 +62,6 @@ class ControllerBase extends ControllerRoot
           '/ui/js/opnsense_theme.js',
           '/ui/js/opnsense_ui.js',
           '/ui/js/opnsense_bootgrid_plugin.js',
-          '/ui/js/opnsense_bootgrid_plugin.js',
           '/ui/js/opnsense_status.js',
           // bootstrap script
           '/ui/js/bootstrap.min.js',
