@@ -244,6 +244,7 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <default>wan</default>
+                    <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                     </filters>
@@ -251,6 +252,7 @@
                 <interface2 type="InterfaceField">
                     <Required>N</Required>
                     <default></default>
+                    <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                     </filters>
