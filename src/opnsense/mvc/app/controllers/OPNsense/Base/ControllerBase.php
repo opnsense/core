@@ -42,7 +42,7 @@ class ControllerBase extends ControllerRoot
     protected $content_security_policy = array();
 
     /**
-     *  @return array list of javascript files to c
+     *  @return array list of javascript files to be included in default.volt
      */
     protected function templateJSIncludes()
     {
@@ -72,6 +72,9 @@ class ControllerBase extends ControllerRoot
         ];
     }
 
+    /**
+     *  @return array list of css files to be included in default.volt (used themed versions if available)
+     */
     protected function templateCSSIncludes()
     {
         return [
