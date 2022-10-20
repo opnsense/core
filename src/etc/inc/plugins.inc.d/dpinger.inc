@@ -314,7 +314,7 @@ function dpinger_run()
     );
 }
 
-function dpinger_status($verbose = false)
+function dpinger_status()
 {
     $status = array();
     $gateways_arr = array();
