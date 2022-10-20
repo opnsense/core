@@ -162,10 +162,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting router advertisement service...';
-        flush();
-    }
+    service_log('Starting router advertisement service...', $verbose);
 
     $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
@@ -522,9 +519,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
@@ -579,10 +574,7 @@ function dhcpd_dhcp4_configure($verbose = false)
         }
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv4 service...';
-        flush();
-    }
+    service_log('Starting DHCPv4 service...', $verbose);
 
     $custoptions = "";
     $ifconfig_details = legacy_interfaces_details();
@@ -1223,9 +1215,7 @@ EOD;
         mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
     }
 
-    if ($verbose) {
-        print "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_zones($ddns_zones, $ipproto = 'inet')
@@ -1289,10 +1279,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
         }
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv6 service...';
-        flush();
-    }
+    service_log('Starting DHCPv6 service...', $verbose);
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
     foreach (array_keys($iflist) as $ifname) {
@@ -1607,9 +1594,7 @@ EOD;
         mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcrelay_configure($verbose = false, $family = null)
@@ -1637,10 +1622,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv4 relay...';
-        flush();
-    }
+    service_log('Starting DHCPv4 relay...', $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1735,9 +1717,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         mwexec($cmd);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcrelay6_configure($verbose = false)
@@ -1754,10 +1734,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv6 relay...';
-        flush();
-    }
+    service_log('Starting DHCPv6 relay...', $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1847,9 +1824,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         mwexec($cmd);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true, $proto = null)
