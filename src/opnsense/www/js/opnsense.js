@@ -96,14 +96,14 @@ function getFormData(parent) {
                     // deserialize the field content - used for JS maintained fields
                     node[keypart] = sourceNode.data('data');
                 } else {
-                    // regular input type, might need a parser to convert to the correct format
-                    // (attribute type_formatter as function name)
-                    if (sourceNode.attr('type_formatter') !== undefined && window[sourceNode.attr('type_formatter')] !== undefined) {
-                        node[keypart] = window[sourceNode.attr('type_formatter')](sourceNode.val());
-                    } else {
-                        node[keypart] = sourceNode.val();
-                    }
+                    node[keypart] = sourceNode.val();
                 }
+                // Might need a parser to convert to the correct format
+                // (attribute type_formatter as function name)
+                if (sourceNode.attr('type_formatter') !== undefined && window[sourceNode.attr('type_formatter')] !== undefined) {
+                    node[keypart] = window[sourceNode.attr('type_formatter')](node[keypart]);
+                }
+
             }
         });
     });
