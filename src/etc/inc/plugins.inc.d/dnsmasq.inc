@@ -100,10 +100,7 @@ function dnsmasq_configure_do($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting Dnsmasq DNS...';
-        flush();
-    }
+    service_log('Starting Dnsmasq DNS...', $verbose);
 
     $args = '';
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
@@ -200,9 +197,7 @@ function dnsmasq_configure_do($verbose = false)
 
     _dnsmasq_dhcpleases_start();
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function _dnsmasq_add_host_entries()
