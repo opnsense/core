@@ -103,18 +103,13 @@ function does_interface_exist($interface)
 
 function interfaces_loopback_configure($verbose = false)
 {
-    if ($verbose) {
-        echo 'Configuring loopback interface...';
-        flush();
-    }
+    service_log('Configuring loopback interface...', $verbose);
 
     legacy_interface_setaddress('lo0', '127.0.0.1');
     interfaces_vips_configure('lo0');
     legacy_interface_flags('lo0', 'up');
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function interfaces_vlan_priorities()
@@ -141,10 +136,7 @@ function interfaces_vlan_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Configuring VLAN interfaces...';
-        flush();
-    }
+    service_log('Configuring VLAN interfaces...', $verbose);
 
     /* XXX sorting vlans here on top of $config seems prone to further side effects */
     // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
@@ -170,9 +162,7 @@ function interfaces_vlan_configure($verbose = false)
         _interfaces_vlan_configure($vlan);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function _interfaces_vlan_configure($vlan)
@@ -420,18 +410,13 @@ function interfaces_lagg_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Configuring LAGG interfaces...';
-        flush();
-    }
+    service_log('Configuring LAGG interfaces...', $verbose);
 
     foreach ($config['laggs']['lagg'] as $lagg) {
         _interfaces_lagg_configure($lagg);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function _interfaces_lagg_configure($lagg)
@@ -691,10 +676,7 @@ function _interfaces_gif_configure($gif)
 
 function interfaces_hardware($verbose = false)
 {
-    if ($verbose) {
-        echo 'Configuring hardware interfaces...';
-        flush();
-    }
+    service_log('Configuring hardware interfaces...', $verbose);
 
     $intf_details = legacy_interfaces_details();
 
@@ -702,9 +684,7 @@ function interfaces_hardware($verbose = false)
         configure_interface_hardware($device, $intf_details);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function interfaces_configure($verbose = false)
