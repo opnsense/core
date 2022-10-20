@@ -64,10 +64,7 @@ function webgui_configure_do($verbose = false, $interface = '')
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting web GUI...';
-        flush();
-    }
+    service_log('Starting web GUI...', $verbose);
 
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
@@ -116,9 +113,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     }
 
     if (!webgui_generate_config($portarg, $crt, $key, $ca, $listeners)) {
-        if ($verbose) {
-            echo "deferred.\n";
-        }
+        service_log("deferred.\n", $verbose);
         return;
     }
 
@@ -148,13 +143,9 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     /* start lighttpd */
     if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
     } else {
-        if ($verbose) {
-            echo "done.\n";
-        }
+        service_log("done.\n", $verbose);
     }
 }
 
@@ -165,10 +156,7 @@ function webgui_create_selfsigned($verbose = false)
     $a_ca = &config_read_array('ca');
     $a_cert = &config_read_array('cert');
 
-    if ($verbose) {
-        echo 'Creating self-signed web GUI certificate...';
-        flush();
-    }
+    service_log('Creating self-signed web GUI certificate...', $verbose);
 
     log_error('Creating TLS certificate for this host');
 
@@ -201,9 +189,7 @@ function webgui_create_selfsigned($verbose = false)
 
     write_config('Created web GUI TLS certificate');
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function webgui_generate_config($port, $cert, $key, $ca, $listeners)
