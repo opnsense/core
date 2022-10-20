@@ -103,18 +103,10 @@ function unbound_optimization()
 function unbound_service_stop()
 {
     $chroot_python_dir = "/var/unbound/usr/local/lib/" . readlink('/usr/local/bin/python3') ;
-    if (isvalidpid('/var/run/unbound.pid')) {
-        killbypid('/var/run/unbound.pid', 'TERM', true);
-    }
-    if (isvalidpid('/var/run/unbound_dhcpd.pid')) {
-        killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    }
-    if (!mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
-        mwexecf('/sbin/umount %s', '/var/unbound/dev');
-    }
-    if (!mwexec("/sbin/mount | grep {$chroot_python_dir}", true)) {
-        mwexecf('/sbin/umount %s', $chroot_python_dir);
-    }
+    killbypid('/var/run/unbound.pid', 'TERM', true);
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    mwexecf('/sbin/umount %s', '/var/unbound/dev');
+    mwexecf('/sbin/umount %s', $chroot_python_dir);
 }
 
 function unbound_generate_config()
@@ -368,8 +360,7 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     unbound_generate_config();
 
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    unbound_service_stop();
 
     if (!unbound_enabled()) {
         return;
