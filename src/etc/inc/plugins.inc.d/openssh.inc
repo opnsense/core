@@ -262,18 +262,11 @@ function openssh_configure_do($verbose = false, $interface = '')
 
     file_put_contents("/usr/local/etc/ssh/sshd_config", $sshconf);
 
-    if ($verbose) {
-        echo 'Configuring OpenSSH...';
-        flush();
-    }
+    service_log('Configuring OpenSSH...', $verbose);
 
     if ((count($interfaces) && !count($listeners)) || mwexecf('/usr/bin/protect -i /usr/local/sbin/sshd')) {
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
     } else {
-        if ($verbose) {
-            echo "done.\n";
-        }
+        service_log("done.\n", $verbose);
     }
 }
