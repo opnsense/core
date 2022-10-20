@@ -1143,10 +1143,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
         log_error('Resyncing OpenVPN instances.');
     }
 
-    if ($verbose) {
-        echo 'Syncing OpenVPN settings...';
-        flush();
-    }
+    service_log('Syncing OpenVPN settings...', $verbose);
 
     $reconfigure_count = 0;
     foreach (array('server', 'client') as $mode) {
@@ -1165,9 +1162,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
         configd_run('filter reload'); /* XXX really needed? */
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function openvpn_get_active_servers($type = 'multipoint')
