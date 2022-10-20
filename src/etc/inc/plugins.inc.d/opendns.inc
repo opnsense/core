@@ -40,15 +40,12 @@ function opendns_configure_do($verbose = false)
     global $config;
 
     if (!empty($config['opendns']['enable'])) {
-        if ($verbose) {
-            echo 'Configure OpenDNS...';
-            flush();
-        }
+        service_log('Configure OpenDNS...', $verbose);
+
         $result = opendns_register($config['opendns']);
         syslog(LOG_NOTICE, "opendns response: $result");
-        if ($verbose) {
-            echo "done.\n";
-        }
+
+        service_log("done.\n", $verbose);
     }
 }
 
