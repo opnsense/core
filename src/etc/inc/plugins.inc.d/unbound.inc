@@ -102,11 +102,10 @@ function unbound_optimization()
 
 function unbound_service_stop()
 {
-    $chroot_python_dir = "/var/unbound/usr/local/lib/" . readlink('/usr/local/bin/python3') ;
-    killbypid('/var/run/unbound.pid', 'TERM', true);
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    mwexecf('/sbin/umount %s', '/var/unbound/dev');
-    mwexecf('/sbin/umount %s', $chroot_python_dir);
+    killbypid('/var/run/unbound.pid', 'TERM', true);
+    mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
+    mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
 }
 
 function unbound_generate_config()
@@ -118,8 +117,10 @@ function unbound_generate_config()
     }
 
     $pythonv = readlink('/usr/local/bin/python3');
+    $python_dir = "/usr/local/lib/{$pythonv}";
+    $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', "/usr/local/lib/{$pythonv}"];
+    $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', $python_dir];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
@@ -129,11 +130,8 @@ function unbound_generate_config()
         mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     }
 
-    $python_dir = "/usr/local/lib/{$pythonv}";
-    $chroot_python_dir = "/var/unbound{$python_dir}";
-
-    if (mwexec("/sbin/mount | grep {$chroot_python_dir}", true)) {
-        mwexec("/sbin/mount -r -t nullfs {$python_dir} {$chroot_python_dir}");
+    if (mwexecf('/sbin/mount | awk \'{ print $3 }\' | grep -qx %s', [$chroot_python_dir], true)) {
+        mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
     }
 
     $optimization = unbound_optimization();
@@ -358,18 +356,14 @@ function unbound_configure_do($verbose = false, $unused = '')
         unbound_cache_flush();
     }
 
-    unbound_generate_config();
-
     unbound_service_stop();
+    unbound_generate_config();
 
     if (!unbound_enabled()) {
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting Unbound DNS...';
-        flush();
-    }
+    service_log('Starting Unbound DNS...', $verbose);
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -380,9 +374,7 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function unbound_add_host_entries($ifconfig_details = null)
