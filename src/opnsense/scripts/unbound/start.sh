@@ -60,7 +60,7 @@ for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); d
 done
 
 # XXX remove obsolete file, last used in 22.7
-rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
+rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf || true
 
 chown -R unbound:unbound /var/unbound || true
 

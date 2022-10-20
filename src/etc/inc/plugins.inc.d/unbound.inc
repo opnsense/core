@@ -62,6 +62,7 @@ function unbound_services()
     $pconfig['description'] = gettext('Unbound DNS');
     $pconfig['php']['restart'] = array('unbound_configure_do');
     $pconfig['php']['start'] = array('unbound_configure_do');
+    $pconfig['php']['stop'] = array('unbound_service_stop');
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 
@@ -97,6 +98,23 @@ function unbound_optimization()
     $optimization['key_cache_slabs'] = "key-cache-slabs: {$numslabs}";
 
     return $optimization;
+}
+
+function unbound_service_stop()
+{
+    $chroot_python_dir = "/var/unbound/usr/local/lib/" . readlink('/usr/local/bin/python3') ;
+    if (isvalidpid('/var/run/unbound.pid')) {
+        killbypid('/var/run/unbound.pid', 'TERM', true);
+    }
+    if (isvalidpid('/var/run/unbound_dhcpd.pid')) {
+        killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    }
+    if (!mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
+        mwexecf('/sbin/umount %s', '/var/unbound/dev');
+    }
+    if (!mwexec("/sbin/mount | grep {$chroot_python_dir}", true)) {
+        mwexecf('/sbin/umount %s', $chroot_python_dir);
+    }
 }
 
 function unbound_generate_config()
