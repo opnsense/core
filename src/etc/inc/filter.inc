@@ -155,19 +155,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
 
-    if ($verbose) {
-        echo 'Configuring firewall.';
-        flush();
-    }
+    service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
 
     ifgroup_setup();
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+
+    service_log('.', $verbose);
 
     // initialize fw plugin object
     $fw = filter_core_get_initialized_plugin_system();
@@ -284,20 +279,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $aliases .= "\n# Plugins tables\n";
     $aliases .= $fw->tablesToText();
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     $natrules = "\n# NAT Redirects\n";
     $natrules .= "no nat proto carp all\n";
     $natrules .= "no rdr proto carp all\n";
     $natrules .= $fw->outputNatRules();
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
@@ -308,17 +297,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         unlock($filterlck);
         closelog();
 
-        if ($verbose) {
-            echo "done.\n";
-        }
+        service_log("done.\n", $verbose);
 
         return;
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     $limitrules = '';
 
@@ -406,9 +390,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         unlock($filterlck);
         closelog();
 
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
 
         return;
     }
@@ -449,9 +431,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         unlock($filterlck);
         closelog();
 
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
 
         return;
     }
@@ -465,20 +445,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         mwexec('/sbin/pfctl -t bogonsv6 -T kill');
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     if ($load_aliases) {
         configd_run('template reload OPNsense/Filter');
         configd_run('filter refresh_aliases', true);
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     /* enable permanent promiscuous mode to avoid dmesg noise */
     mwexec('/sbin/ifconfig pflog0 promisc');
@@ -490,9 +464,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     unlock($filterlck);
     closelog();
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function filter_generate_scrubbing(&$FilterIflist)
