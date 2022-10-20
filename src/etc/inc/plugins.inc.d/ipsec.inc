@@ -1253,18 +1253,16 @@ function ipsec_configure_do($verbose = false, $interface = '')
         /* disallow IPSEC, it is off */
         mwexec("/sbin/ifconfig enc0 down");
 
-        return 0;
+        return;
     } else {
         if (get_single_sysctl('net.inet.ipsec.def_policy') == "") {
             mwexec("/sbin/kldload ipsec");
         }
         mwexec("/sbin/ifconfig enc0 up");
 
-        if ($verbose) {
-            echo 'Configuring IPsec VPN...';
-        }
+        service_log('Configuring IPsec VPN...', $verbose);
 
-        // cleanup legacy ipsec.conf files
+        /* cleanup legacy ipsec.conf files */
         mwexec("rm -rf /usr/local/etc/ipsec.d");
         @unlink("/usr/local/etc/ipsec.conf");
         @unlink("/usr/local/etc/ipsec.secrets");
@@ -1564,9 +1562,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
     /* load manually defined SPD entries */
     ipsec_configure_spd();
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function generate_strongswan_conf(array $tree, $level = 0): string
@@ -1665,10 +1661,7 @@ function ipsec_configure_vti($verbose = false, $device = null)
         }
     }
 
-    if ($verbose) {
-        echo 'Creating IPsec VTI instances...';
-        flush();
-    }
+    service_log(sprintf('Creating IPsec VTI instance%s...', empty($device) ? 's' : " {$device}"), $verbose);
 
     // drop changed or not existing interfaces and tunnel endpoints
     foreach ($current_interfaces as $intf => $intf_details) {
@@ -1781,9 +1774,7 @@ function ipsec_configure_vti($verbose = false, $device = null)
         }
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function ipsec_configure_device($device)
