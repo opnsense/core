@@ -244,7 +244,7 @@ function plugins_firewall($fw)
     return $fw;
 }
 
-function plugins_configure($hook, $verbose = false, $args = array())
+function plugins_configure($hook, $verbose = false, $args = [])
 {
     array_unshift($args, $verbose);
 

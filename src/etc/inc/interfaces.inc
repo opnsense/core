@@ -2416,12 +2416,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     if ($reload) {
         system_routing_configure($verbose, $interface);
-        plugins_configure('ipsec', $verbose, array($interface));
+        plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
         plugins_configure('dns', $verbose);
         /* XXX move these up the call stack */
-        configdp_run('dyndns reload', array($interface));
-        configdp_run('rfc2136 reload', array($interface));
+        configdp_run('dyndns reload', [$interface]);
+        configdp_run('rfc2136 reload', [$interface]);
     }
 
     return $loaded;
