@@ -296,9 +296,8 @@ function plugins_configure($hook, $verbose = false, $args = array())
     }
 }
 
-function plugins_run($hook, $verbose = false, $args = array())
+function plugins_run($hook, $args = [])
 {
-    array_unshift($args, $verbose);
     $ret = [];
 
     syslog(LOG_DEBUG, sprintf('plugins_run %s (%s)', $hook, implode(',', $args)));
