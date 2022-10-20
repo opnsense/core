@@ -46,10 +46,7 @@ function rrd_configure($verbose = false, $bootup = false)
 {
     global $config;
 
-    if ($verbose) {
-        echo 'Generating RRD graphs...';
-        flush();
-    }
+    service_log('Generating RRD graphs...', $verbose);
 
     $rrddbpath = "/var/db/rrd/";
 
@@ -588,9 +585,7 @@ EOD;
         chown($database, "nobody");
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function rrd_create_gateway_quality($rrd_file, $unknown = false)
