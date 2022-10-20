@@ -50,12 +50,12 @@ function dpinger_services()
             continue;
         }
 
-        $pconfig = array();
+        $pconfig = [];
         $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
-        $pconfig['php']['restart'] = array('dpinger_configure_do');
-        $pconfig['php']['start'] = array('dpinger_configure_do');
+        $pconfig['php']['restart'] = ['dpinger_configure_do'];
+        $pconfig['php']['start'] = ['dpinger_configure_do'];
         $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
-        $pconfig['php']['args'] = array('verbose', 'id');
+        $pconfig['php']['args'] = ['verbose', 'id'];
         $pconfig['name'] = 'dpinger';
         $pconfig['verbose'] = false;
         $pconfig['id'] = $gateway['name'];
@@ -98,10 +98,7 @@ function dpinger_syslog()
 
 function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
-    if ($verbose) {
-        echo sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}");
-        flush();
-    }
+    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
 
     foreach (dpinger_processes() as $running_gwname => $process) {
         if (!empty($gwname) && $running_gwname != $gwname) {
@@ -307,9 +304,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dpinger_run()
