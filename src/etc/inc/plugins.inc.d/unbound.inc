@@ -102,6 +102,7 @@ function unbound_optimization()
 
 function unbound_service_stop()
 {
+    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
