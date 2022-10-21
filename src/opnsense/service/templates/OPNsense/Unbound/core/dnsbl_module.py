@@ -86,27 +86,27 @@ class ModuleContext:
     def log_entry(self, t, client, family, type, domain, action, response_type):
         kwargs = locals()
         del kwargs['self']
+        self.pipe_buffer.append(kwargs)
         if self.pipe_fd is None:
-            if not (time.time() - self.pipe_timer) > 10:
-                self.pipe_buffer.append(kwargs)
-                return
-            self.pipe_timer = time.time()
-            if not self.try_open_pipe():
-                self.pipe_buffer.append(kwargs)
-                return
+            if (time.time() - self.pipe_timer) > 10:
+                self.pipe_timer = time.time()
+                if not self.try_open_pipe():
+                    return
             else:
-                while len(self.pipe_buffer) > 0:
-                    self.log_entry(**self.pipe_buffer.popleft())
+                return
 
         with self.lock:
-            log = ('%d %s %s %s %s %d %d\n' % (t, client, family, type, domain, action, response_type))
+            l = None
             try:
-                os.write(self.pipe_fd, log.encode())
+                while len(self.pipe_buffer) > 0:
+                    l = self.pipe_buffer.popleft()
+                    log = ('%d %s %s %s %s %d %d\n' % (l['t'], l['client'], l['family'], l['type'], l['domain'], l['action'], l['response_type']))
+                    os.write(self.pipe_fd, log.encode())
             except BrokenPipeError:
                 log_warn("Logging backend closed connection unexpectedly. Closing pipe and continuing.")
                 os.close(self.pipe_fd)
                 self.pipe_fd = None
-                self.pipe_buffer.append(kwargs)
+                self.pipe_buffer.appendleft(l)
 
     def update_dnsbl(self, t):
         if (t - self.dnsbl_update_time) > 60:
