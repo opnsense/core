@@ -137,9 +137,9 @@
 /usr/local/etc/rc.syshook.d/start/10-newwanip
 /usr/local/etc/rc.syshook.d/start/20-freebsd
 /usr/local/etc/rc.syshook.d/start/25-syslog
+/usr/local/etc/rc.syshook.d/start/85-dnsbl
 /usr/local/etc/rc.syshook.d/start/90-carp
 /usr/local/etc/rc.syshook.d/start/90-cron
-/usr/local/etc/rc.syshook.d/start/90-dnsbl
 /usr/local/etc/rc.syshook.d/start/95-beep
 /usr/local/etc/rc.syshook.d/stop/05-beep
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
