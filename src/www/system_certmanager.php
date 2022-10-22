@@ -33,6 +33,7 @@ require_once('system.inc');
 phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
 phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
 
+use phpseclib3\File\ASN1;
 use phpseclib3\File\X509;
 
 function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg, $extns)
@@ -131,8 +132,7 @@ function parse_csr($csr_str)
                             case 'id-ce-extKeyUsage':
                                 $ret['extendedKeyUsage'] = array();
                                 foreach ($column['extnValue'] as $usage) {
-                                    array_push($ret['extendedKeyUsage'], strpos($usage, 'id-kp-') === 0 ? $x509_lib->getOID($usage)
-                                                                                                        : $usage);
+                                    array_push($ret['extendedKeyUsage'], strpos($usage, 'id-kp-') === 0 ? ASN1::getOID($usage) : $usage);
                                 }
                                 break;
 
