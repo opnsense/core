@@ -1,0 +1,69 @@
+<model>
+    <mount>/virtualip</mount>
+    <version>1.0.0</version>
+    <description>
+        Virtual IP configuration
+    </description>
+    <items>
+        <vip type="ArrayField">
+            <interface type=".\VipInterfaceField">
+                <Required>Y</Required>
+                <AllowDynamic>S</AllowDynamic>
+            </interface>
+            <mode type="OptionField">
+              <Required>Y</Required>
+              <default>ipalias</default>
+              <OptionValues>
+                  <ipalias>IP Alias</ipalias>
+                  <carp>CARP</carp>
+                  <proxyarp>Proxy ARP</proxyarp>
+                  <other>Other</other>
+              </OptionValues>
+            </mode>
+            <type type="OptionField">
+              <Required>Y</Required>
+              <default>single</default>
+              <OptionValues>
+                  <single>Single address</single>
+                  <network>Network</network>
+              </OptionValues>
+            </type>
+            <subnet type=".\VipNetworkField">
+                <Required>Y</Required>
+            </subnet>
+            <subnet_bits type=".\VipNetworkField">
+                <Required>Y</Required>
+            </subnet_bits>
+            <gateway type="NetworkField">
+                <Required>N</Required>
+            </gateway>
+            <noexpand type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </noexpand>
+            <password type="UpdateOnlyTextField">
+                <Required>N</Required>
+            </password>
+            <vhid type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>255</MaximumValue>
+            </vhid>
+            <advbase type="IntegerField">
+                <Required>Y</Required>
+                <default>1</default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>254</MaximumValue>
+            </advbase>
+            <advskew type="IntegerField">
+                <Required>Y</Required>
+                <default>0</default>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>254</MaximumValue>
+            </advskew>
+            <descr type="TextField">
+              <Required>N</Required>
+            </descr>
+        </vip>
+    </items>
+</model>
