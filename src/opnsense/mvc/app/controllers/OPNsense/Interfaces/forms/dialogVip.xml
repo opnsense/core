@@ -31,6 +31,13 @@
       <style>mode mode_proxyarp</style>
     </field>
     <field>
+      <id>vip.nobind</id>
+      <label>Deny service binding</label>
+      <type>checkbox</type>
+      <help>Assigning services to the virtual IP's interface will automatically include this address. Check to prevent binding to this address instead.</help>
+      <style>mode mode_carp mode_ipalias</style>
+    </field>
+    <field>
         <id>vip.password</id>
         <label>Password</label>
         <type>password</type>

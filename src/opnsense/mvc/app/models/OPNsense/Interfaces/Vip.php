@@ -42,19 +42,24 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
         $vips = [];
+        $carp_vhids = [];
 
         // collect chaned VIP entries
         $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();
+            $parentNode = $node->getParentNode();
             if ($validateFullModel || $node->isFieldChanged()) {
-                $parentNode = $node->getParentNode();
                 if ($parentNode->getInternalXMLTagName() === 'vip' && in_array($tagName, $vip_fields)) {
                     $parentKey = $parentNode->__reference;
                     $vips[$parentKey] = $parentNode;
                 }
             }
+            if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[(string)$parentNode->vhid])) {
+                $carp_vhids[(string)$parentNode->vhid] = $parentNode;
+            }
         }
+
         // validate all changed VIPs
         foreach ($vips as $key => $node) {
             $subnet_bits = (string)$node->subnet_bits;
@@ -68,14 +73,14 @@ class Vip extends BaseModel
                     }
                     $network_addr = long2ip(ip2long($subnet) & $sm);
                     $broadcast_addr = long2ip((ip2long($subnet) & 0xFFFFFFFF) | $sm);
-                    if ($subnet == $network_addr) {
+                    if ($subnet == $network_addr && $subnet_bits != '32') {
                         $messages->appendMessage(
                             new Message(
                                 gettext("You cannot use the network address for this VIP"),
                                 $key . ".subnet"
                             )
                         );
-                    } elseif ($subnet == $broadcast_addr) {
+                    } elseif ($subnet == $broadcast_addr && $subnet_bits != '32') {
                         $messages->appendMessage(
                             new Message(
                               gettext("You cannot use the broadcast address for this VIP"),
@@ -85,7 +90,7 @@ class Vip extends BaseModel
                     }
                 }
                 $configHandle = Config::getInstance()->object();
-                if (!empty($configHandle->interfaces)) {
+                if (!empty($configHandle->interfaces) && !empty((string)$node->vhid)) {
                     foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
                         if ($ifname === (string)$node->interface && substr($ifnode->if, 0, 2) === 'lo') {
                             $messages->appendMessage(
@@ -115,7 +120,32 @@ class Vip extends BaseModel
                           $key . ".vhid"
                         )
                     );
+                } elseif (
+                  isset($carp_vhids[(string)$node->vhid]) &&
+                  $carp_vhids[(string)$node->vhid]->__reference != $node->__reference
+                ) {
+                    $errmsg = gettext(
+                        "VHID %s is already in use on interface %s. Pick a unique number on this interface."
+                    );
+                    $messages->appendMessage(
+                        new Message(
+                          sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[(string)$node->vhid]->interface),
+                          $key . ".vhid"
+                        )
+                    );
                 }
+            } elseif (
+              (string)$node->mode == 'ipalias' &&
+              !empty((string)$node->vhid) &&
+              !isset($carp_vhids[(string)$node->vhid])
+            ) {
+                $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
+                $messages->appendMessage(
+                    new Message(
+                      sprintf($errmsg, (string)$node->vhid, (string)$node->interface),
+                      $key . ".vhid"
+                    )
+                );
             }
         }
 

@@ -21,10 +21,12 @@
               </OptionValues>
             </mode>
             <subnet type=".\VipNetworkField">
-                <Required>Y</Required>
+                <!--required, but validated in model -->
+                <Required>N</Required>
             </subnet>
             <subnet_bits type=".\VipNetworkField">
-                <Required>Y</Required>
+                <!--required, but validated in model -->
+                <Required>N</Required>
             </subnet_bits>
             <gateway type="NetworkField">
                 <Required>N</Required>
@@ -33,6 +35,10 @@
                 <default>0</default>
                 <Required>Y</Required>
             </noexpand>
+            <nobind type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </nobind>
             <password type="TextField">
                 <Required>N</Required>
             </password>
