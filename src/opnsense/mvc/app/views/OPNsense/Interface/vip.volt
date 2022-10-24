@@ -8,6 +8,50 @@
                 del:'/api/interfaces/vip_settings/delItem/'
             }
         );
+        $("#vip\\.mode").change(function(){
+            $(".mode").closest("tr").hide();
+            let show_advanced = $("#show_advanced_formDialogDialogVip").hasClass("fa-toggle-on");
+
+            $(".mode_"+$(this).val()).each(function(){
+                if (($(this).hasClass("advanced") && show_advanced) || !$(this).hasClass("advanced")) {
+                    $(this).closest("tr").show();
+                }
+            });
+            // carp button
+            if ($(this).val() == 'carp') {
+                $("#vip\\.vhid").css('width', '100px').addClass('btn-group');
+                $(".carp_btn").show();
+            } else {
+                $("#vip\\.vhid").css('width', '');
+                $(".carp_btn").hide();
+            }
+
+        });
+
+        // hook mode change to "show advanced" toggle to show dependant advanced fields
+        $("#show_advanced_formDialogDialogVip").click(function(e){
+            $("#vip\\.mode").change();
+        });
+
+        let vhid_btn = $("<button type='button' class='btn carp_btn btn-default btn-group'>").html("{{ lang._('Select an unassigned VHID')}}");
+
+        $("#vip\\.vhid").closest("td").prepend(
+            $("<div class='btn-group'>").append(
+                $("#vip\\.vhid").detach(),
+                vhid_btn
+            )
+        );
+        /**
+         * select an unassigned carp vhid
+         */
+        vhid_btn.click(function(){
+            ajaxGet("/api/interfaces/vip_settings/get_unused_vhid", {}, function(data){
+                if (data.vhid !== undefined) {
+                    $("#vip\\.vhid").val(data.vhid);
+                }
+            });
+        });
+
         $("#reconfigureAct").SimpleActionButton();
     });
 </script>

@@ -20,14 +20,6 @@
                   <other>Other</other>
               </OptionValues>
             </mode>
-            <type type="OptionField">
-              <Required>Y</Required>
-              <default>single</default>
-              <OptionValues>
-                  <single>Single address</single>
-                  <network>Network</network>
-              </OptionValues>
-            </type>
             <subnet type=".\VipNetworkField">
                 <Required>Y</Required>
             </subnet>
@@ -41,25 +33,28 @@
                 <default>0</default>
                 <Required>Y</Required>
             </noexpand>
-            <password type="UpdateOnlyTextField">
+            <password type="TextField">
                 <Required>N</Required>
             </password>
             <vhid type="IntegerField">
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>255</MaximumValue>
+                <ValidationMessage>Invalid VHID number provided, Acceptable values for vhid are 1 to 255.</ValidationMessage>
             </vhid>
             <advbase type="IntegerField">
                 <Required>Y</Required>
                 <default>1</default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>254</MaximumValue>
+                <ValidationMessage>Invalid advertisement interval, acceptable values are 1 to 255.</ValidationMessage>
             </advbase>
             <advskew type="IntegerField">
                 <Required>Y</Required>
                 <default>0</default>
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>254</MaximumValue>
+                <ValidationMessage>Invalid skew value, acceptable values are 0 to 255.</ValidationMessage>
             </advskew>
             <descr type="TextField">
               <Required>N</Required>

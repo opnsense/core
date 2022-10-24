@@ -58,6 +58,25 @@ class VipSettingsController extends ApiMutableModelControllerBase
     }
 
     /**
+     * retrieve first unused VHID number
+     */
+    public function getUnusedVhidAction()
+    {
+        $vhids = [];
+        foreach ($this->getModel()->vip->iterateItems() as $vip) {
+            if (!in_array((string)$vip->vhid, $vhids) && !empty((string)$vip->vhid)) {
+                $vhids[] = (string)$vip->vhid;
+            }
+        }
+        for ($i=1; $i <= 255; $i++) {
+            if (!in_array((string)$i, $vhids)) {
+                return ['vhid' => $i, 'status' => 'ok'];
+            }
+        }
+        return ['status' => 'not_found'];
+    }
+
+    /**
      * remap subnet and subnet_bits to network (which represents combined field)
      */
     private function handleFormValidations($response)

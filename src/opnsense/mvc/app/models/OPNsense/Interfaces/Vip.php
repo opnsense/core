@@ -30,7 +30,95 @@ namespace OPNsense\Interfaces;
 
 use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 class Vip extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $vips = [];
+
+        // collect chaned VIP entries
+        $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
+        foreach ($this->getFlatNodes() as $key => $node) {
+            $tagName = $node->getInternalXMLTagName();
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $parentNode = $node->getParentNode();
+                if ($parentNode->getInternalXMLTagName() === 'vip' && in_array($tagName, $vip_fields)) {
+                    $parentKey = $parentNode->__reference;
+                    $vips[$parentKey] = $parentNode;
+                }
+            }
+        }
+        // validate all changed VIPs
+        foreach ($vips as $key => $node) {
+            $subnet_bits = (string)$node->subnet_bits;
+            $subnet = (string)$node->subnet;
+            if (in_array((string)$node->mode, ['carp', 'ipalias'])) {
+                if (Util::isSubnet($subnet . "/" . $subnet_bits) && strpos($subnet, ':') === false) {
+                    $sm = 0;
+                    for ($i = 0; $i < $subnet_bits; $i++) {
+                        $sm >>= 1;
+                        $sm |= 0x80000000;
+                    }
+                    $network_addr = long2ip(ip2long($subnet) & $sm);
+                    $broadcast_addr = long2ip((ip2long($subnet) & 0xFFFFFFFF) | $sm);
+                    if ($subnet == $network_addr) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("You cannot use the network address for this VIP"),
+                                $key . ".subnet"
+                            )
+                        );
+                    } elseif ($subnet == $broadcast_addr) {
+                        $messages->appendMessage(
+                            new Message(
+                              gettext("You cannot use the broadcast address for this VIP"),
+                              $key . ".subnet"
+                            )
+                        );
+                    }
+                }
+                $configHandle = Config::getInstance()->object();
+                if (!empty($configHandle->interfaces)) {
+                    foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
+                        if ($ifname === (string)$node->interface && substr($ifnode->if, 0, 2) === 'lo') {
+                            $messages->appendMessage(
+                                new Message(
+                                  gettext('For this type of VIP loopback is not allowed.'),
+                                  $key . ".interface"
+                                )
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
+            if ((string)$node->mode == 'carp') {
+                if (empty((string)$node->password)) {
+                    $messages->appendMessage(
+                        new Message(
+                          gettext("You must specify a CARP password that is shared between the two VHID members."),
+                          $key . ".password"
+                        )
+                    );
+                }
+                if (empty((string)$node->vhid)) {
+                    $messages->appendMessage(
+                        new Message(
+                          gettext('A VHID must be selected for this CARP VIP.'),
+                          $key . ".vhid"
+                        )
+                    );
+                }
+            }
+        }
+
+        return $messages;
+    }
 }
