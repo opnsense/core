@@ -122,7 +122,7 @@ function plugins_disk_get()
         }
 
         /* do not register for business additions */
-        if ($prefix == 'OPNBEcore' || $prefix == 'core.license') {
+        if ($prefix == 'OPNBEcore' || $filename == 'core.license') {
             continue;
         }
 
