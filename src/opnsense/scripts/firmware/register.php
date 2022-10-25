@@ -121,8 +121,8 @@ function plugins_disk_get()
             continue;
         }
 
-        /* do not register for business addition */
-        if ($prefix == 'OPNBEcore') {
+        /* do not register for business additions */
+        if ($prefix == 'OPNBEcore' || $prefix == 'core.license') {
             continue;
         }
 
