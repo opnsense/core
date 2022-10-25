@@ -116,7 +116,13 @@ function plugins_disk_get()
         $filename = basename($name);
         $prefix = explode('.', $filename)[0];
 
+        /* do not register from set-provided metadata */
         if ($prefix == 'base' || $prefix == 'kernel' || $prefix == 'pkgs') {
+            continue;
+        }
+
+        /* do not register for business additions */
+        if ($prefix == 'OPNBEcore' || $filename == 'core.license') {
             continue;
         }
 
