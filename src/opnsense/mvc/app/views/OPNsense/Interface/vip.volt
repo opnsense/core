@@ -5,9 +5,26 @@
                 get:'/api/interfaces/vip_settings/getItem/',
                 set:'/api/interfaces/vip_settings/setItem/',
                 add:'/api/interfaces/vip_settings/addItem/',
-                del:'/api/interfaces/vip_settings/delItem/'
+                del:'/api/interfaces/vip_settings/delItem/',
+                options:{
+                    requestHandler: function(request){
+                        if ( $('#mode_filter').val().length > 0) {
+                            request['mode'] = $('#mode_filter').val();
+                        }
+                        return request;
+                    },
+                    formatters: {
+                        vhid: function (column, row) {
+                            return row.vhid_txt;
+                        }
+                    }
+                }
             }
         );
+        $("#mode_filter").change(function(){
+            $('#grid-vips').bootgrid('reload');
+        });
+
         $("#vip\\.mode").change(function(){
             $(".mode").closest("tr").hide();
             let show_advanced = $("#show_advanced_formDialogDialogVip").hasClass("fa-toggle-on");
@@ -41,6 +58,8 @@
                 vhid_btn
             )
         );
+
+        $("#mode_filter_container").detach().prependTo('#grid-vips-header > .row > .actionBar > .actions');
         /**
          * select an unassigned carp vhid
          */
@@ -56,10 +75,23 @@
     });
 </script>
 <div class="tab-content content-box">
+  <div class="hidden">
+      <!-- filter per type container -->
+      <div id="mode_filter_container" class="btn-group">
+          <select id="mode_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
+              <option value="ipalias">{{ lang._('IP Alias') }}</option>
+              <option value="carp">{{ lang._('CARP') }}</option>
+              <option value="proxyarp">{{ lang._('Proxy ARP') }}</option>
+              <option value="other">{{ lang._('Other') }}</option>
+          </select>
+      </div>
+  </div>
   <table id="grid-vips" class="table table-condensed table-hover table-striped" data-editDialog="DialogVip" data-editAlert="VipChangeMessage">
       <thead>
           <tr>
               <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+              <th data-column-id="address" data-type="string">{{ lang._('Address') }}</th>
+              <th data-column-id="vhid" data-type="string" data-formatter="vhid" >{{ lang._('VHID') }}</th>
               <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
               <th data-column-id="mode" data-type="string">{{ lang._('Type') }}</th>
               <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>

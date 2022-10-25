@@ -104,13 +104,48 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase('vip', ['interface', 'mode', 'type', 'descr'], 'descr');
+        $mode = $this->request->getPost('mode');
+        $filter_funct = null;
+        if (!empty($mode)) {
+            $filter_funct = function ($record) use ($mode) {
+                return in_array($record->mode, $mode);
+            };
+        }
+        $result = $this->searchBase(
+            'vip',
+            ['interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits', 'vhid', 'advbase', 'advskew'],
+            'descr',
+            $filter_funct
+        );
+
+        if (!empty($result['rows'])) {
+            foreach ($result['rows'] as &$row) {
+                $row['address'] = sprintf("%s/%s", $row['subnet'], $row['subnet_bits']);
+                $row['vhid_txt'] = $row['vhid'];
+                if ($row['mode'] == 'CARP') {
+                    $row['vhid_txt'] = sprintf(
+                        gettext('%s (freq. %s/%s)'),
+                        $row['vhid'],
+                        $row['advbase'],
+                        $row['advskew']
+                    );
+                }
+            }
+        }
+        return $result;
     }
 
     public function setItemAction($uuid)
     {
+        $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+        if (
+            $node != null &&
+            explode('/', $_POST['vip']['network'])[0] != (string)$node->subnet &&
+            !file_exists("/tmp/delete_vip_{$uuid}.todo")
+        ) {
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+        }
         return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
-
     }
 
     public function addItemAction()
@@ -134,7 +169,12 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
-        return $this->delBase("vip", $uuid);
+        $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+        $response = $this->delBase("vip", $uuid);
+        if ($response['result'] ?? '' == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+        }
+        return $response;
     }
 
     public function reconfigureAction()

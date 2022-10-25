@@ -136,8 +136,10 @@ class Vip extends BaseModel
                 }
             } elseif (
               (string)$node->mode == 'ipalias' &&
-              !empty((string)$node->vhid) &&
-              !isset($carp_vhids[(string)$node->vhid])
+              !empty((string)$node->vhid) && (
+                  !isset($carp_vhids[(string)$node->vhid]) ||
+                  (string)$carp_vhids[(string)$node->vhid]->interface != (string)$node->interface
+              )
             ) {
                 $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
                 $messages->appendMessage(

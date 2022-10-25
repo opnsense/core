@@ -17,12 +17,19 @@
                   <ipalias>IP Alias</ipalias>
                   <carp>CARP</carp>
                   <proxyarp>Proxy ARP</proxyarp>
+                  <!-- madness without function -->
                   <other>Other</other>
               </OptionValues>
             </mode>
             <subnet type=".\VipNetworkField">
                 <!--required, but validated in model -->
                 <Required>N</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Address already assigned.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
             </subnet>
             <subnet_bits type=".\VipNetworkField">
                 <!--required, but validated in model -->
