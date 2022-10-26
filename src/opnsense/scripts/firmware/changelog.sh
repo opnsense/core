@@ -48,7 +48,7 @@ changelog_checksum()
 
 changelog_url()
 {
-	CORE_ABI=$(opnsense-version -a)
+	CORE_ABI=$(opnsense-version -x)
 	SYS_ABI=$(opnsense-verify -a)
 
 	URLPREFIX="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}"
