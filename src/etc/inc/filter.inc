@@ -378,6 +378,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
         $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
     }
+    /* if pf already generated a hostid, reuse it */
+    $current_hostid = get_current_hostid();
+    if (!empty($current_hostid)) {
+        $limitrules .= "set hostid {$current_hostid}\n";
+    }
 
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
@@ -840,6 +845,17 @@ function default_state_size()
     $max_states = (int) ($physmem / 10) * 1000;
 
     return $max_states;
+}
+
+function get_current_hostid()
+{
+    exec('/sbin/pfctl -si -v 2>/dev/null', $output);
+    foreach ($output as $line) {
+        if (strpos($line, 'Hostid:') !== false) {
+            return preg_split("/(\s+)/", $line)[1];
+        }
+    }
+    return null;
 }
 
 function get_protocols()
