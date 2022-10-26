@@ -153,4 +153,41 @@ class Vip extends BaseModel
 
         return $messages;
     }
+
+    /**
+     * find relevant references to this address which prevent removal or change of this address.
+     */
+    public function whereUsed($address)
+    {
+        $relevant_paths = [
+          'nat.outbound.rule.' => gettext('Address %s referenced by outboud nat rule "%s"'),
+          'nat.rule.' => gettext('Address %s referenced by port forward "%s"'),
+        ];
+        $usages = [];
+        foreach (Config::getInstance()->object()->xpath("//text()[.='{$address}']") as $node) {
+            $referring_node = $node->xpath("..")[0];
+            $item_path = [$node->getName(), $referring_node->getName()];
+            $item_description = "";
+            $parent_node = $referring_node;
+            while ($parent_node != null && $parent_node->xpath("../..") != null) {
+                if (empty($item_description)) {
+                    foreach (["description", "descr", "name"] as $key) {
+                        if (!empty($parent_node->$key)) {
+                            $item_description = (string)$parent_node->$key;
+                            break;
+                        }
+                    }
+                }
+               $parent_node = $parent_node->xpath("..")[0];
+               $item_path[] = $parent_node->getName();
+             }
+             $item_path = implode('.', array_reverse($item_path))."\n";
+             foreach ($relevant_paths as $ref => $msg) {
+                if (preg_match("/^{$ref}/", $item_path)) {
+                    $usages[] = sprintf($msg, $address, $item_description);
+                }
+             }
+        }
+        return $usages;
+    }
 }
