@@ -83,8 +83,8 @@ class Vip extends BaseModel
                     } elseif ($subnet == $broadcast_addr && $subnet_bits != '32') {
                         $messages->appendMessage(
                             new Message(
-                              gettext("You cannot use the broadcast address for this VIP"),
-                              $key . ".subnet"
+                                gettext("You cannot use the broadcast address for this VIP"),
+                                $key . ".subnet"
                             )
                         );
                     }
@@ -95,8 +95,8 @@ class Vip extends BaseModel
                         if ($ifname === (string)$node->interface && substr($ifnode->if, 0, 2) === 'lo') {
                             $messages->appendMessage(
                                 new Message(
-                                  gettext('For this type of VIP loopback is not allowed.'),
-                                  $key . ".interface"
+                                    gettext('For this type of VIP loopback is not allowed.'),
+                                    $key . ".interface"
                                 )
                             );
                             break;
@@ -108,44 +108,44 @@ class Vip extends BaseModel
                 if (empty((string)$node->password)) {
                     $messages->appendMessage(
                         new Message(
-                          gettext("You must specify a CARP password that is shared between the two VHID members."),
-                          $key . ".password"
+                            gettext("You must specify a CARP password that is shared between the two VHID members."),
+                            $key . ".password"
                         )
                     );
                 }
                 if (empty((string)$node->vhid)) {
                     $messages->appendMessage(
                         new Message(
-                          gettext('A VHID must be selected for this CARP VIP.'),
-                          $key . ".vhid"
+                            gettext('A VHID must be selected for this CARP VIP.'),
+                            $key . ".vhid"
                         )
                     );
                 } elseif (
-                  isset($carp_vhids[(string)$node->vhid]) &&
-                  $carp_vhids[(string)$node->vhid]->__reference != $node->__reference
+                    isset($carp_vhids[(string)$node->vhid]) &&
+                    $carp_vhids[(string)$node->vhid]->__reference != $node->__reference
                 ) {
                     $errmsg = gettext(
                         "VHID %s is already in use on interface %s. Pick a unique number on this interface."
                     );
                     $messages->appendMessage(
                         new Message(
-                          sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[(string)$node->vhid]->interface),
-                          $key . ".vhid"
+                            sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[(string)$node->vhid]->interface),
+                            $key . ".vhid"
                         )
                     );
                 }
             } elseif (
-              (string)$node->mode == 'ipalias' &&
-              !empty((string)$node->vhid) && (
+                (string)$node->mode == 'ipalias' &&
+                !empty((string)$node->vhid) && (
                   !isset($carp_vhids[(string)$node->vhid]) ||
                   (string)$carp_vhids[(string)$node->vhid]->interface != (string)$node->interface
-              )
+                )
             ) {
                 $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
                 $messages->appendMessage(
                     new Message(
-                      sprintf($errmsg, (string)$node->vhid, (string)$node->interface),
-                      $key . ".vhid"
+                        sprintf($errmsg, (string)$node->vhid, (string)$node->interface),
+                        $key . ".vhid"
                     )
                 );
             }
@@ -178,15 +178,15 @@ class Vip extends BaseModel
                         }
                     }
                 }
-               $parent_node = $parent_node->xpath("..")[0];
-               $item_path[] = $parent_node->getName();
-             }
-             $item_path = implode('.', array_reverse($item_path))."\n";
-             foreach ($relevant_paths as $ref => $msg) {
+                $parent_node = $parent_node->xpath("..")[0];
+                $item_path[] = $parent_node->getName();
+            }
+             $item_path = implode('.', array_reverse($item_path)) . "\n";
+            foreach ($relevant_paths as $ref => $msg) {
                 if (preg_match("/^{$ref}/", $item_path)) {
                     $usages[] = sprintf($msg, $address, $item_description);
                 }
-             }
+            }
         }
         return $usages;
     }

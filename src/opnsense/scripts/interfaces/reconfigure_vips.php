@@ -75,7 +75,7 @@ if (!empty($config['virtualip']['vip'])) {
     $interfaces = [];
     foreach (legacy_config_get_interfaces() as $interfaceKey => $itf) {
         if (!empty($itf['if']) && ($itf['type'] ?? '') != 'group') {
-          $interfaces[$interfaceKey] = $itf['if'];
+            $interfaces[$interfaceKey] = $itf['if'];
         }
     }
     foreach ($config['virtualip']['vip'] as $vipent) {

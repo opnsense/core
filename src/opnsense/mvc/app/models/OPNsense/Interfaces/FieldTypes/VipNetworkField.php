@@ -36,7 +36,6 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-
 class VipNetworkField extends TextField
 {
     public function getValidators()

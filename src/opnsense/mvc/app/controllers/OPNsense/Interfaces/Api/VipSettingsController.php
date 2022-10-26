@@ -68,7 +68,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 $vhids[] = (string)$vip->vhid;
             }
         }
-        for ($i=1; $i <= 255; $i++) {
+        for ($i = 1; $i <= 255; $i++) {
             if (!in_array((string)$i, $vhids)) {
                 return ['vhid' => $i, 'status' => 'ok'];
             }
@@ -147,7 +147,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 return [
                     'result' => 'failed',
                     'validations' => [
-                        'vip.network' => array_slice($validations, 0 , 2)
+                        'vip.network' => array_slice($validations, 0, 2)
                     ]
                 ];
             } elseif (!file_exists("/tmp/delete_vip_{$uuid}.todo")) {
@@ -182,7 +182,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = $this->getModel()->whereUsed((string)$node->subnet);
         if (!empty($validations)) {
-            throw new UserException(implode('<br/>', array_slice($validations, 0 , 5)), gettext("Item in use by"));
+            throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
         }
         $response = $this->delBase("vip", $uuid);
         if ($response['result'] ?? '' == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
