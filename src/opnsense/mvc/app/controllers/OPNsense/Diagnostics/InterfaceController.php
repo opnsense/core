@@ -63,6 +63,14 @@ class InterfaceController extends IndexController
     }
 
     /**
+     * Virtual ip addresses (carp)
+     */
+    public function vipAction()
+    {
+        $this->view->pick('OPNsense/Diagnostics/vip');
+    }
+
+    /**
      * netstat
      */
     public function netstatAction()

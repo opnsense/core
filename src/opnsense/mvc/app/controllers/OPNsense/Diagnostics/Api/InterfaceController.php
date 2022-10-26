@@ -31,6 +31,8 @@ namespace OPNsense\Diagnostics\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\Interfaces\Vip;
+
 
 /**
  * Class InterfaceController
@@ -219,6 +221,113 @@ class InterfaceController extends ApiControllerBase
     public function getInterfaceConfigAction()
     {
         return json_decode((new Backend())->configdRun('interface list ifconfig'), true);
+    }
+
+    /**
+     * retrieve virtual ip status (carp)
+     */
+    public function getVipStatusAction()
+    {
+        $records = [];
+        $addresses = [];
+        foreach ((new Vip())->vip->iterateItems() as $vip) {
+            if (!empty((string)$vip->vhid)) {
+                $addresses[(string)$vip->subnet] = (string)$vip->mode;
+            }
+        }
+        $vhids = [];
+        $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
+        $ifnames = $this->getInterfaceNames();
+        if (!empty($ifconfig)) {
+            foreach ($ifconfig as $if => $data) {
+                if (!empty($data['carp'])) {
+                    $tmpcarp = [];
+                    foreach ($data['carp'] as $carp) {
+                        $vhids[] = $carp['vhid'];
+                        $tmpcarp[$carp['vhid']] = $carp;
+                    }
+                    foreach (['ipv4', 'ipv6'] as $proto) {
+                        foreach ($data[$proto] as $subnet) {
+                            if (!empty($subnet['vhid'])) {
+                                $record = [
+                                    'interface' => !empty($ifnames[$if]) ? $ifnames[$if] : null,
+                                    'vhid' => $subnet['vhid'],
+                                    'advbase' => $tmpcarp[$subnet['vhid']]['advbase'],
+                                    'advskew' => $tmpcarp[$subnet['vhid']]['advskew'],
+                                    'subnet' => $subnet['ipaddr'],
+                                    'status' => $tmpcarp[$subnet['vhid']]['status'],
+                                    'mode' => 'ipalias'
+                                ];
+                                if (!empty($addresses[$subnet['ipaddr']])) {
+                                    $record['mode'] = $addresses[$subnet['ipaddr']];
+                                }
+                                $records[] = $record;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // add disabled or not yet enabled
+        foreach ((new Vip())->vip->iterateItems() as $vip) {
+            if (!in_array((string)$vip->vhid, $vhids) && !empty((string)$vip->vhid)) {
+                $record = [
+                    'vhid' => (string)$vip->vhid,
+                    'advbase' => (string)$vip->advbase,
+                    'advskew' => (string)$vip->advskew,
+                    'subnet' => (string)$vip->subnet,
+                    'mode' =>   (string)$vip->mode,
+                    'interface' => (string)$vip->interface,
+                    'status' => 'DISABLED'
+                ];
+                $interface = $record['interface'];
+                if (
+                  !empty(Config::getInstance()->object()->interfaces->$interface) &&
+                  !empty(Config::getInstance()->object()->interfaces->$interface->descr)
+                ) {
+                    $record['interface'] = (string)Config::getInstance()->object()->interfaces->$interface->descr;
+                } else {
+                    $record['interface'] = strtoupper($record['interface']);
+                }
+                $records[] = $record;
+            }
+        }
+        // add translations and text fields
+        foreach ($records as &$record) {
+            // static case to feed translations
+            switch ($record['status']) {
+                case 'MASTER':
+                    $record['status_txt'] = gettext('MASTER');
+                    break;
+                case 'BACKUP':
+                    $record['status_txt'] = gettext('BACKUP');
+                    break;
+                case 'INIT':
+                    $record['status_txt'] = gettext('INIT');
+                    break;
+                default:
+                    $record['status_txt'] = gettext('DISABLED');
+            }
+            if ($record['mode'] == 'carp') {
+                $record['vhid_txt'] = sprintf(
+                    gettext('%s (freq. %s/%s)'),
+                    $record['vhid'],
+                    $record['advbase'],
+                    $record['advskew']
+                );
+            } else {
+                $record['vhid_txt'] = $record['vhid'] ;
+            }
+        }
+        $mode = $this->request->getPost('mode');
+        $filter_funct = null;
+        if (!empty($mode)) {
+            $filter_funct = function ($record) use ($mode) {
+                return in_array($record['mode'], $mode);
+            };
+        }
+        return $this->searchRecordsetBase($records, null, null, $filter_funct);
     }
 
     /**
