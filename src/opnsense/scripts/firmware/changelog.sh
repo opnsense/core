@@ -65,21 +65,16 @@ changelog_fetch()
 {
 	mkdir -p ${DESTDIR}
 
-	CHECKSUM=$(changelog_checksum ${DESTDIR}/changelog.txz)
 	URL=$(changelog_url)
 
 	${FETCH} -mo ${DESTDIR}/changelog.txz "${URL}"
+	${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
 
-	if [ "${CHECKSUM}" != "$(changelog_checksum ${DESTDIR}/changelog.txz)" ]; then
-		${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
-	fi
+	opnsense-verify -q ${DESTDIR}/changelog.txz
 
-	if opnsense-verify -q ${DESTDIR}/changelog.txz; then
-		changelog_remove
-		tar -C ${DESTDIR} -xJf ${DESTDIR}/changelog.txz
-	else
-		rm -f ${DESTDIR}/changelog.txz ${DESTDIR}/changelog.txz.sig
-	fi
+	changelog_remove
+
+	tar -C ${DESTDIR} -xJf ${DESTDIR}/changelog.txz
 }
 
 changelog_show()
