@@ -1,0 +1,77 @@
+<model>
+    <mount>/virtualip</mount>
+    <version>1.0.0</version>
+    <description>
+        Virtual IP configuration
+    </description>
+    <items>
+        <vip type="ArrayField">
+            <interface type=".\VipInterfaceField">
+                <Required>Y</Required>
+                <AllowDynamic>S</AllowDynamic>
+            </interface>
+            <mode type="OptionField">
+              <Required>Y</Required>
+              <default>ipalias</default>
+              <OptionValues>
+                  <ipalias>IP Alias</ipalias>
+                  <carp>CARP</carp>
+                  <proxyarp>Proxy ARP</proxyarp>
+                  <!-- madness without function -->
+                  <other>Other</other>
+              </OptionValues>
+            </mode>
+            <subnet type=".\VipNetworkField">
+                <!--required, but validated in model -->
+                <Required>N</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Address already assigned.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </subnet>
+            <subnet_bits type=".\VipNetworkField">
+                <!--required, but validated in model -->
+                <Required>N</Required>
+            </subnet_bits>
+            <gateway type="NetworkField">
+                <Required>N</Required>
+            </gateway>
+            <noexpand type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </noexpand>
+            <nobind type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </nobind>
+            <password type="TextField">
+                <Required>N</Required>
+            </password>
+            <vhid type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>255</MaximumValue>
+                <ValidationMessage>Invalid VHID number provided, Acceptable values for vhid are 1 to 255.</ValidationMessage>
+            </vhid>
+            <advbase type="IntegerField">
+                <Required>Y</Required>
+                <default>1</default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>254</MaximumValue>
+                <ValidationMessage>Invalid advertisement interval, acceptable values are 1 to 255.</ValidationMessage>
+            </advbase>
+            <advskew type="IntegerField">
+                <Required>Y</Required>
+                <default>0</default>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>254</MaximumValue>
+                <ValidationMessage>Invalid skew value, acceptable values are 0 to 255.</ValidationMessage>
+            </advskew>
+            <descr type="TextField">
+              <Required>N</Required>
+            </descr>
+        </vip>
+    </items>
+</model>

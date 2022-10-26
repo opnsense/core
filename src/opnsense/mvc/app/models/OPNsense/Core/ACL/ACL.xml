@@ -309,15 +309,10 @@
     <page-firewall-virtualipaddress-edit>
         <name>Firewall: Virtual IP Address: Edit</name>
         <patterns>
-            <pattern>firewall_virtual_ip_edit.php*</pattern>
+            <pattern>ui/interfaces/vip</pattern>
+            <pattern>api/interfaces/vip_settings/*</pattern>
         </patterns>
     </page-firewall-virtualipaddress-edit>
-    <page-firewall-virtualipaddresses>
-        <name>Firewall: Virtual IP Addresses</name>
-        <patterns>
-            <pattern>firewall_virtual_ip.php*</pattern>
-        </patterns>
-    </page-firewall-virtualipaddresses>
     <page-diagnostics-logs-firewall-general>
         <name>Diagnostics: Log: Firewall: General</name>
         <patterns>

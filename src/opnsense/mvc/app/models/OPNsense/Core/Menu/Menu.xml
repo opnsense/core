@@ -106,9 +106,7 @@
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
         <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
-            <Settings url="/firewall_virtual_ip.php">
-                <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
-            </Settings>
+            <Settings url="/ui/interfaces/vip"/>
             <Status url="/carp_status.php">
                 <All url="/carp_status.php*" visibility="hidden"/>
             </Status>
