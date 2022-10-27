@@ -247,6 +247,12 @@ function print_service_banner($service)
     global $config;
 
     switch ($service) {
+	case 'bootup':
+            if (!product::getInstance()->booting()) {
+                break;
+            }
+            print_alert_box(gettext('The system is currently booting. Not all services have been started yet.'));
+            break;
         case 'firewall':
             if (!isset($config['system']['disablefilter'])) {
                 break;
