@@ -327,7 +327,31 @@ class InterfaceController extends ApiControllerBase
                 return in_array($record['mode'], $mode);
             };
         }
-        return $this->searchRecordsetBase($records, null, null, $filter_funct);
+        $response = $this->searchRecordsetBase($records, null, null, $filter_funct);
+        $response['carp'] = json_decode((new Backend())->configdRun("interface show carp"), true) ?? [];
+        return $response;
+    }
+
+    /**
+     * set new carp node status (enable, disable, maintenance)
+     * @return array
+     */
+    public function CarpStatusAction($status)
+    {
+        if ($this->request->isPost()) {
+            $response = json_decode((new Backend())->configdpRun('interface carp_set_status', [$status]), true);
+            if (!empty($response)) {
+                return $response;
+            }
+        }
+        return array("message" => "error");
+    }
+
+    public function getPfSyncNodesAction()
+    {
+        $records = json_decode((new Backend())->configdRun("filter list pfsync json"), true) ?? [];
+        $records = !empty($records['nodes']) ? $records['nodes'] : [];
+        return $this->searchRecordsetBase($records);
     }
 
     /**

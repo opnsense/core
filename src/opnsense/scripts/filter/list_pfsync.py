@@ -34,7 +34,7 @@ import sys
 import ujson
 
 if __name__ == '__main__':
-    result = {'nodes': [], 'hostid': None}
+    result = {'nodes': {}, 'hostid': None}
     for line in subprocess.run(['/sbin/pfctl', '-s', 'info', '-v'], capture_output=True, text=True).stdout.split('\n'):
         if line.find('Hostid:') == 0:
             result['hostid'] = line.split()[-1][2:]
@@ -45,6 +45,10 @@ if __name__ == '__main__':
             if line.find('creatorid:') > -1:
                 creatorid = line.split('creatorid:')[1].strip().split()[0]
                 if creatorid not in result['nodes']:
-                    result['nodes'].append(creatorid)
+                    result['nodes'][creatorid] = {
+                        'creatorid': creatorid,
+                        'this': 1 if result['hostid'] == creatorid else 0
+                    }
 
+    result['nodes'] = list(result['nodes'].values())
     print(ujson.dumps(result))

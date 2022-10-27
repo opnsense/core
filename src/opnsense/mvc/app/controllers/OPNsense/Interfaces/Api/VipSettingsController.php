@@ -104,7 +104,8 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        $mode = $this->request->getPost('mode');
+        // Forms only use POST, but since search offers both GET and POST, let's keep this compatible
+        $mode = $this->request->get('mode') ?? $this->request->getPost('mode');
         $filter_funct = null;
         if (!empty($mode)) {
             $filter_funct = function ($record) use ($mode) {

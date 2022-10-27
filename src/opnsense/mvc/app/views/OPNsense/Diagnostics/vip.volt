@@ -9,6 +9,33 @@
                   }
                   return request;
               },
+              responseHandler: function (data) {
+                  if (typeof data.carp === 'object') {
+                      $("#carp_demotion_level").text(data.carp.demotion);
+                      $(".carp_action").hide();
+                      if (data.carp.allow == '0') {
+                          $("#carp_allowed").html('<span class="fa fa-fw fa-times"></span>');
+                          $("#carp_status_enable").show();
+                      } else {
+                          $("#carp_allowed").html('<span class="fa fa-fw fa-check"></span>');
+                          $("#carp_status_disable").show();
+                      }
+                      if (data.carp.maintenancemode == '1') {
+                          $("#carp_maintance_mode").html('<span class="fa fa-fw fa-check"></span>');
+                          $("#carp_status_maintenance > b").text("{{ lang._('Leave Persistent CARP Maintenance Mode') }}");
+                      } else {
+                          $("#carp_maintance_mode").html('');
+                          $("#carp_status_maintenance > b").text("{{ lang._('Enter Persistent CARP Maintenance Mode') }}");
+                      }
+                      $("#carp_status_maintenance").show();
+                      if (data.carp.status_msg !== '') {
+                          $("#carp_status_msg").html($("<div>").html(data.carp.status_msg).text()).show();
+                      } else {
+                          $("#carp_status_msg").hide();
+                      }
+                  }
+                  return data;
+              },
               formatters: {
                   vhid: function (column, row) {
                       return row.vhid_txt;
@@ -19,11 +46,20 @@
               }
           }
         });
+        $("#grid-pfsyncnodes").UIBootgrid({
+          search:'/api/diagnostics/interface/get_pfsync_nodes/',
+        });
         $("#mode_filter").change(function(){
             $('#grid-vips').bootgrid('reload');
         });
 
         $("#mode_filter_container").detach().prependTo('#grid-vips-header > .row > .actionBar > .actions');
+
+        $(".carp_action").each(function(){
+          $(this).SimpleActionButton({onAction: function(data, status){
+            $('#grid-vips').bootgrid('reload');
+          }});
+        });
     });
 </script>
 
@@ -42,6 +78,8 @@
               </select>
           </div>
       </div>
+      <div id="carp_status_msg" class="alert alert-warning" style="display: none; margin: 10px;" role="alert">
+      </div>
       <table id="grid-vips" class="table table-condensed table-hover table-striped">
           <thead>
               <tr>
@@ -49,14 +87,60 @@
                   <th data-column-id="vhid" data-type="string" data-formatter="vhid" >{{ lang._('VHID') }}</th>
                   <th data-column-id="subnet" data-type="string" data-identifier="true">{{ lang._('Address') }}</th>
                   <th data-column-id="status" data-type="string" data-formatter="status">{{ lang._('Status') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
               </tr>
           </thead>
           <tbody>
           </tbody>
       </table>
+      <table class="table table-condensed" >
+        <tbody>
+          <tr>
+              <td style="width:200px;">{{ lang._('Carp allowed')}}</td>
+              <td id='carp_allowed' style="width:50px;">-</td>
+              <td>
+                  <button class="btn btn-primary carp_action" id="carp_status_enable" style="display: none;"
+                          data-endpoint='/api/diagnostics/interface/carp_status/enable'
+                          data-label="{{ lang._('Enable CARP') }}"
+                          data-error-title="{{ lang._('Error changing status') }}"
+                          type="button"
+                  ></button>
+                  <button class="btn btn-primary carp_action" id="carp_status_disable" style="display: none;"
+                          data-endpoint='/api/diagnostics/interface/carp_status/disable'
+                          data-label="{{ lang._('Temporarily Disable CARP') }}"
+                          data-error-title="{{ lang._('Error changing status') }}"
+                          type="button"
+                  ></button>
+              </td>
+          </tr>
+          <tr>
+              <td>{{ lang._('Persistent maintance mode')}}</td>
+              <td id='carp_maintance_mode'>-</td>
+              <td>
+                <button class="btn btn-primary carp_action" id="carp_status_maintenance" style="display: none;"
+                        data-endpoint='/api/diagnostics/interface/carp_status/maintenance'
+                        data-label="{{ lang._('Toggle') }}"
+                        data-error-title="{{ lang._('Error changing status') }}"
+                        type="button"
+                ></button>
+              </td>
+          </tr>
+          <tr>
+              <td>{{ lang._('Current CARP demotion level')}}</td>
+              <td id='carp_demotion_level'>-</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div id="pfsync" class="tab-pane fade in">
-
+      <table id="grid-pfsyncnodes" class="table table-condensed table-hover table-striped">
+          <thead>
+              <tr>
+                  <th data-column-id="creatorid" data-type="string">{{ lang._('Hostid') }}</th>
+                  <th data-column-id="this" data-type="boolean" data-formatter="boolean" >{{ lang._('This node') }}</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+      </table>
     </div>
 </div>
