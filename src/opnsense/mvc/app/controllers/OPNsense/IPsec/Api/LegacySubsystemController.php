@@ -68,5 +68,6 @@ class LegacySubsystemController extends ApiControllerBase
                 @unlink('/tmp/ipsec.dirty');
             }
         }
+        return $result;
     }
 }
