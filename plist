@@ -660,6 +660,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/treeview.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
@@ -825,6 +826,8 @@
 /usr/local/opnsense/scripts/firmware/update.sh
 /usr/local/opnsense/scripts/firmware/upgrade.sh
 /usr/local/opnsense/scripts/interfaces/capture.py
+/usr/local/opnsense/scripts/interfaces/carp_global_status.php
+/usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/list_arp.py
@@ -1823,7 +1826,6 @@
 /usr/local/share/man/man8/opnsense-version.8.gz
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
-/usr/local/www/carp_status.php
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
