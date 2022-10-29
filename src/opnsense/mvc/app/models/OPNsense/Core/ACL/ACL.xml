@@ -497,7 +497,10 @@
     <page-status-carp>
         <name>Status: CARP</name>
         <patterns>
-            <pattern>carp_status.php*</pattern>
+            <pattern>ui/diagnostics/interface/vip</pattern>
+            <pattern>api/diagnostics/interface/carp_status</pattern>
+            <pattern>api/diagnostics/interface/get_vip_status/*</pattern>
+            <pattern>api/diagnostics/interface/get_pfsync_nodes/*</pattern>
         </patterns>
     </page-status-carp>
     <page-status-habackup>

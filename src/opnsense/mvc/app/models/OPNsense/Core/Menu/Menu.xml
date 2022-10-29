@@ -107,9 +107,7 @@
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
         <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/ui/interfaces/vip"/>
-            <Status url="/carp_status.php">
-                <All url="/carp_status.php*" visibility="hidden"/>
-            </Status>
+            <Status url="/ui/diagnostics/interface/vip"/>
         </VIP>
         <Wireless order="940" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
