@@ -41,7 +41,15 @@
                       return row.vhid_txt;
                   },
                   status: function (column, row) {
-                      return row.status_txt;
+                      let icon = 'fa fa-info-circle fa-fw';
+                      if (row.status == 'MASTER') {
+                          icon = 'fa fa-play fa-fw text-success';
+                      } else if (row.status == 'BACKUP') {
+                          icon = 'fa fa-play fa-fw text-muted';
+                      } else if (row.status == 'DISABLED') {
+                          icon = 'fa fa-remove fa-fw text-danger';
+                      }
+                      return '<span class="'+icon+'"></span> &nbsp;' + row.status_txt;
                   },
               }
           }
