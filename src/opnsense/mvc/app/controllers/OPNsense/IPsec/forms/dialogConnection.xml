@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>connection.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>connection.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

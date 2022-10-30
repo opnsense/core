@@ -1,0 +1,18 @@
+<model>
+    <mount>//OPNsense/Swanctl</mount>
+    <version>1.0.0</version>
+    <description>OPNsense IPsec Connections</description>
+    <items>
+        <Connections>
+            <Connection type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </Connection>
+        </Connections>
+    </items>
+</model>
