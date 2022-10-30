@@ -64,19 +64,19 @@ class UIModelGrid
         $filter_funct = null,
         $sort_flags = SORT_NATURAL
     ) {
-        $itemsPerPage = $request->getPost('rowCount', 'int', -1);
-        $currentPage = $request->getPost('current', 'int', 1);
+        $itemsPerPage = $request->get('rowCount', 'int', -1);
+        $currentPage = $request->get('current', 'int', 1);
         $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
-        if ($request->hasPost('sort') && is_array($request->getPost("sort"))) {
-            $sortBy = array_keys($request->getPost("sort"));
-            if (!empty($sortBy) && $request->getPost("sort")[$sortBy[0]] == "desc") {
+        if ($request->hasPost('sort') && is_array($request->get("sort"))) {
+            $sortBy = array_keys($request->get("sort"));
+            if (!empty($sortBy) && $request->get("sort")[$sortBy[0]] == "desc") {
                 $sortDescending = true;
             }
         }
 
-        $searchPhrase = $request->getPost('searchPhrase', 'string', '');
+        $searchPhrase = $request->get('searchPhrase', 'string', '');
         return $this->fetch(
             $fields,
             $itemsPerPage,

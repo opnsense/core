@@ -128,6 +128,9 @@ class ApiControllerBase extends ControllerRoot
                     return "Invalid JSON syntax";
                 }
                 $_POST = $jsonRawBody;
+                foreach ($_POST as $key => $value) {
+                    $_REQUEST[$key] = $value;
+                }
                 break;
             case 'application/x-www-form-urlencoded':
             case 'application/x-www-form-urlencoded;charset=utf-8':
