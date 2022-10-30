@@ -96,6 +96,15 @@ class InterfaceController extends ApiControllerBase
     }
 
     /**
+     * search wrapper around getArpAction
+     * @return array
+     */
+    public function searchArpAction()
+    {
+        return $this->searchRecordsetBase($this->getArpAction());
+    }
+
+    /**
      * retrieve system arp table contents
      * @return array
      */
@@ -133,6 +142,15 @@ class InterfaceController extends ApiControllerBase
         }
 
         return $ndptable;
+    }
+
+    /**
+     * search wrapper around getNdpAction
+     * @return array
+     */
+    public function searchNdpAction()
+    {
+        return $this->searchRecordsetBase($this->getNdpAction());
     }
 
     /**

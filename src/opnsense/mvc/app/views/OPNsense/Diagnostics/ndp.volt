@@ -1,6 +1,6 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2016 by Deciso B.V.
+OPNsense® is Copyright © 2014 – 2022 by Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -28,30 +28,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     $( document ).ready(function() {
-        /**
-         * fetch system NDP table
-         */
-        function updateNDP() {
-            if ($("#grid-ndp").hasClass('bootgrid-table')) {
-                $("#grid-ndp").bootgrid('clear');
-            } else {
-                $("#grid-ndp").bootgrid({
-                    ajax: false,
-                    selection: false,
-                    multiSelect: false
-                });
-            }
-            ajaxGet("/api/diagnostics/interface/getNdp", {}, function (data, status) {
-                        if (status == "success") {
-                            $("#grid-ndp").bootgrid('append', data);
-                        }
-                    }
-            );
-        }
-
-        // initial fetch
-        $("#refresh").click(updateNDP);
-        $("#refresh").click();
+        $("#grid-ndp").UIBootgrid({
+            search:'/api/diagnostics/interface/search_ndp/'
+        });
     });
 </script>
 
