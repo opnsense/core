@@ -248,7 +248,7 @@ function print_service_banner($service)
 
     switch ($service) {
 	case 'bootup':
-            if (!product::getInstance()->booting) {
+            if (!product::getInstance()->booting()) {
                 break;
             }
             print_alert_box(gettext('The system is currently booting. Not all services have been started yet.'));
