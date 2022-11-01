@@ -100,7 +100,7 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    log = ('%d %s %s %s %s %d %d\n' % (l['t'], l['client'], l['family'], l['type'], l['domain'], l['action'], l['response_type']))
+                    log = "{t} {client} {family} {type} {domain} {action} {response_type}\n".format(**l)
                     os.write(self.pipe_fd, log.encode())
             except BrokenPipeError:
                 log_warn("Logging backend closed connection unexpectedly. Closing pipe and continuing.")
@@ -128,12 +128,11 @@ class ModuleContext:
         client = qstate.mesh_info.reply_list.query_reply
 
         if self.dnsbl_available and qname.rstrip('.') in mod_env['dnsbl']['data']:
-            action = ACTION_BLOCK
             qstate.return_rcode = self.rcode
 
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
-                self.log_entry(t, client.addr, client.family, qtype, qname, action, RESPONSE_LOCAL)
+                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_BLOCK, RESPONSE_LOCAL)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
@@ -142,25 +141,24 @@ class ModuleContext:
                 msg.answer.append("%s 3600 IN A %s" % (qname, self.dst_addr))
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
-                action = ACTION_DROP
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(t, client.addr, client.family, qtype, qname, action, RESPONSE_LOCAL)
+                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_DROP, RESPONSE_LOCAL)
                 return True
 
             if self.dnssec_enabled():
                 qstate.return_msg.rep.security = 2
+            self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_BLOCK, RESPONSE_LOCAL)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
             # Pass the query to validator/iterator
-            action = ACTION_PASS
+            self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_PASS, RESPONSE_NEW)
             qstate.ext_state[id] = MODULE_WAIT_MODULE
 
-        self.log_entry(t, client.addr, client.family, qtype, qname, action, RESPONSE_LOCAL)
         return True
 
 def query_cb(qinfo, flags, qstate, addr, zone, region, **kwargs):
     # use this to determine the server(s) interrogated for a query
-    # this requires more complex logic so leave as-is for now
+    # this requires more complex logic (it's called for every call to a server during recursion) so leave as-is for now
 
     return True
 
@@ -173,7 +171,6 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
-    log_info("response from local-data")
     ctx = mod_env['context']
     client = kwargs['repinfo']
     ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_LOCAL)
@@ -183,7 +180,7 @@ def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                               region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_SERVFAIL)
+    ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_DROP, RESPONSE_SERVFAIL)
     return True
 
 def init_standard(id, env):
