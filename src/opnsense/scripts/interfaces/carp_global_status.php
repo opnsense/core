@@ -47,7 +47,7 @@ $response = [
 ];
 
 if (empty($response['maintenancemode']) && !empty($response['demotion'])) {
-    $response['status_msg'] = gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.") ;
+    $response['status_msg'] = gettext("CARP has detected a problem and this unit has been demoted to BACKUP status.");
     $response['status_msg'] .= "<br />" . gettext("Check link status on all interfaces with configured CARP VIPs.");
 } elseif ($carpcount == 0) {
     $response['status_msg'] = gettext("Could not locate any defined CARP interfaces.");

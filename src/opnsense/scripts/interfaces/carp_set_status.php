@@ -54,26 +54,26 @@ if ($action == 'maintenance') {
         echo json_encode(['status' => 'ok', 'action' => 'enter_maintenance']);
     }
 } elseif ($action == 'disable') {
-      set_single_sysctl('net.inet.carp.allow', '0');
-      foreach ($a_vip as $vip) {
-          if (!empty($vip['vhid'])) {
-              interface_vip_bring_down($vip);
-          }
-      }
-      echo json_encode(['status' => 'ok', 'action' => 'disable']);
+    set_single_sysctl('net.inet.carp.allow', '0');
+    foreach ($a_vip as $vip) {
+        if (!empty($vip['vhid'])) {
+            interface_vip_bring_down($vip);
+        }
+    }
+    echo json_encode(['status' => 'ok', 'action' => 'disable']);
 } elseif ($action == 'enable') {
-      interfaces_carp_setup();
-      set_single_sysctl('net.inet.carp.allow', '1');
-      foreach ($a_vip as $vip) {
-          if (!empty($vip['vhid'])) {
-              if ($vip['mode'] == 'carp') {
-                  interface_carp_configure($vip);
-              } else {
-                  interface_ipalias_configure($vip);
-              }
-          }
-      }
-      echo json_encode(['status' => 'ok', 'action' => 'enable']);
+    interfaces_carp_setup();
+    set_single_sysctl('net.inet.carp.allow', '1');
+    foreach ($a_vip as $vip) {
+        if (!empty($vip['vhid'])) {
+            if ($vip['mode'] == 'carp') {
+                interface_carp_configure($vip);
+            } else {
+                interface_ipalias_configure($vip);
+            }
+        }
+    }
+    echo json_encode(['status' => 'ok', 'action' => 'enable']);
 } else {
     echo json_encode(['status' => 'failed']);
 }

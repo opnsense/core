@@ -33,7 +33,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Interfaces\Vip;
 
-
 /**
  * Class InterfaceController
  * @package OPNsense\Diagnostics\Api
@@ -301,8 +300,8 @@ class InterfaceController extends ApiControllerBase
                 ];
                 $interface = $record['interface'];
                 if (
-                  !empty(Config::getInstance()->object()->interfaces->$interface) &&
-                  !empty(Config::getInstance()->object()->interfaces->$interface->descr)
+                    !empty(Config::getInstance()->object()->interfaces->$interface) &&
+                    !empty(Config::getInstance()->object()->interfaces->$interface->descr)
                 ) {
                     $record['interface'] = (string)Config::getInstance()->object()->interfaces->$interface->descr;
                 } else {
@@ -335,7 +334,7 @@ class InterfaceController extends ApiControllerBase
                     $record['advskew']
                 );
             } else {
-                $record['vhid_txt'] = $record['vhid'] ;
+                $record['vhid_txt'] = $record['vhid'];
             }
         }
         $mode = $this->request->getPost('mode');
