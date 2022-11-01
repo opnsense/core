@@ -92,13 +92,17 @@ def inform_super(id, qstate, superqstate, qdata):
     return True
 
 def operate(id, event, qstate, qdata):
-    if (event == MODULE_EVENT_NEW) or (event == MODULE_EVENT_PASS):
+    if event == MODULE_EVENT_NEW:
         ctx = mod_env['context']
         return ctx.filter_query(id, qstate)
 
     if event == MODULE_EVENT_MODDONE:
         # Iterator finished, show response (if any)
         qstate.ext_state[id] = MODULE_FINISHED
+        return True
+
+    if event == MODULE_EVENT_PASS:
+        qstate.ext_state[id] = MODULE_WAIT_MODULE
         return True
 
     log_err("pythonmod: bad event. Query was %s" % qstate.qinfo.qname_str)
