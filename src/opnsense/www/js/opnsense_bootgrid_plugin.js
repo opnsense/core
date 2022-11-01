@@ -260,8 +260,14 @@ $.fn.UIBootgrid = function (params) {
             $('.selectpicker').selectpicker('refresh');
             // clear validation errors (if any)
             clearFormValidation('frm_' + editDlg);
-            // show dialog
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            if ($('#'+editDlg).hasClass('modal')) {
+                // show dialog
+                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            } else {
+                // when edit dialog isn't a modal, fire click event
+                $('#'+editDlg).click();
+            }
+
             if (this_grid.onBeforeRenderDialog) {
                 this_grid.onBeforeRenderDialog(payload).done(function(){
                     dfObj.resolve();
@@ -285,7 +291,11 @@ $.fn.UIBootgrid = function (params) {
                 $('#'+editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
                 saveDlg.click(function(){
                     saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
@@ -322,7 +332,11 @@ $.fn.UIBootgrid = function (params) {
             this_grid.show_edit_dialog(event, params['get'] + uuid).done(function(){
                 saveDlg.unbind('click').click(function(){
                     saveFormToEndpoint(params['set']+uuid, 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
@@ -385,12 +399,21 @@ $.fn.UIBootgrid = function (params) {
                 // clear validation errors (if any)
                 clearFormValidation('frm_' + editDlg);
 
-                // show dialog for pipe edit
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                if ($('#'+editDlg).hasClass('modal')) {
+                    // show dialog
+                    $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                } else {
+                    // when edit dialog isn't a modal, fire click event
+                    $('#'+editDlg).click();
+                }
                 // define save action
                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                     saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
