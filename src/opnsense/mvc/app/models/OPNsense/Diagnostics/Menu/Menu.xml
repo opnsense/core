@@ -6,7 +6,8 @@
     </Reporting>
     <System>
         <Diagnostics>
-            <Activity url="/ui/diagnostics/activity" cssClass="fa fa-medkit fa-fw"/>
+            <Activity url="/ui/diagnostics/activity" />
+            <Statistics url="/ui/diagnostics/system/memory" />
         </Diagnostics>
         <Routes>
             <Status order="20" url="/ui/diagnostics/interface/routes"/>
