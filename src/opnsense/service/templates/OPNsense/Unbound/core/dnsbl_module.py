@@ -24,6 +24,7 @@ class ModuleContext:
         self.dnsbl_update_time = 0
         self.dnsbl_available = False
         self.log_update_time = time.time()
+        self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
 
         self.pipe_name = '/data/dns_logger'
         self.pipe_fd = None
@@ -55,9 +56,6 @@ class ModuleContext:
                     log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
 
         self.dnsbl_available = True
-
-    def dnssec_enabled(self):
-        return 'validator' in self.env.cfg.module_conf
 
     # Defines the rendezvous point and tries to open the pipe.
     # If no reader is present, subsequent calls to log_entry
@@ -102,10 +100,12 @@ class ModuleContext:
                     l = self.pipe_buffer.popleft()
                     log = "{t} {client} {family} {type} {domain} {action} {response_type}\n".format(**l)
                     os.write(self.pipe_fd, log.encode())
-            except BrokenPipeError:
-                log_warn("Logging backend closed connection unexpectedly. Closing pipe and continuing.")
-                os.close(self.pipe_fd)
-                self.pipe_fd = None
+            except (BrokenPipeError, BlockingIOError) as e:
+                if e.__class__.__name__ == 'BrokenPipeError':
+                    log_warn("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
+                    os.close(self.pipe_fd)
+                    self.pipe_fd = None
+
                 self.pipe_buffer.appendleft(l)
 
     def update_dnsbl(self, t):
@@ -142,10 +142,10 @@ class ModuleContext:
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_DROP, RESPONSE_LOCAL)
+                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_DROP, RESPONSE_SERVFAIL)
                 return True
 
-            if self.dnssec_enabled():
+            if self.dnssec_enabled:
                 qstate.return_msg.rep.security = 2
             self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_BLOCK, RESPONSE_LOCAL)
             qstate.ext_state[id] = MODULE_FINISHED
@@ -231,7 +231,7 @@ def operate(id, event, qstate, qdata):
         qstate.ext_state[id] = MODULE_WAIT_MODULE
         return True
 
-    log_err("pythonmod: bad event. Query was %s" % qstate.qinfo.qname_str)
+    log_err("dnsbl_module: bad event. Query was %s" % qstate.qinfo.qname_str)
     qstate.ext_state[id] = MODULE_ERROR
     return True
 
