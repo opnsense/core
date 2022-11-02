@@ -294,6 +294,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/PacketCaptureController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/DnsDiagnosticsController.php
@@ -303,6 +304,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetflowController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/PacketCaptureController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/TrafficController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/dns_diagnostics.xml
