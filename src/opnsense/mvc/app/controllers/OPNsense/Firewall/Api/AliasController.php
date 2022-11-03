@@ -34,6 +34,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Category;
 
 /**
  * @package OPNsense\Firewall
@@ -51,18 +52,62 @@ class AliasController extends ApiMutableModelControllerBase
     public function searchItemAction()
     {
         $type = $this->request->get('type');
-        $filter_funct = null;
-        if (!empty($type)) {
-            $filter_funct = function ($record) use ($type) {
-                return in_array($record->type, $type);
-            };
-        }
-        return $this->searchBase(
+        $category = $this->request->get('category');
+        $filter_funct = function ($record) use ($type, $category) {
+            $match_type = empty($type) || in_array($record->type, $type);
+            $match_cat = empty($category) || array_intersect(explode(',', $record->categories), $category);
+            return $match_type && $match_cat;
+        };
+
+        $result = $this->searchBase(
             "aliases.alias",
-            array('enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'),
+            ['enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'],
             "name",
             $filter_funct
         );
+
+        // append category uuid's so we can use these in the frontend
+        $tmp = [];
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $alias) {
+            $tmp[$key] = !empty((string)$alias->categories) ? explode(',', (string)$alias->categories) : [];
+        }
+        foreach ($result['rows'] as &$record) {
+            $record['categories_uuid'] = $tmp[$record['uuid']];
+        }
+
+        return $result;
+    }
+
+    /**
+     * list categories and usage
+     * @return array
+     */
+    public function listCategoriesAction()
+    {
+        $response = ['rows' => []];
+        $catcount = [];
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
+            if (!empty((string)$alias->categories)) {
+                foreach (explode(',', (string)$alias->categories) as $cat) {
+                    if (!isset($catcount[$cat])) {
+                        $catcount[$cat] = 0;
+                    }
+                    $catcount[$cat] += 1;
+                }
+            }
+        }
+        $mdlcat = new Category();
+        foreach ($mdlcat->categories->category->iterateItems() as $key => $category) {
+            $response['rows'][] = [
+                "uuid" => $key,
+                "name" => (string)$category->name,
+                "color" => (string)$category->color,
+                "used" => isset($catcount[$key]) ? $catcount[$key] : 0
+            ];
+        }
+        array_multisort(array_column($response['rows'], "name"), SORT_ASC, SORT_NATURAL, $response['rows']);
+
+        return $response;
     }
 
     /**

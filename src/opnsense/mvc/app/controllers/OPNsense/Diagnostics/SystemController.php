@@ -36,18 +36,18 @@
   * Class SystemController
   * @package OPNsense\Diagnostics
   */
- class SystemController extends IndexController
- {
-     public function memoryAction()
-     {
-         $this->view->tabs = [
-             [
-               "name" => "memory",
-               "caption" => gettext("Memory"),
-               "endpoint" => "/api/diagnostics/system/memory"
-             ]
-         ];
-         $this->view->default_tab = "memory";
-         $this->view->pick('OPNsense/Diagnostics/treeview');
-     }
- }
+class SystemController extends IndexController
+{
+    public function memoryAction()
+    {
+        $this->view->tabs = [
+            [
+              "name" => "memory",
+              "caption" => gettext("Memory"),
+              "endpoint" => "/api/diagnostics/system/memory"
+            ]
+        ];
+        $this->view->default_tab = "memory";
+        $this->view->pick('OPNsense/Diagnostics/treeview');
+    }
+}
