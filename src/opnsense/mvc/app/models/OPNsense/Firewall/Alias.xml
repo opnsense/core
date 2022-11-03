@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Alias</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         Firewall aliases
     </description>
@@ -71,6 +71,18 @@
                     <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <multiple>Y</multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                    <Required>N</Required>
+                </categories>
                 <description type="TextField">
                     <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
