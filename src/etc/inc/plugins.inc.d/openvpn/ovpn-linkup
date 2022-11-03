@@ -24,8 +24,8 @@ elif [ -n "${ifconfig_ipv6_local}" ]; then
 	ROUTERV6="-a ${ifconfig_ipv6_local}"
 fi
 
-/usr/local/sbin/ifctl -4rd ${ROUTERV4}
-/usr/local/sbin/ifctl -6rd ${ROUTERV6}
+/usr/local/sbin/ifctl -4rd -i ${1} ${ROUTERV4}
+/usr/local/sbin/ifctl -6rd -i ${1} ${ROUTERV6}
 
 /usr/local/sbin/configctl -d interface newip ${1}
 
