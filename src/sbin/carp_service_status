@@ -56,12 +56,10 @@ if (flock($fp, LOCK_EX)) {
             SRV_FAIL_FACTOR,  implode(",", $failed_services)
         ));
         set_single_sysctl("net.inet.carp.demotion", SRV_FAIL_FACTOR);
-        closelog();
     } elseif (empty($failed_services) && $demotion_set) {
         // demotion bitmask set and service(s) operational
         syslog(LOG_WARNING, sprintf("carp promoted by %d due to service recovery", SRV_FAIL_FACTOR));
         set_single_sysctl("net.inet.carp.demotion", -1 * SRV_FAIL_FACTOR);
-        closelog();
     }
 
     flock($fp, LOCK_UN);

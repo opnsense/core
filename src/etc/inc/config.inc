@@ -71,7 +71,13 @@ final class product
     }
 }
 
-openlog(product::getInstance()->id(), LOG_ODELAY, LOG_USER);
+function reopenlog()
+{
+    openlog(product::getInstance()->id(), LOG_ODELAY, LOG_USER);
+}
+
+reopenlog();
+
 register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
