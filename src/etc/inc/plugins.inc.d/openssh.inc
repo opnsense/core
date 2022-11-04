@@ -148,10 +148,10 @@ function openssh_configure_do($verbose = false, $interface = '')
     }
 
     if ($generate_keys) {
+        /* XXX replace with file lock */
         if (is_subsystem_dirty('sshdkeys')) {
             return;
         }
-        log_error('Started creating your SSH keys. SSH startup is being delayed a wee bit.');
         mark_subsystem_dirty('sshdkeys');
         foreach ($keys as $type => $name) {
             $file = "/conf/sshd/{$name}";
@@ -160,7 +160,6 @@ function openssh_configure_do($verbose = false, $interface = '')
             mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', array($type, $file));
         }
         clear_subsystem_dirty('sshdkeys');
-        log_error('Completed creating your SSH keys. SSH will now be started.');
     }
 
     $sshport = isset($sshcfg['port']) ? $sshcfg['port'] : 22;
@@ -213,7 +212,7 @@ function openssh_configure_do($verbose = false, $interface = '')
         }
 
         if (count($listeners) >= 16) {
-            log_error("The SSH listening address $tmpaddr cannot be added due to MAX_LISTEN_SOCKS limit reached.");
+            log_msg("The SSH listening address $tmpaddr cannot be added due to MAX_LISTEN_SOCKS limit reached.", LOG_WARNING);
             continue;
         }
 

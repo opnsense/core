@@ -394,7 +394,7 @@ function ipsec_parse_phase2($ikeid)
             } elseif (in_array($ph2ent['mode'], ['tunnel', 'tunnel6'])) {
                 $leftsubnet_data = ipsec_idinfo_to_cidr($ph2ent['localid'], false, $ph2ent['mode']);
                 if (!is_ipaddr($leftsubnet_data) && !is_subnet($leftsubnet_data) && ($leftsubnet_data != "0.0.0.0/0")) {
-                    log_error("Invalid IPsec Phase 2 \"{$ph2ent['descr']}\" - {$ph2ent['localid']['type']} has no subnet.");
+                    log_msg("Invalid IPsec Phase 2 \"{$ph2ent['descr']}\" - {$ph2ent['localid']['type']} has no subnet.", LOG_ERR);
                     continue;
                 }
                 $result['local_ts'][] = $leftsubnet_data;
@@ -774,14 +774,14 @@ function ipsec_configure_spd()
                     $tunnel_dst = ipsec_resolve($ph1ent['remote-gateway'], $ph1ent['protocol']);
 
                     if (empty($tunnel_dst) || empty($tunnel_src)) {
-                        log_error(sprintf(
+                        log_msg(sprintf(
                             "spdadd: skipped for tunnel %s-%s (reqid :%s, local: %s, remote: %s)",
                             $tunnel_src,
                             $tunnel_dst,
                             !empty($reqid_mapping[$ph2ent['uniqid']]) ? $reqid_mapping[$ph2ent['uniqid']] : "",
                             $ph2ent['spd'],
                             ipsec_idinfo_to_cidr($ph2ent['remoteid'], false, $ph2ent['mode'])
-                        ));
+                        ), LOG_ERR);
                         continue;
                     }
 
@@ -1098,7 +1098,7 @@ function ipsec_write_cas()
             $cafiles[] = $fname;
             file_put_contents($fname, $cert);
         } else {
-            log_error(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']));
+            log_msg(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']), LOG_ERR);
         }
     }
     foreach (glob("{$capath}/*.0.crt") as $fname) {
@@ -1126,7 +1126,7 @@ function ipsec_write_certs()
             $cert = lookup_cert($ph1ent['certref']);
 
             if (empty($cert)) {
-                log_error(sprintf('Error: Invalid phase1 certificate reference for %s', $ph1ent['name']));
+                log_msg(sprintf('Error: Invalid phase1 certificate reference for %s', $ph1ent['name']), LOG_ERR);
                 continue;
             }
 
@@ -1685,7 +1685,7 @@ function ipsec_configure_vti($verbose = false, $device = null)
             || $local_configured != $intf_details['tunnel']['src_addr']
             || $remote_configured != $intf_details['tunnel']['dest_addr']
         ) {
-            log_error(sprintf("destroy interface %s", $intf));
+            log_msg(sprintf("destroy interface %s", $intf), LOG_DEBUG);
             legacy_interface_destroy($intf);
             unset($current_interfaces[$intf]);
         } else {
@@ -1703,12 +1703,12 @@ function ipsec_configure_vti($verbose = false, $device = null)
                             }
                         }
                         if (!$isfound) {
-                            log_error(sprintf(
+                            log_msg(sprintf(
                                 "remove tunnel %s %s from interface %s",
                                 $addr['ipaddr'],
                                 $addr['endpoint'],
                                 $intf
-                            ));
+                            ), LOG_DEBUG);
                             mwexecf('/sbin/ifconfig %s %s %s delete', [
                                 $intf, $proto == 'ipv6' ? 'inet6' : 'inet',  $addr['ipaddr'], $addr['endpoint']
                             ]);
