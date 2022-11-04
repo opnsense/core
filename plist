@@ -652,6 +652,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_pftop.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_states.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_stats.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/health.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/log.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/netflow.volt
@@ -659,7 +660,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/packetcapture.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traffic.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/treeview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/vip.volt
