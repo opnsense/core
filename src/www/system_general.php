@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dnsallowoverride_exclude'] = [];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
-    $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'];
+    $pconfig['dnssearchdomain'] = $config['system']['dnssearchdomain'] ?? null;
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['language'] = $config['system']['language'];
