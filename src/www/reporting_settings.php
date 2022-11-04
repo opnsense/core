@@ -37,16 +37,16 @@ require_once("system.inc");
 $rrdcfg = &config_read_array('rrd');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['rrdenable'] = isset($rrdcfg['enable']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['action']) && $pconfig['action'] == "ResetRRD") {
         $savemsg = gettext('RRD data has been cleared.');
-        configd_run('systemhealth flush *');
+        configd_run('health flush *');
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "flush_file") {
         $savemsg = gettext('RRD report has been cleared.');
-        configdp_run('systemhealth flush', array($pconfig['filename']));
+        configdp_run('health flush', [$pconfig['filename']]);
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "flush_netflow") {
         $savemsg = gettext('All local netflow data has been cleared.');
         configd_run('netflow flush');
@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     rrd_configure();
 }
 
-$all_rrd_files = json_decode(configd_run('systemhealth list'), true);
+$all_rrd_files = json_decode(configd_run('health list'), true);
 if (!is_array($all_rrd_files)) {
-    $all_rrd_files = array();
+    $all_rrd_files = [];
 }
 ksort($all_rrd_files);
 
