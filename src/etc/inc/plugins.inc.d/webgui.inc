@@ -112,10 +112,7 @@ function webgui_configure_do($verbose = false, $interface = '')
         $ca = ca_chain($cert);
     }
 
-    if (!webgui_generate_config($portarg, $crt, $key, $ca, $listeners)) {
-        service_log("deferred.\n", $verbose);
-        return;
-    }
+    webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
 
     /* only stop the frontend when the generation was successful */
     killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
@@ -157,8 +154,6 @@ function webgui_create_selfsigned($verbose = false)
     $a_cert = &config_read_array('cert');
 
     service_log('Creating self-signed web GUI certificate...', $verbose);
-
-    log_error('Creating TLS certificate for this host');
 
     $cert = [];
     $cert['refid'] = uniqid();
@@ -490,10 +485,5 @@ EOD;
         }
     }
 
-    if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
-        log_error('Error: cannot write configuration');
-        return 0;
-    }
-
-    return 1;
+    @file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config);
 }

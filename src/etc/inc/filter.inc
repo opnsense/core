@@ -259,7 +259,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $down_gateways = return_down_gateways();
         foreach (array("inet", "inet6") as $ipprotocol) {
             if (!empty($down_gateways)) {
-                log_error(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)));
+                log_msg(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)), LOG_DEBUG);
             }
             $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
             if ($default_gw !== null && !empty($default_gw['gateway'])) {

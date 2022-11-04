@@ -60,25 +60,25 @@ function handle_argument_group($action, $realif)
 
     switch ($action) {
         case 'stop':
-            log_error(sprintf(
+            log_msg(sprintf(
                 "DEVD: Ethernet detached event for %s(%s)",
                 $interface,
                 $realif
-            ));
+            ), LOG_NOTICE);
             interface_bring_down($interface);
             filter_configure(false, false);
             break;
         case 'start':
-            log_error(sprintf(
+            log_msg(sprintf(
                 "DEVD: Ethernet attached event for %s(%s)",
                 $interface,
                 $realif
-            ));
+            ), LOG_NOTICE);
             interface_configure(false, $interface, true, true);
             filter_configure(false, false);
             break;
         default:
-            log_error("DEVD: The action parameter passed is wrong ($action)");
+            log_msg("DEVD: The action parameter passed is wrong ($action)", LOG_ERR);
             break;
     }
 }

@@ -118,10 +118,10 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         if (!empty($gwname) && $gwname != $name) {
             continue;
         } elseif (empty($gateway['monitor'])) {
-            log_error(sprintf('The %s monitor address is empty, skipping.', $name));
+            log_msg(sprintf('The %s monitor address is empty, skipping.', $name), LOG_WARNING);
             continue;
         } elseif (in_array($gateway['monitor'], $monitor_ips)) {
-            log_error(sprintf('The %s monitor address "%s" cannot be used twice, skipping.', $name, $gateway['monitor']));
+            log_msg(sprintf('The %s monitor address "%s" cannot be used twice, skipping.', $name, $gateway['monitor']), LOG_WARNING);
             continue;
         }
 
@@ -156,18 +156,18 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             if ($gwifip == null) {
                 list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
                 if (!empty($gwifip) && is_ipaddrv4($gateway['gateway'])) {
-                    log_error(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
+                    log_msg(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip), LOG_NOTICE);
                 }
             }
 
             if (empty($gwifip)) {
-                log_error(sprintf('The required %s IPv4 interface address could not be found, skipping.', $name));
+                log_msg(sprintf('The required %s IPv4 interface address could not be found, skipping.', $name), LOG_WARNING);
                 continue;
             }
 
             /* flush the monitor unconditionally */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
+                log_msg("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
                 system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
             }
 
@@ -183,7 +183,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
              * not strictly necessary but is an added level of protection.
              */
             if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
+                log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
                 system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
@@ -212,7 +212,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             }
 
             if (empty($gwifip)) {
-                log_error(sprintf('The required %s IPv6 interface address could not be found, skipping.', $name));
+                log_msg(sprintf('The required %s IPv6 interface address could not be found, skipping.', $name), LOG_WARNING);
                 continue;
             }
 
@@ -229,7 +229,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
             /* flush the monitor unconditionally */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
+                log_msg("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
                 system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
             }
 
@@ -245,11 +245,11 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
              * not strictly necessary but is an added level of protection.
              */
             if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_error("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}");
+                log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
                 system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
             }
         } else {
-            log_error(sprintf('Unknown address family "%s" during monitor setup', $gateway['ipprotocol']));
+            log_msg(sprintf('Unknown address family "%s" during monitor setup', $gateway['ipprotocol']), LOG_ERR);
             continue;
         }
 

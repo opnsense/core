@@ -150,7 +150,7 @@ function system_sysctl_get()
         if (!empty($defaults[$key])) {
             $value = $defaults[$key]['default'];
         } else {
-            log_error('warning: ignoring missing default tunable request: ' . $key);
+            log_msg('warning: ignoring missing default tunable request: ' . $key, LOG_WARNING);
             unset($sysctls[$key]);
         }
     }
@@ -194,7 +194,7 @@ function system_resolvconf_generate($verbose = false)
 
     foreach (get_nameservers(null, true) as $dnsserver) {
         if (isset($routes[$dnsserver['host']])) {
-            log_error("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}");
+            log_warning("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}", LOG_WARNING);
             continue;
         }
 
@@ -608,7 +608,7 @@ function system_staticroutes_configure($interface = null)
         $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
         foreach ($static_routes as $rtent) {
             if (empty($gateways_arr[$rtent['gateway']])) {
-                log_error(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']));
+                log_message(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];
@@ -617,7 +617,7 @@ function system_staticroutes_configure($interface = null)
             }
 
             if (!is_subnet($rtent['network'])) {
-                log_error(sprintf('Cannot add static route to: %s', $rtent['network']));
+                log_msg(sprintf('Cannot add static route to: %s', $rtent['network']), LOG_ERR);
                 continue;
             }
             $interfacegw = $gateway['if'];
@@ -849,7 +849,7 @@ function system_kernel_configure($verbose = false)
      *
      * Keep in sync with /usr/local/etc/erc.loader.d/20-modules
      */
-    $mods = array(
+    $mods = [
         'carp',
         'if_bridge',
         'if_enc',
@@ -862,17 +862,17 @@ function system_kernel_configure($verbose = false)
         'pf',
         'pflog',
         'pfsync',
-    );
+    ];
 
     if (!empty($config['system']['crypto_hardware'])) {
         foreach (explode(',', $config['system']['crypto_hardware']) as $crypto) {
-            log_error(sprintf('Loading %s cryptographic accelerator module.', $crypto));
+            log_msg(sprintf('Loading %s cryptographic accelerator module.', $crypto), LOG_INFO);
             $mods[] = $crypto;
         }
     }
 
     if (!empty($config['system']['thermal_hardware'])) {
-        log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
+        log_msg(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']), LOG_INFO);
         $mods[] = $config['system']['thermal_hardware'];
     }
 
