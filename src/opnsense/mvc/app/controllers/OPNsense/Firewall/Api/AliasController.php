@@ -90,7 +90,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty((string)$alias->categories)) {
                 foreach (explode(',', (string)$alias->categories) as $cat) {
                     if (!isset($catcount[$cat])) {
-                        $catcount[$cat] = 0 ;
+                        $catcount[$cat] = 0;
                     }
                     $catcount[$cat] += 1;
                 }
@@ -105,7 +105,7 @@ class AliasController extends ApiMutableModelControllerBase
                 "used" => isset($catcount[$key]) ? $catcount[$key] : 0
             ];
         }
-        array_multisort(array_column($response['rows'], "name"), SORT_ASC, SORT_NATURAL, $response['rows'] );
+        array_multisort(array_column($response['rows'], "name"), SORT_ASC, SORT_NATURAL, $response['rows']);
 
         return $response;
     }
