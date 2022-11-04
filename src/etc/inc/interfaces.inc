@@ -2511,7 +2511,7 @@ function interface_track6_6to4_configure($interface, $lancfg)
         mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
     }
 
-    log_error("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
+    log_error("6to4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
     mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 }
 
