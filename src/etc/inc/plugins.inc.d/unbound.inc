@@ -548,6 +548,7 @@ function unbound_add_host_entries($ifconfig_details = null)
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 
     closelog();
+    reopenlog();
 }
 
 function unbound_acls_subnets()

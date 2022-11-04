@@ -307,6 +307,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
         if ($verbose) {
             echo "done.\n";
@@ -405,6 +406,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
         if ($verbose) {
             echo "failed.\n";
@@ -448,6 +450,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
         if ($verbose) {
             echo "failed.\n";
@@ -489,6 +492,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     unlock($filterlck);
     closelog();
+    reopenlog();
 
     if ($verbose) {
         echo "done.\n";
