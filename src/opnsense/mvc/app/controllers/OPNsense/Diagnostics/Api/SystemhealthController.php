@@ -462,7 +462,7 @@ class SystemhealthController extends ApiControllerBase
         # Source of data: xml fields of corresponding .xml metadata
         $result = array();
         $backend = new Backend();
-        $response = $backend->configdRun('systemhealth list');
+        $response = $backend->configdRun('health list');
         $healthList = json_decode($response, true);
         // search by topic and name, return array with filename
         if (is_array($healthList)) {
@@ -492,7 +492,7 @@ class SystemhealthController extends ApiControllerBase
         # Source of data: filelisting of /var/db/rrd/*.rrd
         $result = array();
         $backend = new Backend();
-        $response = $backend->configdRun('systemhealth list');
+        $response = $backend->configdRun('health list');
         $healthList = json_decode($response, true);
 
         $result['data'] = array();
@@ -542,7 +542,7 @@ class SystemhealthController extends ApiControllerBase
         $xml = false;
         if ($rrd_details['filename'] != "") {
             $backend = new Backend();
-            $response = $backend->configdpRun('systemhealth fetch', array($rrd_details['filename']));
+            $response = $backend->configdpRun('health fetch', [$rrd_details['filename']]);
             if ($response != null) {
                 $xml = @simplexml_load_string($response);
             }

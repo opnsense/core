@@ -952,6 +952,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
+/usr/local/opnsense/service/conf/actions.d/actions_health.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ids.conf
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
@@ -963,7 +964,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
-/usr/local/opnsense/service/conf/actions.d/actions_systemhealth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
 /usr/local/opnsense/service/conf/actions.d/actions_unbound.conf
 /usr/local/opnsense/service/conf/actions.d/actions_webgui.conf
