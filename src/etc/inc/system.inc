@@ -519,7 +519,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             }
             break;
         default:
-            log_error("ROUTING: unknown address family '{$family}'");
+            log_msg("ROUTING: unknown address family '{$family}'", LOG_ERR);
             return;
     }
 
@@ -529,7 +529,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             if (ip_in_subnet($gateway, $network)) {
                 $realif = null;
             } else {
-                log_error("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'", LOG_NOTICE);
             }
         }
     } else {
@@ -540,7 +540,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
-        log_error("ROUTING: keeping current default gateway '{$gateway}'");
+        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
         return;
     }
 
@@ -557,9 +557,9 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     service_log('Setting up routes...', $verbose);
 
     if (!empty($interface)) {
-        log_error("ROUTING: entering configure using '${interface}'");
+        log_msg("ROUTING: entering configure using '${interface}'", LOG_DEBUG);
     } else {
-        log_error("ROUTING: entering configure using defaults");
+        log_msg("ROUTING: entering configure using defaults", LOG_DEBUG);
     }
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
@@ -569,12 +569,12 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         $gateway = $gateways->getDefaultGW(array(), $ipproto);
         $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
         if ($gateway != null) {
-            log_error("ROUTING: {$logproto} default gateway set to {$gateway['interface']}");
+            log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_error("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
+                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}", LOG_NOTICE);
                 system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
-                log_error("ROUTING: skipping {$logproto} default route");
+                log_msg("ROUTING: skipping {$logproto} default route", LOG_NOTICE);
             }
         }
     }
