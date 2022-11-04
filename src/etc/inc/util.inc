@@ -886,12 +886,22 @@ function log_error($error)
 * RESULT
 *   null
 ******/
-function log_msg($msg, $prio = LOG_WARNING)
+function log_msg($msg, $prio = LOG_NOTICE)
 {
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
         $files = get_included_files();
         $page = basename($files[0]);
+    }
+
+    switch ($prio) {
+        case LOG_DEBUG:
+        case LOG_INFO:
+            /* lowest handled value for the time being */
+            $prio = LOG_NOTICE;
+            break;
+        default:
+            break;
     }
 
     syslog($prio, "$page: $msg");
