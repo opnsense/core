@@ -1001,7 +1001,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $old_config['realif'] = get_real_interface($if);
             $old_config['realifv6'] = get_real_interface($if, "inet6");
             $new_config = array();
-            $new_ppp_config = array();
+            $new_ppp_config = !empty($a_ppps[$pppid]) ? $a_ppps[$pppid] : [];
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
