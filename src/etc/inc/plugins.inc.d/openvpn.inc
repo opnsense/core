@@ -946,7 +946,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
     if (!mwexecf('/usr/local/sbin/openvpn --config %s', "/var/etc/openvpn/{$mode_id}.conf")) {
         $pid = waitforpid("/var/run/openvpn_{$mode_id}.pid", 10);
         if ($pid) {
-            log_msg(sprintf('OpenVPN %s %s instance started on PID %s.', $mode, $vpnid, $pid), LOG_NOTICE);
+            log_msg(sprintf('OpenVPN %s %s instance started on PID %s.', $mode, $vpnid, $pid));
         } else {
             log_msg(sprintf('OpenVPN %s %s instance start timed out.', $mode, $vpnid), LOG_WARNING);
         }

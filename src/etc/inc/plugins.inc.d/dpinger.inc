@@ -156,7 +156,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             if ($gwifip == null) {
                 list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
                 if (!empty($gwifip) && is_ipaddrv4($gateway['gateway'])) {
-                    log_msg(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip), LOG_NOTICE);
+                    log_msg(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
                 }
             }
 

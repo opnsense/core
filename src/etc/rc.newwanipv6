@@ -40,7 +40,7 @@ require_once("interfaces.inc");
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 exit_on_bootup(function ($argument) {
-    log_msg("IP renewal deferred during boot on '{$argument}'", LOG_NOTICE);
+    log_msg("IP renewal deferred during boot on '{$argument}'");
     file_put_contents('/tmp/newwanipv6_' . $argument, $argument);
 }, [$argument]);
 
@@ -87,7 +87,7 @@ if ($ip == $cacheip) {
     return;
 }
 
-log_msg("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).", LOG_NOTICE);
+log_msg("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 interfaces_vips_configure($interface, 6);
 

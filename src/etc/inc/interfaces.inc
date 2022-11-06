@@ -752,7 +752,7 @@ function interfaces_configure($verbose = false)
             /* pre-op: configuring the underlying device */
             if (!empty($devices[$device])) {
                 /* XXX devices could depend on other devices */
-                log_msg("Device $device required for $if, configuring now", LOG_NOTICE);
+                log_msg("Device $device required for $if, configuring now");
                 call_user_func_array($devices[$device], [$device]);
                 unset($devices[$device]);
             }
@@ -773,7 +773,7 @@ function interfaces_configure($verbose = false)
     /* last but not least start all unconfigured devices */
     foreach ($devices as $name => $function) {
         /* XXX devices could depend on other devices */
-        log_msg("Device $name is not assigned, configuring late", LOG_NOTICE);
+        log_msg("Device $name is not assigned, configuring late");
         call_user_func_array($function, [$name]);
     }
 }
@@ -2176,7 +2176,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             }
 
             if (in_array($realhwif, array_keys($device['names']))) {
-                log_msg("Device $realhwif requires reload for $interface, configuring now", LOG_NOTICE);
+                log_msg("Device $realhwif requires reload for $interface, configuring now");
                 call_user_func_array($device['function'], [$realhwif]);
             }
         }

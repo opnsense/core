@@ -40,7 +40,7 @@ require_once("interfaces.inc");
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 exit_on_bootup(function ($argument) {
-    log_msg("IP renewal deferred during boot on '{$argument}'", LOG_NOTICE);
+    log_msg("IP renewal deferred during boot on '{$argument}'");
     file_put_contents('/tmp/newwanip_' . $argument, $argument);
 }, [$argument]);
 
@@ -87,7 +87,7 @@ if ($ip == $cacheip) {
     return;
 }
 
-log_msg("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).", LOG_NOTICE);
+log_msg("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
 
 interfaces_vips_configure($interface, 4);
 
@@ -168,7 +168,7 @@ if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
     filter_configure_sync();
 
     if (is_ipaddr($cacheip) && $ip != $cacheip) {
-        log_msg("IP address change detected, killing states of old ip $cacheip", LOG_NOTICE);
+        log_msg("IP address change detected, killing states of old ip $cacheip");
         mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
         mwexecf('/sbin/pfctl -k %s', $cacheip);
     }

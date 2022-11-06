@@ -529,7 +529,7 @@ function system_default_route($gateway, $family, $interface, $far = false)
             if (ip_in_subnet($gateway, $network)) {
                 $realif = null;
             } else {
-                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'", LOG_NOTICE);
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
             }
         }
     } else {
@@ -571,10 +571,10 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         if ($gateway != null) {
             log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}", LOG_NOTICE);
+                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
                 system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
             } else {
-                log_msg("ROUTING: skipping {$logproto} default route", LOG_NOTICE);
+                log_msg("ROUTING: skipping {$logproto} default route");
             }
         }
     }
