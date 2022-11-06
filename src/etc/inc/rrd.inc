@@ -36,7 +36,7 @@ function rrd_create($rrdcreatecmd)
     exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
     if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
-        log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
+        log_msg(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput), LOG_ERR);
     }
     unset($rrdcreateoutput);
     return $rrdcreatereturn;
@@ -653,14 +653,14 @@ function rrd_import()
             $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
             if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
-                log_error("Cannot write $xml_file");
+                log_msg("Cannot write $xml_file", LOG_ERR);
                 continue;
             }
             $output = array();
             $status = null;
             exec("/usr/local/bin/rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
             if ($status) {
-                log_error("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.");
+                log_msg("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.", LOG_ERR);
                 continue;
             }
             unlink($xml_file);
@@ -669,7 +669,7 @@ function rrd_import()
             $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $rrd_fd = fopen($rrd_file, "w");
             if (!$rrd_fd) {
-                log_error("Cannot write $rrd_file");
+                log_msg("Cannot write $rrd_file", LOG_ERR);
                 continue;
             }
             $data = base64_decode($rrd['data']);
@@ -678,16 +678,16 @@ function rrd_import()
             if ($dcomp) {
                 /* If the decompression worked, write the decompressed data */
                 if (fwrite($rrd_fd, $dcomp) === false) {
-                    log_error("fwrite $rrd_file failed");
+                    log_msg("fwrite $rrd_file failed", LOG_ERR);
                     continue;
                 }
             } elseif (fwrite($rrd_fd, $data) === false) {
                   /* If the decompression failed, it wasn't compressed, so write raw data */
-                  log_error("fwrite $rrd_file failed");
+                  log_msg("fwrite $rrd_file failed", LOG_ERR);
                   continue;
             }
             if (fclose($rrd_fd) === false) {
-                log_error("fclose $rrd_file failed");
+                log_msg("fclose $rrd_file failed", LOG_ERR);
                 continue;
             }
         }
