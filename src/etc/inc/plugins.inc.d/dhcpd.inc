@@ -214,7 +214,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if ($dhcpv6ifconf['AdvLinkMTU'] < $mtu) {
                 $mtu = $dhcpv6ifconf['AdvLinkMTU'];
             } else {
-                log_error('Warning! Skipping AdvLinkMTU configuration since it cannot be applied.');
+                log_msg("Skipping AdvLinkMTU configuration since it cannot be applied on {$dhcpv6if}", LOG_WARNING);
             }
         }
 
@@ -357,7 +357,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
-                    log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+                    log_msg("dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}", LOG_WARNING);
                 }
             } elseif (!empty($config['system']['dnsserver'][0])) {
                 $dnslist_tmp = $config['system']['dnsserver'];
@@ -452,7 +452,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
-                log_error("Warning! dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
+                log_msg("dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}", LOG_WARNING);
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
@@ -639,7 +639,7 @@ EOD;
                     }
                 }
             } else {
-                log_error('Warning! DHCP Failover setup and no CARP virtual IPs defined!');
+                log_msg("DHCP failover set up on {$dhcpif} but no CARP virtual IPs defined!", LOG_WARNING);
             }
             $dhcpdconf_pri = "";
             if ($failover_primary) {
@@ -687,7 +687,7 @@ EOPP;
         list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
 
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
-            log_error("Warning! dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}");
+            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}", LOG_WARNING);
             continue;
         }
 
@@ -1345,14 +1345,14 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
 
                     $range_from = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['from'], '::');
                     if ($range_from == '::') {
-                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value");
+                        log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_from = $dhcpdv6cfg[$ifname]['prefixrange']['from'] . ':0:0:0:0';
                     }
 
                     $range_to = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['to'], '::');
                     if ($range_to == '::') {
-                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value");
+                        log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_to = $dhcpdv6cfg[$ifname]['prefixrange']['to'] . ':0:0:0:0';
                     }
@@ -1412,7 +1412,7 @@ EOD;
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
+            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}", LOG_WARNING);
             continue;
         }
 
