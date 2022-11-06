@@ -9,6 +9,7 @@ import signal
 import resource
 import logging
 import atexit
+import time
 from logging import handlers
 
 
@@ -107,6 +108,8 @@ class Daemonize(object):
                 sys.exit(1)
             elif process_id != 0:
                 # This is the parent process. Exit.
+                # Wait a second (so fork can do a deed) and exit
+                time.sleep(1)
                 sys.exit(0)
             # This is the child process. Continue.
 
