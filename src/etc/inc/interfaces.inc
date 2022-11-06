@@ -1239,7 +1239,7 @@ EOD;
 
     /* clean up old lock files */
     foreach ($ports as $port) {
-        @unlink("/var/spool/lock/LCK..{$port}");
+        @unlink('/var/spool/lock/LCK..' . basename($port));
     }
 
     /* fire up mpd */
