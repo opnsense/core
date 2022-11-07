@@ -13,6 +13,7 @@ name="configd"
 rcvar="configd_enable"
 : ${configd_enable="YES"}
 pidfile="/var/run/${name}.pid"
+sockfile="/var/run/configd.socket"
 
 start_precmd=configd_prestart
 start_postcmd=configd_poststart
@@ -29,18 +30,25 @@ configd_load_rc_config()
 	command_interpreter=/usr/local/bin/python3
 }
 
-#
 configd_prestart()
 {
+	# clean up again just in case as poststart will probe for socket
+	configd_poststop
+
 	# reset access rights on configd daemon script
 	chmod 700 /usr/local/opnsense/service/configd.py
 }
 
-#
 configd_poststart()
 {
 	# give the daemon some time to initialize its configuration
-	sleep 1
+	for i in 1 2 3 4 5; do
+		sleep 1
+
+		if [ -S ${sockfile} ]; then
+			break
+		fi
+	done
 }
 
 # kill configd
@@ -77,9 +85,7 @@ configd_stop()
 # cleanup after stopping configd
 configd_poststop()
 {
-	if  [ -S /var/run/configd.socket ]; then
-		rm /var/run/configd.socket
-	fi
+	rm -f ${sockfile}
 }
 
 load_rc_config $name
