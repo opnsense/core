@@ -45,7 +45,7 @@ configd_poststart()
 	for i in 1 2 3 4 5; do
 		sleep 1
 
-		if [ -S ${SOCKFILE} ]; then
+		if [ -S ${sockfile} ]; then
 			break
 		fi
 	done
@@ -85,7 +85,7 @@ configd_stop()
 # cleanup after stopping configd
 configd_poststop()
 {
-	rm -f ${SOCKFILE}
+	rm -f ${sockfile}
 }
 
 load_rc_config $name
