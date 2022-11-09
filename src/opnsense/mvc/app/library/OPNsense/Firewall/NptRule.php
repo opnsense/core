@@ -72,6 +72,10 @@ class NptRule extends Rule
     private function parseNptRules()
     {
         foreach ($this->reader('npt') as $rule) {
+            if (empty($rule['to'])) {
+                /* auto-detect expands from dynamic interface address */
+                $rule['to'] = "({$rule['interface']}:0)/" . explode('/', $rule['from'])[1];
+            }
             yield $rule;
         }
     }
