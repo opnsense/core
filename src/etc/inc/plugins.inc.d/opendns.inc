@@ -28,11 +28,11 @@
 
 function opendns_configure()
 {
-    return array(
-        'bootup' => array('opendns_configure_do'),
-        'local' => array('opendns_configure_do'),
-        'newwanip' => array('opendns_configure_do'),
-    );
+    return [
+        'bootup' => ['opendns_configure_do'],
+        'local' => ['opendns_configure_do'],
+        'newwanip' => ['opendns_configure_do'],
+    ];
 }
 
 function opendns_configure_do($verbose = false)
@@ -43,7 +43,7 @@ function opendns_configure_do($verbose = false)
         service_log('Configure OpenDNS...', $verbose);
 
         $result = opendns_register($config['opendns']);
-        syslog(LOG_NOTICE, "opendns response: $result");
+        log_msg("opendns response: $result");
 
         service_log("done.\n", $verbose);
     }
