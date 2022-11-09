@@ -248,7 +248,7 @@ function plugins_configure($hook, $verbose = false, $args = [])
 {
     array_unshift($args, $verbose);
 
-    syslog(LOG_DEBUG, sprintf('plugins_configure %s (%s)', $hook, implode(',', $args)));
+    log_msg(sprintf('plugins_configure %s (%s)', $hook, implode(',', $args)), LOG_INFO);
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -278,12 +278,12 @@ function plugins_configure($hook, $verbose = false, $args = [])
                         if ($argc > count($args)) {
                             $argc = count($args);
                         }
-                        syslog(LOG_DEBUG, sprintf(
+                        log_msg(sprintf(
                             'plugins_configure %s (execute task : %s(%s))',
                             $hook,
                             $argf,
                             implode(',', array_slice($args, 0, $argc))
-                        ));
+                        ), LOG_DEBUG);
                         try {
                             call_user_func_array($argf, array_slice($args, 0, $argc));
                         } catch (\Error $e) {
@@ -300,7 +300,7 @@ function plugins_run($hook, $args = [])
 {
     $ret = [];
 
-    syslog(LOG_DEBUG, sprintf('plugins_run %s (%s)', $hook, implode(',', $args)));
+    log_msg(sprintf('plugins_run %s (%s)', $hook, implode(',', $args)), LOG_INFO);
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -329,12 +329,12 @@ function plugins_run($hook, $args = [])
                     if ($argc > count($args)) {
                         $argc = count($args);
                     }
-                    syslog(LOG_DEBUG, sprintf(
+                    log_msg(sprintf(
                         'plugins_run %s (execute task : %s(%s))',
                         $hook,
                         $argf,
                         implode(',', array_slice($args, 0, $argc))
-                    ));
+                    ), LOG_DEBUG);
                     try {
                         $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
                     } catch (\Error $e) {
