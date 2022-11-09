@@ -39,7 +39,8 @@ class NptRule extends Rule
         'binat' => 'parseStaticText,binat ',
         'log' => 'parseBool,log',
         'interface' => 'parseInterface',
-        'from' => 'parsePlain,from , to any',
+        'ipprotocol' => 'parseStaticText,inet6 ',
+        'from' => 'parsePlain,from ',
         'to' => 'parsePlain, -> ',
         'descr' => 'parseComment'
     ];
