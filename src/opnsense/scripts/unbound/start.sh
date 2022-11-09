@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2020-2021 Deciso B.V.
+# Copyright (c) 2020-2022 Deciso B.V.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,8 +26,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-set -e
-
 # prepare and startup unbound, so we can easily background it
 
 DOMAIN=${1}
@@ -48,7 +46,7 @@ if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; t
 
 	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
 	# always let this succeed
-	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE} || true
+	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE}
 fi
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
@@ -60,7 +58,7 @@ for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); d
 done
 
 # preload the blocklist cache so the dnsbl hook can properly diff on it
-cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache || true
+cp /usr/local/etc/unbound.opnsense.d/dnsbl.conf /tmp/unbound_dnsbl.cache
 
 chown -R unbound:unbound /var/unbound
 
