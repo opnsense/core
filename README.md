@@ -14,6 +14,11 @@ https://docs.opnsense.org/development/architecture.html
 Our aim is to gradually evolve to a new codebase instead of using a
 big bang approach into something new.
 
+<a href="https://scan.coverity.com/projects/opnsense-core">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/26974/badge.svg"/>
+</a>
+
 Build tools
 ===========
 
