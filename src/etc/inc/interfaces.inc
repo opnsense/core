@@ -1320,7 +1320,7 @@ function interface_proxyarp_configure($interface = '')
             if ($vipent['mode'] === "proxyarp") {
                 if (empty($interface) || $interface == $vipent['interface']) {
                     if (empty($paa[$vipent['interface']])) {
-                        $paa[$proxyif] = array();
+                        $paa[$vipent['interface']] = [];
                     }
                     $paa[$vipent['interface']][] = $vipent;
                 }
