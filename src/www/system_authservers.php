@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
@@ -37,7 +37,7 @@ $authCNFOptions = $authFactory->listConfigOptions();
 config_read_array('system', 'authserver');
 config_read_array('ca');
 
-$a_server = array();
+$a_server = [];
 foreach (auth_get_authserver_list() as $servers) {
     $a_server[] = $servers;
 }
@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['act'])) {
         $act = $_GET['act'];
     }
-    $pconfig = array();
-    $pconfig['ldap_sync_memberof_groups'] = array();
+    $pconfig = [];
+    $pconfig['sync_memberof_groups'] = [];
     if ($act == "new") {
         $pconfig['ldap_protver'] = 3;
         $pconfig['radius_srvcs'] = "both";
@@ -89,17 +89,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'];
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
-            $pconfig['ldap_sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
-            $pconfig['ldap_sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
+            $pconfig['sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            $pconfig['sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
-                $pconfig['ldap_sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
+                $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
             }
         } elseif ($pconfig['type'] == "radius") {
-            $pconfig['radius_host'] = $a_server[$id]['host'];
-            $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'];
-            $pconfig['radius_acct_port'] = $a_server[$id]['radius_acct_port'];
-            $pconfig['radius_secret'] = $a_server[$id]['radius_secret'];
-            $pconfig['radius_timeout'] = $a_server[$id]['radius_timeout'];
+            $pconfig['radius_host'] = $a_server[$id]['host'] ?? '';
+            $pconfig['radius_auth_port'] = $a_server[$id]['radius_auth_port'] ?? '';
+            $pconfig['radius_acct_port'] = $a_server[$id]['radius_acct_port'] ?? '';
+            $pconfig['radius_secret'] = $a_server[$id]['radius_secret'] ?? '';
+            $pconfig['radius_timeout'] = $a_server[$id]['radius_timeout'] ?? '';
 
             if (!empty($pconfig['radius_auth_port']) &&
                 !empty($pconfig['radius_acct_port'])) {
@@ -111,9 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($pconfig['radius_auth_port'])) {
                 $pconfig['radius_auth_port'] = 1812;
             }
+            $pconfig['sync_memberof'] = !empty($a_server[$id]['sync_memberof']);
+            $pconfig['sync_create_local_users'] = !empty($a_server[$id]['sync_create_local_users']);
+            if (!empty($a_server[$id]['sync_memberof_groups'])) {
+                $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['sync_memberof_groups']);
+            }
         } elseif ($pconfig['type'] == 'local') {
-            foreach (array('password_policy_duration', 'enable_password_policy_constraints',
-                'password_policy_complexity', 'password_policy_length') as $fieldname) {
+            foreach (['password_policy_duration', 'enable_password_policy_constraints',
+                'password_policy_complexity', 'password_policy_length'] as $fieldname) {
                 if (!empty($config['system']['webgui'][$fieldname])) {
                     $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
                 } else {
@@ -128,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_server[$pconfig['id']])) {
         $id = $pconfig['id'];
@@ -211,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
 
       if (count($input_errors) == 0) {
-          $server = array();
+          $server = [];
           $server['refid'] = uniqid();
           if (isset($id)) {
               $server = $a_server[$id];
@@ -242,9 +247,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   }
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
-              $server['ldap_sync_memberof'] = !empty($pconfig['ldap_sync_memberof']);
-              $server['ldap_sync_memberof_groups'] = !empty($pconfig['ldap_sync_memberof_groups']) ? implode(",", $pconfig['ldap_sync_memberof_groups']) : array();
-              $server['ldap_sync_create_local_users'] = !empty($pconfig['ldap_sync_create_local_users']);
+              $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
+              $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
+              $server['ldap_sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
               $server['host'] = $pconfig['radius_host'];
 
@@ -267,6 +272,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $server['radius_auth_port'] = $pconfig['radius_auth_port'];
                   unset($server['radius_acct_port']);
               }
+              $server['sync_memberof'] = !empty($pconfig['sync_memberof']);
+              $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
+              $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == 'local') {
               foreach (array('password_policy_duration', 'enable_password_policy_constraints',
                   'password_policy_complexity', 'password_policy_length') as $fieldname) {
@@ -315,8 +323,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $all_authfields = array(
     'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
     'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'ldap_sync_memberof', 'ldap_sync_create_local_users', 'radius_host',
-    'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs'
+    'ldap_read_properties', 'sync_memberof', 'sync_create_local_users', 'radius_host',
+    'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs',
+    'password_policy_duration', 'enable_password_policy_constraints',
+    'password_policy_complexity', 'password_policy_length'
 );
 
 foreach ($all_authfields as $fieldname) {
@@ -483,15 +493,15 @@ $( document ).ready(function() {
             }, "json");
         }
     });
-    $("#ldap_read_properties").change(function(){
-        if ($(this).is(":checked")) {
-            $("#ldap_sync_memberof").prop('disabled', false);
-            $("#ldap_sync_memberof_groups").prop('disabled', false);
-            $("#ldap_sync_create_local_users").prop('disabled', false);
+    $("#ldap_read_properties, #type").change(function(){
+        if ($(this).is(":checked") || $("#type").val() == 'radius' ) {
+            $("#sync_memberof").prop('disabled', false);
+            $("#sync_memberof_groups").prop('disabled', false);
+            $("#sync_create_local_users").prop('disabled', false);
         } else {
-            $("#ldap_sync_memberof").prop('disabled', true);
-            $("#ldap_sync_memberof_groups").prop('disabled', true);
-            $("#ldap_sync_create_local_users").prop('disabled', true);
+            $("#sync_memberof").prop('disabled', true);
+            $("#sync_memberof_groups").prop('disabled', true);
+            $("#sync_create_local_users").prop('disabled', true);
         }
     });
     $("#ldap_read_properties").change();
@@ -742,47 +752,6 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_sync_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize groups'); ?></td>
-                  <td>
-                    <input id="ldap_sync_memberof" name="ldap_sync_memberof" type="checkbox" <?= empty($pconfig['ldap_sync_memberof']) ? '' : 'checked="checked"';?> />
-                    <div class="hidden" data-for="help_for_ldap_sync_memberof">
-                      <?= gettext("Synchronize groups specified by memberOf attribute after login, this option requires to enable read properties. ".
-                                  "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
-                                  "Group memberships will be persisted in OPNsense. ".
-                                  "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
-                  <td>
-                    <select name='ldap_sync_memberof_groups[]' id="ldap_sync_memberof_groups" class="selectpicker" multiple="multiple">
-<?php
-                    foreach (config_read_array('system', 'group') as $group):
-                        $selected = !empty($pconfig['ldap_sync_memberof_groups']) && in_array($group['name'], $pconfig['ldap_sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
-                      <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
-<?php
-                    endforeach; ?>
-                    </select>
-                    <div class="hidden" data-for="help_for_ldap_sync_memberof_groups">
-                      <?= gettext("Limit the groups which may be used by ldap, keep empty to consider all local groups in OPNsense. ".
-                                  "When groups are selected, you can assign unassigned groups to the user manually ");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_sync_create_local_users" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic user creation"); ?></td>
-                  <td>
-                    <input id="ldap_sync_create_local_users" name="ldap_sync_create_local_users" type="checkbox" <?= empty($pconfig['ldap_sync_create_local_users']) ? '' : 'checked="checked"';?> />
-                    <div class="hidden" data-for="help_for_ldap_sync_create_local_users">
-                      <?= gettext(
-                        "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
-                        "successful login with group memberships returned for the user."
-                      );?>
-                    </div>
-                  </td>
-                </tr>
                 <!-- RADIUS -->
                 <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hostname or IP address");?></td>
@@ -832,6 +801,47 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
+                <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize groups'); ?></td>
+                  <td>
+                    <input id="sync_memberof" name="sync_memberof" type="checkbox" <?= empty($pconfig['sync_memberof']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_sync_memberof">
+                      <?= gettext("Synchronize groups specified by memberOf or class attribute after login, this option requires to enable read properties. ".
+                                  "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
+                                  "Group memberships will be persisted in OPNsense. ".
+                                  "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
+                  <td>
+                    <select name='sync_memberof_groups[]' id="sync_memberof_groups" class="selectpicker" multiple="multiple">
+<?php
+                    foreach (config_read_array('system', 'group') as $group):
+                        $selected = !empty($pconfig['sync_memberof_groups']) && in_array($group['name'], $pconfig['sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
+                      <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
+<?php
+                    endforeach; ?>
+                    </select>
+                    <div class="hidden" data-for="help_for_sync_memberof_groups">
+                      <?= gettext("Limit the groups which may be used by this authenticator, keep empty to consider all local groups in OPNsense. ".
+                                  "When groups are selected, you can assign unassigned groups to the user manually ");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_create_local_users" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic user creation"); ?></td>
+                  <td>
+                    <input id="sync_create_local_users" name="sync_create_local_users" type="checkbox" <?= empty($pconfig['sync_create_local_users']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_sync_create_local_users">
+                      <?= gettext(
+                        "To be used in combination with synchronize groups, allow the authenticator to create new local users after ".
+                        "successful login with group memberships returned for the user."
+                      );?>
+                    </div>
+                  </td>
+                </tr>
                 <!-- pluggable options -->
 <?php
                 foreach ($authCNFOptions as $typename => $authtype):
@@ -853,13 +863,13 @@ endif; ?>
                       <td>
 <?php
                         if ($field['type'] == 'text'):?>
-                        <input name="<?=$fieldname;?>" type="text" value="<?=$pconfig[$fieldname];?>"/>
+                        <input name="<?=$fieldname;?>" type="text" value="<?=$pconfig[$fieldname] ?? '';?>"/>
 <?php
                         elseif ($field['type'] == 'dropdown'):?>
                         <select name="<?=$fieldname;?>" class="selectpicker" data-style="btn-default">
 <?php
                           foreach ($field['options'] as $option => $optiontext):?>
-                          <option value="<?=$option;?>" <?=(empty($pconfig[$fieldname]) && $field['default'] == $option) || $pconfig[$fieldname] == $option ? "selected=\"selected\"" : "";?> >
+                          <option value="<?=$option;?>" <?=(empty($pconfig[$fieldname]) && $field['default'] == $option) || ($pconfig[$fieldname] ?? '') == $option ? "selected=\"selected\"" : "";?> >
                             <?=$optiontext;?>
                           </option>
 <?php
