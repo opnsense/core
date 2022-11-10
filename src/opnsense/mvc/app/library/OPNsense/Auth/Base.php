@@ -31,6 +31,7 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 
 /**
  * Authenticator stub, implements local methods

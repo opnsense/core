@@ -29,7 +29,6 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Core\Config;
-use OPNsense\Core\Backend;
 
 /**
  * Class LDAP connector
