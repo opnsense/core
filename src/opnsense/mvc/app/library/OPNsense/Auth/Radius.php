@@ -77,7 +77,24 @@ class Radius extends Base implements IAuthConnector
     /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
-    private $lastAuthProperties = array();
+    private $lastAuthProperties = [];
+
+
+    /**
+     * @var boolean when set, synchronize groups defined in memberOf attribute to local database
+     */
+    private $syncMemberOf = false;
+
+    /**
+     * @var boolean when set, allow local user creation
+     */
+    private $syncCreateLocalUsers = false;
+
+    /**
+     * @var array limit the groups which will be considered for sync, empty means all
+     */
+    private $syncMemberOfLimit = [];
+
 
     /**
      * type name in configuration
@@ -118,6 +135,15 @@ class Radius extends Base implements IAuthConnector
             if (!empty($config[$confSetting]) && property_exists($this, $objectProperty)) {
                 $this->$objectProperty = $config[$confSetting];
             }
+        }
+        if (!empty($config['sync_create_local_users'])) {
+            $this->syncCreateLocalUsers = true;
+        }
+        if (!empty($config['sync_memberof'])) {
+            $this->syncMemberOf = true;
+        }
+        if (!empty($config['sync_memberof_groups'])) {
+            $this->syncMemberOfLimit = explode(",", strtolower($config['sync_memberof_groups']));
         }
     }
 
@@ -433,9 +459,25 @@ class Radius extends Base implements IAuthConnector
                                     }
                                     $this->lastAuthProperties['Framed-Route'][] = $resa['data'];
                                     break;
+                                case RADIUS_CLASS:
+                                    if (!empty($this->lastAuthProperties['class'])) {
+                                        $this->lastAuthProperties['class'] .= "\n" . $resa['data'];
+                                    } else {
+                                        $this->lastAuthProperties['class'] = $resa['data'];
+                                    }
+                                    break;
                                 default:
                                     break;
                             }
+                        }
+                        // update group policies when applicable
+                        if ($this->syncMemberOf) {
+                            $this->setGroupMembership(
+                                $username,
+                                $this->lastAuthProperties['class'] ?? '',
+                                $this->syncMemberOfLimit,
+                                $this->syncCreateLocalUsers
+                            );
                         }
                         return true;
                         break;
