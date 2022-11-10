@@ -920,48 +920,9 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
         }
     }
 
-    $pfctlflush = array();
-    $arpflush = array();
-
-    if (does_interface_exist($realif)) {
-        $arpflush[$realif] = 1;
-
-        if (!empty(trim(@file_get_contents("/tmp/{$realif}_router")))) {
-            $pfctlflush[$realif] = 1;
-        }
-    }
-
-    if (does_interface_exist($realifv6)) {
-        /*
-         * XXX So we flush ARP on IPv6 here!  But why?
-         *
-         * Either we want to flush NDP or both ARP
-         * and NDP, but then the same goes for IPv4.
-         */
-        $arpflush[$realifv6] = 1;
-
-        if (!empty(trim(@file_get_contents("/tmp/{$realifv6}_routerv6")))) {
-            $pfctlflush[$realifv6] = 1;
-        }
-    }
-
-    foreach (array_keys($arpflush) as $dev) {
-        mwexecf('/usr/sbin/arp -d -i %s -a', $dev);
-    }
-
-    foreach (array_keys($pfctlflush) as $dev) {
-        log_error("Clearing states for stale {$interface} route on {$dev}");
-        mwexecf('/sbin/pfctl -i %s -Fs', $dev);
-    }
-
-    /* clear stale state files associated with this interface */
-    @unlink("/tmp/{$realifv6}_nameserverv6");
-    @unlink("/tmp/{$realifv6}_prefixv6");
-    @unlink("/tmp/{$realifv6}_routerv6");
-    @unlink("/tmp/{$realifv6}_searchdomainv6");
-    @unlink("/tmp/{$realif}_nameserver");
-    @unlink("/tmp/{$realif}_router");
-    @unlink("/tmp/{$realif}_searchdomain");
+    /* clear stale state associated with this interface */
+    mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
+    mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
 }
 
 function interfaces_ptpid_used($ptpid)
