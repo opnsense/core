@@ -2575,10 +2575,8 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
-    if (is_ipaddrv4($ip4gateway)) {
-        system_host_route($wancfg['gateway-6rd'], $ip4gateway);
-    }
+    $ip4gateway = $gateways->getInterfaceGateway($interface, 'inet');
+    system_host_route($wancfg['gateway-6rd'], $ip4gateway);
 
     link_interface_to_track6($interface, $update);
 }
@@ -2663,10 +2661,8 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
     $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    $ip4gateway = $gateways->getInterfaceGateway($interface, "inet");
-    if (is_ipaddrv4($ip4gateway)) {
-        system_host_route('192.88.99.1', $ip4gateway);
-    }
+    $ip4gateway = $gateways->getInterfaceGateway($interface, 'inet');
+    system_host_route('192.88.99.1', $ip4gateway);
 
     link_interface_to_track6($interface, $update);
 }

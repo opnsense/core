@@ -498,7 +498,7 @@ function system_hostname_configure($verbose = false)
     service_log("{$hostname}\n", $verbose);
 }
 
-function system_host_route($host, $gateway, $delete = true, $add = true)
+function system_host_route($host, $gateway)
 {
     if (is_ipaddrv4($gateway)) {
         $family = 'inet';
@@ -508,11 +508,9 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
         return;
     }
 
-    if ($delete) {
-        mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
-    }
+    mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
 
-    if ($add && $host != $gateway) {
+    if ($host != $gateway) {
         mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
     }
 }
