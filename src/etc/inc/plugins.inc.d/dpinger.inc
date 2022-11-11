@@ -96,32 +96,19 @@ function dpinger_syslog()
     return $logfacilities;
 }
 
-function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
+function dpinger_instances($ifconfig_details = null)
 {
-    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
+    $instances = [];
+    $routes = [];
 
-    foreach (dpinger_processes() as $running_gwname => $process) {
-        if (!empty($gwname) && $running_gwname != $gwname) {
-            continue;
-        }
-        killbypid($process['pidfile'], 'TERM', true);
-        @unlink($process['pidfile']);
-        @unlink($process['socket']);
-    }
-
-    $ifconfig_details = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifconfig_details);
-    $monitor_ips = [];
 
-    $dpinger_default = dpinger_defaults();
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-        if (!empty($gwname) && $gwname != $name) {
+        if (empty($gateway['monitor'])) {
+            /* skip monitors not currently attached */
             continue;
-        } elseif (empty($gateway['monitor'])) {
-            log_msg(sprintf('The %s monitor address is empty, skipping.', $name), LOG_WARNING);
-            continue;
-        } elseif (in_array($gateway['monitor'], $monitor_ips)) {
-            log_msg(sprintf('The %s monitor address "%s" cannot be used twice, skipping.', $name, $gateway['monitor']), LOG_WARNING);
+        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+            /* do not monitor if such was requested */
             continue;
         }
 
@@ -136,13 +123,36 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
 
-        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-            /* flush the monitor unconditionally */
-            system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
+        if (isset($routes[$gateway['monitor']])) {
+            log_warning("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
+            continue;
         }
 
-        if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-            /* do not monitor if such was requested */
+        $routes[$gateway['monitor']] = $gateway['gateway'];
+        $instances[$name] = $gateway;
+    }
+
+    return $instances;
+}
+
+function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
+{
+    service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
+
+    foreach (dpinger_processes() as $running_gwname => $process) {
+        if (!empty($gwname) && $running_gwname != $gwname) {
+            continue;
+        }
+        killbypid($process['pidfile'], 'TERM', true);
+        @unlink($process['pidfile']);
+        @unlink($process['socket']);
+    }
+
+    $ifconfig_details = legacy_interfaces_details();
+    $dpinger_default = dpinger_defaults();
+
+    foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
+        if (!empty($gwname) && $gwname != $name) {
             continue;
         }
 
@@ -225,7 +235,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
          */
         if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
             log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
-            system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
+            system_host_route($gateway['monitor'], $gateway['gateway']);
         }
 
         /*
