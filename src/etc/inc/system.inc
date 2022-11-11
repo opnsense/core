@@ -160,6 +160,22 @@ function system_sysctl_get()
     return $sysctls;
 }
 
+function system_resolvconf_host_routes()
+{
+    $routes = [];
+
+    foreach (get_nameservers(null, true) as $dnsserver) {
+        if (isset($routes[$dnsserver['host']])) {
+            log_warning("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}", LOG_WARNING);
+            continue;
+        }
+
+        $routes[$dnsserver['host']] = $dnsserver['gateway'];
+    }
+
+    return $routes;
+}
+
 function system_resolvconf_generate($verbose = false)
 {
     global $config;
@@ -191,15 +207,10 @@ function system_resolvconf_generate($verbose = false)
     }
 
     $search = array_merge($search, get_searchdomains());
+    $routes = system_resolvconf_host_routes();
 
-    foreach (get_nameservers(null, true) as $dnsserver) {
-        if (isset($routes[$dnsserver['host']])) {
-            log_warning("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}", LOG_WARNING);
-            continue;
-        }
-
-        $resolvconf .= "nameserver {$dnsserver['host']}\n";
-        $routes[$dnsserver['host']] = $dnsserver['gateway'];
+    foreach (array_keys($routes) as $host) {
+        $resolvconf .= "nameserver {$host}\n";
     }
 
     if (count($search)) {

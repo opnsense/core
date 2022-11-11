@@ -481,6 +481,13 @@ function core_configure()
     ];
 }
 
+function core_run()
+{
+    return [
+        'host_routes' => 'system_resolvconf_host_routes',
+    ];
+}
+
 /**
  * user changed event, synchronize attached system groups for requested user
  */

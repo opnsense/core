@@ -96,6 +96,17 @@ function dpinger_syslog()
     return $logfacilities;
 }
 
+function dpinger_host_routes()
+{
+    $routes = [];
+
+    foreach (dpinger_instances() as $gateway) {
+        $routes[$gateway['monitor']] = $gateway['gateway'];
+    }
+
+    return $routes;
+}
+
 function dpinger_instances($ifconfig_details = null)
 {
     $instances = [];
@@ -294,9 +305,10 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
 function dpinger_run()
 {
-    return array(
+    return [
+        'host_routes' => 'dpinger_host_routes',
         'return_gateways_status' => 'dpinger_status',
-    );
+    ];
 }
 
 function dpinger_status()
