@@ -126,6 +126,29 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         }
 
         /*
+         * If gateway is a local link and 'monitor' is global routable
+         * then the ICMP6 response would not find its way back home.
+         */
+        if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
+           $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
+        }
+        if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
+            $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
+        }
+
+        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
+            /* flush the monitor unconditionally */
+            system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
+        }
+
+        if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+            /* do not monitor if such was requested */
+            continue;
+        }
+
+        $gwifip = null;
+
+        /*
          * Interface IP is needed since dpinger will bind a socket to it.
          * However the config GUI should already have checked this and when
          * PPPoE is used the IP address is set to "dynamic".  So using
@@ -134,9 +157,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
          * "dynamic" case) are present inside the if block.  So using
          * $gateway['ipprotocol'] is the better option.
          */
-        if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-            $gwifip = null;
-
+        if ($gateway['ipprotocol'] == 'inet') {
             if (is_ipaddrv4($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
                     /* explicitly do not require $addr['alias'] to be true here */
@@ -153,7 +174,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 }
             }
 
-            if ($gwifip == null) {
+            if (empty($gwifip)) {
                 list ($gwifip) = interfaces_primary_address($gateway['interface'], $ifconfig_details);
                 if (!empty($gwifip) && is_ipaddrv4($gateway['gateway'])) {
                     log_msg(sprintf('Chose to bind %s on %s since we could not find a proper match.', $name, $gwifip));
@@ -164,31 +185,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 log_msg(sprintf('The required %s IPv4 interface address could not be found, skipping.', $name), LOG_WARNING);
                 continue;
             }
-
-            /* flush the monitor unconditionally */
-            if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_msg("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
-                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
-            }
-
-            /* Do not monitor if such was requested */
-            if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            /*
-             * If the gateway is the same as the monitor we do not add a
-             * route as this will break the routing table.
-             * Add static routes for each gateway with their monitor IP
-             * not strictly necessary but is an added level of protection.
-             */
-            if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
-                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
-            }
-        } elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
-            $gwifip = null;
-
+        } elseif ($gateway['ipprotocol'] == 'inet6') {
             if (is_linklocal($gateway['monitor'])) {
                 /* link local monitor needs a link local address for the "src" part */
                 list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
@@ -196,7 +193,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
             }
 
-            if ($gwifip == null && is_ipaddrv6($gateway['gateway'])) {
+            if (empty($gwifip) && is_ipaddrv6($gateway['gateway'])) {
                 foreach (interfaces_addresses($gateway['interface'], false, $ifconfig_details) as $addr) {
                     if ($addr['family'] != 'inet6' || !$addr['alias']) {
                         continue;
@@ -215,42 +212,20 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 log_msg(sprintf('The required %s IPv6 interface address could not be found, skipping.', $name), LOG_WARNING);
                 continue;
             }
-
-            /*
-             * If gateway is a local link and 'monitor' is global routable
-             * then the ICMP6 response would not find its way back home.
-             */
-            if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-                $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-            }
-            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-            }
-
-            /* flush the monitor unconditionally */
-            if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_msg("Removing static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
-                system_host_route($gateway['monitor'], $gateway['gateway'], true, false);
-            }
-
-            /* Do not monitor if such was requested */
-            if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-                continue;
-            }
-
-            /*
-             * If the gateway is the same as the monitor we do not add a
-             * route as this will break the routing table.
-             * Add static routes for each gateway with their monitor IP
-             * not strictly necessary but is an added level of protection.
-             */
-            if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-                log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
-                system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
-            }
         } else {
             log_msg(sprintf('Unknown address family "%s" during monitor setup', $gateway['ipprotocol']), LOG_ERR);
             continue;
+        }
+
+        /*
+         * If the gateway is the same as the monitor we do not add a
+         * route as this will break the routing table.
+         * Add static routes for each gateway with their monitor IP
+         * not strictly necessary but is an added level of protection.
+         */
+        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
+            log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
+            system_host_route($gateway['monitor'], $gateway['gateway'], false, true);
         }
 
         /*
