@@ -101,7 +101,9 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        $routes[$gateway['monitor']] = $gateway['gateway'];
+        if (!isset($gateway['monitor_noroute'])) {
+            $routes[$gateway['monitor']] = $gateway['gateway'];
+        }
     }
 
     return $routes;
@@ -134,12 +136,15 @@ function dpinger_instances($ifconfig_details = null)
             $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
 
-        if (isset($routes[$gateway['monitor']])) {
-            log_warning("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
-            continue;
+        if (!isset($gateway['monitor_noroute'])) {
+            if (isset($routes[$gateway['monitor']])) {
+                log_warning("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
+                continue;
+            }
+
+            $routes[$gateway['monitor']] = $gateway['gateway'];
         }
 
-        $routes[$gateway['monitor']] = $gateway['gateway'];
         $instances[$name] = $gateway;
     }
 
@@ -238,8 +243,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        /* XXX add an option to skip an individual host route */
-        if (true) {
+        if (!isset($gateway['monitor_noroute'])) {
             system_host_route($gateway['monitor'], $gateway['gateway']);
         }
 
