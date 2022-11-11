@@ -509,11 +509,11 @@ function system_host_route($host, $gateway, $delete = true, $add = true)
     }
 
     if ($delete) {
-        mwexecf('/sbin/route delete -host -%s %s', array($family, $host), true);
+        mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
     }
 
-    if ($add) {
-        mwexecf('/sbin/route add -host -%s %s %s', array($family, $host, $gateway));
+    if ($add && $host != $gateway) {
+        mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
     }
 }
 

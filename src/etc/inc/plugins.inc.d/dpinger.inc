@@ -101,9 +101,7 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-            $routes[$gateway['monitor']] = $gateway['gateway'];
-        }
+        $routes[$gateway['monitor']] = $gateway['gateway'];
     }
 
     return $routes;
@@ -240,14 +238,8 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        /*
-         * If the gateway is the same as the monitor we do not add a
-         * route as this will break the routing table.
-         * Add static routes for each gateway with their monitor IP
-         * not strictly necessary but is an added level of protection.
-         */
-        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-            log_msg("Adding static route for monitor {$gateway['monitor']} via {$gateway['gateway']}", LOG_INFO);
+        /* XXX add an option to skip an individual host route */
+        if (true) {
             system_host_route($gateway['monitor'], $gateway['gateway']);
         }
 
