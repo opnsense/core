@@ -336,7 +336,10 @@ function plugins_run($hook, $args = [])
                         implode(',', array_slice($args, 0, $argc))
                     ), LOG_DEBUG);
                     try {
-                        $ret[$name] = call_user_func_array($argf, array_slice($args, 0, $argc));
+                        $result = call_user_func_array($argf, array_slice($args, 0, $argc));
+                        if (!empty($result)) {
+                            $ret[$name] = $result;
+                        }
                     } catch (\Error $e) {
                         error_log($e);
                     }
