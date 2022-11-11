@@ -473,16 +473,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_phase1[] = $ph1ent;
         }
 
-        /* if the remote gateway changed and the interface is not WAN then remove route */
-        if ($pconfig['interface'] != 'wan') {
-            if ($old_ph1ent['remote-gateway'] != $pconfig['remote-gateway']) {
-                /* XXX does this even apply? only use of system.inc at the top! */
-                system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
-            }
-        }
-
         write_config();
         mark_subsystem_dirty('ipsec');
+
         header(url_safe('Location: /ui/ipsec/tunnels'));
         exit;
     }
