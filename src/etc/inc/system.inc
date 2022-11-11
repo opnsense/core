@@ -573,11 +573,12 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         log_msg("ROUTING: entering configure using defaults", LOG_DEBUG);
     }
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $ifdetails = legacy_interfaces_details();
+    $gateways = new \OPNsense\Routing\Gateways($ifdetails);
 
     foreach (['inet', 'inet6'] as $ipproto) {
         /* determine default gateway without considering monitor status */
-        $gateway = $gateways->getDefaultGW(array(), $ipproto);
+        $gateway = $gateways->getDefaultGW([], $ipproto);
         $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
         if ($gateway != null) {
             log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
@@ -590,36 +591,12 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         }
     }
 
-    system_staticroutes_configure($interface);
-
-    service_log("done.\n", $verbose);
-
-    if ($monitor) {
-        $reloads = [];
-
-        if (!empty($interface)) {
-            foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-                if ($interface == $gateway['interface']) {
-                    $reloads[] = $name;
-                }
-            }
-        }
-
-        foreach (count($reloads) ? $reloads : [null] as $reload) {
-            plugins_configure('monitor', $verbose, [$reload]);
-        }
-    }
-}
-
-function system_staticroutes_configure($interface = null)
-{
     $static_routes = get_staticroutes(false);
     if (count($static_routes)) {
-        $ifdetails = legacy_interfaces_details();
-        $gateways_arr = (new \OPNsense\Routing\Gateways($ifdetails))->gatewaysIndexedByName(false, true);
+        $gateways_arr = $gateways->gatewaysIndexedByName(false, true);
         foreach ($static_routes as $rtent) {
             if (empty($gateways_arr[$rtent['gateway']])) {
-                log_message(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
+                log_msg(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];
@@ -656,8 +633,8 @@ function system_staticroutes_configure($interface = null)
                 if (is_ipaddr($gatewayip)) {
                     mwexec("/sbin/route delete {$cmd}", true);
                     if ($fargw) {
-                        mwexecf('/sbin/route delete %s %s -interface %s ', array($inet, $gatewayip, $interfacegw), true);
-                        mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw), true);
+                        mwexecf('/sbin/route delete %s %s -interface %s ', [$inet, $gatewayip, $interfacegw], true);
+                        mwexecf('/sbin/route add %s %s -interface %s', [$inet, $gatewayip, $interfacegw], true);
                     } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
                         $gatewayip .= "%{$interfacegw}";
                     }
@@ -667,6 +644,24 @@ function system_staticroutes_configure($interface = null)
                     mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
                 }
             }
+        }
+    }
+
+    service_log("done.\n", $verbose);
+
+    if ($monitor) {
+        $reloads = [];
+
+        if (!empty($interface)) {
+            foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
+                if ($interface == $gateway['interface']) {
+                    $reloads[] = $name;
+                }
+            }
+        }
+
+        foreach (count($reloads) ? $reloads : [null] as $reload) {
+            plugins_configure('monitor', $verbose, [$reload]);
         }
     }
 }
