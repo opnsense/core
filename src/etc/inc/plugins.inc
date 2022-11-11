@@ -206,7 +206,7 @@ function plugins_interfaces()
                     }
                     // traverse and diff interface properties with known configuration
                     foreach ($intf_data as $prop_name => $prop_value) {
-                        if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || $intf_config[$prop_name] != $prop_value) {
+                        if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || ($intf_config[$prop_name] ?? '') != $prop_value) {
                             $intf_config[$prop_name] = $prop_value;
                             $changed = true;
                         }
