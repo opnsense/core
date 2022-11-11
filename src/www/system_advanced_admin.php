@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
     $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
     $pconfig['ocsp-staple'] = isset($config['system']['webgui']['ocsp-staple']);
+    $pconfig['ocsp-staple-autocron'] = isset($config['system']['webgui']['ocsp-staple-autocron']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
@@ -160,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             (empty($pconfig['ocsp-staple'])) != empty($config['system']['webgui']['ocsp-staple']) ||
+            (empty($pconfig['ocsp-staple-autocron'])) != empty($config['system']['webgui']['ocsp-staple-autocron']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
             ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
 
@@ -187,6 +189,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['webgui']['ocsp-staple'])) {
             unset($config['system']['webgui']['ocsp-staple']);
         }
+
+        if (!empty($pconfig['ocsp-staple-autocron'])) {
+            $config['system']['webgui']['ocsp-staple-autocron'] = true;
+        } elseif (isset($config['system']['webgui']['ocsp-staple-autocron'])) {
+            unset($config['system']['webgui']['ocsp-staple-autocron']);
+        }
+
 
         if (!empty($pconfig['session_timeout'])) {
             $config['system']['webgui']['session_timeout'] = $pconfig['session_timeout'];
@@ -372,6 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         filter_configure();
         system_login_configure();
         system_hosts_generate();
+        system_cron_configure();
         plugins_configure('dns');
         plugins_configure('dhcp');
         configd_run('openssh restart', true);
@@ -602,7 +612,17 @@ $(document).ready(function() {
                   <input name="ocsp-staple" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Staple OCSP response') ?>
                   <div class="hidden" data-for="help_for_ocspstaple">
-                    <?=gettext("Retrieve OCSP data everytime webGUI (re)start and staple it along with the certificate as part of the TLS handshake. Automatic update is only working during start/restart, you need to setup a cron job to periodically update this data too.");?>
+                    <?=gettext("Retrieve OCSP data everytime webGUI (re)start and staple it along with the certificate as part of the TLS handshake. Automatic download is only working during start/restart, you need to enable auto-update or setup a cron job to periodically update this data too.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ocspstaple_autocron" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('OCSP auto-update') ?></td>
+                <td>
+                  <input name="ocsp-staple-autocron" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple-autocron']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Enable OCSP response file automatic update') ?>
+                  <div class="hidden" data-for="help_for_ocspstaple_autocron">
+                    <?=gettext("Enable automatic update of the OCSP response. Automatic update runs every 12 hours. If you need a specific schedule, disable auto-update and create a \"Update web GUI OCSP data\" cron job with the desired schedule.");?>
                   </div>
                 </td>
               </tr>

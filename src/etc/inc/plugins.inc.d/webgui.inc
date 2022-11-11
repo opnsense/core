@@ -28,6 +28,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function webgui_cron()
+{
+    global $config;
+
+    $jobs = array();
+
+    if (
+        isset($config['system']['webgui']['ocsp-staple']) && $config['system']['webgui']['ocsp-staple'] == '1' &&
+        isset($config['system']['webgui']['ocsp-staple-autocron']) && $config['system']['webgui']['ocsp-staple-autocron'] == '1'
+    ) {
+        $jobs[]['autocron'] = array('/usr/local/sbin/configctl webgui ocsp', '0', '*/12');
+    }
+
+    return $jobs;
+}
+
 function webgui_configure()
 {
     return array(
