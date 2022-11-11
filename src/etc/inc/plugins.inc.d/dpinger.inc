@@ -112,7 +112,7 @@ function dpinger_instances($ifconfig_details = null)
     $instances = [];
     $routes = [];
 
-    $gateways = new \OPNsense\Routing\Gateways($ifconfig_details);
+    $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
 
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
         if (empty($gateway['monitor'])) {
