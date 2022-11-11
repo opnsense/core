@@ -101,7 +101,9 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        $routes[$gateway['monitor']] = $gateway['gateway'];
+        if (is_ipaddr($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
+            $routes[$gateway['monitor']] = $gateway['gateway'];
+        }
     }
 
     return $routes;
