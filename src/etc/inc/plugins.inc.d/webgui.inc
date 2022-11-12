@@ -36,7 +36,7 @@ function webgui_cron()
 
     if (
         isset($config['system']['webgui']['ocsp-staple']) && $config['system']['webgui']['ocsp-staple'] == '1' &&
-        isset($config['system']['webgui']['ocsp-staple-autocron']) && $config['system']['webgui']['ocsp-staple-autocron'] == '1'
+        !isset($config['system']['webgui']['ocsp-staple-autocron-disable'])
     ) {
         $jobs[]['autocron'] = array('/usr/local/sbin/configctl webgui ocsp', '0', '*/12');
     }

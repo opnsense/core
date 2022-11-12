@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
     $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
     $pconfig['ocsp-staple'] = isset($config['system']['webgui']['ocsp-staple']);
-    $pconfig['ocsp-staple-autocron'] = isset($config['system']['webgui']['ocsp-staple-autocron']);
+    $pconfig['ocsp-staple-autocron-disable'] = isset($config['system']['webgui']['ocsp-staple-autocron-disable']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
@@ -132,6 +132,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     );
                     break;
                 }
+                if (!empty($pconfig['ocsp-staple'])) {
+                   $ca = '';
+                   $ca = ca_chain($cert);
+                   if (empty($ca)) {
+                      $input_errors[] = gettext(
+                          sprintf('No issuing CA certificate found for %s certificate. OCSP stapling is not possible.', $cert['descr'])
+                      );
+                      break;
+                   }
+                }
             }
         }
     }
@@ -161,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
             (empty($pconfig['ocsp-staple'])) != empty($config['system']['webgui']['ocsp-staple']) ||
-            (empty($pconfig['ocsp-staple-autocron'])) != empty($config['system']['webgui']['ocsp-staple-autocron']) ||
+            (empty($pconfig['ocsp-staple-autocron-disable'])) != empty($config['system']['webgui']['ocsp-staple-autocron-disable']) ||
             ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
             ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
 
@@ -190,10 +200,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['ocsp-staple']);
         }
 
-        if (!empty($pconfig['ocsp-staple-autocron'])) {
-            $config['system']['webgui']['ocsp-staple-autocron'] = true;
-        } elseif (isset($config['system']['webgui']['ocsp-staple-autocron'])) {
-            unset($config['system']['webgui']['ocsp-staple-autocron']);
+        if (!empty($pconfig['ocsp-staple-autocron-disable'])) {
+            $config['system']['webgui']['ocsp-staple-autocron-disable'] = true;
+        } elseif (isset($config['system']['webgui']['ocsp-staple-autocron-disable'])) {
+            unset($config['system']['webgui']['ocsp-staple-autocron-disable']);
         }
 
 
@@ -617,12 +627,12 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_ocspstaple_autocron" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('OCSP auto-update') ?></td>
+                <td><a id="help_for_ocspstaple_autocron_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable OCSP auto-update') ?></td>
                 <td>
-                  <input name="ocsp-staple-autocron" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple-autocron']) ? '' : 'checked="checked"' ?>/>
-                  <?= gettext('Enable OCSP response file automatic update') ?>
-                  <div class="hidden" data-for="help_for_ocspstaple_autocron">
-                    <?=gettext("Enable automatic update of the OCSP response. Automatic update runs every 12 hours. If you need a specific schedule, disable auto-update and create a \"Update web GUI OCSP data\" cron job with the desired schedule.");?>
+                  <input name="ocsp-staple-autocron-disable" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple-autocron-disable']) ? '' : 'checked="checked"' ?>/>
+                  <?= gettext('Disable OCSP response file automatic update') ?>
+                  <div class="hidden" data-for="help_for_ocspstaple_autocron_disable">
+                    <?=gettext("OCSP response file automatic update is enabled by default (if OCSP staple enabled) and runs every 12 hours. If you need a specific schedule, disable auto-update and create a \"Update web GUI OCSP data\" cron job with the desired schedule.");?>
                   </div>
                 </td>
               </tr>
