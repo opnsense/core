@@ -2268,7 +2268,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    $interface_descr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
+    $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
 
     switch ($wancfg['ipaddrv6'] ?? '') {
