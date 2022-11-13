@@ -460,49 +460,37 @@ class Action(object):
 
                 script_command = script_command + " " + script_arguments
 
-            if self.type.lower() == 'script':
-                # execute script type command
-                try:
-                    exit_status = subprocess.call(script_command, env=self.config_environment, shell=True)
-                    # send response
-                    if exit_status == 0:
-                        return 'OK'
-                    else:
-                        syslog_error('[%s] returned exit status %d' % (message_uuid, exit_status))
-                        return 'Error (%d)' % exit_status
-                except Exception as script_exception:
-                    syslog_error('[%s] Script action failed with %s at %s' % (message_uuid,
-                                                                                               script_exception,
-                                                                                               traceback.format_exc()))
-                    return 'Execute error'
-            elif self.type.lower() == 'script_output':
-                try:
-                    with tempfile.NamedTemporaryFile() as error_stream:
-                        with tempfile.NamedTemporaryFile() as output_stream:
-                            subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                                  stdout=output_stream, stderr=error_stream)
-                            output_stream.seek(0)
-                            error_stream.seek(0)
-                            script_output = output_stream.read()
-                            script_error_output = error_stream.read()
+            # execute script or script_output type command
+            try:
+                with tempfile.NamedTemporaryFile() as error_stream:
+                    with tempfile.NamedTemporaryFile() as output_stream:
+                        result = subprocess.run(script_command, env=self.config_environment, shell=True, stderr=error_stream, stdout=output_stream)
+                        output_stream.seek(0)
+                        error_stream.seek(0)
+                        script_output = output_stream.read()
+                        script_error_output = error_stream.read()
+                        if result.returncode == 0:
+                            return 'OK' if self.type.lower() == 'script' else script_output.decode()
+                        else:
                             if len(script_error_output) > 0:
-                                syslog_error('[%s] Script action stderr returned "%s"' %(
-                                    message_uuid, script_error_output.strip()[:255]
+                                syslog_error('[%s] Script action failed. Command: %s. Return Code: %s. Stderr returned "%s"' %(
+                                    message_uuid, script_command[:255], result.returncode, script_error_output.decode().strip()
                                 ))
-                            return script_output.decode()
-                except Exception as script_exception:
-                    syslog_error('[%s] Script action failed with %s at %s' % (
-                        message_uuid, script_exception, traceback.format_exc()
-                    ))
-                    return 'Execute error'
-
-            # fallback should never get here
-            return "type error"
+                            return 'Error (%d)' % result.returncode
+            except Exception as script_exception:
+                syslog_error('[%s] Script action failed with %s at %s' % (
+                    message_uuid, script_exception, traceback.format_exc()
+                ))
+                return 'Execute error'
         elif self.type.lower() == 'inline':
             # Handle inline service actions
             try:
                 # match parameters, serialize to parameter string defined by action template
                 if len(parameters) > 0:
+                    if len(parameters) > self.parameters.count('%s'):
+                        # more parameters than expected, fail execution
+                        syslog_error('[%s] Inline action failed. Parameter mismatch' % (message_uuid))
+                        return 'Parameter mismatch'
                     inline_act_parameters = self.parameters % tuple(parameters)
                 else:
                     inline_act_parameters = ''
