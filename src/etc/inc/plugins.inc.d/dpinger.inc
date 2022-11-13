@@ -130,7 +130,7 @@ function dpinger_instances($ifconfig_details = null)
          * then the ICMP6 response would not find its way back home.
          */
         if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-           $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
+            $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
         if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
             $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
