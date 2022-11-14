@@ -101,9 +101,18 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        if (!isset($gateway['monitor_noroute'])) {
-            $routes[$gateway['monitor']] = $gateway['gateway'];
+        if (isset($gateway['monitor_noroute'])) {
+            /* no need to register */
+            continue;
+        } elseif (empty($gateway['gateway'])) {
+            /* previously reported as empty */
+            continue;
+        } elseif (isset($routes[$gateway['monitor']])) {
+            log_msg("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
+            continue;
         }
+
+        $routes[$gateway['monitor']] = $gateway['gateway'];
     }
 
     return $routes;
@@ -112,7 +121,6 @@ function dpinger_host_routes()
 function dpinger_instances($ifconfig_details = null)
 {
     $instances = [];
-    $routes = [];
 
     $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
 
@@ -132,17 +140,12 @@ function dpinger_instances($ifconfig_details = null)
         if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
             $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
-        if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-            $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-        }
-
-        if (!isset($gateway['monitor_noroute'])) {
-            if (isset($routes[$gateway['monitor']])) {
-                log_warning("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
-                continue;
+        if (!empty($gateway['gateway'])) {
+            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
+                $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
             }
-
-            $routes[$gateway['monitor']] = $gateway['gateway'];
+        } else {
+            log_msg("Gateway currently empty for {$gateway['monitor']} on {$gateway['interface']}");
         }
 
         $instances[$name] = $gateway;
@@ -166,6 +169,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
     $ifconfig_details = legacy_interfaces_details();
     $dpinger_default = dpinger_defaults();
+    $routes = [];
 
     foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
@@ -243,8 +247,13 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        if (!isset($gateway['monitor_noroute'])) {
-            system_host_route($gateway['monitor'], $gateway['gateway']);
+        if (!empty($gateway['gateway']) && !isset($gateway['monitor_noroute'])) {
+            if (isset($routes[$gateway['monitor']])) {
+                log_msg("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
+            } else {
+                system_host_route($gateway['monitor'], $gateway['gateway']);
+                $routes[$gateway['monitor']] = $gateway['gateway'];
+            }
         }
 
         /*
