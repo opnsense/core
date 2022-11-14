@@ -166,7 +166,7 @@ function system_resolvconf_host_routes()
 
     foreach (get_nameservers(null, true) as $dnsserver) {
         if (isset($routes[$dnsserver['host']])) {
-            log_warning("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}", LOG_WARNING);
+            log_msg("Duplicated DNS route ignored for {$dnsserver['host']} on {$dnsserver['interface']}", LOG_WARNING);
             continue;
         }
 
