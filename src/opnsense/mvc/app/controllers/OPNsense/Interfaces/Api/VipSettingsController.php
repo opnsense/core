@@ -186,7 +186,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
             throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
         }
         $response = $this->delBase("vip", $uuid);
-        if ($response['result'] ?? '' == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
+        if (($response['result'] ?? '') == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
             file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
         }
         return $response;

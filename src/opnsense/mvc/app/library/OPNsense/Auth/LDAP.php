@@ -333,11 +333,8 @@ class LDAP extends Base implements IAuthConnector
     public function connect($bind_url, $userdn = null, $password = null, $timeout = 30)
     {
         $retval = false;
-        set_error_handler(
-            function () {
-                null;
-            }
-        );
+
+        set_error_handler(function () { /* do nothing */ });
 
         $this->closeLDAPHandle();
 

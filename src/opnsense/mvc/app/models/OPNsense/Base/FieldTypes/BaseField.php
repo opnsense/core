@@ -477,7 +477,7 @@ abstract class BaseField
                         return $constr_class->newInstance($constraint);
                     }
                 } catch (ReflectionException $e) {
-                    null; // ignore configuration errors, if the constraint can't be found, skip.
+                    /* ignore configuration errors, if the constraint can't be found, skip. */
                 }
             }
         }

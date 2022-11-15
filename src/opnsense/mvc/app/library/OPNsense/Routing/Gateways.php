@@ -258,8 +258,7 @@ class Gateways
                         }
                     }
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
-                        // if name is already taken, don't try to add a new (virtual) entry
-                        null;
+                        /* if name is already taken, don't try to add a new (virtual) entry */
                     } elseif (($router = $this->getRouterFromFile($realif, $ipproto)) != null) {
                         $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {
