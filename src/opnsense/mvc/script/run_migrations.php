@@ -71,7 +71,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 }
             }
         } catch (\ReflectionException $e) {
-            null; // cannot construct, skip
+            /* cannot construct, skip */
         }
     }
 }
