@@ -448,25 +448,33 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
-        if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+        if ($this->request->isPost() && $this->request->hasPost($post_field) && $uuid != null) {
             $mdl = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                if ($node != null) {
-                    $node->setNodes($this->request->getPost($post_field));
-                    if (is_array($overlay)) {
-                        $node->setNodes($overlay);
-                    }
-                    $result = $this->validate($node, $post_field);
-                    if (empty($result['validations'])) {
-                        // save config if validated correctly
-                        $this->save();
-                        $result = array("result" => "saved");
-                    } else {
-                        $result["result"] = "failed";
-                    }
-                    return $result;
+            $node = $mdl->getNodeByReference($path . '.' . $uuid);
+            if ($node == null) {
+                // set is an "upsert" operation, if we don't know the uuid, it's ok to create it.
+                // this eases scriptable actions where a single unique entry should be pushed atomically to
+                // multiple hosts.
+                $node = $mdl->getNodeByReference($path);
+                if ($node != null && $node->isArrayType()) {
+                    $node = $node->Add();
+                    $node->setAttributeValue("uuid", $uuid);
                 }
+            }
+            if ($node != null) {
+                $node->setNodes($this->request->getPost($post_field));
+                if (is_array($overlay)) {
+                    $node->setNodes($overlay);
+                }
+                $result = $this->validate($node, $post_field);
+                if (empty($result['validations'])) {
+                    // save config if validated correctly
+                    $this->save();
+                    $result = array("result" => "saved");
+                } else {
+                    $result["result"] = "failed";
+                }
+                return $result;
             }
         }
         return array("result" => "failed");
