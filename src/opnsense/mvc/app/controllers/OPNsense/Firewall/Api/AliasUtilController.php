@@ -81,7 +81,7 @@ class AliasUtilController extends ApiControllerBase
         if ($result !== null) {
             // return sorted (case insensitive)
             $result = array_values($result);
-            natcasesort($result);
+            sort($result, SORT_NATURAL | SORT_FLAG_CASE);
         }
         return $result;
     }
