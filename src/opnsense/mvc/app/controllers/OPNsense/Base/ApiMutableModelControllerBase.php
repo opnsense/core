@@ -313,8 +313,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = SORT_NATURAL)
-    {
+    public function searchBase(
+        $path,
+        $fields,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
+    ) {
         $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {

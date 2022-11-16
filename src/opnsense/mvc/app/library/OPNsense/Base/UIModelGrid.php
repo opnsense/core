@@ -62,7 +62,7 @@ class UIModelGrid
         $fields,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
@@ -109,7 +109,7 @@ class UIModelGrid
         $sortDescending = false,
         $searchPhrase = '',
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
         $result = array('rows' => array());
 
