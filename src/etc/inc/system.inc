@@ -75,6 +75,9 @@ function system_sysctl_defaults()
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
         'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
         'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
+        'kern.ipc.nmbclusters' => [ 'default' => '1000000' ],
+        'kern.ipc.nmbjumbop' => [ 'default' => '524288' ],
+        'kern.ipc.nmbjumbo9' => [ 'default' => '524288' ],
         'kern.randompid' => [ 'default' => '1' ],
         'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
@@ -113,6 +116,7 @@ function system_sysctl_defaults()
         'net.link.bridge.pfil_onlyip' => [ 'default' => '0' ],
         'net.link.ether.inet.log_arp_movements' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
         'net.link.ether.inet.log_arp_wrong_iface' => [ 'default' => isset($config['system']['sharednet']) ? '0' : '1', 'required' => true ],
+        'net.link.ifqmaxlen' => [ 'default' => '128', 'required' => true ],
         'net.link.tap.user_open' => [ 'default' => '1' ],
         'net.link.vlan.mtag_pcp' => [ 'default' => '1', 'required' => true ],
         'net.local.dgram.maxdgram' => [ 'default' => '8192', 'required' => true ],
