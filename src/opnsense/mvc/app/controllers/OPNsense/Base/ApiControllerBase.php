@@ -127,7 +127,7 @@ class ApiControllerBase extends ControllerRoot
                 if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
                     return "Invalid JSON syntax";
                 }
-                $_POST = $jsonRawBody;
+                $_POST = is_array($jsonRawBody) ? $jsonRawBody : [];
                 foreach ($_POST as $key => $value) {
                     $_REQUEST[$key] = $value;
                 }
