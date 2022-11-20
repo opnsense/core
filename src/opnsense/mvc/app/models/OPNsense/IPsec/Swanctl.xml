@@ -14,5 +14,68 @@
                 </description>
             </Connection>
         </Connections>
+        <locals>
+            <local type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <connection type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.Swanctl</source>
+                            <items>Connections.Connection</items>
+                            <display>description</display>
+                        </host>
+                    </Model>
+                    <Required>Y</Required>
+                </connection>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </local>
+        </locals>
+        <remotes>
+            <remote type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <connection type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.Swanctl</source>
+                            <items>Connections.Connection</items>
+                            <display>description</display>
+                        </host>
+                    </Model>
+                    <Required>Y</Required>
+                </connection>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </remote>
+        </remotes>
+        <children>
+            <child type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <connection type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.Swanctl</source>
+                            <items>Connections.Connection</items>
+                            <display>description</display>
+                        </host>
+                    </Model>
+                    <Required>Y</Required>
+                </connection>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </child>
+        </children>
     </items>
 </model>

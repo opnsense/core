@@ -73,8 +73,79 @@ class ConnectionsController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    public function connectionExistsAction($uuid)
+    {
+        return [
+            "exists" => isset($this->getModel()->Connections->Connection->$uuid)
+        ];
+    }
+
     public function delConnectionAction($uuid)
     {
         return $this->delBase('Connections.Connection', $uuid);
     }
+
+    public function searchLocalAction()
+    {
+        return $this->searchBase('locals.local', ['description']);
+    }
+    public function getLocalAction($uuid = null)
+    {
+        return $this->getBase('local', 'locals.local', $uuid);
+    }
+    public function setLocalAction($uuid = null)
+    {
+        return $this->setBase('local', 'locals.local', $uuid);
+    }
+    public function addLocalAction()
+    {
+        return $this->addBase('local', 'locals.local');
+    }
+    public function delLocalAction($uuid)
+    {
+        return $this->delBase('locals.local', $uuid);
+    }
+
+    public function searchRemoteAction()
+    {
+        return $this->searchBase('remotes.remote', ['description']);
+    }
+    public function getRemoteAction($uuid = null)
+    {
+        return $this->getBase('remote', 'remotes.remote', $uuid);
+    }
+    public function setRemoteAction($uuid = null)
+    {
+        return $this->setBase('remote', 'remotes.remote', $uuid);
+    }
+    public function addRemoteAction()
+    {
+        return $this->addBase('remote', 'remotes.remote');
+    }
+    public function delRemoteAction($uuid)
+    {
+        return $this->delBase('remotes.remote', $uuid);
+    }
+
+    public function searchChildAction()
+    {
+        return $this->searchBase('children.child', ['description']);
+    }
+    public function getChildAction($uuid = null)
+    {
+        return $this->getBase('child', 'children.child', $uuid);
+    }
+    public function setChildAction($uuid = null)
+    {
+        return $this->setBase('child', 'children.child', $uuid);
+    }
+    public function addChildAction()
+    {
+        return $this->addBase('child', 'children.child');
+    }
+    public function delChildAction($uuid)
+    {
+        return $this->delBase('children.child', $uuid);
+    }
+
 }

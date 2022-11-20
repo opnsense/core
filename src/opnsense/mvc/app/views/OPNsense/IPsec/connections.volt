@@ -8,15 +8,49 @@
           del:'/api/ipsec/connections/del_connection/',
         });
 
+        let detail_grids = {
+            locals: 'local',
+            remotes: 'remote',
+            children: 'child',
+        };
+        for (const [grid_key, obj_type] of Object.entries(detail_grids)) {
+          $("#grid-" + grid_key).UIBootgrid({
+            search:'/api/ipsec/connections/search_' + obj_type,
+            get:'/api/ipsec/connections/get_' + obj_type + '/',
+            set:'/api/ipsec/connections/set_' + obj_type + '/',
+            add:'/api/ipsec/connections/add_' + obj_type + '/',
+            del:'/api/ipsec/connections/del_' + obj_type + '/',
+            options:{
+                navigation: obj_type == 'child' ? 3 : 0,
+                selection: obj_type == 'child' ? true : false,
+                useRequestHandlerOnGet: true,
+                requestHandler: function(request) {
+                    request['connection'] = $("#connection\\.uuid").val();
+                    return new URLSearchParams(request).toString();
+                }
+            }
+          });
+        }
+
         $(".hidden_attr").closest('tr').hide();
 
         $("#ConnectionDialog").click(function(){
+            $("#connection_details").hide();
+            ajaxGet("/api/ipsec/connections/connection_exists/" + $("#connection\\.uuid").val(), {}, function(data){
+                if (data.exists) {
+                    $("#connection_details").show();
+                }
+            });
             $(this).show();
         });
 
         $("#ConnectionDialog").change(function(){
-            $("#tab_connections").click();
-            $("#ConnectionDialog").hide();
+            if ($("#connection_details").is(':visible')) {
+                $("#tab_connections").click();
+                $("#ConnectionDialog").hide();
+            } else {
+                $("#ConnectionDialog").click();
+            }
         });
 
         $("#connection\\.description").change(function(){
@@ -31,6 +65,16 @@
     });
 
 </script>
+
+<style>
+  div.section_header > hr {
+      margin: 0px;
+  }
+  div.section_header > h2 {
+      padding-left: 5px;
+      margin: 0px;
+  }
+</style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="tab_connections" href="#connections">{{ lang._('Connections') }}</a></li>
@@ -66,9 +110,95 @@
       </div>
     </div>
     <div id="edit_connection" class="tab-pane fade in">
+        <div class="section_header">
+          <h2>{{ lang._('General settings')}}</h2>
+          <hr/>
+        </div>
         <div>
           <form id="frm_ConnectionDialog">
           </form>
+        </div>
+        <div id="connection_details">
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="section_header">
+                <h2>{{ lang._('Local Authentication')}}</h2>
+                <hr/>
+              </div>
+              <table id="grid-locals" class="table table-condensed table-hover table-striped" data-editDialog="DialogLocal">
+                  <thead>
+                      <tr>
+                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td></td>
+                          <td>
+                              <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                          </td>
+                      </tr>
+                  </tfoot>
+              </table>
+            </div>
+            <div class="col-xs-6">
+              <div class="section_header">
+                <h2>{{ lang._('Remote Authentication')}}</h2>
+                <hr/>
+              </div>
+              <table id="grid-remotes" class="table table-condensed table-hover table-striped" data-editDialog="DialogRemote">
+                  <thead>
+                      <tr>
+                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td></td>
+                          <td>
+                              <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                          </td>
+                      </tr>
+                  </tfoot>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="section_header">
+                <h2>{{ lang._('Children')}}</h2>
+                <hr/>
+              </div>
+              <table id="grid-children" class="table table-condensed table-hover table-striped" data-editDialog="DialogChild">
+                  <thead>
+                      <tr>
+                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td></td>
+                          <td>
+                              <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                              <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+                          </td>
+                      </tr>
+                  </tfoot>
+              </table>
+            </div>
+          </div>
         </div>
         <div id="ConnectionDialogBtns">
             <button type="button" class="btn btn-primary" id="btn_ConnectionDialog_save">
@@ -80,3 +210,6 @@
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','label':lang._('Edit Connection')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogLocal,'id':'DialogLocal','label':lang._('Edit Local')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogRemote','label':lang._('Edit Child')])}}

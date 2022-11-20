@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>local.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>local.connection</id>
+        <label>Host override</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>local.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

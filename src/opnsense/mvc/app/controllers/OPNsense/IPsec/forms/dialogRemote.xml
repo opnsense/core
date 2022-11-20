@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>remote.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>remote.connection</id>
+        <label>Host override</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>remote.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

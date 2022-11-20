@@ -34,5 +34,8 @@ class ConnectionsController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/IPsec/connections');
         $this->view->formDialogConnection = $this->getForm('dialogConnection');
+        $this->view->formDialogLocal = $this->getForm('dialogLocal');
+        $this->view->formDialogRemote = $this->getForm('dialogRemote');
+        $this->view->formDialogChild = $this->getForm('dialogChild');
     }
 }
