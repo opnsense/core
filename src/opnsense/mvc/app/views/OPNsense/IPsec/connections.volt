@@ -4,9 +4,11 @@
           search:'/api/ipsec/connections/search_connection',
           get:'/api/ipsec/connections/get_connection/',
           set:'/api/ipsec/connections/set_connection/',
-          add:'/api/ipsec/connections/add_connection/',
+          add:'/api/ipsec/connections/set_connection/',
           del:'/api/ipsec/connections/del_connection/',
         });
+
+        $(".hidden_attr").closest('tr').hide();
 
         $("#ConnectionDialog").click(function(){
             $(this).show();

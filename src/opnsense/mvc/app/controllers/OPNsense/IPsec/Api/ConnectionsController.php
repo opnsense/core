@@ -46,6 +46,11 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function setConnectionAction($uuid = null)
     {
+        $post = $this->request->getPost('connection');
+        if (empty($uuid) && !empty($post) && !empty($post['uuid'])) {
+            // use form provided uuid when not provided as uri parameter
+            $uuid = $post['uuid'];
+        }
         return $this->setBase('connection', 'Connections.Connection', $uuid);
     }
 
@@ -56,7 +61,16 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function getConnectionAction($uuid = null)
     {
-        return $this->getBase('connection', 'Connections.Connection', $uuid);
+        $result = $this->getBase('connection', 'Connections.Connection', $uuid);
+        if (!empty($result['connection'])) {
+            $fetchmode = $this->request->has("fetchmode") ? $this->request->get("fetchmode") : null;
+            if (empty($uuid) || $fetchmode == 'copy') {
+                $result['connection']['uuid'] = $this->getModel()->Connections->generateUUID();
+            } else {
+                $result['connection']['uuid'] = $uuid;
+            }
+        }
+        return $result;
     }
 
     public function delConnectionAction($uuid)
