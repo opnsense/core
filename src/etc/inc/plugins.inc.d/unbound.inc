@@ -351,6 +351,7 @@ function unbound_configure_do($verbose = false, $unused = '')
     unbound_generate_config();
 
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound_logger.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (!unbound_enabled()) {
@@ -367,6 +368,11 @@ function unbound_configure_do($verbose = false, $unused = '')
         if (isset($config['unbound']['regdhcpdomain'])) {
             $domain = $config['unbound']['regdhcpdomain'];
         }
+    }
+
+    @unlink('/var/unbound/data/stats');
+    if (isset($config['unbound']['stats'])) {
+        @touch('/var/unbound/data/stats');
     }
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);

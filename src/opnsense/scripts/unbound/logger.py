@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 import sys
 import selectors
 import argparse
@@ -12,23 +14,67 @@ from daemonize import Daemonize
 from sqlite3_helper import check_and_repair
 
 class DNSReader:
-    def __init__(self):
+    def __init__(self, flush_interval):
         check_and_repair("/var/unbound/data/unbound.sqlite")
 
         self.con = sqlite3.connect("/var/unbound/data/unbound.sqlite")
         self.cursor = self.con.cursor()
         self.timer = 0
-        self.flush_interval = 5
+        self.flush_interval = flush_interval
         self.count = 0
         self.buffer = deque()
         self.buf_max = 4000
 
         try:
-            self.cursor.execute("CREATE TABLE IF NOT EXISTS query(time, client, family, type, domain, action, response_type)")
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS query (
+                    qid INTEGER PRIMARY KEY,
+                    time INTEGER,
+                    client TEXT,
+                    family TEXT,
+                    type TEXT,
+                    domain TEXT,
+                    action INTEGER,
+                    response_type INTEGER
+                )
+            """)
+            self.cursor.execute("PRAGMA journal_mode = WAL") # persists across connections
+            for size in [300, 60]:
+                self.create_bucket(size)
+            self.cursor.execute("CREATE INDEX IF NOT EXISTS idx_query ON query(time)")
         except sqlite3.DatabaseError as e:
             syslog.syslog(syslog.LOG_ERR, "Unable to set up database: %s" % e)
-            self.con.close()
+            self.close()
             sys.exit(1)
+
+    def create_bucket(self, interval):
+        bucket = """
+            CREATE VIEW IF NOT EXISTS v_time_buckets_{min}min AS
+            WITH RECURSIVE
+                cnt(x) AS (
+                    SELECT (unixepoch() - (unixepoch() % {intv})) x
+                    UNION ALL
+                    SELECT x - {intv} FROM cnt
+                    LIMIT {lim}
+                )
+            SELECT x as start_timestamp,
+                x + {intv} as end_timestamp
+            FROM cnt;
+        """.format(intv=interval, min=(interval//60), lim=((60//(interval//60))*24))
+        self.cursor.execute(bucket)
+
+    def rotate_db(self, interval=7):
+        query = """
+            DELETE
+            FROM query
+            WHERE time not in (
+                SELECT time
+                FROM query
+                WHERE DATETIME(time, 'unixepoch') > DATETIME('now', 'start of day', '-{interval} days')
+                ORDER BY time desc
+            );
+        """.format(interval=interval)
+        self.cursor.execute(query)
 
     def close(self):
         self.con.close()
@@ -45,9 +91,13 @@ class DNSReader:
         if len(self.buffer) > self.buf_max or flush:
             if flush:
                 self.timer = time.time()
+                self.rotate_db()
             while len(self.buffer) > 0:
-                self.cursor.execute("INSERT INTO query VALUES(?, ?, ?, ?, ?, ?, ?)",
-                    self.buffer.popleft())
+                self.cursor.execute("""
+                    INSERT INTO query (
+                        time, client, family, type, domain, action, response_type
+                    ) VALUES(?, ?, ?, ?, ?, ?, ?)
+                """, self.buffer.popleft())
             self.con.commit()
 
         return True
@@ -69,7 +119,7 @@ class DNSReader:
         t2 = (end - start)
         return (t1, t2)
 
-def run_logger(target_pipe):
+def run_logger(target_pipe, flush_interval):
     fd = None
     sel = selectors.DefaultSelector()
 
@@ -79,7 +129,7 @@ def run_logger(target_pipe):
         syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
         sys.exit(1)
 
-    r = DNSReader()
+    r = DNSReader(flush_interval)
     sel.register(fd, selectors.EVENT_READ, r.read)
 
     while True:
@@ -99,6 +149,7 @@ if __name__ == '__main__':
     parser.add_argument('--pipe', help='named pipe file location', default='/var/unbound/data/dns_logger')
     parser.add_argument('--foreground', help='run (log) in foreground', default=False, action='store_true')
     parser.add_argument('--test', help='run in test mode', default=False, action='store_true')
+    parser.add_argument('--flush_interval', help='interval to flush to db', default=5)
 
     inputargs = parser.parse_args()
 
@@ -106,7 +157,7 @@ if __name__ == '__main__':
 
     if not inputargs.test:
         syslog.syslog(syslog.LOG_NOTICE, 'Daemonizing unbound logging backend.')
-        cmd = lambda : run_logger(target_pipe=inputargs.pipe)
+        cmd = lambda : run_logger(target_pipe=inputargs.pipe, flush_interval=inputargs.flush_interval)
         daemon = Daemonize(app="unbound_logger", pid=inputargs.pid, action=cmd, foreground=inputargs.foreground)
         daemon.start()
     else:

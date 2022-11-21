@@ -70,3 +70,7 @@ chown -R unbound:unbound /var/unbound || true
 if [ -n "${DOMAIN}" ]; then
 	/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
 fi
+
+if [ -f /var/unbound/data/stats ]; then
+  /usr/local/opnsense/scripts/unbound/logger.py
+fi

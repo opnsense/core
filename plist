@@ -392,12 +392,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AdvancedController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/DiagnosticsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DnsblController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/ForwardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/advanced.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
@@ -680,6 +682,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overrides.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
@@ -928,8 +931,9 @@
 /usr/local/opnsense/scripts/unbound/blocklists.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/check.sh
+/usr/local/opnsense/scripts/unbound/logger.py
 /usr/local/opnsense/scripts/unbound/start.sh
-/usr/local/opnsense/scripts/unbound/unbound_logger.py
+/usr/local/opnsense/scripts/unbound/stats.py
 /usr/local/opnsense/scripts/unbound/wrapper.py
 /usr/local/opnsense/service/conf/actions.d/actions_auth.conf
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf

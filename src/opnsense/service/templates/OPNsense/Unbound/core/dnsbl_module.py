@@ -13,6 +13,7 @@ RESPONSE_NEW = 0
 RESPONSE_LOCAL = 1
 RESPONSE_CACHE = 2
 RESPONSE_SERVFAIL = 3
+RESPONSE_BLOCK = 4
 
 class ModuleContext:
     def __init__(self, env):
@@ -25,6 +26,7 @@ class ModuleContext:
         self.dnsbl_available = False
         self.log_update_time = time.time()
         self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
+        self.stats_enabled = os.path.exists('/data/stats')
 
         self.pipe_name = '/data/dns_logger'
         self.pipe_fd = None
@@ -33,7 +35,8 @@ class ModuleContext:
         self.pipe_buffer = deque(maxlen=100000) # buffer to hold qdata as long as a backend is not present
 
         self.update_dnsbl(self.log_update_time)
-        self.create_pipe_rdv()
+        if self.stats_enabled:
+            self.create_pipe_rdv()
 
     def dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
@@ -57,15 +60,13 @@ class ModuleContext:
 
         self.dnsbl_available = True
 
-    # Defines the rendezvous point and tries to open the pipe.
-    # If no reader is present, subsequent calls to log_entry
-    # will attempt to open the pipe if necessary while being throttled
+    # Defines the rendezvous point, but does not open it.
+    # Subsequent calls to log_entry will attempt to open the pipe if necessary while being throttled
     # by a default timer
     def create_pipe_rdv(self):
         if os.path.exists(self.pipe_name):
             os.unlink(self.pipe_name)
         os.mkfifo(self.pipe_name)
-        self.try_open_pipe()
 
     def try_open_pipe(self):
         try:
@@ -74,6 +75,7 @@ class ModuleContext:
             self.pipe_fd = os.open(self.pipe_name, os.O_NONBLOCK | os.O_WRONLY)
         except OSError as e:
             if e.errno == errno.ENXIO:
+                log_warn("dnsbl_module: no logging backend found.")
                 self.pipe_fd = None
                 return False
             else:
@@ -82,14 +84,18 @@ class ModuleContext:
         return True
 
     def log_entry(self, t, client, family, type, domain, action, response_type):
+        if not self.stats_enabled:
+            return
         kwargs = locals()
         del kwargs['self']
         self.pipe_buffer.append(kwargs)
         if self.pipe_fd is None:
             if (time.time() - self.pipe_timer) > 10:
                 self.pipe_timer = time.time()
+                log_info("dnsbl_module: attempting to open pipe")
                 if not self.try_open_pipe():
                     return
+                log_info("dnsbl_module: successfully opened pipe")
             else:
                 return
 
@@ -121,18 +127,19 @@ class ModuleContext:
                 self.load_dnsbl()
 
     def filter_query(self, id, qstate):
-        t = time.time()
+        t = int(time.time())
         self.update_dnsbl(t)
         qname = qstate.qinfo.qname_str
-        qtype = qstate.qinfo.qtype_str
+        qtype = qstate.qinfo.qtype
+        qtype_str = qstate.qinfo.qtype_str
+        # XXX: breaks on DNSSEC
         client = qstate.mesh_info.reply_list.query_reply
 
         if self.dnsbl_available and qname.rstrip('.') in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
-
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
-                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_BLOCK, RESPONSE_LOCAL)
+                self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_BLOCK, RESPONSE_BLOCK)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
@@ -142,16 +149,16 @@ class ModuleContext:
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_DROP, RESPONSE_SERVFAIL)
+                self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_DROP, RESPONSE_SERVFAIL)
                 return True
 
             if self.dnssec_enabled:
                 qstate.return_msg.rep.security = 2
-            self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_BLOCK, RESPONSE_LOCAL)
+            self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_BLOCK, RESPONSE_BLOCK)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
             # Pass the query to validator/iterator
-            self.log_entry(t, client.addr, client.family, qtype, qname, ACTION_PASS, RESPONSE_NEW)
+            self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_PASS, RESPONSE_NEW)
             qstate.ext_state[id] = MODULE_WAIT_MODULE
 
         return True
@@ -166,21 +173,21 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_CACHE)
+    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_CACHE)
     return True
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_LOCAL)
+    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_LOCAL)
     return True
 
 def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                               region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(time.time(), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_DROP, RESPONSE_SERVFAIL)
+    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_DROP, RESPONSE_SERVFAIL)
     return True
 
 def init_standard(id, env):
@@ -207,10 +214,11 @@ def deinit(id):
     if ctx.pipe_fd is not None:
         os.close(ctx.pipe_fd)
 
-    try:
-        os.unlink(ctx.pipe_name)
-    except Exception as e:
-        log_err(e)
+    if ctx.stats_enabled:
+        try:
+            os.unlink(ctx.pipe_name)
+        except:
+            pass
 
     return True
 
