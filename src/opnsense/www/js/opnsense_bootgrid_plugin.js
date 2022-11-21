@@ -155,6 +155,7 @@ $.fn.UIBootgrid = function (params) {
                     let rowid = params.datakey !== undefined ? params.datakey : 'uuid';
                     commandlist.map(function(command){
                         let has_option = command.classname !== undefined;
+                        let option_title_str = command.title !== undefined ? " title=\""+command.title+"\"" : "";
                         for (let i=0; i < command.requires.length; i++) {
                             if (!(command.requires[i] in params)) {
                                 has_option = false;
@@ -162,7 +163,8 @@ $.fn.UIBootgrid = function (params) {
                         }
 
                         if (has_option) {
-                            html.push("<button type=\"button\" class=\"btn btn-xs btn-default bootgrid-tooltip command-"+command.name+
+                            html.push("<button type=\"button\" " + option_title_str +
+                                " class=\"btn btn-xs btn-default bootgrid-tooltip command-"+command.name+
                                 "\" data-row-id=\"" + row[rowid] + "\">"+
                                 "<span class=\""+command.classname+"\"></span></button> "
                             );
