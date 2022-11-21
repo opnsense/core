@@ -362,6 +362,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
         $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
     }
+
     /* if pf already generated a hostid, reuse it */
     $current_hostid = get_current_hostid();
     if (!empty($current_hostid)) {
