@@ -54,10 +54,12 @@ class OverviewController extends ApiControllerBase
         return json_decode($response, true);
     }
 
-    public function totalsAction()
+    public function totalsAction($maximum)
     {
         $this->sessionClose();
-        $response = (new Backend())->configdRun('unbound qstats totals');
+        $max = preg_replace("/^(?:(?![0-9]).)*$/", "10", $maximum);
+        $response = (new Backend())->configdpRun('unbound qstats totals', array($max));
+        error_log(print_r($response, TRUE));
         return json_decode($response, true);
     }
 }

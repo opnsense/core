@@ -33,10 +33,6 @@
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/chart.css', theme_name)) }}" rel="stylesheet" />
 
 <script>
-    function percentage(value, total) {
-        return ((value / total) * 100).toFixed(2);
-    }
-
     $(document).ready(function() {
         $('#info').hide();
 
@@ -160,6 +156,7 @@
 
         g_queryChart = null;
 
+        /* Initial page load */
         function do_startup() {
             let def = new $.Deferred();
             ajaxGet('/api/unbound/overview/isEnabled', {}, function(is_enabled, status) {
@@ -173,21 +170,19 @@
                 }
                 $('#timeperiod').selectpicker('refresh');
 
-                /* Initial page load */
-                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                    let formatted = formatQueryData(data);
-                    let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
-                    g_queryChart = create_chart($("#rollingChart"), stepSize, formatted);
+                ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
+                    $('#totalCounter').html(data.total);
+                    $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
+                    $('#cachedCounter').html(data.cached.total + " (" + data.cached.pcnt + "%)");
+                    $('#localCounter').html(data.local.total + " (" + data.local.pcnt + "%)");
 
-                    ajaxGet('/api/unbound/overview/totals', {}, function(data, status) {
-                        $('#totalCounter').html(data.total);
-                        $('#blockedCounter').html(data.blocked + " (" + percentage(data.blocked, data.total) + "%)");
-                        $('#cachedCounter').html(data.cached + " (" + percentage(data.cached, data.total) + "%)");
-                        $('#localCounter').html(data.local + " (" + percentage(data.local, data.total) + "%)");
+                    $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
-                        $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
-
+                    ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
                         def.resolve();
+                        let formatted = formatQueryData(data);
+                        let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
+                        g_queryChart = create_chart($("#rollingChart"), stepSize, formatted);
                     });
                 });
             });

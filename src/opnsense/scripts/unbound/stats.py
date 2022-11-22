@@ -31,34 +31,8 @@ class DBWrapper:
         self.cursor.close()
         self.con.close()
 
-def handle_counters(db, args):
-    query = """
-        SELECT COUNT(*) AS total,
-            COUNT(case q.action when 1 then 1 else null end) AS blocked,
-            COUNT(case q.response_type when 2 then 1 else null end) AS cached,
-            COUNT(case q.response_type when 1 then 1 else null end) AS local
-        FROM query q;
-    """
-
-    result = db.execute(query)
-
-    t = """
-        SELECT time
-        FROM query
-        ORDER BY qid ASC
-        LIMIT 1;
-    """
-
-    start_time = db.execute(t)
-
-    if result and start_time:
-        print(ujson.dumps({
-            "total": result[0][0],
-            "blocked": result[0][1],
-            "cached": result[0][2],
-            "local": result[0][3],
-            "start_time": start_time[0][0]
-        }))
+def percent(val, total):
+    return '{:.2f}'.format(round(((val / total) * 100), 2))
 
 def handle_rolling(db, args):
     interval = int(re.sub("^(?:(?!300|60).)*$", "300", str(args.interval)))
@@ -99,36 +73,82 @@ def handle_rolling(db, args):
         print(ujson.dumps(result))
 
 def handle_top(db, args):
-    cond_where = ""
-    if args.blocked:
-        cond_where = "WHERE action == 1"
-    query = """
-        SELECT domain, COUNT(domain) AS cnt FROM query
-        {w}
+    top = """
+        SELECT domain, COUNT(domain) as cnt
+        FROM query
         GROUP BY domain
         ORDER BY cnt DESC
         LIMIT :max;
-    """.format(w=cond_where)
+    """
 
-    result = db.execute(query, {"max": args.max})
+    r_top = db.execute(top, {"max": args.max})
 
-    if result:
-        print(ujson.dumps(dict(result)))
+    top_blocked = """
+        SELECT domain, COUNT(domain) as cnt
+        FROM query
+        WHERE action == 1
+        GROUP BY DOMAIN
+        ORDER BY cnt DESC
+        LIMIT :max;
+    """
+
+    r_top_blocked = db.execute(top_blocked, {"max": args.max})
+
+    total = """
+        SELECT COUNT(*) AS total,
+            COUNT(case q.action when 1 then 1 else null end) AS blocked,
+            COUNT(case q.response_type when 2 then 1 else null end) AS cached,
+            COUNT(case q.response_type when 1 then 1 else null end) AS local
+        FROM query q;
+    """
+
+    r_total = db.execute(total)
+
+    t = """
+        SELECT time
+        FROM query
+        ORDER BY qid ASC
+        LIMIT 1;
+    """
+
+    r_start_time = db.execute(t)
+
+    if r_top and r_top_blocked and r_total and r_start_time:
+        total = r_total[0][0]
+        blocked = r_total[0][1]
+        cached = r_total[0][2]
+        local = r_total[0][3]
+        print(ujson.dumps({
+            "total": total,
+            "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
+            "cached": {"total": cached, "pcnt": percent(cached, total)},
+            "local": {"total": local, "pcnt": percent(local, total)},
+            "start_time": r_start_time[0][0],
+            "top": {
+                k: {
+                    "total": v,
+                    "pcnt_total": percent(v, total)
+                } for k, v in dict(r_top).items()
+            },
+            "top_blocked": {
+                k: {
+                    "total": v,
+                    "pcnt_total": percent(v, total),
+                    "pcnt_blocked": percent(v, blocked)
+                } for k, v in dict(r_top_blocked).items()
+            }
+        }))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--counters', help='get counter values', action='store_true')
-    parser.set_defaults(func=handle_counters)
-
     subparsers = parser.add_subparsers(dest='command', help='sub-command help')
     r_parser = subparsers.add_parser('rolling', help='get rolling aggregate of query data')
     r_parser.add_argument('--timeperiod', help='timeperiod in hours. Valid values are [24, 12, 1]', type=int, default=24)
     r_parser.add_argument('--interval', help='interval in seconds. valid values are [300, 60]', type=int, default=300)
     r_parser.set_defaults(func=handle_rolling)
 
-    t_parser = subparsers.add_parser('top', help='get top queried domains')
-    t_parser.add_argument('--max', help='limit results by max items', type=int, default=10)
-    t_parser.add_argument('--blocked', help='get the top blocked domains instead', action='store_true')
+    t_parser = subparsers.add_parser('totals', help='get top queried domains and total counters')
+    t_parser.add_argument('--max', help='limit top queried domains by max items', type=int, default=10)
     t_parser.set_defaults(func=handle_top)
 
     if len(sys.argv)==1:
