@@ -8,7 +8,6 @@ import re
 from time import time
 from collections import deque
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from sqlite3_helper import check_and_repair
 
 class DBWrapper:
     def __init__(self):

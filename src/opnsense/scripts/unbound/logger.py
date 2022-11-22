@@ -6,6 +6,7 @@ import argparse
 import syslog
 import sqlite3
 import time
+import datetime
 import random, string
 from timeit import default_timer as timer
 from collections import deque
@@ -64,16 +65,12 @@ class DNSReader:
         self.cursor.execute(bucket)
 
     def rotate_db(self, interval=7):
+        t = datetime.date.today() - datetime.timedelta(days=interval)
         query = """
             DELETE
             FROM query
-            WHERE time not in (
-                SELECT time
-                FROM query
-                WHERE DATETIME(time, 'unixepoch') > DATETIME('now', 'start of day', '-{interval} days')
-                ORDER BY time desc
-            );
-        """.format(interval=interval)
+            WHERE DATETIME(time, 'unixepoch') < DATETIME('{time}');
+        """.format(time=t)
         self.cursor.execute(query)
 
     def close(self):
