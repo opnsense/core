@@ -215,7 +215,7 @@ include_once("head.inc");
                             <input name="stats" type="checkbox" value="yes" <?=!empty($pconfig['stats']) ? 'checked="checked"' : '';?> />
                               <?= gettext('Enable statistics') ?>
                               <div class="hidden" data-for="help_for_stats">
-                                <?= gettext("Enable the collection of statistics including, but not limited to, top searched domains, " .
+                                <?= gettext("Enable the local collection of statistics including, but not limited to, top searched domains, " .
                                     "blocked domains, client activity, cache hits and local-data hits."); ?>
                               </div>
                           </td>
