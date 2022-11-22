@@ -203,9 +203,8 @@
         });
 
         do_startup().done(function() {
-            console.log('done');
+            $('.content-box').show();
         }).fail(function() {
-            console.log('failed');
             $('.content-box').hide();
             $('#info').show();
         });
