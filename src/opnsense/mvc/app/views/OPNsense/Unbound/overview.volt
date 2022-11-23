@@ -129,12 +129,15 @@
             });
 
             /* Add a redundant data step to end the chart time axis properly */
-            let lastVal = formatted[formatted.length - 1];
-            let interval = $("#timeperiod").val() == 1 ? 60 : 300;
-            formatted.push({
-                x: lastVal.x + (interval * 1000),
-                y: null
-            });
+            if (formatted.length > 0) {
+                let lastVal = formatted[formatted.length - 1];
+                let interval = $("#timeperiod").val() == 1 ? 60 : 300;
+                formatted.push({
+                    x: lastVal.x + (interval * 1000),
+                    y: null
+                });
+            }
+
             return formatted;
         }
 

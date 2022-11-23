@@ -58,6 +58,8 @@ class DBWrapper:
         self.con.close()
 
 def percent(val, total):
+    if val == 0 or total == 0:
+        return 0
     return '{:.2f}'.format(round(((val / total) * 100), 2))
 
 def handle_rolling(db, args):
@@ -145,32 +147,36 @@ def handle_top(db, args):
 
     r_start_time = db.execute(t)
 
+    total = blocked = cached = local = passed = 0
+    start_time = int(time())
     if r_top and r_top_blocked and r_total and r_start_time:
         total = r_total[0][0]
         blocked = r_total[0][1]
         cached = r_total[0][2]
         local = r_total[0][3]
         passed = r_total[0][4]
-        print(ujson.dumps({
-            "total": total,
-            "passed": passed,
-            "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
-            "cached": {"total": cached, "pcnt": percent(cached, total)},
-            "local": {"total": local, "pcnt": percent(local, total)},
-            "start_time": r_start_time[0][0],
-            "top": {
-                k: {
-                    "total": v,
-                    "pcnt": percent(v, passed)
-                } for k, v in dict(r_top).items()
-            },
-            "top_blocked": {
-                k: {
-                    "total": v,
-                    "pcnt": percent(v, blocked),
-                } for k, v in dict(r_top_blocked).items()
-            }
-        }))
+        start_time = r_start_time[0][0]
+
+    print(ujson.dumps({
+        "total": total,
+        "passed": passed,
+        "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
+        "cached": {"total": cached, "pcnt": percent(cached, total)},
+        "local": {"total": local, "pcnt": percent(local, total)},
+        "start_time": start_time,
+        "top": {
+            k: {
+                "total": v,
+                "pcnt": percent(v, passed)
+            } for k, v in dict(r_top).items()
+        },
+        "top_blocked": {
+            k: {
+                "total": v,
+                "pcnt": percent(v, blocked),
+            } for k, v in dict(r_top_blocked).items()
+        }
+    }))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
