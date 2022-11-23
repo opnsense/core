@@ -154,6 +154,19 @@
             return "Queries over the last " + h;
         }
 
+        function createTopList(id, data) {
+            let idx = 1;
+            for (const [domain, statObj] of Object.entries(data)) {
+                $('#' + id).append(
+                    '<li class="list-group-item list-group-item-border">' +
+                    idx + '. ' + domain +
+                    '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)</span>' +
+                    '</li>'
+                )
+                idx++;
+            }
+        }
+
         g_queryChart = null;
 
         /* Initial page load */
@@ -175,6 +188,12 @@
                     $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
                     $('#cachedCounter').html(data.cached.total + " (" + data.cached.pcnt + "%)");
                     $('#localCounter').html(data.local.total + " (" + data.local.pcnt + "%)");
+
+                    createTopList('top', data.top);
+                    createTopList('top-blocked', data.top_blocked);
+
+                    $('#top li:nth-child(even)').addClass('odd-bg');
+                    $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
                     $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
@@ -239,7 +258,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 3em;
+    font-size: 2em;
 }
 
 .stats-text {
@@ -266,14 +285,46 @@
     font-size: 15px;
 }
 
-.test {
-    justify-content: center;
-}
-
 #bannersub {
     text-align: center;
     margin: 5px;
 }
+
+.list-group {
+    margin: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.list-group-item-border {
+    border: 1px solid #ddd;
+}
+
+.list-group-item-border:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 2px solid black;
+}
+
+.list-group-item-border:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.btn.pull-right {
+    margin-left: 3px;
+}
+
+.odd-bg {
+    background: #f7f7f7;
+}
+
+.counter {
+    float: right;
+    color: #3c3c3b;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
 </style>
 
 <div id="info" class="alert alert-warning" role="alert">
@@ -334,7 +385,7 @@
         </div>
     </div>
 </div>
-<div class="content-box">
+<div class="content-box" style="margin-bottom: 10px;">
     <div id="graph" class="container-fluid">
         <div class="row d-flex justify-content-center">
             <div class="col-md-4"></div>
@@ -356,6 +407,30 @@
                 </div>
             </div>
             <div class="col-2"></div>
+        </div>
+    </div>
+</div>
+<div class="content-box">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="top-list">
+                    <ul class="list-group" id="top">
+                      <li class="list-group-item list-group-item-border">
+                        <b>{{ lang._('Top passed domains') }}</b>
+                      </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="top-list">
+                    <ul class="list-group" id="top-blocked">
+                      <li class="list-group-item list-group-item-border">
+                        <b>{{ lang._('Top blocked domains') }}</b>
+                      </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

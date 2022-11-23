@@ -7,7 +7,6 @@ import syslog
 import re
 from time import time
 from collections import deque
-sys.path.insert(0, "/usr/local/opnsense/site-python")
 
 class DBWrapper:
     def __init__(self):
@@ -73,9 +72,11 @@ def handle_rolling(db, args):
         print(ujson.dumps(result))
 
 def handle_top(db, args):
+    # get top N of all passed queries
     top = """
         SELECT domain, COUNT(domain) as cnt
         FROM query
+        WHERE action == 0
         GROUP BY domain
         ORDER BY cnt DESC
         LIMIT :max;
@@ -83,6 +84,7 @@ def handle_top(db, args):
 
     r_top = db.execute(top, {"max": args.max})
 
+    # get top N of all blocked queries
     top_blocked = """
         SELECT domain, COUNT(domain) as cnt
         FROM query
@@ -94,16 +96,19 @@ def handle_top(db, args):
 
     r_top_blocked = db.execute(top_blocked, {"max": args.max})
 
+    # get counters of total values
     total = """
         SELECT COUNT(*) AS total,
             COUNT(case q.action when 1 then 1 else null end) AS blocked,
             COUNT(case q.response_type when 2 then 1 else null end) AS cached,
-            COUNT(case q.response_type when 1 then 1 else null end) AS local
+            COUNT(case q.response_type when 1 then 1 else null end) AS local,
+            COUNT(case q.action when 0 then 1 else null end) AS passed
         FROM query q;
     """
 
     r_total = db.execute(total)
 
+    # get initial start time
     t = """
         SELECT time
         FROM query
@@ -118,8 +123,10 @@ def handle_top(db, args):
         blocked = r_total[0][1]
         cached = r_total[0][2]
         local = r_total[0][3]
+        passed = r_total[0][4]
         print(ujson.dumps({
             "total": total,
+            "passed": passed,
             "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
             "cached": {"total": cached, "pcnt": percent(cached, total)},
             "local": {"total": local, "pcnt": percent(local, total)},
@@ -127,14 +134,13 @@ def handle_top(db, args):
             "top": {
                 k: {
                     "total": v,
-                    "pcnt_total": percent(v, total)
+                    "pcnt": percent(v, passed)
                 } for k, v in dict(r_top).items()
             },
             "top_blocked": {
                 k: {
                     "total": v,
-                    "pcnt_total": percent(v, total),
-                    "pcnt_blocked": percent(v, blocked)
+                    "pcnt": percent(v, blocked),
                 } for k, v in dict(r_top_blocked).items()
             }
         }))
