@@ -90,7 +90,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $configObj = Config::getInstance()->object();
             $usages = array();
             // find uuid's in our config.xml
-            foreach ($configObj->xpath("//text()[.='{$uuid}']") as $node) {
+            foreach ($configObj->xpath("//text()[contains(.,'{$uuid}')]") as $node) {
                 $referring_node = $node->xpath("..")[0];
                 if (!empty($referring_node->attributes()['uuid'])) {
                     // this looks like a model node, try to find module name (first tag with version attribute)
