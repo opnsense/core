@@ -35,7 +35,7 @@ require_once("plugins.inc");
 
 $opts = getopt('hm:f:', array(), $optind);
 if (isset($opts['h']) || empty($opts['f']) || empty($opts['m'])) {
-    echo "Usage: clearlog [-h] [-m] [-f]\n\n";
+    echo "Usage: clearlog.php [-h] [-m] [-f]\n\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-m module name\n";
     echo "\t-f filename\n";

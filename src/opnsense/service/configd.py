@@ -170,6 +170,4 @@ else:
                        logger=loghandle
                        )
     daemon.start()
-    # wait for the socket to come up before yielding to the caller
-    time.sleep(1)
 sys.exit(0)

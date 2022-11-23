@@ -132,6 +132,7 @@ function session_auth()
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         log_msg($message, $prio);
         closelog();
+        reopenlog();
     }
 
     if (session_status() == PHP_SESSION_NONE) {
@@ -295,7 +296,7 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];
         }
-        log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
+        log_msg("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
         header(url_safe("Location: /{$page}"));
         exit;
     } else {

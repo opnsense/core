@@ -51,7 +51,7 @@ class ApiControllerBase extends ControllerRoot
         $fields = null,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
@@ -127,7 +127,10 @@ class ApiControllerBase extends ControllerRoot
                 if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
                     return "Invalid JSON syntax";
                 }
-                $_POST = $jsonRawBody;
+                $_POST = is_array($jsonRawBody) ? $jsonRawBody : [];
+                foreach ($_POST as $key => $value) {
+                    $_REQUEST[$key] = $value;
+                }
                 break;
             case 'application/x-www-form-urlencoded':
             case 'application/x-www-form-urlencoded;charset=utf-8':

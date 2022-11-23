@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $ifinfo = $ifsinfo[$ifdescr]; ?>
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
-    <td style="width:15%; word-break: break-word;">
+    <td style="width:5%; word-break: break-word;">
 <?php if (isset($ifinfo['ppplink'])): ?>
       <span title="3g" class="fa fa-mobile text-success"></span>
 <?php elseif (isset($config['interfaces'][$ifdescr]['wireless'])): ?>
@@ -139,7 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       <span title="cablenic" class="fa fa-exchange text-danger"></span>
 <?php endif ?>
 <?php endif ?>
-      &nbsp;
+    </td>
+    <td style="width:15%; word-break: break-word;">
       <strong>
         <u>
           <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
@@ -159,10 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       <?= htmlspecialchars($ifinfo['status']) ?>
 <?php endif ?>
     </td>
-    <td style="width:35%; word-break: break-word;">
+    <td style="width:32%; word-break: break-word;">
       <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
-    <td style="width:45%; word-break: break-word;">
+    <td style="width:43%; word-break: break-word;">
       <?= htmlspecialchars($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
       <?= htmlspecialchars(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>

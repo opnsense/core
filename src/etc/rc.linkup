@@ -40,11 +40,11 @@ if ($argc < 3) {
     exit;
 }
 
-function handle_argument_group($action, $realif)
+function handle_argument_group($action, $device)
 {
     global $config;
 
-    $interface = convert_real_interface_to_friendly_interface_name($realif);
+    $interface = convert_real_interface_to_friendly_interface_name($device);
 
     if (empty($interface)) {
         return;
@@ -60,25 +60,17 @@ function handle_argument_group($action, $realif)
 
     switch ($action) {
         case 'stop':
-            log_error(sprintf(
-                "DEVD: Ethernet detached event for %s(%s)",
-                $interface,
-                $realif
-            ));
+            log_msg(sprintf("DEVD: Ethernet detached event for %s(%s)", $interface, $device));
             interface_bring_down($interface);
             filter_configure(false, false);
             break;
         case 'start':
-            log_error(sprintf(
-                "DEVD: Ethernet attached event for %s(%s)",
-                $interface,
-                $realif
-            ));
+            log_msg(sprintf("DEVD: Ethernet attached event for %s(%s)", $interface, $device));
             interface_configure(false, $interface, true, true);
             filter_configure(false, false);
             break;
         default:
-            log_error("DEVD: The action parameter passed is wrong ($action)");
+            log_msg("DEVD: The action parameter passed is wrong ($action)", LOG_ERR);
             break;
     }
 }

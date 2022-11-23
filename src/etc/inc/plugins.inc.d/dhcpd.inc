@@ -162,10 +162,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting router advertisement service...';
-        flush();
-    }
+    service_log('Starting router advertisement service...', $verbose);
 
     $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
@@ -217,7 +214,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if ($dhcpv6ifconf['AdvLinkMTU'] < $mtu) {
                 $mtu = $dhcpv6ifconf['AdvLinkMTU'];
             } else {
-                log_error('Warning! Skipping AdvLinkMTU configuration since it cannot be applied.');
+                log_msg("Skipping AdvLinkMTU configuration since it cannot be applied on {$dhcpv6if}", LOG_WARNING);
             }
         }
 
@@ -360,7 +357,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
-                    log_error("Warning! dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}");
+                    log_msg("dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}", LOG_WARNING);
                 }
             } elseif (!empty($config['system']['dnsserver'][0])) {
                 $dnslist_tmp = $config['system']['dnsserver'];
@@ -455,7 +452,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
-                log_error("Warning! dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}");
+                log_msg("dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}", LOG_WARNING);
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
@@ -522,9 +519,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
         mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
@@ -579,10 +574,7 @@ function dhcpd_dhcp4_configure($verbose = false)
         }
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv4 service...';
-        flush();
-    }
+    service_log('Starting DHCPv4 service...', $verbose);
 
     $custoptions = "";
     $ifconfig_details = legacy_interfaces_details();
@@ -647,7 +639,7 @@ EOD;
                     }
                 }
             } else {
-                log_error('Warning! DHCP Failover setup and no CARP virtual IPs defined!');
+                log_msg("DHCP failover set up on {$dhcpif} but no CARP virtual IPs defined!", LOG_WARNING);
             }
             $dhcpdconf_pri = "";
             if ($failover_primary) {
@@ -695,7 +687,7 @@ EOPP;
         list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
 
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
-            log_error("Warning! dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}");
+            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}", LOG_WARNING);
             continue;
         }
 
@@ -1223,9 +1215,7 @@ EOD;
         mwexec('/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid ' . join(' ', $dhcpdifs));
     }
 
-    if ($verbose) {
-        print "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_zones($ddns_zones, $ipproto = 'inet')
@@ -1289,10 +1279,7 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
         }
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv6 service...';
-        flush();
-    }
+    service_log('Starting DHCPv6 service...', $verbose);
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
     foreach (array_keys($iflist) as $ifname) {
@@ -1358,14 +1345,14 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
 
                     $range_from = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['from'], '::');
                     if ($range_from == '::') {
-                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value");
+                        log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_from = $dhcpdv6cfg[$ifname]['prefixrange']['from'] . ':0:0:0:0';
                     }
 
                     $range_to = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['to'], '::');
                     if ($range_to == '::') {
-                        log_error("Warning! '{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value");
+                        log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_to = $dhcpdv6cfg[$ifname]['prefixrange']['to'] . ':0:0:0:0';
                     }
@@ -1425,7 +1412,7 @@ EOD;
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            log_error("Warning! dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}");
+            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}", LOG_WARNING);
             continue;
         }
 
@@ -1607,9 +1594,7 @@ EOD;
         mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcrelay_configure($verbose = false, $family = null)
@@ -1637,10 +1622,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv4 relay...';
-        flush();
-    }
+    service_log('Starting DHCPv4 relay...', $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1735,9 +1717,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         mwexec($cmd);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcrelay6_configure($verbose = false)
@@ -1754,10 +1734,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting DHCPv6 relay...';
-        flush();
-    }
+    service_log('Starting DHCPv6 relay...', $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1847,9 +1824,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         mwexec($cmd);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true, $proto = null)

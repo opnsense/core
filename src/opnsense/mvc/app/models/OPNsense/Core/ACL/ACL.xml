@@ -306,18 +306,6 @@
             <pattern>firewall_schedule_edit.php*</pattern>
         </patterns>
     </page-firewall-schedules-edit>
-    <page-firewall-virtualipaddress-edit>
-        <name>Firewall: Virtual IP Address: Edit</name>
-        <patterns>
-            <pattern>firewall_virtual_ip_edit.php*</pattern>
-        </patterns>
-    </page-firewall-virtualipaddress-edit>
-    <page-firewall-virtualipaddresses>
-        <name>Firewall: Virtual IP Addresses</name>
-        <patterns>
-            <pattern>firewall_virtual_ip.php*</pattern>
-        </patterns>
-    </page-firewall-virtualipaddresses>
     <page-diagnostics-logs-firewall-general>
         <name>Diagnostics: Log: Firewall: General</name>
         <patterns>
@@ -499,12 +487,6 @@
             <pattern>services_router_advertisements.php*</pattern>
         </patterns>
     </page-services-router-advertisements>
-    <page-status-carp>
-        <name>Status: CARP</name>
-        <patterns>
-            <pattern>carp_status.php*</pattern>
-        </patterns>
-    </page-status-carp>
     <page-status-habackup>
         <name>Status: HA backup</name>
         <patterns>

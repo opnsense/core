@@ -193,7 +193,7 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
     xml_parser_set_option($xml_parser,XML_OPTION_SKIP_WHITE, 1);
 
     if (!($fp = fopen($cffile, "r"))) {
-        log_error('Error: could not open XML input');
+        log_msg('Error: could not open XML input', LOG_ERR);
         if (isset($parsed_attributes)) {
             $parsed_attributes = array();
             unset($parsedattrs);
@@ -203,9 +203,9 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
 
     while ($data = fread($fp, 4096)) {
         if (!xml_parse($xml_parser, $data, feof($fp))) {
-            log_error(sprintf('XML error: %s at line %d' . "\n",
+            log_msg(sprintf('XML error: %s at line %d' . "\n",
                   xml_error_string(xml_get_error_code($xml_parser)),
-                  xml_get_current_line_number($xml_parser)));
+                  xml_get_current_line_number($xml_parser)), LOG_ERR);
             if (isset($parsed_attributes)) {
                 $parsed_attributes = array();
                 unset($parsedattrs);
@@ -216,7 +216,7 @@ function parse_xml_config_raw_attr($cffile, $rootobj, &$parsed_attributes, $isst
     xml_parser_free($xml_parser);
 
     if (!$parsedcfg[$rootobj]) {
-        log_error(sprintf('XML error: no %s object found!', $rootobj));
+        log_msg(sprintf('XML error: no %s object found!', $rootobj), LOG_ERR);
         if (isset($parsed_attributes)) {
             $parsed_attributes = array();
             unset($parsedattrs);
@@ -328,6 +328,7 @@ function get_wireless_channel_info($interface)
 }
 
 $ifdescrs = legacy_config_get_interfaces(['virtual' => false]);
+$hwifs = array_keys(get_interface_list());
 
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
@@ -1001,7 +1002,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $old_config['realif'] = get_real_interface($if);
             $old_config['realifv6'] = get_real_interface($if, "inet6");
             $new_config = array();
-            $new_ppp_config = array();
+            $new_ppp_config = !empty($a_ppps[$pppid]) ? $a_ppps[$pppid] : [];
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
@@ -2014,8 +2015,7 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
-<?php
-                if (count($mediaopts_list) > 1):?>
+<?php if (in_array($pconfig['if'], $hwifs)): ?>
                 <!-- Hardware settings -->
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
@@ -2088,8 +2088,7 @@ include("head.inc");
                     </table>
                   </div>
                 </div>
-<?php
-                endif;?>
+<?php endif ?>
                 <!-- static IPv4 -->
                 <div class="tab-content content-box col-xs-12 __mb" id="staticv4" style="display:none">
                   <div class="table-responsive">

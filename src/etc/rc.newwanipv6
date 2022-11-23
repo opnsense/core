@@ -40,27 +40,27 @@ require_once("interfaces.inc");
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
 
 exit_on_bootup(function ($argument) {
-    log_error("IP renewal deferred during boot on '{$argument}'");
+    log_msg("IP renewal deferred during boot on '{$argument}'");
     file_put_contents('/tmp/newwanipv6_' . $argument, $argument);
 }, [$argument]);
 
 if (empty($argument)) {
     $interface = 'wan';
-    $interface_real = get_real_interface($interface, 'inet6');
+    $device = get_real_interface($interface, 'inet6');
 } else {
     $interface = convert_real_interface_to_friendly_interface_name($argument);
-    $interface_real = $argument;
+    $device = $argument;
 }
 
 if (!isset($config['interfaces'][$interface]['enable'])) {
-    log_error("Interface '{$interface}' ($interface_real) is disabled or empty, nothing to do.");
+    log_msg("Interface '{$interface}' ($device) is disabled or empty, nothing to do.", LOG_WARNING);
     return;
 }
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ipv6($interface);
 
-$cacheip_file = "/tmp/{$interface_real}_oldipv6";
+$cacheip_file = "/tmp/{$device}_oldipv6";
 
 if (!is_ipaddr($ip)) {
     /* remove previously cached IP since it is gone */
@@ -71,8 +71,8 @@ if (!is_ipaddr($ip)) {
      * to reconfigure an interface.  OpenVPN might be in tap(4)
      * mode and not have an IP address.
      */
-    if (substr($interface_real, 0, 4) != 'ovpn') {
-        log_error("Failed to detect IP for {$interface_descr}[{$interface}]");
+    if (substr($device, 0, 4) != 'ovpn') {
+        log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
         return;
     }
 }
@@ -83,11 +83,11 @@ system_hosts_generate();
 
 $cacheip = trim(@file_get_contents($cacheip_file));
 if ($ip == $cacheip) {
-    log_error("No IP change detected for {$interface_descr}[{$interface}]");
+    log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
     return;
 }
 
-log_error("On (IP address: {$ip} vs. ${cacheip}) (interface: {$interface_descr}[{$interface}]) (real interface: {$interface_real}).");
+log_msg("IP renwal starting (new: {$ip}, old: ${cacheip}, interface: {$interface_descr}[{$interface}], device: {$device})");
 
 interfaces_vips_configure($interface, 6);
 

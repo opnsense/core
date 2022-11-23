@@ -39,7 +39,8 @@ class NptRule extends Rule
         'binat' => 'parseStaticText,binat ',
         'log' => 'parseBool,log',
         'interface' => 'parseInterface',
-        'from' => 'parsePlain,from , to any',
+        'ipprotocol' => 'parseStaticText,inet6 ',
+        'from' => 'parsePlain,from ',
         'to' => 'parsePlain, -> ',
         'descr' => 'parseComment'
     ];
@@ -71,6 +72,10 @@ class NptRule extends Rule
     private function parseNptRules()
     {
         foreach ($this->reader('npt') as $rule) {
+            if (empty($rule['to'])) {
+                /* auto-detect expands from dynamic interface address */
+                $rule['to'] = $this->parseInterface($rule['interface'], '(', ':0)/' . explode('/', $rule['from'])[1]);
+            }
             yield $rule;
         }
     }

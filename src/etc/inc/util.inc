@@ -304,7 +304,7 @@ function exit_on_bootup($callback = null, $arguments = [])
     $fp = fopen($bootflag, 'r');
     if (!$fp) {
         /* log possible error and adjust exist code */
-        log_error("exit_on_bootup(): error opening $bootflag");
+        log_msg("exit_on_bootup(): error opening $bootflag", LOG_ERR);
         exit(1);
     }
 
@@ -318,6 +318,31 @@ function exit_on_bootup($callback = null, $arguments = [])
 
     /* let the script run if we made sure we are up and running */
     fclose($fp);
+}
+
+/**
+ * service logger with additional boot-time performance logging
+ * @param $message string message to log
+ * @param $verbose boolean verbose|bool (send to console),
+ * @return void
+ */
+function service_log(string $message, bool $verbose = true): void
+{
+    if ($verbose) {
+        echo $message;
+        flush();
+    }
+
+    if (product::getInstance()->booting()) {
+        $bt = debug_backtrace();
+        $caller = !empty($bt[1]['function']) ? $bt[1]['function'] : 'unknown';
+
+        file_put_contents('/var/log/boot.log', implode(' ', [
+            (new DateTime())->format('c'),
+            $caller . '[' . getmypid() . ']',
+            rtrim($message) . PHP_EOL
+        ]), FILE_APPEND | LOCK_EX);
+    }
 }
 
 /* validate non-negative numeric string, or equivalent numeric variable */
@@ -861,12 +886,22 @@ function log_error($error)
 * RESULT
 *   null
 ******/
-function log_msg($msg, $prio = LOG_WARNING)
+function log_msg($msg, $prio = LOG_NOTICE)
 {
     $page = $_SERVER['SCRIPT_NAME'];
     if (empty($page)) {
         $files = get_included_files();
         $page = basename($files[0]);
+    }
+
+    switch ($prio) {
+        case LOG_DEBUG:
+        case LOG_INFO:
+            /* lowest handled value for the time being */
+            $prio = LOG_NOTICE;
+            break;
+        default:
+            break;
     }
 
     syslog($prio, "$page: $msg");
@@ -924,7 +959,7 @@ function mwexec($command, $mute = false)
 
     if ($retval != 0 && $mute == false) {
         $output = implode(' ', $oarr);
-        log_error(sprintf("The command '%s' returned exit code '%d', the output was '%s'", $command, $retval, $output));
+        log_msg(sprintf("The command '%s' returned exit code '%d', the output was '%s'", $command, $retval, $output), LOG_ERR);
         unset($output);
     }
 

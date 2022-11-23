@@ -63,10 +63,10 @@ function vxlan_configure_do($verbose = false, $device = null)
     $changed_devices = array();
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems());
 
-    if ($verbose && !empty($vxlans)) {
-        echo 'Configuring VXLAN interfaces...';
-        flush();
+    if (!empty($vxlans)) {
+        service_log(sprintf('Configuring VXLAN interface%s...', empty($device) ? 's' : " {$device}"), $verbose);
     }
+
     $all_addresses = array();
     $known_addresses = array();
     foreach ($interfaces_details as $intf) {
@@ -148,8 +148,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
     }
 
-    if ($verbose && !empty($vxlans)) {
-        echo "done.\n";
+    if (!empty($vxlans)) {
+        service_log("done.\n", $verbose);
     }
 
     // configure interface when device has changed

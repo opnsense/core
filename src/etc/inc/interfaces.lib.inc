@@ -26,6 +26,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+function legacy_interface_error($cmd, $opt = null)
+{
+    $msg = 'The command `' . $cmd . '\' failed to execute';
+
+    if ($opt !== null) {
+        $msg .= " ({$opt})";
+    }
+
+    log_msg($msg, LOG_ERR);
+}
+
 function legacy_interface_listget($flag = 'all')
 {
     $cmd_wlan = 'sysctl -n net.wlan.devices';
@@ -46,7 +57,7 @@ function legacy_interface_listget($flag = 'all')
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
         return ($ifs);
     }
 
@@ -68,7 +79,7 @@ function legacy_interface_flags($ifs, $flag, $report_errors = true)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if (!empty($ret) && $report_errors) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -79,7 +90,7 @@ function legacy_interface_create($ifs, $name = null)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
         return ($new);
     }
 
@@ -92,7 +103,7 @@ function legacy_interface_create($ifs, $name = null)
 
         exec($cmd . ' 2>&1', $out, $ret);
         if ($ret) {
-            log_error('The command `' . $cmd . '\' failed to execute');
+            legacy_interface_error($cmd);
         }
 
         /* return new name here anyway to force proper device not found errors later */
@@ -109,7 +120,7 @@ function legacy_interface_destroy($ifs)
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
         /* disable error reporting to avoid spurious errors on first configuration */
-        //log_error('The command `' . $cmd . '\' failed to execute');
+        //legacy_interface_error($cmd);
     }
 }
 
@@ -119,7 +130,7 @@ function legacy_interface_setaddress($ifs, $addr, $family = 4)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -129,7 +140,7 @@ function legacy_interface_deladdress($ifs, $addr, $family = 4)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -139,7 +150,7 @@ function legacy_interface_mtu($ifs, $mtu)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -149,7 +160,7 @@ function legacy_bridge_member($ifs, $member)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -159,7 +170,7 @@ function legacy_vlan_tag($ifs, $member, $tag, $pcp, $proto)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -169,7 +180,7 @@ function legacy_vlan_remove_tag($ifs)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -179,7 +190,7 @@ function legacy_vlan_pcp($ifs, $pcp)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -189,7 +200,7 @@ function legacy_vlan_proto($ifs, $proto)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
     }
 }
 
@@ -206,7 +217,7 @@ function legacy_interface_stats($ifs = null)
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        log_error('The command `' . $cmd . '\' failed to execute');
+        legacy_interface_error($cmd);
         return $stats;
     }
 
@@ -246,7 +257,7 @@ function legacy_interfaces_details($intf = null)
     if ($ret) {
         /* only error if no explicit interface was chosen */
         if (empty($intf)) {
-            log_error('The command `' . $cmd . '\' failed to execute ' . implode(' ', $ifconfig_data));
+            legacy_interface_error($cmd, implode(' ', $ifconfig_data));
         }
         return $result;
     }

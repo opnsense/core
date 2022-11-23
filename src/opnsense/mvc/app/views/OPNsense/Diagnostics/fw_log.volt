@@ -45,9 +45,15 @@
          */
         function reverse_lookup() {
             let to_fetch = [];
+            let unfinshed_lookup = false;
              $(".address").each(function(){
                 let address = $(this).data('address');
                 if (!hostnameMap.hasOwnProperty(address) && !to_fetch.includes(address)) {
+                    // limit dns fetches to 50 per cycle
+                    if (to_fetch.length >= 50) {
+                        unfinshed_lookup = true;
+                        return;
+                    }
                     to_fetch.push(address);
                 }
             });
@@ -71,6 +77,10 @@
                             hostnameMap[address] = data[address];
                         }
                     });
+                    if (unfinshed_lookup) {
+                        // schedule next fetch
+                        reverse_lookup();
+                    }
                     update_grid();
                 });
             } else {

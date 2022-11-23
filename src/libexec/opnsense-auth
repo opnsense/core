@@ -77,5 +77,4 @@ if (!empty($auth_data['user']) && isset($auth_data['password'])) {
     }
 }
 
-closelog();
 exit($exit_status);

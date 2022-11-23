@@ -93,9 +93,9 @@ function index_users()
 {
     global $config;
 
-    $userindex = array();
+    $userindex = [];
 
-    if (is_array($config['system']['user'])) {
+    if (!empty($config['system']['user'])) {
         $i = 0;
         foreach ($config['system']['user'] as $userent) {
             $userindex[$userent['name']] = $i;
@@ -301,10 +301,10 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     global $config;
 
     if (empty($user['password'])) {
-        log_error(sprintf(
+        log_msg(sprintf(
             gettext('There is something wrong in your config because user %s password is missing!'),
             $user['name']
-        ));
+        ), LOG_ERR);
         return;
     }
 

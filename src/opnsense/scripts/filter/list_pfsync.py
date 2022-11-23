@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2022 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,21 +34,21 @@ import sys
 import ujson
 
 if __name__ == '__main__':
-    result = {'nodes': []}
+    result = {'nodes': {}, 'hostid': None}
+    for line in subprocess.run(['/sbin/pfctl', '-s', 'info', '-v'], capture_output=True, text=True).stdout.split('\n'):
+        if line.find('Hostid:') == 0:
+            result['hostid'] = line.split()[-1][2:]
     sp = subprocess.run(['/sbin/pfctl', '-s', 'state', '-vv'], capture_output=True)
     data = sp.stdout.decode().strip()
     if data.count('\n') > 2:
         for line in data.split('\n'):
             if line.find('creatorid:') > -1:
-                creatorid = line.split('creatorid:')[1].strip()
+                creatorid = line.split('creatorid:')[1].strip().split()[0]
                 if creatorid not in result['nodes']:
-                    result['nodes'].append(creatorid)
+                    result['nodes'][creatorid] = {
+                        'creatorid': creatorid,
+                        'this': 1 if result['hostid'] == creatorid else 0
+                    }
 
-    # handle command line argument (type selection)
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
-        print(ujson.dumps(result))
-    else:
-        # output plain
-        print ('------------------------- pfsync nodes -------------------------')
-        for ostype in result['nodes']:
-            print (ostype)
+    result['nodes'] = list(result['nodes'].values())
+    print(ujson.dumps(result))

@@ -1,6 +1,6 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2016 by Deciso B.V.
+OPNsense® is Copyright © 2014 – 2022 by Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -28,26 +28,18 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <script>
     $( document ).ready(function() {
-        /**
-         * fetch system arp table
-         */
-        function updateARP() {
-            if ($("#grid-arp").hasClass('bootgrid-table')) {
-                $("#grid-arp").bootgrid('clear');
-            } else {
-                $("#grid-arp").bootgrid({
-                    ajax: false,
-                    selection: false,
-                    multiSelect: false
-                });
+        $("#grid-arp").UIBootgrid({
+          search:'/api/diagnostics/interface/search_arp/',
+          options:{
+            requestHandler: function(request){
+                request['resolve'] = $("#resolve").prop("checked") ? 'yes': 'no';
+                return request;
             }
-            ajaxGet("/api/diagnostics/interface/getArp", {resolve:$("#resolve").prop("checked") ? 'yes': 'no'}, function (data, status) {
-                        if (status == "success") {
-                            $("#grid-arp").bootgrid('append', data);
-                        }
-                    }
-            );
-        }
+          }
+        });
+        $("#resolve").change(function(){
+            $('#grid-arp').bootgrid('reload');
+        });
 
         $("#flushModal").click(function(event){
           BootstrapDialog.show({
@@ -62,16 +54,12 @@ POSSIBILITY OF SUCH DAMAGE.
                       label: "<?= gettext('Flush ARP Table');?>",
                       action: function(dialogRef) {
                         ajaxCall("/api/diagnostics/interface/flushArp", {}, function (data, status) {
-                            $("#refresh").click();
+                            $('#grid-arp').bootgrid('reload');
                         });
                     }
                   }]
           }); // end BootstrapDialog.show
         }); // end .click(function(event)
-
-        // initial fetch
-        $("#refresh").click(updateARP);
-        $("#refresh").click();
     });
 </script>
 

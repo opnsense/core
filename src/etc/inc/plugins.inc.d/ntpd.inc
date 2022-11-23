@@ -177,10 +177,7 @@ function ntpd_configure_do($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting NTP service...';
-        flush();
-    }
+    service_log('Starting NTP service...', $verbose);
 
     $driftfile = '/var/db/ntpd.drift';
     $statsdir = '/var/log/ntp';
@@ -462,7 +459,5 @@ function ntpd_configure_do($verbose = false)
         mwexecf_bg('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }

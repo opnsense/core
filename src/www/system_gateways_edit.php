@@ -305,6 +305,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($pconfig['monitor_disable'] == "yes") {
             $gateway['monitor_disable'] = true;
         }
+        if ($pconfig['monitor_noroute'] == "yes") {
+            $gateway['monitor_noroute'] = true;
+        }
         if ($pconfig['force_down'] == "yes") {
             $gateway['force_down'] = true;
         }
@@ -401,6 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'losslow',
         'monitor',
         'monitor_disable',
+        'monitor_noroute',
         'name',
         'weight',
         'alert_interval',
@@ -564,6 +568,15 @@ $( document ).ready(function() {
                     <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_monitor_disable">
                       <?= gettext('This will consider this gateway as always being "up".') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_monitor_noroute" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Host Route "); ?></td>
+                  <td>
+                    <input name="monitor_noroute" type="checkbox" value="yes" <?=!empty($pconfig['monitor_noroute']) ? "checked=\"checked\"" : "";?>/>
+                    <div class="hidden" data-for="help_for_monitor_noroute">
+                      <?= gettext('Do not create a dedicated host route for this monitor.') ?>
                     </div>
                   </td>
                 </tr>

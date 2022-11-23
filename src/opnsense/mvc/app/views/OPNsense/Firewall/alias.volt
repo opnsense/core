@@ -27,6 +27,11 @@
         margin-bottom: 0px;
         font-style: italic;
     }
+
+    ul.dropdown-menu.inner > li > a > span.text  {
+        width: 100% !important;
+    }
+
 </style>
 <script>
     $( document ).ready(function() {
@@ -42,10 +47,13 @@
                     if ( $('#type_filter').val().length > 0) {
                         request['type'] = $('#type_filter').val();
                     }
+                    if ( $('#category_filter').val().length > 0) {
+                        request['category'] = $('#category_filter').val();
+                    }
                     return request;
                 },
                 formatters: {
-                    "commands": function (column, row) {
+                    commands: function (column, row) {
                         if (row.uuid.includes('-') === true) {
                             // exclude buttons for internal aliases (which uses names instead of valid uuid's)
                             return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
@@ -53,7 +61,7 @@
                                 '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                         }
                     },
-                    "rowtoggle": function (column, row) {
+                    rowtoggle: function (column, row) {
                         if (!row.uuid.includes('-')) {
                             return '<span class="fa fa-fw fa-check-square-o"></span>';
                         } else if (parseInt(row[column.id], 2) === 1) {
@@ -62,11 +70,26 @@
                             return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
                         }
                     },
+                    name : function (column, row) {
+                        if (row.categories_uuid.length === 0) {
+                            return row.name;
+                        } else {
+                            let html = [row.name + ' '];
+                            for (i=0; i < row.categories_uuid.length ; ++i) {
+                                let item = $("#"+row.categories_uuid[i]);
+                                if (item && item.data('color')) {
+                                    html.push("<i class='fa fa-circle category-item' style='color:#"+
+                                           item.data('color')+"' title='"+item.text()+"'></i>");
+                                }
+                            }
+                            return html.join('&nbsp;');
+                        }
+                    }
                 }
             }
         });
 
-        $("#type_filter").change(function(){
+        $("#type_filter, #category_filter").change(function(){
             $('#grid-aliases').bootgrid('reload');
         });
 
@@ -82,9 +105,36 @@
                 });
                 $("#network_content").selectpicker('refresh');
             });
+            $(".category-item").tooltip();
+        }).on("load.rs.jquery.bootgrid", function (e){
+            // reload categories before grid load
+            ajaxCall('/api/firewall/alias/list_categories', {}, function(data, status){
+                if (data.rows !== undefined) {
+                    let current_selection = $("#category_filter").val();
+                    $("#category_filter").empty();
+                    for (i=0; i < data.rows.length ; ++i) {
+                        let row = data.rows[i];
+                        let opt_val = $('<div/>').html(row.name).text();
+                        let bgcolor = row.color != "" ? row.color : '31708f;'; // set category color
+                        let option = $("<option/>").val(row.uuid).html(row.name);
+                        if (row.used > 0) {
+                            option.data(
+                              'content',
+                              "<span>"+opt_val + "</span>"+
+                              "<span style='background:#"+bgcolor+";' class='badge pull-right'>" + row.used + "</span>"
+                            );
+                            option.data('color', bgcolor);
+                            option.attr('id', row.uuid);
+                        }
+
+                        $("#category_filter").append(option);
+                    }
+                    $("#category_filter").val(current_selection);
+                    $("#category_filter").selectpicker('refresh');
+                }
+            });
         });
-
-
+        $('#grid-aliases').bootgrid().trigger('load.rs.jquery.bootgrid');
 
         /**
          * Open form with alias selected
@@ -462,6 +512,7 @@
         }
         loadSettings();
 
+
         /**
          * reconfigure
          */
@@ -537,6 +588,8 @@
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
+                            <select id="category_filter"  data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
+                            </select>
                         </div>
                     </div>
                     <table id="grid-aliases" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlias" data-editAlert="aliasChangeMessage">
@@ -544,7 +597,7 @@
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                            <th data-column-id="name" data-width="20em" data-type="string">{{ lang._('Name') }}</th>
+                            <th data-column-id="name" data-width="20em" data-formatter="name">{{ lang._('Name') }}</th>
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
@@ -676,6 +729,22 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.categories">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.type">
+                                            <a id="help_for_alias.categories" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Categories')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.categories">
+                                            {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.updatefreq">

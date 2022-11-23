@@ -37,10 +37,10 @@ $type = !empty($argv[2]) ? $argv[2] : '';
 $a_hasync = &config_read_array('hasync');
 if (!empty($a_hasync['disconnectppps'])) {
     if ($type != 'MASTER' && $type != 'BACKUP') {
-       log_error("Carp '$type' event unknown from source '{$subsystem}'");
+       log_msg("Carp '$type' event unknown from source '{$subsystem}'");
        exit(1);
     } elseif (!strstr($subsystem, '@')) {
-       log_error("Carp '$type' event triggered from wrong source '{$subsystem}'");
+       log_msg("Carp '$type' event triggered from wrong source '{$subsystem}'");
        exit(1);
     }
 
@@ -50,7 +50,7 @@ if (!empty($a_hasync['disconnectppps'])) {
         if ($ppp['ports'] == $iface) {
             foreach($config['interfaces'] as $ifkey => $interface) {
                 if ($ppp['if'] == $interface['if']) {
-                    log_error("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
+                    log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
                     if ($type == 'BACKUP') {
                         interface_bring_down($ifkey);
                     } else {

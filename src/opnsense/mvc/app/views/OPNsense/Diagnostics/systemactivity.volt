@@ -65,20 +65,22 @@ POSSIBILITY OF SUCH DAMAGE.
                                 header_txt += "<br/>";
                             });
                             $("#header_data").html(header_txt);
-                            $('#header_data').fadeOut('slow');
-                            $('#header_data_show').fadeIn('slow');
+                            $('#header_data_show').show();
                         }
                     }
             );
         }
 
 
-        // initial fetch
-        updateTop();
+        // link refresh
+        $("#refresh").click(function () {
+            $('#header_data_show').hide();
+            $('#header_data').hide();
+            updateTop();
+        });
 
-        // hide show header info button
-        $('#header_data_show').hide();
-        $("#refresh").click(updateTop);
+        // initial fetch
+        $("#refresh").click();
 
         // link show header info
         $("#header_data_show").click(function(){
@@ -122,10 +124,10 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="pull-left" data-toggle="popover">
-                            <small id="header_data"></small>
+                            <small id="header_data" style="display:none"></small>
                         </div>
                         <div class="pull-right">
-                            <button id="header_data_show" class="btn btn-default"><i class="fa fa-info-circle"></i></button>
+                            <button id="header_data_show" style="display:none" class="btn btn-default"><i class="fa fa-info-circle"></i></button>
                             <button id="refresh" type="button" class="btn btn-default">
                                 <span>{{ lang._('Refresh') }}</span>
                                 <span class="fa fa-refresh"></span>

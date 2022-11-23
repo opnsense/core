@@ -165,7 +165,7 @@ class Util
 
                     if (!empty($alias['content'])) {
                         $tmp = array_slice($alias['content'], 0, 10);
-                        asort($tmp, SORT_NATURAL);
+                        asort($tmp, SORT_NATURAL | SORT_FLAG_CASE);
                         if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
