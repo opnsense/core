@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries
-    ,closeaction";
+    ,closeaction,unique";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -347,6 +347,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Invalid argument for close action.');
     }
 
+    if (!empty($pconfig['unique']) && !in_array($pconfig['unique'], ['no', 'replace', 'never', 'keep'])) {
+        $input_errors[] = gettext('Invalid argument for unique.');
+    }
+
     if (!empty($pconfig['dpd_enable'])) {
         if (!is_numeric($pconfig['dpd_delay'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD delay.");
@@ -403,7 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike,closeaction";
+        ,nat_traversal,auto,mobike,closeaction,unique";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -1211,6 +1215,29 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_unique" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Unique"); ?></td>
+                    <td>
+                      <select name="unique" class="selectpicker">
+                        <option value="" <?= empty($pconfig['unique']) ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Replace"); ?>
+                        </option>
+                        <option value="no" <?= $pconfig['unique'] == "no" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("No"); ?>
+                        </option>
+                        <option value="never" <?= $pconfig['unique'] == "never" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Never"); ?>
+                        </option>
+                        <option value="keep" <?= $pconfig['unique'] == "keep" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Keep"); ?>
+                        </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_unique">
+                          <?=gettext(
+                            "Connection uniqueness policy to enforce. To avoid multiple connections from the same user, a uniqueness policy can be enforced."
+                          )?>
+                      </div>
+                    </td>
+                  </tr>                  <tr>
                     <td><a id="help_for_dpd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Dead Peer Detection"); ?></td>
                     <td>
                       <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
