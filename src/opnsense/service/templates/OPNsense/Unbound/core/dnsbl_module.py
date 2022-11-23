@@ -132,7 +132,7 @@ class ModuleContext:
         qname = qstate.qinfo.qname_str
         qtype = qstate.qinfo.qtype
         qtype_str = qstate.qinfo.qtype_str
-        # XXX: breaks on DNSSEC
+        # XXX: potential issue on DNSSEC
         client = qstate.mesh_info.reply_list.query_reply
 
         if self.dnsbl_available and qname.rstrip('.') in mod_env['dnsbl']['data']:
