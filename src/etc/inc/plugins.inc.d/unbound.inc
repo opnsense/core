@@ -370,9 +370,10 @@ function unbound_configure_do($verbose = false, $unused = '')
         }
     }
 
-    @unlink('/var/unbound/data/stats');
     if (isset($config['unbound']['stats'])) {
         @touch('/var/unbound/data/stats');
+    } else {
+        @unlink('/var/unbound/data/stats');
     }
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);

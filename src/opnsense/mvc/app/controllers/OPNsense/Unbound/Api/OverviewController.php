@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,8 @@ class OverviewController extends ApiControllerBase
     {
         $this->sessionClose();
         $config = Config::getInstance()->object();
-        $enabled = isset($config->unbound->stats);
-
         return [
-            'enabled' => $enabled ? 1 : 0
+            'enabled' => isset($config->unbound->stats) ? 1 : 0
         ];
     }
 
@@ -50,7 +48,7 @@ class OverviewController extends ApiControllerBase
         $this->sessionClose();
         // Sanitize input
         $interval = preg_replace("/^(?:(?!1|12|24).)*$/", "24", $timeperiod) == 1 ? 60 : 300;
-        $response = (new Backend())->configdpRun('unbound qstats rolling', array($interval, $timeperiod));
+        $response = (new Backend())->configdpRun('unbound qstats rolling', [$interval, $timeperiod]);
         return json_decode($response, true);
     }
 
@@ -58,7 +56,7 @@ class OverviewController extends ApiControllerBase
     {
         $this->sessionClose();
         $max = preg_replace("/^(?:(?![0-9]).)*$/", "10", $maximum);
-        $response = (new Backend())->configdpRun('unbound qstats totals', array($max));
+        $response = (new Backend())->configdpRun('unbound qstats totals', [$max]);
         return json_decode($response, true);
     }
 }
