@@ -31,6 +31,7 @@
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/chart.css', theme_name)) }}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dns-overview.css', theme_name)) }}" rel="stylesheet"/>
 
 <script>
     $(document).ready(function() {
@@ -230,105 +231,6 @@
     });
 
 </script>
-
-<style>
-.banner {
-    width: 25%;
-}
-
-.stats-element {
-    height: 5em;
-    background: #f7f7f7;
-    overflow: hidden;
-    display: flex;
-    justify-content: flex-start;
-    border-radius: .3em;
-    margin:auto;
-    border: 1px solid rgba(217, 79, 0, 0.2);
-}
-
-.stats-icon {
-    height: auto;
-    width: 50%;
-    object-fit:cover;
-    background: #d94f0033;
-    border-radius: 0 2em 2em 0 / 0 3em 3em 0;
-    box-shadow: 3px 5px 1px 3px rgba(217,79,0,0.25);
-}
-
-.icon {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-}
-
-.stats-text {
-    height: 5em;
-    width: 15em;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.stats-counter-text {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    font-size: 15px;
-}
-
-.stats-inner-text {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    font-size: 15px;
-}
-
-#bannersub {
-    text-align: center;
-    margin: 5px;
-}
-
-.list-group {
-    margin: 0px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.list-group-item-border {
-    border: 1px solid #ddd;
-}
-
-.list-group-item-border:first-child {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border-bottom: 2px solid black;
-}
-
-.list-group-item-border:last-child {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-.btn.pull-right {
-    margin-left: 3px;
-}
-
-.odd-bg {
-    background: #f7f7f7;
-}
-
-.counter {
-    float: right;
-    color: #3c3c3b;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-</style>
 
 <div id="info" class="alert alert-warning" role="alert">
     {{ lang._('Local gathering of statistics is not enabled. Enable it in the Unbound General page.') }}
