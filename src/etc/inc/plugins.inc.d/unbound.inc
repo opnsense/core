@@ -113,6 +113,7 @@ function unbound_service_stop()
     }
 
     killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound_logger.pid', 'TERM', true);
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
