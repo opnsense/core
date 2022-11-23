@@ -363,7 +363,7 @@
             <div class="banner col-xs-3 justify-content-center">
                 <div class="stats-element">
                     <div class="stats-icon">
-                        <i class="icon fa fa-database text-info" aria-hidden="true"></i>
+                        <i class="icon fa fa-database text-primary" aria-hidden="true"></i>
                     </div>
                     <div class="stats-text">
                         <h2 id="cachedCounter" class="stats-counter-text"></h2>
@@ -374,7 +374,7 @@
             <div class="banner col-xs-3 justify-content-center">
                 <div class="stats-element">
                     <div class="stats-icon">
-                        <i class="icon fa fa-database text-primary" aria-hidden="true"></i>
+                        <i class="icon fa fa-database text-info" aria-hidden="true"></i>
                     </div>
                     <div class="stats-text">
                         <h2 id="localCounter" class="stats-counter-text"></h2>
