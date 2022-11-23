@@ -105,10 +105,6 @@
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
-            <Settings url="/ui/interfaces/vip"/>
-            <Status url="/ui/diagnostics/interface/vip"/>
-        </VIP>
         <Wireless order="940" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
