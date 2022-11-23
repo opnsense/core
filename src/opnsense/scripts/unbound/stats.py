@@ -149,7 +149,7 @@ def handle_top(db, args):
 
     total = blocked = cached = local = passed = 0
     start_time = int(time())
-    if r_top and r_top_blocked and r_total and r_start_time:
+    if r_total and r_start_time:
         total = r_total[0][0]
         blocked = r_total[0][1]
         cached = r_total[0][2]
