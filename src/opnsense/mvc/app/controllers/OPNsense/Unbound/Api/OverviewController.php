@@ -61,7 +61,7 @@ class OverviewController extends ApiControllerBase
 
         /* Map the blocklist type keys to their corresponding description */
         $nodes = (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['type'];
-        foreach($parsed['top_blocked'] as $domain => $props) {
+        foreach ($parsed['top_blocked'] as $domain => $props) {
             if (array_key_exists($props['blocklist'], $nodes)) {
                 $parsed['top_blocked'][$domain]['blocklist'] = $nodes[$props['blocklist']]['value'];
             }

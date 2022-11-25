@@ -334,7 +334,9 @@ class LDAP extends Base implements IAuthConnector
     {
         $retval = false;
 
-        set_error_handler(function () { /* do nothing */ });
+        set_error_handler(function () {
+            /* do nothing */
+        });
 
         $this->closeLDAPHandle();
 

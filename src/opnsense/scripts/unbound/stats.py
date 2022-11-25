@@ -96,7 +96,7 @@ def handle_rolling(db, args):
                     'resolved': tup[6],
                     'local': tup[7],
                     'cached': tup[8]
-                } 
+                }
             for tup in data}
         print(ujson.dumps(result))
 
