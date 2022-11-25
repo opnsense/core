@@ -115,7 +115,7 @@ def handle_top(db, args):
 
     # get top N of all blocked queries
     top_blocked = """
-        SELECT domain, COUNT(domain) as cnt
+        SELECT domain, COUNT(domain) as cnt, blocklist
         FROM query
         WHERE action == 1
         GROUP BY DOMAIN
@@ -171,10 +171,11 @@ def handle_top(db, args):
             } for k, v in dict(r_top).items()
         },
         "top_blocked": {
-            k: {
-                "total": v,
-                "pcnt": percent(v, blocked),
-            } for k, v in dict(r_top_blocked).items()
+            tup[0]: {
+                "total": tup[1],
+                "pcnt": percent(tup[1], blocked),
+                "blocklist": tup[2]
+            } for tup in r_top_blocked
         }
     }))
 

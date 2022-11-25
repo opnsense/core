@@ -161,9 +161,10 @@
         function createTopList(id, data) {
             let idx = 1;
             for (const [domain, statObj] of Object.entries(data)) {
+                let bl = statObj.hasOwnProperty('blocklist') ? '(' + statObj.blocklist + ')' : '';
                 $('#' + id).append(
                     '<li class="list-group-item list-group-item-border">' +
-                    idx + '. ' + domain +
+                    idx + '. ' + domain + ' ' + bl +
                     '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)</span>' +
                     '</li>'
                 )

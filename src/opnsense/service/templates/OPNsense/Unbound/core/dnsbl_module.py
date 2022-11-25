@@ -109,7 +109,7 @@ class ModuleContext:
 
         return True
 
-    def log_entry(self, t, client, family, type, domain, action, response_type):
+    def log_entry(self, t, client, family, type, domain, action, response_type, blocklist=None):
         if not self.stats_enabled:
             return
         kwargs = locals()
@@ -130,7 +130,7 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    log = "{t} {client} {family} {type} {domain} {action} {response_type}\n".format(**l)
+                    log = "{t} {client} {family} {type} {domain} {action} {response_type} {blocklist}\n".format(**l)
                     os.write(self.pipe_fd, log.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
@@ -161,11 +161,14 @@ class ModuleContext:
         # XXX: potential issue on DNSSEC
         client = qstate.mesh_info.reply_list.query_reply
 
-        if self.dnsbl_available and qname.rstrip('.') in mod_env['dnsbl']['data']:
+        domain = qname.rstrip('.')
+        info = (t, client.addr, client.family, qtype_str, qname)
+        if self.dnsbl_available and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
+            blocklist = mod_env['dnsbl']['data'][domain]['bl']
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
-                self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_BLOCK, RESPONSE_BLOCK)
+                self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
@@ -175,16 +178,16 @@ class ModuleContext:
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_DROP, RESPONSE_SERVFAIL)
+                self.log_entry(*(info), ACTION_DROP, RESPONSE_SERVFAIL)
                 return True
 
             if self.dnssec_enabled:
                 qstate.return_msg.rep.security = 2
-            self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_BLOCK, RESPONSE_BLOCK)
+            self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
             # Pass the query to validator/iterator
-            self.log_entry(t, client.addr, client.family, qtype_str, qname, ACTION_PASS, RESPONSE_NEW)
+            self.log_entry(*(info), ACTION_PASS, RESPONSE_NEW)
             qstate.ext_state[id] = MODULE_WAIT_MODULE
 
         return True

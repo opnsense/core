@@ -61,8 +61,9 @@ class DNSReader:
                     type TEXT,
                     domain TEXT,
                     action INTEGER,
-                    response_type INTEGER
-                )
+                    response_type INTEGER,
+                    blocklist TEXT
+                );
             """)
             self.cursor.execute("PRAGMA journal_mode = WAL") # persists across connections
             for size in [300, 60]:
@@ -117,8 +118,8 @@ class DNSReader:
             while len(self.buffer) > 0:
                 self.cursor.execute("""
                     INSERT INTO query (
-                        time, client, family, type, domain, action, response_type
-                    ) VALUES(?, ?, ?, ?, ?, ?, ?)
+                        time, client, family, type, domain, action, response_type, blocklist
+                    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                 """, self.buffer.popleft())
             self.con.commit()
 

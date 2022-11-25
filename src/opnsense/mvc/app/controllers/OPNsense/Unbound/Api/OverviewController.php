@@ -57,6 +57,16 @@ class OverviewController extends ApiControllerBase
         $this->sessionClose();
         $max = preg_replace("/^(?:(?![0-9]).)*$/", "10", $maximum);
         $response = (new Backend())->configdpRun('unbound qstats totals', [$max]);
-        return json_decode($response, true);
+        $parsed = json_decode($response, true);
+
+        /* Map the blocklist type keys to their corresponding description */
+        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['type'];
+        foreach($parsed['top_blocked'] as $domain => $props) {
+            if (array_key_exists($props['blocklist'], $nodes)) {
+                $parsed['top_blocked'][$domain]['blocklist'] = $nodes[$props['blocklist']]['value'];
+            }
+        }
+
+        return $parsed;
     }
 }
