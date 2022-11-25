@@ -94,7 +94,7 @@ class DNSReader:
         query = """
             DELETE
             FROM query
-            WHERE DATETIME(time, 'unixepoch') < DATETIME(':delta');
+            WHERE DATETIME(time, 'unixepoch') < DATETIME(:delta);
         """
         self.cursor.execute(query, {"delta": t})
 
