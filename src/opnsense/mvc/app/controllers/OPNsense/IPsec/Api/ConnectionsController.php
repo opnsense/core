@@ -39,6 +39,33 @@ class ConnectionsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'swanctl';
     protected static $internalModelClass = 'OPNsense\IPsec\Swanctl';
 
+    private function connectionFilter()
+    {
+        $connection = $this->request->get('connection');
+        $filter_func = null;
+        if (!empty($connection)) {
+            $filter_func = function ($record) use ($connection) {
+                return $record->connection == $connection;
+            };
+        }
+        return $filter_func;
+    }
+
+    private function wrapDefaults($payload, $topic)
+    {
+        $conn_uuid = $this->request->get('connection');
+        if (!empty($conn_uuid)) {
+            foreach ($payload[$topic]['connection'] as $key => &$value) {
+                if ($key == $conn_uuid) {
+                    $value['selected'] = 1;
+                } else {
+                    $value['selected'] = 0;
+                }
+            }
+        }
+        return $payload;
+    }
+
     public function searchConnectionAction()
     {
         return $this->searchBase('Connections.Connection', ['description']);
@@ -87,11 +114,14 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchLocalAction()
     {
-        return $this->searchBase('locals.local', ['description']);
+        return $this->searchBase('locals.local', ['description'], 'description', $this->connectionFilter());
     }
     public function getLocalAction($uuid = null)
     {
-        return $this->getBase('local', 'locals.local', $uuid);
+        return $this->wrapDefaults(
+            $this->getBase('local', 'locals.local', $uuid),
+            'local'
+        );
     }
     public function setLocalAction($uuid = null)
     {
@@ -108,11 +138,14 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchRemoteAction()
     {
-        return $this->searchBase('remotes.remote', ['description']);
+        return $this->searchBase('remotes.remote', ['description'], 'description', $this->connectionFilter());
     }
     public function getRemoteAction($uuid = null)
     {
-        return $this->getBase('remote', 'remotes.remote', $uuid);
+        return $this->wrapDefaults(
+            $this->getBase('remote', 'remotes.remote', $uuid),
+            'remote'
+        );
     }
     public function setRemoteAction($uuid = null)
     {
@@ -129,11 +162,14 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchChildAction()
     {
-        return $this->searchBase('children.child', ['description']);
+        return $this->searchBase('children.child', ['description'], 'description', $this->connectionFilter());
     }
     public function getChildAction($uuid = null)
     {
-        return $this->getBase('child', 'children.child', $uuid);
+        return $this->wrapDefaults(
+            $this->getBase('child', 'children.child', $uuid),
+            'child'
+        );
     }
     public function setChildAction($uuid = null)
     {

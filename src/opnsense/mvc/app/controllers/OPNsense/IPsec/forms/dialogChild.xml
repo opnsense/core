@@ -6,7 +6,7 @@
     </field>
     <field>
         <id>child.connection</id>
-        <label>Host override</label>
+        <label>Connection</label>
         <type>dropdown</type>
     </field>
     <field>

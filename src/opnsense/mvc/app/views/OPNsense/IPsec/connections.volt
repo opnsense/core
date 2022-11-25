@@ -26,7 +26,12 @@
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['connection'] = $("#connection\\.uuid").val();
-                    return new URLSearchParams(request).toString();
+                    if (request.rowCount === undefined) {
+                        return new URLSearchParams(request).toString();
+                    } else {
+                        return request
+                    }
+
                 }
             }
           });
@@ -39,6 +44,9 @@
             ajaxGet("/api/ipsec/connections/connection_exists/" + $("#connection\\.uuid").val(), {}, function(data){
                 if (data.exists) {
                     $("#connection_details").show();
+                    $("#grid-locals").bootgrid("reload");
+                    $("#grid-remotes").bootgrid("reload");
+                    $("#grid-children").bootgrid("reload");
                 }
             });
             $(this).show();
@@ -212,4 +220,4 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','label':lang._('Edit Connection')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogLocal,'id':'DialogLocal','label':lang._('Edit Local')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogRemote','label':lang._('Edit Child')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogChild','label':lang._('Edit Child')])}}
