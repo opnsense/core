@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     // boolean values
     $pconfig['enable'] = isset($a_unboundcfg['enable']);
+    $pconfig['stats'] = isset($a_unboundcfg['stats']);
     $pconfig['enable_wpad'] = isset($a_unboundcfg['enable_wpad']);
     $pconfig['dnssec'] = isset($a_unboundcfg['dnssec']);
     $pconfig['dns64'] = isset($a_unboundcfg['dns64']);
@@ -119,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_unboundcfg['noarecords'] = !empty($pconfig['noarecords']);
             $a_unboundcfg['dnssec'] = !empty($pconfig['dnssec']);
             $a_unboundcfg['enable'] = !empty($pconfig['enable']);
+            $a_unboundcfg['stats'] = !empty($pconfig['stats']);
             $a_unboundcfg['enable_wpad'] = !empty($pconfig['enable_wpad']);
             $a_unboundcfg['noreglladdr6'] = empty($pconfig['reglladdr6']);
             $a_unboundcfg['regdhcp'] = !empty($pconfig['regdhcp']);
@@ -206,6 +208,17 @@ include_once("head.inc");
                           <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '';?> />
                           <?= gettext('Enable Unbound') ?>
                         </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_stats" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Query Statistics");?></td>
+                          <td>
+                            <input name="stats" type="checkbox" value="yes" <?=!empty($pconfig['stats']) ? 'checked="checked"' : '';?> />
+                              <?= gettext('Enable statistics') ?>
+                              <div class="hidden" data-for="help_for_stats">
+                                <?= gettext("Enable the local collection of statistics including, but not limited to, top searched domains, " .
+                                    "blocked domains, client activity, cache hits and local-data hits."); ?>
+                              </div>
+                          </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
