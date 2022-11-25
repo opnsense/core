@@ -158,8 +158,14 @@ class ModuleContext:
         qname = qstate.qinfo.qname_str
         qtype = qstate.qinfo.qtype
         qtype_str = qstate.qinfo.qtype_str
-        # XXX: potential issue on DNSSEC
-        client = qstate.mesh_info.reply_list.query_reply
+
+        try:
+            # This can fail in cases where DNSSEC is enabled and since this isn't easily
+            # reproducible, we log the type of query so we can act on it in the future.
+            client = qstate.mesh_info.reply_list.query_reply
+        except AttributeError:
+            log_warn("dnsbl_module: unable to determine client for (%s type %s)" % (qname, qtype_str))
+            client = None
 
         domain = qname.rstrip('.')
         info = (t, client.addr, client.family, qtype_str, qname)
