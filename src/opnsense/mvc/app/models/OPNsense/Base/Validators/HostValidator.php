@@ -64,6 +64,8 @@ class HostValidator extends BaseValidator
             $filterOptIp = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
             if ($allow_fqdnwildcard && substr($value, 0, 2) == '*.') {
                 $value = substr($value, 2);
+            } elseif ($allow_zoneroot && substr($value, 0, 2) == '@.') {
+                $value = substr($value, 2);
             }
             if ($allow_zoneroot && $value == '@') {
                 $result = true;
