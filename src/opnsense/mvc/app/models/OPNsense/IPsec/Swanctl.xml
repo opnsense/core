@@ -30,6 +30,48 @@
                     </Model>
                     <Required>Y</Required>
                 </connection>
+                <round type="IntegerField">
+                    <Required>Y</Required>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>10</MaximumValue>
+                    <default>0</default>
+                </round>
+                <auth type="OptionField">
+                    <Required>Y</Required>
+                    <default>psk</default>
+                    <OptionValues>
+                        <psk>Pre-Shared Key</psk>
+                        <pubkey>Public Key</pubkey>
+                        <eap_tls value="eap-tls">EAP TLS</eap_tls>
+                        <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
+                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
+                    </OptionValues>
+                </auth>
+                <id type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([0-9a-zA-Z.\-,_\:){0,4196}$/u</mask>
+                </id>
+                <eap_id type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([0-9a-zA-Z.\-,_\:){0,4196}$/u</mask>
+                </eap_id>
+                <certs type="CertificateField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </certs>
+                <pubkeys type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.IPsec</source>
+                            <items>keyPairs.keyPair</items>
+                            <display>name</display>
+                        </host>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>N</Required>
+                </pubkeys>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
@@ -51,6 +93,48 @@
                     </Model>
                     <Required>Y</Required>
                 </connection>
+                <round type="IntegerField">
+                    <Required>Y</Required>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>10</MaximumValue>
+                    <default>0</default>
+                </round>
+                <auth type="OptionField">
+                    <Required>Y</Required>
+                    <default>psk</default>
+                    <OptionValues>
+                        <psk>Pre-Shared Key</psk>
+                        <pubkey>Public Key</pubkey>
+                        <eap_tls value="eap-tls">EAP TLS</eap_tls>
+                        <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
+                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
+                    </OptionValues>
+                </auth>
+                <id type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([0-9a-zA-Z.\-,_\:){0,4196}$/u</mask>
+                </id>
+                <eap_id type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([0-9a-zA-Z.\-,_\:){0,4196}$/u</mask>
+                </eap_id>
+                <certs type="CertificateField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </certs>
+                <pubkeys type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.IPsec</source>
+                            <items>keyPairs.keyPair</items>
+                            <display>name</display>
+                        </host>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <Required>N</Required>
+                </pubkeys>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
