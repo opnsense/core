@@ -9,6 +9,94 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
+                <proposals type=".\IPsecProposalField">
+                    <default>default</default>
+                    <Required>Y</Required>
+                </proposals>
+                <unique type="OptionField">
+                    <Required>Y</Required>
+                    <default>no</default>
+                    <OptionValues>
+                        <no>No (default)</no>
+                        <never>Never</never>
+                        <keep>Keep</keep>
+                        <replace>Replace</replace>
+                    </OptionValues>
+                </unique>
+                <aggressive type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </aggressive>
+                <version type="OptionField">
+                    <Required>Y</Required>
+                    <default>0</default>
+                    <OptionValues>
+                        <ike value="0">IKEv1+IKEv2</ike>
+                        <ikev1 value="1">IKEv1</ikev1>
+                        <ikev2 value="2">IKEv2</ikev2>
+                    </OptionValues>
+                </version>
+                <mobike type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </mobike>
+                <local_addrs type=".\IKEAdressField">
+                    <Required>N</Required>
+                </local_addrs>
+                <remote_addrs type=".\IKEAdressField">
+                    <Required>N</Required>
+                </remote_addrs>
+                <encap type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </encap>
+                <reauth_time type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>N</Required>
+                </reauth_time>
+                <rekey_time type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>N</Required>
+                </rekey_time>
+                <over_time type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>N</Required>
+                </over_time>
+                <dpd_delay  type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>N</Required>
+                </dpd_delay>
+                <dpd_timeout type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>N</Required>
+                </dpd_timeout>
+                <pools type=".\PoolsField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                </pools>
+                <send_certreq type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </send_certreq>
+                <send_cert type="OptionField">
+                    <Required>N</Required>
+                    <BlankDesc>Default</BlankDesc>
+                    <OptionValues>
+                        <ifasked>If asked</ifasked>
+                        <never>Never</never>
+                        <always>Always</always>
+                    </OptionValues>
+                </send_cert>
+                <keyingtries  type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>1000</MaximumValue>
+                    <Required>N</Required>
+                </keyingtries>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
@@ -156,10 +244,89 @@
                     </Model>
                     <Required>Y</Required>
                 </connection>
+                <!-- XXX: reqid needs some cleverness and plumbing to create interfaces for VTI-->
+                <esp_proposals type=".\IPsecProposalField">
+                    <default>default</default>
+                    <Required>Y</Required>
+                </esp_proposals>
+                <sha256_96 type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </sha256_96>
+                <start_action type="OptionField">
+                    <Required>Y</Required>
+                    <default>start</default>
+                    <OptionValues>
+                        <none>None</none>
+                        <trap_start value='trap|start'>Trap+start</trap_start>
+                        <route>Route</route>
+                        <start>Start</start>
+                        <trap>Trap</trap>
+                    </OptionValues>
+                </start_action>
+                <close_action type="OptionField">
+                    <Required>Y</Required>
+                    <default>none</default>
+                    <OptionValues>
+                        <none>None</none>
+                        <trap>Trap</trap>
+                        <start>Start</start>
+                    </OptionValues>
+                </close_action>
+                <dpd_action  type="OptionField">
+                    <Required>Y</Required>
+                    <default>clear</default>
+                    <OptionValues>
+                        <clear>Clear</clear>
+                        <trap>Trap</trap>
+                        <start>Start</start>
+                    </OptionValues>
+                </dpd_action>
+                <mode type="OptionField">
+                    <Required>Y</Required>
+                    <default>tunnel</default>
+                    <OptionValues>
+                        <tunnel>Tunnel</tunnel>
+                        <transport>Transport</transport>
+                        <pass>Pass</pass>
+                        <drop>Drop</drop>
+                    </OptionValues>
+                </mode>
+                <local_ts type="NetworkField">
+                    <Required>Y</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </local_ts>
+                <remote_ts type="NetworkField">
+                    <Required>Y</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </remote_ts>
+                <rekey_time type="IntegerField">
+                    <default>3600</default>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>500000</MaximumValue>
+                    <Required>Y</Required>
+                </rekey_time>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
             </child>
         </children>
+        <Pools>
+            <Pool type="ArrayField">
+                <name type="TextField">
+                    <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Pool name must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </name>
+            </Pool>
+        </Pools>
     </items>
 </model>

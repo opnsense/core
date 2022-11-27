@@ -26,17 +26,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\FieldTypes;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
+
+/**
+ * @package OPNsense\Base\FieldTypes
+ */
+class IKEAdressField extends BaseListField
 {
-    public function indexAction()
+    public function getValidators()
     {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            $validators[] = new CallbackValidator(["callback" => function ($data) {
+                $messages = [];
+                foreach (explode(",", $data) as $entry) {
+                    if  (Util::isIpAddress($entry) || Util::isSubnet($entry) || Util::isDomain($entry)) {
+                        continue;
+                    }
+                    $messages[] = sprintf(
+                        gettext('Entry "%s" is not a valid hostname, IP address or range.'),
+                        $entry
+                    );
+                }
+                return $messages;
+            }
+            ]);
+        }
+        return $validators;
     }
 }

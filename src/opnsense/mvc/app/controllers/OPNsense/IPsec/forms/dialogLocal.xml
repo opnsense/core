@@ -19,7 +19,7 @@
         <id>local.auth</id>
         <label>Authentication</label>
         <type>dropdown</type>
-        <help>Authentication to perform for this round</help>
+        <help>Authentication to perform for this round, when using Pre-Shared key make sure to define one under "VPN->IPsec->Pre-Shared Keys"</help>
     </field>
     <field>
         <id>local.id</id>
@@ -39,6 +39,7 @@
         <label>EAP Id</label>
         <type>text</type>
         <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method</help>
+        <style>local_auth local_auth_eap-mschapv2 local_auth_eap-tls local_auth_eap-radius</style>
     </field>
     <field>
       <id>local.certs</id>
@@ -51,6 +52,7 @@
       <label>Public Keys</label>
       <type>select_multiple</type>
       <help>List of raw public key candidates to use for authentication.</help>
+      <style>local_auth local_auth_pubkey</style>
     </field>
     <field>
         <id>local.description</id>

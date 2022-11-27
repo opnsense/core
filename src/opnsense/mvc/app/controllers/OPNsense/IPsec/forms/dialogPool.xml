@@ -1,0 +1,7 @@
+<form>
+    <field>
+        <id>pool.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

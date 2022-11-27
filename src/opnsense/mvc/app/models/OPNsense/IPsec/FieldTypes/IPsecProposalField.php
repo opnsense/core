@@ -26,17 +26,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\FieldTypes;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseListField;
+
+/**
+ * @package OPNsense\Base\FieldTypes
+ */
+class IPsecProposalField extends BaseListField
 {
-    public function indexAction()
+    private static $internalCacheOptionList = [];
+
+    protected function actionPostLoadingEvent()
     {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
+        if (empty(self::$internalCacheOptionList)) {
+            self::$internalCacheOptionList['default'] = 'default';
+            foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16',
+                      'chacha20poly1305'] as $encalg
+            ) {
+                foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
+                    foreach ([
+                        'modp2048', 'modp3072', 'modp4096', 'modp6144', 'modp8192', 'ecp224',
+                        'ecp256', 'ecp384', 'ecp521', 'ecp224bp', 'ecp256bp', 'ecp384bp', 'ecp512bp',
+                        'x25519', 'x448'] as $dhgroup
+                    ) {
+                        $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
+                        self::$internalCacheOptionList[$cipher] = $cipher;
+                    }
+                }
+            }
+            natcasesort(self::$internalCacheOptionList);
+        }
+        $this->internalOptionList = self::$internalCacheOptionList;
     }
 }

@@ -39,6 +39,7 @@
         <label>EAP Id</label>
         <type>text</type>
         <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method</help>
+        <style>remote_auth remote_auth_eap-mschapv2 remote_auth_eap-tls remote_auth_eap-radius</style>
     </field>
     <field>
       <id>remote.certs</id>
@@ -51,6 +52,7 @@
       <label>Public Keys</label>
       <type>select_multiple</type>
       <help>List of raw public key candidates to use for authentication.</help>
+      <style>remote_auth remote_auth_pubkey</style>
     </field>
     <field>
         <id>remote.description</id>

@@ -26,17 +26,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\FieldTypes;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseListField;
+
+/**
+ * @package OPNsense\Base\FieldTypes
+ */
+class PoolsField extends BaseListField
 {
-    public function indexAction()
+    private static $internalCacheOptionList = [];
+
+    protected function actionPostLoadingEvent()
     {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
+        if (empty(self::$internalCacheOptionList)) {
+            foreach ($this->getParentModel()->Pools->Pool->iterateItems() as $node_uuid => $node) {
+                self::$internalCacheOptionList[$node_uuid] = (string)$node->name;
+            }
+            // internal (plugin) pools
+            self::$internalCacheOptionList['radius'] = 'radius';
+            natcasesort(self::$internalCacheOptionList);
+        }
+        $this->internalOptionList = self::$internalCacheOptionList;
     }
 }

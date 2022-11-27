@@ -26,17 +26,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\Api;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\ApiMutableModelControllerBase;
+
+/**
+ * Class PoolsController
+ * @package OPNsense\IPsec\Api
+ */
+class PoolsController extends ApiMutableModelControllerBase
 {
-    public function indexAction()
+    protected static $internalModelName = 'swanctl';
+    protected static $internalModelClass = 'OPNsense\IPsec\Swanctl';
+
+    public function searchAction()
     {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
+        return $this->searchBase('Pools.Pool', ['name']);
+    }
+
+    public function setAction($uuid = null)
+    {
+        return $this->setBase('pool', 'Pools.Pool', $uuid);
+    }
+
+    public function addAction()
+    {
+        return $this->addBase('pool', 'Pools.Pool');
+    }
+
+    public function getAction($uuid = null)
+    {
+        return $this->getBase('pool', 'Pools.Pool', $uuid);
+    }
+
+    public function delAction($uuid)
+    {
+        return $this->delBase('Pools.Pool', $uuid);
     }
 }
