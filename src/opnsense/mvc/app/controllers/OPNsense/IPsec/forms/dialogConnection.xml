@@ -6,6 +6,12 @@
         <style>hidden_attr</style>
     </field>
     <field>
+        <id>connection.org_uuid</id>
+        <label>orignal uuid</label>
+        <type>text</type>
+        <style>hidden_attr</style>
+    </field>
+    <field>
         <id>connection.enabled</id>
         <label>enabled</label>
         <type>checkbox</type>

@@ -73,12 +73,48 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function setConnectionAction($uuid = null)
     {
+        $copy_uuid = null;
         $post = $this->request->getPost('connection');
         if (empty($uuid) && !empty($post) && !empty($post['uuid'])) {
             // use form provided uuid when not provided as uri parameter
             $uuid = $post['uuid'];
+            $copy_uuid = $post['org_uuid'] ?? null;
         }
-        return $this->setBase('connection', 'Connections.Connection', $uuid);
+        $result = $this->setBase('connection', 'Connections.Connection', $uuid);
+        // copy children (when none exist)
+        if (!empty($copy_uuid) && $result['result'] != 'failed') {
+            $changed = False;
+            foreach (['locals.local', 'remotes.remote', 'children.child'] as $ref) {
+                $container = $this->getModel()->getNodeByReference($ref);
+                if ($container != null) {
+                    $orignal_items = [];
+                    $has_children = False;
+                    foreach ($container->iterateItems() as $node_uuid => $node) {
+                        if ($node->connection == $copy_uuid) {
+                            $record = [];
+                            foreach ($node->iterateItems() as $key => $field) {
+                                $record[$key] = (string)$field;
+                            }
+                            $orignal_items[] = $record;
+                        } elseif ($node->connection == $uuid) {
+                            $has_children = True;
+                        }
+                    }
+                    if (!$has_children) {
+                        foreach ($orignal_items as $record) {
+                            $node = $container->Add();
+                            $record['connection'] = $uuid;
+                            $node->setNodes($record);
+                            $changed = True;
+                        }
+                    }
+                }
+            }
+            if ($changed) {
+                $this->save();
+            }
+        }
+        return $result;
     }
 
     public function addConnectionAction()
@@ -91,6 +127,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
         $result = $this->getBase('connection', 'Connections.Connection', $uuid);
         if (!empty($result['connection'])) {
             $fetchmode = $this->request->has("fetchmode") ? $this->request->get("fetchmode") : null;
+            $result['connection']['org_uuid'] = $uuid;
             if (empty($uuid) || $fetchmode == 'copy') {
                 $result['connection']['uuid'] = $this->getModel()->Connections->generateUUID();
             } else {
@@ -109,12 +146,28 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function delConnectionAction($uuid)
     {
+        // remove children
+        foreach (['locals.local', 'remotes.remote', 'children.child'] as $ref) {
+            $tmp = $this->getModel()->getNodeByReference($ref);
+            if ($tmp != null) {
+                foreach ($tmp->iterateItems() as $node_uuid => $node) {
+                    if ($node->connection == $uuid) {
+                        $this->delBase($ref, $node_uuid);
+                    }
+                }
+            }
+        }
         return $this->delBase('Connections.Connection', $uuid);
     }
 
     public function searchLocalAction()
     {
-        return $this->searchBase('locals.local', ['description'], 'description', $this->connectionFilter());
+        return $this->searchBase(
+            'locals.local',
+            ['description', 'round', 'auth'],
+            'description',
+            $this->connectionFilter()
+        );
     }
     public function getLocalAction($uuid = null)
     {
@@ -138,7 +191,12 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchRemoteAction()
     {
-        return $this->searchBase('remotes.remote', ['description'], 'description', $this->connectionFilter());
+        return $this->searchBase(
+            'remotes.remote',
+            ['description', 'round', 'auth'],
+            'description',
+            $this->connectionFilter()
+        );
     }
     public function getRemoteAction($uuid = null)
     {
