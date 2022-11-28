@@ -38,7 +38,7 @@ function webgui_cron()
         isset($config['system']['webgui']['ocsp-staple']) && $config['system']['webgui']['ocsp-staple'] == '1' &&
         !isset($config['system']['webgui']['ocsp-staple-autocron-disable'])
     ) {
-        $jobs[]['autocron'] = array('/usr/local/sbin/configctl webgui ocsp', '0', '*/12');
+        $jobs[]['autocron'] = array('/usr/local/sbin/configctl webgui ocsp /var/etc/cert.pem /var/etc/issuer.pem /var/etc/staple.der /usr/local/bin/openssl 3', '*/5');
     }
 
     return $jobs;
@@ -422,7 +422,7 @@ EOD;
         $lighty_config .= "ssl.pemfile = \"{$chain_location}\"\n";
 
         if (isset($config['system']['webgui']['ocsp-staple']) && $config['system']['webgui']['ocsp-staple'] == '1') {
-            configd_run('webgui ocsp');
+            configd_run('webgui ocsp /var/etc/cert.pem /var/etc/issuer.pem /var/etc/staple.der /usr/local/bin/openssl 3');
             $lighty_config .= "ssl.stapling-file = \"{$ocsp_location}\"\n";
         }
 

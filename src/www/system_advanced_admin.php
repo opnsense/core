@@ -627,12 +627,12 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_ocspstaple_autocron_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable OCSP auto-update') ?></td>
+                <td><a id="help_for_ocspstaple_autocron_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('OCSP auto-update') ?></td>
                 <td>
                   <input name="ocsp-staple-autocron-disable" type="checkbox" value="yes" <?= empty($pconfig['ocsp-staple-autocron-disable']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Disable OCSP response file automatic update') ?>
                   <div class="hidden" data-for="help_for_ocspstaple_autocron_disable">
-                    <?=gettext("OCSP response file automatic update is enabled by default (if OCSP staple enabled) and runs every 12 hours. If you need a specific schedule, disable auto-update and create a \"Update web GUI OCSP data\" cron job with the desired schedule.");?>
+                    <?=gettext("OCSP response file automatic update is enabled by default (if OCSP staple enabled), runs every 5 min and refresh response if needed. If you need a specific schedule or options, disable auto-update and create a \"Update web GUI OCSP data\" cron job with the desired schedule.");?>
                   </div>
                 </td>
               </tr>
