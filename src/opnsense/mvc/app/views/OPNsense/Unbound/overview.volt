@@ -195,15 +195,27 @@
                         tooltip: {
                             mode: 'nearest',
                             intersect: false,
+                            filter: function(context) {
+                                return context.parsed.y != 0.1;
+                            },
                             callbacks: {
                                 label: function(context) {
                                     /* Logarithmic scaling workaround continuation: replace the earlier
                                      * supplied 0.1 values (if any) with 0 in the tooltip menu
                                      */
-                                    let time = context.formattedValue.split(',')[0].replace(/[{()}]/g, '');
-                                    let label = context.dataset.label
-                                    let val = context.parsed.y == 0.1 ? 0 : context.parsed.y
-                                    return '(' + time + ')  ' + label + ': ' + val.toLocaleString();
+                                    if (context) {
+                                        if (context.parsed.y == 0.1) {
+                                            return null;
+                                        }
+                                        let label = context.dataset.label
+                                        let val = context.parsed.y == 0.1 ? 0 : context.parsed.y
+                                        return label + ': ' + val.toLocaleString();
+                                    }
+                                },
+                                title: function(context) {
+                                    if (context[0]) {
+                                        return context[0].formattedValue.split(',')[0].replace(/[{()}]/g, '');;
+                                    }
                                 }
                             }
                         },
