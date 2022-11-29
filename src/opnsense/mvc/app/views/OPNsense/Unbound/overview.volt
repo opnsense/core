@@ -37,7 +37,12 @@
     $(document).ready(function() {
         $('#info').hide();
 
-        function create_chart(target, stepsize, feed_data) {
+        function set_alpha(color, opacity) {
+            const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
+            return color + op.toString(16).toUpperCase();
+        }
+
+        function create_chart(target, stepsize, feed_data, logarithmic) {
             const ctx = target[0].getContext('2d');
             const config = {
                 type: 'line',
@@ -60,6 +65,7 @@
                 },
                 options: {
                     maintainAspectRatio: false,
+                    responsive: true,
                     aspectRatio: 1,
                     elements: {
                         line: {
@@ -94,18 +100,34 @@
                         y: {
                             ticks: {
                                 callback: function (value, index, values) {
+                                    /* workaround for chart.js v3: no proper handling for
+                                     * logarithmic scale when 0 values are supplied.
+                                     */
+                                    if (index === 0) {
+                                        return '0';
+                                    }
                                     /* Don't show decimal values on the y-axis */
                                     if (Math.floor(value) == value) {
                                         return value;
                                     }
-                                }
-                            }
+                                },
+                                autoSkip: true,
+                                autoSkipPadding: 10
+                            },
+                            type: logarithmic ? 'logarithmic' : 'linear',
+                            min: logarithmic ? 0.1 : 0,
                         }
                     },
                     plugins: {
                         tooltip: {
                             mode: 'nearest',
-                            intersect: false
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let val = context.parsed.y == 0.1 ? 0 : context.parsed.y
+                                    return context.dataset.label + ': ' + val.toLocaleString();
+                                }
+                            }
                         },
                         legend: {
                             display: true
@@ -120,9 +142,95 @@
             return new Chart(ctx, config);
         }
 
-        function formatQueryData(data) {
+        function create_client_chart(target, stepsize, feed_data, logarithmic) {
+            const ctx = target[0].getContext('2d');
+            const config = {
+                type: 'bubble',
+                data: {
+                    datasets: feed_data
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    aspectRatio: 1,
+                    layout: {
+                        padding: {
+                            left: 40,
+                            right: 50,
+                            bottom: 20
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                tooltipFormat:'HH:mm',
+                                unit:'minute',
+                                stepSize: stepsize,
+                                minUnit: 'minute',
+                                displayFormats: {
+                                    minute: 'HH:mm'
+                                }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    if (index === 0) {
+                                        return '0';
+                                    }
+                                    /* Don't show decimal values on the y-axis */
+                                    if (Math.floor(value) == value) {
+                                        return value;
+                                    }
+                                },
+                                autoSkip: true,
+                                autoSkipPadding: 10
+                            },
+                            type: logarithmic ? 'logarithmic' : 'linear',
+                            min: logarithmic ? 0.1 : 0,
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'nearest',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    /* Logarithmic scaling workaround continuation: replace the earlier
+                                     * supplied 0.1 values (if any) with 0 in the tooltip menu
+                                     */
+                                    let time = context.formattedValue.split(',')[0].replace(/[{()}]/g, '');
+                                    let label = context.dataset.label
+                                    let val = context.parsed.y == 0.1 ? 0 : context.parsed.y
+                                    return '(' + time + ')  ' + label + ': ' + val.toLocaleString();
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        colorschemes: {
+                            scheme: 'brewer.DarkTwo8'
+                        }
+                    }
+                }
+            };
+
+            return new Chart(ctx, config);
+        }
+
+        function formatQueryData(data, logarithmic) {
             let formatted = [];
             Object.keys(data).forEach((key, index) => {
+                /* workaround for logarithmic scale, see https://github.com/chartjs/Chart.js/issues/9629 */
+                if (logarithmic) {
+                    Object.keys(data[key]).forEach((k, i) => {
+                        if (data[key][k] == 0) {
+                            data[key][k] = 0.1
+                        }
+                    })
+                }
                 formatted.push({
                     x: key * 1000,
                     y: data[key]
@@ -142,20 +250,84 @@
             return formatted;
         }
 
-        function updateQueryChart() {
+        function formatClientData(data, logarithmic) {
+            let uniqueClients = [...new Set(
+                Object.values(data)
+                    .map(Object.keys)
+                    .reduce((a, b) => a.concat(b), [])
+            )]
+            let formatted = [];
+            // split into different datasets
+            for (let i = 0; i < uniqueClients.length; i++) {
+                let tmp = []
+                Object.keys(data).forEach((key, index) => {
+                    /* Similarly with the query line chart, the bubble chart cannot handle null values */
+                    let backup_val = logarithmic ? 0.1 : null;
+                    tmp.push({
+                        x: key * 1000,
+                        y: data[key].hasOwnProperty(uniqueClients[i]) ? data[key][uniqueClients[i]] : backup_val,
+                        r: data[key].hasOwnProperty(uniqueClients[i]) ? 4 : 0
+                    })
+                });
+
+                /* Add a redundant data step to end the chart time axis properly */
+                if (tmp.length > 0) {
+                    let lastVal = tmp[tmp.length - 1];
+                    let interval = $("#timeperiod-clients").val() == 1 ? 60 : 300;
+                    tmp.push({
+                        x: lastVal.x + (interval * 1000),
+                        y: null,
+                        r: 0
+                    });
+                }
+
+                let colors = Chart.colorschemes.brewer.DarkTwo8.length;
+                let colorIdx = i - parseInt(i / colors) * colors;
+                let bgColor = Chart.colorschemes.brewer.DarkTwo8[colorIdx];
+                formatted.push({
+                    label: uniqueClients[i],
+                    data: tmp,
+                    borderWidth: 1,
+                    backgroundColor: set_alpha(bgColor, 0.5),
+                    borderColor: bgColor,
+                    hoverRadius: 10
+                })
+            }
+            return formatted;
+        }
+
+        function updateQueryChart(use_log=false) {
             ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                let formatted = formatQueryData(data);
+                let formatted = formatQueryData(data, use_log);
                 g_queryChart.config.options.scales.x.time.stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
                 g_queryChart.config.data.datasets.forEach(function(dataset) {
                     dataset.data = formatted;
                 });
+                if (use_log) {
+                    g_queryChart.config.options.scales.y.type = 'logarithmic';
+                    g_queryChart.config.options.scales.y.min = 0.1;
+                } else {
+                    g_queryChart.config.options.scales.y.type = 'linear';
+                    g_queryChart.config.options.scales.y.min = 0;
+                }
                 g_queryChart.update();
             });
         }
 
-        function formatTitle() {
-            let h = $("#timeperiod").val() == 1 ? "hour" : $("#timeperiod").val() + " hours";
-            return "Queries over the last " + h;
+        function updateClientChart(use_log=false) {
+            ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
+                let formatted = formatClientData(data, use_log);
+                g_clientChart.config.options.scales.x.time.stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
+                g_clientChart.config.data.datasets = formatted;
+                if (use_log) {
+                    g_clientChart.config.options.scales.y.type = 'logarithmic';
+                    g_clientChart.config.options.scales.y.min = 0.1;
+                } else {
+                    g_clientChart.config.options.scales.y.type = 'linear';
+                    g_clientChart.config.options.scales.y.min = 0;
+                }
+                g_clientChart.update();
+            });
         }
 
         function createTopList(id, data) {
@@ -173,6 +345,7 @@
         }
 
         g_queryChart = null;
+        g_clientChart = null;
 
         /* Initial page load */
         function do_startup() {
@@ -183,10 +356,17 @@
                     return;
                 }
 
+                def.resolve();
+
                 if (window.localStorage && window.localStorage.getItem("api.unbound.overview.timeperiod") !== null) {
                     $("#timeperiod").val(window.localStorage.getItem("api.unbound.overview.timeperiod"));
                 }
                 $('#timeperiod').selectpicker('refresh');
+
+                if (window.localStorage && window.localStorage.getItem("api.unbound.overview.timeperiodclients") !== null) {
+                    $("#timeperiod-clients").val(window.localStorage.getItem("api.unbound.overview.timeperiodclients"));
+                }
+                $('#timeperiod-clients').selectpicker('refresh');
 
                 ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
                     $('#totalCounter').html(data.total);
@@ -203,10 +383,15 @@
                     $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
 
                     ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                        def.resolve();
-                        let formatted = formatQueryData(data);
+                        let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
                         let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
-                        g_queryChart = create_chart($("#rollingChart"), stepSize, formatted);
+                        g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+
+                        ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
+                            let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
+                            let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
+                            g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+                        });
                     });
                 });
             });
@@ -218,8 +403,23 @@
             if (window.localStorage) {
                 window.localStorage.setItem("api.unbound.overview.timeperiod", $(this).val());
             }
-            updateQueryChart();
+            updateQueryChart($("#toggle-log-qchart")[0].checked);
         });
+
+        $("#timeperiod-clients").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.unbound.overview.timeperiodclients", $(this).val());
+            }
+            updateClientChart($("#toggle-log-cchart")[0].checked);
+        });
+
+        $("#toggle-log-qchart").change(function() {
+            updateQueryChart(this.checked);
+        })
+
+        $("#toggle-log-cchart").change(function() {
+            updateClientChart(this.checked);
+        })
 
         do_startup().done(function() {
             $('.content-box').show();
@@ -293,7 +493,7 @@
 </div>
 <div class="content-box" style="margin-bottom: 10px;">
     <div id="graph" class="container-fluid">
-        <div class="row d-flex justify-content-center">
+        <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
             <div class="col-md-4"></div>
             <div class="col-md-4 text-center" style="padding: 10px;">
                 <span id="qGraphTitle" style="padding: 5px;"><b>{{ lang._('Queries over the last ') }}</b></span>
@@ -303,13 +503,50 @@
                     <option value="1">{{ lang._('1 Hour') }}</option>
                 </select>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <div class="vertical-center">
+                    <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
+                    <input id="toggle-log-qchart" type="checkbox"></input>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
                 <div class="chart-container">
                     <canvas id="rollingChart"></canvas>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+</div>
+<div class="content-box" style="margin-bottom: 10px;">
+    <div id="graph" class="container-fluid">
+        <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center" style="padding: 10px;">
+                <span id="cGraphTitle" style="padding: 5px;"><b>{{ lang._('Top 10 client activity over the last ') }}</b></span>
+                <select class="selectpicker" id="timeperiod-clients" data-width="auto">
+                    <option value="24">{{ lang._('24 Hours') }}</option>
+                    <option value="12">{{ lang._('12 Hours') }}</option>
+                    <option value="1">{{ lang._('1 Hour') }}</option>
+                </select>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <div class="vertical-center">
+                    <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
+                    <input id="toggle-log-cchart" type="checkbox"></input>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <div class="chart-container">
+                    <canvas id="rollingChartClient"></canvas>
                 </div>
             </div>
             <div class="col-2"></div>
@@ -340,3 +577,4 @@
         </div>
     </div>
 </div>
+
