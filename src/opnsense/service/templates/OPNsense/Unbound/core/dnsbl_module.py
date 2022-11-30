@@ -164,8 +164,10 @@ class ModuleContext:
             # reproducible, we log the type of query so we can act on it in the future.
             client = qstate.mesh_info.reply_list.query_reply
         except AttributeError:
-            log_warn("dnsbl_module: unable to determine client for (%s type %s)" % (qname, qtype_str))
-            client = None
+            log_warn("dnsbl_module: unable to determine client for %s (type %s)" % (qname, qtype_str))
+            client = type('',(),{})()
+            client.addr = None
+            client.family = None
 
         domain = qname.rstrip('.')
         info = (t, client.addr, client.family, qtype_str, qname)
