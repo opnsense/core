@@ -72,6 +72,8 @@ class ModuleContext:
             try:
                 mod_env['dnsbl'] = json.load(f)
                 log_info('dnsbl_module: blocklist loaded. length is %d' % len(mod_env['dnsbl']['data']))
+                with open('/data/dnsbl.size', 'w') as sfile:
+                    sfile.write(str(len(mod_env['dnsbl']['data'])))
                 config = mod_env['dnsbl']['config']
                 self.dst_addr = config.get('dst_addr', '0.0.0.0')
                 self.rcode = RCODE_NXDOMAIN if config.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR

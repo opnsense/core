@@ -388,7 +388,7 @@
                 ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
                     $('#totalCounter').html(data.total);
                     $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
-                    $('#cachedCounter').html(data.cached.total + " (" + data.cached.pcnt + "%)");
+                    $('#sizeCounter').html(data.blocklist_size);
                     $('#localCounter').html(data.local.total + " (" + data.local.pcnt + "%)");
 
                     createTopList('top', data.top);
@@ -475,7 +475,7 @@
             <div class="banner col-xs-3 justify-content-center">
                 <div class="stats-element">
                     <div class="stats-icon">
-                        <i class="icon fa fa-ban text-danger" aria-hidden="true"></i>
+                        <i class="icon fa fa-hand-paper-o text-danger" aria-hidden="true"></i>
                     </div>
                     <div class="stats-text">
                         <h2 id="blockedCounter" class="stats-counter-text"></h2>
@@ -486,11 +486,11 @@
             <div class="banner col-xs-3 justify-content-center">
                 <div class="stats-element">
                     <div class="stats-icon">
-                        <i class="icon fa fa-database text-primary" aria-hidden="true"></i>
+                        <i class="icon fa fa-list text-primary" aria-hidden="true"></i>
                     </div>
                     <div class="stats-text">
-                        <h2 id="cachedCounter" class="stats-counter-text"></h2>
-                        <p class="stats-inner-text">{{ lang._('From Cache') }}</p>
+                        <h2 id="sizeCounter" class="stats-counter-text"></h2>
+                        <p class="stats-inner-text">{{ lang._('Size of blocklist') }}</p>
                     </div>
                 </div>
             </div>

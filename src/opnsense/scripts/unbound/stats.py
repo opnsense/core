@@ -32,6 +32,7 @@ import ujson
 import sys
 import syslog
 import re
+import os
 from time import time
 from operator import itemgetter
 
@@ -151,9 +152,14 @@ def handle_rolling(db, args):
     print(ujson.dumps(result))
 
 def handle_top(db, args):
-    total = blocked = cached = local = passed = 0
+    total = blocked = local = passed = blocklist_size = 0
     r_top = r_top_blocked = {}
     start_time = int(time())
+
+    bl_path = '/var/unbound/data/dnsbl.size'
+    if os.path.isfile(bl_path) and os.path.getsize(bl_path) > 0:
+        with open(bl_path, 'r') as f:
+            blocklist_size = int(f.readline())
 
     if not db.exit:
         # get top N of all passed queries
@@ -184,7 +190,6 @@ def handle_top(db, args):
         total = """
             SELECT COUNT(*) AS total,
                 COUNT(case q.action when 1 then 1 else null end) AS blocked,
-                COUNT(case q.response_type when 2 then 1 else null end) AS cached,
                 COUNT(case q.response_type when 1 then 1 else null end) AS local,
                 COUNT(case q.action when 0 then 1 else null end) AS passed
             FROM query q;
@@ -205,16 +210,15 @@ def handle_top(db, args):
         if r_total and r_start_time:
             total = r_total[0][0]
             blocked = r_total[0][1]
-            cached = r_total[0][2]
-            local = r_total[0][3]
-            passed = r_total[0][4]
+            local = r_total[0][2]
+            passed = r_total[0][3]
             start_time = r_start_time[0][0]
 
     print(ujson.dumps({
         "total": total,
+        "blocklist_size": blocklist_size,
         "passed": passed,
         "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
-        "cached": {"total": cached, "pcnt": percent(cached, total)},
         "local": {"total": local, "pcnt": percent(local, total)},
         "start_time": start_time,
         "top": {
