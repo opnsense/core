@@ -214,6 +214,7 @@
                                 },
                                 title: function(context) {
                                     if (context[0]) {
+                                        /* Default bubble chart has no tooltip title, add the formatted time */
                                         return context[0].formattedValue.split(',')[0].replace(/[{()}]/g, '');;
                                     }
                                 }
@@ -253,9 +254,13 @@
             if (formatted.length > 0) {
                 let lastVal = formatted[formatted.length - 1];
                 let interval = $("#timeperiod").val() == 1 ? 60 : 300;
+                let y_val = logarithmic ? 0.1 : 0
                 formatted.push({
                     x: lastVal.x + (interval * 1000),
-                    y: null
+                    y: {
+                        "total": y_val,
+                        "blocked": y_val
+                    }
                 });
             }
 
@@ -272,9 +277,9 @@
             // split into different datasets
             for (let i = 0; i < uniqueClients.length; i++) {
                 let tmp = []
+                let backup_val = logarithmic ? 0.1 : null;
                 Object.keys(data).forEach((key, index) => {
-                    /* Similarly with the query line chart, the bubble chart cannot handle null values */
-                    let backup_val = logarithmic ? 0.1 : null;
+                    /* Similarly with the query line chart, the bubble chart cannot handle null values on a log scale */
                     tmp.push({
                         x: key * 1000,
                         y: data[key].hasOwnProperty(uniqueClients[i]) ? data[key][uniqueClients[i]] : backup_val,
@@ -288,7 +293,7 @@
                     let interval = $("#timeperiod-clients").val() == 1 ? 60 : 300;
                     tmp.push({
                         x: lastVal.x + (interval * 1000),
-                        y: null,
+                        y: backup_val,
                         r: 0
                     });
                 }
