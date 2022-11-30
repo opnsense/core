@@ -41,6 +41,12 @@ class DBWrapper:
         self.db_name = "/var/unbound/data/unbound.sqlite"
         self.con = sqlite3.connect(self.db_name)
         self.cursor = self.con.cursor()
+        self.exit = False # let the subcommands handle what to return when no db is available
+
+        check = "SELECT name FROM sqlite_master WHERE type='table' AND name='query';"
+        res = self.cursor.execute(check)
+        if not res.fetchone():
+            self.exit = True
 
     def execute(self, query, params=None):
         try:
@@ -66,137 +72,143 @@ def handle_rolling(db, args):
     interval = int(re.sub("^(?:(?!300|60).)*$", "300", str(args.interval)))
     tp = int(re.sub("^(?:(?!24|12|1).)*$", "24", str(args.timeperiod)))
 
-    if args.clients:
-        query = """
-            WITH grouped AS (
-                SELECT v.start_timestamp s, v.end_timestamp e, c.client cl, COUNT(c.client) cnt_cl
+    result = {}
+
+    if not db.exit:
+        if args.clients:
+            query = """
+                WITH grouped AS (
+                    SELECT v.start_timestamp s, v.end_timestamp e, c.client cl, COUNT(c.client) cnt_cl
+                    FROM v_time_buckets_{intv}min v
+                    LEFT JOIN query c ON
+                        c.time >= v.start_timestamp AND
+                        c.time <= v.end_timestamp
+                    WHERE DATETIME(v.start_timestamp, 'unixepoch') > DATETIME('now', '-{tp} hour')
+                    GROUP BY
+                        v.end_timestamp,
+                        c.client
+                    ORDER BY
+                        v.end_timestamp
+                )
+                SELECT s, e, GROUP_CONCAT(cl), GROUP_CONCAT(cnt_cl)
+                FROM grouped
+                GROUP BY
+                    e
+                ORDER BY
+                    e;
+            """.format(intv=interval//60, tp=tp)
+        else:
+            query = """
+                SELECT v.start_timestamp, v.end_timestamp, COUNT(q.qid) AS cnt,
+                    COUNT(case q.action when 0 then 1 else null end) AS passed,
+                    COUNT(case q.action when 1 then 1 else null end) AS blocked,
+                    COUNT(case q.action when 2 then 1 else null end) AS dropped,
+                    COUNT(case q.response_type when 0 then 1 else null end) AS resolved,
+                    COUNT(case q.response_type when 1 then 1 else null end) AS local,
+                    COUNT(case q.response_type when 2 then 1 else null end) AS cached
                 FROM v_time_buckets_{intv}min v
-                LEFT JOIN query c ON
-                    c.time >= v.start_timestamp AND
-                    c.time <= v.end_timestamp
+                LEFT JOIN query q ON
+                    q.time >= v.start_timestamp AND
+                    q.time <= v.end_timestamp
                 WHERE DATETIME(v.start_timestamp, 'unixepoch') > DATETIME('now', '-{tp} hour')
                 GROUP BY
-                    v.end_timestamp,
-                    c.client
-                ORDER BY
                     v.end_timestamp
-            )
-            SELECT s, e, GROUP_CONCAT(cl), GROUP_CONCAT(cnt_cl)
-            FROM grouped
-            GROUP BY
-                e
-            ORDER BY
-                e;
-        """.format(intv=interval//60, tp=tp)
-    else:
-        query = """
-            SELECT v.start_timestamp, v.end_timestamp, COUNT(q.qid) AS cnt,
-                COUNT(case q.action when 0 then 1 else null end) AS passed,
-                COUNT(case q.action when 1 then 1 else null end) AS blocked,
-                COUNT(case q.action when 2 then 1 else null end) AS dropped,
-                COUNT(case q.response_type when 0 then 1 else null end) AS resolved,
-                COUNT(case q.response_type when 1 then 1 else null end) AS local,
-                COUNT(case q.response_type when 2 then 1 else null end) AS cached
-            FROM v_time_buckets_{intv}min v
-            LEFT JOIN query q ON
-                q.time >= v.start_timestamp AND
-                q.time <= v.end_timestamp
-            WHERE DATETIME(v.start_timestamp, 'unixepoch') > DATETIME('now', '-{tp} hour')
-            GROUP BY
-                v.end_timestamp
-            ORDER BY
-                v.end_timestamp;
-        """.format(intv=(interval//60), tp=tp)
+                ORDER BY
+                    v.end_timestamp;
+            """.format(intv=(interval//60), tp=tp)
 
-    data = db.execute(query)
+        data = db.execute(query)
 
-    if data:
-        if args.clients:
-            result = {}
-            for row in data:
-                interval = {row[0]: {}}
-                if row[2]:
-                    tmp = []
-                    counts = row[3].split(',')
-                    for idx, client in enumerate(row[2].split(',')):
-                        tmp.append((client, int(counts[idx])))
-                    # sort the list by most active client
-                    tmp.sort(key=itemgetter(1), reverse=True)
-                    # limit by 10
-                    tmp = tmp[:10]
-                    interval[row[0]] |= dict(tmp)
-                result |= interval
-        else:
-            result = {
-                tup[0]: {
-                        'total': tup[2],
-                        'passed': tup[3],
-                        'blocked': tup[4],
-                        'dropped': tup[5],
-                        'resolved': tup[6],
-                        'local': tup[7],
-                        'cached': tup[8]
-                    }
-                for tup in data
-            }
-        print(ujson.dumps(result))
+        if data:
+            if args.clients:
+                result = {}
+                for row in data:
+                    interval = {row[0]: {}}
+                    if row[2]:
+                        tmp = []
+                        counts = row[3].split(',')
+                        for idx, client in enumerate(row[2].split(',')):
+                            tmp.append((client, int(counts[idx])))
+                        # sort the list by most active client
+                        tmp.sort(key=itemgetter(1), reverse=True)
+                        # limit by 10
+                        tmp = tmp[:10]
+                        interval[row[0]] |= dict(tmp)
+                    result |= interval
+            else:
+                result = {
+                    tup[0]: {
+                            'total': tup[2],
+                            'passed': tup[3],
+                            'blocked': tup[4],
+                            'dropped': tup[5],
+                            'resolved': tup[6],
+                            'local': tup[7],
+                            'cached': tup[8]
+                        }
+                    for tup in data
+                }
+    print(ujson.dumps(result))
 
 def handle_top(db, args):
-    # get top N of all passed queries
-    top = """
-        SELECT domain, COUNT(domain) as cnt
-        FROM query
-        WHERE action == 0
-        GROUP BY domain
-        ORDER BY cnt DESC
-        LIMIT :max;
-    """
-
-    r_top = db.execute(top, {"max": args.max})
-
-    # get top N of all blocked queries
-    top_blocked = """
-        SELECT domain, COUNT(domain) as cnt, blocklist
-        FROM query
-        WHERE action == 1
-        GROUP BY DOMAIN
-        ORDER BY cnt DESC
-        LIMIT :max;
-    """
-
-    r_top_blocked = db.execute(top_blocked, {"max": args.max})
-
-    # get counters of total values
-    total = """
-        SELECT COUNT(*) AS total,
-            COUNT(case q.action when 1 then 1 else null end) AS blocked,
-            COUNT(case q.response_type when 2 then 1 else null end) AS cached,
-            COUNT(case q.response_type when 1 then 1 else null end) AS local,
-            COUNT(case q.action when 0 then 1 else null end) AS passed
-        FROM query q;
-    """
-
-    r_total = db.execute(total)
-
-    # get initial start time
-    t = """
-        SELECT time
-        FROM query
-        ORDER BY qid ASC
-        LIMIT 1;
-    """
-
-    r_start_time = db.execute(t)
-
     total = blocked = cached = local = passed = 0
+    r_top = r_top_blocked = {}
     start_time = int(time())
-    if r_total and r_start_time:
-        total = r_total[0][0]
-        blocked = r_total[0][1]
-        cached = r_total[0][2]
-        local = r_total[0][3]
-        passed = r_total[0][4]
-        start_time = r_start_time[0][0]
+
+    if not db.exit:
+        # get top N of all passed queries
+        top = """
+            SELECT domain, COUNT(domain) as cnt
+            FROM query
+            WHERE action == 0
+            GROUP BY domain
+            ORDER BY cnt DESC
+            LIMIT :max;
+        """
+
+        r_top = db.execute(top, {"max": args.max})
+
+        # get top N of all blocked queries
+        top_blocked = """
+            SELECT domain, COUNT(domain) as cnt, blocklist
+            FROM query
+            WHERE action == 1
+            GROUP BY DOMAIN
+            ORDER BY cnt DESC
+            LIMIT :max;
+        """
+
+        r_top_blocked = db.execute(top_blocked, {"max": args.max})
+
+        # get counters of total values
+        total = """
+            SELECT COUNT(*) AS total,
+                COUNT(case q.action when 1 then 1 else null end) AS blocked,
+                COUNT(case q.response_type when 2 then 1 else null end) AS cached,
+                COUNT(case q.response_type when 1 then 1 else null end) AS local,
+                COUNT(case q.action when 0 then 1 else null end) AS passed
+            FROM query q;
+        """
+
+        r_total = db.execute(total)
+
+        # get initial start time
+        t = """
+            SELECT time
+            FROM query
+            ORDER BY qid ASC
+            LIMIT 1;
+        """
+
+        r_start_time = db.execute(t)
+
+        if r_total and r_start_time:
+            total = r_total[0][0]
+            blocked = r_total[0][1]
+            cached = r_total[0][2]
+            local = r_total[0][3]
+            passed = r_total[0][4]
+            start_time = r_start_time[0][0]
 
     print(ujson.dumps({
         "total": total,
