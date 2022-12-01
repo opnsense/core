@@ -1199,10 +1199,12 @@ function ipsec_write_secrets()
 
     foreach ((new \OPNsense\IPsec\IPsec())->preSharedKeys->preSharedKey->iterateItems() as $uuid => $psk) {
         $keytype = strtolower($psk->keyType);
-        $secrets["{$keytype}-{$uuid}"] = [
-            'id-0' => (string)$psk->ident,
-            'secret' => '0s' . base64_encode((string)$psk->Key)
-        ];
+        $dataKey = "{$keytype}-{$uuid}";
+        $secrets[$dataKey] = ['id-0' => (string)$psk->ident];
+        if (!empty((string)$psk->remote_ident)) {
+            $secrets[$dataKey]['id-1'] = (string)$psk->remote_ident;
+        }
+        $secrets[$dataKey]['secret'] = '0s' . base64_encode((string)$psk->Key);
     }
 
     return $secrets;
