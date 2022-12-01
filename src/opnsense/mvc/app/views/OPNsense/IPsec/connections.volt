@@ -88,6 +88,13 @@
         });
 
         $("#frm_ConnectionDialog").append($("#frm_DialogConnection").detach());
+        updateServiceControlUI('ipsec');
+
+        /**
+         * reconfigure
+         */
+        $("#reconfigureAct").SimpleActionButton();
+
     });
 
 </script>
@@ -268,6 +275,22 @@
       </div>
     </div>
 </div>
+
+<section class="page-content-main">
+  <div class="content-box">
+    <div class="col-md-12">
+        <br/>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
+                data-label="{{ lang._('Apply') }}"
+                data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
+                type="button"
+        ></button>
+        <br/><br/>
+    </div>
+  </div>
+</section>
+
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','label':lang._('Edit Connection')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogLocal,'id':'DialogLocal','label':lang._('Edit Local')])}}
