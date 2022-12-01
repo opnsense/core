@@ -36,4 +36,40 @@ use OPNsense\Base\BaseModel;
  */
 class Swanctl extends BaseModel
 {
+    public function getConfig()
+    {
+        $data = [];
+        $references = [
+            'connections' => 'Connections.Connection',
+            'locals' => 'locals.local',
+            'remotes' => 'remotes.remote',
+            'children' => 'children.child'
+        ];
+        foreach ($references as $key => $ref) {
+            $data[$key] = [];
+            foreach ($this->getNodeByReference($ref)->iterateItems() as $node_uuid => $node) {
+                if (empty((string)$node->enabled)) {
+                    continue;
+                }
+                $data[$key][$node_uuid] = [];
+                foreach ($node->iterateItems() as $attr_name => $attr) {
+                    if (in_array($attr_name, ['connection', 'enabled']) || (string)$attr == '') {
+                        continue;
+                    } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\BooleanField')) {
+                        $data[$key][$node_uuid][$attr_name] = (string)$attr == '1' ? 'yes' : 'no';
+                    } elseif ($attr_name == 'pubkeys') {
+                        $tmp = [];
+                        foreach (explode(',', (string)$attr) as $item) {
+                            $tmp[] = $item . '.pem';
+                        }
+                        $data[$key][$node_uuid][$attr_name] = implode(',', $tmp);
+                    } else {
+                        $data[$key][$node_uuid][$attr_name] = (string)$attr;
+                    }
+                }
+            }
+        }
+        print_r($data);
+        return [];
+    }
 }
