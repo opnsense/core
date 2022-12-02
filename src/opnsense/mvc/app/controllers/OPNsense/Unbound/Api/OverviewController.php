@@ -43,12 +43,13 @@ class OverviewController extends ApiControllerBase
         ];
     }
 
-    public function RollingAction($timeperiod)
+    public function RollingAction($timeperiod, $clients=False)
     {
         $this->sessionClose();
         // Sanitize input
         $interval = preg_replace("/^(?:(?!1|12|24).)*$/", "24", $timeperiod) == 1 ? 60 : 300;
-        $response = (new Backend())->configdpRun('unbound qstats rolling', [$interval, $timeperiod]);
+        $type = $clients ? 'clients' : 'rolling';
+        $response = (new Backend())->configdpRun('unbound qstats ' . $type, [$interval, $timeperiod]);
         return json_decode($response, true);
     }
 
