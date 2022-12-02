@@ -102,11 +102,20 @@ POSSIBILITY OF SUCH DAMAGE.
                             $('#alert-logfile').append($("<option/>").data('filename', value['filename']).attr("value",value['sequence']).text(value['modified']));
                         }
                     });
-                    $('.selectpicker').selectpicker('refresh');
+                    // a bit dirty way to place controls inline with the bootgrid table action bar - place dummy controls under the table and clone them to action bar
+                    // destroy selectpicker on dummy select under bootgrid table
+                    $('#alert-logfile').selectpicker('destroy');
+
                     // link on change event
                     $('#alert-logfile').on('change', function(){
                         $('#grid-alerts').bootgrid('reload');
                     });
+                    // clone to the action bar (should clone to preserve dummy controls for future use on table tabs switch with bootgid destroy)
+                    $("#grid-alerts-header-extra").children().each(function(){
+                        $(this).clone(true).prependTo($("#grid-alerts-header > .row > .actionBar"));
+                    });
+                    // activate selectpicker on cloned select (cloned select is the first with this ID now. so everything should work despite the duplicate ID)
+                    $("#alert-logfile").selectpicker();
                 }
             });
         }
@@ -435,9 +444,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         });
                 // tooltip wide fields in alert grid
                 grid_alerts.on("loaded.rs.jquery.bootgrid", function(){
-                    $("#grid-alerts-header-extra").children().each(function(){
-                        $(this).prependTo($("#grid-alerts-header > .row > .actionBar"));
-                    });
                     $("#grid-alerts-header > .row > .actionBar > .search.form-group:last").hide();
                     $("#grid-alerts-header > .row > .actionBar > .actions.btn-group > .btn.btn-default").hide();
                     $("#grid-alerts > tbody > tr > td").each(function(){
@@ -686,7 +692,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     cssClass: 'btn-primary',
                     action: function(dlg){
                         ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
-                            updateAlertLogs();
+                            // reload alerts tab and get fresh data
+                            $("#alert_tab").parent("li").removeClass("active");
+                            $("#alert_tab").tab("show");
                         });
                         dlg.close();
                     }
@@ -903,16 +911,6 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div id="alerts" class="tab-pane fade in">
         <!-- tab page "alerts" -->
-        <div id="grid-alerts-header-extra">
-            <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
-            <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
-            <div class="search form-group">
-                <div class="input-group">
-                    <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
-                    <span id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
-                </div>
-            </div>
-        </div>
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
               <tr>
@@ -931,6 +929,16 @@ POSSIBILITY OF SUCH DAMAGE.
             <tbody>
             </tbody>
         </table>
+        <div id="grid-alerts-header-extra" style="display: none;">
+            <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
+            <span id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;" title="{{ lang._('Delete Alert Log') }}"></span>
+            <div class="search form-group">
+                <div class="input-group">
+                    <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
+                    <span id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
