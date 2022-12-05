@@ -177,7 +177,11 @@ class FirewallController extends ApiControllerBase
             if ($this->request->getPost('searchPhrase', 'string', '') != '') {
                 $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
             }
-            if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
+            if (
+                $this->request->has('sort') &&
+                is_array($this->request->getPost("sort")) &&
+                !empty($this->request->getPost("sort"))
+            ) {
                 $tmp = array_keys($this->request->getPost("sort"));
                 $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
             }
@@ -231,7 +235,11 @@ class FirewallController extends ApiControllerBase
             if ($this->request->getPost('searchPhrase', 'string', '') != '') {
                 $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
             }
-            if ($this->request->has('sort') && is_array($this->request->getPost("sort"))) {
+            if (
+                $this->request->has('sort') &&
+                is_array($this->request->getPost("sort")) &&
+                !empty($this->request->getPost("sort"))
+            ) {
                 $tmp = array_keys($this->request->getPost("sort"));
                 $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
             }

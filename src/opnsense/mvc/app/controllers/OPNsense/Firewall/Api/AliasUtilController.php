@@ -117,7 +117,11 @@ class AliasUtilController extends ApiControllerBase
             return $item;
         }, $entry_keys);
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !empty($this->request->getPost('sort'))
+        ) {
             $sortcolumn = array_key_first($this->request->getPost('sort'));
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
             if (!empty(array_column($formatted_full, $sortcolumn))) {
