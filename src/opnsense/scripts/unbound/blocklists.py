@@ -165,5 +165,5 @@ if __name__ == '__main__':
     os.replace('/var/unbound/data/dnsbl.json.new', '/var/unbound/data/dnsbl.json')
 
     syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
-        time.time() - startup_time, len(blocklist_items)
+        time.time() - startup_time, len(blocklist_items['data'])
     ))
