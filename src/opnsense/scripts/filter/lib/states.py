@@ -24,10 +24,12 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
+import fcntl
 import ipaddress
 import os
 import subprocess
 import sys
+import ujson
 
 
 def parse_address(addr):
@@ -49,27 +51,48 @@ def parse_address(addr):
 
 
 def fetch_rule_labels():
-    result = dict()
-    descriptions = dict()
-    # query descriptions from active ruleset so we can search and display rule descriptions as well.
-    if os.path.isfile('/tmp/rules.debug'):
-        with open('/tmp/rules.debug', "rt", encoding="utf-8") as f_in:
-            for line in f_in:
-                lbl = line.split(' label ')[-1] if line.find(' label ') > -1 else ""
-                rule_label = lbl.split('"')[1] if lbl.count('"') >= 2 else None
-                descriptions[rule_label] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
+    """ Generate dict with labels per rule.
+        Since the output is directly related to the rules loaded by /tmp/rules.debug, we can safely cache the results
+        (into /tmp/cache_rule_labels.json) until /tmp/rules.debug changes.
+        :return: dict
+    """
+    pf_rules_file = '/tmp/rules.debug'
+    fhandle = open('/tmp/cache_rule_labels.json', 'a+')
+    try:
+        fhandle.seek(0)
+        cached_labels = ujson.loads(fhandle.read())
+    except ValueError:
+        cached_labels = {'labels': {}}
 
-    sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
-    for line in sp.stdout.strip().split('\n'):
-        if line.startswith('@'):
-            line_id = line.split()[0][1:]
-            if line.find(' label ') > -1:
-                rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
-                result[line_id] = {'rid': rid, 'descr': None}
-                if rid in descriptions:
-                    result[line_id]['descr'] = descriptions[rid]
+    pfr_mtime = os.stat(pf_rules_file).st_mtime if os.path.isfile(pf_rules_file) else 0
+    if cached_labels.get('mtime', 0) != pfr_mtime or cached_labels.get('labels', None) is None:
+        descriptions = dict()
+        # query descriptions from active ruleset so we can search and display rule descriptions as well.
+        if os.path.isfile(pf_rules_file):
+            with open(pf_rules_file, "rt", encoding="utf-8") as f_in:
+                for line in f_in:
+                    lbl = line.split(' label ')[-1] if line.find(' label ') > -1 else ""
+                    rule_label = lbl.split('"')[1] if lbl.count('"') >= 2 else None
+                    descriptions[rule_label] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
 
-    return result
+        sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
+        for line in sp.stdout.strip().split('\n'):
+            if line.startswith('@'):
+                line_id = line.split()[0][1:]
+                if line.find(' label ') > -1:
+                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
+                    cached_labels['labels'][line_id] = {'rid': rid, 'descr': None}
+                    if rid in descriptions:
+                        cached_labels['labels'][line_id]['descr'] = descriptions[rid]
+
+        fcntl.flock(fhandle, fcntl.LOCK_EX)
+        cached_labels['mtime'] = pfr_mtime
+        fhandle.seek(0)
+        fhandle.truncate()
+        fhandle.write(ujson.dumps(cached_labels))
+        fhandle.close()
+
+    return cached_labels['labels']
 
 
 def query_states(rule_label, filter_str):
@@ -80,9 +103,9 @@ def query_states(rule_label, filter_str):
         filter_network = None
 
     rule_labels = fetch_rule_labels()
-    sp = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True)
+    lines = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True).stdout.strip().split('\n')
     record = None
-    for line in sp.stdout.strip().split('\n'):
+    for line in lines:
         parts = line.split()
         if line.startswith(" ") and len(parts) > 1 and record:
             if parts[0] == 'age':
