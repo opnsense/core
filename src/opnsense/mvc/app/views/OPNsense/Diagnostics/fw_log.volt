@@ -228,7 +228,8 @@
             let record_spec = [];
             // Overfetch for limited display scope to increase the chance of being able to find matches.
             // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
-            let max_rows = Math.max(1000, parseInt($("#limit").val()));
+            let max_rows = parseInt($("#limit").val());
+            let max_rows_fetch = Math.max(1000, max_rows);
             // read heading, contains field specs
             $("#grid-log > thead > tr > th ").each(function () {
                 record_spec.push({
@@ -240,7 +241,7 @@
             // read last digest (record hash) from top data row
             var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
             // fetch new log lines and add on top of grid-log
-            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows}, function(data, status) {
+            ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows_fetch}, function(data, status) {
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
@@ -252,7 +253,7 @@
                     let trs = [];
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
-                            var log_tr = $("<tr>");
+                            var log_tr = $('<tr class="log_tr">');
                             if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
                                 record['interface_name'] = interface_descriptions[record.interface];
                             } else {
@@ -313,7 +314,8 @@
                     apply_filter();
 
                     // limit output, try to keep max X records on screen.
-                    $("#grid-log > tbody > tr:gt("+max_rows+")").remove();
+                    $(".log_tr").filter(":hidden").remove();
+                    $(".log_tr").slice(max_rows).remove();
 
                     // bind info buttons
                     $(".act_info").unbind('click').click(function(){
@@ -467,7 +469,7 @@
                         is_matched = is_matched || this_condition_match;
                     }
                 }
-                if (is_matched && visible_rows <= max_rows) {
+                if (is_matched && visible_rows < max_rows) {
                     selected_tr.show();
                     visible_rows += 1;
                 } else {
