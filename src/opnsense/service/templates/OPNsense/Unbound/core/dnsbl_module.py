@@ -103,7 +103,7 @@ class ModuleContext:
             self.pipe_fd = os.open(self.pipe_name, os.O_NONBLOCK | os.O_WRONLY)
         except OSError as e:
             if e.errno == errno.ENXIO:
-                log_warn("dnsbl_module: no logging backend found.")
+                log_info("dnsbl_module: no logging backend found.")
                 self.pipe_fd = None
                 return False
             else:
@@ -136,7 +136,7 @@ class ModuleContext:
                     os.write(self.pipe_fd, log.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
-                    log_warn("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
+                    log_info("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
                     os.close(self.pipe_fd)
                     self.pipe_fd = None
 
