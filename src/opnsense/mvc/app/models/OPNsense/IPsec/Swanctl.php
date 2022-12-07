@@ -40,36 +40,79 @@ class Swanctl extends BaseModel
     {
         $data = [];
         $references = [
+            'pools' => 'Pools.Pool',
             'connections' => 'Connections.Connection',
             'locals' => 'locals.local',
             'remotes' => 'remotes.remote',
-            'children' => 'children.child'
+            'children' => 'children.child',
         ];
         foreach ($references as $key => $ref) {
-            $data[$key] = [];
             foreach ($this->getNodeByReference($ref)->iterateItems() as $node_uuid => $node) {
                 if (empty((string)$node->enabled)) {
                     continue;
                 }
-                $data[$key][$node_uuid] = [];
+                $parent = null;
+                $thisnode = [];
                 foreach ($node->iterateItems() as $attr_name => $attr) {
-                    if (in_array($attr_name, ['connection', 'enabled']) || (string)$attr == '') {
+                    if ($attr_name == 'connection' && isset($data['connections'][(string)$attr])) {
+                        $parent = (string)$attr;
+                        continue;
+                    } elseif ($attr_name == 'pools') {
+                        // pools are mapped by name for clearer identification and legacy support
+                        if ((string)$attr != '') {
+                            $pools = [];
+                            foreach (explode(',', (string)$attr) as $pool_id) {
+                                $is_uuid = preg_match(
+                                    '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $pool_id
+                                ) == 1;
+                                if (isset($data['pools'][$pool_id])) {
+                                    $pools[] = $data['pools'][$pool_id]['name'];
+                                } elseif (!$is_uuid) {
+                                    $pools[] = $pool_id;
+                                }
+                            }
+                            if (!empty($pools)) {
+                                $thisnode['pools'] = implode(',', $pools);
+                            }
+                        }
+                        continue;
+                    } elseif ($attr_name == 'enabled') {
+                        if (empty((string)$attr)) {
+                            // disabled entity
+                            $thisnode = [];
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } elseif ((string)$attr == '') {
                         continue;
                     } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\BooleanField')) {
-                        $data[$key][$node_uuid][$attr_name] = (string)$attr == '1' ? 'yes' : 'no';
+                        $thisnode[$attr_name] = (string)$attr == '1' ? 'yes' : 'no';
                     } elseif ($attr_name == 'pubkeys') {
                         $tmp = [];
                         foreach (explode(',', (string)$attr) as $item) {
                             $tmp[] = $item . '.pem';
                         }
-                        $data[$key][$node_uuid][$attr_name] = implode(',', $tmp);
+                        $thisnode[$attr_name] = implode(',', $tmp);
                     } else {
-                        $data[$key][$node_uuid][$attr_name] = (string)$attr;
+                        $thisnode[$attr_name] = (string)$attr;
                     }
+                }
+                if (empty($thisnode)) {
+                    continue;
+                } elseif (!empty($parent)) {
+                    if (!isset($data['connections'][$parent][$key])) {
+                        $data['connections'][$parent][$key] = [];
+                    }
+                    $data['connections'][$parent][$key][] = $thisnode;
+                } else {
+                    if (!isset($data[$key])) {
+                        $data[$key] = [];
+                    }
+                    $data[$key][$node_uuid] = $thisnode;
                 }
             }
         }
-        print_r($data);
-        return [];
+        return $data;
     }
 }
