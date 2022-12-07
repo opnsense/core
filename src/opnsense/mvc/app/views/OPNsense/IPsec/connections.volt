@@ -6,6 +6,7 @@
           set:'/api/ipsec/connections/set_connection/',
           add:'/api/ipsec/connections/set_connection/',
           del:'/api/ipsec/connections/del_connection/',
+          toggle:'/api/ipsec/connections/toggle_connection/',
         });
 
         let grid_pools = $("#grid-pools").UIBootgrid({
@@ -14,6 +15,7 @@
           set:'/api/ipsec/pools/set/',
           add:'/api/ipsec/pools/add/',
           del:'/api/ipsec/pools/del/',
+          toggle:'/api/ipsec/pools/toggle/',
         });
 
         let detail_grids = {
@@ -28,6 +30,7 @@
             set:'/api/ipsec/connections/set_' + obj_type + '/',
             add:'/api/ipsec/connections/add_' + obj_type + '/',
             del:'/api/ipsec/connections/del_' + obj_type + '/',
+            toggle:'/api/ipsec/connections/toggle_' + obj_type + '/',
             options:{
                 navigation: obj_type === 'child' ? 3 : 0,
                 selection: obj_type === 'child' ? true : false,
@@ -120,6 +123,7 @@
           <thead>
               <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
               </tr>
@@ -164,6 +168,7 @@
                   <thead>
                       <tr>
                         <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                         <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
                         <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
                         <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
@@ -191,6 +196,7 @@
                   <thead>
                       <tr>
                         <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                         <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
                         <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
                         <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
@@ -220,6 +226,7 @@
                   <thead>
                       <tr>
                         <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                         <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                         <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                       </tr>
@@ -251,6 +258,7 @@
           <thead>
               <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
               </tr>

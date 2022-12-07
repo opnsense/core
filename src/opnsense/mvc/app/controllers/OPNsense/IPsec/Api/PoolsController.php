@@ -41,7 +41,7 @@ class PoolsController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase('Pools.Pool', ['name']);
+        return $this->searchBase('Pools.Pool', ['name', 'enabled']);
     }
 
     public function setAction($uuid = null)
@@ -57,6 +57,11 @@ class PoolsController extends ApiMutableModelControllerBase
     public function getAction($uuid = null)
     {
         return $this->getBase('pool', 'Pools.Pool', $uuid);
+    }
+
+    public function toggleAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('Pools.Pool', $uuid, $enabled);
     }
 
     public function delAction($uuid)

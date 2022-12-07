@@ -68,7 +68,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchConnectionAction()
     {
-        return $this->searchBase('Connections.Connection', ['description']);
+        return $this->searchBase('Connections.Connection', ['description', 'enabled']);
     }
 
     public function setConnectionAction($uuid = null)
@@ -137,6 +137,11 @@ class ConnectionsController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    public function toggleConnectionAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('Connections.Connection', $uuid, $enabled);
+    }
+
     public function connectionExistsAction($uuid)
     {
         return [
@@ -164,7 +169,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'locals.local',
-            ['description', 'round', 'auth'],
+            ['description', 'round', 'auth', 'enabled'],
             'description',
             $this->connectionFilter()
         );
@@ -184,6 +189,10 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->addBase('local', 'locals.local');
     }
+    public function toggleLocalAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('locals.local', $uuid, $enabled);
+    }
     public function delLocalAction($uuid)
     {
         return $this->delBase('locals.local', $uuid);
@@ -193,7 +202,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'remotes.remote',
-            ['description', 'round', 'auth'],
+            ['description', 'round', 'auth', 'enabled'],
             'description',
             $this->connectionFilter()
         );
@@ -213,6 +222,10 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->addBase('remote', 'remotes.remote');
     }
+    public function toggleRemoteAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('remotes.remote', $uuid, $enabled);
+    }
     public function delRemoteAction($uuid)
     {
         return $this->delBase('remotes.remote', $uuid);
@@ -220,7 +233,12 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchChildAction()
     {
-        return $this->searchBase('children.child', ['description'], 'description', $this->connectionFilter());
+        return $this->searchBase(
+            'children.child',
+            ['description', 'enabled'],
+            'description',
+            $this->connectionFilter()
+        );
     }
     public function getChildAction($uuid = null)
     {
@@ -236,6 +254,10 @@ class ConnectionsController extends ApiMutableModelControllerBase
     public function addChildAction()
     {
         return $this->addBase('child', 'children.child');
+    }
+    public function toggleChildAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('children.child', $uuid, $enabled);
     }
     public function delChildAction($uuid)
     {
