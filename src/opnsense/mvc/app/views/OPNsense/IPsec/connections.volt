@@ -125,6 +125,10 @@
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="local_addrs" data-type="string">{{ lang._('Local') }}</th>
+                <th data-column-id="remote_addrs" data-type="string">{{ lang._('Remote') }}</th>
+                <th data-column-id="local_ts" data-type="string">{{ lang._('Local Nets') }}</th>
+                <th data-column-id="remote_ts" data-type="string">{{ lang._('Remote Nets') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
               </tr>
           </thead>

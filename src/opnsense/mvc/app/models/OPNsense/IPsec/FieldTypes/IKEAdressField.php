@@ -28,15 +28,34 @@
 
 namespace OPNsense\IPsec\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Firewall\Util;
 
 /**
  * @package OPNsense\Base\FieldTypes
  */
-class IKEAdressField extends BaseListField
+class IKEAdressField extends BaseField
 {
+    /**
+     * @var bool marks if this is a data node or a container
+     */
+    protected $internalIsContainer = false;
+
+    /**
+     * get valid options, descriptions and selected value
+     * @return array
+     */
+    public function getNodeData()
+    {
+        $result = [];
+        foreach (explode(',', $this->internalValue) as $net) {
+            $result[$net] = array("value" => $net, "selected" => 1);
+        }
+        return $result;
+    }
+
+
     public function getValidators()
     {
         $validators = parent::getValidators();

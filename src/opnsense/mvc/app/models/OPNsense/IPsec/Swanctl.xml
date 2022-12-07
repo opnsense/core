@@ -4,7 +4,7 @@
     <description>OPNsense IPsec Connections</description>
     <items>
         <Connections>
-            <Connection type="ArrayField">
+            <Connection type=".\ConnnectionField">
                 <enabled type="BooleanField">
                     <default>1</default>
                     <Required>Y</Required>

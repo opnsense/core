@@ -68,7 +68,10 @@ class ConnectionsController extends ApiMutableModelControllerBase
 
     public function searchConnectionAction()
     {
-        return $this->searchBase('Connections.Connection', ['description', 'enabled']);
+        return $this->searchBase(
+            'Connections.Connection',
+            ['description', 'enabled', 'local_addrs', 'remote_addrs', 'local_ts', 'remote_ts']
+        );
     }
 
     public function setConnectionAction($uuid = null)
