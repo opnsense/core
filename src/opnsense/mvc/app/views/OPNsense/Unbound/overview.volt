@@ -398,18 +398,18 @@
                     $('#top-blocked li:nth-child(even)').addClass('odd-bg');
 
                     $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+                });
 
-                    ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                        let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
-                        let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
-                        g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
+                    let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
+                    let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
+                    g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+                });
 
-                        ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
-                            let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
-                            let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
-                            g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
-                        });
-                    });
+                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
+                    let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
+                    let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
+                    g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
                 });
             });
 
