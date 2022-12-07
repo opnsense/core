@@ -32,6 +32,7 @@ import sys
 import re
 import os
 import pandas
+import numpy as np
 from time import time
 from operator import itemgetter
 sys.path.insert(0, "/usr/local/opnsense/site-python")
@@ -70,10 +71,8 @@ def handle_rolling(args):
                 GROUP_CONCAT(cl) as clients,
                 GROUP_CONCAT(cnt_cl) as client_totals
             FROM grouped
-            GROUP BY
-                s, e
-            ORDER BY
-                e;
+            GROUP BY s, e
+            ORDER BY e
         """.format(intv=interval//60, tp=tp)
     else:
         query = """
@@ -99,8 +98,8 @@ def handle_rolling(args):
 
     if not data.empty:
         if args.clients:
-            # first, in-place drop any rows that do not have any clients
-            data.dropna(inplace=True)
+            # a group_concat without any client returns NaN in a Dataframe, replace it with an empty string
+            data = data.replace(np.nan, '', regex=True)
             data = list(data.itertuples(index=False, name=None))
             result = {}
             for row in data:

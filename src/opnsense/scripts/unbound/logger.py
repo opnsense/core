@@ -44,7 +44,6 @@ class DNSReader:
         self.flush_interval = flush_interval
         self.count = 0
         self.buffer = deque()
-        self.buf_max = 4000
 
         with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
             db.connection.execute("""
@@ -82,27 +81,28 @@ class DNSReader:
         if r == '':
             return False
 
-        # Start a transaction every flush_interval seconds or
-        # when buf_max has been reached
         self.buffer.append(tuple(r.strip("\n").split()))
-        flush = (time.time() - self.timer) > self.flush_interval
-        if len(self.buffer) > self.buf_max or flush:
+
+        # Start a transaction every flush_interval seconds. With regular inserts
+        # we would also need to limit the amount of queries we buffer before inserting them,
+        # but appending a DataFrame of N size is always faster than splitting N into chunks and
+        # individually appending them in separate DataFrames.
+        if (time.time() - self.timer) > self.flush_interval:
             # A note on the usage of DbConnection:
             # The pipe fifo can fill up while blocking for the lock, since during this time the
             # read() callback cannot run to empty it. The dnsbl module side catches this with
-            # a BlockingIOError, forcing it to buffer the query, making the process
+            # a BlockingIOError, forcing it to re-buffer the query, making the process
             # "eventually consistent". Realistically this condition should never occur.
             with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
-                if flush:
-                    self.timer = time.time()
-                    # truncate the database to the last 7 days
-                    t = datetime.date.today() - datetime.timedelta(days=7)
-                    epoch = int(datetime.datetime(year=t.year, month=t.month, day=t.day).timestamp())
-                    db.connection.execute("""
-                        DELETE
-                        FROM query
-                        WHERE to_timestamp(time) < to_timestamp(?)
-                    """, [epoch])
+                self.timer = time.time()
+                # truncate the database to the last 7 days
+                t = datetime.date.today() - datetime.timedelta(days=7)
+                epoch = int(datetime.datetime(year=t.year, month=t.month, day=t.day).timestamp())
+                db.connection.execute("""
+                    DELETE
+                    FROM query
+                    WHERE to_timestamp(time) < to_timestamp(?)
+                """, [epoch])
                 if len(self.buffer) > 0:
                     # construct a dataframe from the current buffer and empty it. This is orders of magniture
                     # faster than transactional inserts, and doesn't block even under high load.
@@ -152,4 +152,3 @@ if __name__ == '__main__':
     cmd = lambda : run_logger(target_pipe=inputargs.pipe, flush_interval=inputargs.flush_interval)
     daemon = Daemonize(app="unbound_logger", pid=inputargs.pid, action=cmd, foreground=inputargs.foreground)
     daemon.start()
-
