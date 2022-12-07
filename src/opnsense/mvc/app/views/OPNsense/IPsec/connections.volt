@@ -146,6 +146,15 @@
           </div>
           <hr/>
       </div>
+      <div class="col-md-12">
+          <button class="btn btn-primary" id="reconfigureAct"
+                  data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
+                  data-label="{{ lang._('Apply') }}"
+                  data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
+                  type="button"
+          ></button>
+          <br/><br/>
+      </div>
     </div>
     <div id="edit_connection" class="tab-pane fade in">
         <div class="section_header">
@@ -246,11 +255,14 @@
             </div>
           </div>
         </div>
-        <div id="ConnectionDialogBtns">
-            <button type="button" class="btn btn-primary" id="btn_ConnectionDialog_save">
-              {{ lang._('Save')}}
-              <i id="btn_ConnectionDialog_save_progress" class=""></i>
-            </button>
+        <div class="col-md-12">
+          <div id="ConnectionDialogBtns">
+              <button type="button" class="btn btn-primary" id="btn_ConnectionDialog_save">
+                <strong>{{ lang._('Save')}}</strong>
+                <i id="btn_ConnectionDialog_save_progress" class=""></i>
+              </button>
+          </div>
+          <br/>
         </div>
     </div>
     <div id="pools" class="tab-pane fade in">
@@ -284,20 +296,6 @@
     </div>
 </div>
 
-<section class="page-content-main">
-  <div class="content-box">
-    <div class="col-md-12">
-        <br/>
-        <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
-                data-label="{{ lang._('Apply') }}"
-                data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
-                type="button"
-        ></button>
-        <br/><br/>
-    </div>
-  </div>
-</section>
 
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','label':lang._('Edit Connection')])}}
