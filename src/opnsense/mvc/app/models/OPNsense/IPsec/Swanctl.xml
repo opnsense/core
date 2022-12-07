@@ -330,6 +330,12 @@
                         </check001>
                     </Constraints>
                 </name>
+                <addrs type="NetworkField">
+                    <Required>Y</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>Please specify a valid CIDR subnet.</ValidationMessage>
+                </addrs>
             </Pool>
         </Pools>
     </items>

@@ -5,8 +5,18 @@
         <type>checkbox</type>
     </field>
     <field>
-        <id>pool.description</id>
-        <label>Description</label>
+        <id>pool.name</id>
+        <label>Name</label>
         <type>text</type>
     </field>
+    <field>
+        <id>pool.addrs</id>
+        <label>Network</label>
+        <type>text</type>
+        <help>
+          Subnet or range defining addresses allocated in pool.
+          Accepts a single CIDR subnet defining the pool to allocate addresses from
+        </help>
+    </field>
+
 </form>
