@@ -36,9 +36,14 @@ use OPNsense\Base\BaseModel;
  */
 class Swanctl extends BaseModel
 {
+    /**
+     * generate swanctl configuration output, containing "pools" and "connections", locals, remotes and children
+     * are treated as children of connection.
+     * @return array
+     */
     public function getConfig()
     {
-        $data = [];
+        $data = ['connections' => [], 'pools' => []];
         $references = [
             'pools' => 'Pools.Pool',
             'connections' => 'Connections.Connection',

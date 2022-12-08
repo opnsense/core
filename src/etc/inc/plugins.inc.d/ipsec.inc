@@ -1274,12 +1274,10 @@ function ipsec_configure_do($verbose = false, $interface = '')
         ipsec_write_certs();
         ipsec_write_keypairs();
 
-        /* begin ipsec.conf */
-        $swanctl = [
-            'connections' => [],
-            'pools' => [],
-            'secrets' => ipsec_write_secrets()
-        ];
+        /* begin ipsec.conf, hook mvc configuration first */
+        $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
+        $swanctl['secrets'] = ipsec_write_secrets();
+
         if (count($a_phase1)) {
             if (!empty($config['ipsec']['passthrough_networks'])) {
                 $swanctl['connections']['pass'] = [
