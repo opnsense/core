@@ -238,7 +238,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'children.child',
-            ['description', 'enabled'],
+            ['description', 'enabled', 'local_ts', 'remote_ts'],
             'description',
             $this->connectionFilter()
         );

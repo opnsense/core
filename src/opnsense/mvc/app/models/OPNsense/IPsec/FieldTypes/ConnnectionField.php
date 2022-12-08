@@ -35,25 +35,41 @@ use OPNsense\Base\FieldTypes\TextField;
 
 class ConnnectionField extends ArrayField
 {
-    private static $local_ts = null;
-    private static $remote_ts = null;
+    private static $child_attrs = ['local_ts', 'remote_ts'];
+    private static $child_data = null;
 
     protected function actionPostLoadingEvent()
     {
-        if (self::$local_ts === null) {
-            self::$local_ts = [];
-            self::$remote_ts = [];
+        if (self::$child_data === null) {
+            self::$child_data = [];
+            foreach ($this->getParentModel()->children->child->iterateItems() as $node_uuid => $node) {
+                if (empty((string)$node->enabled)) {
+                    continue;
+                }
+                $conn_uuid = (string)$node->connection;
+                if (!isset(self::$child_data[$conn_uuid])) {
+                    self::$child_data[$conn_uuid] = [];
+                }
+                foreach (self::$child_attrs as $key) {
+                    if (!isset(self::$child_data[$conn_uuid][$key])) {
+                        self::$child_data[$conn_uuid][$key] = [];
+                    }
+                    self::$child_data[$conn_uuid][$key][] = (string)$node->$key;
+                }
+            }
         }
         foreach ($this->internalChildnodes as $node) {
             if (!$node->getInternalIsVirtual()) {
-                $local_ts = new TextField();
-                $local_ts->setInternalIsVirtual();
-                $local_ts->setValue("-");
-                $remote_ts = new TextField();
-                $remote_ts->setInternalIsVirtual();
-                $remote_ts->setValue("-");
-                $node->addChildNode('local_ts', $local_ts);
-                $node->addChildNode('remote_ts', $remote_ts);
+                $extra_attr = ['local_ts' => '', 'remote_ts' => ''];
+                $conn_uuid = (string)$node->getAttribute('uuid');
+                foreach (self::$child_attrs as $key) {
+                    $child_node = new TextField();
+                    $child_node->setInternalIsVirtual();
+                    if (isset(self::$child_data[$conn_uuid]) && !empty(self::$child_data[$conn_uuid][$key])) {
+                        $child_node->setValue(implode(',', array_unique(self::$child_data[$conn_uuid][$key])));
+                    }
+                    $node->addChildNode($key, $child_node);
+                }
             }
         }
         return parent::actionPostLoadingEvent();
