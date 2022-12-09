@@ -88,6 +88,9 @@ class DbConnection():
 
         Note: not used with prepared statements, duckdb doesn't support it in this manner.
         """
+        if self.connection is None:
+            return False
+
         try:
             self.connection.execute("DESCRIBE %s" % table_name)
         except duckdb.CatalogException:
