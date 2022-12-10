@@ -295,7 +295,7 @@
       </table>
       <div class="col-md-12">
           <div id="PoolChangeMessage" class="alert alert-info" style="display: none" role="alert">
-              {{ lang._('After changing settings, please remember to apply them with the button below') }}
+              {{ lang._('After changing settings, please remember to apply them') }}
           </div>
           <hr/>
       </div>

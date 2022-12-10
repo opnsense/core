@@ -82,6 +82,15 @@
         </help>
     </field>
     <field>
+        <id>child.reqid</id>
+        <label>Reqid</label>
+        <type>text</type>
+        <help>
+          This might be helpful in some scenarios, like route based tunnels (VTI), but works only if each CHILD_SA configuration is instantiated not more than once.
+          The default uses dynamic reqids, allocated incrementally
+        </help>
+    </field>
+    <field>
         <id>child.esp_proposals</id>
         <label>ESP proposals</label>
         <type>select_multiple</type>

@@ -1,0 +1,37 @@
+<form>
+    <field>
+        <id>vti.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>vti.reqid</id>
+        <label>Reqid</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>vti.local</id>
+        <label>Local address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>vti.remote</id>
+        <label>Remote address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>vti.tunnel_local</id>
+        <label>Tunnel local address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>vti.tunnel_remote</id>
+        <label>Tunnel remote address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>vti.description</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+</form>

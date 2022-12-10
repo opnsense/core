@@ -244,7 +244,11 @@
                     </Model>
                     <Required>Y</Required>
                 </connection>
-                <!-- XXX: reqid needs some cleverness and plumbing to create interfaces for VTI-->
+                <reqid type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>N</Required>
+                </reqid>
                 <esp_proposals type=".\IPsecProposalField">
                     <default>default</default>
                     <Required>Y</Required>
@@ -338,5 +342,51 @@
                 </addrs>
             </Pool>
         </Pools>
+        <VTIs>
+            <VTI type=".\VTIField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <reqid type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Reqid must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </reqid>
+                <local type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </local>
+                <remote type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </remote>
+                <tunnel_local type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </tunnel_local>
+                <tunnel_remote type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </tunnel_remote>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </VTI>
+        </VTIs>
     </items>
 </model>
