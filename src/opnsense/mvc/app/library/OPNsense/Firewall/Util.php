@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -296,5 +296,54 @@ class Util
             }
         }
         return md5(json_encode($rule));
+    }
+
+    /**
+     * Find the smallest possible subnet mask for given IP range
+     * @param array ips (start, end)
+     * @return int smallest mask
+     */
+    public static function smallestCIDR($ips, $family = 'inet')
+    {
+        if ($family == 'inet6') {
+            foreach ($ips as $id => $ip) {
+                $ips[$id] = unpack('N*', inet_pton($ip));
+            }
+
+            for ($bits = 0; $bits <= 128; $bits += 1) {
+                $mask1 = (0xffffffff << max($bits - 96, 0)) & 0xffffffff;
+                $mask2 = (0xffffffff << max($bits - 64, 0)) & 0xffffffff;
+                $mask3 = (0xffffffff << max($bits - 32, 0)) & 0xffffffff;
+                $mask4 = (0xffffffff << $bits) & 0xffffffff;
+                $test = [];
+                foreach ($ips as $ip) {
+                    $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
+                }
+                if (count($test) == 1) {
+                    /* one element means CIDR size matches all */
+                    break;
+                }
+            }
+
+            return 128 - $bits;
+        } else {
+            foreach ($ips as $id => $ip) {
+                $ips[$id] = ip2long($ip);
+            }
+
+            for ($bits = 0; $bits <= 32; $bits += 1) {
+                $mask = (0xffffffff << $bits) & 0xffffffff;
+                $test = [];
+                foreach ($ips as $ip) {
+                    $test[$ip & $mask] = true;
+                }
+                if (count($test) == 1) {
+                    /* one element means CIDR size matches all */
+                    break;
+                }
+            }
+
+            return 32 - $bits;
+        }
     }
 }
