@@ -29,6 +29,7 @@
 namespace OPNsense\IPsec;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Firewall\Util;
 
 /**
  * Class Swanctl
@@ -119,5 +120,36 @@ class Swanctl extends BaseModel
             }
         }
         return $data;
+    }
+
+    /**
+     * return non legacy vti devices formatted like ipsec_get_configured_vtis()
+     */
+    public function getVtiDevices()
+    {
+        $result = [];
+        foreach ($this->VTIs->VTI->iterateItems() as $node_uuid => $node) {
+            if ((string)$node->origin != 'legacy' && (string)$node->enabled == '1') {
+                $inet = strpos((string)$node->local_tunnel, ':') > 0 ? 'inet6' : 'inet';
+                $result['ipsec' . (string)$node->reqid] = [
+                    'reqid' => (string)$node->reqid,
+                    'local' => (string)$node->local,
+                    'remote' => (string)$node->remote,
+                    'descr' => (string)$node->description,
+                    'networks' => [
+                        [
+                            'inet' => $inet,
+                            'tunnel_local' => (string)$node->tunnel_local,
+                            'tunnel_remote' => (string)$node->tunnel_remote,
+                            'mask' => Util::smallestCIDR(
+                                [(string)$node->tunnel_local, (string)$node->tunnel_remote],
+                                $inet
+                            )
+                        ]
+                    ]
+                ];
+            }
+        }
+        return $result;
     }
 }

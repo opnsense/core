@@ -2,7 +2,6 @@
     <VPN>
         <IPsec cssClass="fa fa-lock fa-fw" order="10">
             <Connections order="5" VisibleName="Connections [new]" url="/ui/ipsec/connections"/>
-            <VTI order="5" VisibleName="Virtual Tunnel Interfaces" url="/ui/ipsec/vti"/>
             <Tunnels order="10" VisibleName="Tunnel Settings" url="/ui/ipsec/tunnels">
                 <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*" visibility="hidden"/>
@@ -17,6 +16,7 @@
             <Leases order="70" VisibleName="Lease Status" url="/ui/ipsec/leases"/>
             <SAD order="80" VisibleName="Security Association Database" url="/ui/ipsec/sad"/>
             <SPD order="90" VisibleName="Security Policy Database" url="/ui/ipsec/spd"/>
+            <VTI order="90" VisibleName="Virtual Tunnel Interfaces" url="/ui/ipsec/vti"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/ipsec"/>
         </IPsec>
     </VPN>

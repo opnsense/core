@@ -176,7 +176,8 @@ function ipsec_interfaces()
             }
         }
 
-        foreach (ipsec_get_configured_vtis() as $intf => $details) {
+        $vtis = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
+        foreach ($vtis as $intf => $details) {
             $interfaces[$intf] = [
                 'enable' => true,
                 'descr' => preg_replace('/[^a-z_0-9]/i', '', $details['descr']),
@@ -194,7 +195,8 @@ function ipsec_devices()
     $devices = [];
     $names = [];
 
-    foreach (ipsec_get_configured_vtis() as $device => $details) {
+    $vtis = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
+    foreach ($vtis as $device => $details) {
         $names[$device] = [
             'descr' => sprintf('%s (%s)', $device, $details['descr']),
             'ifdescr' => sprintf('%s', $details['descr']),
@@ -1652,7 +1654,7 @@ function ipsec_get_configured_vtis()
 function ipsec_configure_vti($verbose = false, $device = null)
 {
     // query planned and configured interfaces
-    $configured_intf = ipsec_get_configured_vtis();
+    $configured_intf = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
     $current_interfaces = [];
 
     foreach (legacy_interfaces_details() as $intf => $intf_details) {
@@ -1669,14 +1671,18 @@ function ipsec_configure_vti($verbose = false, $device = null)
             continue;
         }
 
-        $local_configured = $configured_intf[$intf]['local'];
-        $remote_configured = $configured_intf[$intf]['remote'];
+        $local_configured = null;
+        $remote_configured = null;
         if (!empty($configured_intf[$intf])) {
             if (!is_ipaddr($configured_intf[$intf]['local'])) {
                 $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            } else {
+                $local_configured = $configured_intf[$intf]['local'];
             }
             if (!is_ipaddr($configured_intf[$intf]['remote'])) {
                 $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            } else {
+                $remote_configured = $configured_intf[$intf]['remote'];
             }
         }
         if (

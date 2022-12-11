@@ -40,11 +40,13 @@ class VTIField extends ArrayField
 
     public function __construct($ref = null, $tagname = null)
     {
-        $legacy_vtis = json_decode((new Backend())->configdRun('ipsec list legacy_vti'), true);
-        if (!empty($legacy_vtis)) {
-            foreach ($legacy_vtis as $vti) {
-                $vti['enabled'] = '1';
-                self::$legacyItems['ipsec'.$vti['reqid']] = $vti;
+        if (empty(self::$legacyItems)) {
+            $legacy_vtis = json_decode((new Backend())->configdRun('ipsec list legacy_vti'), true);
+            if (!empty($legacy_vtis)) {
+                foreach ($legacy_vtis as $vti) {
+                    $vti['enabled'] = '1';
+                    self::$legacyItems['ipsec'.$vti['reqid']] = $vti;
+                }
             }
         }
         parent::__construct($ref, $tagname);
@@ -69,10 +71,28 @@ class VTIField extends ArrayField
                 $node->markUnchanged();
                 $container_node->addChildNode($key, $node);
             }
+            $type_node = new TextField();
+            $type_node->setInternalIsVirtual();
+            $type_node->setValue('legacy');
+            $container_node->addChildNode('origin', $type_node);
             $result[$vtiName] = $container_node;
         }
         return $result;
     }
+
+    protected function actionPostLoadingEvent()
+    {
+      foreach ($this->internalChildnodes as $node) {
+          if (!$node->getInternalIsVirtual()) {
+              $type_node = new TextField();
+              $type_node->setInternalIsVirtual();
+              $type_node->setValue('vti');
+              $node->addChildNode('origin', $type_node);
+          }
+      }
+      return parent::actionPostLoadingEvent();
+    }
+
 
     /**
      * @inheritdoc
