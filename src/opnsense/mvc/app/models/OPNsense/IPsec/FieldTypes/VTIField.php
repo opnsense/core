@@ -41,6 +41,7 @@ class VTIField extends ArrayField
     public function __construct($ref = null, $tagname = null)
     {
         if (empty(self::$legacyItems)) {
+            // query legacy VTI devices, valid for the duration of this script execution
             $legacy_vtis = json_decode((new Backend())->configdRun('ipsec list legacy_vti'), true);
             if (!empty($legacy_vtis)) {
                 foreach ($legacy_vtis as $vti) {

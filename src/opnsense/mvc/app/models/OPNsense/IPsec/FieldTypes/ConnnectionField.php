@@ -38,6 +38,9 @@ class ConnnectionField extends ArrayField
     private static $child_attrs = ['local_ts', 'remote_ts'];
     private static $child_data = null;
 
+    /**
+     * Add child attributes (virtual / read-only) to connection for query purposes
+     */
     protected function actionPostLoadingEvent()
     {
         if (self::$child_data === null) {
