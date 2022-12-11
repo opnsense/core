@@ -28,6 +28,7 @@
 
 namespace OPNsense\IPsec;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
@@ -37,6 +38,41 @@ use OPNsense\Firewall\Util;
  */
 class Swanctl extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $vtis = [];
+
+        foreach ($this->getFlatNodes() as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $tagName = $node->getInternalXMLTagName();
+                $parentNode = $node->getParentNode();
+                $parentKey = $parentNode->__reference;
+                $parentTagName = $parentNode->getInternalXMLTagName();
+                if ($parentTagName === 'VTI') {
+                    $vtis[$parentKey] = $parentNode;
+                }
+            }
+        }
+        foreach ($vtis as $key => $node) {
+            $vti_inets = [];
+            foreach (['local', 'remote', 'tunnel_local', 'tunnel_remote'] as $prop) {
+                $vti_inets[$prop] = strpos((string)$node->$prop, ':') > 0 ? 'inet6' : 'inet';
+            }
+
+            if ($vti_inets['local'] != $vti_inets['remote']) {
+                $messages->appendMessage(new Message(gettext("Protocol families should match"), $key . ".local"));
+            }
+            if ($vti_inets['tunnel_local'] != $vti_inets['tunnel_remote']) {
+                $messages->appendMessage(new Message(gettext("Protocol families should match"), $key . ".tunnel_local"));
+            }
+        }
+
+        return $messages;
+    }
     /**
      * generate swanctl configuration output, containing "pools" and "connections", locals, remotes and children
      * are treated as children of connection.
