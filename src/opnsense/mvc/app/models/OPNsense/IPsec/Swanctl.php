@@ -105,7 +105,8 @@ class Swanctl extends BaseModel
                             $pools = [];
                             foreach (explode(',', (string)$attr) as $pool_id) {
                                 $is_uuid = preg_match(
-                                    '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $pool_id
+                                    '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+                                    $pool_id
                                 ) == 1;
                                 if (isset($data['pools'][$pool_id])) {
                                     $pools[] = $data['pools'][$pool_id]['name'];

@@ -77,5 +77,4 @@ class ConnnectionField extends ArrayField
         }
         return parent::actionPostLoadingEvent();
     }
-
 }

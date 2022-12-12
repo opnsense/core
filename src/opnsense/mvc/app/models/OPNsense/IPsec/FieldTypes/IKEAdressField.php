@@ -63,7 +63,7 @@ class IKEAdressField extends BaseField
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 $messages = [];
                 foreach (explode(",", $data) as $entry) {
-                    if  (Util::isIpAddress($entry) || Util::isSubnet($entry) || Util::isDomain($entry)) {
+                    if (Util::isIpAddress($entry) || Util::isSubnet($entry) || Util::isDomain($entry)) {
                         continue;
                     }
                     $messages[] = sprintf(

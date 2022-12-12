@@ -46,7 +46,7 @@ class VTIField extends ArrayField
             if (!empty($legacy_vtis)) {
                 foreach ($legacy_vtis as $vti) {
                     $vti['enabled'] = '1';
-                    self::$legacyItems['ipsec'.$vti['reqid']] = $vti;
+                    self::$legacyItems['ipsec' . $vti['reqid']] = $vti;
                 }
             }
         }
@@ -83,15 +83,15 @@ class VTIField extends ArrayField
 
     protected function actionPostLoadingEvent()
     {
-      foreach ($this->internalChildnodes as $node) {
-          if (!$node->getInternalIsVirtual()) {
-              $type_node = new TextField();
-              $type_node->setInternalIsVirtual();
-              $type_node->setValue('vti');
-              $node->addChildNode('origin', $type_node);
-          }
-      }
-      return parent::actionPostLoadingEvent();
+        foreach ($this->internalChildnodes as $node) {
+            if (!$node->getInternalIsVirtual()) {
+                $type_node = new TextField();
+                $type_node->setInternalIsVirtual();
+                $type_node->setValue('vti');
+                $node->addChildNode('origin', $type_node);
+            }
+        }
+        return parent::actionPostLoadingEvent();
     }
 
 

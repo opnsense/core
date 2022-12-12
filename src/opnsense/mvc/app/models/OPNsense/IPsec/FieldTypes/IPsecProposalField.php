@@ -41,11 +41,13 @@ class IPsecProposalField extends BaseListField
     {
         if (empty(self::$internalCacheOptionList)) {
             self::$internalCacheOptionList['default'] = 'default';
-            foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16',
+            foreach (
+                ['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16',
                       'chacha20poly1305'] as $encalg
             ) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
-                    foreach ([
+                    foreach (
+                        [
                         'modp2048', 'modp3072', 'modp4096', 'modp6144', 'modp8192', 'ecp224',
                         'ecp256', 'ecp384', 'ecp521', 'ecp224bp', 'ecp256bp', 'ecp384bp', 'ecp512bp',
                         'x25519', 'x448'] as $dhgroup

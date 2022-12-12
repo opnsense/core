@@ -42,8 +42,8 @@ class VtiController extends ApiMutableModelControllerBase
     public function searchAction()
     {
         return $this->searchBase(
-          'VTIs.VTI',
-          ['enabled', 'description', 'origin', 'reqid', 'local', 'remote', 'tunnel_local', 'tunnel_remote']
+            'VTIs.VTI',
+            ['enabled', 'description', 'origin', 'reqid', 'local', 'remote', 'tunnel_local', 'tunnel_remote']
         );
     }
 

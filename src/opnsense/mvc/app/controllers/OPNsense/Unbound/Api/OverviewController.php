@@ -43,7 +43,7 @@ class OverviewController extends ApiControllerBase
         ];
     }
 
-    public function RollingAction($timeperiod, $clients=False)
+    public function RollingAction($timeperiod, $clients = false)
     {
         $this->sessionClose();
         // Sanitize input
