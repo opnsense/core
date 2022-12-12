@@ -12,6 +12,7 @@
                 <proposals type=".\IPsecProposalField">
                     <default>default</default>
                     <Required>Y</Required>
+                    <Multiple>Y</Multiple>
                 </proposals>
                 <unique type="OptionField">
                     <Required>Y</Required>
@@ -253,6 +254,7 @@
                 <esp_proposals type=".\IPsecProposalField">
                     <default>default</default>
                     <Required>Y</Required>
+                    <Multiple>Y</Multiple>
                 </esp_proposals>
                 <sha256_96 type="BooleanField">
                     <default>0</default>
