@@ -84,10 +84,11 @@ class Swanctl extends BaseModel
         $references = [
             'pools' => 'Pools.Pool',
             'connections' => 'Connections.Connection',
-            'locals' => 'locals.local',
-            'remotes' => 'remotes.remote',
+            'local' => 'locals.local',
+            'remote' => 'remotes.remote',
             'children' => 'children.child',
         ];
+        $pool_names = [];
         foreach ($references as $key => $ref) {
             foreach ($this->getNodeByReference($ref)->iterateItems() as $node_uuid => $node) {
                 if (empty((string)$node->enabled)) {
@@ -108,8 +109,8 @@ class Swanctl extends BaseModel
                                     '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
                                     $pool_id
                                 ) == 1;
-                                if (isset($data['pools'][$pool_id])) {
-                                    $pools[] = $data['pools'][$pool_id]['name'];
+                                if (isset($pool_names[$pool_id])) {
+                                    $pools[] = $pool_names[$pool_id];
                                 } elseif (!$is_uuid) {
                                     $pools[] = $pool_id;
                                 }
@@ -129,8 +130,19 @@ class Swanctl extends BaseModel
                         }
                     } elseif ((string)$attr == '') {
                         continue;
+                    } elseif (in_array($attr_name, ['name', 'description'])) {
+                        if ($key == 'pools') {
+                            $pool_names[$node_uuid] = (string)$attr;
+                        }
+                        continue;
                     } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\BooleanField')) {
                         $thisnode[$attr_name] = (string)$attr == '1' ? 'yes' : 'no';
+                    } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\CertificateField')) {
+                        $tmp = [];
+                        foreach (explode(',', (string)$attr) as $item) {
+                            $tmp[] = $item . '.crt';
+                        }
+                        $thisnode[$attr_name] = implode(',', $tmp);
                     } elseif ($attr_name == 'pubkeys') {
                         $tmp = [];
                         foreach (explode(',', (string)$attr) as $item) {
@@ -144,10 +156,14 @@ class Swanctl extends BaseModel
                 if (empty($thisnode)) {
                     continue;
                 } elseif (!empty($parent)) {
-                    if (!isset($data['connections'][$parent][$key])) {
-                        $data['connections'][$parent][$key] = [];
+                    if ($key == 'children') {
+                        if (!isset($data['connections'][$parent]['children'])) {
+                            $data['connections'][$parent]['children'] = [];
+                        }
+                        $data['connections'][$parent]['children'][$node_uuid] = $thisnode;
+                    } else {
+                        $data['connections'][$parent][$key . '-' . $node_uuid] = $thisnode;
                     }
-                    $data['connections'][$parent][$key][] = $thisnode;
                 } else {
                     if (!isset($data[$key])) {
                         $data[$key] = [];
@@ -188,5 +204,28 @@ class Swanctl extends BaseModel
             }
         }
         return $result;
+    }
+
+    public function getUsedCertrefs()
+    {
+        $references = [
+            'locals' => 'locals.local',
+            'remotes' => 'remotes.remote',
+        ];
+        $certrefs = [];
+        foreach ($references as $key => $ref) {
+            foreach ($this->getNodeByReference($ref)->iterateItems() as $node_uuid => $node) {
+                if (empty((string)$node->enabled)) {
+                    continue;
+                } elseif (!empty((string)$node->certs)) {
+                    foreach (explode(',', (string)$node->certs) as $cert) {
+                        if (!in_array($cert, $certrefs)) {
+                            $certrefs[] = $cert;
+                        }
+                    }
+                }
+            }
+        }
+        return $certrefs;
     }
 }

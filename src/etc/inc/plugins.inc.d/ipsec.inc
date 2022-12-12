@@ -1119,11 +1119,22 @@ function ipsec_write_certs()
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
 
     $filenames = [];
+    foreach ((new \OPNsense\IPsec\Swanctl())->getUsedCertrefs() as $certref) {
+        $cert = lookup_cert($certref);
+        if (empty($cert)) {
+            log_msg(sprintf('Error: Invalid certificate reference for %s', $ph1ent['name']), LOG_ERR);
+            continue;
+        }
+        $ph1keyfile = "/usr/local/etc/swanctl/private/{$certref}.key";
+        file_put_contents($ph1keyfile, base64_decode($cert['prv']));
+        $ph1certfile = "/usr/local/etc/swanctl/x509/{$certref}.crt";
+        file_put_contents($ph1certfile, base64_decode($cert['crt']));
+        $filenames = array_merge($filenames, [$ph1keyfile, $ph1certfile]);
+    }
     foreach ($a_phase1 as $ph1ent) {
         if (isset($ph1ent['disabled'])) {
             continue;
         }
-
         if (!empty($ph1ent['certref'])) {
             $cert = lookup_cert($ph1ent['certref']);
 
@@ -1134,12 +1145,13 @@ function ipsec_write_certs()
 
             $ph1keyfile = "/usr/local/etc/swanctl/private/cert-{$ph1ent['ikeid']}.key";
             file_put_contents($ph1keyfile, base64_decode($cert['prv']));
-            @chmod($ph1keyfile, 0600);
-
             $ph1certfile = "/usr/local/etc/swanctl/x509/cert-{$ph1ent['ikeid']}.crt";
             file_put_contents($ph1certfile, base64_decode($cert['crt']));
-            @chmod($ph1certfile, 0600);
+            $filenames = array_merge($filenames, [$ph1keyfile, $ph1certfile]);
         }
+    }
+    foreach ($filenames as $filename) {
+        @chmod($filename, 0600);
     }
 }
 
@@ -1200,8 +1212,8 @@ function ipsec_write_secrets()
     }
 
     foreach ((new \OPNsense\IPsec\IPsec())->preSharedKeys->preSharedKey->iterateItems() as $uuid => $psk) {
-        $keytype = strtolower($psk->keyType);
-        $dataKey = "{$keytype}-{$uuid}";
+        $keyType = $psk->keyType == 'PSK' ? 'ike' : strtolower($psk->keyType);
+        $dataKey = "{$keyType}-{$uuid}";
         $secrets[$dataKey] = ['id-0' => (string)$psk->ident];
         if (!empty((string)$psk->remote_ident)) {
             $secrets[$dataKey]['id-1'] = (string)$psk->remote_ident;
