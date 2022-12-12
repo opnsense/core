@@ -73,6 +73,20 @@ class Swanctl extends BaseModel
 
         return $messages;
     }
+
+    /**
+     * @return boolean enc0 enabled (any policy set)
+     */
+    public function isEnabled()
+    {
+        foreach ($this->Connections->Connection->iterateItems() as $node_uuid => $node) {
+            if (!empty((string)$node->enabled)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * generate swanctl configuration output, containing "pools" and "connections", locals, remotes and children
      * are treated as children of connection.

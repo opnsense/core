@@ -161,22 +161,28 @@ function ipsec_interfaces()
 {
     global $config;
 
+    $swanctl = (new \OPNsense\IPsec\Swanctl());
     $interfaces = [];
 
-    if (isset($config['ipsec']['phase1'])) {
+    $is_enabled = $swanctl->isEnabled();
+    if (!$is_enabled && isset($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (empty($ph1ent['disabled'])) {
-                $oic = array('enable' => true);
-                $oic['if'] = 'enc0';
-                $oic['descr'] = 'IPsec';
-                $oic['type'] = 'none';
-                $oic['virtual'] = true;
-                $interfaces['enc0'] = $oic;
+                $is_enabled = true;
                 break;
             }
         }
+    }
 
-        $vtis = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
+    if ($is_enabled) {
+        $oic = ['enable' => true];
+        $oic['if'] = 'enc0';
+        $oic['descr'] = 'IPsec';
+        $oic['type'] = 'none';
+        $oic['virtual'] = true;
+        $interfaces['enc0'] = $oic;
+
+        $vtis = array_merge(ipsec_get_configured_vtis(), $swanctl->getVtiDevices());
         foreach ($vtis as $intf => $details) {
             $interfaces[$intf] = [
                 'enable' => true,
