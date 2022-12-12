@@ -687,7 +687,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     cssClass: 'btn-primary',
                     action: function(dlg){
                         ajaxCall("/api/ids/service/dropAlertLog/", {filename: selected_log.data('filename')}, function(data,status){
+                            $('#alert-logfile option').prop('selected', false);
                             updateAlertLogs();
+                            $('#grid-alerts').bootgrid('reload');
                         });
                         dlg.close();
                     }
