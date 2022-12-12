@@ -176,7 +176,8 @@ function ipsec_interfaces()
             }
         }
 
-        foreach (ipsec_get_configured_vtis() as $intf => $details) {
+        $vtis = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
+        foreach ($vtis as $intf => $details) {
             $interfaces[$intf] = [
                 'enable' => true,
                 'descr' => preg_replace('/[^a-z_0-9]/i', '', $details['descr']),
@@ -194,7 +195,8 @@ function ipsec_devices()
     $devices = [];
     $names = [];
 
-    foreach (ipsec_get_configured_vtis() as $device => $details) {
+    $vtis = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
+    foreach ($vtis as $device => $details) {
         $names[$device] = [
             'descr' => sprintf('%s (%s)', $device, $details['descr']),
             'ifdescr' => sprintf('%s', $details['descr']),
@@ -1199,10 +1201,12 @@ function ipsec_write_secrets()
 
     foreach ((new \OPNsense\IPsec\IPsec())->preSharedKeys->preSharedKey->iterateItems() as $uuid => $psk) {
         $keytype = strtolower($psk->keyType);
-        $secrets["{$keytype}-{$uuid}"] = [
-            'id-0' => (string)$psk->ident,
-            'secret' => '0s' . base64_encode((string)$psk->Key)
-        ];
+        $dataKey = "{$keytype}-{$uuid}";
+        $secrets[$dataKey] = ['id-0' => (string)$psk->ident];
+        if (!empty((string)$psk->remote_ident)) {
+            $secrets[$dataKey]['id-1'] = (string)$psk->remote_ident;
+        }
+        $secrets[$dataKey]['secret'] = '0s' . base64_encode((string)$psk->Key);
     }
 
     return $secrets;
@@ -1272,12 +1276,10 @@ function ipsec_configure_do($verbose = false, $interface = '')
         ipsec_write_certs();
         ipsec_write_keypairs();
 
-        /* begin ipsec.conf */
-        $swanctl = [
-            'connections' => [],
-            'pools' => [],
-            'secrets' => ipsec_write_secrets()
-        ];
+        /* begin ipsec.conf, hook mvc configuration first */
+        $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
+        $swanctl['secrets'] = ipsec_write_secrets();
+
         if (count($a_phase1)) {
             if (!empty($config['ipsec']['passthrough_networks'])) {
                 $swanctl['connections']['pass'] = [
@@ -1652,7 +1654,7 @@ function ipsec_get_configured_vtis()
 function ipsec_configure_vti($verbose = false, $device = null)
 {
     // query planned and configured interfaces
-    $configured_intf = ipsec_get_configured_vtis();
+    $configured_intf = array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices());
     $current_interfaces = [];
 
     foreach (legacy_interfaces_details() as $intf => $intf_details) {
@@ -1669,14 +1671,18 @@ function ipsec_configure_vti($verbose = false, $device = null)
             continue;
         }
 
-        $local_configured = $configured_intf[$intf]['local'];
-        $remote_configured = $configured_intf[$intf]['remote'];
+        $local_configured = null;
+        $remote_configured = null;
         if (!empty($configured_intf[$intf])) {
             if (!is_ipaddr($configured_intf[$intf]['local'])) {
                 $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
+            } else {
+                $local_configured = $configured_intf[$intf]['local'];
             }
             if (!is_ipaddr($configured_intf[$intf]['remote'])) {
                 $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
+            } else {
+                $remote_configured = $configured_intf[$intf]['remote'];
             }
         }
         if (
