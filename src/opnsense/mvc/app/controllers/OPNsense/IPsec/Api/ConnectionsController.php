@@ -39,6 +39,9 @@ class ConnectionsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'swanctl';
     protected static $internalModelClass = 'OPNsense\IPsec\Swanctl';
 
+    /**
+     * @return null|function lambda to filter on provided connection uuid in GET['connection']
+     */
     private function connectionFilter()
     {
         $connection = $this->request->get('connection');
@@ -51,6 +54,11 @@ class ConnectionsController extends ApiMutableModelControllerBase
         return $filter_func;
     }
 
+    /**
+     * @param array $payload result array
+     * @param string $topic topic used as root container
+     * @return array $payload with optional preselected connection defaults (to be used by children of connection)
+     */
     private function wrapDefaults($payload, $topic)
     {
         $conn_uuid = $this->request->get('connection');
