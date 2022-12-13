@@ -62,8 +62,6 @@ class IPsecProposalField extends BaseListField
             self::$internalCacheOptionList['aes128-aesxcbc-x25519'] = 'aes128-aesxcbc-x25519';
             self::$internalCacheOptionList['aes192-sha384-x25519'] = 'aes192-sha384-x25519';
             self::$internalCacheOptionList['aes256-sha512-x25519'] = 'aes256-sha512-x25519';
-            self::$internalCacheOptionList['chacha20poly1305-x25519'] = 'chacha20poly1305-x25519';
-            self::$internalCacheOptionList['chacha20poly1305-prfsha256-x25519'] = 'chacha20poly1305-prfsha256-x25519';
             self::$internalCacheOptionList['aes128-sha256-ecp256'] = 'aes128-sha256-ecp256';
 
             self::$internalCacheOptionList['null-sha256-x25519'] = sprintf(
