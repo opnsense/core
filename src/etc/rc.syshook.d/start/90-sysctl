@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# re-apply tunables in case a module was loaded depending on them
+/usr/local/sbin/pluginctl -s sysctl restart
