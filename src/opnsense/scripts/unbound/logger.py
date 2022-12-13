@@ -42,7 +42,6 @@ from duckdb_helper import DbConnection
 class DNSReader:
     def __init__(self, target_pipe, flush_interval):
         self.target_pipe = target_pipe
-        syslog.syslog(syslog.LOG_NOTICE, "self.target_pipe: %s" % self.target_pipe)
         self.timer = 0
         self.flush_interval = flush_interval
         self.buffer = deque()
