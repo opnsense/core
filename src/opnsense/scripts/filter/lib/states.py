@@ -131,7 +131,7 @@ def query_states(rule_label, filter_str):
         filter_network = None
         filter_port = None
 
-    rule_labels = {}
+    rule_labels = fetch_rule_labels()
     lines = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True).stdout.strip().split('\n')
     record = None
     for line in lines:
