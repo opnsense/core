@@ -52,6 +52,7 @@ class DNSReader:
         with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
             db.connection.execute("""
                 CREATE TABLE IF NOT EXISTS query (
+                    uuid UUID,
                     time INTEGER,
                     client TEXT,
                     family TEXT,

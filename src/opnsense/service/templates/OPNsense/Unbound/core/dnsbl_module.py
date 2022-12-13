@@ -28,6 +28,7 @@ import os
 import json
 import time
 import errno
+import uuid
 from threading import Lock
 from collections import deque
 
@@ -123,7 +124,8 @@ class ModuleContext:
         if not self.stats_enabled:
             return
 
-        self.pipe_buffer.append(args)
+        entry = (uuid.uuid4(), *args)
+        self.pipe_buffer.append(entry)
         if self.pipe_fd is None:
             if (time.time() - self.pipe_timer) > 10:
                 self.pipe_timer = time.time()
@@ -139,7 +141,7 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    res = "{} {} {} {} {} {} {} {} {} {}\n".format(*l)
+                    res = "{} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
                     os.write(self.pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
