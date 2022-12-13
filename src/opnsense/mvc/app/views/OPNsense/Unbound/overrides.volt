@@ -199,7 +199,6 @@ $( document ).ready(function() {
                 <td></td>
                 <td>
                     <button id="test" data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                 </td>
             </tr>
             </tfoot>
