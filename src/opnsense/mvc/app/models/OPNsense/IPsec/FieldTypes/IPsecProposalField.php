@@ -70,10 +70,7 @@ class IPsecProposalField extends BaseListField
                 gettext('%s (testing only!)'),
                 'null-sha256-x25519'
             );
-            foreach (
-                ['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16',
-                      'chacha20poly1305'] as $encalg
-            ) {
+            foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
                     foreach (
                         [
