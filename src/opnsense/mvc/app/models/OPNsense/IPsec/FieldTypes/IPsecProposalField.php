@@ -40,7 +40,36 @@ class IPsecProposalField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalCacheOptionList)) {
-            self::$internalCacheOptionList['default'] = 'default';
+            self::$internalCacheOptionList['default'] = gettext('default');
+            // sort commmonly used on top (ref https://wiki.strongswan.org/projects/strongswan/wiki/CipherSuiteExamples)
+            self::$internalCacheOptionList['aes192gcm16-ecp384'] = 'aes192gcm16-ecp384';
+            self::$internalCacheOptionList['aes256gcm16-ecp521'] = 'aes256gcm16-ecp521';
+            self::$internalCacheOptionList['aes256gcm16-aes128gcm16-ecp384-ecp256'] = 'aes256gcm16-aes128gcm16-ecp384-ecp256';
+            self::$internalCacheOptionList['aes128gcm16-ecp256'] = 'aes128gcm16-ecp256';
+            self::$internalCacheOptionList['aes128gcm16-x25519'] = 'aes128gcm16-x25519';
+            self::$internalCacheOptionList['aes128gcm16-aesxcbc-x25519'] = 'aes128gcm16-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes192-sha384-ecp384'] = 'aes192-sha384-ecp384';
+            self::$internalCacheOptionList['aes256-sha512-ecp521'] = 'aes256-sha512-ecp521';
+            self::$internalCacheOptionList['aes128-sha256-sha1'] = 'aes128-sha256-sha1';
+            self::$internalCacheOptionList['aes128-sha256-modp2048s256'] = 'aes128-sha256-modp2048s256';
+            self::$internalCacheOptionList['aes128-sha1-modp1024s160'] = 'aes128-sha1-modp1024s160';
+            self::$internalCacheOptionList['aes256-aes128-sha384-sha256-ecp384-ecp256'] = 'aes256-aes128-sha384-sha256-ecp384-ecp256';
+            self::$internalCacheOptionList['aes128ctr-aesxcbc-x25519'] = 'aes128ctr-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes128ccm12-x25519'] = 'aes128ccm12-x25519';
+            self::$internalCacheOptionList['aes128ccm12-aesxcbc-x25519'] = 'aes128ccm12-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes128gmac-x25519'] = 'aes128gmac-x25519';
+            self::$internalCacheOptionList['aes128-sha256-x25519'] = 'aes128-sha256-x25519';
+            self::$internalCacheOptionList['aes128-aesxcbc-x25519'] = 'aes128-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes192-sha384-x25519'] = 'aes192-sha384-x25519';
+            self::$internalCacheOptionList['aes256-sha512-x25519'] = 'aes256-sha512-x25519';
+            self::$internalCacheOptionList['chacha20poly1305-x25519'] = 'chacha20poly1305-x25519';
+            self::$internalCacheOptionList['chacha20poly1305-prfsha256-x25519'] = 'chacha20poly1305-prfsha256-x25519';
+            self::$internalCacheOptionList['aes128-sha256-ecp256'] = 'aes128-sha256-ecp256';
+
+            self::$internalCacheOptionList['null-sha256-x25519'] = sprintf(
+                gettext('%s (testing only!)'),
+                'null-sha256-x25519'
+            );
             foreach (
                 ['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16',
                       'chacha20poly1305'] as $encalg
@@ -53,11 +82,12 @@ class IPsecProposalField extends BaseListField
                         'x25519', 'x448'] as $dhgroup
                     ) {
                         $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
-                        self::$internalCacheOptionList[$cipher] = $cipher;
+                        if (!isset(self::$internalCacheOptionList[$cipher])) {
+                            self::$internalCacheOptionList[$cipher] = $cipher;
+                        }
                     }
                 }
             }
-            natcasesort(self::$internalCacheOptionList);
         }
         $this->internalOptionList = self::$internalCacheOptionList;
     }
