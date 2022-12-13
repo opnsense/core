@@ -278,8 +278,8 @@ def operate(id, event, qstate, qdata):
         # Iterator finished, show response (if any)
         if 'query' in qdata and 'start_time' in qdata:
             ctx = mod_env['context']
-            dnssec_state = qstate.return_msg.rep.security
-            ctx.log_entry(*qdata['query'], round((time.time() - qdata['start_time']) * 1000), dnssec_state)
+            dnssec = qstate.return_msg.rep.security if qstate.return_msg else DNSSEC_UNCHECKED
+            ctx.log_entry(*qdata['query'], round((time.time() - qdata['start_time']) * 1000), dnssec)
         qstate.ext_state[id] = MODULE_FINISHED
         return True
 
