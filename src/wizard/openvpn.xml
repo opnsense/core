@@ -801,14 +801,6 @@
                 <bindstofield>wizardtemp->step10->dynip</bindstofield>
             </field>
             <field>
-                <displayname>Address Pool</displayname>
-                <name>addrpool</name>
-                <type>checkbox</type>
-                <value>on</value>
-                <typehint>Provide a virtual adapter IP address to clients (see Tunnel Network).</typehint>
-                <bindstofield>wizardtemp->step10->addrpool</bindstofield>
-            </field>
-            <field>
                 <displayname>DNS Default Domain</displayname>
                 <name>defaultdomain</name>
                 <type>input</type>
