@@ -30,7 +30,7 @@ import os
 import duckdb
 import fcntl
 
-class DbConnection():
+class DbConnection:
     """
     ContextManager wrapper for a DuckDb connection. Use this to synchronize
     access to a DuckDb instance in cases where there is both a writer and

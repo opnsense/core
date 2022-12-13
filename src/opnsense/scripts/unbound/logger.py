@@ -33,18 +33,23 @@ import syslog
 import time
 import datetime
 import pandas
+import signal
 from collections import deque
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from daemonize import Daemonize
 from duckdb_helper import DbConnection
 
 class DNSReader:
-    def __init__(self, flush_interval):
+    def __init__(self, target_pipe, flush_interval):
+        self.target_pipe = target_pipe
+        syslog.syslog(syslog.LOG_NOTICE, "self.target_pipe: %s" % self.target_pipe)
         self.timer = 0
         self.flush_interval = flush_interval
-        self.count = 0
         self.buffer = deque()
+        self.selector = selectors.DefaultSelector()
+        self.fd = None
 
+    def _setup_db(self):
         with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
             db.connection.execute("""
                 CREATE TABLE IF NOT EXISTS query (
@@ -55,7 +60,9 @@ class DNSReader:
                     domain TEXT,
                     action INTEGER,
                     response_type INTEGER,
-                    blocklist TEXT
+                    blocklist TEXT,
+                    resolve_time_ms INTEGER,
+                    dnssec_status INTEGER
                 )
             """)
 
@@ -76,8 +83,25 @@ class DNSReader:
 
             db.connection.execute("CREATE INDEX IF NOT EXISTS idx_query ON query (time)")
 
-    def read(self, fd, mask):
-        r = fd.readline()
+    def _sig(self, *args):
+        # signal either open() or select() to gracefully close.
+        # we intentionally raise an exception since syscalls such as select()
+        # will default to a retry with a computed timeout if no exception is thrown
+        # as per PEP 475. This will force select() or open() to return so we can free up any resources.
+        raise InterruptedError()
+
+    def _close_logger(self):
+        syslog.syslog(syslog.LOG_NOTICE, "Closing logger")
+        # we might be killing the process before open() has had a chance to return,
+        # so check if the file descriptor is there
+        if self.fd is not None:
+            self.selector.unregister(self.fd)
+            self.fd.close()
+        self.selector.close()
+        sys.exit(0)
+
+    def _read(self, fd, mask):
+        r = self.fd.readline()
         if r == '':
             return False
 
@@ -111,31 +135,38 @@ class DNSReader:
 
         return True
 
-def run_logger(target_pipe, flush_interval):
-    fd = None
-    sel = selectors.DefaultSelector()
+    def run_logger(self):
+        # override the Daemonize signal handler
+        signal.signal(signal.SIGINT, self._sig)
+        signal.signal(signal.SIGTERM, self._sig)
 
-    # Create the DNSReader now to ensure the database has been set up prior to queries coming in.
-    r = DNSReader(flush_interval)
+        self._setup_db()
 
-    try:
-        # open() will block until a query has been pushed down the fifo
-        fd = open(target_pipe, 'r')
-    except OSError:
-        syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
-        sys.exit(1)
+        try:
+            # open() will block until a query has been pushed down the fifo
+            self.fd = open(self.target_pipe, 'r')
+        except InterruptedError:
+            self._close_logger()
+        except OSError:
+            syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
+            sys.exit(1)
 
-    sel.register(fd, selectors.EVENT_READ, r.read)
+        self.selector.register(self.fd.fileno(), selectors.EVENT_READ, self._read)
 
-    while True:
-        events = sel.select()
-        for key, mask in events:
-            callback = key.data
-            if not callback(key.fileobj, mask):
-                syslog.syslog(syslog.LOG_NOTICE, "Unbound closed logging pipe. Exiting")
-                sel.unregister(fd)
-                sel.close()
-                sys.exit()
+        while True:
+            events = self.selector.select()
+            # events will be an empty list if a SIGTERM comes in, see _sig() above
+            if not events:
+                self._close_logger()
+            for key, mask in events:
+                callback = key.data
+                if not callback(key.fileobj, mask):
+                    # unbound closed pipe
+                    self._close_logger()
+
+def run(pipe, flush_interval):
+    r = DNSReader(pipe, flush_interval)
+    r.run_logger()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -149,6 +180,6 @@ if __name__ == '__main__':
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
 
     syslog.syslog(syslog.LOG_NOTICE, 'Daemonizing unbound logging backend.')
-    cmd = lambda : run_logger(target_pipe=inputargs.pipe, flush_interval=inputargs.flush_interval)
+    cmd = lambda : run(inputargs.pipe, inputargs.flush_interval)
     daemon = Daemonize(app="unbound_logger", pid=inputargs.pid, action=cmd, foreground=inputargs.foreground)
     daemon.start()
