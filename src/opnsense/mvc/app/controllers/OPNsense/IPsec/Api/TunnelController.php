@@ -156,7 +156,7 @@ class TunnelController extends ApiControllerBase
             }
             foreach ($config->ipsec->phase2 as $p2) {
                 $ikeid = intval((string)$p2->ikeid);
-                if ($ikeid != $selected_ikeid) {
+                if ($ikeid != $selected_ikeid &&  $selected_ikeid != -1) {
                     $p2idx++;
                     continue;
                 }
