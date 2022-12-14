@@ -59,8 +59,9 @@ class DNSReader:
                     type TEXT,
                     domain TEXT,
                     action INTEGER,
-                    response_type INTEGER,
+                    source INTEGER,
                     blocklist TEXT,
+                    rcode INTEGER,
                     resolve_time_ms INTEGER,
                     dnssec_status INTEGER
                 )

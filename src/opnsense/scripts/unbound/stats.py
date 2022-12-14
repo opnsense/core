@@ -80,9 +80,9 @@ def handle_rolling(args):
                 COUNT(case q.action when 0 then 1 else null end) AS passed,
                 COUNT(case q.action when 1 then 1 else null end) AS blocked,
                 COUNT(case q.action when 2 then 1 else null end) AS dropped,
-                COUNT(case q.response_type when 0 then 1 else null end) AS resolved,
-                COUNT(case q.response_type when 1 then 1 else null end) AS local,
-                COUNT(case q.response_type when 2 then 1 else null end) AS cached
+                COUNT(case q.source when 0 then 1 else null end) AS resolved,
+                COUNT(case q.source when 2 then 1 else null end) AS local,
+                COUNT(case q.source when 3 then 1 else null end) AS cached
             FROM v_time_series_{intv}min v
             LEFT JOIN query q ON
                 q.time >= v.start_timestamp AND
@@ -129,7 +129,7 @@ def handle_rolling(args):
     print(ujson.dumps(result))
 
 def handle_top(args):
-    total = blocked = local = passed = blocklist_size = 0
+    total = resolved = blocked = local = passed = blocklist_size = 0
     r_top = r_top_blocked = r_total = r_start_time = pandas.DataFrame()
     top = top_blocked = {}
     start_time = int(time())
@@ -139,7 +139,7 @@ def handle_top(args):
         with open(bl_path, 'r') as f:
             blocklist_size = int(f.readline())
 
-    with DbConnection('/var/unbound/data/unbound.duckdb') as db:
+    with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
         if db.connection is not None and db.table_exists('query'):
             # all queries are stored in a DataFrame() and its resulting set
             # cast to native python types (`int` instead of `numpy.int64`)
@@ -165,8 +165,9 @@ def handle_top(args):
             r_total = db.connection.execute("""
                 SELECT COUNT(*) AS total,
                     COUNT(case q.action when 1 then 1 else null end) AS blocked,
-                    COUNT(case q.response_type when 1 then 1 else null end) AS local,
-                    COUNT(case q.action when 0 then 1 else null end) AS passed
+                    COUNT(case q.source when 2 then 1 else null end) AS local,
+                    COUNT(case q.action when 0 then 1 else null end) AS passed,
+                    COUNT(case q.source when 0 then 1 else null end) as resolved
                 FROM query q
             """).fetchdf().astype('object')
 
@@ -179,6 +180,7 @@ def handle_top(args):
 
     if not r_total.empty:
         total = r_total.total.iloc[0]
+        resolved = r_total.resolved.iloc[0]
         blocked = r_total.blocked.iloc[0]
         local = r_total.local.iloc[0]
         passed = r_total.passed.iloc[0]
@@ -200,12 +202,43 @@ def handle_top(args):
         "total": total,
         "blocklist_size": blocklist_size,
         "passed": passed,
+        "resolved": {"total": resolved, "pcnt": percent(resolved, total)},
         "blocked": {"total": blocked, "pcnt": percent(blocked, total)},
         "local": {"total": local, "pcnt": percent(local, total)},
         "start_time": start_time,
         "top": top,
         "top_blocked": top_blocked
     }))
+
+def handle_details(args):
+    result = []
+    details = pandas.DataFrame()
+
+    with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
+        if db.connection is not None and db.table_exists('query'):
+            details = db.connection.execute("""
+                SELECT * FROM query
+                ORDER BY time DESC
+                LIMIT ?
+            """, [args.limit]).fetchdf().astype({'uuid': str})
+
+    if not details.empty:
+        # map the integer types to a sensible description
+        details['action'] = details['action'].map({0: 'Pass', 1: 'Block', 2: 'Drop'})
+        details['source'] = details['source'].map({
+            0: 'Recursion', 1: 'Local', 2: 'Local-data', 3: 'Cache'
+        })
+        details['rcode'] =  details['rcode'].map({
+            0: 'NOERROR', 1: 'FORMERR', 2: 'SERVFAIL', 3: 'NXDOMAIN', 4: 'NOTIMPL',
+            5: 'REFUSED', 6: 'YXDOMAIN', 7: 'YXRRSET', 8: 'NXRRSET', 9: 'NOTAUTH',
+            10: 'NOTZONE'
+        })
+        details['dnssec_status'] = details['dnssec_status'].map({
+            0: 'Unchecked', 1: 'Bogus', 2: 'Indeterminate', 3: 'Insecure', 5: 'Secure'
+        })
+        result = details.to_dict('records')
+
+    print(ujson.dumps(result))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -219,6 +252,10 @@ if __name__ == '__main__':
     t_parser = subparsers.add_parser('totals', help='get top queried domains and total counters')
     t_parser.add_argument('--max', help='limit top queried domains by max items', type=int, default=10)
     t_parser.set_defaults(func=handle_top)
+
+    d_parser = subparsers.add_parser('details', help='get detailed query information')
+    d_parser.add_argument('--limit', help='limit results', type=int, default=500)
+    d_parser.set_defaults(func=handle_details)
 
     if len(sys.argv)==1:
         parser.print_help()

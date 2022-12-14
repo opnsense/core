@@ -36,19 +36,13 @@ ACTION_PASS = 0
 ACTION_BLOCK = 1
 ACTION_DROP = 2
 
-RESPONSE_NEW = 0
-RESPONSE_LOCAL = 1
-RESPONSE_CACHE = 2
-RESPONSE_SERVFAIL = 3
-RESPONSE_BLOCK = 4
+SOURCE_RECURSION = 0
+SOURCE_LOCAL = 1
+SOURCE_LOCALDATA = 2
+SOURCE_CACHE = 3
 
-DNSSEC_UNCHECKED = 0
-DNSSEC_BOGUS = 1
-DNSSEC_INDETERMINATE = 2
-# any upstream server that doesn't incorporate dnssec is considered insecure
-DNSSEC_INSECURE = 3
-# upstream constant jumps from 3 to 5, so this is intentional
-DNSSEC_SECURE = 5
+def time_diff_ms(start):
+    return round((time.time() - start) * 1000)
 
 class ModuleContext:
     def __init__(self, env):
@@ -141,7 +135,7 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    res = "{} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
+                    res = "{} {} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
                     os.write(self.pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
@@ -185,29 +179,36 @@ class ModuleContext:
         if self.dnsbl_available and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
             blocklist = mod_env['dnsbl']['data'][domain]['bl']
-            dnssec_status = DNSSEC_INDETERMINATE if self.dnssec_enabled else DNSSEC_UNCHECKED
+            dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
+
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
-                self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist, 0, dnssec_status)
+                self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
+                    self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
             msg = DNSMessage(qname, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
+
             if (qtype == RR_TYPE_A) or (qtype == RR_TYPE_ANY):
                 msg.answer.append("%s 3600 IN A %s" % (qname, self.dst_addr))
+
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(*(info), ACTION_DROP, RESPONSE_SERVFAIL, blocklist, 0, dnssec_status)
+                self.log_entry(*(info), ACTION_DROP, SOURCE_LOCAL, blocklist,
+                    RCODE_SERVFAIL, time_diff_ms(qdata['start_time']), dnssec_status)
                 return True
 
             if self.dnssec_enabled:
-                qstate.return_msg.rep.security = DNSSEC_INDETERMINATE
-            self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist, 0, dnssec_status)
+                qstate.return_msg.rep.security = dnssec_status
+
+            self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
+                self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
             # Pass the query to validator/iterator and log the query when it's done
-            qdata['query'] = (*(info), ACTION_PASS, RESPONSE_NEW, None)
+            qdata['query'] = (*(info), ACTION_PASS, SOURCE_RECURSION, None)
             qstate.ext_state[id] = MODULE_WAIT_MODULE
 
         return True
@@ -216,24 +217,27 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
+
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, RESPONSE_CACHE, None, 0, rep.security)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, rep.security)
     return True
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
+
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, RESPONSE_LOCAL, None, 0, rep.security)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, rep.security)
     return True
 
 def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                               region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
+
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_DROP, RESPONSE_SERVFAIL, None, 0, rep.security)
+    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, rep.security)
     return True
 
 def init_standard(id, env):
@@ -278,8 +282,14 @@ def operate(id, event, qstate, qdata):
         # Iterator finished, show response (if any)
         if 'query' in qdata and 'start_time' in qdata:
             ctx = mod_env['context']
-            dnssec = qstate.return_msg.rep.security if qstate.return_msg else DNSSEC_UNCHECKED
-            ctx.log_entry(*qdata['query'], round((time.time() - qdata['start_time']) * 1000), dnssec)
+            dnssec = sec_status_unchecked
+            rcode = RCODE_SERVFAIL
+
+            if qstate.return_msg:
+                dnssec = qstate.return_msg.rep.security
+                rcode = qstate.return_msg.rep.flags & 0xF
+
+            ctx.log_entry(*qdata['query'], rcode, time_diff_ms(qdata['start_time']), dnssec)
         qstate.ext_state[id] = MODULE_FINISHED
         return True
 

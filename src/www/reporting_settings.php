@@ -33,14 +33,18 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("rrd.inc");
 require_once("system.inc");
+require_once("plugins.inc.d/unbound.inc");
 
 $rrdcfg = &config_read_array('rrd');
+$unboundcfg = &config_read_array('unbound');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
     $pconfig['rrdenable'] = isset($rrdcfg['enable']);
+    $pconfig['unboundenable'] = isset($unboundcfg['stats']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+    $configure_unbound = false;
     if (!empty($pconfig['action']) && $pconfig['action'] == "ResetRRD") {
         $savemsg = gettext('RRD data has been cleared.');
         configd_run('health flush *');
@@ -54,14 +58,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = gettext('Database repair in progress, daemon will start when done.');
         configd_run('netflow aggregate stop');
         configd_run('netflow aggregate repair', true);
+    } elseif (!empty($pconfig['action']) && $pconfig['action'] == "SaveDNS") {
+        $configure_unbound = true;
+        $unboundcfg['stats'] = !empty($pconfig['unboundenable']);
+        $savemsg = get_std_save_message();
+        write_config();
+    } elseif (!empty($pconfig['action']) && $pconfig['action'] == "ResetDNS") {
+        $savemsg = gettext('All local Unbound statistics data has been cleared.');
+        configd_run('unbound qstats reset');
     } else {
         $rrdcfg['enable'] = !empty($pconfig['rrdenable']);
         $savemsg = get_std_save_message();
         write_config();
     }
 
-    plugins_configure('monitor');
-    rrd_configure();
+    if ($configure_unbound) {
+        unbound_configure_do();
+    } else {
+        plugins_configure('monitor');
+        rrd_configure();
+    }
+
 }
 
 $all_rrd_files = json_decode(configd_run('health list'), true);
@@ -160,6 +177,31 @@ $(document).ready(function() {
                 }]
         });
     });
+
+    $("#SaveDNS").click(function(event) {
+        event.preventDefault();
+        $("#action").val("SaveDNS");
+        $("#iform").submit();
+    });
+
+    $("#ResetDNS").click(function(event) {
+        event.preventDefault();
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            message: "<?=gettext('Do you really want to reset the Unbound statistics data?');?>",
+            buttons: [{
+                label: "<?= gettext("No");?>",
+                action: function(dialogRef) {
+                    dialogRef.close();
+                }}, {
+                label: "<?= gettext("Yes");?>",
+                action: function(dialogRef) {
+                    $("#action").val("ResetDNS");
+                    $("#iform").submit()
+                }
+            }]
+        });
+    });
 });
 
 //]]>
@@ -209,6 +251,31 @@ $(document).ready(function() {
               </div>
             </div>
           </section>
+        <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12">
+                <div class="table-responsive">
+                    <table class="table table-striped opnsense_standard_table_form">
+                        <tr>
+                            <td colspan="2"><strong><?=gettext('Unbound DNS reporting');?></strong></td>
+                        </tr>
+                        <tr>
+                            <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Statistics");?></td>
+                            <td>
+                                <input name="unboundenable" type="checkbox" id="unboundenable" value="yes" <?=!empty($pconfig['unboundenable']) ? "checked=\"checked\"" : ""?> />
+                                &nbsp;<strong><?=gettext("Enables local gathering of statistics.");?></strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="button" name="SaveDNS" id="SaveDNS" class="btn btn-primary" value="<?= html_safe(gettext("Save")) ?>" />
+                                <input type="button" name="ResetDNS" id="ResetDNS" class="btn btn-default" value="<?= html_safe(gettext("Reset DNS data")) ?>" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
