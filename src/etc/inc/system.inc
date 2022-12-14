@@ -1133,6 +1133,9 @@ function reset_factory_defaults($sync = true)
     $shutdown_cmd = '/sbin/shutdown -op now';
     if ($sync) {
         mwexec($shutdown_cmd);
+        while (true) {
+            sleep(1);
+        }
     } else {
         mwexec_bg($shutdown_cmd);
     }
