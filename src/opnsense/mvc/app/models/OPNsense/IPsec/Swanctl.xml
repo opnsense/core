@@ -299,6 +299,10 @@
                         <drop>Drop</drop>
                     </OptionValues>
                 </mode>
+                <policies type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </policies>
                 <local_ts type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>

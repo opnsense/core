@@ -39,7 +39,6 @@
           Whether to install IPsec policies or not.
           Disabling this can be useful in some scenarios e.g. VTI where policies are not managed by the IKE daemon
         </help>
-        <advanced>true</advanced>
     </field>
     <field>
         <id>child.start_action</id>
