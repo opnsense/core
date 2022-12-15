@@ -70,4 +70,36 @@ class OverviewController extends ApiControllerBase
 
         return $parsed;
     }
+
+    public function searchQueriesAction()
+    {
+        $this->sessionClose();
+        $response = (new Backend())->configdpRun('unbound qstats details', [1000]);
+        $parsed = json_decode($response, true);
+
+        /* Map the blocklist type keys to their corresponding description */
+        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['type'];
+        foreach ($parsed as $idx => $query) {
+            if (array_key_exists($query['blocklist'], $nodes)) {
+                $parsed[$idx]['blocklist'] = $nodes[$query['blocklist']]['value'];
+            }
+
+            /* Handle front-end color status mapping, start off with OK */
+            $parsed[$idx]['status'] = 0;
+
+            if (in_array($query['action'], ["Block", "Drop"])) {
+                /* block or drop action */
+                $action_map = ["Block" => 3, "Drop" => 4];
+                $parsed[$idx]['status'] = $action_map[$query['action']];
+            } elseif (in_array($query['source'], ["Local", "Local-data", "Cache"])) {
+                /* Pass, but from local, local-data or cache */
+                $parsed[$idx]['status'] = 1;
+            } elseif ($query['rcode'] != 'NOERROR') {
+                /* pass from recursion, any rcode other than NOERROR should be flagged */
+                $parsed[$idx]['status'] = 2;
+            }
+        }
+
+        return $this->searchRecordsetBase($parsed);
+    }
 }

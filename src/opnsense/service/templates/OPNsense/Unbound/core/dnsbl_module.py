@@ -28,6 +28,7 @@ import os
 import json
 import time
 import errno
+import uuid
 from threading import Lock
 from collections import deque
 
@@ -35,11 +36,13 @@ ACTION_PASS = 0
 ACTION_BLOCK = 1
 ACTION_DROP = 2
 
-RESPONSE_NEW = 0
-RESPONSE_LOCAL = 1
-RESPONSE_CACHE = 2
-RESPONSE_SERVFAIL = 3
-RESPONSE_BLOCK = 4
+SOURCE_RECURSION = 0
+SOURCE_LOCAL = 1
+SOURCE_LOCALDATA = 2
+SOURCE_CACHE = 3
+
+def time_diff_ms(start):
+    return round((time.time() - start) * 1000)
 
 class ModuleContext:
     def __init__(self, env):
@@ -103,7 +106,7 @@ class ModuleContext:
             self.pipe_fd = os.open(self.pipe_name, os.O_NONBLOCK | os.O_WRONLY)
         except OSError as e:
             if e.errno == errno.ENXIO:
-                log_warn("dnsbl_module: no logging backend found.")
+                log_info("dnsbl_module: no logging backend found.")
                 self.pipe_fd = None
                 return False
             else:
@@ -111,12 +114,12 @@ class ModuleContext:
 
         return True
 
-    def log_entry(self, t, client, family, type, domain, action, response_type, blocklist=None):
+    def log_entry(self, *args):
         if not self.stats_enabled:
             return
-        kwargs = locals()
-        del kwargs['self']
-        self.pipe_buffer.append(kwargs)
+
+        entry = (uuid.uuid4(), *args)
+        self.pipe_buffer.append(entry)
         if self.pipe_fd is None:
             if (time.time() - self.pipe_timer) > 10:
                 self.pipe_timer = time.time()
@@ -132,14 +135,13 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    log = "{t} {client} {family} {type} {domain} {action} {response_type} {blocklist}\n".format(**l)
-                    os.write(self.pipe_fd, log.encode())
+                    res = "{} {} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
+                    os.write(self.pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
-                    log_warn("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
+                    log_info("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
                     os.close(self.pipe_fd)
                     self.pipe_fd = None
-
                 self.pipe_buffer.appendleft(l)
 
     def update_dnsbl(self, t):
@@ -154,87 +156,93 @@ class ModuleContext:
                 log_info("dnsbl_module: updating blocklist.")
                 self.load_dnsbl()
 
-    def filter_query(self, id, qstate):
-        t = int(time.time())
+    def filter_query(self, id, qstate, qdata):
+        # We're only interested in A, AAAA and CNAME records.
+        qtype = qstate.qinfo.qtype
+        if qtype not in (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME):
+            qstate.ext_state[id] = MODULE_WAIT_MODULE
+            return True
+
+        t = int(qdata['start_time'])
         self.update_dnsbl(t)
         qname = qstate.qinfo.qname_str
-        qtype = qstate.qinfo.qtype
         qtype_str = qstate.qinfo.qtype_str
+        client = None
 
-        try:
-            # This can fail in cases where DNSSEC is enabled and since this isn't easily
-            # reproducible, we log the type of query so we can act on it in the future.
-            client = qstate.mesh_info.reply_list.query_reply
-        except AttributeError:
-            log_warn("dnsbl_module: unable to determine client for %s (type %s)" % (qname, qtype_str))
-            client = type('',(),{})()
-            client.addr = None
-            client.family = None
+        reply_list = qstate.mesh_info.reply_list
+        if reply_list.query_reply:
+            client = reply_list.query_reply
 
         domain = qname.rstrip('.')
-        info = (t, client.addr, client.family, qtype_str, qname)
+        info = (t, client.addr if hasattr(client, 'addr') else None,
+                client.family if hasattr(client, 'family') else None, qtype_str, qname)
         if self.dnsbl_available and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
             blocklist = mod_env['dnsbl']['data'][domain]['bl']
+            dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
+
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
-                self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist)
+                self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
+                    self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
             msg = DNSMessage(qname, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
+
             if (qtype == RR_TYPE_A) or (qtype == RR_TYPE_ANY):
                 msg.answer.append("%s 3600 IN A %s" % (qname, self.dst_addr))
+
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
-                self.log_entry(*(info), ACTION_DROP, RESPONSE_SERVFAIL)
+                self.log_entry(*(info), ACTION_DROP, SOURCE_LOCAL, blocklist,
+                    RCODE_SERVFAIL, time_diff_ms(qdata['start_time']), dnssec_status)
                 return True
 
             if self.dnssec_enabled:
-                qstate.return_msg.rep.security = 2
-            self.log_entry(*(info), ACTION_BLOCK, RESPONSE_BLOCK, blocklist)
+                qstate.return_msg.rep.security = dnssec_status
+
+            self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
+                self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
-            # Pass the query to validator/iterator
-            self.log_entry(*(info), ACTION_PASS, RESPONSE_NEW)
+            # Pass the query to validator/iterator and log the query when it's done
+            qdata['query'] = (*(info), ACTION_PASS, SOURCE_RECURSION, None)
             qstate.ext_state[id] = MODULE_WAIT_MODULE
 
         return True
-
-def query_cb(qinfo, flags, qstate, addr, zone, region, **kwargs):
-    # use this to determine the server(s) interrogated for a query
-    # this requires more complex logic (it's called for every call to a server during recursion) so leave as-is for now
-
-    return True
 
 def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_CACHE)
+
+    info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, rep.security)
     return True
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                            region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_PASS, RESPONSE_LOCAL)
+
+    info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, rep.security)
     return True
 
 def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
                               region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
-    ctx.log_entry(int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str, ACTION_DROP, RESPONSE_SERVFAIL)
+
+    info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
+    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, rep.security)
     return True
 
 def init_standard(id, env):
     ctx = ModuleContext(env)
     mod_env['context'] = ctx
-
-    if not register_inplace_cb_query(query_cb, env, id):
-        return False
 
     if not register_inplace_cb_reply_cache(cache_cb, env, id):
         return False
@@ -267,10 +275,21 @@ def inform_super(id, qstate, superqstate, qdata):
 def operate(id, event, qstate, qdata):
     if event == MODULE_EVENT_NEW:
         ctx = mod_env['context']
-        return ctx.filter_query(id, qstate)
+        qdata['start_time'] = time.time()
+        return ctx.filter_query(id, qstate, qdata)
 
     if event == MODULE_EVENT_MODDONE:
         # Iterator finished, show response (if any)
+        if 'query' in qdata and 'start_time' in qdata:
+            ctx = mod_env['context']
+            dnssec = sec_status_unchecked
+            rcode = RCODE_SERVFAIL
+
+            if qstate.return_msg:
+                dnssec = qstate.return_msg.rep.security
+                rcode = qstate.return_msg.rep.flags & 0xF
+
+            ctx.log_entry(*qdata['query'], rcode, time_diff_ms(qdata['start_time']), dnssec)
         qstate.ext_state[id] = MODULE_FINISHED
         return True
 

@@ -361,6 +361,26 @@
             }
         }
 
+        function create_or_update_totals() {
+            ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
+                $('#top').not(':first').empty();
+                $('#top-blocked').not(':first').empty();
+
+                $('#totalCounter').html(data.total);
+                $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
+                $('#sizeCounter').html(data.blocklist_size);
+                $('#resolvedCounter').html(data.resolved.total + " (" + data.resolved.pcnt + "%)");
+
+                createTopList('top', data.top);
+                createTopList('top-blocked', data.top_blocked);
+
+                $('#top li:nth-child(even)').addClass('odd-bg');
+                $('#top-blocked li:nth-child(even)').addClass('odd-bg');
+
+                $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
+            });
+        }
+
         g_queryChart = null;
         g_clientChart = null;
 
@@ -385,31 +405,18 @@
                 }
                 $('#timeperiod-clients').selectpicker('refresh');
 
-                ajaxGet('/api/unbound/overview/totals/10', {}, function(data, status) {
-                    $('#totalCounter').html(data.total);
-                    $('#blockedCounter').html(data.blocked.total + " (" + data.blocked.pcnt + "%)");
-                    $('#sizeCounter').html(data.blocklist_size);
-                    $('#localCounter').html(data.local.total + " (" + data.local.pcnt + "%)");
+                create_or_update_totals();
 
-                    createTopList('top', data.top);
-                    createTopList('top-blocked', data.top_blocked);
+                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
+                    let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
+                    let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
+                    g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+                });
 
-                    $('#top li:nth-child(even)').addClass('odd-bg');
-                    $('#top-blocked li:nth-child(even)').addClass('odd-bg');
-
-                    $('#bannersub').html("Starting from " + (new Date(data.start_time * 1000)).toLocaleString());
-
-                    ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                        let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
-                        let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
-                        g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
-
-                        ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
-                            let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
-                            let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
-                            g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
-                        });
-                    });
+                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
+                    let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
+                    let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
+                    g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
                 });
             });
 
@@ -439,10 +446,44 @@
         })
 
         do_startup().done(function() {
-            $('.content-box').show();
+            $('.wrapper').show();
         }).fail(function() {
-            $('.content-box').hide();
+            $('.wrapper').hide();
             $('#info').show();
+        });
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id == 'query_details_tab') {
+                $("#grid-queries").bootgrid('destroy');
+                let grid_queries = $("#grid-queries").UIBootgrid({
+                    search:'/api/unbound/overview/searchQueries/',
+                    options: {
+                        rowSelect: false,
+                        multiSelect: false,
+                        selection: false,
+                        formatters: {
+                            "timeformatter": function (column, row) {
+                                return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
+                            },
+                            "resolveformatter": function (column, row) {
+                                return row.resolve_time_ms + 'ms';
+                            }
+                        },
+                        statusMapping: {
+                            0: "query-success",
+                            1: "info",
+                            2: "query-warning",
+                            3: "query-danger",
+                            4: "danger"
+                        }
+                    }
+                });
+            }
+            if (e.target.id == 'query_overview_tab') {
+                create_or_update_totals();
+                updateQueryChart($("#toggle-log-qchart")[0].checked);
+                updateClientChart($("#toggle-log-cchart")[0].checked);
+            }
         });
 
         updateServiceControlUI('unbound');
@@ -451,146 +492,180 @@
 </script>
 
 <div id="info" class="alert alert-warning" role="alert">
-    {{ lang._('Local gathering of statistics is not enabled. Enable it in the Unbound General page.') }}
+    {{ lang._('Local gathering of statistics is not enabled. Enable it in Reporting Settings page.') }}
     <br />
-    <a href="/services_unbound.php">{{ lang._('Go the Unbound configuration') }}</a>
+    <a href="/reporting_settings.php">{{ lang._('Go to the Reporting configuration') }}</a>
 </div>
-<div class="content-box" style="margin-bottom: 10px;">
-    <div id="counters" class="container-fluid">
-        <div class="col-md-12">
-            <h3 id="bannersub"></h3>
+<div class="wrapper">
+    <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs" style="border-bottom: none">
+        <li><a data-toggle="tab" href="#query-overview" id="query_overview_tab">{{ lang._('Overview') }}</a></li>
+        <li><a data-toggle="tab" href="#query-details" id="query_details_tab">{{ lang._('Details') }}</a></li>
+    </ul>
+    <div class="tab-content content-box" style="padding: 10px; border-top: 1px solid #E5E5E5;">
+        <div id="query-overview" class="tab-pane fade in active">
+            <div class="content-box" style="margin-bottom: 10px;">
+                <div id="counters" class="container-fluid">
+                    <div class="col-md-12">
+                        <h3 id="bannersub"></h3>
+                    </div>
+                    <div class="row" style="margin-bottom: 20px; margin-top: 20px;">
+                        <div class="banner col-xs-3 justify-content-center">
+                            <div class="stats-element">
+                                <div class="stats-icon">
+                                    <i class="large-icon fa fa-cogs text-success" aria-hidden="true"></i>
+                                </div>
+                                <div class="stats-text">
+                                    <h2 id="totalCounter" class="stats-counter-text"></h2>
+                                    <p class="stats-inner-text">{{ lang._('Total')}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="banner col-xs-3 justify-content-center">
+                            <div class="stats-element">
+                                <div class="stats-icon">
+                                    <i class="large-icon fa fa-arrows-v text-info" aria-hidden="true"></i>
+                                </div>
+                                <div class="stats-text">
+                                    <h2 id="resolvedCounter" class="stats-counter-text"></h2>
+                                    <p class="stats-inner-text">{{ lang._('Resolved') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="banner col-xs-3 justify-content-center">
+                            <div class="stats-element">
+                                <div class="stats-icon">
+                                    <i class="large-icon fa fa-hand-paper-o text-danger" aria-hidden="true"></i>
+                                </div>
+                                <div class="stats-text">
+                                    <h2 id="blockedCounter" class="stats-counter-text"></h2>
+                                    <p class="stats-inner-text pull-right">{{ lang._('Blocked') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="banner col-xs-3 justify-content-center">
+                            <div class="stats-element">
+                                <div class="stats-icon">
+                                    <i class="large-icon fa fa-list text-primary" aria-hidden="true"></i>
+                                </div>
+                                <div class="stats-text">
+                                    <h2 id="sizeCounter" class="stats-counter-text"></h2>
+                                    <p class="stats-inner-text">{{ lang._('Size of blocklist') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" style="margin-bottom: 10px;">
+                <div id="graph" class="container-fluid">
+                    <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center" style="padding: 10px;">
+                            <span id="qGraphTitle" style="padding: 5px;"><b>{{ lang._('Queries over the last ') }}</b></span>
+                            <select class="selectpicker" id="timeperiod" data-width="auto">
+                                <option value="24">{{ lang._('24 Hours') }}</option>
+                                <option value="12">{{ lang._('12 Hours') }}</option>
+                                <option value="1">{{ lang._('1 Hour') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <div class="vertical-center">
+                                <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
+                                <input id="toggle-log-qchart" type="checkbox"></input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <div class="chart-container">
+                                <canvas id="rollingChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box" style="margin-bottom: 10px;">
+                <div id="graph" class="container-fluid">
+                    <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 text-center" style="padding: 10px;">
+                            <span id="cGraphTitle" style="padding: 5px;"><b>{{ lang._('Top 10 client activity over the last ') }}</b></span>
+                            <select class="selectpicker" id="timeperiod-clients" data-width="auto">
+                                <option value="24">{{ lang._('24 Hours') }}</option>
+                                <option value="12">{{ lang._('12 Hours') }}</option>
+                                <option value="1">{{ lang._('1 Hour') }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2">
+                            <div class="vertical-center">
+                                <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
+                                <input id="toggle-log-cchart" type="checkbox"></input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2"></div>
+                        <div class="col-8">
+                            <div class="chart-container">
+                                <canvas id="rollingChartClient"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-box">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="top-list">
+                                <ul class="list-group" id="top">
+                                    <li class="list-group-item list-group-item-border">
+                                        <b>{{ lang._('Top passed domains') }}</b>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="top-list">
+                                <ul class="list-group" id="top-blocked">
+                                    <li class="list-group-item list-group-item-border">
+                                        <b>{{ lang._('Top blocked domains') }}</b>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row" style="margin-bottom: 20px; margin-top: 20px;">
-            <div class="banner col-xs-3 justify-content-center">
-                <div class="stats-element">
-                    <div class="stats-icon">
-                        <i class="icon fa fa-cogs text-success" aria-hidden="true"></i>
-                    </div>
-                    <div class="stats-text">
-                        <h2 id="totalCounter" class="stats-counter-text"></h2>
-                        <p class="stats-inner-text">{{ lang._('Total')}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="banner col-xs-3 justify-content-center">
-                <div class="stats-element">
-                    <div class="stats-icon">
-                        <i class="icon fa fa-hand-paper-o text-danger" aria-hidden="true"></i>
-                    </div>
-                    <div class="stats-text">
-                        <h2 id="blockedCounter" class="stats-counter-text"></h2>
-                        <p class="stats-inner-text pull-right">{{ lang._('Blocked') }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="banner col-xs-3 justify-content-center">
-                <div class="stats-element">
-                    <div class="stats-icon">
-                        <i class="icon fa fa-list text-primary" aria-hidden="true"></i>
-                    </div>
-                    <div class="stats-text">
-                        <h2 id="sizeCounter" class="stats-counter-text"></h2>
-                        <p class="stats-inner-text">{{ lang._('Size of blocklist') }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="banner col-xs-3 justify-content-center">
-                <div class="stats-element">
-                    <div class="stats-icon">
-                        <i class="icon fa fa-database text-info" aria-hidden="true"></i>
-                    </div>
-                    <div class="stats-text">
-                        <h2 id="localCounter" class="stats-counter-text"></h2>
-                        <p class="stats-inner-text">{{ lang._('From Local-data') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="content-box" style="margin-bottom: 10px;">
-    <div id="graph" class="container-fluid">
-        <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
-            <div class="col-md-4"></div>
-            <div class="col-md-4 text-center" style="padding: 10px;">
-                <span id="qGraphTitle" style="padding: 5px;"><b>{{ lang._('Queries over the last ') }}</b></span>
-                <select class="selectpicker" id="timeperiod" data-width="auto">
-                    <option value="24">{{ lang._('24 Hours') }}</option>
-                    <option value="12">{{ lang._('12 Hours') }}</option>
-                    <option value="1">{{ lang._('1 Hour') }}</option>
-                </select>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-2">
-                <div class="vertical-center">
-                    <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
-                    <input id="toggle-log-qchart" type="checkbox"></input>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
-                <div class="chart-container">
-                    <canvas id="rollingChart"></canvas>
-                </div>
-            </div>
-            <div class="col-2"></div>
-        </div>
-    </div>
-</div>
-<div class="content-box" style="margin-bottom: 10px;">
-    <div id="graph" class="container-fluid">
-        <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
-            <div class="col-md-4"></div>
-            <div class="col-md-4 text-center" style="padding: 10px;">
-                <span id="cGraphTitle" style="padding: 5px;"><b>{{ lang._('Top 10 client activity over the last ') }}</b></span>
-                <select class="selectpicker" id="timeperiod-clients" data-width="auto">
-                    <option value="24">{{ lang._('24 Hours') }}</option>
-                    <option value="12">{{ lang._('12 Hours') }}</option>
-                    <option value="1">{{ lang._('1 Hour') }}</option>
-                </select>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-2">
-                <div class="vertical-center">
-                    <label class="h-100" style="margin-right: 5px;">Logarithmic</label>
-                    <input id="toggle-log-cchart" type="checkbox"></input>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
-                <div class="chart-container">
-                    <canvas id="rollingChartClient"></canvas>
-                </div>
-            </div>
-            <div class="col-2"></div>
-        </div>
-    </div>
-</div>
-<div class="content-box">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="top-list">
-                    <ul class="list-group" id="top">
-                      <li class="list-group-item list-group-item-border">
-                        <b>{{ lang._('Top passed domains') }}</b>
-                      </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="top-list">
-                    <ul class="list-group" id="top-blocked">
-                      <li class="list-group-item list-group-item-border">
-                        <b>{{ lang._('Top blocked domains') }}</b>
-                      </li>
-                    </ul>
-                </div>
-            </div>
+        <div id="query-details" class="tab-pane fade in">
+            <table id="grid-queries" class="table table-condensed">
+                <thead>
+                <tr>
+                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                    <th data-column-id="status" data-type="numeric" data-visible="false" data-formatter="statusformatter">{{ lang._('status') }}</th>
+                    <th data-column-id="time" data-type="string" data-formatter="timeformatter">{{ lang._('Time') }}</th>
+                    <th data-column-id="client" data-type="string">{{ lang._('Client') }}</th>
+                    <th data-column-id="family" data-width="6em" data-visible="false" data-type="string">{{ lang._('Family') }}</th>
+                    <th data-column-id="type" data-width="6em" data-type="string">{{ lang._('Type') }}</th>
+                    <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
+                    <th data-column-id="action" data-width="6em" data-type="string">{{ lang._('Action') }}</th>
+                    <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
+                    <th data-column-id="rcode" data-type="string">{{ lang._('Return Code') }}</th>
+                    <th data-column-id="resolve_time_ms" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
+                    <th data-column-id="blocklist" data-type="string">{{ lang._('Blocklist') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
         </div>
     </div>
 </div>

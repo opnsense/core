@@ -12,8 +12,9 @@
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
-        <Settings url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
-        <Traffic url="/ui/diagnostics/traffic" cssClass="fa fa-line-chart fa-fw"/>
+        <Settings order="10" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
+        <Traffic order="20" url="/ui/diagnostics/traffic" cssClass="fa fa-line-chart fa-fw"/>
+        <DNS order="30" url="/ui/unbound/overview" cssClass="fa fa-bar-chart fa-fw"/>
     </Reporting>
     <System order="20" cssClass="fa fa-server">
         <Access cssClass="fa fa-users fa-fw">

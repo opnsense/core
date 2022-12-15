@@ -1129,6 +1129,7 @@
 /usr/local/opnsense/site-python/__init__.py
 /usr/local/opnsense/site-python/daemonize.LICENSE
 /usr/local/opnsense/site-python/daemonize.py
+/usr/local/opnsense/site-python/duckdb_helper.py
 /usr/local/opnsense/site-python/log_helper.py
 /usr/local/opnsense/site-python/params.py
 /usr/local/opnsense/site-python/sqlite3_helper.py

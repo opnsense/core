@@ -565,6 +565,13 @@
             <pattern>api/diagnostics/traffic*</pattern>
         </patterns>
     </page-status-trafficgraph>
+    <page-status-dnsoverview>
+        <name>Status: DNS Overview</name>
+        <patterns>
+            <pattern>ui/unbound/overview*</pattern>
+            <pattern>api/unbound/overview*</pattern>
+        </patterns>
+    </page-status-dnsoverview>
     <page-diagnostics-wirelessstatus>
         <name>Status: Wireless</name>
         <patterns>

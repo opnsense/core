@@ -22,7 +22,7 @@
     box-shadow: 3px 5px 1px 3px rgba(217,79,0,0.25);
 }
 
-.icon {
+.large-icon {
     position: relative;
     top: 50%;
     left: 50%;
@@ -100,4 +100,24 @@
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+}
+
+#maintabs > li > a {
+    border: 1px solid #E5E5E5;
+}
+
+.query-success {
+    background-color: #c3e6cb;
+}
+
+.query-info {
+    background-color: #bee5eb;
+}
+
+.query-danger {
+    background-color: #f5c6cb;
+}
+
+.query-warning {
+    background-color: #ffeeba;
 }
