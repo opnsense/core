@@ -485,8 +485,6 @@
                 updateClientChart($("#toggle-log-cchart")[0].checked);
             }
         });
-
-        updateServiceControlUI('unbound');
     });
 
 </script>
