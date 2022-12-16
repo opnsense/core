@@ -209,7 +209,7 @@
                                         }
                                         let label = context.dataset.label
                                         let val = context.parsed.y == 0.1 ? 0 : context.parsed.y
-                                        return label + ': ' + val.toLocaleString();
+                                        return label + ' (' + val.toLocaleString() + ')';
                                     }
                                 },
                                 title: function(context) {
