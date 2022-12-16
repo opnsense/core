@@ -656,6 +656,7 @@
                     <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                     <th data-column-id="rcode" data-type="string">{{ lang._('Return Code') }}</th>
                     <th data-column-id="resolve_time_ms" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
+                    <th data-column-id="ttl" data-type="string">{{ lang._('TTL') }}</th>
                     <th data-column-id="blocklist" data-type="string">{{ lang._('Blocklist') }}</th>
                 </tr>
                 </thead>

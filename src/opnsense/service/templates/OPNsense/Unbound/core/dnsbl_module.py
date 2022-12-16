@@ -135,7 +135,7 @@ class ModuleContext:
             try:
                 while len(self.pipe_buffer) > 0:
                     l = self.pipe_buffer.popleft()
-                    res = "{} {} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
+                    res = "{} {} {} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
                     os.write(self.pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
@@ -178,31 +178,32 @@ class ModuleContext:
             qstate.return_rcode = self.rcode
             blocklist = mod_env['dnsbl']['data'][domain]['bl']
             dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
+            ttl = 3600
 
             if self.rcode == RCODE_NXDOMAIN:
                 # exit early
                 self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
-                    self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
+                    self.rcode, time_diff_ms(qdata['start_time']), dnssec_status, 0)
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
             msg = DNSMessage(qname, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
 
             if (qtype == RR_TYPE_A) or (qtype == RR_TYPE_ANY):
-                msg.answer.append("%s 3600 IN A %s" % (qname, self.dst_addr))
+                msg.answer.append("%s %s IN A %s" % (qname, ttl, self.dst_addr))
 
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
                 log_err("dnsbl_module: unable to create response for %s, dropping query" % qname)
                 self.log_entry(*(info), ACTION_DROP, SOURCE_LOCAL, blocklist,
-                    RCODE_SERVFAIL, time_diff_ms(qdata['start_time']), dnssec_status)
+                    RCODE_SERVFAIL, time_diff_ms(qdata['start_time']), dnssec_status, 0)
                 return True
 
             if self.dnssec_enabled:
                 qstate.return_msg.rep.security = dnssec_status
 
             self.log_entry(*(info), ACTION_BLOCK, SOURCE_LOCAL, blocklist,
-                self.rcode, time_diff_ms(qdata['start_time']), dnssec_status)
+                self.rcode, time_diff_ms(qdata['start_time']), dnssec_status, ttl)
             qstate.ext_state[id] = MODULE_FINISHED
         else:
             # Pass the query to validator/iterator and log the query when it's done
@@ -216,8 +217,11 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
     ctx = mod_env['context']
     client = kwargs['repinfo']
 
+    # rep.ttl is stored as an epoch, so convert it to remaining seconds
+    ttl = rep.ttl - int(time.time())
+
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, rep.security)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, rep.security, ttl)
     return True
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
@@ -226,7 +230,7 @@ def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, rep.security)
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, rep.security, rep.ttl)
     return True
 
 def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
@@ -235,7 +239,7 @@ def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, rep.security)
+    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, rep.security, rep.ttl)
     return True
 
 def init_standard(id, env):
@@ -282,12 +286,29 @@ def operate(id, event, qstate, qdata):
             ctx = mod_env['context']
             dnssec = sec_status_unchecked
             rcode = RCODE_SERVFAIL
+            ttl = 0
 
             if qstate.return_msg:
-                dnssec = qstate.return_msg.rep.security
-                rcode = qstate.return_msg.rep.flags & 0xF
+                r = qstate.return_msg.rep
+                dnssec = r.security
+                rcode = r.flags & 0xF
 
-            ctx.log_entry(*qdata['query'], rcode, time_diff_ms(qdata['start_time']), dnssec)
+                # there are two types of TTLs in a return_msg.rep: RRset TTLs
+                # and a single TTL for the entire reply used for negative caching.
+                # RFC2308 (2.1,2.2) states that negative caching can occur under the following two conditions:
+                # NXDOMAIN and NODATA (which isn't an rcode, but is signified by NOERROR without an answer)
+                if rcode == RCODE_NXDOMAIN or (rcode == RCODE_NOERROR and r.an_numrrsets == 0):
+                    ttl = r.ttl
+                elif r.an_numrrsets > 0:
+                    tmp = list()
+                    # there can be multiple RRsets in the answer section,
+                    # which means their TTL can differ. TTLs do not differ per RR in an RRset (RFC 2181,5.2)
+                    for i in range(0, r.an_numrrsets):
+                        tmp.append(str(r.rrsets[i].entry.data.ttl))
+                    ttl = ",".join(tmp)
+
+            ctx.log_entry(*qdata['query'], rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
+
         qstate.ext_state[id] = MODULE_FINISHED
         return True
 

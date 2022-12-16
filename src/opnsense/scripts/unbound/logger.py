@@ -63,7 +63,8 @@ class DNSReader:
                     blocklist TEXT,
                     rcode INTEGER,
                     resolve_time_ms INTEGER,
-                    dnssec_status INTEGER
+                    dnssec_status INTEGER,
+                    ttl INTEGER
                 )
             """)
 
