@@ -292,20 +292,7 @@ def operate(id, event, qstate, qdata):
                 r = qstate.return_msg.rep
                 dnssec = r.security
                 rcode = r.flags & 0xF
-
-                # there are two types of TTLs in a return_msg.rep: RRset TTLs
-                # and a single TTL for the entire reply used for negative caching.
-                # RFC2308 (2.1,2.2) states that negative caching can occur under the following two conditions:
-                # NXDOMAIN and NODATA (which isn't an rcode, but is signified by NOERROR without an answer)
-                if rcode == RCODE_NXDOMAIN or (rcode == RCODE_NOERROR and r.an_numrrsets == 0):
-                    ttl = r.ttl
-                elif r.an_numrrsets > 0:
-                    tmp = list()
-                    # there can be multiple RRsets in the answer section,
-                    # which means their TTL can differ. TTLs do not differ per RR in an RRset (RFC 2181,5.2)
-                    for i in range(0, r.an_numrrsets):
-                        tmp.append(str(r.rrsets[i].entry.data.ttl))
-                    ttl = ",".join(tmp)
+                ttl = r.ttl
 
             ctx.log_entry(*qdata['query'], rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
 
