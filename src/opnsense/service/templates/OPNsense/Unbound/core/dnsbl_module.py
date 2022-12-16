@@ -157,15 +157,10 @@ class ModuleContext:
                 self.load_dnsbl()
 
     def filter_query(self, id, qstate, qdata):
-        # We're only interested in A, AAAA and CNAME records.
-        qtype = qstate.qinfo.qtype
-        if qtype not in (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME):
-            qstate.ext_state[id] = MODULE_WAIT_MODULE
-            return True
-
         t = int(qdata['start_time'])
         self.update_dnsbl(t)
         qname = qstate.qinfo.qname_str
+        qtype = qstate.qinfo.qtype
         qtype_str = qstate.qinfo.qtype_str
         client = None
 
@@ -176,7 +171,10 @@ class ModuleContext:
         domain = qname.rstrip('.')
         info = (t, client.addr if hasattr(client, 'addr') else None,
                 client.family if hasattr(client, 'family') else None, qtype_str, qname)
-        if self.dnsbl_available and domain in mod_env['dnsbl']['data']:
+
+        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME)
+
+        if self.dnsbl_available and qtype in rr_types and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
             blocklist = mod_env['dnsbl']['data'][domain]['bl']
             dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
