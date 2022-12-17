@@ -35,6 +35,7 @@ for FILE in $(find /var/unbound/etc -depth 1); do
 done
 
 # if the root.key file is missing or damaged, run unbound-anchor
+cd /var/unbound/
 if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
 	# unbound-anchor has undefined behaviour if file is corrupted, start clean
 	rm -f /var/unbound/root.key
