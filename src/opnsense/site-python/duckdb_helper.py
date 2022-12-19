@@ -58,7 +58,7 @@ class DbConnection:
                 self.connection = duckdb.connect(database=self._path, read_only=self._read_only)
 
                 # Doing any call to now()/get_current_timestamp() etc. in DuckDb will result
-                # in a timestamp adjusted for the current time zone. Since we want to store and query 
+                # in a timestamp adjusted for the current time zone. Since we want to store and query
                 # UTC at all times also set the database time zone to UTC. This is scoped within the connection.
                 self.connection.execute("SET TimeZone='UTC'")
             except duckdb.IOException:
@@ -97,4 +97,3 @@ class DbConnection:
             return False
 
         return True
-
