@@ -8,9 +8,7 @@
         <id>vti.reqid</id>
         <label>Reqid</label>
         <type>text</type>
-        <help>
-          This id	is used	to distinguish traffic and security policies between several if_ipsec interfaces.
-        </help>
+        <help>This ID is used to distinguish traffic and security policies between several if_ipsec interfaces.</help>
     </field>
     <field>
         <id>vti.local</id>
