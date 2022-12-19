@@ -95,6 +95,7 @@
             <Backend url="/ui/diagnostics/log/core/configd"/>
             <General url="/ui/diagnostics/log/core/system"/>
             <WebGUI VisibleName="Web GUI" url="/ui/diagnostics/log/core/lighttpd"/>
+            <ServiceLog VisibleName="Service Log (this boot)" url="/ui/diagnostics/log/core/boot"/>
         </LogFiles>
         <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
             <Services url="/status_services.php">

@@ -61,6 +61,23 @@ class SysLogFormat(NewBaseLogFormat):
         return response[:tmp].strip().split()[-1] if tmp > -1 else ""
 
 
+class ServiceLogFormat(NewBaseLogFormat):
+    def __init__(self, filename):
+        super(ServiceLogFormat, self).__init__(filename)
+
+    @staticmethod
+    def match(line):
+        return len(line) > 25 and line[19] == '+' and re.match(r'\d{4}(.\d{2}){2}(\s|T)(\d{2}.){2}\d{2}', line[0:19])
+
+    @property
+    def timestamp(self):
+        return self._line[0:19]
+
+    @property
+    def line(self):
+        return self._line[26:]
+
+
 class SysLogFormatEpoch(NewBaseLogFormat):
     def __init__(self, filename):
         super(SysLogFormatEpoch, self).__init__(filename)
