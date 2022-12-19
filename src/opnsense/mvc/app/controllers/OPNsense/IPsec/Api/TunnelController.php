@@ -99,7 +99,7 @@ class TunnelController extends ApiControllerBase
                     $ph1proposal .= " + " . gettext("DH Group") . " {$p1->dhgroup}";
                 }
                 $item = [
-                    "id" => intval((string)$p1->ikeid),   // ikeid should be unique
+                    "id" => intval((string)$p1->ikeid), // ikeid should be unique
                     "seqid" => $idx,
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet46" ? "IPv4+6" : ($p1->protocol == "inet6" ? "IPv6" : "IPv4"),
@@ -156,7 +156,7 @@ class TunnelController extends ApiControllerBase
             }
             foreach ($config->ipsec->phase2 as $p2) {
                 $ikeid = intval((string)$p2->ikeid);
-                if ($ikeid != $selected_ikeid &&  $selected_ikeid != -1) {
+                if ($ikeid != $selected_ikeid && $selected_ikeid != -1) {
                     $p2idx++;
                     continue;
                 }
