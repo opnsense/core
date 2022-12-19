@@ -52,7 +52,7 @@
       <label>Public Keys</label>
       <type>select_multiple</type>
       <help>List of raw public key candidates to use for authentication.</help>
-      <style>remote_auth remote_auth_pubkey</style>
+      <style>remote_auth selectpicker remote_auth_pubkey</style>
     </field>
     <field>
         <id>remote.description</id>

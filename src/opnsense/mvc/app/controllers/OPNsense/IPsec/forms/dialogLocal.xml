@@ -52,7 +52,7 @@
       <label>Public Keys</label>
       <type>select_multiple</type>
       <help>List of raw public key candidates to use for authentication.</help>
-      <style>local_auth local_auth_pubkey</style>
+      <style>local_auth selectpicker local_auth_pubkey</style>
     </field>
     <field>
         <id>local.description</id>
