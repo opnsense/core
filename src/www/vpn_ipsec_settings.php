@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
-            $pconfig["ipsec_{$lkey}"] = null;
+            $pconfig["ipsec_{$lkey}"] = '0';
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -237,7 +237,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <?= $ldescr ?>
                         <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>">
 <?php foreach (IPSEC_LOG_LEVELS as $lidx => $lvalue): ?>
-                          <option value="<?=$lidx?>" <?= (isset($pconfig["ipsec_{$lkey}"]) && $pconfig["ipsec_{$lkey}"] == $lidx) || (!isset($pconfig["ipsec_{$lkey}"]) && $lidx == "0") ? 'selected="selected"' : '' ?>>
+                          <option value="<?=$lidx?>" <?=$pconfig["ipsec_{$lkey}"] == $lidx ? 'selected="selected"' : '' ?>>
                                 <?=$lvalue?>
                           </option>
 <?php endforeach ?>
