@@ -186,9 +186,11 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             ) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             }
+
             if ($this->invokeInterfaceRegistration()) {
                 $backend->configdRun('interface invoke registration');
             }
+
             $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
 
             if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
