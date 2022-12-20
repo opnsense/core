@@ -55,6 +55,7 @@ class ModuleContext:
         self.dnsbl_available = False
         self.log_update_time = time.time()
         self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
+        self.stats_enabled = os.path.exists('/data/stats')
 
         self.pipe_name = '/data/dns_logger'
         self.pipe_fd = None
@@ -63,7 +64,8 @@ class ModuleContext:
         self.pipe_buffer = deque(maxlen=100000) # buffer to hold qdata as long as a backend is not present
 
         self.update_dnsbl(self.log_update_time)
-        self.create_pipe_rdv()
+        if self.stats_enabled:
+            self.create_pipe_rdv()
 
     def dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
@@ -73,6 +75,8 @@ class ModuleContext:
             try:
                 mod_env['dnsbl'] = json.load(f)
                 log_info('dnsbl_module: blocklist loaded. length is %d' % len(mod_env['dnsbl']['data']))
+                with open('/data/dnsbl.size', 'w') as sfile:
+                    sfile.write(str(len(mod_env['dnsbl']['data'])))
                 config = mod_env['dnsbl']['config']
                 self.dst_addr = config.get('dst_addr', '0.0.0.0')
                 self.rcode = RCODE_NXDOMAIN if config.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
@@ -102,6 +106,7 @@ class ModuleContext:
             self.pipe_fd = os.open(self.pipe_name, os.O_NONBLOCK | os.O_WRONLY)
         except OSError as e:
             if e.errno == errno.ENXIO:
+                log_info("dnsbl_module: no logging backend found.")
                 self.pipe_fd = None
                 return False
             else:
@@ -110,13 +115,18 @@ class ModuleContext:
         return True
 
     def log_entry(self, *args):
+        if not self.stats_enabled:
+            return
+
         entry = (uuid.uuid4(), *args)
         self.pipe_buffer.append(entry)
         if self.pipe_fd is None:
             if (time.time() - self.pipe_timer) > 10:
                 self.pipe_timer = time.time()
+                log_info("dnsbl_module: attempting to open pipe")
                 if not self.try_open_pipe():
                     return
+                log_info("dnsbl_module: successfully opened pipe")
             else:
                 return
 
@@ -129,6 +139,7 @@ class ModuleContext:
                     os.write(self.pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
+                    log_info("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
                     os.close(self.pipe_fd)
                     self.pipe_fd = None
                 self.pipe_buffer.appendleft(l)
@@ -252,10 +263,11 @@ def deinit(id):
     if ctx.pipe_fd is not None:
         os.close(ctx.pipe_fd)
 
-    try:
-        os.unlink(ctx.pipe_name)
-    except:
-        pass
+    if ctx.stats_enabled:
+        try:
+            os.unlink(ctx.pipe_name)
+        except:
+            pass
 
     return True
 
