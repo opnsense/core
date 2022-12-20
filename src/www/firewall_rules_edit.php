@@ -1316,25 +1316,6 @@ include("head.inc");
                     <th colspan="2"><?=gettext("Advanced features");?></th>
                   </tr>
                   <tr>
-                    <td><a id="help_for_sourceos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source OS");?></td>
-                    <td>
-                        <select name="os" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                        <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>><?= gettext('Any') ?></option>
-<?php
-                          foreach ($ostypes as $ostype): ?>
-                            <option value="<?=$ostype;?>" <?= $ostype == $pconfig['os'] ? "selected=\"selected\"" : ""; ?>>
-                              <?=htmlspecialchars($ostype);?>
-                            </option>
-<?php
-                        endforeach;?>
-                        </select>
-                        <div class="hidden" data-for="help_for_sourceos">
-                          <strong><?=gettext("OS Type:");?></strong><br/>
-                          <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
-                        </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                     <td>
                       <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
@@ -1667,6 +1648,23 @@ endforeach;?>
                             <?=gettext("Use this to choose TCP flags that must be set or cleared for this rule to match.");?>
                         </div>
                       </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                    <td><a id="help_for_sourceos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source OS') ?></td>
+                    <td>
+                      <select name="os" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                        <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>><?= gettext('Any') ?></option>
+<?php foreach ($ostypes as $ostype): ?>
+                        <option value="<?=$ostype;?>" <?= $ostype == $pconfig['os'] ? "selected=\"selected\"" : ""; ?>>
+                          <?=htmlspecialchars($ostype);?>
+                        </option>
+<?php endforeach ?>
+                      </select>
+                      <div class="hidden" data-for="help_for_sourceos">
+                        <strong><?=gettext("OS Type:");?></strong><br/>
+                        <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
+                      </div>
+                    </td>
                   </tr>
                     <tr class="opt_advanced hidden">
                         <td><a id="help_for_nopfsync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State Type");?> / <?=gettext("NO pfsync");?> </td>
