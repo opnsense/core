@@ -159,6 +159,14 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
+     * invoke interface registration check, return true to invoke configd action
+     */
+    protected function invokeInterfaceRegistration()
+    {
+        return false;
+    }
+
+    /**
      * reconfigure with optional stop, generate config and start / reload
      * @return array response message
      * @throws \Exception when configd action fails
@@ -178,7 +186,9 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             ) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             }
-
+            if ($this->invokeInterfaceRegistration()) {
+                $backend->configdRun('interface invoke registration');
+            }
             $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
 
             if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
