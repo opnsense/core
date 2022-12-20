@@ -947,9 +947,7 @@ function ipsec_write_strongswan_conf()
         }
     }
 
-    if (!empty($config['ipsec']['auto_routes_disable'])) {
-        $strongswanTree['charon']['install_routes'] = 'no';
-    }
+    $strongswanTree['charon']['install_routes'] = 'no';
     if (isset($a_client['enable']) && isset($a_client['net_list'])) {
         $strongswanTree['charon']['cisco_unity'] = 'yes';
     }

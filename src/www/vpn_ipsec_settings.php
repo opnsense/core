@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig  = array();
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
-    $pconfig['auto_routes_disable'] = isset($config['ipsec']['auto_routes_disable']);
     $pconfig['max_ikev1_exchanges'] = !empty($config['ipsec']['max_ikev1_exchanges']) ? $config['ipsec']['max_ikev1_exchanges'] : null;
     if (!empty($config['ipsec']['passthrough_networks'])) {
         $pconfig['passthrough_networks'] = explode(',', $config['ipsec']['passthrough_networks']);
@@ -102,11 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['ipsec']['passthrough_networks'] = implode(',', $pconfig['passthrough_networks']);
         } elseif (isset($config['ipsec']['passthrough_networks'])) {
             unset($config['ipsec']['passthrough_networks']);
-        }
-        if (!empty($pconfig['auto_routes_disable'])) {
-            $config['ipsec']['auto_routes_disable'] = true;
-        } elseif (isset($config['ipsec']['auto_routes_disable'])) {
-            unset($config['ipsec']['auto_routes_disable']);
         }
 
         if (!empty($pconfig['max_ikev1_exchanges'])) {
@@ -200,18 +194,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <div class="hidden" data-for="help_for_passthrough_networks">
                             <?=gettext("This exempts traffic for one or more subnets from getting processed by the IPsec stack in the kernel. ".
                                         "When sending all traffic to the remote location, you probably want to add your lan network(s) here"); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_auto_routes_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not install routes"); ?></td>
-                      <td style="width:78%" class="vtable">
-                        <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Do not automatically install routes"); ?></strong>
-                        <div class="hidden" data-for="help_for_auto_routes_disable">
-                            <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
-                                                  "Select this option to prevent automatically adding routes" .
-                                                  " to the system routing table. See charon.install_routes"); ?>
                         </div>
                       </td>
                     </tr>
