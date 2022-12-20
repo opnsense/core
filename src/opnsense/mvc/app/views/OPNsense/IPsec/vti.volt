@@ -80,7 +80,7 @@
     </div>
     <div class="col-md-12">
         <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
+                data-endpoint='/api/ipsec/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
                 data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
                 type="button"

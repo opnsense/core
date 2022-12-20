@@ -152,7 +152,7 @@
       </div>
       <div class="col-md-12">
           <button class="btn btn-primary" id="reconfigureAct"
-                  data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
+                  data-endpoint="/api/ipsec/service/reconfigure"
                   data-label="{{ lang._('Apply') }}"
                   data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
                   type="button"
@@ -172,7 +172,7 @@
         <div id="connection_details">
           <div class="row">
             <hr/>
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-md-6">
               <div class="section_header">
                 <h2>{{ lang._('Local Authentication')}}</h2>
                 <hr/>
@@ -200,7 +200,7 @@
                   </tfoot>
               </table>
             </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-md-6">
               <div class="section_header">
                 <h2>{{ lang._('Remote Authentication')}}</h2>
                 <hr/>
