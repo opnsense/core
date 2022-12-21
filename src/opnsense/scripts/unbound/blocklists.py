@@ -104,20 +104,21 @@ if __name__ == '__main__':
         else:
             cnf_cache.read('/tmp/unbound-blocklists.conf')
 
-        # get the difference between the old and new configuration, there won't be any
-        # if we're starting up, so it will proceed as normal.
-        diff_cnf = {d: set(map(tuple, v.items())) for d,v in cnf._sections.items()}
-        diff_cnf_cache = {d: set(map(tuple, v.items())) for d,v in cnf_cache._sections.items()}
-        diffs_added = {header: diff_cnf[header] - diff_cnf_cache[header] for header, _ in diff_cnf.items()}
-        diffs_removed = {header: diff_cnf_cache[header] - diff_cnf[header] for header, _ in diff_cnf.items()}
+        if cnf.sections() and cnf_cache.sections():
+            # get the difference between the old and new configuration, there won't be any
+            # if we're starting up, so it will proceed as normal.
+            diff_cnf = {d: set(map(tuple, v.items())) for d,v in cnf._sections.items()}
+            diff_cnf_cache = {d: set(map(tuple, v.items())) for d,v in cnf_cache._sections.items()}
+            diffs_added = {header: diff_cnf[header] - diff_cnf_cache[header] for header, _ in diff_cnf.items()}
+            diffs_removed = {header: diff_cnf_cache[header] - diff_cnf[header] for header, _ in diff_cnf.items()}
 
-        # we can only skip download if the include option has changed, but it must proceed
-        # if any other option has changed
-        if (diffs_added['include'] or diffs_removed['include']):
-            skip_download = True
-        for (a, r) in zip(diffs_added, diffs_removed):
-            if (a != 'include' and r != 'include') and (diffs_added[a] or diffs_removed[r]):
-                skip_download = False
+            # we can only skip download if the include option has changed, but it must proceed
+            # if any other option has changed
+            if (diffs_added['include'] or diffs_removed['include']):
+                skip_download = True
+            for (a, r) in zip(diffs_added, diffs_removed):
+                if (a != 'include' and r != 'include') and (diffs_added[a] or diffs_removed[r]):
+                    skip_download = False
 
         # exclude (white) lists, compile to regex to be used to filter blocklist entries
         if cnf.has_section('exclude'):
