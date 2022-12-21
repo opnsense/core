@@ -162,15 +162,16 @@ class ModuleContext:
         qname = qstate.qinfo.qname_str
         qtype = qstate.qinfo.qtype
         qtype_str = qstate.qinfo.qtype_str
-        client = None
 
         reply_list = qstate.mesh_info.reply_list
-        if reply_list.query_reply:
+        if reply_list and reply_list.query_reply:
             client = reply_list.query_reply
+            info = (t, client.addr if hasattr(client, 'addr') else None,
+                    client.family if hasattr(client, 'family') else None, qtype_str, qname)
+        else:
+            info = (t, None, None, qtype_str, qname)
 
         domain = qname.rstrip('.')
-        info = (t, client.addr if hasattr(client, 'addr') else None,
-                client.family if hasattr(client, 'family') else None, qtype_str, qname)
 
         rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME)
 
