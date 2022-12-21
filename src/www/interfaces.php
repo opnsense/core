@@ -779,6 +779,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
+            case 'pppoev6':
+                if ($pconfig['type'] != 'pppoe') {
+                    $input_errors[] = gettext('IPv6 PPPoE mode requires PPPoE IPv4 mode.');
+                }
+                break;
         }
 
         /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
@@ -1912,7 +1917,7 @@ include("head.inc");
                           <td>
                             <select name="type6" class="selectpicker" data-style="btn-default" id="type6">
 <?php
-                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
+                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "pppoev6" => gettext("PPPoEv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
                             foreach ($types6 as $key => $opt):?>
                               <option value="<?=$key;?>" <?=$key == $pconfig['type6'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
 <?php

@@ -1023,6 +1023,8 @@ function interface_ppps_configure($interface)
         }
     }
 
+    $ipv6_mode = ($ifcfg['ipaddrv6'] ?? 'none') == 'pppoev6' ? 'enable' : 'disable';
+
     // Construct the mpd.conf file
     $mpdconf = <<<EOD
 startup:
@@ -1034,7 +1036,7 @@ startup:
 default:
 {$ppp['type']}client:
   create bundle static {$interface}
-  set bundle enable ipv6cp
+  set bundle {$ipv6_mode} ipv6cp
   set iface name {$ifcfg['if']}
 
 EOD;
