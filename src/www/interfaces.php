@@ -1205,6 +1205,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case '6to4':
                     $new_config['ipaddrv6'] = '6to4';
                     break;
+                case 'pppoev6':
+                    $new_config['ipaddrv6'] = 'pppoev6';
+                    break;
                 case 'track6':
                     $new_config['ipaddrv6'] = 'track6';
                     $new_config['track6-interface'] = $pconfig['track6-interface'];
