@@ -152,6 +152,9 @@
             <whitelists type="CSVListField">
                 <Required>N</Required>
             </whitelists>
+            <blocklists type="CSVListField">
+                <Required>N</Required>
+            </blocklists>
             <address type="NetworkField">
                 <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>

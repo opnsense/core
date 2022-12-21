@@ -40,6 +40,58 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'dot';
 
+    public function updateBlocklistAction()
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type')) {
+            Config::getInstance()->lock();
+            $domain = $this->request->getPost('domain');
+            $type = $this->request->getPost('type');
+            $mdl = $this->getModel();
+            $item = $mdl->getNodeByReference('dnsbl.'.$type);
+
+            if ($item != null) {
+                $remove = function($csv, $item) {
+                    $parts = explode(',', $csv);
+                    while(($i = array_search($item, $parts)) !== false) {
+                        unset($parts[$i]);
+                    }
+                    return implode(',', $parts);
+                };
+
+                // strip off any trailing dot
+                $value = rtrim($domain, '.');
+                $wl = (string)$mdl->dnsbl->whitelists;
+                $bl = (string)$mdl->dnsbl->blocklists;
+
+                if (strpos((string)$mdl->dnsbl->$type, $value) !== false) {
+                    // value already in model, no need to re-run a potentially
+                    // expensive dnsbl action
+                    return ["status" => "OK"];
+                }
+
+                // Check if domains should be switched around in the model
+                if ($type == 'whitelists' && strpos($bl, $value) !== false) {
+                    $mdl->dnsbl->blocklists = $remove((string)$mdl->dnsbl->blocklists, $value);
+                } elseif ($type == 'blocklists' && strpos($wl, $value) !== false) {
+                    $mdl->dnsbl->whitelists = $remove((string)$mdl->dnsbl->whitelists, $value);
+                }
+
+                // update the model
+                $list = array_filter(explode(',', (string)$item));
+                $list[] = $value;
+                $mdl->dnsbl->$type = implode(',', $list);
+
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+
+                $service = new \OPNsense\Unbound\Api\ServiceController();
+                $result = $service->dnsblAction();
+            }
+        }
+        return $result;
+    }
+
     public function getNameserversAction()
     {
         if ($this->request->isGet()) {

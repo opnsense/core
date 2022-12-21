@@ -29,6 +29,14 @@
         <help>List of domains to whitelist. You can use regular expressions.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.blocklists</id>
+        <label>Blocklist Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to blocklist. Only exact matches are supported.</help>
+    </field>
+    <field>
         <id>unbound.dnsbl.address</id>
         <label>Destination Address</label>
         <type>text</type>
