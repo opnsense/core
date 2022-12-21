@@ -343,6 +343,4 @@ class TextFieldTest extends Field_Framework_TestCase
 
         $this->assertContains('OPNsense\Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
     }
-
-
 }
