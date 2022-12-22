@@ -93,6 +93,22 @@
         $("#frm_ConnectionDialog").append($("#frm_DialogConnection").detach());
         updateServiceControlUI('ipsec');
 
+        $("#enable").click(function(){
+            if (!$(this).hasClass("pending")) {
+                $(this).addClass("pending");
+                let enabled = $("#enable").prop('checked') ? '1' : '0';
+                ajaxCall('/api/ipsec/connections/toggle/' + enabled,  {}, function (data, status) {
+                    $("#enable").removeClass("pending");
+                });
+            }
+        });
+        ajaxGet('/api/ipsec/connections/is_enabled', {}, function (data, status) {
+            if (data.enabled === true) {
+                $("#enable").prop('checked', data.enabled);
+            }
+            $("#enable").removeClass("pending");
+        });
+
         /**
          * reconfigure
          */
@@ -150,7 +166,7 @@
           </div>
           <hr/>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-10">
           <button class="btn btn-primary" id="reconfigureAct"
                   data-endpoint="/api/ipsec/service/reconfigure"
                   data-label="{{ lang._('Apply') }}"
@@ -159,6 +175,13 @@
           ></button>
           <br/><br/>
       </div>
+      <div class="col-md-2">
+        <div class="pull-right">
+            <input name="enable" class="pending" type="checkbox" id="enable"/>
+            <strong>{{ lang._('Enable IPsec') }}</strong>
+        </div>
+      </div>
+
     </div>
     <div id="edit_connection" class="tab-pane fade in">
         <div class="section_header">

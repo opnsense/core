@@ -29,6 +29,7 @@
 namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
 
 /**
  * Class ConnectionsController
@@ -274,4 +275,41 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->delBase('children.child', $uuid);
     }
+
+    /**
+     * is IPsec enabled
+     */
+    public function isEnabledAction()
+    {
+        $this->sessionClose();
+        return [
+            'enabled' => isset(Config::getInstance()->object()->ipsec->enable)
+        ];
+    }
+
+    /**
+     * toggle if IPsec is enabled
+     */
+    public function toggleAction($enabled = null)
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            if ($enabled == "0" || $enabled == "1") {
+                $new_status = $enabled == "1";
+            } else {
+                $new_status = !isset($config->ipsec->enable);
+            }
+            if ($new_status) {
+                $config->ipsec->enable = true;
+            } elseif (isset($config->ipsec->enable)) {
+                unset($config->ipsec->enable);
+            }
+            Config::getInstance()->save();
+            return ['status' => 'ok'];
+        }
+        return ['status' => 'failed'];
+    }
+
 }
