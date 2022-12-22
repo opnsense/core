@@ -25,6 +25,17 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<style>
+/* "dropdown in responsive table" issue workaround: display dummy road so dropdowns fits the table */
+    @media screen and (max-width: 767px) {
+        .dropdown_helper {
+            display: block !important;
+        }
+    }
+    .dropdown_helper {
+        display: none;
+    }
+</style>
 <script>
 
     function generic_search(that, entries) {
@@ -786,8 +797,8 @@
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
             </ul>
             <div class="tab-content content-box">
-                <div id="updates" class="tab-pane">
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist" style="display: none;">
+                <div id="updates" class="tab-pane table-responsive">
+                    <table class="table table-striped table-condensed" id="updatelist" style="display: none;">
                         <thead>
                             <tr>
                               <th style="width:20%">{{ lang._('Package name') }}</th>
@@ -813,9 +824,9 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <div id="update_status_container">
+                    <div id="update_status_container table-responsive">
                        <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
-                      <table class="table table-striped table-condensed table-responsive">
+                      <table class="table table-striped table-condensed">
                         <tbody>
                           <tr>
                             <td>
@@ -827,8 +838,8 @@
                       </table>
                     </div>
                 </div>
-                <div id="status" class="tab-pane active">
-                    <table class="table table-striped table-condensed table-responsive">
+                <div id="status" class="tab-pane active table-responsive">
+                    <table class="table table-striped table-condensed">
                         <tbody>
                             <tr>
                                 <td style="width: 20px;"></td>
@@ -893,9 +904,9 @@
                             <tr>
                                 <td style="width: 20px;"></td>
                                 <td style="width: 150px;"></td>
-                                <td>
+                                <td style="min-width: 500px;">
                                     <button class="btn btn-primary" id="checkupdate"><i class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
-                                    <div class="btn-group" id="audit_actions" style="display:none;">
+                                    <div class="btn-group dropdown" id="audit_actions" style="display:none;">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             <i class="fa fa-lock"></i> {{ lang._('Run an audit') }} <i class="caret"></i>
                                         </button>
@@ -906,7 +917,7 @@
                                             <li><a id="audit_upgrade" href="#">{{ lang._('Upgrade') }}</a></li>
                                         </ul>
                                     </div>
-                                    <div class="btn-group" id="plugin_actions" style="display:none;">
+                                    <div class="btn-group dropdown" id="plugin_actions" style="display:none;">
                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                             <i class="fa fa-exclamation-triangle"></i> {{ lang._('Resolve plugin conflicts') }} <i class="caret"></i>
                                         </button>
@@ -919,11 +930,12 @@
                                 </td>
                                 <td></td>
                             </tr>
+                            <tr class="dropdown_helper" style="padding-bottom: 120px;"></tr>
                         </tbody>
                     </table>
                 </div>
-                <div id="plugins" class="tab-pane">
-                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
+                <div id="plugins" class="tab-pane table-responsive">
+                    <table class="table table-striped table-condensed" id="pluginlist">
                         <thead>
                             <tr>
                                 <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
@@ -937,8 +949,8 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="packages" class="tab-pane">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
+                <div id="packages" class="tab-pane table-responsive">
+                    <table class="table table-striped table-condensed" id="packageslist">
                         <thead>
                             <tr>
                                 <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="package_search" placeholder="{{ lang._('Name') }}"></th>
@@ -953,14 +965,14 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="changelog" class="tab-pane">
-                    <table class="table table-striped table-condensed table-responsive" id="changeloglist">
+                <div id="changelog" class="tab-pane table-responsive">
+                    <table class="table table-striped table-condensed" id="changeloglist">
                         <thead></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div id="settings" class="tab-pane">
-                    <table class="table table-striped table-condensed table-responsive">
+                <div id="settings" class="tab-pane table-responsive">
+                    <table class="table table-striped table-condensed">
                         <tbody>
                             <tr>
                                 <td style="width: 20px;"></td>
