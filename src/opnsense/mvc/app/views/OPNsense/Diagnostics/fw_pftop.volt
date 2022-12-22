@@ -119,7 +119,6 @@
   <table id="grid-pftop" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
       <thead>
       <tr>
-          <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false" >{{ lang._('state id') }}</th>
           <th data-column-id="dir" data-type="string" data-width="4em" data-formatter="direction">{{ lang._('Dir') }}</th>
           <th data-column-id="proto" data-type="string" data-width="6em">{{ lang._('Proto') }}</th>
           <th data-column-id="src" data-type="string" data-formatter="address" data-sortable="false">{{ lang._('Source') }}</th>
