@@ -104,13 +104,16 @@ class ForwardRule extends Rule
                 $tmp['pass'] = empty($tmp['nordr']);
             }
             // target address, when invalid, disable rule
-            if (!empty($tmp['target'])) {
-                if (Util::isAlias($tmp['target'])) {
-                    $tmp['target'] = "\${$tmp['target']}";
-                } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
+            if (empty($tmp['target'])) {
+                if (empty($tmp['nordr'])) {
                     $tmp['disabled'] = true;
-                    $this->log("Invalid target");
+                    $this->log("Missing target");
                 }
+            } elseif (Util::isAlias($tmp['target'])) {
+                $tmp['target'] = "\${$tmp['target']}";
+            } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
+                $tmp['disabled'] = true;
+                $this->log("Invalid target");
             }
             // parse our local port
             if (
