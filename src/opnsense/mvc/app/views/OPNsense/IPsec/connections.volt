@@ -112,7 +112,11 @@
         /**
          * reconfigure
          */
-        $("#reconfigureAct").SimpleActionButton();
+        $("#reconfigureAct").SimpleActionButton({
+            onAction: function(data, status){
+                updateServiceControlUI('ipsec');
+            }
+        });
 
     });
 
