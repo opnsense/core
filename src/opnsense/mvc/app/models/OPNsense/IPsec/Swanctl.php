@@ -178,7 +178,7 @@ class Swanctl extends BaseModel
                     } else {
                         $data['connections'][$parent][$key . '-' . $node_uuid] = $thisnode;
                     }
-                } else {
+                } elseif (in_array($key, ['connections', 'pools'])) {
                     if (!isset($data[$key])) {
                         $data[$key] = [];
                     }
