@@ -76,6 +76,8 @@ class Template(object):
     def _encode_idna(x):
         """ encode string to idna, preserve leading dots
         """
+        if type(x) != str:
+            return x
         try:
             tmp = b''.join([b''.join([b'.' for x in range(len(x) - len(x.lstrip('.')))]), x.lstrip('.').encode('idna')])
             return tmp.decode()
