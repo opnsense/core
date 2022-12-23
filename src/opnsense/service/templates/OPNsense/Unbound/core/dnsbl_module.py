@@ -177,7 +177,7 @@ class ModuleContext:
 
         if self.dnsbl_available and qtype in rr_types and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
-            blocklist = mod_env['dnsbl']['data'][domain]['bl']
+            blocklist = mod_env['dnsbl']['data'][domain].get('bl')
             dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
             ttl = 3600
 
