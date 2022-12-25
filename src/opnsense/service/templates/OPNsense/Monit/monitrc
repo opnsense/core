@@ -135,7 +135,11 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%      endfor %}
 {%     endif %}
 {%     if service.start|default('') != '' %}
-   start program = "{{ service.start }}"
+{%       set srv_start_timeout = '' %}
+{%       if service.starttimeout|default('') != '' %}
+{%         set srv_start_timeout = "with timeout " ~ service.starttimeout ~ " seconds" %}
+{%       endif %}
+   start program = "{{ service.start }}" {{ srv_start_timeout }}
 {%     endif %}
 {%     if service.stop|default('') != '' %}
    stop program = "{{ service.stop }}"
