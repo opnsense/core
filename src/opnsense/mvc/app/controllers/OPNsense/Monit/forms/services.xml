@@ -43,6 +43,13 @@
       <help><![CDATA[The timeout for custom program checks.]]></help>
    </field>
    <field>
+      <id>service.starttimeout</id>
+      <label>Start Timeout</label>
+      <type>text</type>
+      <advanced>true</advanced>
+      <help><![CDATA[The timeout for custom program to start a service.]]></help>
+   </field>
+   <field>
       <id>service.address</id>
       <label>Address</label>
       <type>text</type>

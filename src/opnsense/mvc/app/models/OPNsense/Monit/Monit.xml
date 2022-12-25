@@ -231,6 +231,13 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
          </timeout>
+         <starttimeout type="IntegerField">
+            <default>30</default>
+            <Required>N</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
+         </starttimeout>
          <address type="HostnameField">
             <Required>N</Required>
          </address>
