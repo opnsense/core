@@ -27,6 +27,8 @@
 <script>
     'use strict';
 
+    var last_digest = '';
+    var grid_reset = false;
     $( document ).ready(function() {
         var field_type_icons = {
           'binat': 'fa-exchange',
@@ -238,29 +240,32 @@
                     'class': $(this).attr('class')
                 });
             });
-            // read last digest (record hash) from top data row
-            var last_digest = $("#grid-log > tbody > tr:first > td:first").text();
+            // use last digest (record hash) to limit data size
+            // digest migrated from DOM storage to global var
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows_fetch}, function(data, status) {
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
-                } else if (last_digest != '' && $("#grid-log > tbody > tr").length == 1){
+                } else if (grid_reset){
                     // $("#limit").change(); called, this request should be discarted (data grid reset)
+                    last_digest = '';
+                    grid_reset = false;
                     return;
                 } else if (data !== undefined && data.length > 0) {
                     let record;
                     let trs = [];
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
-                            var log_tr = $('<tr class="log_tr">');
+                            last_digest = record['__digest__'];
+                            var log_tr = $('<tr class="log_tr" style="display:none;">');
                             if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
                                 record['interface_name'] = interface_descriptions[record.interface];
                             } else {
                                 record['interface_name'] = record.interface;
                             }
                             log_tr.data('details', record);
-                            log_tr.hide();
+                            //log_tr.hide();
                             $.each(record_spec, function(idx, field){
                                 var log_td = $('<td>').addClass(field['class']);
                                 var column_name = field['column-id'];
@@ -515,6 +520,7 @@
         // reset log content on limit change, forces a reload
         $("#limit").change(function(){
             $('#grid-log > tbody').html("<tr></tr>");
+            grid_reset = true;
         });
 
         function poller() {
