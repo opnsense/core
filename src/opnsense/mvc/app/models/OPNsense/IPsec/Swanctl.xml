@@ -395,5 +395,37 @@
                 </description>
             </VTI>
         </VTIs>
+        <SPDs>
+            <SPD type=".\SPDField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <protocol type="OptionField">
+                    <Required>Y</Required>
+                    <default>esp</default>
+                    <OptionValues>
+                        <esp>ESP</esp>
+                        <ah>AH</ah>
+                    </OptionValues>
+                </protocol>
+                <reqid type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>Y</Required>
+                </reqid>
+                <source type="NetworkField">
+                    <Required>Y</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </source>
+                <destination type="NetworkField">
+                    <Required>N</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </destination>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </SPD>
+        </SPDs>
     </items>
 </model>

@@ -26,17 +26,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\Api;
+
+use OPNsense\Base\ApiMutableModelControllerBase;
 
 /**
- * Class SpdController
- * @package OPNsense\IPsec
+ * Class ManualSPD
+ * @package OPNsense\IPsec\Api
  */
-class SpdController extends \OPNsense\Base\IndexController
+class ManualSPDController extends ApiMutableModelControllerBase
 {
-    public function indexAction()
+    protected static $internalModelName = 'swanctl';
+    protected static $internalModelClass = 'OPNsense\IPsec\Swanctl';
+
+    public function searchAction()
     {
-        $this->view->pick('OPNsense/IPsec/spd');
-        $this->view->formDialogSPD = $this->getForm('dialogSPD');
+        return $this->searchBase(
+            'SPDs.SPD',
+            ['enabled', 'description', 'origin', 'reqid', 'source', 'destination']
+        );
+    }
+
+    public function setAction($uuid = null)
+    {
+        return $this->setBase('spd', 'SPDs.SPD', $uuid);
+    }
+
+    public function addAction()
+    {
+        return $this->addBase('spd', 'SPDs.SPD');
+    }
+
+    public function getAction($uuid = null)
+    {
+        return $this->getBase('spd', 'SPDs.SPD', $uuid);
+    }
+
+    public function toggleAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('SPDs.SPD', $uuid, $enabled);
+    }
+
+    public function delAction($uuid)
+    {
+        return $this->delBase('SPDs.SPD', $uuid);
     }
 }

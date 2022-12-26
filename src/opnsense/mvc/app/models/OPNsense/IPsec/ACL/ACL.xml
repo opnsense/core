@@ -81,6 +81,7 @@
         <patterns>
             <pattern>ui/ipsec/spd</pattern>
             <pattern>api/ipsec/spd/*</pattern>
+            <pattern>api/ipsec/manual_spd/*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>
