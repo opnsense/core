@@ -174,6 +174,12 @@ class Swanctl extends BaseModel
                         if (!isset($data['connections'][$parent]['children'])) {
                             $data['connections'][$parent]['children'] = [];
                         }
+                        if (!empty($thisnode['reqid'])) {
+                            // trigger updown event handler when a reqid is set.
+                            // currently this only handles manual spd entries, we may extend/refactor the script later
+                            // if needed
+                            $thisnode['updown'] = '/usr/local/opnsense/scripts/ipsec/updown_event.py';
+                        }
                         $data['connections'][$parent]['children'][$node_uuid] = $thisnode;
                     } else {
                         $data['connections'][$parent][$key . '-' . $node_uuid] = $thisnode;

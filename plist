@@ -335,6 +335,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ManualSpdController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PoolsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
@@ -359,6 +360,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogPSK.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogPool.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogRemote.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
@@ -600,6 +602,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IKEAdressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/IPsecProposalField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/PoolsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/SPDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/FieldTypes/VTIField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/IPsec.xml
@@ -884,12 +887,14 @@
 /usr/local/opnsense/scripts/ipsec/connect.py
 /usr/local/opnsense/scripts/ipsec/disconnect.py
 /usr/local/opnsense/scripts/ipsec/get_legacy_vti.php
+/usr/local/opnsense/scripts/ipsec/lib/__init__.py
 /usr/local/opnsense/scripts/ipsec/list_leases.py
 /usr/local/opnsense/scripts/ipsec/list_sad.py
 /usr/local/opnsense/scripts/ipsec/list_spd.py
 /usr/local/opnsense/scripts/ipsec/list_status.py
 /usr/local/opnsense/scripts/ipsec/saddelete.py
 /usr/local/opnsense/scripts/ipsec/spddelete.py
+/usr/local/opnsense/scripts/ipsec/updown_event.py
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
@@ -1043,6 +1048,8 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw_rule_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rules.macro
+/usr/local/opnsense/service/templates/OPNsense/IPsec/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/IPsec/reqid_events.conf
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
 /usr/local/opnsense/service/templates/OPNsense/Monit/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Monit/monitrc
