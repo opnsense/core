@@ -227,6 +227,7 @@
 
 
         function fetch_log() {
+            const log_fetched = new $.Deferred();
             let record_spec = [];
             // Overfetch for limited display scope to increase the chance of being able to find matches.
             // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
@@ -244,6 +245,7 @@
             // digest migrated from DOM storage to global var
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows_fetch}, function(data, status) {
+                log_fetched.resolve();
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
@@ -405,6 +407,7 @@
                     }
                 }
             });
+            return log_fetched;
         }
 
         // matcher
@@ -525,9 +528,12 @@
 
         function poller() {
             if ($("#auto_refresh").is(':checked')) {
-                fetch_log();
+                fetch_log().done(function(){
+                    setTimeout(poller, 1000);
+                });
+            } else {
+                setTimeout(poller, 1000);
             }
-            setTimeout(poller, 1000);
         }
         // manual refresh
         $("#refresh").click(function(){
