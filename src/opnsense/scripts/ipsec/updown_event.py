@@ -33,6 +33,7 @@ import json
 import subprocess
 import argparse
 import tempfile
+import syslog
 from configparser import ConfigParser
 from lib import list_spds
 
@@ -50,6 +51,8 @@ if __name__ == '__main__':
     cmd_args = parser.parse_args()
     # init spd's on up-host[-v6], up-client[-v6]
     if cmd_args.action and cmd_args.action.startswith('up'):
+        syslog.openlog('charon', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+        syslog.syslog(syslog.LOG_NOTICE, '[UPDOWN] received %s event for reqid %s' % (cmd_args.action, cmd_args.reqid))
         if os.path.exists(spd_filename):
             cnf = ConfigParser()
             cnf.read(spd_filename)
@@ -79,6 +82,10 @@ if __name__ == '__main__':
                         # incomplete, skip
                         continue
                     spd['ipproto'] = '4' if spd.get('source', '').find(':') == -1 else '6'
+                    syslog.syslog(
+                        syslog.LOG_NOTICE,
+                        '[UPDOWN] add manual policy : %s' % (spd_add_cmd % spd)[7:]
+                    )
                     set_key.append(spd_add_cmd % spd)
                 if len(set_key) > 0:
                     f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
