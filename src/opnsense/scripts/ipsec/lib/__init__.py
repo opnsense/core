@@ -45,7 +45,7 @@ def list_spds(req_id=None, automatic=True):
             continue
         elif line_num == 1:
             this_record['direction'] = line.split()[0]
-        elif line.startswith('\tlifetime:') and line.find('ifname=') > 0:
+        elif line.startswith('\tlifetime:') or line.find('ifname=') > 0:
             this_record['automatic'] = True
         elif line.find('/unique:') > 0:
             this_record['reqid'] = line.split('/unique:')[1].split()[0]
