@@ -314,6 +314,7 @@
         }
 
         function updateQueryChart(use_log=false) {
+            let def = new $.Deferred();
             ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
                 let formatted = formatQueryData(data, use_log);
                 g_queryChart.config.options.scales.x.time.stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
@@ -328,10 +329,13 @@
                     g_queryChart.config.options.scales.y.min = 0;
                 }
                 g_queryChart.update();
+                def.resolve();
             });
+            return def;
         }
 
         function updateClientChart(use_log=false) {
+            let def = new $.Deferred();
             ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
                 let formatted = formatClientData(data, use_log);
                 g_clientChart.config.options.scales.x.time.stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
@@ -344,7 +348,9 @@
                     g_clientChart.config.options.scales.y.min = 0;
                 }
                 g_clientChart.update();
+                def.resolve();
             });
+            return def;
         }
 
         function createTopList(id, data, type) {
@@ -410,19 +416,14 @@
                 }
                 $('#timeperiod-clients').selectpicker('refresh');
 
-                create_or_update_totals();
-
-                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod").val(), {}, function(data, status) {
-                    let formatted = formatQueryData(data, $("#toggle-log-qchart").is(":checked"));
-                    let stepSize = $("#timeperiod").val() == 1 ? 5 : 60;
-                    g_queryChart = create_chart($("#rollingChart"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
+                g_queryChart = create_chart($("#rollingChart"), 60, [], false);
+                g_clientChart = create_client_chart($("#rollingChartClient"), 60, [], false);
+                updateQueryChart($("#toggle-log-qchart")[0].checked).done(function() {
+                    updateClientChart($("#toggle-log-cchart")[0].checked).done(function() {
+                        create_or_update_totals();
+                    });
                 });
 
-                ajaxGet('/api/unbound/overview/rolling/' + $("#timeperiod-clients").val() + '/1', {}, function(data, status) {
-                    let formatted = formatClientData(data, $("#toggle-log-qchart").is(":checked"));
-                    let stepSize = $("#timeperiod-clients").val() == 1 ? 5 : 60;
-                    g_clientChart = create_client_chart($("#rollingChartClient"), stepSize, formatted, $("#toggle-log-qchart").is(":checked"));
-                });
             });
 
             return def;
@@ -554,7 +555,7 @@
 </div>
 <div class="wrapper">
     <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs" style="border-bottom: none">
-        <li><a data-toggle="tab" href="#query-overview" id="query_overview_tab">{{ lang._('Overview') }}</a></li>
+        <li class="active"><a data-toggle="tab" href="#query-overview" id="query_overview_tab">{{ lang._('Overview') }}</a></li>
         <li><a data-toggle="tab" href="#query-details" id="query_details_tab">{{ lang._('Details') }}</a></li>
     </ul>
     <div class="tab-content content-box" style="padding: 10px; border-top: 1px solid #E5E5E5;">
