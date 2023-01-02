@@ -63,6 +63,16 @@ class Util
     }
 
     /**
+     * is provided address a mac address.
+     * @param string $network address
+     * @return boolean
+     */
+    public static function isMACAddress($address)
+    {
+        return !empty(filter_var($address, FILTER_VALIDATE_MAC));
+    }
+
+    /**
      * is provided network valid
      * @param string $network network
      * @return boolean

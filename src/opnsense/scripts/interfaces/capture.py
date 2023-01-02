@@ -140,6 +140,8 @@ if __name__ == '__main__':
                             tokens.append(token)
                         elif token.find('/') > -1:
                             tokens.append('net %s' % token)
+                        elif token.count(':') == 5 and sum([len(x) == 2 for x in token.split(':')]) == 6:
+                            tokens.append('ether host %s' % token)
                         else:
                             tokens.append('host %s' % token)
                     filters.append('( %s )' % ' '.join(tokens))
