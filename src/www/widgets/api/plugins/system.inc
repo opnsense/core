@@ -107,6 +107,12 @@ function system_api_kernel()
     $result['memory']['total'] = get_single_sysctl('hw.physmem');
     if ($totalMem != 0) {
         $result['memory']['used'] = round(((($totalMem - ($inactiveMem + $cachedMem + $freeMem))) / $totalMem)*$result['memory']['total'], 0);
+        $arcMem = get_single_sysctl('kstat.zfs.misc.arcstats.size');
+        if (!empty($arcMem)) {
+            $result['memory']['arc'] = $arcMem;
+            $result['memory']['arc_txt'] = sprintf(gettext("ARC size %d MB"), $arcMem/1024/1024);
+        }
+
     } else {
         $result['memory']['used'] = gettext('N/A');
     }
