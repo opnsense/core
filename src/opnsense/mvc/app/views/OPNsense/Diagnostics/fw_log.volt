@@ -28,7 +28,7 @@
     'use strict';
 
     var last_digest = '';
-    var grid_reset = false;
+    var record_spec = [];
     $( document ).ready(function() {
         var field_type_icons = {
           'binat': 'fa-exchange',
@@ -41,6 +41,16 @@
         };
         var interface_descriptions = {};
         let hostnameMap = {};
+
+        // read heading, contains field specs
+        $("#grid-log > thead > tr > th ").each(function () {
+            record_spec.push({
+                    'column-id': $(this).data('column-id'),
+                    'type': $(this).data('type'),
+                    'class': $(this).attr('class')
+                });
+        });
+
 
         /**
          * reverse lookup address fields (replace address part for hostname if found)
@@ -228,31 +238,23 @@
 
         function fetch_log() {
             const log_fetched = new $.Deferred();
-            let record_spec = [];
             // Overfetch for limited display scope to increase the chance of being able to find matches.
             // As we fetch once per second, we would be limited to 25 records/sec of log data when 25 is selected.
             let max_rows = parseInt($("#limit").val());
             let max_rows_fetch = Math.max(1000, max_rows);
-            // read heading, contains field specs
-            $("#grid-log > thead > tr > th ").each(function () {
-                record_spec.push({
-                    'column-id': $(this).data('column-id'),
-                    'type': $(this).data('type'),
-                    'class': $(this).attr('class')
-                });
-            });
             // use last digest (record hash) to limit data size
             // digest migrated from DOM storage to global var
+            // if grid reseted between ajax calls set empty digest
+            last_digest = last_digest == "__false__" ? "" : last_digest;
             // fetch new log lines and add on top of grid-log
             ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': max_rows_fetch}, function(data, status) {
                 log_fetched.resolve();
                 if (status == 'error') {
                     // stop poller on failure
                     $("#auto_refresh").prop('checked', false);
-                } else if (grid_reset){
-                    // $("#limit").change(); called, this request should be discarted (data grid reset)
+                } else if (last_digest == "__false__"){
+                    // grid was reset during ajax request, this request should be discarded
                     last_digest = '';
-                    grid_reset = false;
                     return;
                 } else if (data !== undefined && data.length > 0) {
                     let record;
@@ -508,22 +510,26 @@
                 }
                 $('.selectpicker').selectpicker('refresh');
                 $("#filter_tag").change();
-                apply_filter();
+                grid_reset();
             });
             $("#filters").append($new_filter);
             $("#filter_value").val("");
             $("#filters_help").show();
-            apply_filter();
+            grid_reset();
         });
 
         $("#filter_or_type").click(function(){
-            apply_filter();
+            grid_reset();
         });
 
         // reset log content on limit change, forces a reload
-        $("#limit").change(function(){
+        function grid_reset() {
             $('#grid-log > tbody').html("<tr></tr>");
-            grid_reset = true;
+            last_digest = "__false__";
+        }
+
+        $("#limit").change(function(){
+            grid_reset();
         });
 
         function poller() {
