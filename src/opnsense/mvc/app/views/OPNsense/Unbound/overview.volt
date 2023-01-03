@@ -418,12 +418,9 @@
 
                 g_queryChart = create_chart($("#rollingChart"), 60, [], false);
                 g_clientChart = create_client_chart($("#rollingChartClient"), 60, [], false);
-                updateQueryChart($("#toggle-log-qchart")[0].checked).done(function() {
-                    updateClientChart($("#toggle-log-cchart")[0].checked).done(function() {
-                        create_or_update_totals();
-                    });
-                });
-
+                updateQueryChart($("#toggle-log-qchart")[0].checked);
+                updateClientChart($("#toggle-log-cchart")[0].checked);
+                create_or_update_totals();
             });
 
             return def;
