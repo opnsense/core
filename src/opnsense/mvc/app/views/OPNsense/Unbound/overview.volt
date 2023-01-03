@@ -253,7 +253,7 @@
             /* Add a redundant data step to end the chart time axis properly */
             if (formatted.length > 0) {
                 let lastVal = formatted[formatted.length - 1];
-                let interval = $("#timeperiod").val() == 1 ? 60 : 300;
+                let interval = $("#timeperiod").val() == 1 ? 60 : 600;
                 let y_val = logarithmic ? 0.1 : 0
                 formatted.push({
                     x: lastVal.x + (interval * 1000),
@@ -290,7 +290,7 @@
                 /* Add a redundant data step to end the chart time axis properly */
                 if (tmp.length > 0) {
                     let lastVal = tmp[tmp.length - 1];
-                    let interval = $("#timeperiod-clients").val() == 1 ? 60 : 300;
+                    let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
                     tmp.push({
                         x: lastVal.x + (interval * 1000),
                         y: backup_val,
@@ -354,23 +354,41 @@
         }
 
         function createTopList(id, data, type) {
-            let idx = 1;
-            for (const [domain, statObj] of Object.entries(data)) {
+            ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
                 let class_type = type == "pass" ? "block-domain" : "whitelist-domain";
                 let icon_type = type == "pass" ? "fa fa-ban text-danger" : "fa fa-pencil text-info";
-                let bl = statObj.hasOwnProperty('blocklist') ? '(' + statObj.blocklist + ')' : '';
-                $('#' + id).append(
-                    '<li class="list-group-item list-group-item-border top-item">' +
-                    idx + '. ' + domain + ' ' + bl +
-                    '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)' +
-                    '<button class="'+ class_type + '" data-value="'+ domain +'" ' +
-                    'data-toggle="tooltip" style="margin-left: 10px;"><i class="' + icon_type + '"></i></button>' +
-                    '</span></li>'
-                )
-                idx++;
-            }
-            $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
-            $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
+                for (let i = 0; i < 10; i++) {
+                    let domain = Object.keys(data)[i];
+                    let statObj = Object.values(data)[i];
+                    if (typeof domain == 'undefined' || typeof statObj == 'undefined') {
+                        $('#' + id).append(
+                            '<li class="list-group-item list-group-item-border top-item">' +
+                            (i + 1) + '. ' +
+                            '<span class="counter">0 (0.0%)' +
+                            '</span></li>'
+                        )
+                        continue;
+                    }
+
+                    let icon = '<button class="'+ class_type + '" data-value="'+ domain +'" ' +
+                    'data-toggle="tooltip" style="margin-left: 10px;"><i class="' + icon_type + '"></i></button>'
+
+                    if (bl_enabled.enabled == 0) {
+                        icon = '';
+                    }
+
+                    let bl = statObj.hasOwnProperty('blocklist') ? '(' + statObj.blocklist + ')' : '';
+                    $('#' + id).append(
+                        '<li class="list-group-item list-group-item-border top-item">' +
+                        (i + 1) + '. ' + domain + ' ' + bl +
+                        '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)' +
+                        icon +
+                        '</span></li>'
+                    )
+                }
+                $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
+                $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
+            });
         }
 
         function create_or_update_totals() {
@@ -478,62 +496,72 @@
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'query_details_tab') {
                 $("#grid-queries").bootgrid('destroy');
-                let grid_queries = $("#grid-queries").UIBootgrid({
-                    search:'/api/unbound/overview/searchQueries/',
-                    options: {
-                        rowSelect: false,
-                        multiSelect: false,
-                        selection: false,
-                        formatters: {
-                            "timeformatter": function (column, row) {
-                                return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
+                ajaxGet('/api/unbound/overview/isBlockListEnabled', {}, function(bl_enabled, status) {
+                    let grid_queries = $("#grid-queries").UIBootgrid({
+                        search:'/api/unbound/overview/searchQueries/',
+                        options: {
+                            rowSelect: false,
+                            multiSelect: false,
+                            selection: false,
+                            formatters: {
+                                "timeformatter": function (column, row) {
+                                    return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
+                                },
+                                "resolveformatter": function (column, row) {
+                                    return row.resolve_time_ms + 'ms';
+                                },
+                                "commands": function (column, row) {
+                                    let btn = '';
+                                    if (bl_enabled.enabled == 0) {
+                                        return btn;
+                                    } else if (row.action == 'Pass') {
+                                        btn = '<button type="button" class="btn-secondary block-domain" data-domain=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-ban text-danger"></i></button> ';
+                                    } else if (row.action == 'Block') {
+                                        btn = '<button type="button" class="btn-secondary whitelist-domain" data-domain=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-pencil text-info"></i></button>';
+                                    }
+                                    return btn;
+                                },
                             },
-                            "resolveformatter": function (column, row) {
-                                return row.resolve_time_ms + 'ms';
-                            },
-                            "commands": function (column, row) {
-                                let btn = '';
-                                if (row.action == 'Pass') {
-                                    btn = '<button type="button" class="btn-secondary block-domain" data-domain=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-ban text-danger"></i></button> ';
-                                } else if (row.action == 'Block') {
-                                    btn = '<button type="button" class="btn-secondary whitelist-domain" data-domain=' + row.domain + ' data-toggle="tooltip"><i class="fa fa-pencil text-info"></i></button>';
-                                }
-                                return btn;
-                            },
-                        },
-                        statusMapping: {
-                            0: "query-success",
-                            1: "info",
-                            2: "query-warning",
-                            3: "query-danger",
-                            4: "danger"
+                            statusMapping: {
+                                0: "query-success",
+                                1: "info",
+                                2: "query-warning",
+                                3: "query-danger",
+                                4: "danger"
+                            }
                         }
-                    }
-                }).on("loaded.rs.jquery.bootgrid", function (e) {
-                   $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
-                   $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
-                   grid_queries.find(".block-domain").on("click", function(e) {
-                       $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
-                       ajaxCall('/api/unbound/settings/updateBlocklist', {
-                           'domain': $(this).data('domain'),
-                           'type': 'blocklists',
-                       }, function(data, status) {
-                            let btn = grid_queries.find(".block-domain");
-                            btn.remove("i").html('<i class="fa fa-ban text-danger"></i>');
-                       });
-                   });
+                    }).on("loaded.rs.jquery.bootgrid", function (e) {
+                        if (bl_enabled.enabled == 0) {
+                            $(".hide-col").css("display", "none");
+                        } else {
+                            $(".hide-col").css('display', '');
+                        }
+                        $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
+                        $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
+                        grid_queries.find(".block-domain").on("click", function(e) {
+                            $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
+                            ajaxCall('/api/unbound/settings/updateBlocklist', {
+                                'domain': $(this).data('domain'),
+                                'type': 'blocklists',
+                            }, function(data, status) {
+                                    let btn = grid_queries.find(".block-domain");
+                                    btn.remove("i").html('<i class="fa fa-ban text-danger"></i>');
+                            });
+                        });
 
-                   grid_queries.find(".whitelist-domain").on("click", function(e) {
-                       $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
-                       ajaxCall('/api/unbound/settings/updateBlocklist', {
-                           'domain': $(this).data('domain'),
-                           'type': 'whitelists',
-                       }, function(data, status) {
-                            let btn = grid_queries.find(".whitelist-domain");
-                            btn.remove("i").html('<i class="fa fa-pencil text-info"></i>');
-                       });
-                   });
-                });
+                        grid_queries.find(".whitelist-domain").on("click", function(e) {
+                            $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
+                            ajaxCall('/api/unbound/settings/updateBlocklist', {
+                                'domain': $(this).data('domain'),
+                                'type': 'whitelists',
+                            }, function(data, status) {
+                                    let btn = grid_queries.find(".whitelist-domain");
+                                    btn.remove("i").html('<i class="fa fa-pencil text-info"></i>');
+                            });
+                        });
+                    });
+                })
+
             }
             if (e.target.id == 'query_overview_tab') {
                 create_or_update_totals();
@@ -714,7 +742,7 @@
                     <th data-column-id="resolve_time_ms" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
                     <th data-column-id="ttl" data-type="string">{{ lang._('TTL') }}</th>
                     <th data-column-id="blocklist" data-type="string">{{ lang._('Blocklist') }}</th>
-                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Command') }}</th>
+                    <th data-header-css-class="hide-col" data-css-class="hide-col" data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Command') }}</th>
                 </tr>
                 </thead>
                 <tbody>

@@ -68,7 +68,7 @@ class DNSReader:
                 )
             """)
 
-            for size in [300, 60]:
+            for size in [600, 300, 60]:
                 db.connection.execute(
                     """
                         CREATE OR REPLACE VIEW v_time_series_{min}min AS (

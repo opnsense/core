@@ -45,7 +45,7 @@ def percent(val, total):
 
 def handle_rolling(args):
     # sanitize input
-    interval = int(re.sub("^(?:(?!300|60).)*$", "300", str(args.interval)))
+    interval = int(re.sub("^(?:(?!600|300|60).)*$", "600", str(args.interval)))
     tp = int(re.sub("^(?:(?!24|12|1).)*$", "24", str(args.timeperiod)))
     data = pandas.DataFrame()
 

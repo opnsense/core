@@ -43,11 +43,18 @@ class OverviewController extends ApiControllerBase
         ];
     }
 
+    public function isBlockListEnabledAction()
+    {
+        return [
+            'enabled' => (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['enabled']
+        ];
+    }
+
     public function RollingAction($timeperiod, $clients = false)
     {
         $this->sessionClose();
         // Sanitize input
-        $interval = preg_replace("/^(?:(?!1|12|24).)*$/", "24", $timeperiod) == 1 ? 60 : 300;
+        $interval = preg_replace("/^(?:(?!1|12|24).)*$/", "24", $timeperiod) == 1 ? 60 : 600;
         $type = $clients ? 'clients' : 'rolling';
         $response = (new Backend())->configdpRun('unbound qstats ' . $type, [$interval, $timeperiod]);
         return json_decode($response, true);

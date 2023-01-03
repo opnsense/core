@@ -65,6 +65,10 @@
     padding-bottom: 10px;
 }
 
+.list-group-item {
+    height: 2.5em;
+}
+
 .list-group-item-border {
     border: 1px solid #ddd;
 }
