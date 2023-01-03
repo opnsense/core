@@ -708,7 +708,7 @@ include("head.inc");
                     </table>
                   </div>
                   <div class="hidden" data-for="help_for_syncookies">
-                      <?=gettext("When syncookies are active, pf will answer each incoming TCP SYN with a syncookie SYNACK, without allocating any resources.");?>
+                      <?=gettext("When syncookies are active, OPNsense will answer each incoming TCP SYN with a syncookie SYNACK, without allocating any resources.");?>
                   </div>
                 </td>
               </tr>
