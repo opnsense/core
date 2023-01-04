@@ -24,6 +24,11 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<style>
+    .unfiltered {
+        display: none;
+    }
+</style>
 <script>
     'use strict';
 
@@ -262,14 +267,13 @@
                     while ((record = data.pop()) != null) {
                         if (record['__digest__'] != last_digest) {
                             last_digest = record['__digest__'];
-                            var log_tr = $('<tr class="log_tr" style="display:none;">');
+                            var log_tr = $('<tr class="log_tr unfiltered">');
                             if (record.interface !== undefined && interface_descriptions[record.interface] !== undefined) {
                                 record['interface_name'] = interface_descriptions[record.interface];
                             } else {
                                 record['interface_name'] = record.interface;
                             }
                             log_tr.data('details', record);
-                            //log_tr.hide();
                             $.each(record_spec, function(idx, field){
                                 var log_td = $('<td>').addClass(field['class']);
                                 var column_name = field['column-id'];
@@ -294,7 +298,7 @@
                                         }
                                         break;
                                     case 'info':
-                                        log_td.html('<button class="act_info btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
+                                        log_td.html('<button class="act_info no_bind btn btn-xs fa fa-info-circle" aria-hidden="true"></i>');
                                         break;
                                     case 'label':
                                         // record data is always html-escaped. no special protection required
@@ -323,11 +327,10 @@
                     apply_filter();
 
                     // limit output, try to keep max X records on screen.
-                    $(".log_tr").filter(":hidden").remove();
                     $(".log_tr").slice(max_rows).remove();
 
                     // bind info buttons
-                    $(".act_info").unbind('click').click(function(){
+                    $(".act_info.no_bind").removeClass("no_bind").click(function(){
                         var sender_tr = $(this).parent().parent();
                         var sender_details = sender_tr.data('details');
                         var hidden_columns = ['__spec__', '__host__', '__digest__'];
@@ -437,55 +440,58 @@
                 filters.push($(this).data('filter'));
             });
             let filter_or_type = $("#filter_or_type").is(':checked');
-            $("#grid-log > tbody > tr").each(function(){
-                let selected_tr = $(this);
-                let this_data = $(this).data('details');
-                if (this_data === undefined) {
-                    return;
-                }
-                let is_matched = (filters.length > 0) ? !filter_or_type : true;
-                for (let i=0; i < filters.length; i++) {
-                    let filter_value = filters[i].value.toLowerCase();
-                    let filter_condition = filters[i].condition;
-                    let this_condition_match = false;
-                    let filter_tag = filters[i].tag;
-
-                    if (filter_tag === '__addr__') {
-                        let src_match = match_filter(filter_value, filter_condition, this_data['src']);
-                        let dst_match = match_filter(filter_value, filter_condition, this_data['dst']);
-                        if (!filter_condition.match('!')) {
-                            this_condition_match = src_match || dst_match;
-                        } else {
-                            this_condition_match = src_match && dst_match;
-                        }
-                    } else if (filter_tag === '__port__') {
-                        let srcport_match = match_filter(filter_value, filter_condition, this_data['srcport']);
-                        let dstport_match = match_filter(filter_value, filter_condition, this_data['dstport']);
-                        if (!filter_condition.match('!')) {
-                            this_condition_match = srcport_match || dstport_match;
-                        } else {
-                            this_condition_match = srcport_match && dstport_match;
-                        }
-                    } else {
-                        this_condition_match = match_filter(filter_value, filter_condition, this_data[filter_tag]);
+            $("tr.unfiltered").each(function(){
+                if (visible_rows < max_rows) {
+                    let selected_tr = $(this);
+                    let this_data = $(this).data('details');
+                    if (this_data === undefined) {
+                        return;
                     }
+                    let is_matched = (filters.length > 0) ? !filter_or_type : true;
+                    for (let i=0; i < filters.length; i++) {
+                        let filter_value = filters[i].value.toLowerCase();
+                        let filter_condition = filters[i].condition;
+                        let this_condition_match = false;
+                        let filter_tag = filters[i].tag;
 
-                    if (!this_condition_match && !filter_or_type) {
-                        // normal AND condition, exit when one of the criteria is not met
-                        is_matched = this_condition_match;
-                        break;
-                    } else if (filter_or_type) {
-                        // or condition is deselected by default
-                        is_matched = is_matched || this_condition_match;
+                        if (filter_tag === '__addr__') {
+                            let src_match = match_filter(filter_value, filter_condition, this_data['src']);
+                            let dst_match = match_filter(filter_value, filter_condition, this_data['dst']);
+                            if (!filter_condition.match('!')) {
+                                this_condition_match = src_match || dst_match;
+                            } else {
+                                this_condition_match = src_match && dst_match;
+                            }
+                        } else if (filter_tag === '__port__') {
+                            let srcport_match = match_filter(filter_value, filter_condition, this_data['srcport']);
+                            let dstport_match = match_filter(filter_value, filter_condition, this_data['dstport']);
+                            if (!filter_condition.match('!')) {
+                                this_condition_match = srcport_match || dstport_match;
+                            } else {
+                                this_condition_match = srcport_match && dstport_match;
+                            }
+                        } else {
+                            this_condition_match = match_filter(filter_value, filter_condition, this_data[filter_tag]);
+                        }
+
+                        if (!this_condition_match && !filter_or_type) {
+                            // normal AND condition, exit when one of the criteria is not met
+                            is_matched = this_condition_match;
+                            break;
+                        } else if (filter_or_type) {
+                            // or condition is deselected by default
+                            is_matched = is_matched || this_condition_match;
+                        }
                     }
-                }
-                if (is_matched && visible_rows < max_rows) {
-                    selected_tr.show();
-                    visible_rows += 1;
+                    if (is_matched && visible_rows < max_rows) {
+                        selected_tr.removeClass("unfiltered");
+                        visible_rows += 1;
+                    }
                 } else {
-                    selected_tr.hide();
+                    return false; // break loop if we have max_rows result already
                 }
             });
+            $("tr.unfiltered").remove();
         }
 
         $("#add_filter_condition").click(function(){
