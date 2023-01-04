@@ -223,6 +223,31 @@ $(document).ready(function() {
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
+                    <td colspan="2"><strong><?=gettext('Unbound DNS reporting');?></strong></td>
+                  </tr>
+                  <tr>
+                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Statistics");?></td>
+                    <td>
+                        <input name="unboundenable" type="checkbox" id="unboundenable" value="yes" <?=!empty($pconfig['unboundenable']) ? "checked=\"checked\"" : ""?> />
+                        &nbsp;<strong><?=gettext("Enables local gathering of statistics.");?></strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <input type="button" name="SaveDNS" id="SaveDNS" class="btn btn-primary" value="<?= html_safe(gettext("Save")) ?>" />
+                        <input type="button" name="ResetDNS" id="ResetDNS" class="btn btn-default" value="<?= html_safe(gettext("Reset DNS data")) ?>" />
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </section>
+          <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12">
+              <div class="table-responsive">
+                <table class="table table-striped opnsense_standard_table_form">
+                  <tr>
                     <td colspan="2"><strong><?=gettext('Reporting Database Options');?></strong></td>
                   </tr>
                   <tr>
@@ -250,41 +275,11 @@ $(document).ready(function() {
                 </table>
               </div>
             </div>
-          </section>
-        <section class="col-xs-12">
-            <div class="tab-content content-box col-xs-12">
-                <div class="table-responsive">
-                    <table class="table table-striped opnsense_standard_table_form">
-                        <tr>
-                            <td colspan="2"><strong><?=gettext('Unbound DNS reporting');?></strong></td>
-                        </tr>
-                        <tr>
-                            <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Statistics");?></td>
-                            <td>
-                                <input name="unboundenable" type="checkbox" id="unboundenable" value="yes" <?=!empty($pconfig['unboundenable']) ? "checked=\"checked\"" : ""?> />
-                                &nbsp;<strong><?=gettext("Enables local gathering of statistics.");?></strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="button" name="SaveDNS" id="SaveDNS" class="btn btn-primary" value="<?= html_safe(gettext("Save")) ?>" />
-                                <input type="button" name="ResetDNS" id="ResetDNS" class="btn btn-default" value="<?= html_safe(gettext("Reset DNS data")) ?>" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </section>
-          <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td colspan="2"><strong><?=gettext('Collected reports');?></strong></td>
-                  </tr>
-                  <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Reports");?> </td>
+                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Collected Reports");?> </td>
                     <td>
                       <table class="table table-condensed">
 <?php
