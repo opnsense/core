@@ -470,6 +470,11 @@ class Action(object):
                         script_output = output_stream.read()
                         script_error_output = error_stream.read()
                         if result.returncode == 0:
+                            if len(script_error_output) > 0 and self.type.lower() == 'script_output' and self.command.endswith('exit 0') and not self.command.startswith('pgrep'):
+                                # backward compatibility with subprocess.check_call version: exit 0 forced for script_output action and stderr is not empty. log stderr
+                                syslog_error('[%s] Script action "%s" stderr returned "%s"' %(
+                                    message_uuid, script_command[:255], script_error_output.decode().strip()
+                                ))
                             return 'OK' if self.type.lower() == 'script' else script_output.decode()
                         else:
                             if len(script_error_output) > 0:
