@@ -36,7 +36,6 @@ import pandas
 import signal
 from collections import deque
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from daemonize import Daemonize
 from duckdb_helper import DbConnection
 
 class DNSReader:
@@ -181,7 +180,5 @@ if __name__ == '__main__':
 
     syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
 
-    syslog.syslog(syslog.LOG_NOTICE, 'Daemonizing unbound logging backend.')
-    cmd = lambda : run(inputargs.pipe, inputargs.flush_interval)
-    daemon = Daemonize(app="unbound_logger", pid=inputargs.pid, action=cmd, foreground=inputargs.foreground)
-    daemon.start()
+    syslog.syslog(syslog.LOG_NOTICE, 'Backgrounding unbound logging backend.')
+    run(inputargs.pipe, inputargs.flush_interval)
