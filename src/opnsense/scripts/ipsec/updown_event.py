@@ -51,7 +51,7 @@ if __name__ == '__main__':
     cmd_args = parser.parse_args()
     # init spd's on up-host[-v6], up-client[-v6]
     if cmd_args.action and cmd_args.action.startswith('up'):
-        syslog.openlog('charon', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+        syslog.openlog('charon', facility=syslog.LOG_LOCAL4)
         syslog.syslog(syslog.LOG_NOTICE, '[UPDOWN] received %s event for reqid %s' % (cmd_args.action, cmd_args.reqid))
         if os.path.exists(spd_filename):
             cnf = ConfigParser()

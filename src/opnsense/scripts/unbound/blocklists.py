@@ -93,7 +93,7 @@ if __name__ == '__main__':
     rcode = 'NOERROR'
 
     startup_time = time.time()
-    syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+    syslog.openlog('unbound', facility=syslog.LOG_LOCAL4)
     blocklist_items = {
         'data': {},
         'config': {}

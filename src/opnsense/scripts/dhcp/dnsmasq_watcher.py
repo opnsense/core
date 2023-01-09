@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
     inputargs = parser.parse_args()
 
-    syslog.openlog('dnsmasq', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+    syslog.openlog('dnsmasq', facility=syslog.LOG_LOCAL4)
 
     if inputargs.foreground:
         run_watcher(

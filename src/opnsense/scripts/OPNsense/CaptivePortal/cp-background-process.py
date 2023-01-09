@@ -47,7 +47,7 @@ class CPBackgroundProcess(object):
     """
     def __init__(self):
         # open syslog and notice startup
-        syslog.openlog('captiveportal', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+        syslog.openlog('captiveportal', facility=syslog.LOG_LOCAL4)
         syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
         # handles to ipfw, arp the config and the internal administration
         self.ipfw = IPFW()
