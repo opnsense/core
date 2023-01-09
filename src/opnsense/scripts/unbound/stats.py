@@ -223,11 +223,15 @@ def handle_details(args):
         if db.connection is not None and db.table_exists('query'):
             details = db.connection.execute("""
                 SELECT * FROM query
+                LEFT JOIN client resolved on client = resolved.ipaddr
                 ORDER BY time DESC
                 LIMIT ?
             """, [args.limit]).fetchdf().astype({'uuid': str})
 
     if not details.empty:
+        # use a resolved hostname if possible
+        details['client'] = np.where(details['hostname'].isnull(), details['client'], details['hostname'])
+        details = details.drop(['hostname', 'ipaddr'], axis=1)
         # map the integer types to a sensible description
         details['action'] = details['action'].map({0: 'Pass', 1: 'Block', 2: 'Drop'})
         details['source'] = details['source'].map({
