@@ -69,8 +69,10 @@ def handle_rolling(args):
                 s as start_timestamp,
                 e as end_timestamp,
                 GROUP_CONCAT(cl) as clients,
+                GROUP_CONCAT(COALESCE(resolved.hostname, '')) as hostnames,
                 GROUP_CONCAT(cnt_cl) as client_totals
             FROM grouped
+            LEFT JOIN client resolved ON cl = resolved.ipaddr
             GROUP BY s, e
             ORDER BY e
         """.format(intv=interval//60, tp=tp)
@@ -106,8 +108,11 @@ def handle_rolling(args):
                 interval = {row[0]: {}}
                 if row[2]:
                     tmp = []
-                    counts = row[3].split(',')
+                    hosts = row[3].split(',')
+                    counts = row[4].split(',')
                     for idx, client in enumerate(row[2].split(',')):
+                        if hosts[idx] != '':
+                            client = hosts[idx]
                         tmp.append((client, int(counts[idx])))
                     # sort the list by most active client
                     tmp.sort(key=itemgetter(1), reverse=True)
@@ -245,7 +250,7 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(dest='command', help='sub-command help')
     r_parser = subparsers.add_parser('rolling', help='get rolling aggregate of query data')
     r_parser.add_argument('--timeperiod', help='timeperiod in hours. Valid values are [24, 12, 1]', type=int, default=24)
-    r_parser.add_argument('--interval', help='interval in seconds. valid values are [300, 60]', type=int, default=300)
+    r_parser.add_argument('--interval', help='interval in seconds. valid values are [600, 300, 60]', type=int, default=300)
     r_parser.add_argument('--clients', help='get top 10 client activity instead', action='store_true')
     r_parser.set_defaults(func=handle_rolling)
 

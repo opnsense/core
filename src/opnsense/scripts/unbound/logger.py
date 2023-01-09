@@ -34,6 +34,8 @@ import time
 import datetime
 import pandas
 import signal
+import socket
+import duckdb
 from collections import deque
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from duckdb_helper import DbConnection
@@ -46,6 +48,22 @@ class DNSReader:
         self.buffer = deque()
         self.selector = selectors.DefaultSelector()
         self.fd = None
+
+        self.client_map = {}
+        self.update_hostname = False
+
+    def resolve_ip(self, ip, timeout=0.01):
+        # if a host is known locally, we should be able to resolve it sub 10ms
+        if ip is None:
+            return
+        old = socket.getdefaulttimeout()
+        socket.setdefaulttimeout(timeout)
+        try:
+            host = socket.gethostbyaddr(ip)[0]
+        except socket.timeout:
+            host = None
+        socket.setdefaulttimeout(old)
+        return host
 
     def _setup_db(self):
         with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
@@ -65,6 +83,13 @@ class DNSReader:
                     dnssec_status INTEGER,
                     ttl INTEGER
                 )
+            """)
+
+            db.connection.execute("""
+                CREATE TABLE IF NOT EXISTS client (
+                    ipaddr TEXT UNIQUE,
+                    hostname TEXT
+                );
             """)
 
             for size in [600, 300, 60]:
@@ -106,7 +131,15 @@ class DNSReader:
         if r == '':
             return False
 
-        self.buffer.append(tuple(r.strip("\n").split()))
+        q = tuple(r.strip("\n").split())
+        self.buffer.append(q)
+
+        client = q[2]
+        client_check = (time.time() - self.client_map.get(client, 0)) > 3600
+        if client_check:
+            self.client_map[client] = time.time()
+            syslog.syslog(syslog.LOG_INFO, "Update hostname for client %s" % client)
+            self.update_hostname = True
 
         # Start a transaction every flush_interval seconds. With regular inserts
         # we would also need to limit the amount of queries we buffer before inserting them,
@@ -133,6 +166,13 @@ class DNSReader:
                     # faster than transactional inserts, and doesn't block even under high load.
                     db.connection.append('query', pandas.DataFrame(list(self.buffer)))
                     self.buffer.clear()
+                if self.update_hostname:
+                    host = self.resolve_ip(client)
+                    if host is not None:
+                        try:
+                            db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
+                        except duckdb.ConstraintException:
+                            db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
 
         return True
 
