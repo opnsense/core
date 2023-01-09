@@ -60,7 +60,7 @@ class DNSReader:
         socket.setdefaulttimeout(timeout)
         try:
             host = socket.gethostbyaddr(ip)[0]
-        except socket.timeout:
+        except (socket.timeout, socket.herror):
             host = None
         socket.setdefaulttimeout(old)
         return host
@@ -90,6 +90,8 @@ class DNSReader:
                     ipaddr TEXT UNIQUE,
                     hostname TEXT
                 );
+
+                DELETE FROM client
             """)
 
             for size in [600, 300, 60]:
@@ -168,11 +170,11 @@ class DNSReader:
                     self.buffer.clear()
                 if self.update_hostname:
                     host = self.resolve_ip(client)
-                    if host is not None:
-                        try:
-                            db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
-                        except duckdb.ConstraintException:
-                            db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
+                    # host can be None
+                    try:
+                        db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
+                    except duckdb.ConstraintException:
+                        db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
 
         return True
 
