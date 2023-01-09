@@ -71,5 +71,5 @@ if [ -n "${DOMAIN}" ]; then
 fi
 
 if [ -f /var/unbound/data/stats ]; then
-  /usr/bin/nohup /usr/local/opnsense/scripts/unbound/logger.py &
+    /usr/sbin/daemon -f /usr/local/opnsense/scripts/unbound/logger.py
 fi
