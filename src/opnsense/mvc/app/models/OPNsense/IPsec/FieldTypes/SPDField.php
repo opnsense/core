@@ -59,7 +59,7 @@ class SPDField extends ArrayField
                     if (!empty((string)$p2->spd) && !empty($phase1s[(string)$p2->ikeid])) {
                         $reqid = !empty((string)$p2->reqid) ? (string)$p2->reqid : '0';
                         foreach (explode(',', (string)$p2->spd) as $idx2 => $spd) {
-                            $spdkey = 'spd_' . (string)$p2->ikeid . '_' . (string)$idx . '_' . $idx2 ;
+                            $spdkey = 'spd_' . (string)$p2->ikeid . '_' . (string)$idx . '_' . $idx2;
                             self::$legacyItems[$spdkey] = [
                                 'enabled' => '1',
                                 'reqid' => $reqid,
