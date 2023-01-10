@@ -207,6 +207,10 @@ function plugins_interfaces()
                     // traverse and diff interface properties with known configuration
                     foreach ($intf_data as $prop_name => $prop_value) {
                         if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || ($intf_config[$prop_name] ?? '') != $prop_value) {
+                            if (is_array($prop_value) && !count($prop_value) && isset($intf_config[$prop_name]) && $intf_config[$prop_name] === '') {
+                                /* if value is '' in config and property is [] force a match (OpenVPN group networks) */
+                                continue;
+                            }
                             $intf_config[$prop_name] = $prop_value;
                             $changed = true;
                         }
