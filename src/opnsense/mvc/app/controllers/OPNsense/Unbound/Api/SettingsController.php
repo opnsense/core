@@ -48,12 +48,12 @@ class SettingsController extends ApiMutableModelControllerBase
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
             $mdl = $this->getModel();
-            $item = $mdl->getNodeByReference('dnsbl.'.$type);
+            $item = $mdl->getNodeByReference('dnsbl.' . $type);
 
             if ($item != null) {
-                $remove = function($csv, $item) {
+                $remove = function ($csv, $item) {
                     $parts = explode(',', $csv);
-                    while(($i = array_search($item, $parts)) !== false) {
+                    while (($i = array_search($item, $parts)) !== false) {
                         unset($parts[$i]);
                     }
                     return implode(',', $parts);

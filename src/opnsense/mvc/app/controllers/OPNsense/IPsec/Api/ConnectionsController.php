@@ -311,5 +311,4 @@ class ConnectionsController extends ApiMutableModelControllerBase
         }
         return ['status' => 'failed'];
     }
-
 }
