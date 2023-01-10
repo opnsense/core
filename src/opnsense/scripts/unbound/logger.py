@@ -215,7 +215,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--pid', help='pid file location', default='/var/run/unbound_logger.pid')
     parser.add_argument('--pipe', help='named pipe file location', default='/var/unbound/data/dns_logger')
-    parser.add_argument('--foreground', help='run (log) in foreground', default=False, action='store_true')
     parser.add_argument('--flush_interval', help='interval to flush to db', default=10)
 
     inputargs = parser.parse_args()
