@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -109,8 +109,6 @@ CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
 .if "${CORE_FLAVOUR}" == OpenSSL
 CORE_REPOSITORY?=	${CORE_ABI}/latest
-.elif "${CORE_FLAVOUR}" == LibreSSL
-CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
 CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
 .endif

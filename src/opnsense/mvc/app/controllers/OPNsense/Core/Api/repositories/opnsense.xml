@@ -102,10 +102,6 @@
             <name/>
             <description>(default)</description>
         </flavour>
-        <flavour>
-            <name>libressl</name>
-            <description>LibreSSL</description>
-        </flavour>
         <flavour has_subscription="true">
             <name>latest</name>
             <description>OpenSSL</description>
