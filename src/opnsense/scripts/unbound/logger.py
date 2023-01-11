@@ -60,7 +60,7 @@ class DNSReader:
         socket.setdefaulttimeout(timeout)
         try:
             host = socket.gethostbyaddr(ip)[0]
-        except (socket.timeout, socket.herror):
+        except Exception:
             host = None
         socket.setdefaulttimeout(old)
         return host
