@@ -191,6 +191,20 @@
                             min: logarithmic ? 0.1 : 0,
                         }
                     },
+                    onClick: function(e, a) {
+                        let element = a[0];
+                        if (typeof element == 'undefined') return;
+                        let dataset = this.config._config.data.datasets[element.datasetIndex];
+                        let label = dataset.label;
+                        let data = dataset.data[element.index];
+                        let timestamp = data.x
+                        let ip = data.z;
+
+                        g_clientFilter = ip;
+                        g_timeFilter = timestamp;
+                        g_labelFilter = label;
+                        $('.nav-tabs a[href="#query-details"]').tab('show');
+                    },
                     plugins: {
                         tooltip: {
                             mode: 'nearest',
@@ -217,6 +231,9 @@
                                         /* Default bubble chart has no tooltip title, add the formatted time */
                                         return context[0].formattedValue.split(',')[0].replace(/[{()}]/g, '');;
                                     }
+                                },
+                                afterBody: function(context) {
+                                    return 'Click to view details';
                                 }
                             }
                         },
@@ -278,12 +295,21 @@
             for (let i = 0; i < uniqueClients.length; i++) {
                 let tmp = []
                 let backup_val = logarithmic ? 0.1 : null;
+                let label = uniqueClients[i];
+                let hasHostname = false;
                 Object.keys(data).forEach((key, index) => {
+                    if (!hasHostname) {
+                        if (data[key].hasOwnProperty(uniqueClients[i]) && data[key][uniqueClients[i]]['hostname'] != '') {
+                            label = data[key][uniqueClients[i]]['hostname'];
+                            hasHostname = true;
+                        }
+                    }
                     /* Similarly with the query line chart, the bubble chart cannot handle null values on a log scale */
                     tmp.push({
                         x: key * 1000,
-                        y: data[key].hasOwnProperty(uniqueClients[i]) ? data[key][uniqueClients[i]] : backup_val,
-                        r: data[key].hasOwnProperty(uniqueClients[i]) ? 4 : 0
+                        y: data[key].hasOwnProperty(uniqueClients[i]) ? data[key][uniqueClients[i]]['count'] : backup_val,
+                        r: data[key].hasOwnProperty(uniqueClients[i]) ? 4 : 0,
+                        z: data[key].hasOwnProperty(uniqueClients[i]) ? uniqueClients[i] : null // meta-data; not presented, but is necessary for drill-down
                     })
                 });
 
@@ -302,7 +328,7 @@
                 let colorIdx = i - parseInt(i / colors) * colors;
                 let bgColor = Chart.colorschemes.brewer.DarkTwo8[colorIdx];
                 formatted.push({
-                    label: uniqueClients[i],
+                    label: label,
                     data: tmp,
                     borderWidth: 1,
                     backgroundColor: set_alpha(bgColor, 0.5),
@@ -412,6 +438,9 @@
 
         g_queryChart = null;
         g_clientChart = null;
+        g_clientFilter = null;
+        g_timeFilter = null;
+        g_labelFilter = null;
 
         /* Initial page load */
         function do_startup() {
@@ -503,6 +532,19 @@
                             rowSelect: false,
                             multiSelect: false,
                             selection: false,
+                            useRequestHandlerOnGet: true,
+                            requestHandler: function(request) {
+                                if (g_clientFilter != null && g_timeFilter != null) {
+                                    let timestamp = g_timeFilter / 1000;
+                                    let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
+
+                                    request['client'] = g_clientFilter;
+                                    request['timeStart'] = timestamp;
+                                    request['timeEnd'] = timestamp + interval;
+                                }
+
+                                return request;
+                            },
                             formatters: {
                                 "timeformatter": function (column, row) {
                                     return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
@@ -531,6 +573,27 @@
                             }
                         }
                     }).on("loaded.rs.jquery.bootgrid", function (e) {
+                        if (g_clientFilter != null && g_timeFilter != null && !$('#searchFilter').length) {
+                            // Add a badge to signify we're in a drill-down
+                            let label = (typeof g_labelFilter != 'undefined') ? g_labelFilter : g_clientFilter;
+                            $('div.actionBar').prepend($('<div id="searchFilter"></div>'));
+                            let timeStart = moment.unix(g_timeFilter / 1000).local().format('MM-DD HH:mm');
+                            let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
+                            let timeEnd = moment.unix((g_timeFilter / 1000) + interval).local().format('MM-DD HH:mm');
+                            $('#searchFilter').append('<span class="tag badge badge-pill badge-secondary">' +
+                                label + ' (' + timeStart + ' - ' + timeEnd + ')' +
+                                '<a id="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></span></a>');
+
+                            $('#removeFilter').click(function(e) {
+                                // Reset filters set by a client drill-down
+                                g_clientFilter = null;
+                                g_timeFilter = null;
+                                g_labelFilter = null;
+                                $('#searchFilter').remove();
+                                $('#grid-queries').bootgrid('reload');
+                            })
+                        }
+
                         if (bl_enabled.enabled == 0) {
                             $(".hide-col").css("display", "none");
                         } else {
@@ -564,6 +627,10 @@
 
             }
             if (e.target.id == 'query_overview_tab') {
+                // Reset filters set by a client drill-down
+                g_clientFilter = null;
+                g_timeFilter = null;
+                g_labelFilter = null;
                 create_or_update_totals();
                 updateQueryChart($("#toggle-log-qchart")[0].checked);
                 updateClientChart($("#toggle-log-cchart")[0].checked);
@@ -740,7 +807,7 @@
                     <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                     <th data-column-id="rcode" data-type="string">{{ lang._('Return Code') }}</th>
                     <th data-column-id="resolve_time_ms" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
-                    <th data-column-id="ttl" data-type="string">{{ lang._('TTL') }}</th>
+                    <th data-column-id="ttl" data-width="6em" data-type="string">{{ lang._('TTL') }}</th>
                     <th data-column-id="blocklist" data-type="string">{{ lang._('Blocklist') }}</th>
                     <th data-header-css-class="hide-col" data-css-class="hide-col" data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Command') }}</th>
                 </tr>

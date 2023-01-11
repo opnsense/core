@@ -31,6 +31,7 @@ namespace OPNsense\Unbound\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 class OverviewController extends ApiControllerBase
 {
@@ -81,7 +82,21 @@ class OverviewController extends ApiControllerBase
     public function searchQueriesAction()
     {
         $this->sessionClose();
-        $response = (new Backend())->configdpRun('unbound qstats details', [1000]);
+
+        $client = $this->request->get("client", null);
+        $time_start = $this->request->get("timeStart", null);
+        $time_end = $this->request->get("timeEnd", null);
+
+        $client = Util::isIpAddress($client) ? $client : null;
+        $time_start = is_int($time_start) ? $time_start : null;
+        $time_end = is_int($time_end) ? $time_end : null;
+
+        if (isset($client, $time_start, $time_end)) {
+            $response = (new Backend())->configdpRun('unbound qstats query', [$client, $time_start, $time_end]);
+        } else {
+            $response = (new Backend())->configdpRun('unbound qstats details', [1000]);
+        }
+
         $parsed = json_decode($response, true);
 
         /* Map the blocklist type keys to their corresponding description */

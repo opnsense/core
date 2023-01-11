@@ -111,14 +111,12 @@ def handle_rolling(args):
                     hosts = row[3].split(',')
                     counts = row[4].split(',')
                     for idx, client in enumerate(row[2].split(',')):
-                        if hosts[idx] != '':
-                            client = hosts[idx]
-                        tmp.append((client, int(counts[idx])))
+                        tmp.append((client, int(counts[idx]), hosts[idx]))
                     # sort the list by most active client
                     tmp.sort(key=itemgetter(1), reverse=True)
                     # limit by 10
                     tmp = tmp[:10]
-                    interval[row[0]] |= dict(tmp)
+                    interval[row[0]] |= {t[0]: {'count': t[1], 'hostname': t[2]} for t in tmp}
                 result |= interval
         else:
             result = data.set_index('start_timestamp').apply(lambda x: {
@@ -220,13 +218,22 @@ def handle_details(args):
     details = pandas.DataFrame()
 
     with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
-        if db.connection is not None and db.table_exists('query'):
-            details = db.connection.execute("""
-                SELECT * FROM query
-                LEFT JOIN client resolved on client = resolved.ipaddr
-                ORDER BY time DESC
-                LIMIT ?
-            """, [args.limit]).fetchdf().astype({'uuid': str})
+        if db.connection is not None and db.table_exists('query') and db.table_exists('client'):
+            if args.client and args.start and args.end:
+                details = db.connection.execute("""
+                    SELECT * FROM query q
+                    LEFT JOIN client resolved on q.client = resolved.ipaddr
+                    WHERE q.client = ? AND q.time > ? AND q.time < ?
+                    ORDER BY time DESC
+                    LIMIT ?
+                """, [args.client, args.start, args.end, args.limit]).fetchdf().astype({'uuid': str})
+            else:
+                details = db.connection.execute("""
+                    SELECT * FROM query
+                    LEFT JOIN client resolved on client = resolved.ipaddr
+                    ORDER BY time DESC
+                    LIMIT ?
+                """, [args.limit]).fetchdf().astype({'uuid': str})
 
     if not details.empty:
         # use a resolved hostname if possible
@@ -264,6 +271,9 @@ if __name__ == '__main__':
 
     d_parser = subparsers.add_parser('details', help='get detailed query information')
     d_parser.add_argument('--limit', help='limit results', type=int, default=500)
+    d_parser.add_argument('--client', help='limit result to client')
+    d_parser.add_argument('--start', help='start unix epoch')
+    d_parser.add_argument('--end', help='end unix epoch')
     d_parser.set_defaults(func=handle_details)
 
     if len(sys.argv)==1:
