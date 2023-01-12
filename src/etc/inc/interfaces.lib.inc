@@ -166,7 +166,7 @@ function legacy_bridge_member($ifs, $member)
 
 function legacy_vlan_tag($ifs, $member, $tag, $pcp, $proto)
 {
-    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlandev ' . escapeshellarg($member) . ' vlan ' . escapeshellarg($tag) . ' vlanpcp ' . escapeshellarg($pcp) . ' vlanproto ' . escapeshellarg($proto);
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' vlan ' . escapeshellarg($tag) . ' vlandev ' . escapeshellarg($member) . ' vlanpcp ' . escapeshellarg($pcp) . ' vlanproto ' . escapeshellarg($proto);
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
