@@ -3467,6 +3467,8 @@ function get_real_interface($interface = 'wan', $family = 'all')
 
             if ($family == 'inet6') {
                 switch ($cfg['ipaddrv6'] ?? '') {
+                    case 'pppoev6':
+                        break;
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
