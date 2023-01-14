@@ -3453,46 +3453,47 @@ function get_real_interface($interface = 'wan', $family = 'all')
         /* XXX legacy cruft ends here */
         default:
             if (empty($config['interfaces'][$interface])) {
-                /* assume the interface exists, most code does not verify our return value anyway */
+                /* assume the interface exists to force an error elsewhere */
                 break;
             }
 
             $cfg = &config_read_array('interfaces', $interface);
 
+            /* set default for IPv4 and IPv6 lookups */
             $realif = $cfg['if'];
 
-            if (isset($cfg['wireless']) && !strstr($cfg['if'], '_wlan')) {
+            if (isset($cfg['wireless']) && !strstr($realif, '_wlan')) {
                 $realif .= '_wlan0';
             }
 
             if ($family == 'inet6') {
-                switch ($cfg['ipaddrv6'] ?? '') {
-                    case 'pppoev6':
-                        break;
+                switch ($cfg['ipaddrv6'] ?? 'none') {
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
                         break;
-                    default:
-                        switch ($cfg['ipaddr'] ?? '') {
+                    case 'dhcp6':
+                    case 'slaac':
+                    case 'staticv6':
+                        if (isset($cfg['dhcp6usev4iface'])) {
+                            /* keep preset as requested */
+                            break;
+                        }
+                        switch ($cfg['ipaddr'] ?? 'none') {
                             case 'l2tp':
-                            case 'ppp':
                             case 'pppoe':
                             case 'pptp':
-                                $realif = get_ppp_parent($cfg['if']);
-                                if (isset($cfg['dhcp6usev4iface']) || strpos($realif, '/') === 0) {
-                                    /* parent interface not usable on user request or if device node */
-                                    $realif = $cfg['if'];
-                                }
+                                /* except for "ppp" all have parent interfaces */
+                                $realif = get_ppp_parent($realif);
                                 break;
                             default:
-                                /* already set in IPv4 default case */
                                 break;
                         }
                         break;
+                    default:
+                        break;
                 }
             }
-
             break;
     }
 
