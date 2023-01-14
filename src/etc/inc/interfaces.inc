@@ -3453,12 +3453,13 @@ function get_real_interface($interface = 'wan', $family = 'all')
         /* XXX legacy cruft ends here */
         default:
             if (empty($config['interfaces'][$interface])) {
-                /* assume the interface exists, most code does not verify our return value anyway */
+                /* assume the interface exists to force an error elsewhere */
                 break;
             }
 
             $cfg = &config_read_array('interfaces', $interface);
 
+            /* set default for IPv4 and IPv6 lookups */
             $realif = $cfg['if'];
 
             if (isset($cfg['wireless']) && !strstr($cfg['if'], '_wlan')) {
@@ -3474,25 +3475,24 @@ function get_real_interface($interface = 'wan', $family = 'all')
                         $realif = "{$interface}_stf";
                         break;
                     default:
+                        /* XXX integration is still suboptimal making wild assumptions with "default" label */
                         switch ($cfg['ipaddr'] ?? '') {
                             case 'l2tp':
                             case 'ppp':
                             case 'pppoe':
                             case 'pptp':
-                                $realif = get_ppp_parent($cfg['if']);
-                                if (isset($cfg['dhcp6usev4iface']) || strpos($realif, '/') === 0) {
-                                    /* parent interface not usable on user request or if device node */
-                                    $realif = $cfg['if'];
+                                $parent = get_ppp_parent($realif);
+                                if (!isset($cfg['dhcp6usev4iface']) && strpos($parent, '/') !== 0) {
+                                    /* deliver parent on request as long as it is not a device node */
+                                    $realif = $parent;
                                 }
                                 break;
                             default:
-                                /* already set in IPv4 default case */
                                 break;
                         }
                         break;
                 }
             }
-
             break;
     }
 
