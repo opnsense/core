@@ -127,10 +127,10 @@ class Gateways
                 case 'dhcp6':
                 case 'slaac':
                 case 'staticv6':
-                    if (isset($cfg['dhcp6usev4iface'])) {
+                    if (isset($ifcfg['dhcp6usev4iface'])) {
                         break;
                     }
-                    switch ($cfg['ipaddr'] ?? 'none') {
+                    switch ($ifcfg['ipaddr'] ?? 'none') {
                         case 'l2tp':
                         case 'pppoe':
                         case 'pptp':
