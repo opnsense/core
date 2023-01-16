@@ -3467,29 +3467,30 @@ function get_real_interface($interface = 'wan', $family = 'all')
             }
 
             if ($family == 'inet6') {
-                switch ($cfg['ipaddrv6'] ?? '') {
-                    case 'pppoev6':
-                        break;
+                switch ($cfg['ipaddrv6'] ?? 'none') {
                     case '6rd':
                     case '6to4':
                         $realif = "{$interface}_stf";
                         break;
-                    default:
-                        /* XXX integration is still suboptimal making wild assumptions with "default" label */
-                        switch ($cfg['ipaddr'] ?? '') {
+                    case 'dhcp6':
+                    case 'slaac':
+                    case 'staticv6':
+                        if (isset($cfg['dhcp6usev4iface'])) {
+                            /* keep preset as requested */
+                            break;
+                        }
+                        switch ($cfg['ipaddr'] ?? 'none') {
                             case 'l2tp':
-                            case 'ppp':
                             case 'pppoe':
                             case 'pptp':
-                                $parent = get_ppp_parent($realif);
-                                if (!isset($cfg['dhcp6usev4iface']) && strpos($parent, '/') !== 0) {
-                                    /* deliver parent on request as long as it is not a device node */
-                                    $realif = $parent;
-                                }
+                                /* except for "ppp" all have parent interfaces */
+                                $realif = get_ppp_parent($realif);
                                 break;
                             default:
                                 break;
                         }
+                        break;
+                    default:
                         break;
                 }
             }
