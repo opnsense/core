@@ -3462,7 +3462,7 @@ function get_real_interface($interface = 'wan', $family = 'all')
             /* set default for IPv4 and IPv6 lookups */
             $realif = $cfg['if'];
 
-            if (isset($cfg['wireless']) && !strstr($cfg['if'], '_wlan')) {
+            if (isset($cfg['wireless']) && !strstr($realif, '_wlan')) {
                 $realif .= '_wlan0';
             }
 
