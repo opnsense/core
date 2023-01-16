@@ -136,7 +136,7 @@ class Gateways
                         case 'pptp':
                             if (!empty($this->configHandle->ppps)) {
                                 foreach ($this->configHandle->ppps->children() as $ppp) {
-                                    if ($realif == $ppp['if']) {
+                                    if ($realif == $ppp->if) {
                                         $ports = explode(',', $ppp->ports);
                                         $realif = $this->getRealInterface($definedIntf, $ports[0]);
                                         break;
