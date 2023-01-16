@@ -195,7 +195,10 @@ class Gateways
                             // default address family
                             $gw_arr['ipprotocol'] = 'inet';
                         }
-                        $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
+                        // Make sure to use the tunnel interface for 6rd and 6to4 setups.
+                        $ifname = $gw_arr["interface"];
+                        $ifcfg = $definedIntf[$ifname];
+                        $gw_arr["if"] = $gw_arr['ipprotocol'] == 'inet6' && in_array($ifcfg['ipaddrv6'] ?? null, ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
                         $gw_arr["attribute"] = $i++;
                         if (Util::isIpAddress($gateway->gateway)) {
                             if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
