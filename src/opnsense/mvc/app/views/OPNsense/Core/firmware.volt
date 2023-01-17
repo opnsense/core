@@ -26,7 +26,7 @@
  #}
 
 <style>
-/* "dropdown in responsive table" issue workaround: display dummy road so dropdowns fits the table */
+    /* "dropdown in responsive table" issue workaround: display dummy road so dropdowns fits the table */
     @media screen and (max-width: 767px) {
         .dropdown_helper {
             display: block !important;
