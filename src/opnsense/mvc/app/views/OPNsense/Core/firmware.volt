@@ -36,6 +36,7 @@
         display: none;
     }
 </style>
+
 <script>
 
     function generic_search(that, entries) {
