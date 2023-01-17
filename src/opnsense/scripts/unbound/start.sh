@@ -34,32 +34,43 @@ for FILE in $(find /var/unbound/etc -depth 1); do
 	rm -rf ${FILE}
 done
 
-# if the root.key file is missing or damaged, run unbound-anchor
+# XXX remove obsolete file, last used in 22.7
+rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
+
+# copy includes
+for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); do
+	cp ${FILE} /var/unbound/etc/
+done
+
+# check config
 cd /var/unbound/
-if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
-	# unbound-anchor has undefined behaviour if file is corrupted, start clean
-	rm -f /var/unbound/root.key
+# if trust anchor file specified and key file is missing or damaged, run unbound-anchor
+if ! check_output=$(/usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2>&1); then
+	if ! $(echo "$check_output" | grep -q 'root.key'); then
+		# checkconf error but not trust anchor related. there is nothing we can do
+		msg="$(echo "$check_output" | tr '\n' ';')"
+		logger -s -t unbound -p user.error "unbound-checkconf error. output was: $msg"
+		exit 1
+	else
+		# anchor file specified but the root key is missed or corrupted
+		logger -s -t unbound -p user.debug "unbound-checkconf error. dnssec root key is missing or corrupted. update the key"
+		# unbound-anchor has undefined behaviour if file is corrupted, start clean
+		rm -f /var/unbound/root.key
 
-	# if we are in forwarding mode, prefer to use the configured system nameservers
-	if [ -s /var/unbound/resolv.conf.root ]; then
-		OPT_RESOLVE="-Rf /var/unbound/resolv.conf.root"
+		# if we are in forwarding mode, prefer to use the configured system nameservers
+		if [ -s /var/unbound/resolv.conf.root ]; then
+			OPT_RESOLVE="-Rf /var/unbound/resolv.conf.root"
+		fi
+
+		# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
+		# always let this succeed
+		chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE}
 	fi
-
-	# unbound-anchor exits with 1 on failover, since we would still like to start unbound,
-	# always let this succeed
-	chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a /var/unbound/root.key ${OPT_RESOLVE}
 fi
 
 if [ ! -f /var/unbound/unbound_control.key ]; then
 	chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d /var/unbound
 fi
-
-for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); do
-	cp ${FILE} /var/unbound/etc/
-done
-
-# XXX remove obsolete file, last used in 22.7
-rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
 
 chown -R unbound:unbound /var/unbound
 
