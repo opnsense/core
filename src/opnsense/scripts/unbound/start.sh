@@ -63,7 +63,12 @@ rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
 
 chown -R unbound:unbound /var/unbound
 
-/usr/local/sbin/unbound -c /var/unbound/unbound.conf
+if ! start_output=$(/usr/local/sbin/unbound -c /var/unbound/unbound.conf 2>&1); then
+        msg="$(echo "$start_output" | tr '\n' ';')"
+	logger -s -t unbound -p user.error "unbound start failed. output was: $msg"
+	exit 1
+fi
+
 /usr/local/opnsense/scripts/unbound/cache.sh load
 
 if [ -n "${DOMAIN}" ]; then
