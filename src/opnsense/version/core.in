@@ -11,6 +11,7 @@
     "product_name": "%%CORE_PRODUCT%%",
     "product_nickname": "%%CORE_NICKNAME%%",
     "product_series": "%%CORE_SERIES%%",
+    "product_tier": "1",
     "product_version": "%%CORE_PKGVERSION%%",
     "product_website": "%%CORE_WWW%%"
 }
