@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ OUTPUT=
 DO_CHECK=
 DO_ORIGIN=
 
-while getopts AacefHilNnOsVvwx OPT; do
+while getopts AacefHilNnOstVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -71,6 +71,9 @@ while getopts AacefHilNnOsVvwx OPT; do
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
+		;;
+	t)
+		OUTPUT="${OUTPUT} \${product_tier}"
 		;;
 	V)
 		OUTPUT="${OUTPUT} \${product_series}"
@@ -130,7 +133,7 @@ fi
 case "${TARGET}" in
 core)
 	if [ -z "${OUTPUT}" ]; then
-		OUTPUT="${DEFAULTS} \(\${product_arch}/\${product_flavour}\)"
+		OUTPUT="${DEFAULTS}"
 	fi
 
 	if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
