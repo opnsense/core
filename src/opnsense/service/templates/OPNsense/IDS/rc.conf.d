@@ -3,6 +3,9 @@
 {% if not helpers.empty('OPNsense.IDS.general.enabled') %}
 suricata_setup="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
+{% if not helpers.empty('OPNsense.IDS.general.verbosity') %}
+suricata_flags="-{{OPNsense.IDS.general.verbosity}}"
+{% endif %}
 {% if OPNsense.IDS.general.ips|default("0") == "1" %}
 # IPS mode, switch to netmap
 suricata_netmap="YES"
