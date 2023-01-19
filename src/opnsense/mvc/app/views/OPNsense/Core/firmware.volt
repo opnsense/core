@@ -825,7 +825,7 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <div id="update_status_container table-responsive">
+                    <div id="update_status_container" class="table-responsive">
                        <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly="readonly" style="max-width:100%; font-family: monospace;"></textarea>
                       <table class="table table-striped table-condensed">
                         <tbody>
