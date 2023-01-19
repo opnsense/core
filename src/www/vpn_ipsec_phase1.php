@@ -994,7 +994,7 @@ endforeach; ?>
 <?php
                       foreach (auth_get_authserver_list() as $auth_server):
                         if ($auth_server['type'] == "radius"):?>
-                        <option value="<?=$auth_server['name'];?>" <?=in_array($auth_server['name'],$pconfig['authservers']) ? 'selected="selected"' : "";?>>
+                        <option value="<?=$auth_server['name'];?>" <?=!empty($pconfig['authservers']) && in_array($auth_server['name'] ?? '', $pconfig['authservers']) ? 'selected="selected"' : "";?>>
                           <?=htmlspecialchars($auth_server['name']);?>
                         </option>
 <?php
