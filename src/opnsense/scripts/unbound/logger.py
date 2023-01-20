@@ -118,7 +118,7 @@ class DNSReader:
         # as per PEP 475. This will force select() or open() to return so we can free up any resources.
         raise InterruptedError()
 
-    def _close_logger(self):
+    def close_logger(self):
         syslog.syslog(syslog.LOG_NOTICE, "Closing logger")
         # we might be killing the process before open() has had a chance to return,
         # so check if the file descriptor is there
@@ -189,7 +189,7 @@ class DNSReader:
             # open() will block until a query has been pushed down the fifo
             self.fd = open(self.target_pipe, 'r')
         except InterruptedError:
-            self._close_logger()
+            self.close_logger()
         except OSError:
             syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
             sys.exit(1)
@@ -197,19 +197,26 @@ class DNSReader:
         self.selector.register(self.fd.fileno(), selectors.EVENT_READ, self._read)
 
         while True:
+            # select() will block until a file object is ready. To handle a SIGTERM we raise
+            # an exception in the signal handler, see _sig() for further details. On an exception
+            # events will return an empty list (see https://docs.python.org/3/library/selectors.html#selectors.BaseSelector.select)
             events = self.selector.select()
-            # events will be an empty list if a SIGTERM comes in, see _sig() above
             if not events:
-                self._close_logger()
+                self.close_logger()
             for key, mask in events:
                 callback = key.data
                 if not callback(key.fileobj, mask):
                     # unbound closed pipe
-                    self._close_logger()
+                    self.close_logger()
 
 def run(pipe, flush_interval):
     r = DNSReader(pipe, flush_interval)
-    r.run_logger()
+    try:
+        r.run_logger()
+    except InterruptedError:
+        r.close_logger()
+    except Exception:
+        raise
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
