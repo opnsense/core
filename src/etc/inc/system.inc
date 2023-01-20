@@ -418,6 +418,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 
         $gwkey = "dns{$dnscounter}gw";
         $gateway = null;
+        $dnsif = null;
 
         if (!empty($syscfg[$gwkey]) && $syscfg[$gwkey] != 'none') {
             /* if a gateway is attached figure out the interface and address */
