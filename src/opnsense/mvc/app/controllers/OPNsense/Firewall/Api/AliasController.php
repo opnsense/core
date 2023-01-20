@@ -123,7 +123,7 @@ class AliasController extends ApiMutableModelControllerBase
         $old_name = $node != null ? (string)$node->name : null;
         if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("alias")) {
             $new_name = $this->request->getPost("alias")['name'];
-            if ($new_name != $old_name) {
+            if ($new_name !== null && $new_name != $old_name) {
                 // replace aliases, setBase() will synchronise the changes to disk
                 $this->getModel()->refactor($old_name, $new_name);
             }
