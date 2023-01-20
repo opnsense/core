@@ -1026,7 +1026,8 @@ function interface_ppps_configure($interface)
         }
     }
 
-    $ipv6_mode = ($ifcfg['ipaddrv6'] ?? 'none') == 'pppoev6' ? 'enable' : 'disable';
+    /* XXX should be limited to 'pppoev6' match but some ISPs seem to require both racing away */
+    $ipv6_mode = ($ifcfg['ipaddrv6'] ?? 'none') != 'none' ? 'enable' : 'disable';
 
     // Construct the mpd.conf file
     $mpdconf = <<<EOD
