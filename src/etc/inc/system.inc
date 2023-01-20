@@ -509,11 +509,16 @@ function system_host_route($host, $gateway)
         return;
     }
 
-    mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
-
-    if ($host != $gateway) {
-        mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
+    /*
+     * If the gateway is the same as the host we do not add a route
+     * as this is not needed and may also break the routing table.
+     */
+    if ($host == $gateway) {
+        return;
     }
+
+    mwexecf('/sbin/route delete -host -%s %s', [$family, $host], true);
+    mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
 function system_default_route($gateway, $family, $interface, $far = false)
