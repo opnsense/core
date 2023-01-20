@@ -179,7 +179,7 @@ class DNSReader:
         return True
 
     def run_logger(self):
-        # override the Daemonize signal handler
+        # set a signal handler
         signal.signal(signal.SIGINT, self._sig)
         signal.signal(signal.SIGTERM, self._sig)
 
@@ -213,7 +213,6 @@ def run(pipe, flush_interval):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pid', help='pid file location', default='/var/run/unbound_logger.pid')
     parser.add_argument('--pipe', help='named pipe file location', default='/var/unbound/data/dns_logger')
     parser.add_argument('--flush_interval', help='interval to flush to db', default=10)
 
