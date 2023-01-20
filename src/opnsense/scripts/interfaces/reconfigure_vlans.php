@@ -54,9 +54,10 @@ if (file_exists($vfilename) && filesize($vfilename) > 0) {
 if (!empty($config['vlans']['vlan'])) {
     foreach ($config['vlans']['vlan'] as $vlan) {
         $all_vlans[$vlan['vlanif']] = $vlan;
-        if (!in_array($vlan['vlanif'], $all_parents)) {
-            $all_parents[] = $vlan['vlanif'];
+        if (!isset($all_parents[$vlan['if']])) {
+            $all_parents[$vlan['if']] = 0;
         }
+        $all_parents[$vlan['if']]++ ;
     }
 }
 
@@ -67,7 +68,7 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
     }
     if (isset($all_vlans[$ifname])) {
         $vlan = $all_vlans[$ifname];
-        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
+        $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
         $cvlan = $ifdetails['vlan'];
         if (empty($vlan)) {
             // option 1: removed vlan

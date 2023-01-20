@@ -154,11 +154,14 @@ function interfaces_vlan_configure($verbose = false)
     $all_parents = [];
     foreach ($config['vlans']['vlan'] as $vlan) {
         if (!in_array($vlan['vlanif'], $all_parents)) {
-            $all_parents[] = $vlan['vlanif'];
+            if (!isset($all_parents[$vlan['if']])) {
+                $all_parents[$vlan['if']] = 0;
+            }
+            $all_parents[$vlan['if']]++ ;
         }
     }
     foreach ($config['vlans']['vlan'] as $vlan) {
-        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
+        $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
         _interfaces_vlan_configure($vlan);
     }
 
