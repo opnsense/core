@@ -972,9 +972,14 @@ function ipsec_write_strongswan_conf()
     if (isset($a_client['enable'])) {
         $net_list = [];
         if (isset($a_client['net_list'])) {
-            foreach ($a_phase2 as $ph2ent) {
-                if (!isset($ph2ent['disabled']) && isset($ph1ent['mobile'])) {
-                    $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+            foreach ($a_phase1 as $ph1ent) {
+                if (isset($ph1ent['disabled']) || !isset($ph1ent['mobile'])) {
+                    continue;
+                }
+                foreach ($a_phase2 as $ph2ent) {
+                    if ($ph1ent['ikeid'] == $ph2ent['ikeid'] && !isset($ph2ent['disabled']) && !empty($ph2ent['localid'])) {
+                        $net_list[] = ipsec_idinfo_to_cidr($ph2ent['localid'], true, $ph2ent['mode']);
+                    }
                 }
             }
         }
