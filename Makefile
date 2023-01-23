@@ -29,9 +29,9 @@ all:
 .include "Mk/defaults.mk"
 
 CORE_ABI?=	23.1
-CORE_MESSAGE?=	TBA
+CORE_MESSAGE?=	I'm no chicken
 CORE_NAME?=	opnsense
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Quintessential Quail
 CORE_TYPE?=	community
 
 .for REPLACEMENT in ABI PHP PYTHON
