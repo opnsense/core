@@ -59,7 +59,7 @@
     margin: 5px;
 }
 
-.list-group {
+.list-group-wrapper {
     margin: 0px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -71,10 +71,6 @@
 
 .list-group-item-border {
     border: 1px solid #ddd;
-}
-
-.list-group-item > text {
-    font-size: 35px;
 }
 
 .list-group-item-border:first-child {
@@ -95,11 +91,26 @@
     background: #f7f7f7;
 }
 
+.top-item {
+    display: flex;
+    white-space: nowrap;
+}
+
+.group-p {
+    overflow: hidden;
+    height: 20px;
+    margin-right: 5px;
+    text-overflow: ellipsis;
+}
+
 .counter {
-    float: right;
+    position: relative;
+    top: -3px;
     color: #3c3c3b;
     font-size: 14px;
     line-height: 1.4;
+    flex: 1;
+    text-align: right;
 }
 
 .vertical-center {
