@@ -304,8 +304,6 @@ function plugins_run($hook, $args = [])
 {
     $ret = [];
 
-    log_msg(sprintf('plugins_run %s (%s)', $hook, implode(',', $args)), LOG_INFO);
-
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;
@@ -333,12 +331,6 @@ function plugins_run($hook, $args = [])
                     if ($argc > count($args)) {
                         $argc = count($args);
                     }
-                    log_msg(sprintf(
-                        'plugins_run %s (execute task : %s(%s))',
-                        $hook,
-                        $argf,
-                        implode(',', array_slice($args, 0, $argc))
-                    ), LOG_DEBUG);
                     try {
                         $result = call_user_func_array($argf, array_slice($args, 0, $argc));
                         if (!empty($result)) {
