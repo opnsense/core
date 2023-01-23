@@ -203,7 +203,7 @@ class MenuSystem
         if ($config->interfaces->count() > 0) {
             if ($config->ifgroups->count() > 0) {
                 foreach ($config->ifgroups->children() as $key => $node) {
-                    if (empty($node->members)) {
+                    if (empty($node->members) || !empty($node->nogroup)) {
                         continue;
                     }
                     /* we need both if and gr reference */

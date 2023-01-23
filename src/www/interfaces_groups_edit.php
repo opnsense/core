@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ifname'] = isset($a_ifgroups[$id]['ifname']) ? $a_ifgroups[$id]['ifname'] : null;
     $pconfig['descr'] = isset($a_ifgroups[$id]['descr']) ?  $a_ifgroups[$id]['descr'] : null;
     $pconfig['members'] = isset($a_ifgroups[$id]['members']) ? explode(' ', $a_ifgroups[$id]['members']) : array();
+    $pconfig['nogroup'] = isset($a_ifgroups[$id]['nogroup']) ?  $a_ifgroups[$id]['nogroup'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
     if (!empty($a_ifgroups[$_POST['id']])) {
@@ -89,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $ifgroupentry['members'] = implode(' ', $pconfig['members']);
       $ifgroupentry['descr'] = $pconfig['descr'];
       $ifgroupentry['ifname'] = $pconfig['ifname'];
+      $ifgroupentry['nogroup'] = $pconfig['nogroup'] ?? null;
 
       if (isset($id)) {
           // rename interface group
@@ -223,6 +225,13 @@ legacy_html_escape_form_data($pconfig);
                       <div class="hidden" data-for="help_for_members">
                         <?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
                       </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('GUI groups') ?></td>
+                    <td>
+                      <input type="checkbox" name="nogroup" value="1" <?= !empty($pconfig['nogroup']) ? 'checked="checked"' : '' ?>/>
+                      <?= gettext('Prevent grouping these members in the interfaces menu section') ?>
                     </td>
                   </tr>
                   <tr>
