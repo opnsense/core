@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $ifgroupentry['members'] = implode(' ', $pconfig['members']);
       $ifgroupentry['descr'] = $pconfig['descr'];
       $ifgroupentry['ifname'] = $pconfig['ifname'];
-      $ifgroupentry['nogroup'] = $pconfig['nogroup'];
+      $ifgroupentry['nogroup'] = $pconfig['nogroup'] ?? null;
 
       if (isset($id)) {
           // rename interface group
@@ -228,12 +228,10 @@ legacy_html_escape_form_data($pconfig);
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_nogroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Prevent grouping in menu') ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('GUI groups') ?></td>
                     <td>
-                      <input type="checkbox" name="nogroup" value="1" <?=!empty($pconfig['nogroup']) ? "checked=\"checked\"" : ""?> />
-                      <div class="hidden" data-for="help_for_nogroup">
-                        <?=gettext("Prevent grouping these interfaces in the Interfaces menu section");?>
-                      </div>
+                      <input type="checkbox" name="nogroup" value="1" <?= !empty($pconfig['nogroup']) ? 'checked="checked"' : '' ?>/>
+                      <?= gettext('Prevent grouping these members in the interfaces menu section') ?>
                     </td>
                   </tr>
                   <tr>
