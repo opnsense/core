@@ -406,7 +406,7 @@
                     let bl = statObj.hasOwnProperty('blocklist') ? '(' + statObj.blocklist + ')' : '';
                     $('#' + id).append(
                         '<li class="list-group-item list-group-item-border top-item">' +
-                        (i + 1) + '. ' + domain + ' ' + bl +
+                        '<p class="group-p">' + (i + 1) + '. ' + domain + ' ' + bl + '&nbsp </p>' +
                         '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)' +
                         icon +
                         '</span></li>'
@@ -772,7 +772,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="top-list">
-                                <ul class="list-group" id="top">
+                                <ul class="list-group list-group-wrapper" id="top">
                                     <li class="list-group-item list-group-item-border">
                                         <b>{{ lang._('Top passed domains') }}</b>
                                     </li>
@@ -781,7 +781,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="top-list">
-                                <ul class="list-group" id="top-blocked">
+                                <ul class="list-group list-group-wrapper" id="top-blocked">
                                     <li class="list-group-item list-group-item-border">
                                         <b>{{ lang._('Top blocked domains') }}</b>
                                     </li>
