@@ -50,9 +50,10 @@ class DNSReader:
         self.fd = None
 
         self.client_map = {}
+        self.update_clients = []
         self.update_hostname = False
 
-    def resolve_ip(self, ip, timeout=0.01):
+    def _resolve_ip(self, ip, timeout=0.01):
         # if a host is known locally, we should be able to resolve it sub 10ms
         if ip is None:
             return
@@ -136,12 +137,7 @@ class DNSReader:
         q = tuple(r.strip("\n").split())
         self.buffer.append(q)
 
-        client = q[2]
-        client_check = (time.time() - self.client_map.get(client, 0)) > 3600
-        if client_check:
-            self.client_map[client] = time.time()
-            syslog.syslog(syslog.LOG_INFO, "Update hostname for client %s" % client)
-            self.update_hostname = True
+        self.update_clients.append(q[2])
 
         # Start a transaction every flush_interval seconds. With regular inserts
         # we would also need to limit the amount of queries we buffer before inserting them,
@@ -168,13 +164,16 @@ class DNSReader:
                     # faster than transactional inserts, and doesn't block even under high load.
                     db.connection.append('query', pandas.DataFrame(list(self.buffer)))
                     self.buffer.clear()
-                if self.update_hostname:
-                    host = self.resolve_ip(client)
-                    # host can be None
-                    try:
-                        db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
-                    except duckdb.ConstraintException:
-                        db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
+                for client in self.update_clients:
+                    # attempt to resolve every client IP we've seen in between intervals (if necessary)
+                    client_check = (time.time() - self.client_map.get(client, 0)) > 3600
+                    if client_check:
+                        self.client_map[client] = time.time()
+                        host = self._resolve_ip(client)
+                        try:
+                            db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
+                        except duckdb.ConstraintException:
+                            db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
 
         return True
 
