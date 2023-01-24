@@ -33,6 +33,7 @@ import time
 import syslog
 import traceback
 import subprocess
+import sqlite3
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB
@@ -236,6 +237,11 @@ def main():
             break
         except SystemExit:
             break
+        except sqlite3.DatabaseError:
+            # try to repair a broken sqlite database if it apears to be broken after using a table
+            syslog.syslog(syslog.LOG_ERR, "Forcefully repair database (%s)" % traceback.format_exc().replace("\n", " "))
+            check_and_repair('/var/captiveportal/captiveportal.sqlite', force_repair=True)
+            time.sleep(60)
         except:
             syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
             print(traceback.format_exc())
