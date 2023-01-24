@@ -213,34 +213,34 @@ class ModuleContext:
 
         return True
 
-def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
-                           region, **kwargs):
+def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
 
     # rep.ttl is stored as an epoch, so convert it to remaining seconds
-    ttl = rep.ttl - int(time.time())
+    ttl = (rep.ttl - int(time.time())) if rep else 0
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, rep.security, ttl)
+    security = rep.security if rep else 0
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, security, ttl)
     return True
 
-def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
-                           region, **kwargs):
+def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, rep.security, rep.ttl)
+    security = rep.security if rep else 0
+    ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, security, rep.ttl if rep else 0)
     return True
 
-def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out,
-                              region, **kwargs):
+def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     ctx = mod_env['context']
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, rep.security, rep.ttl)
+    security = rep.security if rep else 0
+    ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, security, rep.ttl if rep else 0)
     return True
 
 def init_standard(id, env):
@@ -290,7 +290,7 @@ def operate(id, event, qstate, qdata):
             ttl = 0
 
             if qstate.return_msg:
-                r = qstate.return_msg.rep
+                r = qstate.return_msg.rep if qstate.return_msg.rep else 0
                 dnssec = r.security
                 rcode = r.flags & 0xF
                 ttl = r.ttl
