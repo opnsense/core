@@ -156,7 +156,7 @@ class CPBackgroundProcess(object):
                 elif db_client['authenticated_via'] == '---mac---':
                     # detect mac changes
                     current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip is not None:
+                    if current_ip is not None and db_client['ipAddress'] != current_ip:
                         if db_client['ipAddress'] != '':
                             # remove old ip
                             self.ipfw.delete(zoneid, db_client['ipAddress'])
