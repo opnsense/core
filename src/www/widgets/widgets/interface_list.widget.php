@@ -164,9 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
     <td style="width:43%; word-break: break-word;">
-      <?= htmlspecialchars($ifinfo['ipaddr']) ?>
+      <?= htmlspecialchars($ifinfo['ipaddr'] ?? '') ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= htmlspecialchars(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+      <?= htmlspecialchars((interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?? '') ?>
     </td>
   </tr>
 <?php endforeach ?>

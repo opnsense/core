@@ -130,7 +130,7 @@ abstract class Rule
      */
     protected function parsePlainCurly($value, $prefix = "", $suffix = "")
     {
-        if (strpos($value, '$') === false) {
+        if ($value !== null && strpos($value, '$') === false) {
             // don't wrap aliases in curly brackets
             $prefix = $prefix . "{";
             $suffix = "}" . $suffix;
