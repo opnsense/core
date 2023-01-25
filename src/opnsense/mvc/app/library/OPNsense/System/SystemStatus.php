@@ -49,7 +49,6 @@ class SystemStatus
     private function collectStatus()
     {
         $result = [];
-        $statusCodes = [];
         $all = glob(__DIR__ . '/Status/*.php');
         $classes = array_map(function ($file) {
             if (strpos($file, 'Status') !== false) {
