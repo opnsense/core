@@ -3886,9 +3886,11 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
-        $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
-        if (!empty($aux)) {
-            $ifinfo['prefixv6'] = $aux;
+        if (!empty($ifinfo['ifv6'])) {
+            $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
+            if (!empty($aux)) {
+                $ifinfo['prefixv6'] = $aux;
+            }
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
@@ -3953,7 +3955,7 @@ function get_interfaces_info($include_unlinked = false)
                 break;
         }
 
-        if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
+        if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid") && !empty($ifinfo['if'])) {
             $sec = intval(trim(shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ' . escapeshellarg($ifinfo['if']))));
             if ($sec) {
                 $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
