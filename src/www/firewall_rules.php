@@ -127,7 +127,7 @@ function firewall_rule_item_proto($filterent)
         $result = $record_ipprotocol;
         $result .= sprintf(
           "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
-          html_safe($icmp6types[$filterent['icmp6-type']]),
+          isset($icmp6types[$filterent['icmp6-type']]) ? html_safe($icmp6types[$filterent['icmp6-type']]) : '',
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
         );
         return $result;
@@ -156,9 +156,9 @@ function firewall_rule_item_icons($filterent)
             gettext("any")
         );
     }
-    if (empty($filterent['floating']) && $filterent['quick'] === null){
+    if (empty($filterent['floating']) && !isset($filterent['quick'])){
         $is_quick = true;
-    } elseif (!empty($filterent['floating']) && $filterent['quick'] === null) {
+    } elseif (!empty($filterent['floating']) && !isset($filterent['quick'])) {
         $is_quick = false;
     } else {
         $is_quick = $filterent['quick'];
@@ -181,7 +181,11 @@ function firewall_rule_item_icons($filterent)
 
 function firewall_rule_item_action($filterent)
 {
-    if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
+    if (!isset($filterent['type']) && empty($filterent['disabled'])) {
+        return "fa fa-play fa-fw text-success";
+    } elseif (!isset($filterent['type']) && !empty($filterent['disabled'])) {
+        return "fa fa-play fa-fw text-muted";
+    } elseif ($filterent['type'] == "block" && empty($filterent['disabled'])) {
         return "fa fa-times fa-fw text-danger";
     } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
         return "fa fa-times fa-fw text-muted";
@@ -198,7 +202,7 @@ function firewall_rule_item_action($filterent)
 
 function firewall_rule_item_log($filterent)
 {
-    if ($filterent['log'] == true) {
+    if (!empty($filterent['log'])) {
         return "fa fa-info-circle fa-fw text-info";
     } else {
         return "fa fa-info-circle fa-fw text-muted";
@@ -537,11 +541,14 @@ $( document ).ready(function() {
   // hook category functionality
   hook_firewall_categories();
 
-  // expand internal auto generated rules
-  if ($("tr.internal-rule").length > 0) {
-      $("#expand-internal-rules").show();
-      $("#internal-rule-count").text($("tr.internal-rule").length);
-  }
+  // expand internal auto generated or related rules
+  $(".expand_type").each(function(){
+      let tmp = $(this).data('type');
+      if ($("tr."+tmp+"-rule").length > 0) {
+          $("#expand-"+tmp+"-rules").show();
+          $("#"+tmp+"-rule-count").text($("tr."+tmp+"-rule").length);
+      }
+  });
 
   // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
   $(".opnsense-rules > tbody > tr").each(function(){
@@ -560,12 +567,17 @@ $( document ).ready(function() {
           }
       });
   });
-  //
-  $("#expand-internal").click(function(event){
-      event.preventDefault();
-      $(".internal-rule").toggle();
-      $(".opnsense-rules").change();
+
+  $(".expand_type").each(function(){
+      let tmp = $(this).data('type');
+      $("#expand-"+tmp).click(function(event){
+          event.preventDefault();
+          $("."+tmp+"-rule").toggle();
+          $(".opnsense-rules").change();
+      });
   });
+
+  //
 });
 </script>
 <style>
@@ -675,36 +687,65 @@ $( document ).ready(function() {
                         </button>
                       </td>
                   </tr>
-                  <tr id="expand-internal-rules" style="display: none;">
-                      <td><i class="fa fa-folder-o text-muted"></i></td>
-                      <td></td>
-                      <td class="view-info" colspan="2"> </td>
-                      <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
-                      <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
-                      <td colspan="2" class="view-stats"></td>
-                      <td><?= gettext('Automatically generated rules') ?></td>
-                      <td>
-                          <button class="btn btn-default btn-xs" id="expand-internal">
-                            <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
-                            <span class="badge">
-                              <span id="internal-rule-count"><span>
-                            </span>
-                          </button>
-                      </td>
-                  </tr>
 <?php
+                $ifgroups = [];
+                foreach (config_read_array('ifgroups', 'ifgroupentry') as $ifgroup) {
+                    if (!empty($ifgroup['members']) && in_array($selected_if, explode(' ', $ifgroup['members']))) {
+                        $ifgroups[] = $ifgroup['ifname'];
+                    }
+                }
                 $fw = filter_core_get_initialized_plugin_system();
                 filter_core_bootstrap($fw);
                 plugins_firewall($fw);
+                filter_core_rules_user($fw);
+                $prev_origin = null;
+                $origin_texts = [
+                    'internal' => gettext('Automatically generated rules'),
+                    'floating' => gettext('Floating rules'),
+                    'group' => gettext('Group rules'),
+                ];
                 foreach ($fw->iterateFilterRules() as $rule):
-                    $is_selected = $rule->getInterface() == $selected_if || (
-                        ($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules"
-                    );
-                    if ($rule->isEnabled() && $is_selected):
+                    $is_selected = false;
+                    if ($rule->getInterface() == $selected_if) {
+                        // interface view and this interface is selected
+                        $is_selected = true;
+                    } elseif ($selected_if == "FloatingRules" && $rule->ruleOrigin() == 'floating') {
+                        // floating view, skip floating
+                        $is_selected = false;
+                    } elseif (($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules") {
+                        // floating type of rule and "floating" view
+                        $is_selected = true;
+                    } elseif ($rule->getInterface() == "" || in_array($selected_if, explode(',', $rule->getInterface())) || in_array($rule->getInterface(), $ifgroups)) {
+                        // rule is floating or of group type and matches this interface
+                        $is_selected = true;
+                    }
+                    if ($rule->isEnabled() && $is_selected && $rule->ruleOrigin() != 'interface'):
                         $filterent = $rule->getRawRule();
                         $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
-                        legacy_html_escape_form_data($filterent);?>
-                    <tr class="internal-rule" style="display: none;">
+                        legacy_html_escape_form_data($filterent);
+?>
+<?php
+                    if ($prev_origin != $rule->ruleOrigin()):?>
+                    <tr id="expand-<?=$rule->ruleOrigin();?>-rules" class="expand_type" data-type="<?=$rule->ruleOrigin();?>" style="display: none;">
+                        <td><i class="fa fa-folder-o text-muted"></i></td>
+                        <td></td>
+                        <td class="view-info" colspan="2"> </td>
+                        <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
+                        <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
+                        <td colspan="2" class="view-stats"></td>
+                        <td><?= $origin_texts[$rule->ruleOrigin()] ?></td>
+                        <td>
+                            <button class="btn btn-default btn-xs" id="expand-<?=$rule->ruleOrigin();?>">
+                              <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
+                              <span class="badge">
+                                <span id="<?=$rule->ruleOrigin();?>-rule-count"><span>
+                              </span>
+                            </button>
+                        </td>
+                    </tr>
+<?php
+                    endif;?>
+                    <tr class="<?=$rule->ruleOrigin();?>-rule" style="display: none;">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span>
@@ -743,6 +784,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
 <?php
+                    $prev_origin = $rule->ruleOrigin();
                     endif;
                 endforeach;?>
 <?php

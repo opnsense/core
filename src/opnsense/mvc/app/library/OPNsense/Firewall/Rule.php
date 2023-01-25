@@ -397,6 +397,25 @@ abstract class Rule
         return empty($this->rule['disabled']);
     }
 
+    public function ruleOrigin()
+    {
+
+        switch ($this->rule['#priority']) {
+            case 200000:
+                $origin = 'floating';
+                break;
+            case 300000:
+                $origin = 'group';
+                break;
+            case 400000:
+                $origin = 'interface';
+                break;
+            default:
+                $origin = 'internal';
+        }
+        return $origin;
+    }
+
     /**
      * return raw rule
      */
