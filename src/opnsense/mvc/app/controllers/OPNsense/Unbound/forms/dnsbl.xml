@@ -6,6 +6,13 @@
         <help>Enable the usage of DNS blocklists.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.safesearch</id>
+        <label>Enable SafeSearch</label>
+        <type>checkbox</type>
+        <style>safesearch</style>
+        <help>Enable the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
+    </field>
+    <field>
         <id>unbound.dnsbl.type</id>
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
