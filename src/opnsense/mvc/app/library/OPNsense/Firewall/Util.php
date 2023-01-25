@@ -252,7 +252,7 @@ class Util
      */
     public static function isPort($number, $allow_range = true)
     {
-        $tmp = explode(':', $number);
+        $tmp = $number !== null ? explode(':', $number) : [];
         foreach ($tmp as $port) {
             if (
                 (filter_var($port, FILTER_VALIDATE_INT, array(

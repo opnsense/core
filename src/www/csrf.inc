@@ -48,7 +48,7 @@ class LegacyCSRF
             );
             session_start();
             $secure = $config['system']['webgui']['protocol'] == 'https';
-            setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+            setcookie(session_name(), session_id(), 0, '/', '', $secure, true);
         }
         ob_start(array($this,'csrfRewriteHandler'), 5242880);
     }
