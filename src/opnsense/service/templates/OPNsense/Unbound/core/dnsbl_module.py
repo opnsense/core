@@ -221,7 +221,7 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     ttl = (rep.ttl - int(time.time())) if rep else 0
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    security = rep.security if rep else False
+    security = rep.security if rep else 0
     ctx.log_entry(*info, ACTION_PASS, SOURCE_CACHE, None, rcode, 0, security, ttl)
     return True
 
@@ -230,7 +230,7 @@ def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    security = rep.security if rep else False
+    security = rep.security if rep else 0
     ctx.log_entry(*info, ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, security, rep.ttl if rep else 0)
     return True
 
@@ -239,7 +239,7 @@ def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs)
     client = kwargs['repinfo']
 
     info = (int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str)
-    security = rep.security if rep else False
+    security = rep.security if rep else 0
     ctx.log_entry(*info, ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, security, rep.ttl if rep else 0)
     return True
 
@@ -290,7 +290,7 @@ def operate(id, event, qstate, qdata):
             ttl = 0
 
             if qstate.return_msg:
-                r = qstate.return_msg.rep
+                r = qstate.return_msg.rep if qstate.return_msg.rep else 0
                 dnssec = r.security
                 rcode = r.flags & 0xF
                 ttl = r.ttl
