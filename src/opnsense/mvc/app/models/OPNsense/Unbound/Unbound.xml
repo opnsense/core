@@ -108,6 +108,10 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <safesearch type="BooleanField">
+                <default>0</default>
+                <Required>N</Required>
+            </safesearch>
             <type type="OptionField">
                 <Required>N</Required>
                 <Multiple>Y</Multiple>

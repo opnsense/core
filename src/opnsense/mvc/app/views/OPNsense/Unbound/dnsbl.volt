@@ -28,16 +28,27 @@
 <script>
    $(document).ready(function() {
        var data_get_map = {'frm_dnsbl_settings':"/api/unbound/settings/get"};
+       let init_state = null;
        mapDataToFormUI(data_get_map).done(function(data){
            formatTokenizersUI();
            $('.selectpicker').selectpicker('refresh');
+           init_state = $('.safesearch').is(':checked');
        });
 
        $("#saveAct").SimpleActionButton({
           onPreAction: function() {
               const dfObj = new $.Deferred();
+              let safesearch_changed = !($('.safesearch').is(':checked') == init_state);
+              init_state = $('.safesearch').is(':checked');
               saveFormToEndpoint("/api/unbound/settings/set", 'frm_dnsbl_settings', function(){
-                  dfObj.resolve();
+                  if (safesearch_changed) {
+                      /* Restart Unbound and apply the DNSBL after it has finished */
+                      ajaxCall('/api/unbound/service/reconfigure', {}, function(data,status) {
+                          dfObj.resolve();
+                      });
+                  } else {
+                      dfObj.resolve();
+                  }
               });
               return dfObj;
           }
