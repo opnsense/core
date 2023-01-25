@@ -1272,11 +1272,8 @@ function ipsec_configure_do($verbose = false, $interface = '')
         /* try to stop charon */
         mwexec('/usr/local/etc/rc.d/strongswan onestop', true);
 
-        /* wait for process to die */
-        sleep(2);
-
         /* disallow IPSEC, it is off */
-        mwexec("/sbin/ifconfig enc0 down");
+        mwexec("/sbin/ifconfig enc0 down", true);
 
         return;
     } else {
