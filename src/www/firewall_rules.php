@@ -588,8 +588,8 @@ $( document ).ready(function() {
         width: 150px;
     }
     .opnsense-rules > tbody > tr > td {
-        padding-left:15px;
-        padding-right:15px;
+        padding-left:5px;
+        padding-right:5px;
     }
 </style>
 
@@ -661,6 +661,10 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Port') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Gateway') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Schedule') ?></strong></td>
+                      <td class="view-info">
+                          <strong><?= gettext('Intf') ?></strong>
+                          <i class="fa fa-question-circle"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies too'));?>"></i>
+                      </td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('Evaluations') ?></strong></td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('States') ?></strong></td>
                       <td class="view-stats"><strong><?= gettext('Packets') ?></strong></td>
@@ -720,6 +724,7 @@ $( document ).ready(function() {
                         $is_selected = true;
                     }
                     if ($rule->isEnabled() && $is_selected && $rule->ruleOrigin() != 'interface'):
+                        $intf_count = empty($rule->getInterface()) ? '*' : count(explode(',', $rule->getInterface()));
                         $filterent = $rule->getRawRule();
                         $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
                         legacy_html_escape_form_data($filterent);
@@ -733,6 +738,7 @@ $( document ).ready(function() {
                         <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
                         <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
                         <td colspan="2" class="view-stats"></td>
+                        <td class="view-info"></td>
                         <td><?= $origin_texts[$rule->ruleOrigin()] ?></td>
                         <td>
                             <button class="btn btn-default btn-xs" id="expand-<?=$rule->ruleOrigin();?>">
@@ -771,6 +777,10 @@ $( document ).ready(function() {
                         <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
+                      <td class="view-info">
+                          <!-- # interfaces -->
+                          <?=$intf_count;?>
+                      </td>
                       <td class="view-stats hidden-xs hidden-sm" id="<?=$rule->getLabel();?>_evaluations"><?= gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm">
                           <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" id="<?=$rule->getLabel();?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?=  gettext('N/A');?></a>
@@ -799,6 +809,7 @@ $( document ).ready(function() {
                   // calculate a hash so we can track these records in the ruleset, new style (mvc) code will
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
                   $rule_hash = OPNsense\Firewall\Util::calcRuleHash($a_filter_raw[$i]);
+                  $intf_count = empty($filterent['interface']) ? '*' : count(explode(',', $filterent['interface']));
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
@@ -913,6 +924,10 @@ $( document ).ready(function() {
                       *
 <?php
                        endif;?>
+                    </td>
+                    <td class="view-info">
+                      <!-- # interfaces -->
+                      <?=$intf_count;?>
                     </td>
                     <td class="view-stats hidden-xs hidden-sm" id="<?=$rule_hash;?>_evaluations"><?= gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm">
