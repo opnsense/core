@@ -623,17 +623,14 @@ function filter_core_rules_user($fw)
             $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
             $rule['#ref'] = sprintf('firewall_rules_edit.php?if=%s&id=%s', $intf, $idx);
             $rule['seq'] = $idx;  // current rule sequence (used as id in firewall pages)
-            $sched = '';
-            $descr = '';
 
+            if (empty($rule['descr'])) {
+                $rule['descr'] = '';
+            }
             if (!empty($rule['sched'])) {
-                $sched = "({$rule['sched']})";
-            }
-            if (!empty($rule['descr'])) {
-                $descr = ": {$rule['descr']}";
+                $rule['descr'] .= " ({$rule['sched']})";
             }
 
-            $rule['descr'] = "{$sched}{$descr}";
             if (isset($rule['floating'])) {
                 $prio = 200000;
             } elseif (in_array($rule['interface'], $ifgroups)) {
@@ -651,7 +648,7 @@ function filter_core_rules_user($fw)
                             }
                             /* disable rule, suffix label to mark end of schedule */
                             $rule['disabled'] = true;
-                            $rule['descr'] = "[FIN]" . $rule['descr'];
+                            $rule['descr'] = "[FIN] " . $rule['descr'];
                         }
                         break;
                     }

@@ -127,7 +127,7 @@ function firewall_rule_item_proto($filterent)
         $result = $record_ipprotocol;
         $result .= sprintf(
           "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
-          isset($icmp6types[$filterent['icmp6-type']]) ? html_safe($icmp6types[$filterent['icmp6-type']]) : '',
+          html_safe($icmp6types[$filterent['icmp6-type']] ?? ''),
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
         );
         return $result;
@@ -541,15 +541,6 @@ $( document ).ready(function() {
   // hook category functionality
   hook_firewall_categories();
 
-  // expand internal auto generated or related rules
-  $(".expand_type").each(function(){
-      let tmp = $(this).data('type');
-      if ($("tr."+tmp+"-rule").length > 0) {
-          $("#expand-"+tmp+"-rules").show();
-          $("#"+tmp+"-rule-count").text($("tr."+tmp+"-rule").length);
-      }
-  });
-
   // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
   $(".opnsense-rules > tbody > tr").each(function(){
       // save zebra color
@@ -566,17 +557,45 @@ $( document ).ready(function() {
               $(this).css("background-color", $("#fw_category").data('stripe_color'));
           }
       });
-  });
-
-  $(".expand_type").each(function(){
-      let tmp = $(this).data('type');
-      $("#expand-"+tmp).click(function(event){
-          event.preventDefault();
-          $("."+tmp+"-rule").toggle();
-          $(".opnsense-rules").change();
+      $(".expand_type").each(function(){
+          let tmp = $(this).data('type');
+          if ($("tr."+tmp+"-rule").length > 0) {
+              $("#expand-"+tmp+"-rules").show();
+              $("#"+tmp+"-rule-count").text($("tr."+tmp+"-rule").length);
+          }
+          if ($(this).hasClass('is_collapsed')) {
+              $("."+tmp+"-rule").hide();
+          }
       });
   });
 
+
+
+  $(".expand_type").each(function(){
+      $("#expand-"+$(this).data('type')+"-rules").click(function(event){
+          event.preventDefault();
+          $(this).toggleClass('is_collapsed');
+          // trigger category change as this will show/hide all "rule" rows (and fires an event on .opnsense-rules )
+          $("#fw_category").change();
+      });
+  });
+  // tooltip interface list
+  $(".interface_tooltip").tooltip({
+      html: true,
+      title: function(){
+<?php
+        $iflist = [];
+        foreach (legacy_config_get_interfaces() as $intf => $payload) {
+          $iflist[$intf] = $payload['descr'];
+        }
+        echo "    let descriptions = JSON.parse('". json_encode($iflist) . "');";?>
+          let this_interfaces = [];
+          $.each($(this).data('interfaces').split(','), function(idx, intf) {
+              this_interfaces.push(descriptions[intf]);
+          });
+          return this_interfaces.join('<br/>');
+      }
+  });
   //
 });
 </script>
@@ -590,6 +609,10 @@ $( document ).ready(function() {
     .opnsense-rules > tbody > tr > td {
         padding-left:5px;
         padding-right:5px;
+    }
+
+    .expand_type {
+        font-style: italic;
     }
 </style>
 
@@ -662,8 +685,7 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Gateway') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Schedule') ?></strong></td>
                       <td class="view-info">
-                          <strong><?= gettext('Intf') ?></strong>
-                          <i class="fa fa-question-circle"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies too'));?>"></i>
+                          <i class="fa fa-fw fa-sitemap"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies too'));?>"></i>
                       </td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('Evaluations') ?></strong></td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('States') ?></strong></td>
@@ -731,7 +753,7 @@ $( document ).ready(function() {
 ?>
 <?php
                     if ($prev_origin != $rule->ruleOrigin()):?>
-                    <tr id="expand-<?=$rule->ruleOrigin();?>-rules" class="expand_type" data-type="<?=$rule->ruleOrigin();?>" style="display: none;">
+                    <tr id="expand-<?=$rule->ruleOrigin();?>-rules" class="expand_type is_collapsed" data-type="<?=$rule->ruleOrigin();?>" style="display: none;">
                         <td><i class="fa fa-folder-o text-muted"></i></td>
                         <td></td>
                         <td class="view-info" colspan="2"> </td>
@@ -751,7 +773,7 @@ $( document ).ready(function() {
                     </tr>
 <?php
                     endif;?>
-                    <tr class="<?=$rule->ruleOrigin();?>-rule" style="display: none;">
+                    <tr class="rule <?=$rule->ruleOrigin();?>-rule" style="display: none;" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span>
@@ -778,15 +800,27 @@ $( document ).ready(function() {
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
                       <td class="view-info">
-                          <!-- # interfaces -->
-                          <?=$intf_count;?>
+                          <?php if ($intf_count == '*'):?>
+                              <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-toggle="tooltip">
+                                <?=$intf_count;?>
+                              </a>
+                          <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                            <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$rule->getInterface();?>">
+                              <?=$intf_count;?>
+                            </a>
+                          <?php endif; ?>
                       </td>
                       <td class="view-stats hidden-xs hidden-sm" id="<?=$rule->getLabel();?>_evaluations"><?= gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm">
                           <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" id="<?=$rule->getLabel();?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?=  gettext('N/A');?></a>
                       <td class="view-stats" id="<?=$rule->getLabel();?>_packets"><?= gettext('N/A') ?></td>
                       <td class="view-stats" id="<?=$rule->getLabel();?>_bytes"><?= gettext('N/A') ?></td>
-                      <td><?=$rule->getDescr();?></td>
+                      <td class="rule-description">
+                        <?=$rule->getDescr();?>
+                        <div class="collapse rule_md5_hash">
+                            <small><?=$filterent['label'];?></small>
+                        </div>
+                      </td>
                       <td>
 <?php if (!empty($rule->getRef())): ?>
                           <a href="firewall_rule_lookup.php?rid=<?=html_safe($rule->getLabel());?>" class="btn btn-default btn-xs"><i class="fa fa-fw fa-search"></i></a>
@@ -926,8 +960,15 @@ $( document ).ready(function() {
                        endif;?>
                     </td>
                     <td class="view-info">
-                      <!-- # interfaces -->
-                      <?=$intf_count;?>
+                      <?php if ($intf_count == '*'):?>
+                          <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-toggle="tooltip">
+                            <?=$intf_count;?>
+                          </a>
+                      <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                        <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$filterent['interface'];?>">
+                          <?=$intf_count;?>
+                        </a>
+                      <?php endif; ?>
                     </td>
                     <td class="view-stats hidden-xs hidden-sm" id="<?=$rule_hash;?>_evaluations"><?= gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm">
