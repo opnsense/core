@@ -1211,11 +1211,18 @@ function ipsec_write_secrets()
             $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer");
 
             if (!empty($peerid_data)) {
-                $secrets['ike-p1-' . $seq] = [
-                    'id-0' => $myid,
-                    'id-1' => trim($peerid_data),
-                    'secret' => '0s' . base64_encode(trim($ph1ent['pre-shared-key']))
-                ];
+                if (!empty($myid)) {
+                    $secrets['ike-p1-' . $seq] = [
+                        'id-0' => $myid,
+                        'id-1' => trim($peerid_data),
+                        'secret' => '0s' . base64_encode(trim($ph1ent['pre-shared-key']))
+                    ];
+                } else {
+                    $secrets['ike-p1-' . $seq] = [
+                        'id-0' => trim($peerid_data),
+                        'secret' => '0s' . base64_encode(trim($ph1ent['pre-shared-key']))
+                    ];
+                }
             }
         }
     }
