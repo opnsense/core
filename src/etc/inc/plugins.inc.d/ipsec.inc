@@ -1328,7 +1328,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
                 $connection = [
                     'unique' => !empty($ph1ent['unique']) ? $ph1ent['unique'] : 'replace',
-                    'aggressive' => $ph1ent['mode'] ?? '' == 'aggressive' ? 'yes' : 'no',
+                    'aggressive' => ($ph1ent['mode'] ?? '') == 'aggressive' ? 'yes' : 'no',
                     'version' => ($ph1ent['iketype'] ?? '') == 'ikev2' ? 2 : 1,
                     'mobike' => !empty($ph1ent['mobike']) ? 'no' : 'yes',
                     'local_addrs' => $ep,
