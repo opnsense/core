@@ -582,6 +582,7 @@ $( document ).ready(function() {
   // tooltip interface list
   $(".interface_tooltip").tooltip({
       html: true,
+      placement: 'bottom',
       title: function(){
 <?php
         $iflist = [];
@@ -591,7 +592,7 @@ $( document ).ready(function() {
         echo "    let descriptions = JSON.parse('". json_encode($iflist) . "');";?>
           let this_interfaces = [];
           $.each($(this).data('interfaces').split(','), function(idx, intf) {
-              this_interfaces.push(descriptions[intf]);
+              this_interfaces.push(descriptions[intf] ?? intf);
           });
           return this_interfaces.join('<br/>');
       }
@@ -801,7 +802,7 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm">*</td>
                       <td class="view-info">
                           <?php if ($intf_count == '*'):?>
-                              <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-toggle="tooltip">
+                              <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
                                 <?=$intf_count;?>
                               </a>
                           <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
@@ -961,7 +962,7 @@ $( document ).ready(function() {
                     </td>
                     <td class="view-info">
                       <?php if ($intf_count == '*'):?>
-                          <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-toggle="tooltip">
+                          <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
                             <?=$intf_count;?>
                           </a>
                       <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
