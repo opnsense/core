@@ -1,3 +1,1 @@
 # configuration for opnsense-update(8), do not edit
-
-UPGRADE_RELEASE="23.1"
