@@ -139,11 +139,11 @@
                 </auth>
                 <id type="TextField">
                     <Required>N</Required>
-                    <mask>/^([0-9a-zA-Z\.\-,_\:]){0,1024}$/u</mask>
+                    <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </id>
                 <eap_id type="TextField">
                     <Required>N</Required>
-                    <mask>/^([0-9a-zA-Z\.\-,_\:]){0,1024}$/u</mask>
+                    <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </eap_id>
                 <certs type="CertificateField">
                     <Required>N</Required>
