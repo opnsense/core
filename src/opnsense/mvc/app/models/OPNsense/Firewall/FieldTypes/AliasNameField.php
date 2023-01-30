@@ -92,6 +92,16 @@ class AliasNameField extends BaseField
             $validators[] = new CallbackValidator(
                 [
                     "callback" => function ($value) {
+                        if (strlen($value) > 1 && is_numeric($value[0])) {
+                            return [gettext('An alias name may not start with a digit')];
+                        }
+                        return [];
+                    }
+                ]
+            );
+            $validators[] = new CallbackValidator(
+                [
+                    "callback" => function ($value) {
                         if (
                             getservbyname($value, 'tcp') ||
                             getservbyname($value, 'udp') || getprotobyname($value)
