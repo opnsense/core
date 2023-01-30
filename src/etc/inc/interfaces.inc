@@ -157,7 +157,7 @@ function interfaces_vlan_configure($verbose = false)
             if (!isset($all_parents[$vlan['if']])) {
                 $all_parents[$vlan['if']] = 0;
             }
-            $all_parents[$vlan['if']]++ ;
+            $all_parents[$vlan['if']]++;
         }
     }
     foreach ($config['vlans']['vlan'] as $vlan) {
