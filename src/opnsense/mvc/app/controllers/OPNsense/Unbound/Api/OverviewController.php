@@ -68,13 +68,17 @@ class OverviewController extends ApiControllerBase
         $response = (new Backend())->configdpRun('unbound qstats totals', [$max]);
         $parsed = json_decode($response, true);
 
+        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
         /* Map the blocklist type keys to their corresponding description */
-        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['type'];
+        $types = $nodes['dnsbl']['type'];
         foreach ($parsed['top_blocked'] as $domain => $props) {
-            if (array_key_exists($props['blocklist'], $nodes)) {
-                $parsed['top_blocked'][$domain]['blocklist'] = $nodes[$props['blocklist']]['value'];
+            if (array_key_exists($props['blocklist'], $types)) {
+                $parsed['top_blocked'][$domain]['blocklist'] = $types[$props['blocklist']]['value'];
             }
         }
+
+        $parsed['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
+        $parsed['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
 
         return $parsed;
     }
@@ -100,10 +104,11 @@ class OverviewController extends ApiControllerBase
         $parsed = json_decode($response, true);
 
         /* Map the blocklist type keys to their corresponding description */
-        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes()['dnsbl']['type'];
+        $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
+        $types = $nodes['dnsbl']['type'];
         foreach ($parsed as $idx => $query) {
-            if (array_key_exists($query['blocklist'], $nodes)) {
-                $parsed[$idx]['blocklist'] = $nodes[$query['blocklist']]['value'];
+            if (array_key_exists($query['blocklist'], $types)) {
+                $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'];
             }
 
             /* Handle front-end color status mapping, start off with OK */
@@ -122,6 +127,10 @@ class OverviewController extends ApiControllerBase
             }
         }
 
-        return $this->searchRecordsetBase($parsed);
+        $response = $this->searchRecordsetBase($parsed);
+        $response['whitelisted_domains'] = array_keys($nodes['dnsbl']['whitelists']);
+        $response['blocklisted_domains'] = array_keys($nodes['dnsbl']['blocklists']);
+
+        return $response;
     }
 }
