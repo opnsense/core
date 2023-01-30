@@ -263,6 +263,7 @@ class Plugin
             $rule_hash = Util::calcRuleHash($conf);
             $conf['label'] = $rule_hash;
         }
+        $conf['#priority'] = $prio;
         $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = array();

@@ -130,7 +130,7 @@ abstract class Rule
      */
     protected function parsePlainCurly($value, $prefix = "", $suffix = "")
     {
-        if (strpos($value, '$') === false) {
+        if ($value !== null && strpos($value, '$') === false) {
             // don't wrap aliases in curly brackets
             $prefix = $prefix . "{";
             $suffix = "}" . $suffix;
@@ -281,11 +281,11 @@ abstract class Rule
                 }
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
                     $port = !empty($rule[$tag]['port']) ? str_replace('-', ':', $rule[$tag]['port']) : null;
-                    if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
+                    if ($port == null || $port == 'any') {
+                        $port = null;
+                    } elseif (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
                         // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
                         $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
-                    } elseif ($port == 'any') {
-                        $port = null;
                     }
                     if (Util::isPort($port)) {
                         $rule[$target . "_port"] = $port;
@@ -395,6 +395,25 @@ abstract class Rule
     public function isEnabled()
     {
         return empty($this->rule['disabled']);
+    }
+
+    public function ruleOrigin()
+    {
+
+        switch ($this->rule['#priority']) {
+            case 200000:
+                $origin = 'floating';
+                break;
+            case 300000:
+                $origin = 'group';
+                break;
+            case 400000:
+                $origin = 'interface';
+                break;
+            default:
+                $origin = 'internal';
+        }
+        return $origin;
     }
 
     /**
