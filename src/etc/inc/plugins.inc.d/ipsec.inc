@@ -1270,7 +1270,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
     if (!isset($ipseccfg['enable'])) {
         /* try to stop charon */
-        mwexec('/usr/local/etc/rc.d/strongswan onestop');
+        mwexec('/usr/local/etc/rc.d/strongswan onestop', true);
 
         /* wait for process to die */
         sleep(2);
