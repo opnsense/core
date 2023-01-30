@@ -186,8 +186,9 @@ if __name__ == '__main__':
             if cnf.has_section('include'):
                 for item in cnf['include']:
                     entry = cnf['include'][item].rstrip().lower()
-                    if domain_pattern.match(entry):
-                        blocklist_items['data'][entry] = {"bl": "Custom"}
+                    if not whitelist_pattern.match(entry):
+                        if domain_pattern.match(entry):
+                            blocklist_items['data'][entry] = {"bl": "Custom"}
 
         else:
             # only modify the existing list, administrate on added and removed exact custom matches
@@ -195,9 +196,12 @@ if __name__ == '__main__':
             if (diffs_added['include'] or diffs_removed['include']) and os.path.exists('/var/unbound/data/dnsbl.json'):
                 blocklist_items = ujson.load(open('/var/unbound/data/dnsbl.json', 'r'))
                 for item in diffs_removed['include']:
-                    del blocklist_items['data'][item[1].rstrip().lower()]
+                    # include entry may have been overridden by the whitelist, so use pop()
+                    blocklist_items['data'].pop(item[1].rstrip().lower(), None)
                 for item in diffs_added['include']:
-                    blocklist_items['data'][item[1].rstrip().lower()] = {"bl": "Custom"}
+                    entry = item[1].rstrip().lower()
+                    if not whitelist_pattern.match(entry):
+                        blocklist_items['data'][entry] = {"bl": "Custom"}
 
         with open('/tmp/unbound-blocklists.conf.cache', 'w') as cache_config:
             # cache the current config so we can diff on it the next time
