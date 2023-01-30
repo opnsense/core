@@ -592,7 +592,12 @@ $( document ).ready(function() {
         echo "    let descriptions = JSON.parse('". json_encode($iflist) . "');";?>
           let this_interfaces = [];
           $.each($(this).data('interfaces').split(','), function(idx, intf) {
-              this_interfaces.push(descriptions[intf] ?? intf);
+              if (descriptions[intf]) {
+                  this_interfaces.push(descriptions[intf]);
+              } else {
+                  // strikeout non existing interface (show, but mark)
+                  this_interfaces.push('<s>'+intf+'</s>');
+              }
           });
           return this_interfaces.join('<br/>');
       }
