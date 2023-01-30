@@ -48,37 +48,37 @@ class SettingsController extends ApiMutableModelControllerBase
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
             $mdl = $this->getModel();
-            $item = $mdl->getNodeByReference('dnsbl.' . $type);
+            $item = (string)$mdl->getNodeByReference('dnsbl.' . $type);
 
             if ($item != null) {
-                $remove = function ($csv, $item) {
-                    $parts = explode(',', $csv);
-                    while (($i = array_search($item, $parts)) !== false) {
-                        unset($parts[$i]);
+                $remove = function ($csv, $part) {
+                    while (($i = array_search($part, $csv)) !== false) {
+                        unset($csv[$i]);
                     }
-                    return implode(',', $parts);
+                    return implode(',', $csv);
                 };
 
                 // strip off any trailing dot
                 $value = rtrim($domain, '.');
-                $wl = (string)$mdl->dnsbl->whitelists;
-                $bl = (string)$mdl->dnsbl->blocklists;
+                $wl = explode(',', (string)$mdl->dnsbl->whitelists);
+                $bl = explode(',', (string)$mdl->dnsbl->blocklists);
 
-                if (strpos((string)$mdl->dnsbl->$type, $value) !== false) {
+                $existing_domains = explode(',', $item);
+                if (in_array($value, $existing_domains)) {
                     // value already in model, no need to re-run a potentially
                     // expensive dnsbl action
                     return ["status" => "OK"];
                 }
 
                 // Check if domains should be switched around in the model
-                if ($type == 'whitelists' && strpos($bl, $value) !== false) {
-                    $mdl->dnsbl->blocklists = $remove((string)$mdl->dnsbl->blocklists, $value);
-                } elseif ($type == 'blocklists' && strpos($wl, $value) !== false) {
-                    $mdl->dnsbl->whitelists = $remove((string)$mdl->dnsbl->whitelists, $value);
+                if ($type == 'whitelists' && in_array($value, $bl)) {
+                    $mdl->dnsbl->blocklists = $remove($bl, $value);
+                } elseif ($type == 'blocklists' && in_array($value, $wl)) {
+                    $mdl->dnsbl->whitelists = $remove($wl, $value);
                 }
 
                 // update the model
-                $list = array_filter(explode(',', (string)$item));
+                $list = array_filter($existing_domains); // removes all empty entries
                 $list[] = $value;
                 $mdl->dnsbl->$type = implode(',', $list);
 
