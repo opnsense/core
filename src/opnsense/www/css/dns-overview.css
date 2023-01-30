@@ -167,3 +167,7 @@
   color: #fff;
   margin-bottom: 2px;
 }
+
+.tooltip-inner {
+  max-width: 1000px !important;
+}

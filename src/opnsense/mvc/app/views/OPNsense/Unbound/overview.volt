@@ -396,7 +396,7 @@
                         continue;
                     }
 
-                    let icon = '<button class="'+ class_type + '" data-value="'+ domain +'" ' +
+                    let icon = '<button type="button" class="'+ class_type + '" data-value="'+ domain +'" ' +
                     'data-toggle="tooltip" style="margin-left: 10px;"><i class="' + icon_type + '"></i></button>'
 
                     if (bl_enabled.enabled == 0) {
@@ -412,8 +412,8 @@
                         '</span></li>'
                     )
                 }
-                $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
-                $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
+                $(".block-domain").attr('title', "{{ lang._('Block Domain') }}").tooltip({container: 'body'});
+                $(".whitelist-domain").attr('title', "{{ lang._('Whitelist Domain') }}").tooltip({container: 'body'});
             });
         }
 
@@ -552,6 +552,9 @@
                                 "resolveformatter": function (column, row) {
                                     return row.resolve_time_ms + 'ms';
                                 },
+                                "domain": function (column, row) {
+                                    return '<span class="domain-content" data-toggle="tooltip" title="' + row.domain + '">' + row.domain + '</span>';
+                                },
                                 "commands": function (column, row) {
                                     let btn = '';
                                     if (bl_enabled.enabled == 0) {
@@ -599,8 +602,9 @@
                         } else {
                             $(".hide-col").css('display', '');
                         }
-                        $(".block-domain").tooltip().attr('title', "{{ lang._('Block Domain') }}");
-                        $(".whitelist-domain").tooltip().attr('title', "{{ lang._('Whitelist Domain') }}");
+                        $(".domain-content").tooltip({placement: "auto left"});
+                        $(".block-domain").attr('title', "{{ lang._('Block Domain') }}").tooltip();
+                        $(".whitelist-domain").attr('title', "{{ lang._('Whitelist Domain') }}").tooltip();
                         grid_queries.find(".block-domain").on("click", function(e) {
                             $(this).remove("i").html('<i class="fa fa-spinner fa-spin"></i>');
                             ajaxCall('/api/unbound/settings/updateBlocklist', {
@@ -802,7 +806,7 @@
                     <th data-column-id="client" data-type="string">{{ lang._('Client') }}</th>
                     <th data-column-id="family" data-width="6em" data-visible="false" data-type="string">{{ lang._('Family') }}</th>
                     <th data-column-id="type" data-width="6em" data-type="string">{{ lang._('Type') }}</th>
-                    <th data-column-id="domain" data-type="string">{{ lang._('Domain') }}</th>
+                    <th data-column-id="domain" data-formatter="domain" data-type="string">{{ lang._('Domain') }}</th>
                     <th data-column-id="action" data-width="6em" data-type="string">{{ lang._('Action') }}</th>
                     <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                     <th data-column-id="rcode" data-type="string">{{ lang._('Return Code') }}</th>
