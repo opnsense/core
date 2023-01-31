@@ -208,6 +208,7 @@ class Util
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
+                $aliases[] = $name;
                 foreach ($node['content'] as $address) {
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
