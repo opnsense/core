@@ -488,7 +488,7 @@ $( document ).ready(function() {
                       <td>
 <?php
                          $localport = $natent['local-port'];
-                         if (strpos($natent['destination']['port'],'-') !== false) {
+                         if (!is_alias($localport) && strpos($natent['destination']['port'],'-') !== false) {
                             $natlocalport = preg_match('/^(\d){1,5}$/', $natent['local-port']) ? (int)$natent['local-port'] : 1;
                             list($dstbeginport, $dstendport) = explode("-", $natent['destination']['port']);
                             $dstbeginport = preg_match('/^\d*$/', $dstbeginport) ? (int)$dstbeginport : 1;
