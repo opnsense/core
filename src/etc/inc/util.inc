@@ -611,7 +611,7 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr);
+    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr ?? '');
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
@@ -964,7 +964,7 @@ function exec_safe($format, $args = [])
     }
 
     foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg);
+        $args[$id] = escapeshellarg($arg ?? '');
     }
 
     return vsprintf($format, $args);
@@ -1051,7 +1051,9 @@ function ipcmp($a, $b)
 /* return true if $addr is in $subnet, false if not */
 function ip_in_subnet($addr, $subnet)
 {
-    if (is_ipaddrv6($addr)) {
+    if (empty($subnet)) {
+        /* discard invalid input */
+    } elseif (is_ipaddrv6($addr)) {
         return (Net_IPv6::isInNetmask($addr, $subnet));
     } elseif (is_ipaddrv4($addr)) {
         list($ip, $mask) = explode('/', $subnet);
