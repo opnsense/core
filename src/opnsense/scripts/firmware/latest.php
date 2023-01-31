@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2021-2023 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'util.inc';
+
 $changelogfile = '/usr/local/opnsense/changelog/index.json';
 
-list ($series, $version) = explode(' ', trim(shell_exec('opnsense-version -Vv')));
+list ($series, $version) = explode(' ', shell_safe('opnsense-version -Vv'));
 $version = explode('_', $version)[0];
 
 $ret = json_decode(@file_get_contents($changelogfile), true);

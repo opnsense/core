@@ -485,11 +485,7 @@ function get_crash_report()
     $count = 0;
 
     if (file_exists($PHP_errors_log)) {
-        $total = shell_exec(sprintf(
-            '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-            $PHP_errors_log
-        ));
-        if ($total > 0) {
+        if (intval(shell_safe('/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'', $PHP_errors_log))) {
             $count++;
         }
     }

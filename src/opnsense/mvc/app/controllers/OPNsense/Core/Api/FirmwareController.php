@@ -841,7 +841,7 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
+        $version = explode(' ', trim(shell_exec('opnsense-version -nv') ?? ''));
         foreach (array('product_id' => 0, 'product_version' => 1) as $result => $index) {
             $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
         }

@@ -62,7 +62,7 @@ function upload_crash_report($files, $agent)
 
 include('head.inc');
 
-$plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
+$plugins = implode(' ',  explode("\n", shell_safe('pkg info -g "os-*"')));
 $product = product::getInstance();
 
 $crash_report_header = sprintf(
@@ -74,8 +74,8 @@ $crash_report_header = sprintf(
     $product->hash(),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
-    trim(shell_exec('/usr/local/bin/openssl version')),
-    trim(shell_exec('/usr/local/bin/python3 -V')),
+    shell_safe('/usr/local/bin/openssl version'),
+    shell_safe('/usr/local/bin/python3 -V'),
     PHP_VERSION
 );
 

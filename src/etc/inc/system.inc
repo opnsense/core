@@ -305,7 +305,7 @@ function get_searchdomains()
 
     if (isset($syscfg['dnsallowoverride'])) {
         /* return domains as required by configuration */
-        $list = trim(shell_exec('/usr/local/sbin/ifctl -sl'));
+        $list = shell_safe('/usr/local/sbin/ifctl -sl');
         if (!empty($list)) {
             $search_list = explode("\n", $list);
         }
@@ -339,17 +339,17 @@ function get_nameservers($interface = null, $with_gateway = false)
         /* only acquire servers provided for this interface */
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, 'inet6');
-        $list = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -4nli %s', $realif)));
+        $list = shell_safe('/usr/local/sbin/ifctl -4nli %s', $realif);
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
-        $list = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6nli %s', $realifv6)));
+        $list = shell_safe('/usr/local/sbin/ifctl -6nli %s', $realifv6);
         if (!empty($list)) {
             $dns_lists[] = $list;
         }
     } elseif (isset($syscfg['dnsallowoverride'])) {
         /* return dynamic servers as required by configuration */
-        $list = trim(shell_exec('/usr/local/sbin/ifctl -nl'));
+        $list = shell_safe('/usr/local/sbin/ifctl -nl');
         if (!empty($list)) {
             $dns_lists = explode("\n", $list);
         }
@@ -385,7 +385,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 
         if ($with_gateway) {
             /* router file is available for connectivity creating nameserver files */
-            $gw = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -%s -ri %s', [$intf[1], $intf[0]])));
+            $gw = shell_safe('/usr/local/sbin/ifctl -%s -ri %s', [$intf[1], $intf[0]]);
             if (is_linklocal($gw) && strpos($gw, '%') === false) {
                 $gw .= "%{$intf[0]}";
             }
@@ -678,7 +678,7 @@ function system_syslog_start($verbose = false)
     mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
 
     $last_version = @file_get_contents('/var/run/syslog-ng.version');
-    $this_version = shell_exec('syslog-ng -V | sha256');
+    $this_version = shell_safe('syslog-ng -V | sha256');
 
     if (isvalidpid('/var/run/syslog-ng.pid') && $last_version == $this_version) {
         mwexecf('/usr/local/sbin/syslog-ng-ctl reload');
@@ -718,7 +718,7 @@ function system_firmware_configure($verbose = false)
     service_log('Writing firmware setting...', $verbose);
 
     /* calculate the effective ABI */
-    $args = [ exec_safe('-A %s', trim(shell_exec('opnsense-version -x'))) ];
+    $args = [ exec_safe('-A %s', shell_safe('opnsense-version -x')) ];
 
     if (!empty($config['system']['firmware']['mirror'])) {
         $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
@@ -732,7 +732,7 @@ function system_firmware_configure($verbose = false)
     mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
 
     /* clear the license file when no subscription key is set */
-    if (empty(trim(shell_exec('/usr/local/sbin/opnsense-update -K')))) {
+    if (empty(shell_safe('/usr/local/sbin/opnsense-update -K'))) {
         @unlink('/usr/local/opnsense/version/core.license');
     }
 

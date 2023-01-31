@@ -165,7 +165,7 @@ function system_api_versions($product)
 
     $result[] = sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']);
     $result[] = php_uname('s') . ' ' . php_uname('r');
-    $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
+    $result[] = shell_safe('/usr/local/bin/openssl version');
 
     if (!empty($product['product_license']['valid_to'])) {
         $result[] = gettext('Licensed until') . ' ' . $product['product_license']['valid_to'];
