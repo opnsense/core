@@ -68,53 +68,57 @@ def download_geolite():
             if r.status_code == 200:
                 tmp_stream.write(r.content)
                 tmp_stream.seek(0)
-                with zipfile.ZipFile(tmp_stream, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
-                    # fetch zip file contents
-                    file_handles = dict()
-                    for item in zf.infolist():
-                        if item.file_size > 0:
-                            filename = os.path.basename(item.filename)
-                            file_handles[filename] = item
-                            if filename.lower().find('locations-en.csv') > -1:
-                                result['locations_filename'] = filename
-                            elif filename.lower().find('ipv4.csv') > -1:
-                                result['address_sources']['IPv4'] = filename
-                            elif filename.lower().find('ipv6.csv') > -1:
-                                result['address_sources']['IPv6'] = filename
-                    # only process geo ip data when archive contains country definitions
-                    if result['locations_filename'] is not None:
-                        dt = datetime.datetime(*file_handles[result['locations_filename']].date_time).isoformat()
-                        result['timestamp'] = dt
-                        country_codes = dict()
-                        # parse geoname_id to country code map
-                        locations = zf.open(file_handles[result['locations_filename']]).read()
-                        for line in locations.decode().split('\n'):
-                            parts = line.split(',')
-                            if len(parts) > 4 and parts[0].isdigit():
-                                if len(parts[4]) >= 1:
-                                    country_codes[parts[0]] = parts[4]
-                                elif parts[2] == 'EU':
-                                    country_codes[parts[0]] = parts[2]
-                        # process all details into files per country / protocol
-                        for proto in ['IPv4', 'IPv6']:
-                            if result['address_sources'][proto] is not None:
-                                output_handles = dict()
-                                country_blocks = zf.open(file_handles[result['address_sources'][proto]]).read()
-                                for line in country_blocks.decode().split('\n'):
-                                    parts = line.split(',')
-                                    if len(parts) > 3 and parts[1] in country_codes:
-                                        country_code = country_codes[parts[1]]
-                                        if country_code not in output_handles:
-                                            if not os.path.exists('/usr/local/share/GeoIP/alias'):
-                                                os.makedirs('/usr/local/share/GeoIP/alias')
-                                            output_handles[country_code] = open(
-                                                '/usr/local/share/GeoIP/alias/%s-%s'%(country_code,proto), 'w'
-                                            )
-                                            result['file_count'] += 1
-                                        output_handles[country_code].write("%s\n" % parts[0])
-                                        result['address_count'] += 1
-                                for country_code in output_handles:
-                                    output_handles[country_code].close()
+                try:
+                    with zipfile.ZipFile(tmp_stream, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
+                        # fetch zip file contents
+                        file_handles = dict()
+                        for item in zf.infolist():
+                            if item.file_size > 0:
+                                filename = os.path.basename(item.filename)
+                                file_handles[filename] = item
+                                if filename.lower().find('locations-en.csv') > -1:
+                                    result['locations_filename'] = filename
+                                elif filename.lower().find('ipv4.csv') > -1:
+                                    result['address_sources']['IPv4'] = filename
+                                elif filename.lower().find('ipv6.csv') > -1:
+                                    result['address_sources']['IPv6'] = filename
+                        # only process geo ip data when archive contains country definitions
+                        if result['locations_filename'] is not None:
+                            dt = datetime.datetime(*file_handles[result['locations_filename']].date_time).isoformat()
+                            result['timestamp'] = dt
+                            country_codes = dict()
+                            # parse geoname_id to country code map
+                            locations = zf.open(file_handles[result['locations_filename']]).read()
+                            for line in locations.decode().split('\n'):
+                                parts = line.split(',')
+                                if len(parts) > 4 and parts[0].isdigit():
+                                    if len(parts[4]) >= 1:
+                                        country_codes[parts[0]] = parts[4]
+                                    elif parts[2] == 'EU':
+                                        country_codes[parts[0]] = parts[2]
+                            # process all details into files per country / protocol
+                            for proto in ['IPv4', 'IPv6']:
+                                if result['address_sources'][proto] is not None:
+                                    output_handles = dict()
+                                    country_blocks = zf.open(file_handles[result['address_sources'][proto]]).read()
+                                    for line in country_blocks.decode().split('\n'):
+                                        parts = line.split(',')
+                                        if len(parts) > 3 and parts[1] in country_codes:
+                                            country_code = country_codes[parts[1]]
+                                            if country_code not in output_handles:
+                                                if not os.path.exists('/usr/local/share/GeoIP/alias'):
+                                                    os.makedirs('/usr/local/share/GeoIP/alias')
+                                                output_handles[country_code] = open(
+                                                    '/usr/local/share/GeoIP/alias/%s-%s'%(country_code,proto), 'w'
+                                                )
+                                                result['file_count'] += 1
+                                            output_handles[country_code].write("%s\n" % parts[0])
+                                            result['address_count'] += 1
+                                    for country_code in output_handles:
+                                        output_handles[country_code].close()
+                except zipfile.BadZipFile as e:
+                    syslog.syslog(syslog.LOG_ERR, 'geoip update failed : %s' % e)
+                    return result
 
                 open(stats_output,'w').write(ujson.dumps(result))
 
