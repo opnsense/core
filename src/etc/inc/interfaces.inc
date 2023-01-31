@@ -3548,7 +3548,7 @@ function guess_interface_from_ip($ipaddress)
         return $best_if;
     }
 
-    $ret = shell_safe("/sbin/route -n get %s | /usr/bin/awk '/interface/ { print \$2; };'", $ipaddress);
+    $ret = shell_safe('/sbin/route -n get %s | /usr/bin/awk \'/interface/ { print $2; };\'', $ipaddress);
     if (empty($ret)) {
         return false;
     }
