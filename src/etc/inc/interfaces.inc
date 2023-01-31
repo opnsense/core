@@ -3538,7 +3538,7 @@ function guess_interface_from_ip($ipaddress)
         return $best_if;
     }
 
-    $ret = exec_command("/sbin/route -n get {$ipaddress} | /usr/bin/awk '/interface/ { print \$2; };'");
+    $ret = shell_safe('/sbin/route -n get %s | /usr/bin/awk \'/interface/ { print $2; };\'', $ipaddress);
     if (empty($ret)) {
         return false;
     }
@@ -3874,11 +3874,11 @@ function get_interfaces_info($include_unlinked = false)
                     $ifinfo['subnetv6'] = $ipv6addr['subnetbits'];
                 }
             }
-        }
 
-        $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
-        if (!empty($aux)) {
-            $ifinfo['prefixv6'] = $aux;
+            $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
+            if (!empty($aux)) {
+                $ifinfo['prefixv6'] = $aux;
+            }
         }
 
         $ifinfotmp = $all_intf_stats[$ifinfo['if']];
