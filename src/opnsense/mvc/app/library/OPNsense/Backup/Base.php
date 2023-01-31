@@ -71,7 +71,7 @@ abstract class Base
         @unlink($file);
 
         if (file_exists("{$file}.enc") && !$retval) {
-            $version = trim(shell_exec('opnsense-version -Nv'));
+            $version = trim(shell_exec('opnsense-version -Nv') ?? '');
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: " . strtoupper($cipher) . "\n";
