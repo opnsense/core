@@ -61,7 +61,7 @@ if __name__ == '__main__':
                 'pool': current_pool['name'],
                 'address': parts[0],
                 'online': parts[1] == 'online',
-                'user': parts[2][1:-1]
+                'user': ' '.join(parts[2:])[1:-1]
             })
         elif len(parts) > 3 and parts[-1].isdigit():
             current_pool = {
