@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,21 +27,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("filter.inc");
-require_once("interfaces.inc");
-require_once("util.inc");
+require_once 'config.inc';
+require_once 'filter.inc';
+require_once 'interfaces.inc';
+require_once 'util.inc';
 
-// gather all relevant vlan's (new/updated and removed) into a single list
+/* gather all relevant vlan's (new/updated and removed) into a single list */
 $all_vlans = [];
 $all_parents = [];
-$vfilename = "/tmp/.vlans.removed";
+$vfilename = '/tmp/.vlans.removed';
 if (file_exists($vfilename) && filesize($vfilename) > 0) {
-    $handle = fopen($vfilename, "r+");
+    $handle = fopen($vfilename, 'r+');
     if (flock($handle, LOCK_EX)) {
         fseek($handle, 0);
         foreach (explode("\n", fread($handle, filesize($vfilename))) as $line) {
-            if (!isset($all_vlans[$line]) && trim($line) != "") {
+            if (!isset($all_vlans[$line]) && trim($line) != '') {
                 $all_vlans[$line] = [];
             }
         }
@@ -50,7 +50,7 @@ if (file_exists($vfilename) && filesize($vfilename) > 0) {
         flock($handle, LOCK_UN);
     }
 }
-// merge configured vlans
+/* merge configured vlans */
 if (!empty($config['vlans']['vlan'])) {
     foreach ($config['vlans']['vlan'] as $vlan) {
         $all_vlans[$vlan['vlanif']] = $vlan;
@@ -61,26 +61,32 @@ if (!empty($config['vlans']['vlan'])) {
     }
 }
 
-// handle existing vlan's
+/* handle existing vlans */
 foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
     if (empty($ifdetails['vlan'])) {
         continue;
     }
-    if (isset($all_vlans[$ifname])) {
+    if (!isset($all_vlans[$ifname])) {
+        continue;
+    }
+    if (empty($all_vlans[$ifname])) {
+        /* option 1: removed vlan */
+        legacy_interface_destroy($ifname);
+    } else {
         $vlan = $all_vlans[$ifname];
         $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
         $cvlan = $ifdetails['vlan'];
-        if (empty($vlan)) {
-            // option 1: removed vlan
-            legacy_interface_destroy($ifname);
-        } elseif ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
-            // option 2: changed vlan, unlink and relink
-            // XXX: legacy code used interface_configure() in these cases, but since you can't change a tag or a parent
-            //      for an assigned interface. At the moment that doesn't seem to make much sense
+        if ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
+            /* option 2: changed vlan, unlink and relink */
+            /*
+             * XXX: legacy code used interface_configure() in these cases,
+             * but since you cannot change a tag or a parent for an assigned
+             * interface.  At the moment that does not seem to make much sense.
+             */
             legacy_vlan_remove_tag($vlan['vlanif']);
             legacy_vlan_tag($vlan['vlanif'], $vlan['if'], $vlan['tag'], $vlan['pcp'], $vlan['proto']);
-        } elseif ($vlan['pcp'] != $cvlan['pcp'] || $vlan['proto'] != $cvlan['proto']) {
-            // option 3: only pcp or proto changed, which can be altered instantly
+        } else {
+            /* option 3: only pcp or proto changed, which can be altered instantly */
             if ($vlan['pcp'] != $cvlan['pcp']) {
                 legacy_vlan_pcp($vlan['vlanif'], $vlan['pcp']);
             }
@@ -88,11 +94,11 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
                 legacy_vlan_proto($vlan['vlanif'], $vlan['proto']);
             }
         }
-        unset($all_vlans[$ifname]);
     }
+    unset($all_vlans[$ifname]);
 }
 
-// configure new
+/* configure new */
 foreach ($all_vlans as $ifname => $vlan) {
     if (!empty($vlan)) {
         $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
