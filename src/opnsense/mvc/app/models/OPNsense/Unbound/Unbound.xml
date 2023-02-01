@@ -49,6 +49,12 @@
             <logtagqueryreply type="BooleanField">
                 <default>0</default>
             </logtagqueryreply>
+            <logservfail type="BooleanField">
+                <default>0</default>
+            </logservfail>
+            <loglocalactions type="BooleanField">
+                <default>0</default>
+            </loglocalactions>
             <logverbosity type="OptionField">
                 <default>1</default>
                 <Required>Y</Required>
@@ -61,6 +67,15 @@
                     <opt6 value="5">Level 5</opt6>
                 </OptionValues>
             </logverbosity>
+            <valloglevel  type="OptionField">
+                <default>0</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="0">Level 0 (Default)</opt1>
+                    <opt2 value="1">Level 1</opt2>
+                    <opt3 value="2">Level 2</opt3>
+                </OptionValues>
+            </valloglevel>
             <privatedomain type="CSVListField">
                 <Required>N</Required>
             </privatedomain>

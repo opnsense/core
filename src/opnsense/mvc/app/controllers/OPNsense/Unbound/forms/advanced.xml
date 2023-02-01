@@ -139,6 +139,27 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.logservfail</id>
+        <label>Log local actions</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, log lines to inform about local zone actions.  These lines
+            are like the local-zone type inform prints  out,  but  they  are
+            also printed for the other types of local zones.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.loglocalactions</id>
+        <label>Log SERVFAIL</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, log lines that say why queries return SERVFAIL to clients.
+            This is separate from the verbosity debug  logs,  much  smaller,
+            and printed at the error level, not the info level of debug info
+            from verbosity.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.logverbosity</id>
         <label>Log Level Verbosity</label>
         <type>dropdown</type>
@@ -146,6 +167,21 @@
             Select the log verbosity. Level 0 means no verbosity, only errors. Level 1 gives operational information.
             Level 2 gives detailed operational information. Level 3 gives query level information, output per query.
             Level 4 gives algorithm level information. Level 5 logs client identification for cache misses.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.valloglevel</id>
+        <label>Log validation level</label>
+        <type>dropdown</type>
+        <help>
+            Have the validator print validation failures to  the  log.
+            Regardless  of  the  verbosity setting.  Default is 0, off.  At 1,
+            for every user query that fails a line is printed to  the  logs.
+            This  way  you  can monitor what happens with validation.  Use a
+            diagnosis tool, such as dig or drill, to find out why validation
+            is  failing  for  these  queries.  At 2, not only the query that
+            failed is printed but also the reason why Unbound thought it was
+            wrong and which server sent the faulty data.
         </help>
     </field>
     <field>
