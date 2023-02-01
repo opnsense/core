@@ -708,7 +708,7 @@
                                         <input type="text" class="form-control" size="50" id="alias.name">
                                         <div class="hidden" data-for="help_for_alias.name">
                                             <small>
-                                                {{lang._('The name of the alias must start with a letter or single underscore, be less than 32 characters long and may further only consist alphanumeric characters or underscores. Aliases can be nested using this name.')}}
+                                                {{lang._('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores. Aliases can be nested using this name.')}}
                                             </small>
                                         </div>
                                     </td>

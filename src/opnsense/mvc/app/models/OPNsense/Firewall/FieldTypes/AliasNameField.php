@@ -83,7 +83,7 @@ class AliasNameField extends BaseField
                 ),
                 'domain' => $reservedwords));
             $validators[] = new Regex([
-                'message' => gettext('The name must start with a letter or single underscore, be less than 32 characters long and may further only consist alphanumeric characters or underscores.'),
+                'message' => gettext('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores.'),
                 /* avoids single "_" and prefixes of "__" here too */
                 'pattern' => '/^([a-zA-Z]|([_a-zA-Z][a-zA-Z0-9][_a-zA-Z0-9]{0,29}))$/'
             ]);
