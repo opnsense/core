@@ -50,7 +50,7 @@ class DNSReader:
         self.fd = None
 
         self.client_map = {}
-        self.update_clients = []
+        self.update_clients = set()
         self.update_hostname = False
 
     def _resolve_ip(self, ip, timeout=0.01):
@@ -137,7 +137,7 @@ class DNSReader:
         q = tuple(r.strip("\n").split())
         self.buffer.append(q)
 
-        self.update_clients.append(q[2])
+        self.update_clients.add(q[2])
 
         # Start a transaction every flush_interval seconds. With regular inserts
         # we would also need to limit the amount of queries we buffer before inserting them,
