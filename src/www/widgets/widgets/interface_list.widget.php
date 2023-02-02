@@ -143,8 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <td style="width:15%; word-break: break-word;">
       <strong>
         <u>
-          <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
-            <?= htmlspecialchars($ifname) ?>
+          <span onclick="location.href='/interfaces.php?if=<?= html_safe($ifdescr) ?>'" style="cursor:pointer">
+            <?= html_safe($ifname) ?>
           </span>
         </u>
       </strong>
@@ -157,16 +157,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php elseif ($ifinfo['status'] == "no carrier"): ?>
       <span class="fa fa-times text-danger"></span>
 <?php else: ?>
-      <?= htmlspecialchars($ifinfo['status']) ?>
+      <?= html_safe($ifinfo['status']) ?>
 <?php endif ?>
     </td>
     <td style="width:32%; word-break: break-word;">
-      <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
+      <?= html_safe(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
     <td style="width:43%; word-break: break-word;">
-      <?= htmlspecialchars($ifinfo['ipaddr'] ?? '') ?>
+      <?= html_safe($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= htmlspecialchars((interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?? '') ?>
+      <?= html_safe(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
     </td>
   </tr>
 <?php endforeach ?>

@@ -64,7 +64,7 @@ function get_current_theme()
 function html_safe($text)
 {
     /* gettext() embedded in JavaScript can cause syntax errors */
-    return str_replace("\n", '&#10;', htmlspecialchars($text, ENT_QUOTES | ENT_HTML401));
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
 }
 
 /**
