@@ -469,45 +469,6 @@ if (!$timezone) {
 
 date_default_timezone_set($timezone);
 
-function get_crash_report()
-{
-    if (!userIsAdmin($_SESSION['Username'])) {
-        return;
-    }
-
-    $savemsg = sprintf(
-        gettext('A problem was detected. Click %shere%s for more information.'),
-        '<a href="/crash_reporter.php">',
-        '</a>'
-    );
-    $skip_files = array('.', '..', 'minfree', 'bounds', '');
-    $PHP_errors_log = '/tmp/PHP_errors.log';
-    $count = 0;
-
-    if (file_exists($PHP_errors_log)) {
-        $total = shell_exec(sprintf(
-            '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-            $PHP_errors_log
-        ));
-        if ($total > 0) {
-            $count++;
-        }
-    }
-
-    $crashes = glob('/var/crash/*');
-    foreach ($crashes as $crash) {
-        if (!in_array(basename($crash), $skip_files)) {
-            $count++;
-        }
-    }
-
-    if (!$count) {
-        $savemsg = '';
-    }
-
-    return $savemsg;
-}
-
 function get_menu_user()
 {
     global $config;

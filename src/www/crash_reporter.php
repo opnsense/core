@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014 Deciso B.V.
  * Copyright (C) 2011 Scott Ullrich <sullrich@gmail.com>
  * All rights reserved.
@@ -28,7 +28,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("guiconfig.inc");
+require_once 'guiconfig.inc';
+
+function has_crash_report()
+{
+    $skip_files = ['.', '..', 'minfree', 'bounds', ''];
+    $PHP_errors_log = '/tmp/PHP_errors.log';
+    $count = 0;
+
+    if (file_exists($PHP_errors_log)) {
+        if (intval(shell_safe('/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'', $PHP_errors_log))) {
+            $count++;
+        }
+    }
+
+    $crashes = glob('/var/crash/*');
+    foreach ($crashes as $crash) {
+        if (!in_array(basename($crash), $skip_files)) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
 
 function upload_crash_report($files, $agent)
 {
@@ -62,7 +84,7 @@ function upload_crash_report($files, $agent)
 
 include('head.inc');
 
-$plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
+$plugins = implode(' ',  explode("\n", shell_safe('pkg info -g "os-*"')));
 $product = product::getInstance();
 
 $crash_report_header = sprintf(
@@ -74,8 +96,8 @@ $crash_report_header = sprintf(
     $product->hash(),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
-    trim(shell_exec('/usr/local/bin/openssl version')),
-    trim(shell_exec('/usr/local/bin/python3 -V')),
+    shell_safe('/usr/local/bin/openssl version'),
+    shell_safe('/usr/local/bin/python3 -V'),
     PHP_VERSION
 );
 
@@ -150,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     /* if there is no user activity probe for a crash report */
-    $has_crashed = !empty(get_crash_report());
+    $has_crashed = has_crash_report();
 }
 
 if ($has_crashed) {
