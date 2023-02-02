@@ -2,9 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
- * Copyright (C) 2010 Ermal Luçi
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,24 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * OpenVPN calls this script to authenticate a user
- * based on a username and password. We lookup these
- * in our config.xml file and check the credentials.
- */
-
 require_once("config.inc");
 require_once("auth.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
+/**
+ * @param string $serverid server identifier
+ * @return array|null openvpn server properties
+ */
 function get_openvpn_server($serverid)
 {
     global $config;
     if (isset($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $server) {
-            if ("server{$server['vpnid']}" == $serverid) {
+            if ($server['vpnid'] == $serverid) {
                 return $server;
             }
         }
@@ -54,9 +50,14 @@ function get_openvpn_server($serverid)
     return null;
 }
 
+/**
+ * Parse provisioning properties supplied by the authenticator
+ * @param array $props key value store containing addresses and routes
+ * @return array formatted like openvpn_csc_conf_write() expects
+ */
 function parse_auth_properties($props)
 {
-    $result = array();
+    $result = [];
     if (!empty($props['Framed-IP-Address']) && !empty($props['Framed-IP-Netmask'])) {
         $cidrmask = 32 - log((ip2long($props['Framed-IP-Netmask']) ^ ip2long('255.255.255.255')) + 1, 2);
         $result['tunnel_network'] = $props['Framed-IP-Address'] . "/" . $cidrmask;
@@ -67,62 +68,58 @@ function parse_auth_properties($props)
     return $result;
 }
 
-/* setup syslog logging */
-openlog("openvpn", LOG_ODELAY, LOG_AUTH);
-
-if (count($argv) > 6) {
-    $authmodes = explode(',', $argv[5]);
-    $username = base64_decode(str_replace('%3D', '=', $argv[1]));
-    $password = base64_decode(str_replace('%3D', '=', $argv[2]));
-    $common_name = $argv[3];
-    $modeid = $argv[6];
-    $strictusercn = $argv[4] == 'false' ? false : true;
-
-    $a_server = get_openvpn_server($modeid);
-    if (strpos($password, 'SCRV1:') === 0) {
-        // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
-        // validate and concat password into our default pin+password
-        $tmp = explode(':', $password);
-        if (count($tmp) == 3) {
-            $pass = base64_decode($tmp[1]);
-            $pin = base64_decode($tmp[2]);
-            if ($pass !== false && $pin !== false) {
-                $password = $pin . $pass;
+/**
+ * perform authentication
+ * @param string $common_name certificate common name for this connection
+ * @param string $serverid server identifier
+ * @param string $method method to use, supply username+password via-env or via-file
+ * @param string $auth_file when using a file, defines the name to use
+ * @return string|bool an error string or true when properly authenticated
+ */
+function do_auth($common_name, $serverid, $method, $auth_file)
+{
+    $username = $password = false;
+    if ($method == 'via-file') {
+        // via-file
+        if (!empty($auth_file) && is_file($auth_file)) {
+            $lines = explode("\n", file_get_contents($auth_file));
+            if (count($lines) >= 2) {
+                $username = $lines[0];
+                $password = $lines[1];
             }
         }
+    } else {
+        // via-env
+        $username = getenv('username');
+        $password = getenv('password');
     }
-
-    // primary input validation
-    $error_message = null;
-    if (($strictusercn === true) && ($common_name != $username)) {
-        $error_message = sprintf(
+    if (empty($username) || empty($password)) {
+        return "username or password missing ({$method} - {$auth_file})";
+    }
+    $a_server = $serverid !== null ? get_openvpn_server($serverid) : null;
+    if ($a_server == null) {
+        return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
+    } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {
+        return sprintf(
             "Username does not match certificate common name (%s != %s), access denied.",
             $username,
             $common_name
         );
-    } elseif (!is_array($authmodes)) {
-        $error_message = 'No authentication server has been selected to authenticate against. ' .
-            "Denying authentication for user {$username}";
-    } elseif ($a_server == null) {
-        $error_message = "OpenVPN '$modeid' was not found. Denying authentication for user {$username}";
+    } elseif (empty($a_server['authmode'])) {
+        return 'No authentication server has been selected to authenticate against. ' .
+        "Denying authentication for user {$username}";
     } elseif (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
-        $error_message = "OpenVPN '$modeid' requires the local group {$a_server['local_group']}. " .
+        return "OpenVPN '$serverid' requires the local group {$a_server['local_group']}. " .
             "Denying authentication for user {$username}";
-    }
-    if ($error_message != null) {
-        syslog(LOG_WARNING, $error_message);
-        closelog();
-        exit(1);
     }
 
-    if (file_exists("/var/etc/openvpn/{$modeid}.ca")) {
-        putenv("LDAPTLS_CACERT=/var/etc/openvpn/{$modeid}.ca");
+    if (file_exists("/var/etc/openvpn/server{$serverid}.ca")) {
+        putenv("LDAPTLS_CACERT=/var/etc/openvpn/server{$serverid}.ca");
         putenv("LDAPTLS_REQCERT=never");
     }
-
     // perform the actual authentication
     $authFactory = new OPNsense\Auth\AuthenticationFactory();
-    foreach ($authmodes as $authName) {
+    foreach (explode(',', $a_server['authmode']) as $authName) {
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
             if ($authenticator->authenticate($username, $password)) {
@@ -145,18 +142,41 @@ if (count($argv) > 6) {
                 } else {
                     syslog(LOG_NOTICE, "user '{$username}' authenticated using '{$authName}'");
                 }
-                closelog();
-                exit(0);
+                return true;
             }
         }
     }
-
-    // deny access and log
-    syslog(LOG_WARNING, "user '{$username}' could not authenticate.");
-    closelog();
-    exit(-1);
+    return "user '{$username}' could not authenticate.";
 }
 
-syslog(LOG_ERR, "invalid user authentication environment");
-closelog();
-exit(-1);
+/* setup syslog logging */
+openlog("openvpn", LOG_ODELAY, LOG_AUTH);
+
+/* parse environment variables */
+$parms = [];
+$parmlist = ['auth_server', 'auth_method', 'common_name', 'auth_file', 'auth_defer', 'auth_control_file'];
+foreach ($parmlist as $key) {
+    $parms[$key] = isset(getenv()[$key]) ? getenv()[$key] : null;
+}
+
+/* perform authentication */
+$response = do_auth($parms['common_name'], $parms['auth_server'], $parms['auth_method'], $parms['auth_file']);
+
+if (is_string($response)) {
+    // send failure message to log
+    syslog(LOG_WARNING, $response);
+    closelog();
+}
+
+if (!empty($parms['auth_defer'])) {
+    if (!empty($parms['auth_control_file'])) {
+        file_put_contents($parms['auth_control_file'], sprintf("%d", $response === true ? '1' : '0'));
+    }
+    exit(0);
+} else {
+    if ($response === true) {
+        exit(0);
+    } else {
+        exit(1);
+    }
+}
