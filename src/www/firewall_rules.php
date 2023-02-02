@@ -127,7 +127,7 @@ function firewall_rule_item_proto($filterent)
         $result = $record_ipprotocol;
         $result .= sprintf(
           "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
-          html_safe($icmp6types[$filterent['icmp6-type']] ?? ''),
+          html_safe($icmp6types[$filterent['icmp6-type']]),
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
         );
         return $result;
