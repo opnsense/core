@@ -38,13 +38,14 @@ $ipsec_leases = array();
 
 if (isset($config['ipsec']['phase1'])) {
     $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
-    if ($ipsec_leases == null) {
-        $ipsec_leases = array();
+    if (!is_array($ipsec_leases) || empty($ipsec_leases['leases'])) {
+        $ipsec_leases = [];
+    } else {
+        $ipsec_leases = $ipsec_leases['leases'];
     }
-
     $ipsec_status = json_decode(configd_run("ipsec list status"), true);
     if ($ipsec_status == null) {
-        $ipsec_status = array();
+        $ipsec_status = [];
     }
 
     // parse configured tunnels
@@ -141,14 +142,12 @@ if (isset($config['ipsec']['phase2'])) {
 <?php
         // count active mobile users
         $mobile_users = 0;
-        foreach ($ipsec_leases as $pool => $pool_details) {
-            foreach ($pool_details['items'] as $lease) {
-                if ($lease['status'] == 'online') {
-                    ++$mobile_users;
-                }
+        foreach ($ipsec_leases as $lease) {
+            if ($lease['online']) {
+                ++$mobile_users;
             }
         }
-?>
+    ?>
           <?=$mobile_users;?>
         </td>
       </tr>
@@ -194,18 +193,16 @@ if (isset($config['ipsec']['phase2'])) {
     </thead>
     <tbody>
 <?php
-    foreach ($ipsec_leases as $pool => $pool_details):
-      foreach ($pool_details['items'] as $lease): ?>
+    foreach ($ipsec_leases as $lease):?>
       <tr>
         <td><?=htmlspecialchars($lease['user']);?></td>
         <td><?=htmlspecialchars($lease['address']);?></td>
         <td>
-          <i class="fa fa-exchange fa-fw text-<?= $lease['status'] == 'online' ?  "success" : 'danger' ?>"></i>
+          <i class="fa fa-exchange fa-fw text-<?= $lease['online'] ?  "success" : 'danger' ?>"></i>
         </td>
       </tr>
 
 <?php
-      endforeach;
     endforeach;?>
     </tbody>
   </table>
