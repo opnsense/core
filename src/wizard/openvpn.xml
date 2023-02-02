@@ -663,7 +663,7 @@
             <field>
                 <name>crypto</name>
                 <type>select</type>
-                <displayname>Encryption Algorithm</displayname>
+                <displayname>Encryption algorithm (fallback)</displayname>
                 <bindstofield>wizardtemp->step10->crypto</bindstofield>
                 <options>
                     <option>
@@ -671,7 +671,7 @@
                         <value>dummy</value>
                     </option>
                 </options>
-                <description>The method used to encrypt traffic between endpoints. This setting must match on the client and server side, but is otherwise set however you like. Certain algorithms will perform better on different hardware, depending on the availability of supported VPN accelerator chips.</description>
+                <description>Fallback cipher selection in case none of the default data-ciphers is supported by the client. Only preserved for backwards compatibility reasons</description>
             </field>
             <field>
                 <name>digest</name>

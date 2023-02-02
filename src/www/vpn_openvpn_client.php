@@ -916,20 +916,19 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
+          <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (fallback)"); ?></td>
             <td>
               <select name="crypto" class="form-control">
 <?php
-              $cipherlist = openvpn_get_cipherlist();
-              foreach ($cipherlist as $name => $desc) :
-                  $selected = "";
-                  if ($name == $pconfig['crypto']) {
-                      $selected = " selected=\"selected\"";
-                  }?>
+              foreach (openvpn_get_cipherlist() as $name => $desc) :
+                $selected = $name == $pconfig['crypto'] ? " selected=\"selected\"" : "";?>
                   <option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
 <?php
               endforeach; ?>
               </select>
+              <div class="hidden" data-for="help_for_crypto">
+                <?= gettext('Fallback cipher selection in case none of the default data-ciphers is supported by the client. Only preserved for backwards compatibility reasons.') ?>
+              </div>
             </td>
           </tr>
           <tr>

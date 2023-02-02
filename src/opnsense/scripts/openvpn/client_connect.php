@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2018-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,20 +34,26 @@ require_once("plugins.inc.d/openvpn.inc");
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 $common_name = getenv("common_name");
-$vpnid = filter_var($argv[1], FILTER_SANITIZE_NUMBER_INT);
+$vpnid = getenv("auth_server");
+$config_file = getenv("config_file");
 if (isset($config['openvpn']['openvpn-server'])) {
     foreach ($config['openvpn']['openvpn-server'] as $server) {
-        if ("{$server['vpnid']}" === "$vpnid") {
+        if ($server['vpnid'] == $vpnid) {
+            // XXX: Eventually we should move the responsibility to determine if we do want to write a file
+            //      to here instead of the configuration file (always call event, filter relevant).
             $all_cso = openvpn_fetch_csc_list();
             if (!empty($all_cso[$vpnid][$common_name])) {
                 $cso = $all_cso[$vpnid][$common_name];
             } else {
-                $cso = array("common_name" => $common_name);
+                $cso = ["common_name" => $common_name];
             }
-            // $argv[2] contains the temporary file used for the profile specified by client-connect
-            $cso_filename = openvpn_csc_conf_write($cso, $server, $argv[2]);
+            if (!empty($config_file)) {
+            $cso_filename = openvpn_csc_conf_write($cso, $server, $config_file);
             if (!empty($cso_filename)) {
                 syslog(LOG_NOTICE, "client config created @ {$cso_filename}");
+            }
+            } else {
+            syslog(LOG_NOTICE, "unable to write client config for {$common_name}, missing target filename");
             }
             break;
         }
