@@ -110,7 +110,9 @@ class DNSReader:
                     """.format(intv=size, min=(size//60), lim=((60//(size//60))*24))
                 )
 
-            db.connection.execute("CREATE INDEX IF NOT EXISTS idx_query ON query (time)")
+            # when an earlier version created an index, make sure it doesn't exists.
+            # We do need to read the file anyway and adding an index means a **lot** of maintenance in the logger.
+            db.connection.execute("DROP INDEX IF EXISTS idx_query")
 
     def _sig(self, *args):
         # signal either open() or select() to gracefully close.
