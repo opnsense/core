@@ -44,6 +44,7 @@ class DNSReader:
     def __init__(self, target_pipe, flush_interval):
         self.target_pipe = target_pipe
         self.timer = 0
+        self.cleanup_timer = 0
         self.flush_interval = flush_interval
         self.buffer = deque()
         self.selector = selectors.DefaultSelector()
@@ -145,22 +146,22 @@ class DNSReader:
         # we would also need to limit the amount of queries we buffer before inserting them,
         # but appending a DataFrame of N size is always faster than splitting N into chunks and
         # individually appending them in separate DataFrames.
-        if (time.time() - self.timer) > self.flush_interval:
+        now = time.time()
+        if (now - self.timer) > self.flush_interval:
             # A note on the usage of DbConnection:
             # The pipe fifo can fill up while blocking for the lock, since during this time the
             # read() callback cannot run to empty it. The dnsbl module side catches this with
             # a BlockingIOError, forcing it to re-buffer the query, making the process
             # "eventually consistent". Realistically this condition should never occur.
             with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
-                self.timer = time.time()
-                # truncate the database to the last 7 days
-                t = datetime.date.today() - datetime.timedelta(days=7)
-                epoch = int(datetime.datetime(year=t.year, month=t.month, day=t.day).timestamp())
-                db.connection.execute("""
-                    DELETE
-                    FROM query
-                    WHERE to_timestamp(time) < to_timestamp(?)
-                """, [epoch])
+                self.timer = now
+                if (now - self.cleanup_timer) > 3600:
+                    self.cleanup_timer = now
+                    # truncate the database to the last 7 days once an hour
+                    t = datetime.date.today() - datetime.timedelta(days=7)
+                    epoch = int(datetime.datetime(year=t.year, month=t.month, day=t.day).timestamp())
+                    db.connection.execute("DELETE FROM query WHERE to_timestamp(time) < to_timestamp(?)", [epoch])
+
                 if len(self.buffer) > 0:
                     # construct a dataframe from the current buffer and empty it. This is orders of magniture
                     # faster than transactional inserts, and doesn't block even under high load.
@@ -168,9 +169,8 @@ class DNSReader:
                     self.buffer.clear()
                 for client in self.update_clients:
                     # attempt to resolve every client IP we've seen in between intervals (if necessary)
-                    client_check = (time.time() - self.client_map.get(client, 0)) > 3600
-                    if client_check:
-                        self.client_map[client] = time.time()
+                    if  (now - self.client_map.get(client, 0)) > 3600:
+                        self.client_map[client] = now
                         host = self._resolve_ip(client)
                         try:
                             db.connection.execute("INSERT INTO client VALUES (?, ?)", [client, host])
