@@ -467,14 +467,24 @@
 
                 def.resolve();
 
-                if (window.localStorage && window.localStorage.getItem("api.unbound.overview.timeperiod") !== null) {
-                    $("#timeperiod").val(window.localStorage.getItem("api.unbound.overview.timeperiod"));
+                if (window.localStorage) {
+                    if (window.localStorage.getItem("api.unbound.overview.timeperiod") !== null) {
+                        $("#timeperiod").val(window.localStorage.getItem("api.unbound.overview.timeperiod"));
+                    }
+
+                    if (window.localStorage.getItem("api.unbound.overview.timeperiodclients") !== null) {
+                        $("#timeperiod-clients").val(window.localStorage.getItem("api.unbound.overview.timeperiodclients"));
+                    }
+
+                    if (window.localStorage.getItem("api.unbound.overview.logqchart") !== null) {
+                        $("#toggle-log-qchart").prop('checked', window.localStorage.getItem("api.unbound.overview.logqchart") == 'true');
+                    }
+
+                    if (window.localStorage.getItem("api.unbound.overview.logcchart") !== null) {
+                        $("#toggle-log-cchart").prop('checked', window.localStorage.getItem("api.unbound.overview.logcchart") == 'true');
+                    }
                 }
                 $('#timeperiod').selectpicker('refresh');
-
-                if (window.localStorage && window.localStorage.getItem("api.unbound.overview.timeperiodclients") !== null) {
-                    $("#timeperiod-clients").val(window.localStorage.getItem("api.unbound.overview.timeperiodclients"));
-                }
                 $('#timeperiod-clients').selectpicker('refresh');
 
                 g_queryChart = create_chart($("#rollingChart"), 60, [], false);
@@ -502,10 +512,16 @@
         });
 
         $("#toggle-log-qchart").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.unbound.overview.logqchart", this.checked);
+            }
             updateQueryChart(this.checked);
         })
 
         $("#toggle-log-cchart").change(function() {
+            if (window.localStorage) {
+                window.localStorage.setItem("api.unbound.overview.logcchart", this.checked);
+            }
             updateClientChart(this.checked);
         })
 
