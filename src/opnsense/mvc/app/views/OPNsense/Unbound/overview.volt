@@ -468,7 +468,6 @@
                 def.resolve();
 
                 if (window.localStorage) {
-                    console.log(window.localStorage.getItem("api.unbound.overview.logqchart"));
                     if (window.localStorage.getItem("api.unbound.overview.timeperiod") !== null) {
                         $("#timeperiod").val(window.localStorage.getItem("api.unbound.overview.timeperiod"));
                     }
