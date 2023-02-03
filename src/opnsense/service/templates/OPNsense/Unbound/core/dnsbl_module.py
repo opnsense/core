@@ -41,6 +41,8 @@ SOURCE_LOCAL = 1
 SOURCE_LOCALDATA = 2
 SOURCE_CACHE = 3
 
+RR_TYPE_HTTPS = 65
+
 def time_diff_ms(start):
     return round((time.time() - start) * 1000)
 
@@ -173,7 +175,7 @@ class ModuleContext:
 
         domain = qname.rstrip('.')
 
-        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME)
+        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
 
         if self.dnsbl_available and qtype in rr_types and domain in mod_env['dnsbl']['data']:
             qstate.return_rcode = self.rcode
