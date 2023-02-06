@@ -392,7 +392,7 @@
                     let statObj = Object.values(data)[i];
                     if (typeof domain == 'undefined' || typeof statObj == 'undefined') {
                         $('#' + id).append(
-                            '<li class="list-group-item list-group-item-border top-item">' +
+                            '<li class="list-group-item list-group-item-border list-item-domain top-item">' +
                             (i + 1) + '. ' +
                             '<span class="counter">0 (0.0%)' +
                             '</span></li>'
@@ -415,7 +415,7 @@
 
                     let bl = statObj.hasOwnProperty('blocklist') ? '(' + statObj.blocklist + ')' : '';
                     $('#' + id).append(
-                        '<li class="list-group-item list-group-item-border top-item">' +
+                        '<li class="list-group-item list-group-item-border list-item-domain top-item">' +
                         '<p class="group-p">' + (i + 1) + '. ' + domain + ' ' + bl + '&nbsp </p>' +
                         '<span class="counter">'+ statObj.total +' (' + statObj.pcnt +'%)' +
                         icon +
@@ -730,7 +730,7 @@
         <li class="active"><a data-toggle="tab" href="#query-overview" id="query_overview_tab">{{ lang._('Overview') }}</a></li>
         <li><a data-toggle="tab" href="#query-details" id="query_details_tab">{{ lang._('Details') }}</a></li>
     </ul>
-    <div class="tab-content content-box" style="padding: 10px; border-top: 1px solid #E5E5E5;">
+    <div class="tab-content content-box">
         <div id="query-overview" class="tab-pane fade in active">
             <div class="content-box" style="margin-bottom: 10px;">
                 <div id="counters" class="container-fluid">
@@ -853,7 +853,7 @@
                         <div class="col-md-6">
                             <div class="top-list">
                                 <ul class="list-group list-group-wrapper" id="top">
-                                    <li class="list-group-item list-group-item-border">
+                                    <li class="list-group-item list-group-item-border list-item-domain">
                                         <b>{{ lang._('Top passed domains') }}</b>
                                     </li>
                                 </ul>
@@ -862,7 +862,7 @@
                         <div class="col-md-6">
                             <div class="top-list">
                                 <ul class="list-group list-group-wrapper" id="top-blocked">
-                                    <li class="list-group-item list-group-item-border">
+                                    <li class="list-group-item list-group-item-border list-item-domain">
                                         <b>{{ lang._('Top blocked domains') }}</b>
                                     </li>
                                 </ul>
