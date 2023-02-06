@@ -139,7 +139,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.logservfail</id>
+        <id>unbound.advanced.loglocalactions</id>
         <label>Log local actions</label>
         <type>checkbox</type>
         <help>
@@ -149,7 +149,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.loglocalactions</id>
+        <id>unbound.advanced.logservfail</id>
         <label>Log SERVFAIL</label>
         <type>checkbox</type>
         <help>
