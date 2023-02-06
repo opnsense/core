@@ -691,7 +691,7 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Gateway') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Schedule') ?></strong></td>
                       <td class="view-info">
-                          <i class="fa fa-fw fa-sitemap"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies too'));?>"></i>
+                          <i class="fa fa-fw fa-sitemap"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies to'));?>"></i>
                       </td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('Evaluations') ?></strong></td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('States') ?></strong></td>
