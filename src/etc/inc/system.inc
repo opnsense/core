@@ -538,26 +538,37 @@ function system_default_route($gateway, $family, $interface, $far = false)
             return;
     }
 
-    if ($family == 'inet') {
-        if (!$far) {
-            list (, $network) = interfaces_primary_address($interface);
-            if (ip_in_subnet($gateway, $network)) {
-                $realif = null;
-            } else {
-                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
-            }
-        }
-    } else {
-        /* IPv6 does not support far gateway notion */
-        $realif = null;
-    }
-
+    /* XXX while this does prevent unnecessary work it cannot detect a flip of far gateway setting */
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
         log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
         return;
     }
+
+    if ($family == 'inet') {
+        $dynamicgw = trim(@file_get_contents("/tmp/${realif}_router") ?? '');
+        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
+            /* special case tries to turn on far gateway when required for dynamic gateway */
+            list (, $network) = interfaces_primary_address($interface);
+            if (empty($network) || ip_in_subnet($gateway, $network)) {
+                /*
+                 * If we fail a primary network detection or the local address
+                 * is in the same network as the gateway address do nothing.
+                 */
+                $realif = null;
+            } else {
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+            }
+        } elseif (!$far) {
+            /* standard case disables host routes when not set in a static gateway */
+            $realif = null;
+        }
+    } else {
+        /* IPv6 does not support far gateway notion */
+        $realif = null;
+    }
+
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
