@@ -249,14 +249,15 @@ def init_standard(id, env):
     ctx = ModuleContext(env)
     mod_env['context'] = ctx
 
-    if not register_inplace_cb_reply_cache(cache_cb, env, id):
-        return False
+    if ctx.stats_enabled:
+        if not register_inplace_cb_reply_cache(cache_cb, env, id):
+            return False
 
-    if not register_inplace_cb_reply_local(local_cb, env, id):
-        return False
+        if not register_inplace_cb_reply_local(local_cb, env, id):
+            return False
 
-    if not register_inplace_cb_reply_servfail(servfail_cb, env, id):
-        return False
+        if not register_inplace_cb_reply_servfail(servfail_cb, env, id):
+            return False
 
     return True
 
@@ -285,8 +286,8 @@ def operate(id, event, qstate, qdata):
 
     if event == MODULE_EVENT_MODDONE:
         # Iterator finished, show response (if any)
-        if 'query' in qdata and 'start_time' in qdata:
-            ctx = mod_env['context']
+        ctx = mod_env['context']
+        if ctx.stats_enabled and 'query' in qdata and 'start_time' in qdata:
             dnssec = sec_status_unchecked
             rcode = RCODE_SERVFAIL
             ttl = 0
