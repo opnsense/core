@@ -107,17 +107,13 @@ CORE_PKGVERSION=	${CORE_VERSION}
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
-.if "${CORE_FLAVOUR}" == OpenSSL
-CORE_REPOSITORY?=	${CORE_ABI}/latest
-.else
-CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
-.endif
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
+CORE_REPOSITORY?=	${CORE_ABI}/latest
 CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.

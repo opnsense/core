@@ -34,7 +34,6 @@ $licensefile = $metafile . '.license';
 
 $ret = json_decode(@file_get_contents($metafile), true);
 if ($ret != null) {
-    $ret['product_crypto'] = shell_safe('opnsense-version -f');
     $ret['product_latest'] = shell_safe('/usr/local/opnsense/scripts/firmware/latest.php');
     $ret['product_mirror'] = preg_replace('/\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\//i', '/${SUBSCRIPTION}/', shell_safe('opnsense-update -M'));
     $ret['product_time'] = date('D M j H:i:s T Y', filemtime('/usr/local/opnsense/www/index.php'));

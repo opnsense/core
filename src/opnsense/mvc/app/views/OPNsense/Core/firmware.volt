@@ -862,12 +862,6 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;">{{ lang._('Flavour') }}</td>
-                                <td id="product_crypto"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Commit') }}</td>
                                 <td id="product_hash"></td>
                                 <td></td>
