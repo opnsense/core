@@ -36,7 +36,6 @@ import pandas
 import signal
 import socket
 import duckdb
-from collections import deque
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from duckdb_helper import DbConnection
 
@@ -46,7 +45,7 @@ class DNSReader:
         self.timer = 0
         self.cleanup_timer = 0
         self.flush_interval = flush_interval
-        self.buffer = deque()
+        self.buffer = list()
         self.selector = selectors.DefaultSelector()
         self.fd = None
 
@@ -165,7 +164,7 @@ class DNSReader:
                 if len(self.buffer) > 0:
                     # construct a dataframe from the current buffer and empty it. This is orders of magniture
                     # faster than transactional inserts, and doesn't block even under high load.
-                    db.connection.append('query', pandas.DataFrame(list(self.buffer)))
+                    db.connection.append('query', pandas.DataFrame(self.buffer))
                     self.buffer.clear()
                 for client in self.update_clients:
                     # attempt to resolve every client IP we've seen in between intervals (if necessary)
