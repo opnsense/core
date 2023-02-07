@@ -47,7 +47,7 @@ final class product
     {
         self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
 
-        /* boot detection via exit_on_bootup()  */
+        /* boot detection */
         $bootflag = '/var/run/booting';
         @touch($bootflag);
         $fp = fopen($bootflag, 'r');

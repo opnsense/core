@@ -296,23 +296,11 @@ function unlock($cfglckkey = null)
 
 function exit_on_bootup($callback = null, $arguments = [])
 {
-    $bootflag = '/var/run/booting';
-
-    /* make sure file exists */
-    @touch($bootflag);
-
-    $fp = fopen($bootflag, 'r');
-    if (!$fp) {
-        /* log possible error and adjust exist code */
-        log_msg("exit_on_bootup(): error opening $bootflag", LOG_ERR);
-        exit(1);
-    }
-
-    if (!flock($fp, LOCK_SH | LOCK_NB)) {
+    if (product::getInstance()->booting()) {
         if ($callback) {
             call_user_func_array($callback, $arguments);
         }
-        /* intentionally we exit here to avoid future cleverness WRT bootup handing */
+        /* intentionally we exit here to avoid future cleverness WRT bootup handling */
         exit(0);
     }
 
