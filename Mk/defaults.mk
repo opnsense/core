@@ -39,18 +39,6 @@ CORE_ARCH?=	${_CORE_ARCH}
 
 CORE_MAKE=	${MAKE}
 
-OPENSSL=	${LOCALBASE}/bin/openssl
-
-.if ! defined(CORE_FLAVOUR)
-.if exists(${OPENSSL})
-_CORE_FLAVOUR!=	${OPENSSL} version
-CORE_FLAVOUR?=	${_CORE_FLAVOUR:[1]}
-.else
-.warning "Detected 'Base' flavour is not currently supported"
-CORE_FLAVOUR?=	Base
-.endif
-.endif
-
 PHPBIN=		${LOCALBASE}/bin/php
 
 .if exists(${PHPBIN})
