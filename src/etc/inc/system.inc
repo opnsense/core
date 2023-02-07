@@ -535,7 +535,7 @@ function system_default_route($gateway, $interface, $far = false)
 
     $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
 
-   if (is_linklocal($gateway)) {
+    if (is_linklocal($gateway)) {
         $gateway .= "%{$realif}";
     }
 
