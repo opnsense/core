@@ -263,12 +263,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             }
             $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
             if ($default_gw !== null && !empty($default_gw['gateway'])) {
-                system_default_route(
-                    $default_gw['gateway'],
-                    $ipprotocol,
-                    $default_gw['if'],
-                    isset($default_gw['fargw'])
-                );
+                system_default_route($default_gw['gateway'], $default_gw['if'], isset($default_gw['fargw']));
             }
         }
     }
