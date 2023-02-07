@@ -657,7 +657,9 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
-    system_host_route($gif['remote-addr'], $realifgw);
+    if (!empty($realifgw)) {
+        system_host_route($gif['remote-addr'], $realifgw);
+    }
 
     interfaces_bring_up($gif['gifif']);
 

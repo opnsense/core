@@ -506,7 +506,7 @@ function system_host_route($host, $gateway)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid host address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_WARNING);
         return;
     }
 
@@ -529,7 +529,7 @@ function system_default_route($gateway, $interface, $far = false)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_WARNING);
         return;
     }
 
