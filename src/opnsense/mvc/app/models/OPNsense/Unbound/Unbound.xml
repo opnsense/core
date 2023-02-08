@@ -171,7 +171,7 @@
             <whitelists type="CSVListField">
                 <Required>N</Required>
             </whitelists>
-            <blocklists type="CSVListField">
+            <blocklists type=".\BlocklistsField">
                 <Required>N</Required>
             </blocklists>
             <address type="NetworkField">

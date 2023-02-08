@@ -158,6 +158,52 @@ class ModuleContext:
                 log_info("dnsbl_module: updating blocklist.")
                 self.load_dnsbl()
 
+    def policies_in_domain(self, domain):
+        if domain in mod_env['dnsbl']['data']:
+            bl = mod_env['dnsbl']['data'][domain]['bl']
+            for policy in mod_env['dnsbl']['data'][domain]['policies']:
+                yield bl, policy
+
+    def block(self, domain, qtype, qdata):
+        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
+
+        if not self.dnsbl_available:
+            return False
+
+        if not qtype in rr_types:
+            return False
+
+        config = mod_env['dnsbl']['config']
+        sub = domain
+        matches = dict()
+        while len(matches) == 0:
+            for bl, policy in self.policies_in_domain(sub):
+                is_full_domain = sub == domain
+                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
+                    # XXX: todo: check client
+                    if policy['source_net'] != '*':
+                        continue
+                    priority = 0 if policy['action'] == 'block' else 1
+                    matches[priority] = policy
+                    matches[priority]['domain'] = domain
+                    matches[priority]['bl'] = bl
+
+            # exit condition
+            if '.' not in sub or not config.get('has_wildcards', False):
+                break
+            else:
+                sub = sub.split('.', maxsplit=1)[1]
+
+        if len(matches) > 0:
+            match = matches[sorted(matches.keys(), reverse=True)[0]]
+            log_info('match found: domain: %(domain)s; wildcard: %(wildcard)r; action: %(action)s; description: %(description)s' % match)
+            qdata['match'] = match
+            if match['action'] == 'block':
+                return True
+
+        return False
+
+
     def filter_query(self, id, qstate, qdata):
         t = int(qdata['start_time'])
         self.update_dnsbl(t)
@@ -175,11 +221,12 @@ class ModuleContext:
 
         domain = qname.rstrip('.')
 
-        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
-
-        if self.dnsbl_available and qtype in rr_types and domain in mod_env['dnsbl']['data']:
+        if self.block(domain, qtype, qdata):
             qstate.return_rcode = self.rcode
-            blocklist = mod_env['dnsbl']['data'][domain].get('bl')
+            blocklist = None
+            match = qdata.get('match', None)
+            if match:
+                blocklist = match.get('bl')
             dnssec_status = sec_status_secure if self.dnssec_enabled else sec_status_unchecked
             ttl = 3600
 
