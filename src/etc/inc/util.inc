@@ -303,9 +303,6 @@ function exit_on_bootup($callback = null, $arguments = [])
         /* intentionally we exit here to avoid future cleverness WRT bootup handling */
         exit(0);
     }
-
-    /* let the script run if we made sure we are up and running */
-    fclose($fp);
 }
 
 /**
