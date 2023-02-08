@@ -151,7 +151,7 @@ function ifgroup_setup()
     }
 }
 
-function filter_configure_sync($verbose = false, $load_aliases = true)
+function filter_configure_sync($verbose = false, $load_aliases = true, $switch_gw = true)
 {
     global $config;
 
@@ -252,7 +252,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (isset($config['system']['gw_switch_default']) && !product::getInstance()->booting()) {
+    if ($switch_gw && isset($config['system']['gw_switch_default'])) {
         // When gateway switching is enabled, we might consider a different default gateway.
         // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
         // we keep it here for now (historical reasons).
