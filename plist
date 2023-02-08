@@ -995,7 +995,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
-/usr/local/opnsense/service/conf/actions.d/actions_plugins.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
