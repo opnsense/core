@@ -61,7 +61,7 @@ class LegacySubsystemController extends ApiControllerBase
     {
         $result = ["status" => "failed"];
         if ($this->request->isPost()) {
-            $bckresult = trim((new Backend())->configdRun('ipsec reconfigure'));
+            $bckresult = trim((new Backend())->configdRun('ipsec reload'));
             if ($bckresult === 'OK') {
                 $result['message'] = gettext('The changes have been applied successfully.');
                 $result['status'] = "ok";
