@@ -35,7 +35,6 @@
 /usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown
 /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup
-/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn_setup_cso.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/tunnel_endpoint.php
 /usr/local/etc/inc/plugins.inc.d/openvpn/wizard.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
@@ -908,6 +907,11 @@
 /usr/local/opnsense/scripts/netflow/lib/flowparser.py
 /usr/local/opnsense/scripts/netflow/lib/parse.py
 /usr/local/opnsense/scripts/openssh/ssh_query.py
+/usr/local/opnsense/scripts/openvpn/client_connect.php
+/usr/local/opnsense/scripts/openvpn/client_disconnect.sh
+/usr/local/opnsense/scripts/openvpn/ovpn_event.py
+/usr/local/opnsense/scripts/openvpn/tls_verify.php
+/usr/local/opnsense/scripts/openvpn/user_pass_verify.php
 /usr/local/opnsense/scripts/proxy/deploy_error_pages.py
 /usr/local/opnsense/scripts/proxy/download_error_pages.py
 /usr/local/opnsense/scripts/proxy/fetchACLs.py

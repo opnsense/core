@@ -48,12 +48,12 @@ if (isset($config['openvpn']['openvpn-server'])) {
                 $cso = ["common_name" => $common_name];
             }
             if (!empty($config_file)) {
-            $cso_filename = openvpn_csc_conf_write($cso, $server, $config_file);
-            if (!empty($cso_filename)) {
-                syslog(LOG_NOTICE, "client config created @ {$cso_filename}");
-            }
+                $cso_filename = openvpn_csc_conf_write($cso, $server, $config_file);
+                if (!empty($cso_filename)) {
+                    syslog(LOG_NOTICE, "client config created @ {$cso_filename}");
+                }
             } else {
-            syslog(LOG_NOTICE, "unable to write client config for {$common_name}, missing target filename");
+                syslog(LOG_NOTICE, "unable to write client config for {$common_name}, missing target filename");
             }
             break;
         }
