@@ -170,7 +170,7 @@ if (is_string($response)) {
 
 if (!empty($parms['auth_defer'])) {
     if (!empty($parms['auth_control_file'])) {
-        file_put_contents($parms['auth_control_file'], sprintf("%d", $response === true ? '0' : '1'));
+        file_put_contents($parms['auth_control_file'], sprintf("%d", $response === true ? '1' : '0'));
     }
     exit(0);
 } else {
