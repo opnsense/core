@@ -36,6 +36,8 @@ require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+exit_on_bootup();
+
 if (count($argv) > 1 && is_numeric($argv[1])) {
     // starting delayed.
     sleep($argv[1]);
