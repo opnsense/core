@@ -75,6 +75,8 @@ function legacy_html_escape_form_data(&$settings)
         foreach ($settings as $dataKey => &$dataValue) {
             if (is_array($dataValue)) {
                 legacy_html_escape_form_data($dataValue);
+            } elseif ($dataValue === null) {
+                $settings[$dataKey] = '';
             } else {
                 $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES | ENT_HTML401);
             }
