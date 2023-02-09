@@ -916,7 +916,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-          <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (fallback)"); ?></td>
+            <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (fallback)"); ?></td>
             <td>
               <select name="crypto" class="form-control">
 <?php
