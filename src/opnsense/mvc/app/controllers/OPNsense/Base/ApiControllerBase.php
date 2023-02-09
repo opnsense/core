@@ -53,6 +53,7 @@ class ApiControllerBase extends ControllerRoot
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
+        $records = is_array($records) ? $records : []; // safeguard input, we are only able to search arrays.
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
         $currentPage = intval($this->request->getPost('current', 'int', 1));
