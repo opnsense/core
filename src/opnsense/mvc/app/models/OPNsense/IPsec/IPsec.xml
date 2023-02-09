@@ -43,7 +43,9 @@
                         <check001>
                             <ValidationMessage>Another entry with the same identifier already exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
-                            <addField>remote_ident</addField>
+                            <addFields>
+                                <field1>remote_ident</field1>
+                            </addFields>
                         </check001>
                     </Constraints>
                 </ident>
