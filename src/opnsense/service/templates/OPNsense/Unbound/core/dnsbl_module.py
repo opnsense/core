@@ -29,6 +29,8 @@ import json
 import time
 import errno
 import uuid
+import ipaddress
+import traceback
 from threading import Lock
 from collections import deque
 
@@ -164,7 +166,25 @@ class ModuleContext:
             for policy in mod_env['dnsbl']['data'][domain]['policies']:
                 yield bl, policy
 
-    def block(self, domain, qtype, qdata):
+    def in_network(self, client, networks):
+        if networks is None or type(networks) is not list or client is None:
+            return True
+        try:
+            client_net = ipaddress.ip_network(client)
+        except ValueError:
+            log_err('dnsbl_module: unable to parse client network: %s' % traceback.format_exc().replace('\n', ' '))
+            return False
+        for network in networks:
+            try:
+                if client_net.overlaps(ipaddress.ip_network(network)):
+                    log_info("overlaps")
+                    return True
+            except ValueError:
+                log_err('dnsbl_module: unable to parse policy network: %s' % traceback.format_exc().replace('\n', ' '))
+
+        return False
+
+    def block(self, domain, qtype, qdata, client):
         rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
 
         if not self.dnsbl_available:
@@ -179,25 +199,32 @@ class ModuleContext:
         while len(matches) == 0:
             for bl, policy in self.policies_in_domain(sub):
                 is_full_domain = sub == domain
-                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
-                    # XXX: todo: check client
-                    if policy['source_net'] != '*':
+                traverse_hit = (not is_full_domain and policy['wildcard'])
+                if (is_full_domain) or traverse_hit:
+                    if not self.in_network(client, policy['source_net']):
                         continue
                     priority = 0 if policy['action'] == 'block' else 1
+                    # give a higher priority to exact networks
+                    priority += 0 if policy['source_net'] == '*' else 1
                     matches[priority] = policy
                     matches[priority]['domain'] = domain
                     matches[priority]['bl'] = bl
+                    matches[priority]['client'] = client
 
-            # exit condition
             if '.' not in sub or not config.get('has_wildcards', False):
+                # either we have traversed all subdomains or there are no wildcards
+                # in the dataset, in which case traversal is not necessary
                 break
             else:
                 sub = sub.split('.', maxsplit=1)[1]
 
         if len(matches) > 0:
             match = matches[sorted(matches.keys(), reverse=True)[0]]
-            log_info('match found: domain: %(domain)s; wildcard: %(wildcard)r; action: %(action)s; description: %(description)s' % match)
+            # XXX: debug, remove
+            log_info('match found: client: %(client)s domain: %(domain)s; wildcard: %(wildcard)r; action: %(action)s; description: %(description)s' % match)
+
             qdata['match'] = match
+
             if match['action'] == 'block':
                 return True
 
@@ -221,7 +248,7 @@ class ModuleContext:
 
         domain = qname.rstrip('.')
 
-        if self.block(domain, qtype, qdata):
+        if self.block(domain, qtype, qdata, info[1]):
             qstate.return_rcode = self.rcode
             blocklist = None
             match = qdata.get('match', None)
@@ -332,6 +359,14 @@ def operate(id, event, qstate, qdata):
         return ctx.filter_query(id, qstate, qdata)
 
     if event == MODULE_EVENT_MODDONE:
+        match = qdata.get('match')
+        if match:
+            if match['action'] == 'pass' and match['source_net'] != '*':
+                # if we allow a query for a specific client, the response will be cached
+                # and will subsequently be available to other clients via the cache. Therefore
+                # we must invalidate it once the iteration process has finished.
+                invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+
         # Iterator finished, show response (if any)
         ctx = mod_env['context']
         if ctx.stats_enabled and 'query' in qdata and 'start_time' in qdata:
