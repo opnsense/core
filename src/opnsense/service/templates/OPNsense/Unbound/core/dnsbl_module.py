@@ -177,7 +177,6 @@ class ModuleContext:
         for network in networks:
             try:
                 if client_net.overlaps(ipaddress.ip_network(network)):
-                    log_info("overlaps")
                     return True
             except ValueError:
                 log_err('dnsbl_module: unable to parse policy network: %s' % traceback.format_exc().replace('\n', ' '))
@@ -360,12 +359,11 @@ def operate(id, event, qstate, qdata):
 
     if event == MODULE_EVENT_MODDONE:
         match = qdata.get('match')
-        if match:
-            if match['action'] == 'pass' and match['source_net'] != '*':
-                # if we allow a query for a specific client, the response will be cached
-                # and will subsequently be available to other clients via the cache. Therefore
-                # we must invalidate it once the iteration process has finished.
-                invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+        if match and match['action'] == 'pass' and match['source_net'] != '*':
+            # if we allow a query for a specific client, the response will be cached
+            # and will subsequently be available to other clients via the cache. Therefore
+            # we must invalidate it once the iteration process has finished.
+            invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
 
         # Iterator finished, show response (if any)
         ctx = mod_env['context']
