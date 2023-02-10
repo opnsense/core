@@ -55,8 +55,9 @@ class Vip extends BaseModel
                     $vips[$parentKey] = $parentNode;
                 }
             }
-            if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[(string)$parentNode->vhid])) {
-                $carp_vhids[(string)$parentNode->vhid] = $parentNode;
+            $vhid_key = sprintf("%s_%s", $parentNode->interface, $parentNode->vhid);
+            if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[$vhid_key])) {
+                $carp_vhids[$vhid_key] = $parentNode;
             }
         }
 
@@ -105,6 +106,7 @@ class Vip extends BaseModel
                 }
             }
             if ((string)$node->mode == 'carp') {
+                $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
                 if (empty((string)$node->password)) {
                     $messages->appendMessage(
                         new Message(
@@ -121,15 +123,15 @@ class Vip extends BaseModel
                         )
                     );
                 } elseif (
-                    isset($carp_vhids[(string)$node->vhid]) &&
-                    $carp_vhids[(string)$node->vhid]->__reference != $node->__reference
+                    isset($carp_vhids[$vhid_key]) &&
+                    $carp_vhids[$vhid_key]->__reference != $node->__reference
                 ) {
                     $errmsg = gettext(
                         "VHID %s is already in use on interface %s. Pick a unique number on this interface."
                     );
                     $messages->appendMessage(
                         new Message(
-                            sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[(string)$node->vhid]->interface),
+                            sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[$vhid_key]->interface),
                             $key . ".vhid"
                         )
                     );
@@ -137,8 +139,8 @@ class Vip extends BaseModel
             } elseif (
                 (string)$node->mode == 'ipalias' &&
                 !empty((string)$node->vhid) && (
-                  !isset($carp_vhids[(string)$node->vhid]) ||
-                  (string)$carp_vhids[(string)$node->vhid]->interface != (string)$node->interface
+                  !isset($carp_vhids[$vhid_key]) ||
+                  (string)$carp_vhids[$vhid_key]->interface != (string)$node->interface
                 )
             ) {
                 $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
