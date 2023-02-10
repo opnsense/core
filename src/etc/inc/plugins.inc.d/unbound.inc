@@ -102,6 +102,8 @@ function unbound_optimization()
 
 function unbound_service_stop()
 {
+    global $config;
+
     mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
 
     if (empty($config['unbound']['cacheflush'])) {
