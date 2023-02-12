@@ -340,9 +340,6 @@ function ntpd_configure_do($verbose = false)
 
     $ntpcfg .= "\n\n";
 
-    /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
-    $ntpcfg .= "disable monitor\n";
-
     if (
         !empty($config['ntpd']['clockstats']) ||
         !empty($config['ntpd']['loopstats']) ||
