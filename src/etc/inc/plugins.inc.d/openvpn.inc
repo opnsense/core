@@ -111,8 +111,8 @@ function openvpn_devices()
         if (!empty($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
                 $names["ovpn{$mode[0]}{$settings['vpnid']}"] = [
-                    'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description']),
-                    'ifdescr' => sprintf('%s', $settings['description']),
+                    'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode[0], $settings['vpnid'], $mode == 'server' ? gettext('Server') : gettext('Client'), $settings['description'] ?? ''),
+                    'ifdescr' => sprintf('%s', $settings['description'] ?? ''),
                     'name' => "ovpn{$mode[0]}{$settings['vpnid']}",
                 ];
             }
@@ -502,7 +502,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
      * it unless "any" interface was selected, then the local
      * directive will be omitted.
      */
-    if (is_ipaddr($settings['ipaddr'])) {
+    if (is_ipaddr($settings['ipaddr'] ?? '')) {
         $iface_ip = $settings['ipaddr'];
     } elseif ($settings['interface'] != 'any') {
         if (stristr($settings['protocol'], '6') !== false) {
@@ -679,15 +679,15 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         // The management port to listen on
         $conf .= "management /var/etc/openvpn/{$mode_id}.sock unix\n";
 
-        if ($settings['maxclients']) {
+        if (!empty($settings['maxclients'])) {
             $conf .= "max-clients {$settings['maxclients']}\n";
         }
 
         // Can we push routes
-        if ($settings['local_network']) {
+        if (!empty($settings['local_network'])) {
             $conf .= openvpn_gen_routes($settings['local_network'], "ipv4", true);
         }
-        if ($settings['local_networkv6']) {
+        if (!empty($settings['local_networkv6'])) {
             $conf .= openvpn_gen_routes($settings['local_networkv6'], "ipv6", true);
         }
 
@@ -697,7 +697,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             case 'server_tls_user':
                 // Configure client dhcp options
                 openvpn_add_dhcpopts($settings, $conf);
-                if ($settings['client2client']) {
+                if (!empty($settings['client2client'])) {
                     $conf .= "client-to-client\n";
                 }
                 break;
@@ -820,9 +820,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);
-                openvpn_add_keyfile($crl['text'], $conf, $mode_id, "crl-verify");
+                openvpn_add_keyfile($crl['text'] ?? '', $conf, $mode_id, "crl-verify");
             }
-            if ($settings['tls']) {
+            if (!empty($settings['tls'])) {
                 if ($settings['tlsmode'] == "crypt") {
                     openvpn_add_keyfile($settings['tls'], $conf, $mode_id, "tls-crypt");
                 } else {
@@ -848,33 +848,33 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         }
     }
 
-    if ($settings['passtos']) {
+    if (!empty($settings['passtos'])) {
         $conf .= "passtos\n";
     }
 
-    if ($settings['dynamic_ip']) {
+    if (!empty($settings['dynamic_ip'])) {
         $conf .= "persist-remote-ip\n";
         $conf .= "float\n";
     }
 
-    if ($settings['topology_subnet']) {
+    if (!empty($settings['topology_subnet'])) {
         $conf .= "topology subnet\n";
     }
 
     if ($mode == "client") {
-        if ($settings['route_no_pull']) {
+        if (!empty($settings['route_no_pull'])) {
             $conf .= "route-nopull\n";
         }
 
-        if ($settings['route_no_exec']) {
+        if (!empty($settings['route_no_exec'])) {
             $conf .= "route-noexec\n";
         }
 
-        if ($settings['resolve_retry']) {
+        if (!empty($settings['resolve_retry'])) {
             $conf .= "resolv-retry infinite\n";
         }
 
-        if ($settings['remote_random']) {
+        if (!empty($settings['remote_random'])) {
             $conf .= "remote-random\n";
         }
     }

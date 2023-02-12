@@ -851,8 +851,8 @@ EOPP;
                     $newddnszone = [];
                     $newddnszone['domain-name'] = $poolconf['ddnsdomain'];
                     $newddnszone['dns-servers'] = array($poolconf['ddnsdomainprimary']);
-                    $newddnszone['ddnsdomainkeyname'] = $poolconf['ddnsdomainkeyname'];
-                    $newddnszone['ddnsdomainkey'] = $poolconf['ddnsdomainkey'];
+                    $newddnszone['ddnsdomainkeyname'] = $poolconf['ddnsdomainkeyname'] ?? '';
+                    $newddnszone['ddnsdomainkey'] = $poolconf['ddnsdomainkey'] ?? '';
                     $newddnszone['ddnsdomainalgorithm'] = !empty($poolconf['ddnsdomainalgorithm']) ? $poolconf['ddnsdomainalgorithm'] : "hmac-md5";
                     $ddns_zones[] = $newddnszone;
                 }
@@ -1175,8 +1175,8 @@ EOD;
         $dhcpdifs[] = get_real_interface($dhcpif);
         if (!empty($newzone['domain-name']) && isset($dhcpifconf['ddnsupdate']) && is_ipaddrv4($dhcpifconf['ddnsdomainprimary'])) {
             $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
-            $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'];
-            $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'];
+            $newzone['ddnsdomainkeyname'] = $dhcpifconf['ddnsdomainkeyname'] ?? '';
+            $newzone['ddnsdomainkey'] = $dhcpifconf['ddnsdomainkey'] ?? '';
             $newzone['ddnsdomainalgorithm'] = !empty($dhcpifconf['ddnsdomainalgorithm']) ? $dhcpifconf['ddnsdomainalgorithm'] : "hmac-md5";
             $ddns_zones[] = $newzone;
         }

@@ -213,8 +213,8 @@ function core_devices()
 
     foreach (config_read_array('ppps', 'ppp') as $dev) {
         $ppp_names[$dev['if']] = [
-            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'], $dev['username']),
-            'ifdescr' => sprintf('%s', $dev['descr']),
+            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'] ?? '', $dev['username']),
+            'ifdescr' => sprintf('%s', $dev['descr'] ?? ''),
             'ipaddr' => $dev['type'],
             'name' => $dev['if'],
         ];

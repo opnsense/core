@@ -2163,6 +2163,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $wancfg = $config['interfaces'][$interface];
     $loaded = [];
+    $realhwif = '';
 
     if (!isset($wancfg['enable'])) {
         return $loaded;
