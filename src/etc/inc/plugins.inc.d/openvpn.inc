@@ -443,7 +443,7 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 {
     $fpath = "/var/etc/openvpn/{$mode_id}.{$directive}";
     openvpn_create_dirs();
-    $data = str_replace("\r", "", base64_decode($data));
+    $data = !empty($data) ? str_replace("\r", "", base64_decode($data)) : '';
     file_put_contents($fpath, str_replace("\n\n", "\n", $data));
     @chmod($fpath, 0600);
 
@@ -542,8 +542,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     // server specific settings
     if ($mode == 'server') {
-        list($ip, $cidr) = explode('/', $settings['tunnel_network']);
-        list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6']);
+        list($ip, $cidr) = explode('/', $settings['tunnel_network'] ?? '');
+        list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6'] ?? '');
         $mask = gen_subnet_mask($cidr);
 
         // client connect and disconnect handling
@@ -1520,7 +1520,7 @@ function openvpn_refresh_crls()
                     if (!empty($settings['crlref'])) {
                         $crl = lookup_crl($settings['crlref']);
                         $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, base64_decode($crl['text']));
+                        file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
                         @chmod($fpath, 0644);
                     }
                     break;

@@ -65,7 +65,7 @@ class NetworkValidator extends BaseValidator
         foreach ($values as $value) {
             // parse filter options
             $filterOpt = 0;
-            switch (strtolower($this->getOption('version'))) {
+            switch (strtolower($this->getOption('version') ?? '')) {
                 case "ipv4":
                     $filterOpt |= FILTER_FLAG_IPV4;
                     break;
