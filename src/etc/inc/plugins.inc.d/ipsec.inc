@@ -1411,7 +1411,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     case 'rsa_eap-mschapv2':
                         $connection['local-0']['auth'] = 'pubkey';
                         $connection['remote-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['eap_id'] = '%any';
+                        $connection['remote-1']['eap_id'] = '%any';
                         $connection['remote-1']['auth'] = 'eap-mschapv2';
                         break;
                     case 'eap-radius':
