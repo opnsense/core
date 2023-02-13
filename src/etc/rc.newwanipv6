@@ -91,7 +91,7 @@ log_msg("IP renwal starting (new: {$ip}, old: ${cacheip}, interface: {$interface
 
 interfaces_vips_configure($interface, 6);
 
-if ($config['interfaces'][$interface]['ipaddrv6'] == 'slaac') {
+if (($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') == 'slaac') {
     /* require immediate reconfiguration before reconfiguring clients */
     plugins_configure('dhcp', false, ['inet6']);
 }
