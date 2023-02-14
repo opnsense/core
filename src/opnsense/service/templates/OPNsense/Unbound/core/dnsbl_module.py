@@ -114,7 +114,8 @@ class Query:
 
 class DNSBL:
     """
-    DNSBL implementation. Handles 
+    DNSBL implementation. Handles dynamically updating the blocklist as well as matching policies
+    on incoming queries.
     """
     def __init__(self, dnsbl_path='/data/dnsbl.json'):
         self.dnsbl_path = dnsbl_path
@@ -125,23 +126,23 @@ class DNSBL:
 
         self.update_dnsbl()
 
-    def dnsbl_exists(self):
+    def _dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
 
     def update_dnsbl(self):
         t = time.time()
         if (t - self.dnsbl_update_time) > 60:
             self.dnsbl_update_time = t
-            if not self.dnsbl_exists():
+            if not self._dnsbl_exists():
                 self.dnsbl_available = False
                 return
             fstat = os.stat(self.dnsbl_path).st_mtime
             if fstat != self.dnsbl_mtime_cache:
                 self.dnsbl_mtime_cache = fstat
                 log_info("dnsbl_module: updating blocklist.")
-                self.load_dnsbl()
+                self._load_dnsbl()
 
-    def load_dnsbl(self):
+    def _load_dnsbl(self):
         with open(self.dnsbl_path, 'r') as f:
             try:
                 self.dnsbl = json.load(f)
@@ -235,17 +236,17 @@ class Logger:
             self.lock = Lock()
             self.pipe_buffer = deque(maxlen=100000) # buffer to hold qdata as long as a backend is not present
             self.retry_timer = 10
-            self.create_pipe_rdv()
+            self._create_pipe_rdv()
 
     # Defines the rendezvous point, but does not open it.
     # Subsequent calls to log_entry will attempt to open the pipe if necessary while being throttled
     # by a default timer
-    def create_pipe_rdv(self):
+    def _create_pipe_rdv(self):
         if os.path.exists(self.pipe_name):
             os.unlink(self.pipe_name)
         os.mkfifo(self.pipe_name)
 
-    def try_open_pipe(self):
+    def _try_open_pipe(self):
         try:
             # try to obtain the fd in a non-blocking manner and catch the ENXIO exception
             # if the other side is not listening.
@@ -288,7 +289,7 @@ class Logger:
             if (time.time() - self.pipe_timer) > self.retry_timer:
                 self.pipe_timer = time.time()
                 log_info("dnsbl_module: attempting to open pipe")
-                if not self.try_open_pipe():
+                if not self._try_open_pipe():
                     return
                 log_info("dnsbl_module: successfully opened pipe")
             else:
