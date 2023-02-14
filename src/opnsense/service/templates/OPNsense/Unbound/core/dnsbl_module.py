@@ -367,8 +367,8 @@ def init_standard(id, env):
     ctx = ModuleContext(env)
     mod_env['context'] = ctx
 
-    dnsbl = DNSBL()
     logger = Logger()
+    dnsbl = DNSBL()
 
     mod_env['dnsbl'] = dnsbl
     mod_env['logger'] = logger
