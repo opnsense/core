@@ -195,12 +195,12 @@ if __name__ == '__main__':
                                     file_stats['blocklist'] += 1
                                     blocklist_items['data'][entry] = {
                                         'bl': bl_shortcode,
-                                        'policies': list({
+                                        'policies': [{
                                             'source_net': '*',
                                             'wildcard': False,
                                             'action': 'block',
                                             'description': 'default_block'
-                                        })
+                                        }]
                                     }
                                 else:
                                     file_stats['skip'] += 1
