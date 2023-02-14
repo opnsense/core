@@ -162,9 +162,8 @@ class ModuleContext:
 
     def policies_in_domain(self, domain):
         if domain in mod_env['dnsbl']['data']:
-            bl = mod_env['dnsbl']['data'][domain]['bl']
             for policy in mod_env['dnsbl']['data'][domain]['policies']:
-                yield bl, policy
+                yield policy
 
     def in_network(self, client, networks):
         if networks is None or type(networks) is not list or client is None:
@@ -184,30 +183,26 @@ class ModuleContext:
         return False
 
     def block(self, domain, qtype, qdata, client):
-        rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
-
         if not self.dnsbl_available:
             return False
 
-        if not qtype in rr_types:
+        if not qtype in (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS):
             return False
 
         config = mod_env['dnsbl']['config']
         sub = domain
         matches = dict()
         while len(matches) == 0:
-            for bl, policy in self.policies_in_domain(sub):
+            for policy in self.policies_in_domain(sub):
                 is_full_domain = sub == domain
-                traverse_hit = (not is_full_domain and policy['wildcard'])
-                if (is_full_domain) or traverse_hit:
+                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
                     if not self.in_network(client, policy['source_net']):
                         continue
-                    priority = 0 if policy['action'] == 'block' else 1
                     # give a higher priority to exact networks
-                    priority += 0 if policy['source_net'] == '*' else 1
+                    priority = 0 if policy['source_net'] == '*' else 1
                     matches[priority] = policy
                     matches[priority]['domain'] = domain
-                    matches[priority]['bl'] = bl
+                    matches[priority]['bl'] = mod_env['dnsbl']['data'][sub]['bl']
                     matches[priority]['client'] = client
 
             if '.' not in sub or not config.get('has_wildcards', False):
@@ -220,7 +215,7 @@ class ModuleContext:
         if len(matches) > 0:
             match = matches[sorted(matches.keys(), reverse=True)[0]]
             # XXX: debug, remove
-            log_info('match found: client: %(client)s domain: %(domain)s; wildcard: %(wildcard)r; action: %(action)s; description: %(description)s' % match)
+            log_info('match found: client: %(client)s domain: %(domain)s; wildcard: %(wildcard)r; description: %(description)s' % match)
 
             qdata['match'] = match
 
@@ -358,13 +353,6 @@ def operate(id, event, qstate, qdata):
         return ctx.filter_query(id, qstate, qdata)
 
     if event == MODULE_EVENT_MODDONE:
-        match = qdata.get('match')
-        if match and match['action'] == 'pass' and match['source_net'] != '*':
-            # if we allow a query for a specific client, the response will be cached
-            # and will subsequently be available to other clients via the cache. Therefore
-            # we must invalidate it once the iteration process has finished.
-            invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
-
         # Iterator finished, show response (if any)
         ctx = mod_env['context']
         if ctx.stats_enabled and 'query' in qdata and 'start_time' in qdata:
