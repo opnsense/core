@@ -41,9 +41,9 @@ import errno
 import uuid
 import ipaddress
 import traceback
+import argparse
 from threading import Lock
 from collections import deque
-from dataclasses import dataclass, astuple, fields
 
 ACTION_PASS = 0
 ACTION_BLOCK = 1
@@ -54,26 +54,8 @@ SOURCE_LOCAL = 1
 SOURCE_LOCALDATA = 2
 SOURCE_CACHE = 3
 
-RR_TYPE_HTTPS = 65
-
-@dataclass
-class Request:
-    uuid: uuid.UUID
-    time: int
-    client: str
-    family: str
-    type: str
-    domain: str
-
-@dataclass
-class Response:
-    action: int
-    source: int
-    blocklist: str
-    rcode: int
-    resolve_time_ms: int
-    dnssec_status: int
-    ttl: int
+RCODE_NOERROR = 0
+RCODE_NXDOMAIN = 3
 
 class Query:
     """
@@ -81,141 +63,86 @@ class Query:
     Used to send to the DNSBL class to match on a policy.
 
     This class is focused on safely parsing the qstate property
-    to extract all necessary data. Also accepts a custom Request
-    structure if qstate is not available
+    to extract all necessary data.
     """
-    def __init__(self, qstate, request: Request = None):
-        self.num_log_items = len(fields(Request) + fields(Response))
+    def __init__(self):
+        self.request = None
+        self.response = None
 
-        if not request:
-            self.qtype = qstate.qinfo.qtype
-            qname = qstate.qinfo.qname_str
-            qtype_str = qstate.qinfo.qtype_str
-            client_addr = None
-            client_family = None
-            reply_list = qstate.mesh_info.reply_list
-            if reply_list and reply_list.query_reply:
-                client = reply_list.query_reply
-                client_addr = getattr(client, 'addr')
-                client_family = getattr(client, 'family')
-            self.request = Request(
-                uuid.uuid4(),
-                int(time.time()),
-                client_addr,
-                client_family,
-                qtype_str,
-                qname
-            )
-        else:
-            self.request = request
+    def get_qname(self, qstate):
+        qname = ''
+        try:
+            if qstate and qstate.qinfo and qstate.qinfo.qname_str:
+                qname = qstate.qinfo.qname_str
+        except AttributeError:
+            pass
+        return qname
+
+    def get_qname_qinfo(self, qinfo):
+        qname = ''
+        try:
+            if qinfo and qinfo.qname_str:
+                qname = qinfo.qname_str
+        except AttributeError:
+            pass
+        return qname
+
+    def get_qtype(self, qstate):
+        qtype = ''
+        try:
+            if qstate and qstate.qinfo and qstate.qinfo.qtype:
+                qtype = qstate.qinfo.qtype_str
+        except AttributeError:
+            pass
+        return qtype
+
+    def get_qtype_qinfo(self, qinfo):
+        qtype = ''
+        try:
+            if qinfo and qinfo.qtype_str:
+                qtype = qinfo.qtype_str
+        except AttributeError:
+            pass
+        return qtype
+
+    def get_client(self, qstate):
+        client = ('', '')
+        try:
+            if qstate and qstate.mesh_info and qstate.mesh_info.reply_list:
+                reply_list = qstate.mesh_info.reply_list
+                if reply_list.query_reply:
+                    qr = reply_list.query_reply
+                    client = (qr.addr, qr.family)
+        except AttributeError:
+            pass
+        return client
+
+    def get_client_kwargs(self, kwargs):
+        client = ('', '')
+        try:
+            if kwargs is not None and 'repinfo' in kwargs:
+                repinfo = kwargs['repinfo']
+                client = (repinfo.addr, repinfo.family)
+        except AttributeError:
+            pass
+        return client
+
+    def set_request(self, client, type, domain):
+        self.client = client[0]
+        self.family = client[1]
+        self.type = type
+        self.domain = domain
+        self.request = (uuid.uuid4(), int(time.time()), self.client, self.family, self.type, self.domain)
 
     def set_response(self, action, source, blocklist, rcode, resolve_time_ms, dnssec_status, ttl):
-        self.response = Response(action, source, blocklist, rcode, resolve_time_ms, dnssec_status, ttl)
-
-class DNSBL:
-    """
-    DNSBL implementation. Handles dynamically updating the blocklist as well as matching policies
-    on incoming queries.
-    """
-    def __init__(self, dnsbl_path='/data/dnsbl.json'):
-        self.dnsbl_path = dnsbl_path
-        self.dnsbl_mtime_cache = 0
-        self.dnsbl_update_time = 0
-        self.dnsbl_available = False
-        self.dnsbl = None
-
-        self.update_dnsbl()
-
-    def _dnsbl_exists(self):
-        return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
-
-    def update_dnsbl(self):
-        t = time.time()
-        if (t - self.dnsbl_update_time) > 60:
-            self.dnsbl_update_time = t
-            if not self._dnsbl_exists():
-                self.dnsbl_available = False
-                return
-            fstat = os.stat(self.dnsbl_path).st_mtime
-            if fstat != self.dnsbl_mtime_cache:
-                self.dnsbl_mtime_cache = fstat
-                log_info("dnsbl_module: updating blocklist.")
-                self._load_dnsbl()
-
-    def _load_dnsbl(self):
-        with open(self.dnsbl_path, 'r') as f:
-            try:
-                self.dnsbl = json.load(f)
-                log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
-                with open('/data/dnsbl.size', 'w') as sfile:
-                    sfile.write(str(len(self.dnsbl['data'])))
-                config = self.dnsbl['config']
-                if mod_env['context']:
-                    mod_env['context'].set_config(config)
-            except json.decoder.JSONDecodeError as e:
-                if not self.dnsbl:
-                    log_err("dnsbl_module: unable to bootstrap blocklist, this is likely due to a corrupted \
-                            file. Please re-apply the blocklist settings.")
-                    self.dnsbl_available = False
-                    return
-                else:
-                    log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
-
-        self.dnsbl_available = True
-
-    def _in_network(self, client, networks):
-        if networks is None or type(networks) is not list or client is None:
-            return False
-        try:
-            client_net = ipaddress.ip_network(client)
-        except ValueError:
-            log_err('dnsbl_module: unable to parse client network: %s' % traceback.format_exc().replace('\n', ' '))
-            return False
-        for network in networks:
-            try:
-                if client_net.overlaps(ipaddress.ip_network(network)):
-                    return True
-            except ValueError:
-                log_err('dnsbl_module: unable to parse policy network: %s' % traceback.format_exc().replace('\n', ' '))
-
-        return False
-
-    def policy_match(self, query: Query, qstate):
-        self.update_dnsbl()
-
-        if not self.dnsbl_available:
-            return False
-
-        if not query.qtype in (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS):
-            return False
-
-        ctx = mod_env['context']
-
-        domain = query.request.domain.rstrip('.')
-        sub = domain
-        match = None
-        while match is None:
-            if sub in self.dnsbl['data']:
-                policy = self.dnsbl['data'][sub]
-                is_full_domain = sub == domain
-                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
-                    if self._in_network(query.request.client, policy.get('bypass')):
-                        # allow query, but do not cache.
-                        qstate.no_cache_store = 1
-                        return False
-                    match = policy
-
-            if '.' not in sub or not ctx.config.get('has_wildcards', False):
-                # either we have traversed all subdomains or there are no wildcards
-                # in the dataset, in which case traversal is not necessary
-                break
-            else:
-                sub = sub.split('.', maxsplit=1)[1]
-
-        if match is not None:
-            return match
-
-        return False
+        self.action = action
+        self.source = source
+        self.blocklist = blocklist
+        self.rcode = rcode
+        self.resolve_time_ms = resolve_time_ms
+        self.dnssec_status = dnssec_status
+        self.ttl = ttl
+        self.response = (self.action, self.source, self.blocklist, self.rcode, self.resolve_time_ms, self.dnssec_status, self.ttl)
 
 class Logger:
     """
@@ -256,10 +183,10 @@ class Logger:
         return True
 
     def close(self):
-        if self.pipe_fd is not None:
-            os.close(self.pipe_fd)
-
         if self.stats_enabled:
+            if self.pipe_fd is not None:
+                os.close(self.pipe_fd)
+
             try:
                 os.unlink(self.pipe_name)
             except:
@@ -269,14 +196,10 @@ class Logger:
         if not self.stats_enabled:
             return
 
-        try:
-            entry = astuple(query.request) + astuple(query.response)
-        except AttributeError:
+        if query.request is None or query.response is None:
             return
 
-        if len(entry) != query.num_log_items:
-            log_err("dnsbl_module: malformed query during logging, skipping.")
-            return
+        entry = query.request + query.response
 
         self.pipe_buffer.append(entry)
         if self.pipe_fd is None:
@@ -303,6 +226,113 @@ class Logger:
                     self.pipe_fd = None
                 self.pipe_buffer.appendleft(l)
 
+class DNSBL:
+    """
+    DNSBL implementation. Handles dynamically updating the blocklist as well as matching policies
+    on incoming queries.
+    """
+    def __init__(self, dnsbl_path='/data/dnsbl.json', size_file='/data/dnsbl.size'):
+        self.dnsbl_path = dnsbl_path
+        self.size_file = size_file
+        self.dnsbl_mtime_cache = 0
+        self.dnsbl_update_time = 0
+        self.dnsbl_available = False
+        self.dnsbl = None
+
+        self.update_dnsbl()
+
+    def _dnsbl_exists(self):
+        return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
+
+    def update_dnsbl(self):
+        t = time.time()
+        if (t - self.dnsbl_update_time) > 60:
+            self.dnsbl_update_time = t
+            if not self._dnsbl_exists():
+                self.dnsbl_available = False
+                return
+            fstat = os.stat(self.dnsbl_path).st_mtime
+            if fstat != self.dnsbl_mtime_cache:
+                self.dnsbl_mtime_cache = fstat
+                log_info("dnsbl_module: updating blocklist.")
+                self._load_dnsbl()
+
+    def _load_dnsbl(self):
+        with open(self.dnsbl_path, 'r') as f:
+            try:
+                self.dnsbl = json.load(f)
+                log_info('dnsbl_module: blocklist loaded. length is %d' % len(self.dnsbl['data']))
+                with open(self.size_file, 'w') as sfile:
+                    sfile.write(str(len(self.dnsbl['data'])))
+                config = self.dnsbl['config']
+                if mod_env:
+                    mod_env['context'].set_config(config)
+            except json.decoder.JSONDecodeError as e:
+                if not self.dnsbl:
+                    log_err("dnsbl_module: unable to bootstrap blocklist, this is likely due to a corrupted \
+                            file. Please re-apply the blocklist settings.")
+                    self.dnsbl_available = False
+                    return
+                else:
+                    log_err("dnsbl_module: error parsing blocklist: %s, reusing last known list" % e)
+
+        self.dnsbl_available = True
+
+    def _in_network(self, client, networks):
+        if networks is None or type(networks) is not list or client is None:
+            return False
+        try:
+            client_net = ipaddress.ip_network(client)
+        except ValueError:
+            log_err('dnsbl_module: unable to parse client network: %s' % traceback.format_exc().replace('\n', ' '))
+            return False
+        for network in networks:
+            try:
+                if client_net.overlaps(ipaddress.ip_network(network)):
+                    return True
+            except ValueError:
+                log_err('dnsbl_module: unable to parse policy network: %s' % traceback.format_exc().replace('\n', ' '))
+
+        return False
+
+    def policy_match(self, query: Query, qstate=None):
+        self.update_dnsbl()
+
+        if not self.dnsbl_available:
+            return False
+
+        if not query.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
+            return False
+
+        ctx = mod_env['context']
+
+        domain = query.domain.rstrip('.')
+        sub = domain
+        match = None
+        while match is None:
+            if sub in self.dnsbl['data']:
+                policy = self.dnsbl['data'][sub]
+                is_full_domain = sub == domain
+                if (is_full_domain) or (not is_full_domain and policy['wildcard']):
+                    if self._in_network(query.client, policy.get('bypass')):
+                        # allow query, but do not cache.
+                        if qstate:
+                            qstate.no_cache_store = 1
+                        return False
+                    match = policy
+
+            if '.' not in sub or not ctx.config.get('has_wildcards', False):
+                # either we have traversed all subdomains or there are no wildcards
+                # in the dataset, in which case traversal is not necessary
+                break
+            else:
+                sub = sub.split('.', maxsplit=1)[1]
+
+        if match is not None:
+            return match
+
+        return False
+
 class ModuleContext:
     """
     Module configuration context
@@ -312,7 +342,8 @@ class ModuleContext:
         self.env = env
         self.dst_addr = '0.0.0.0'
         self.rcode = RCODE_NOERROR
-        self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
+        if self.env:
+            self.dnssec_enabled = 'validator' in self.env.cfg.module_conf
 
     def set_config(self, config):
         """
@@ -327,12 +358,12 @@ def time_diff_ms(start):
 
 def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     logger = mod_env['logger']
-    client = kwargs['repinfo']
 
     # rep.ttl is stored as an epoch, so convert it to remaining seconds
     ttl = (rep.ttl - int(time.time())) if rep else 0
 
-    query = Query(qstate, request=Request(uuid.uuid4(), int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str))
+    query = Query()
+    query.set_request(query.get_client_kwargs(kwargs), query.get_qtype_qinfo(qinfo), query.get_qname_qinfo(qinfo))
     security = rep.security if rep else 0
     query.set_response(ACTION_PASS, SOURCE_CACHE, None, rcode, 0, security, ttl)
     logger.log_entry(query)
@@ -340,9 +371,9 @@ def cache_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
 
 def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     logger = mod_env['logger']
-    client = kwargs['repinfo']
 
-    query = Query(qstate, request=Request(uuid.uuid4(), int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str))
+    query = Query()
+    query.set_request(query.get_client_kwargs(kwargs), query.get_qtype_qinfo(qinfo), query.get_qname_qinfo(qinfo))
     security = rep.security if rep else 0
     query.set_response(ACTION_PASS, SOURCE_LOCALDATA, None, rcode, 0, security, rep.ttl if rep else 0)
     logger.log_entry(query)
@@ -350,9 +381,9 @@ def local_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
 
 def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs):
     logger = mod_env['logger']
-    client = kwargs['repinfo']
 
-    query = Query(qstate, request=Request(uuid.uuid4(), int(time.time()), client.addr, client.family, qinfo.qtype_str, qinfo.qname_str))
+    query = Query()
+    query.set_request(query.get_client_kwargs(kwargs), query.get_qtype_qinfo(qinfo), query.get_qname_qinfo(qinfo))
     security = rep.security if rep else 0
     query.set_response(ACTION_DROP, SOURCE_LOCAL, None, RCODE_SERVFAIL, 0, security, rep.ttl if rep else 0)
     logger.log_entry(query)
@@ -385,9 +416,7 @@ def init_standard(id, env):
 
 def deinit(id):
     logger = mod_env['logger']
-
     logger.close()
-
     return True
 
 def inform_super(id, qstate, superqstate, qdata):
@@ -396,9 +425,16 @@ def inform_super(id, qstate, superqstate, qdata):
 def operate(id, event, qstate, qdata):
     if event == MODULE_EVENT_NEW:
         qdata['start_time'] = time.time()
-        query = Query(qstate)
+
+        query = Query()
+        client = query.get_client(qstate)
+        qtype = query.get_qtype(qstate)
+        domain = query.get_qname(qstate)
+        query.set_request(client, qtype, domain)
+
         dnsbl = mod_env['dnsbl']
-        match = dnsbl.policy_match(query, qstate)
+        policy_match = dnsbl.policy_match
+        match = policy_match(query, qstate)
         if match:
             ctx = mod_env['context']
             qstate.return_rcode = ctx.rcode
@@ -415,14 +451,14 @@ def operate(id, event, qstate, qdata):
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
-            msg = DNSMessage(query.request.domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
+            msg = DNSMessage(domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
 
-            if (query.qtype == RR_TYPE_A) or (query.qtype == RR_TYPE_ANY):
-                msg.answer.append("%s %s IN A %s" % (query.request.domain, ttl, ctx.dst_addr))
+            if (qtype == 'A'):
+                msg.answer.append("%s %s IN A %s" % (domain, ttl, ctx.dst_addr))
 
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
-                log_err("dnsbl_module: unable to create response for %s, dropping query" % query.request.domain)
+                log_err("dnsbl_module: unable to create response for %s, dropping query" % domain)
                 query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
                     time_diff_ms(qdata['start_time']), dnssec_status, 0)
                 logger.log_entry(query)
@@ -478,7 +514,60 @@ try:
     test_mode = False
 except ImportError:
     test_mode = True
+    mod_env = {}
+
+def match(inputargs):
+    result = {'status': 'error'}
+
+    if not inputargs.domain:
+        result['message'] = 'No valid domain provided'
+        return result
+
+    dnsbl = DNSBL(dnsbl_path='/var/unbound/data/dnsbl.json', size_file='/var/unbound/data/dnsbl.size')
+    if not dnsbl.dnsbl_available:
+        result['message'] = "No blocklist available"
+        return result
+
+    if not inputargs.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
+        result['message'] = "Invalid record type"
+        return result
+
+    try:
+        src = ipaddress.ip_network(inputargs.src_net)
+        family = 'ip4' if type(src) is ipaddress.IPv4Address else 'ip6'
+    except ValueError:
+        result['message'] = "%s not a valid IP or IP range" % inputargs.src_net
+        return result
+
+    query = Query()
+    query.set_request((inputargs.src_net, family), inputargs.type, inputargs.domain)
+
+    match = dnsbl.policy_match(query)
+    if match:
+        result = {'status': 'OK','action': 'Block','blocklist': match.get('bl'),'wildcard': match.get('wildcard')}
+    else:
+        result = {'status': 'OK','action': 'Pass'}
+
+    return result
 
 if __name__ == '__main__' and test_mode:
-    # Runs when executed from the command line as opposed to embedded in Unbound. For future reference
-    exit()
+    # override unbound log methods
+    def log_info(str):
+        return
+
+    def log_err(str):
+        return
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--src_net', help='client source, can be a single IP address or an IP range. Default 127.0.0.1', default='127.0.0.1')
+    parser.add_argument('--domain', help='domain name to query')
+    parser.add_argument('--type', help='query type, e.g. AAAA. Default is A', default='A')
+
+    inputargs = parser.parse_args()
+
+    # create an empty global context
+    ctx = ModuleContext(None)
+    mod_env['context'] = ctx
+
+    result = match(inputargs)
+    print(json.dumps(result))
