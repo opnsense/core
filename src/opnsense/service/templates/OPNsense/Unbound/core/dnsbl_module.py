@@ -533,7 +533,7 @@ def match(inputargs):
         return result
 
     try:
-        src = ipaddress.ip_network(inputargs.src_net)
+        src = ipaddress.ip_address(inputargs.src_net)
         family = 'ip4' if type(src) is ipaddress.IPv4Address else 'ip6'
     except ValueError:
         result['message'] = "%s not a valid IP or IP range" % inputargs.src_net
