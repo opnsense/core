@@ -41,11 +41,10 @@ def get_exclusions(config):
     """
     exclude (white) lists, compile to regex to be used to filter blocklist entries
 
-    :return: a whitelist pattern for regex matching and a list of whitelisted domains 
+    :return: a whitelist pattern for regex matching
     :rtype: tuple
     """
     whitelist_pattern = re.compile('.*?')
-    whitelist_static = set()
 
     if cnf.has_section('exclude'):
         exclude_list = set()
@@ -53,12 +52,7 @@ def get_exclusions(config):
             pattern = cnf['exclude'][exclude_item]
             try:
                 re.compile(pattern, re.IGNORECASE)
-                # if the given pattern is an exact domain name, keep it separate
-                # so we can use it in the decision making process in Unbound.
-                if domain_pattern.match(pattern):
-                    whitelist_static.add(pattern)
-                else:
-                    exclude_list.add(pattern)
+                exclude_list.add(pattern)
             except re.error:
                 syslog.syslog(syslog.LOG_ERR,
                     'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
@@ -72,7 +66,7 @@ def get_exclusions(config):
         whitelist_pattern = re.compile(wp, re.IGNORECASE)
         syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
 
-    return whitelist_pattern, whitelist_static
+    return whitelist_pattern
 
 def uri_reader(uri):
     req_opts = {
@@ -163,7 +157,7 @@ if __name__ == '__main__':
                 if (a != 'include' and r != 'include') and (diffs_added[a] or diffs_removed[r]):
                     skip_download = False
 
-        whitelist_pattern, whitelist_static = get_exclusions(cnf)
+        whitelist_pattern = get_exclusions(cnf)
 
         if not skip_download:
             # fetch all blocklists, will replace the existing file used by Unbound
@@ -195,12 +189,7 @@ if __name__ == '__main__':
                                     file_stats['blocklist'] += 1
                                     blocklist_items['data'][entry] = {
                                         'bl': bl_shortcode,
-                                        'policies': [{
-                                            'source_net': '*',
-                                            'wildcard': False,
-                                            'action': 'block',
-                                            'description': 'default_block'
-                                        }]
+                                        'wildcard': False,
                                     }
                                 else:
                                     file_stats['skip'] += 1
@@ -218,41 +207,14 @@ if __name__ == '__main__':
                         if domain_pattern.match(entry):
                             blocklist_items['data'][entry] = {
                                 'bl': 'Manual',
-                                'policies': [{
-                                    'source_net': '*',
-                                    'wildcard': False,
-                                    'action': 'block',
-                                    'description': 'manual_block'
-                                }]
+                                'wildcard': False,
                             }
                     if '*' in entry:
                         blocklist_items['data'][entry.replace('*.', '')] = {
                             'bl': 'Manual',
-                            'policies': [{
-                                'source_net': '*',
-                                'wildcard': True,
-                                'action': 'block',
-                                'description': 'wildcard_block'
-                            }]
+                            'wildcard': True,
                         }
                         blocklist_items['config']['has_wildcards'] = True
-
-            # ...and also apply the exact whitelisted domains
-            if whitelist_static:
-                for item in whitelist_static:
-                    policy = {
-                        'source_net': '*',
-                        'wildcard': False,
-                        'action': 'pass',
-                        'description': 'whitelisted'
-                    }
-                    if not item in blocklist_items['data']:
-                        blocklist_items['data'][item] = {
-                            'bl': 'Manual',
-                            'policies': [policy]
-                        }
-                    else:
-                        blocklist_items['data'][item]['policies'].append(policy)
 
         else:
             # only modify the existing list, administrate on added and removed exact custom matches
@@ -268,22 +230,12 @@ if __name__ == '__main__':
                         if domain_pattern.match(entry):
                             blocklist_items['data'][entry] = {
                                 'bl': 'Manual',
-                                'policies': [{
-                                    'source_net': '*',
-                                    'wildcard': False,
-                                    'action': 'block',
-                                    'description': 'manual_block'
-                                }]
+                                'wildcard': False,
                             }
                         elif '*' in entry:
                             blocklist_items['data'][entry.replace('*.', '')] = {
                                 'bl': 'Manual',
-                                'policies': [{
-                                    'source_net': '*',
-                                    'wildcard': True,
-                                    'action': 'block',
-                                    'description': 'wildcard_block'
-                                }]
+                                'wildcard': True,
                             }
                             blocklist_items['config']['has_wildcards'] = True
 

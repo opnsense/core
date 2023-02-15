@@ -163,14 +163,9 @@ class DNSBL:
 
         self.dnsbl_available = True
 
-    def _policies_in_domain(self, domain):
-        if domain in self.dnsbl['data']:
-            for policy in self.dnsbl['data'][domain]['policies']:
-                yield policy
-
     def _in_network(self, client, networks):
         if networks is None or type(networks) is not list or client is None:
-            return True
+            return False
         try:
             client_net = ipaddress.ip_network(client)
         except ValueError:
@@ -185,7 +180,7 @@ class DNSBL:
 
         return False
 
-    def policy_match(self, query: Query):
+    def policy_match(self, query: Query, qstate):
         self.update_dnsbl()
 
         if not self.dnsbl_available:
@@ -198,17 +193,17 @@ class DNSBL:
 
         domain = query.request.domain.rstrip('.')
         sub = domain
-        matches = dict()
-        while len(matches) == 0:
-            for policy in self._policies_in_domain(sub):
+        match = None
+        while match is None:
+            if sub in self.dnsbl['data']:
+                policy = self.dnsbl['data'][sub]
                 is_full_domain = sub == domain
                 if (is_full_domain) or (not is_full_domain and policy['wildcard']):
-                    if not self._in_network(query.request.client, policy['source_net']):
-                        continue
-                    # give a higher priority to exact networks
-                    priority = 0 if policy['source_net'] == '*' else 1
-                    matches[priority] = policy
-                    matches[priority]['bl'] = self.dnsbl['data'][sub].get('bl')
+                    if self._in_network(query.request.client, policy.get('bypass')):
+                        # allow query, but do not cache.
+                        qstate.no_cache_store = 1
+                        return False
+                    match = policy
 
             if '.' not in sub or not ctx.config.get('has_wildcards', False):
                 # either we have traversed all subdomains or there are no wildcards
@@ -217,8 +212,7 @@ class DNSBL:
             else:
                 sub = sub.split('.', maxsplit=1)[1]
 
-        if len(matches) > 0:
-            match = matches[sorted(matches.keys(), reverse=True)[0]]
+        if match is not None:
             return match
 
         return False
@@ -404,11 +398,8 @@ def operate(id, event, qstate, qdata):
         qdata['start_time'] = time.time()
         query = Query(qstate)
         dnsbl = mod_env['dnsbl']
-        match = dnsbl.policy_match(query)
+        match = dnsbl.policy_match(query, qstate)
         if match:
-            # do not cache blocked domains
-            qstate.no_cache_store = 1
-
             ctx = mod_env['context']
             qstate.return_rcode = ctx.rcode
             bl = match.get('bl')
