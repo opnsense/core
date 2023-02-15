@@ -649,7 +649,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/BlocklistsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundDomainField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
