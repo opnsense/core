@@ -31,16 +31,17 @@ import re
 import time
 import requests
 import ipaddress
-import dns.resolver
 import syslog
-import subprocess
+import xml.etree.cElementTree as ET
 from hashlib import md5
 from dns.exception import DNSException
+from .pf import PF
 from . import geoip
 from . import net_wildcard_iterator, AsyncDNSResolver
 from .arpcache import ArpCache
 from .bgpasn import BGPASN
 from .interface import InterfaceParser
+
 
 class Alias(object):
     def __init__(self, elem, known_aliases=[], ttl=-1, ssl_no_verify=False, timeout=120):
@@ -227,6 +228,14 @@ class Alias(object):
                 self._has_expired = False
         return self._has_expired
 
+    def cached(self):
+        """ load cached contents in case we don't want to resolve the alias
+        """
+        if os.path.isfile(self._filename_alias_content) and len(self._resolve_content) == 0:
+            self._resolve_content = set(open(self._filename_alias_content).read().split())
+
+        return list(self._resolve_content)
+
     def resolve(self, force=False):
         """ resolve (fetch) alias content, without dependencies.
             :force: force load
@@ -291,15 +300,10 @@ class Alias(object):
         """
         result = set()
         if self.get_type() == 'interface_net':
-            subprocess.run(
-                ['/sbin/pfctl', '-t', self.get_name(), '-T', 'replace', '%s:network' % self._interface],
-                capture_output=True
-            )
+            PF.flush_network(self.get_name(), self._interface)
         # collect current table contents for selected types
         if self.get_type() in ['interface_net', 'external']:
-            pfctl_cmd = ['/sbin/pfctl', '-t', self.get_name(), '-T', 'show']
-            for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
-                result.add(line.strip())
+            result = result.union(set(PF.list_table(self.get_name())))
 
         return result
 
@@ -323,3 +327,74 @@ class Alias(object):
         for item in self._items:
             if item in self._known_aliases:
                 yield item
+
+
+class AliasParser(object):
+    """ Alias Parser class, encapsulates all aliases
+    """
+    def __init__(self, source_tree):
+        self._source_tree = source_tree
+        self._aliases = dict()
+
+    def read(self):
+        """ read aliases
+            :return: None
+        """
+        self._aliases = dict()
+        external_aliases = list()
+        alias_parameters = dict()
+        alias_parameters['known_aliases'] = [x.text for x in self._source_tree.iterfind('table/name')]
+        for alias_name in PF.list_tables():
+            if alias_name not in alias_parameters['known_aliases']:
+                alias_parameters['known_aliases'].append(alias_name)
+                external_aliases.append(alias_name)
+
+        # parse general alias settings
+        conf_general = self._source_tree.find('general')
+        if conf_general:
+            if conf_general.find('ssl_no_verify') is not None and conf_general.find('ssl_no_verify').text == "1":
+                alias_parameters['ssl_no_verify'] = True
+
+        # loop through user defined aliases
+        for elem in self._source_tree.iterfind('table'):
+            alias = Alias(elem, **alias_parameters)
+            self._aliases[alias.get_name()] = alias
+
+        # attach external aliases which aren't defined via the gui
+        for alias_name in external_aliases:
+            elem = ET.Element("table")
+            ET.SubElement(elem, 'type').text = 'external'
+            ET.SubElement(elem, 'name').text = alias_name
+            ET.SubElement(elem, 'ttl').text = '1'
+            self._aliases[alias_name] = Alias(elem, **alias_parameters)
+
+    def get_alias_deps(self, alias, alias_deps=None):
+        """ recursive fetch all alias dependencies
+            :param alias: alias name
+            :param alias_deps: dependencies gathered
+            :return: list of aliases
+        """
+        if not alias_deps:
+            alias_deps = list()
+        if alias in self._aliases:
+            for dep in self._aliases[alias].get_deps():
+                if dep not in alias_deps:
+                    alias_deps.append(dep)
+                    self.get_alias_deps(dep, alias_deps)
+        return alias_deps
+
+    def get(self, name):
+        """ get alias by name
+            :param name: alias name
+            :return: alias (or None if not found)
+        """
+        if name in self._aliases:
+            return self._aliases[name]
+        return None
+
+    def __iter__(self):
+        """ iterate all known aliases
+            :return: iterator
+        """
+        for alias in self._aliases:
+            yield self._aliases[alias]
