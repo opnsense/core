@@ -239,12 +239,12 @@ class DNSBL:
         self.dnsbl_available = False
         self.dnsbl = None
 
-        self.update_dnsbl()
+        self._update_dnsbl()
 
     def _dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
 
-    def update_dnsbl(self):
+    def _update_dnsbl(self):
         t = time.time()
         if (t - self.dnsbl_update_time) > 60:
             self.dnsbl_update_time = t
@@ -296,7 +296,7 @@ class DNSBL:
         return False
 
     def policy_match(self, query: Query, qstate=None):
-        self.update_dnsbl()
+        self._update_dnsbl()
 
         if not self.dnsbl_available:
             return False
