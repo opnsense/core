@@ -127,21 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_dnsmasq['local_ttl'])) {
                 unset($a_dnsmasq['local_ttl']);
             }
-            if (!empty($pconfig['dns_forward_max'])) {
-                $a_dnsmasq['dns_forward_max'] = $pconfig['dns_forward_max'];
-            } elseif (isset($a_dnsmasq['dns_forward_max'])) {
-                unset($a_dnsmasq['dns_forward_max']);
-            }
-            if (!empty($pconfig['cache_size'])) {
-                $a_dnsmasq['cache_size'] = $pconfig['cache_size'];
-            } elseif (isset($a_dnsmasq['cache_size'])) {
-                unset($a_dnsmasq['cache_size']);
-            }
-            if (!empty($pconfig['local_ttl'])) {
-                $a_dnsmasq['local_ttl'] = $pconfig['local_ttl'];
-            } elseif (isset($a_dnsmasq['local_ttl'])) {
-                unset($a_dnsmasq['local_ttl']);
-            }
             write_config();
             system_resolvconf_generate();
             dnsmasq_configure_do();
