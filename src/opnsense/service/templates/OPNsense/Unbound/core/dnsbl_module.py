@@ -132,7 +132,7 @@ class Query:
         self.family = client[1]
         self.type = type
         self.domain = domain
-        self.request = (uuid.uuid4(), int(time.time()), self.client, self.family, self.type, self.domain)
+        self.request = (int(time.time()), self.client, self.family, self.type, self.domain)
 
     def set_response(self, action, source, blocklist, rcode, resolve_time_ms, dnssec_status, ttl):
         self.action = action
@@ -199,7 +199,7 @@ class Logger:
         if query.request is None or query.response is None:
             return
 
-        entry = query.request + query.response
+        entry = (uuid.uuid4(),) + query.request + query.response
 
         self.pipe_buffer.append(entry)
         if self.pipe_fd is None:
@@ -280,7 +280,7 @@ class DNSBL:
 
     def _in_network(self, client, networks):
         if networks is None or type(networks) is not list or client is None:
-            return False
+            return True
         try:
             client_net = ipaddress.ip_network(client)
         except ValueError:
@@ -314,12 +314,13 @@ class DNSBL:
                 policy = self.dnsbl['data'][sub]
                 is_full_domain = sub == domain
                 if (is_full_domain) or (not is_full_domain and policy['wildcard']):
-                    if self._in_network(query.client, policy.get('bypass')):
+                    if self._in_network(query.client, policy.get('source_net')):
+                        match = policy
+                    else:
                         # allow query, but do not cache.
                         if qstate:
                             qstate.no_cache_store = 1
                         return False
-                    match = policy
 
             if '.' not in sub or not ctx.config.get('has_wildcards', False):
                 # either we have traversed all subdomains or there are no wildcards
@@ -533,8 +534,8 @@ def match(inputargs):
         return result
 
     try:
-        src = ipaddress.ip_address(inputargs.src_net)
-        family = 'ip4' if type(src) is ipaddress.IPv4Address else 'ip6'
+        src = ipaddress.ip_network(inputargs.src_net)
+        family = 'ip4' if type(src) is ipaddress.IPv4Network else 'ip6'
     except ValueError:
         result['message'] = "%s not a valid IP or IP range" % inputargs.src_net
         return result
