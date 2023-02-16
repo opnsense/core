@@ -212,6 +212,7 @@ function system_api()
     $result['date_frmt'] = date("D M j G:i:s T Y");
     $result['date_time'] = time();
     preg_match("/sec = (\d+)/", get_single_sysctl("kern.boottime"), $matches);
+    $result['boot_date_frmt'] = date("D M j G:i:s T Y", $matches[1]);
     $result['uptime'] = $result['date_time'] - $matches[1];
     $result['config'] = system_api_config();
     $result['kernel'] = system_api_kernel();

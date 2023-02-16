@@ -83,6 +83,7 @@ require_once("system.inc");
       }
 
       uptime_str += moment.utc(parseInt(data['uptime'])*1000).format("HH:mm:ss");
+      $("#system_information_widget_boot_date").html(data['boot_date_frmt']);
       $("#system_information_widget_uptime").html(uptime_str);
       $("#system_information_widget_datetime").html(data['date_frmt']);
       $("#system_information_widget_last_config_change").html(data['config']['last_change_frmt']);
@@ -206,8 +207,14 @@ require_once("system.inc");
       <td id="system_information_widget_load"></td>
     </tr>
     <tr>
-      <td><?=gettext("Uptime");?></td>
-      <td id="system_information_widget_uptime"></td>
+      <td>
+        <span><?=gettext("Boot date");?></span>
+        <span style="float:right;"><?=gettext("Uptime");?></span>
+      </td>
+      <td>
+        <span id="system_information_widget_boot_date"></span>
+        <span style="float:right;" id="system_information_widget_uptime"></span>
+      </td>
     </tr>
     <tr>
       <td><?=gettext("Current date/time");?></td>
