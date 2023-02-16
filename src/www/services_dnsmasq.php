@@ -421,7 +421,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" <?=!empty($pconfig['local_ttl']) ? "value=\"{$pconfig['local_ttl']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_local_ttl">
-                      <?=gettext("The Time-To-Live in seconds for local DNS entries (i.e. /etc/hosts or DHCP leases). Default: 1.");?>
+                      <?=gettext("The Time-To-Live in seconds for local DNS entries, i.e. /etc/hosts or DHCP leases (default 1)");?>
                     </div>
                   </td>
                 </tr>
