@@ -192,6 +192,16 @@ class Swanctl extends BaseModel
                 }
             }
         }
+        if (!empty($data['pools'])) {
+            // pools are mapped by name for clearer identification and legacy support
+            // need to remap them in the output tree
+            foreach ($data['pools'] as $key => $value) {
+                if (isset($pool_names[$key])) {
+                    $data['pools'][$pool_names[$key]] = $value;
+                    unset($data['pools'][$key]);
+                }
+            }
+        }
         return $data;
     }
 
