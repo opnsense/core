@@ -173,7 +173,7 @@
             </whitelists>
             <blocklists type="CSVListField">
                 <Required>N</Required>
-                <Mask>/^((\*\.)?(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])|(\*))$/i</Mask>
+                <Mask>/^((\*\.)?((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9]))$/i</Mask>
                 <MaskPerItem>1</MaskPerItem>
             </blocklists>
             <address type="NetworkField">
