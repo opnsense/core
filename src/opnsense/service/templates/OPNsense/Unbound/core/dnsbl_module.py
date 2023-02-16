@@ -322,7 +322,7 @@ class DNSBL:
                         match = policy
                     else:
                         # allow query, but do not cache.
-                        if qstate and hasattr():
+                        if qstate and hasattr(qstate, 'no_cache_store'):
                             qstate.no_cache_store = 1
                         return False
 
