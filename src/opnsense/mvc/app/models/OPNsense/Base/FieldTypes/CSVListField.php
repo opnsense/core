@@ -147,8 +147,8 @@ class CSVListField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null && $this->internalMask != null) {
-            $validators[] = new CallbackValidator(["callback" => function($data) {
-                $regex_match = function($value, $pattern) {
+            $validators[] = new CallbackValidator(['callback' => function ($data) {
+                $regex_match = function ($value, $pattern) {
                     $matches = [];
                     preg_match(trim($pattern), $value, $matches);
                     return $matches[0] == $value;
