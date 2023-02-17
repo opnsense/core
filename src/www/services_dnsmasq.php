@@ -403,7 +403,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="dns_forward_max" type="text" id="dns_forward_max" size="6" placeholder="5000" <?=!empty($pconfig['dns_forward_max']) ? "value=\"{$pconfig['dns_forward_max']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_dns_forward_max">
-                      <?=gettext("The maximum number of forwarded DNS queries (default 5000)");?>
+                      <?=gettext("The maximum number of forwarded DNS queries");?>
                     </div>
                   </td>
                 </tr>
@@ -412,7 +412,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="cache_size" type="text" id="cache_size" size="8" placeholder="10000" <?=!empty($pconfig['cache_size']) ? "value=\"{$pconfig['cache_size']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_cache_size">
-                      <?=gettext("The number of entries in DNS cache (default 10000)");?>
+                      <?=gettext("The number of entries in DNS cache");?>
                     </div>
                   </td>
                 </tr>
@@ -421,7 +421,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" <?=!empty($pconfig['local_ttl']) ? "value=\"{$pconfig['local_ttl']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_local_ttl">
-                      <?=gettext("The Time-To-Live in seconds for local DNS entries, i.e. /etc/hosts or DHCP leases (default 1)");?>
+                      <?=gettext("The Time-To-Live in seconds for local DNS entries, i.e. /etc/hosts or DHCP leases");?>
                     </div>
                   </td>
                 </tr>
