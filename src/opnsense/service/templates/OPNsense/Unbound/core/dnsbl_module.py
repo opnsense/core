@@ -58,7 +58,7 @@ RCODE_NOERROR = 0
 RCODE_NXDOMAIN = 3
 
 def obj_path_exists(obj, path):
-    if obj and path is str:
+    if obj and isinstance(path, str):
         for ref in path.split('.'):
             if hasattr(obj, ref):
                 obj = getattr(obj, ref)
@@ -102,8 +102,8 @@ class Query:
                 self._domain = qstate.qinfo.qname_str
             if obj_path_exists(qstate.qinfo, 'qtype_str'):
                 self._type = qstate.qinfo.qtype_str
-            if obj_path_exists(qstate, 'hasattr(qstate.mesh_info.query_reply.addr')\
-                    and obj_path_exists(qstate, 'hasattr(qstate.mesh_info.query_reply.family'):
+            if obj_path_exists(qstate, 'mesh_info.reply_list.query_reply.addr')\
+                    and obj_path_exists(qstate, 'mesh_info.reply_list.query_reply.family'):
                 self._client = qstate.mesh_info.reply_list.query_reply.addr
                 self._family = qstate.mesh_info.reply_list.query_reply.family
 
@@ -288,6 +288,8 @@ class DNSBL:
         self.dnsbl_available = True
 
     def _in_network(self, client, networks):
+        if not networks:
+            return True
         try:
             src_address = ipaddress.ip_address(client)
         except ValueError:
@@ -456,14 +458,14 @@ def operate(id, event, qstate, qdata):
                 qstate.ext_state[id] = MODULE_FINISHED
                 return True
 
-            msg = DNSMessage(domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
+            msg = DNSMessage(query.domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
 
-            if (qtype == 'A'):
-                msg.answer.append("%s %s IN A %s" % (domain, ttl, ctx.dst_addr))
+            if (query.type == 'A'):
+                msg.answer.append("%s %s IN A %s" % (query.domain, ttl, ctx.dst_addr))
 
             if not msg.set_return_msg(qstate):
                 qstate.ext_state[id] = MODULE_ERROR
-                log_err("dnsbl_module: unable to create response for %s, dropping query" % domain)
+                log_err("dnsbl_module: unable to create response for %s, dropping query" % query.domain)
                 query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
                     time_diff_ms(qdata['start_time']), dnssec_status, 0)
                 mod_env['logger'].log_entry(query)

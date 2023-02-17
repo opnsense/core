@@ -187,10 +187,7 @@ if __name__ == '__main__':
                             else:
                                 if domain_pattern.match(domain):
                                     file_stats['blocklist'] += 1
-                                    blocklist_items['data'][entry] = {
-                                        'bl': bl_shortcode,
-                                        'wildcard': False,
-                                    }
+                                    blocklist_items['data'][entry] = {'bl': bl_shortcode, 'wildcard': False}
                                 else:
                                     file_stats['skip'] += 1
 
@@ -205,15 +202,9 @@ if __name__ == '__main__':
                     entry = cnf['include'][item].rstrip().lower()
                     if not whitelist_pattern.match(entry):
                         if domain_pattern.match(entry):
-                            blocklist_items['data'][entry] = {
-                                'bl': 'Manual',
-                                'wildcard': False,
-                            }
+                            blocklist_items['data'][entry] = {'bl': 'Manual','wildcard': False}
                     if '*' in entry:
-                        blocklist_items['data'][entry.replace('*.', '')] = {
-                            'bl': 'Manual',
-                            'wildcard': True,
-                        }
+                        blocklist_items['data'][entry.replace('*.', '')] = {'bl': 'Manual', 'wildcard': True}
                         blocklist_items['config']['has_wildcards'] = True
 
         else:
@@ -228,15 +219,9 @@ if __name__ == '__main__':
                     entry = item[1].rstrip().lower()
                     if not whitelist_pattern.match(entry):
                         if domain_pattern.match(entry):
-                            blocklist_items['data'][entry] = {
-                                'bl': 'Manual',
-                                'wildcard': False,
-                            }
+                            blocklist_items['data'][entry] = {'bl': 'Manual', 'wildcard': False}
                         elif '*' in entry:
-                            blocklist_items['data'][entry.replace('*.', '')] = {
-                                'bl': 'Manual',
-                                'wildcard': True,
-                            }
+                            blocklist_items['data'][entry.replace('*.', '')] = {'bl': 'Manual', 'wildcard': True}
                             blocklist_items['config']['has_wildcards'] = True
 
         with open('/tmp/unbound-blocklists.conf.cache', 'w') as cache_config:
