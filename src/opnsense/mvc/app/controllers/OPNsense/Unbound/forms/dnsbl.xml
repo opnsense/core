@@ -41,7 +41,11 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of domains to blocklist. Only exact matches are supported.</help>
+        <help>
+            List of domains to blocklist. Only exact matches and wildcards are supported.
+            Wildcards are supported 2 TLDs down and only at the beginning of a domain,
+            e.g. "*.example.com", but not "*", "*.com" or "example.*.com".
+        </help>
     </field>
     <field>
         <id>unbound.dnsbl.address</id>
