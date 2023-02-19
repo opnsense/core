@@ -200,7 +200,17 @@ function ntpd_configure_do($verbose = false)
         $ntpcfg .= '12';
     }
     $ntpcfg .= "\n";
-
+    
+    /* Add Max Clock Count */
+    $ntpcfg .= "# Max number of associations\n";
+    $ntpcfg .= 'tos maxclock ';
+    if (!empty($config['ntpd']['maxclock'])) {
+        $ntpcfg .= $config['ntpd']['maxclock'];
+    } else {
+        $ntpcfg .= '10';
+    }
+    $ntpcfg .= "\n";
+    
     /* Add PPS configuration */
     if (
         !empty($config['ntpd']['pps'])
