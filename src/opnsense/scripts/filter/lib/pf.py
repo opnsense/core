@@ -28,8 +28,6 @@
 import subprocess
 
 class PF:
-    def __init__(self):
-        pass
 
     @staticmethod
     def list_tables():

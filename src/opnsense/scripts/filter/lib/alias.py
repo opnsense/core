@@ -228,11 +228,21 @@ class Alias(object):
                 self._has_expired = False
         return self._has_expired
 
+    def is_managed(self):
+        """ Is this alias managed by us (or only used as source)
+            Since we only write md5 hash files if we know how to generate the contents, we can assume
+            it was an alias from us if such a file exists.
+            :return: boolean
+        """
+        return self.get_parser() is not None or os.path.isfile(self._filename_alias_hash)
+
     def cached(self):
         """ load cached contents in case we don't want to resolve the alias
         """
         if os.path.isfile(self._filename_alias_content) and len(self._resolve_content) == 0:
             self._resolve_content = set(open(self._filename_alias_content).read().split())
+            self._is_changed = False
+            self._has_expired = False
 
         return list(self._resolve_content)
 
@@ -259,8 +269,10 @@ class Alias(object):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set
                         self._resolve_content = self._resolve_content.union(self._dnsResolver.collect().addresses())
-                        with open(self._filename_alias_content, 'w') as f_out:
-                            f_out.write('\n'.join(self._resolve_content))
+                    # Always save last recorded content to disk, also when we're not responsible for the alias
+                    # so we can use cached results when reloading a single alias.
+                    with open(self._filename_alias_content, 'w') as f_out:
+                        f_out.write('\n'.join(self._resolve_content))
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     # parse issue, keep data as-is, flush previous content to disk

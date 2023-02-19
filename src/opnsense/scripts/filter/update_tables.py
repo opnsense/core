@@ -49,8 +49,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
+    parser.add_argument('--aliases', help='aliases to update (targetted), comma separated', type=lambda x: x.split(','))
     inputargs = parser.parse_args()
     syslog.openlog('firewall', facility=syslog.LOG_LOCAL4)
+
     # make sure our target directory exists
     if not os.path.isdir('/var/db/aliastables'):
         os.makedirs('/var/db/aliastables')
@@ -68,34 +70,39 @@ if __name__ == '__main__':
     aliases = AliasParser(source_tree)
     aliases.read()
 
+    use_cached = lambda x: inputargs.aliases is not None and x not in inputargs.aliases
     registered_aliases = set()
     for alias in aliases:
         # fetch alias content including dependencies
+        # when a distinct set of aliases is offered, use current contents for all other alias types
         alias_name = alias.get_name()
-        alias_content = alias.resolve()
+        alias_content = alias.cached() if use_cached(alias_name) else alias.resolve()
         alias_changed_or_expired = max(alias.changed(), alias.expired())
         for related_alias_name in aliases.get_alias_deps(alias_name):
             if related_alias_name != alias_name:
                 rel_alias = aliases.get(related_alias_name)
                 if rel_alias:
                     alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
-                    alias_content += rel_alias.resolve()
+                    alias_content += rel_alias.cached() if use_cached(related_alias_name) else rel_alias.resolve()
 
-        if alias.get_parser():
+        # in order to remove unused aliases, we need to keep track of aliases managed by us.
+        if alias.is_managed():
             registered_aliases.add(alias.get_name())
-
+        # only try to replace the contents of this alias if we're responsible for it (know how to parse)
+        if alias.get_parser():
             # when the alias or any of it's dependencies has changed, generate new
             if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
                 open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
 
-            # only try to replace the contents of this alias if we're responsible for it (know how to parse)
-            alias_pf_content = list(PF.list_table(alias_name))
+            # list current alias content when not trying to update a targetted list
+            alias_pf_content = list(PF.list_table(alias_name)) if inputargs.aliases is None else alias_content
 
             if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired):
                 # if the alias is changed, expired or the one in memory has a different number of items, load table
                 if len(alias_content) == 0:
-                    # flush when target is empty
-                    PF.flush(alias_name)
+                    if len(alias_pf_content) > 0:
+                        # flush when target is empty
+                        PF.flush(alias_name)
                 else:
                     # replace table contents with collected alias
                     error_output = PF.replace(alias_name, '/var/db/aliastables/%s.txt' % alias_name)
@@ -113,18 +120,24 @@ if __name__ == '__main__':
                             result['messages'].append(error_message)
                             syslog.syslog(syslog.LOG_NOTICE, error_message)
 
-    # cleanup removed aliases
-    to_remove = dict()
-    for filename in glob.glob('/var/db/aliastables/*.txt'):
-        aliasname = os.path.basename(filename).split('.')[0]
-        if aliasname not in registered_aliases:
-            if aliasname not in to_remove:
-                to_remove[aliasname] = list()
-            to_remove[aliasname].append(filename)
-    for aliasname in to_remove:
-        syslog.syslog(syslog.LOG_NOTICE, 'remove old alias %s' % aliasname)
-        PF.remove(aliasname)
-        for filename in to_remove[aliasname]:
-            os.remove(filename)
+    # cleanup removed aliases when reloading all
+    if inputargs.aliases is None:
+        to_remove = list()
+        to_remove_files = dict()
+        for filename in glob.glob('/var/db/aliastables/*.txt'):
+            aliasname = os.path.basename(filename).split('.')[0]
+            if aliasname not in registered_aliases:
+                if aliasname not in to_remove_files:
+                    to_remove_files[aliasname] = list()
+                # in order to remove files the alias should either be managed externally or not exist at all
+                if aliasname not in to_remove and (filename.find('.md5.') > 0 or aliases.get(aliasname) is None):
+                    # only remove files if there's a checksum
+                    to_remove.append(aliasname)
+                to_remove_files[aliasname].append(filename)
+        for aliasname in to_remove:
+            syslog.syslog(syslog.LOG_NOTICE, 'remove old alias %s' % aliasname)
+            PF.remove(aliasname)
+            for filename in to_remove_files[aliasname]:
+                os.remove(filename)
 
     print (json.dumps(result))
