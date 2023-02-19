@@ -323,7 +323,12 @@ function ntpd_configure_do($verbose = false)
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
+        /* Determine if Network Time Server is from the NTP Pool or not */
+        if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
+        $ntpcfg .= "pool {$ts}";
+        } else {
         $ntpcfg .= "server {$ts}";
+        }
         if (in_array($ts, $iburst)) {
             $ntpcfg .= ' iburst';
         }
@@ -412,6 +417,26 @@ function ntpd_configure_do($verbose = false)
     }
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
         $ntpcfg .= ' notrap';
+    }
+            /* Access restrictions for Pool */
+    $ntpcfg .= "\nrestrict source";
+    if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
+        $ntpcfg .= ' kod';
+    }
+    if (empty($config['ntpd']['limited'])) { /*note: this one works backwards */
+        $ntpcfg .= ' limited';
+    }
+    if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
+        $ntpcfg .= ' nomodify';
+    }
+    if (!empty($config['ntpd']['noquery'])) {
+        $ntpcfg .= ' noquery';
+    }
+    if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
+        $ntpcfg .= ' notrap';
+    }
+    if (!empty($config['ntpd']['noserve'])) {
+        $ntpcfg .= ' noserve';
     }
     $ntpcfg .= "\n";
 
