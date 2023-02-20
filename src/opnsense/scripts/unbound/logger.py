@@ -188,7 +188,7 @@ class DNSReader:
         r_count = 0
         pipe_ready = False
         # give dnsbl_module.py some time to create a pipe
-        while r_count < 3 and not pipe_ready:
+        while not pipe_ready:
             try:
                 # open() will block until a query has been pushed down the fifo
                 self.fd = open(self.target_pipe, 'r')
@@ -196,8 +196,8 @@ class DNSReader:
             except InterruptedError:
                 self.close_logger()
             except OSError:
-                r_count =+ 1
-                if r_count == 3:
+                r_count += 1
+                if r_count > 10:
                     syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
                     sys.exit(1)
                 time.sleep(1)
