@@ -65,9 +65,9 @@ class ModuleContext:
         self.lock = Lock()
         self.pipe_buffer = deque(maxlen=100000) # buffer to hold qdata as long as a backend is not present
 
-        self.update_dnsbl(self.log_update_time)
         if self.stats_enabled:
             self.create_pipe_rdv()
+        self.update_dnsbl(self.log_update_time)
 
     def dnsbl_exists(self):
         return os.path.isfile(self.dnsbl_path) and os.path.getsize(self.dnsbl_path) > 0
