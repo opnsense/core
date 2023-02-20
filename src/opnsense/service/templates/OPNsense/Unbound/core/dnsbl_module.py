@@ -410,8 +410,8 @@ def servfail_cb(qinfo, qstate, rep, rcode, edns, opt_list_out, region, **kwargs)
 def init_standard(id, env):
     ctx = ModuleContext(env)
     mod_env['context'] = ctx
-    mod_env['dnsbl'] = DNSBL()
     mod_env['logger'] = Logger()
+    mod_env['dnsbl'] = DNSBL()
 
     if mod_env['logger'].stats_enabled:
         if not register_inplace_cb_reply_cache(cache_cb, env, id):
