@@ -1,2 +1,3 @@
 monitrc:/usr/local/etc/monitrc
 rc.conf.d:/etc/rc.conf.d/monit
+00-example.conf:/usr/local/etc/monit.opnsense.d/00-example.conf
