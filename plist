@@ -913,6 +913,7 @@
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
+/usr/local/opnsense/scripts/openvpn/ovpn_status.py
 /usr/local/opnsense/scripts/openvpn/tls_verify.php
 /usr/local/opnsense/scripts/openvpn/user_pass_verify.php
 /usr/local/opnsense/scripts/proxy/deploy_error_pages.py
@@ -998,6 +999,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
+/usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
