@@ -25,7 +25,7 @@ if [ "${2}" = "inet" ]; then
 elif [ "${2}" = "inet6" ]; then
 	/usr/local/sbin/ifctl -i ${1} -6nd ${DNS1} ${DNS2}
 	/usr/local/sbin/ifctl -i ${1} -6rd ${ROUTER}
-	/usr/local/sbin/configctl -d interface newipv6 ${1}
+	/usr/local/sbin/configctl -d interface newipv6 ${1} force
 fi
 
 touch /tmp/${1}_uptime
