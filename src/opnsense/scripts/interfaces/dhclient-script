@@ -307,7 +307,7 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_resolv_conf
 	#fi
 	if [ "$changes" = "yes" ] ; then
-		/usr/local/sbin/configctl -d interface newip $interface
+		/usr/local/sbin/configctl -d interface newip $interface force
 	fi
 	;;
 
