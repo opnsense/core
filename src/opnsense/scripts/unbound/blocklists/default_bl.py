@@ -109,6 +109,8 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                             if self.domain_pattern.match(entry):
                                 result[entry] = {'bl': 'Manual', 'wildcard': True}
 
+        self._write_cache()
+
         return result
 
     def _skip_download(self):

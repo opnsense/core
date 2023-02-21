@@ -69,7 +69,7 @@ class BaseBlocklistHandler:
         """
         pass
 
-    def write_cache(self):
+    def _write_cache(self):
         """
         Cache so each derived class can decide whether a download is necessary
         """
@@ -223,7 +223,6 @@ class BlocklistParser:
         merged = {}
         for handler in self.handlers:
             blocklists[handler.priority] = handler.get_blocklist()
-            handler.write_cache()
 
         merged['data'] = self._merge_results(blocklists)
         merged['config'] = self._get_config()

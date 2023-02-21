@@ -31,4 +31,3 @@ from blocklists import BlocklistParser
 if __name__ == '__main__':
     bl = BlocklistParser()
     bl.update_blocklist()
-
