@@ -88,7 +88,7 @@ if ($force == 'no' && $ip == $cacheip) {
     return;
 }
 
-log_msg("IP renwal starting (new: {$ip}, old: ${cacheip}, interface: {$interface_descr}[{$interface}], device: {$device}, force: {$force})");
+log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface_descr}[{$interface}], device: {$device}, force: {$force})");
 
 interfaces_vips_configure($interface, 6);
 
