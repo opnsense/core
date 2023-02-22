@@ -49,7 +49,6 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
 
     def get_blocklist(self):
         result = {}
-        # if not self._skip_download():
         for blocklist, bl_shortcode in self._blocklists_in_config():
             per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0, 'lines': 0}
             for entry in self._domains_in_blocklist(blocklist):
@@ -75,17 +74,16 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
             )
 
         if self.cnf and self.cnf.has_section('include'):
-            for item in self.cnf['include']:
-                entry = self.cnf['include'][item].rstrip().lower()
-                if not self._whitelist_pattern.match(entry):
-                    if self.domain_pattern.match(entry):
-                        result[entry] = {'bl': 'Manual', 'wildcard': False}
-                # XXX: wildcard handling needs different logic
-                elif '*' in entry:
-                    entry = entry.replace('*.', '')
-                    if self.domain_pattern.match(entry):
+            for key, value in self.cnf['include'].items():
+                if key.startswith('custom'):
+                    entry = value.rstrip().lower()
+                    if not self._whitelist_pattern.match(entry):
+                        if self.domain_pattern.match(entry):
+                            result[entry] = {'bl': 'Manual', 'wildcard': False}
+                elif key.startswith('wildcard'):
+                    if self.domain_pattern.match(value):
                         # do not apply whitelist to wildcard domains
-                        result[entry] = {'bl': 'Manual', 'wildcard': True}
+                        result[value] = {'bl': 'Manual', 'wildcard': True}
 
         return result
 
