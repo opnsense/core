@@ -49,81 +49,45 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
 
     def get_blocklist(self):
         result = {}
-        if not self._skip_download():
-            for blocklist, bl_shortcode in self._blocklists_in_config():
-                per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0, 'lines': 0}
-                for entry in self._domains_in_blocklist(blocklist):
-                    domain = entry.lower()
-                    if self._whitelist_pattern.match(entry):
-                        per_file_stats['skip'] += 1
-                    else:
-                        if self.domain_pattern.match(domain):
-                            per_file_stats['blocklist'] += 1
-                            if entry in result:
-                                # duplicate domain, signify in dataset for debugging purposes
-                                if 'duplicates' in result[entry]:
-                                    result[entry]['duplicates'] += ',%s' % bl_shortcode
-                                else:
-                                    result[entry]['duplicates'] = '%s' % bl_shortcode
+        # if not self._skip_download():
+        for blocklist, bl_shortcode in self._blocklists_in_config():
+            per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0, 'lines': 0}
+            for entry in self._domains_in_blocklist(blocklist):
+                domain = entry.lower()
+                if self._whitelist_pattern.match(entry):
+                    per_file_stats['skip'] += 1
+                else:
+                    if self.domain_pattern.match(domain):
+                        per_file_stats['blocklist'] += 1
+                        if entry in result:
+                            # duplicate domain, signify in dataset for debugging purposes
+                            if 'duplicates' in result[entry]:
+                                result[entry]['duplicates'] += ',%s' % bl_shortcode
                             else:
-                                result[entry] = {'bl': bl_shortcode, 'wildcard': False}
+                                result[entry]['duplicates'] = '%s' % bl_shortcode
                         else:
-                            per_file_stats['skip'] += 1
-                syslog.syslog(
-                    syslog.LOG_NOTICE,
-                    'blocklist download %(uri)s (lines: %(lines)d exclude: %(skip)d block: %(blocklist)d)' % per_file_stats
-                )
+                            result[entry] = {'bl': bl_shortcode, 'wildcard': False}
+                    else:
+                        per_file_stats['skip'] += 1
+            syslog.syslog(
+                syslog.LOG_NOTICE,
+                'blocklist download %(uri)s (lines: %(lines)d exclude: %(skip)d block: %(blocklist)d)' % per_file_stats
+            )
 
-            if self.cnf and self.cnf.has_section('include'):
-                for item in self.cnf['include']:
-                    entry = self.cnf['include'][item].rstrip().lower()
-                    if not self._whitelist_pattern.match(entry):
-                        if self.domain_pattern.match(entry):
-                            result[entry] = {'bl': 'Manual', 'wildcard': False}
-                    elif '*' in entry:
-                        entry = entry.replace('*.', '')
-                        if self.domain_pattern.match(entry):
-                            # do not apply whitelist to wildcard domains
-                            result[entry] = {'bl': 'Manual', 'wildcard': True}
-        else:
-            # only modify the existing list, administrate on added and removed exact custom matches
-            syslog.syslog(syslog.LOG_NOTICE, 'blocklist: skip download')
-            if os.path.exists(self.cur_bl_location):
-                result = ujson.load(open(self.cur_bl_location, 'r'))
-                if result:
-                    result = result['data']
-                if self.diffs_removed and self.diffs_removed['include']:
-                    for item in self.diffs_removed['include']:
-                        entry = item[1].replace('*.', '').rstrip().lower()
-                        # include entry may have been overridden by the whitelist, so use pop()
-                        result.pop(entry, None)
-
-                if self.diffs_added and self.diffs_added['include']:
-                    for item in self.diffs_added['include']:
-                        entry = item[1].rstrip().lower()
-                        if not self._whitelist_pattern.match(entry):
-                            if self.domain_pattern.match(entry):
-                                result[entry] = {'bl': 'Manual', 'wildcard': False}
-                        elif '*' in entry:
-                            entry = entry.replace('*.', '')
-                            if self.domain_pattern.match(entry):
-                                result[entry] = {'bl': 'Manual', 'wildcard': True}
-
-        self._write_cache()
+        if self.cnf and self.cnf.has_section('include'):
+            for item in self.cnf['include']:
+                entry = self.cnf['include'][item].rstrip().lower()
+                if not self._whitelist_pattern.match(entry):
+                    if self.domain_pattern.match(entry):
+                        result[entry] = {'bl': 'Manual', 'wildcard': False}
+                # XXX: wildcard handling needs different logic
+                elif '*' in entry:
+                    entry = entry.replace('*.', '')
+                    if self.domain_pattern.match(entry):
+                        # do not apply whitelist to wildcard domains
+                        result[entry] = {'bl': 'Manual', 'wildcard': True}
 
         return result
-
-    def _skip_download(self):
-        # we can only skip download if the include option has changed, but it must proceed
-        # if any other option has changed
-        skip_download = False
-        if (self.diffs_added and self.diffs_added['include']) or (self.diffs_removed and self.diffs_removed['include']):
-            skip_download = True
-        for (a, r) in zip(self.diffs_added, self.diffs_removed):
-            if (a != 'include' and r != 'include') and (self.diffs_added[a] or self.diffs_removed[r]):
-                skip_download = False
-
-        return skip_download
 
     def _get_excludes(self):
         whitelist_pattern = re.compile('$^') # match nothing

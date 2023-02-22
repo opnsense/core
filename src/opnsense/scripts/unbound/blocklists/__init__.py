@@ -36,15 +36,13 @@ import sys
 import fcntl
 import ujson
 import time
+import hashlib
 from configparser import ConfigParser
 
 class BaseBlocklistHandler:
     def __init__(self, config=None):
         self.config = config
         self.cnf = None
-        self.cnf_cache = None
-        self.diffs_added = {}
-        self.diffs_removed = {}
         self.priority = 0
 
         self.cur_bl_location = '/var/unbound/data/dnsbl.json'
@@ -69,14 +67,6 @@ class BaseBlocklistHandler:
         """
         pass
 
-    def _write_cache(self):
-        """
-        Cache so each derived class can decide whether a download is necessary
-        """
-        if self.cnf and self.config:
-            with open(self.config + '.cache', 'w') as cache_config:
-                self.cnf.write(cache_config)
-
     def _load_config(self):
         """
         Load a configuration. If a cached version exists, will also provide a dictionary
@@ -85,31 +75,6 @@ class BaseBlocklistHandler:
         if os.path.exists(self.config):
             self.cnf = ConfigParser()
             self.cnf.read(self.config)
-        if os.path.exists(self.config + '.cache'):
-            self.cnf_cache = ConfigParser()
-            self.cnf_cache.read(self.config + '.cache')
-
-        if self.cnf and self.cnf_cache:
-            if self.cnf.sections() and self.cnf_cache.sections():
-                diff_cnf = {d: set(map(tuple, v.items())) for d,v in self.cnf._sections.items()}
-                diff_cnf_cache = {d: set(map(tuple, v.items())) for d,v in self.cnf_cache._sections.items()}
-                self.diffs_added = {header: diff_cnf[header] - diff_cnf_cache[header] for header, _ in diff_cnf.items()}
-                self.diffs_removed = {header: diff_cnf_cache[header] - diff_cnf[header] for header, _ in diff_cnf.items()}
-
-    def _domains_in_blocklist(self, blocklist):
-        """
-        Generator for derived classes to iterate over downloaded domains.
-        """
-        for line in self._uri_reader(blocklist):
-            # cut line into parts before comment marker (if any)
-            tmp = line.split('#')[0].split()
-            entry = None
-            while tmp:
-                entry = tmp.pop(-1)
-                if entry not in ['127.0.0.1', '0.0.0.0']:
-                    break
-            if entry:
-                yield entry
 
     def _blocklists_in_config(self):
         """
@@ -122,7 +87,49 @@ class BaseBlocklistHandler:
                 bl_shortcode = 'Custom' if list_type[0] == 'custom' else list_type[1]
                 yield (self.cnf['blocklists'][blocklist], bl_shortcode)
 
+    def _domains_in_blocklist(self, blocklist):
+        """
+        Generator for derived classes to iterate over downloaded domains.
+        """
+        for line in self._blocklist_reader(blocklist):
+            # cut line into parts before comment marker (if any)
+            tmp = line.split('#')[0].split()
+            entry = None
+            while tmp:
+                entry = tmp.pop(-1)
+                if entry not in ['127.0.0.1', '0.0.0.0']:
+                    break
+            if entry:
+                yield entry
+
+    def _blocklist_reader(self, uri):
+        """
+        Decides whether a blocklist can be read from a cached file or
+        needs to be downloaded. Yields (unformatted) domains either way
+        """
+        h = hashlib.md5(uri.encode()).hexdigest()
+        cache_loc = '/tmp/bl_cache/'
+        if os.path.exists(cache_loc):
+            filep = cache_loc + h
+            if os.path.exists(filep):
+                fstat = os.stat(filep).st_ctime
+                if (time.time() - fstat) < 72000: # 20 hours, a bit under the recommended cron time
+                    syslog.syslog(syslog.LOG_NOTICE, 'blocklist download: reading from cache')
+                    for line in open(filep):
+                        yield line
+                    return
+
+        syslog.syslog(syslog.LOG_NOTICE, 'blocklist download: writing to cache')
+        os.makedirs(cache_loc, exist_ok=True)
+        with open(cache_loc + h, 'w') as outf:
+            for line in self._uri_reader(uri):
+                outf.write(line + '\n')
+                yield line
+
     def _uri_reader(self, uri):
+        """
+        Takes a URI and yields domain entries.
+        """
         req_opts = {
             'url': uri,
             'timeout': 5,
@@ -245,6 +252,6 @@ class BlocklistParser:
         # atomically replace the current dnsbl so unbound can pick up on it
         os.replace('/var/unbound/data/dnsbl.json.new', '/var/unbound/data/dnsbl.json')
 
-        syslog.syslog(syslog.LOG_NOTICE, "blocklist download done in %0.2f seconds (%d records)" % (
+        syslog.syslog(syslog.LOG_NOTICE, "blocklist parsing done in %0.2f seconds (%d records)" % (
             time.time() - self.startup_time, len(merged['data'])
         ))
