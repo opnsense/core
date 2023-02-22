@@ -253,7 +253,7 @@ function make_config_revision_entry($desc = '')
     if (!empty($_SESSION['Username'])) {
         $username = $_SESSION['Username'];
     } else {
-        $username = '(' . trim(shell_exec('/usr/bin/whoami')) . ')';
+        $username = '(' . shell_safe('/usr/bin/whoami') . ')';
     }
 
     if (!empty($_SERVER['REMOTE_ADDR'])) {

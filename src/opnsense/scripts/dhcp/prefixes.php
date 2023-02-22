@@ -87,7 +87,7 @@ foreach ($routes as $address => $prefix) {
     mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
 }
 
-$dhcpd_log = trim(shell_exec('opnsense-log -n dhcpd'));
+$dhcpd_log = shell_safe('opnsense-log -n dhcpd');
 $expires = [];
 
 if (empty($dhcpd_log)) {

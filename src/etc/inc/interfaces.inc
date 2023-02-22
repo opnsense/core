@@ -3877,7 +3877,7 @@ function get_interfaces_info($include_unlinked = false)
                 }
             }
 
-            $aux = trim(shell_exec(exec_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6'])));
+            $aux = shell_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6']);
             if (!empty($aux)) {
                 $ifinfo['prefixv6'] = $aux;
             }
@@ -3946,7 +3946,7 @@ function get_interfaces_info($include_unlinked = false)
         }
 
         if (file_exists("/var/run/{$link_type}_{$ifdescr}.pid")) {
-            $sec = intval(trim(shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh ' . escapeshellarg($ifinfo['if']))));
+            $sec = intval(shell_safe('/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh %s', $ifinfo['if']));
             if ($sec) {
                 $ifinfo['ppp_uptime'] = convert_seconds_to_hms($sec);
             }
@@ -3991,7 +3991,7 @@ function get_interfaces_info($include_unlinked = false)
 
         $bridge = link_interface_to_bridge($ifdescr);
         if ($bridge) {
-            $bridge_text = shell_exec('/sbin/ifconfig ' . escapeshellarg($bridge));
+            $bridge_text = shell_safe('/sbin/ifconfig %s', $bridge);
             if (stristr($bridge_text, 'blocking') != false) {
                 $ifinfo['bridge'] = "<b><span class='text-danger'>" . gettext("blocking") . "</span></b> - " . gettext("check for ethernet loops");
                 $ifinfo['bridgeint'] = $bridge;

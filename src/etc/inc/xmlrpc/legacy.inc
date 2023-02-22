@@ -34,7 +34,11 @@
  */
 function xmlrpc_publishable_legacy()
 {
-    $publish = array('filter_configure_xmlrpc','restore_config_section_xmlrpc','firmware_version_xmlrpc');
+    $publish = [
+       'filter_configure_xmlrpc',
+       'firmware_version_xmlrpc',
+       'restore_config_section_xmlrpc',
+    ];
 
     return $publish;
 }
@@ -89,7 +93,7 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
                 (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key]['@attributes']['uuid'])) // mvc array
             ) {
                 // (re)set destination array when new or containing a sequenced list of items
-                $cnf_dest[$cnf_key] = array();
+                $cnf_dest[$cnf_key] = [];
             }
             merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
         } else {
@@ -104,11 +108,11 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
  */
 function firmware_version_xmlrpc()
 {
-    return array(
-        'base' => array('version' => trim(shell_exec('opnsense-version -v base'))),
-        'firmware' => array('version' => trim(shell_exec('opnsense-version -v core'))),
-        'kernel' => array('version' => trim(shell_exec('opnsense-version -v kernel'))),
-    );
+    return [
+        'base' => ['version' => shell_safe('opnsense-version -v base')],
+        'firmware' => ['version' => shell_safe('opnsense-version -v core')],
+        'kernel' => ['version' => shell_safe('opnsense-version -v kernel')],
+    ];
 }
 
 /**
@@ -149,8 +153,8 @@ function restore_config_section_xmlrpc($new_config)
     // Some sections should just be copied and not merged, namely if there's a risk of attributes being removed
     // without being seen by the remote (backup) side.
     // (ipsec, openvpn, nat can probably moved out later by specifying a better path to the attribute)
-    $sync_full = array('ipsec', 'wol', 'dnsmasq', 'load_balancer', 'openvpn', 'nat', 'dhcpd', 'dhcpv6');
-    $sync_full_done = array();
+    $sync_full = ['ipsec', 'wol', 'dnsmasq', 'load_balancer', 'openvpn', 'nat', 'dhcpd', 'dhcpv6'];
+    $sync_full_done = [];
     foreach ($sync_full as $syncfull) {
         if (isset($new_config[$syncfull])) {
             $config[$syncfull] = $new_config[$syncfull];
@@ -166,8 +170,8 @@ function restore_config_section_xmlrpc($new_config)
         }
     }
 
-    $vipbackup = array();
-    $oldvips = array();
+    $vipbackup = [];
+    $oldvips = [];
     if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
             if (!empty($vip['vhid'])) {
@@ -209,7 +213,7 @@ function restore_config_section_xmlrpc($new_config)
                 $vipKey = get_unique_vip_key($vip);
                 if (!empty($vip['vhid']) && isset($oldvips[$vipKey])) {
                     $is_changed = false;
-                    foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
+                    foreach (['password', 'advskew', 'subnet', 'subnet_bits', 'advbase'] as $chk_key) {
                         if ($oldvips[$vipKey][$chk_key] != $vip[$chk_key]) {
                             $is_changed = true;
                             break;
