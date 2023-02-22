@@ -53,6 +53,7 @@
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/lighttpd_webgui/conf.d/README
 /usr/local/etc/lighttpd_webgui/conf.d/extforward.conf.example
+/usr/local/etc/monit.opnsense.d/00-example.conf
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/opnsense-beep.d/high
 /usr/local/etc/opnsense-beep.d/low
