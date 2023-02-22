@@ -48,6 +48,17 @@
         </help>
     </field>
     <field>
+        <id>unbound.dnsbl.wildcards</id>
+        <label>Wildcard Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of wildcard domains to blocklist. All subdomains of the given domain will
+            be blocked. Blocking first-level domains is not supported.
+        </help>
+    </field>
+    <field>
         <id>unbound.dnsbl.address</id>
         <label>Destination Address</label>
         <type>text</type>

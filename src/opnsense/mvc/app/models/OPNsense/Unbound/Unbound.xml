@@ -173,10 +173,13 @@
             </whitelists>
             <blocklists type="CSVListField">
                 <Required>N</Required>
-                <Mask>/^((\*\.)?((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9]))$/i</Mask>
+            </blocklists>
+            <wildcards type="CSVListField">
+                <Required>N</Required>
+                <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 <MaskPerItem>1</MaskPerItem>
-            </blocklists>
+            </wildcards>
             <address type="NetworkField">
                 <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
