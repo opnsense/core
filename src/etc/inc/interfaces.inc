@@ -894,7 +894,6 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
             break;
         case 'dhcp':
             killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
-            @unlink("/tmp/{$realif}_oldip"); /* XXX dhclient cannot signal a release */
             break;
         default:
             break;
@@ -2800,7 +2799,11 @@ INFOREQ|REQUEST)
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
-    /usr/local/sbin/configctl -d interface newipv6 {$wanif}
+    FORCE=
+    if [ \${REASON} = "REQUEST" ]; then
+        FORCE=force
+    fi
+    /usr/local/sbin/configctl -d interface newipv6 {$wanif} \${FORCE}
     ;;
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
@@ -3111,7 +3114,6 @@ function interface_dhcp_configure($interface = 'wan')
     }
 
     killbypid("/var/run/dhclient.{$wanif}.pid", 'TERM', true);
-    @unlink("/tmp/{$wanif}_oldip"); /* XXX dhclient cannot signal a release */
 
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {

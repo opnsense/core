@@ -38,6 +38,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
+$force = !empty($argv[2]) ? 'yes' : 'no';
 
 exit_on_bootup(function ($argument) {
     log_msg("IP renewal deferred during boot on '{$argument}'");
@@ -82,12 +83,12 @@ system_resolvconf_generate();
 system_hosts_generate();
 
 $cacheip = trim(@file_get_contents($cacheip_file));
-if ($ip == $cacheip) {
+if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
     return;
 }
 
-log_msg("IP renwal starting (new: {$ip}, old: ${cacheip}, interface: {$interface_descr}[{$interface}], device: {$device})");
+log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface_descr}[{$interface}], device: {$device}, force: {$force})");
 
 interfaces_vips_configure($interface, 6);
 
@@ -101,7 +102,7 @@ $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
 foreach ($interfaces as $interface) {
-    system_routing_configure(false, $interface);
+    system_routing_configure(false, $interface, true, 'inet6');
 }
 
 filter_configure_sync();

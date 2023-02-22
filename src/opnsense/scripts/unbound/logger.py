@@ -185,14 +185,22 @@ class DNSReader:
 
         self._setup_db()
 
-        try:
-            # open() will block until a query has been pushed down the fifo
-            self.fd = open(self.target_pipe, 'r')
-        except InterruptedError:
-            self.close_logger()
-        except OSError:
-            syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
-            sys.exit(1)
+        r_count = 0
+        pipe_ready = False
+        # give dnsbl_module.py some time to create a pipe
+        while not pipe_ready:
+            try:
+                # open() will block until a query has been pushed down the fifo
+                self.fd = open(self.target_pipe, 'r')
+                pipe_ready = True
+            except InterruptedError:
+                self.close_logger()
+            except OSError:
+                r_count += 1
+                if r_count > 10:
+                    syslog.syslog(syslog.LOG_ERR, "Unable to open pipe. This is likely because Unbound isn't running.")
+                    sys.exit(1)
+                time.sleep(1)
 
         self.selector.register(self.fd.fileno(), selectors.EVENT_READ, self._read)
 
