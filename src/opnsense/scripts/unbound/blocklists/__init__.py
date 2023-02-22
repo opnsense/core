@@ -39,7 +39,7 @@ import time
 from configparser import ConfigParser
 
 class BaseBlocklistHandler:
-    def __init__(self, config):
+    def __init__(self, config=None):
         self.config = config
         self.cnf = None
         self.cnf_cache = None
@@ -73,8 +73,8 @@ class BaseBlocklistHandler:
         """
         Cache so each derived class can decide whether a download is necessary
         """
-        if self.cnf:
-            with open('/tmp/unbound-blocklists.conf.cache', 'w') as cache_config:
+        if self.cnf and self.config:
+            with open(self.config + '.cache', 'w') as cache_config:
                 self.cnf.write(cache_config)
 
     def _load_config(self):
