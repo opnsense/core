@@ -126,7 +126,7 @@
                 <name>Harden DNSSEC data</name>
                 <type>checkbox</type>
                 <value></value>
-                <bindstofield>unbound->dnssecstripped</bindstofield>
+                <bindstofield>unboundplus->advanced->dnssecstripped</bindstofield>
             </field>
             <field>
                 <name>Next</name>
