@@ -1549,7 +1549,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 $this_conn['children'][$this_connid] = $base_child_conf;
                 $this_conn['children'][$this_connid]['local_ts'] = join(',', $parsed_phase2['local_ts']);
                 $this_conn['children'][$this_connid]['remote_ts'] = join(',', $parsed_phase2['remote_ts']);
-                if (!empty($parsed_phase2['reqids'])) {
+                if (!empty($parsed_phase2['reqids']) && !isset($ph1ent['mobile'])) {
                     $this_conn['children'][$this_connid]['reqid'] = $parsed_phase2['reqids'][0];
                 }
                 if (!empty($parsed_phase2['esp_proposals'])) {
