@@ -594,7 +594,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   }
   }
 
-  > li:last-child > a{
+  li:last-child > a{
     border-right:1px solid transparent !important;
 
     @media (max-width:$screen-xs-max){
