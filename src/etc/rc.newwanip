@@ -78,13 +78,14 @@ if (!is_ipaddr($ip)) {
      * Take care of OpenVPN and similar if you generate the event
      * to reconfigure an interface.  OpenVPN might be in tap(4)
      * mode and not have an IP address.
-     *
-     * XXX we actually force continuation for ip = null
      */
     if (substr($device, 0, 4) != 'ovpn') {
         log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
         return;
     }
+
+    /* force a non-IP value here that makes the problem explicit when debugged */
+    $ip = 'openvpn_xxx';
 }
 
 /* this may be required to cleanse the DNS information no longer available */
@@ -168,21 +169,18 @@ foreach (array_keys($restartifs) as $ifname) {
  */
 ifgroup_setup();
 
-$intf_ipaddr = $config['interfaces'][$interface]['ipaddr'] ?? 'none';
+system_routing_configure(false, $interface, true, 'inet');
+filter_configure_sync();
 
-if ($force == 'yes' || $ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
-    system_routing_configure(false, $interface, true, 'inet');
-    filter_configure_sync();
-
-    if (is_ipaddr($cacheip) && $ip != $cacheip) {
-        log_msg("IP address change detected, killing states of old ip $cacheip");
-        mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
-        mwexecf('/sbin/pfctl -k %s', $cacheip);
-    }
-
-    @file_put_contents($cacheip_file, $ip . PHP_EOL);
-
-    plugins_configure('vpn', false, [$interface]);
-    plugins_configure('newwanip', false, [$interface]);
-    rrd_configure();
+if (is_ipaddr($cacheip) && $ip != $cacheip) {
+    log_msg("IP address change detected, killing states of old ip $cacheip");
+    mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
+    mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
+
+/* register IP change not before this point as basic connectivity is needed */
+@file_put_contents($cacheip_file, $ip . PHP_EOL);
+
+plugins_configure('vpn', false, [$interface]);
+plugins_configure('newwanip', false, [$interface]);
+rrd_configure();
