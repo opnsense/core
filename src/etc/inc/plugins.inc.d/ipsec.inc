@@ -1528,7 +1528,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $this_conn['children'][$child_id] = $base_child_conf;
                     $this_conn['children'][$child_id]['local_ts'] = $parsed_phase2['local_ts'][$idx];
                     $this_conn['children'][$child_id]['remote_ts'] = $parsed_phase2['remote_ts'][$idx];
-                    $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
+                    if (!isset($ph1ent['mobile'])) {
+                        $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
+                    }
                     foreach (['esp_proposals', 'ah_proposals', 'life_time', 'rekey_time', 'rand_time'] as $fieldname) {
                         if (isset($parsed_phase2[$fieldname][$idx]) && $parsed_phase2[$fieldname][$idx] != null) {
                             if (is_array($parsed_phase2[$fieldname][$idx])) {
