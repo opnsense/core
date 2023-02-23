@@ -62,6 +62,7 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ipv6($interface);
 
 $cacheip_file = "/tmp/{$device}_oldipv6";
+$cacheip = trim(@file_get_contents($cacheip_file));
 
 if (!is_ipaddr($ip)) {
     /* remove previously cached IP since it is gone */
@@ -76,13 +77,15 @@ if (!is_ipaddr($ip)) {
         log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
         return;
     }
+
+    /* force a non-IP value here that makes the problem explicit when debugged */
+    $ip = 'openvpn_xxx';
 }
 
 /* this may be required to cleanse the DNS information no longer available */
 system_resolvconf_generate();
 system_hosts_generate();
 
-$cacheip = trim(@file_get_contents($cacheip_file));
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
     return;
