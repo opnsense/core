@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2017-2022 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2017-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,15 +33,12 @@ import os
 import sys
 import argparse
 import json
-import urllib3
 import xml.etree.cElementTree as ET
 import syslog
 import glob
 from lib.alias import AliasParser
-from lib.pf import PF
-import lib.geoip as geoip
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
+from lib.alias.pf import PF
+from lib.alias.geoip import GEOIP
 
 
 if __name__ == '__main__':
@@ -50,6 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--source_conf', help='configuration xml', default='/usr/local/etc/filter_tables.conf')
     parser.add_argument('--aliases', help='aliases to update (targetted), comma separated', type=lambda x: x.split(','))
+    parser.add_argument('--types', help='alias types to update (comma seperated)', type=lambda x: x.split(','))
     inputargs = parser.parse_args()
     syslog.openlog('firewall', facility=syslog.LOG_LOCAL4)
 
@@ -59,7 +57,7 @@ if __name__ == '__main__':
 
     # make sure we download geoip data if not found. Since aliases only will trigger a download when change requires it
     if not os.path.isfile('/usr/local/share/GeoIP/alias.stats'):
-        geoip.download_geolite()
+        GEOIP().download()
 
     try:
         source_tree = ET.ElementTree(file=inputargs.source_conf)
@@ -70,8 +68,16 @@ if __name__ == '__main__':
     aliases = AliasParser(source_tree)
     aliases.read()
 
-    use_cached = lambda x: inputargs.aliases is not None and x not in inputargs.aliases
-    registered_aliases = set()
+    # collect "to_update" list, when not set (None) we're planning to update all following normal lifetime rules.
+    to_update = None
+    if inputargs.aliases is not None or inputargs.types is not None:
+        to_update = inputargs.aliases if inputargs.aliases is not None else []
+        if inputargs.types is not None:
+            for alias in aliases:
+                if alias.get_type() in inputargs.types:
+                    to_update.append(alias.get_name())
+
+    use_cached = lambda x: to_update is not None and x not in to_update
     for alias in aliases:
         # fetch alias content including dependencies
         # when a distinct set of aliases is offered, use current contents for all other alias types
@@ -82,12 +88,9 @@ if __name__ == '__main__':
             if related_alias_name != alias_name:
                 rel_alias = aliases.get(related_alias_name)
                 if rel_alias:
-                    alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
                     alias_content += rel_alias.cached() if use_cached(related_alias_name) else rel_alias.resolve()
+                    alias_changed_or_expired = max(alias_changed_or_expired, rel_alias.changed(), rel_alias.expired())
 
-        # in order to remove unused aliases, we need to keep track of aliases managed by us.
-        if alias.is_managed():
-            registered_aliases.add(alias.get_name())
         # only try to replace the contents of this alias if we're responsible for it (know how to parse)
         if alias.get_parser():
             # when the alias or any of it's dependencies has changed, generate new
@@ -95,7 +98,7 @@ if __name__ == '__main__':
                 open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
 
             # list current alias content when not trying to update a targetted list
-            alias_pf_content = list(PF.list_table(alias_name)) if inputargs.aliases is None else alias_content
+            alias_pf_content = list(PF.list_table(alias_name)) if to_update is None else alias_content
 
             if (len(alias_content) != len(alias_pf_content) or alias_changed_or_expired):
                 # if the alias is changed, expired or the one in memory has a different number of items, load table
@@ -121,7 +124,8 @@ if __name__ == '__main__':
                             syslog.syslog(syslog.LOG_NOTICE, error_message)
 
     # cleanup removed aliases when reloading all
-    if inputargs.aliases is None:
+    if to_update is None:
+        registered_aliases = [alias.get_name() for alias in aliases if alias.is_managed()]
         to_remove = list()
         to_remove_files = dict()
         for filename in glob.glob('/var/db/aliastables/*.txt'):
