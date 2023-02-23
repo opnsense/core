@@ -1283,302 +1283,304 @@ function ipsec_configure_do($verbose = false, $interface = '')
         sleep(2);
 
         /* disallow IPSEC, it is off */
-        mwexec("/sbin/ifconfig enc0 down");
+        mwexec('/sbin/ifconfig enc0 down');
 
         return;
-    } else {
-        if (get_single_sysctl('net.inet.ipsec.def_policy') == "") {
-            mwexec("/sbin/kldload ipsec");
+    }
+
+    if (get_single_sysctl('net.inet.ipsec.def_policy') == '') {
+        mwexec('/sbin/kldload ipsec');
+    }
+    mwexec('/sbin/ifconfig enc0 up');
+
+    service_log('Configuring IPsec VPN...', $verbose);
+
+    /* cleanup legacy ipsec.conf files */
+    mwexec('rm -rf /usr/local/etc/ipsec.d');
+    @unlink('/usr/local/etc/ipsec.conf');
+    @unlink('/usr/local/etc/ipsec.secrets');
+
+    ipsec_write_strongswan_conf();
+    ipsec_write_cas();
+    ipsec_write_certs();
+    ipsec_write_keypairs();
+
+    /* begin ipsec.conf, hook mvc configuration first */
+    $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
+    $swanctl['secrets'] = ipsec_write_secrets();
+
+    if (count($a_phase1)) {
+        if (!empty($config['ipsec']['passthrough_networks'])) {
+            $swanctl['connections']['pass'] = [
+                'remote_addrs' => '127.0.0.1',
+                'unique' => 'replace',
+                'children' => [
+                    'pass' => [
+                          'local_ts' => $config['ipsec']['passthrough_networks'],
+                          'remote_ts' => $config['ipsec']['passthrough_networks'],
+                          'mode' => 'pass',
+                          'start_action' => 'route'
+                      ]
+                ]
+            ];
         }
-        mwexec("/sbin/ifconfig enc0 up");
 
-        service_log('Configuring IPsec VPN...', $verbose);
-
-        /* cleanup legacy ipsec.conf files */
-        mwexec("rm -rf /usr/local/etc/ipsec.d");
-        @unlink("/usr/local/etc/ipsec.conf");
-        @unlink("/usr/local/etc/ipsec.secrets");
-
-        ipsec_write_strongswan_conf();
-        ipsec_write_cas();
-        ipsec_write_certs();
-        ipsec_write_keypairs();
-
-        /* begin ipsec.conf, hook mvc configuration first */
-        $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
-        $swanctl['secrets'] = ipsec_write_secrets();
-
-        if (count($a_phase1)) {
-            if (!empty($config['ipsec']['passthrough_networks'])) {
-                $swanctl['connections']['pass'] = [
-                    'remote_addrs' => '127.0.0.1',
-                    'unique' => 'replace',
-                    'children' => [
-                        'pass' => [
-                              'local_ts' => $config['ipsec']['passthrough_networks'],
-                              'remote_ts' => $config['ipsec']['passthrough_networks'],
-                              'mode' => 'pass',
-                              'start_action' => 'route'
-                          ]
-                    ]
-                ];
+        foreach ($a_phase1 as $ph1ent) {
+            if (isset($ph1ent['disabled'])) {
+                continue;
+            }
+            $ep = ipsec_get_phase1_src($ph1ent);
+            if (empty($ep)) {
+                continue;
             }
 
-            foreach ($a_phase1 as $ph1ent) {
-                if (isset($ph1ent['disabled'])) {
-                    continue;
-                }
-                $ep = ipsec_get_phase1_src($ph1ent);
-                if (empty($ep)) {
-                    continue;
-                }
+            $connection = [
+                'unique' => !empty($ph1ent['unique']) ? $ph1ent['unique'] : 'replace',
+                'aggressive' => ($ph1ent['mode'] ?? '') == 'aggressive' ? 'yes' : 'no',
+                'version' => ($ph1ent['iketype'] ?? '') == 'ikev2' ? 2 : 1,
+                'mobike' => !empty($ph1ent['mobike']) ? 'no' : 'yes',
+                'local_addrs' => $ep,
+                'local-0' => [
+                    'id' => ipsec_find_id($ph1ent, "local")
+                ],
+                'remote-0' => [
+                    'id' => ipsec_find_id($ph1ent, "peer") ?? '%any'
+                ],
+                'remote_addrs' => !isset($ph1ent['mobile']) && empty($ph1ent['rightallowany']) ? $ph1ent['remote-gateway'] : '%any',
+                'encap' => !empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force' ? 'yes' : 'no',
+            ];
+            if (!isset($ph1ent['reauth_enable']) && !empty($ph1ent['lifetime']) && !empty($ph1ent['margintime'])) {
+                // XXX: should probably move to a gui setting for reauth_time and deprecate "Disable Reauth"
+                $connection['reauth_time'] =  ($ph1ent['lifetime'] - $ph1ent['margintime']) . ' s';
+            }
+            if (isset($ph1ent['rekey_enable'])) {
+                $connection['rekey_time'] = '0 s';
+                $connection['reauth_time'] = '0 s';
+                // XXX todo -> child connections.<conn>.children.<child>.life_time=0
+            } elseif (!empty($ph1ent['margintime']) && !empty($ph1ent['rekeyfuzz']) && !empty($ph1ent['lifetime'])) {
+                $connection['rekey_time'] = ($ph1ent['lifetime'] - $ph1ent['margintime']) . ' s';
+                $connection['over_time'] = $ph1ent['margintime'] . ' s';
+                $connection['rand_time'] = ($ph1ent['margintime'] * $ph1ent['rekeyfuzz']) . ' s';
+            }
+            if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
+                $connection['dpd_delay'] = "{$ph1ent['dpd_delay']} s";
+                $dpdtimeout = $ph1ent['dpd_delay'] * ($ph1ent['dpd_maxfail'] + 1);
+                $connection['dpd_timeout'] = "{$dpdtimeout} s";
+            }
+            if (!empty($ph1ent['keyingtries'])) {
+                $connection['keyingtries'] = $ph1ent['keyingtries'] == -1 ? "0" : $ph1ent['keyingtries'];
+            }
 
-                $connection = [
-                    'unique' => !empty($ph1ent['unique']) ? $ph1ent['unique'] : 'replace',
-                    'aggressive' => ($ph1ent['mode'] ?? '') == 'aggressive' ? 'yes' : 'no',
-                    'version' => ($ph1ent['iketype'] ?? '') == 'ikev2' ? 2 : 1,
-                    'mobike' => !empty($ph1ent['mobike']) ? 'no' : 'yes',
-                    'local_addrs' => $ep,
-                    'local-0' => [
-                        'id' => ipsec_find_id($ph1ent, "local")
-                    ],
-                    'remote-0' => [
-                        'id' => ipsec_find_id($ph1ent, "peer") ?? '%any'
-                    ],
-                    'remote_addrs' => !isset($ph1ent['mobile']) && empty($ph1ent['rightallowany']) ? $ph1ent['remote-gateway'] : '%any',
-                    'encap' => !empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force' ? 'yes' : 'no',
-                ];
-                if (!isset($ph1ent['reauth_enable']) && !empty($ph1ent['lifetime']) && !empty($ph1ent['margintime'])) {
-                    // XXX: should probably move to a gui setting for reauth_time and deprecate "Disable Reauth"
-                    $connection['reauth_time'] =  ($ph1ent['lifetime'] - $ph1ent['margintime']) . ' s';
-                }
-                if (isset($ph1ent['rekey_enable'])) {
-                    $connection['rekey_time'] = '0 s';
-                    $connection['reauth_time'] = '0 s';
-                    // XXX todo -> child connections.<conn>.children.<child>.life_time=0
-                } elseif (!empty($ph1ent['margintime']) && !empty($ph1ent['rekeyfuzz']) && !empty($ph1ent['lifetime'])) {
-                    $connection['rekey_time'] = ($ph1ent['lifetime'] - $ph1ent['margintime']) . ' s';
-                    $connection['over_time'] = $ph1ent['margintime'] . ' s';
-                    $connection['rand_time'] = ($ph1ent['margintime'] * $ph1ent['rekeyfuzz']) . ' s';
-                }
-                if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
-                    $connection['dpd_delay'] = "{$ph1ent['dpd_delay']} s";
-                    $dpdtimeout = $ph1ent['dpd_delay'] * ($ph1ent['dpd_maxfail'] + 1);
-                    $connection['dpd_timeout'] = "{$dpdtimeout} s";
-                }
-                if (!empty($ph1ent['keyingtries'])) {
-                    $connection['keyingtries'] = $ph1ent['keyingtries'] == -1 ? "0" : $ph1ent['keyingtries'];
-                }
-
-                if (isset($ph1ent['mobile'])) {
-                    $pools = [];
-                    if (!empty($a_client['pool_address'])) {
-                        $pools[] = 'defaultv4';
-                        if (!isset($swanctl['pools']['defaultv4'])) {
-                            $swanctl['pools']['defaultv4'] = [
-                                'addrs' => "{$a_client['pool_address']}/{$a_client['pool_netbits']}"
-                            ];
-                        }
-                    }
-                    if (!empty($a_client['pool_address_v6'])) {
-                        $pools[] = 'defaultv6';
-                        if (!isset($swanctl['pools']['defaultv6'])) {
-                            $swanctl['pools']['defaultv6'] = [
-                                'addrs' => "{$a_client['pool_address_v6']}/{$a_client['pool_netbits_v6']}"
-                            ];
-                        }
-                    }
-                    if (!empty($pools)) {
-                        $connection['pools'] = join(',', $pools);
+            if (isset($ph1ent['mobile'])) {
+                $pools = [];
+                if (!empty($a_client['pool_address'])) {
+                    $pools[] = 'defaultv4';
+                    if (!isset($swanctl['pools']['defaultv4'])) {
+                        $swanctl['pools']['defaultv4'] = [
+                            'addrs' => "{$a_client['pool_address']}/{$a_client['pool_netbits']}"
+                        ];
                     }
                 }
-
-                switch ($ph1ent['authentication_method']) {
-                    case 'eap-tls':
-                        $connection['local-0']['auth'] = 'eap-tls';
-                        $connection['remote-0']['auth'] = 'eap-tls';
-                        break;
-                    case 'psk_eap-tls':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'eap-tls';
-                        $connection['remote-0']['eap_id'] = '%any';
-                        break;
-                    case 'eap-mschapv2':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'eap-mschapv2';
-                        $connection['remote-0']['eap_id'] = '%any';
-                        break;
-                    case 'rsa_eap-mschapv2':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'pubkey';
-                        $connection['remote-1']['eap_id'] = '%any';
-                        $connection['remote-1']['auth'] = 'eap-mschapv2';
-                        break;
-                    case 'eap-radius':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'eap-radius';
-                        $connection['remote-0']['eap_id'] = '%any';
-                        $connection['send_certreq'] = 'no';
-                        if (!isset($connection['pools'])) {
-                            $connection['pools'] = 'radius';
-                        }
-                        break;
-                    case 'xauth_rsa_server':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'pubkey';
-                        $connection['remote-1']['auth'] = 'xauth-pam';
-                        break;
-                    case 'xauth_psk_server':
-                        $connection['local-0']['auth'] = 'psk';
-                        $connection['remote-0']['auth'] = 'psk';
-                        $connection['remote-1']['auth'] = 'xauth-pam';
-                        break;
-                    case 'pre_shared_key':
-                        $connection['local-0']['auth'] = 'psk';
-                        $connection['remote-0']['auth'] = 'psk';
-                        break;
-                    case 'rsasig':
-                    case 'pubkey':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'pubkey';
-                        break;
-                    case 'hybrid_rsa_server':
-                        $connection['local-0']['auth'] = 'pubkey';
-                        $connection['remote-0']['auth'] = 'xauth';
-                        break;
+                if (!empty($a_client['pool_address_v6'])) {
+                    $pools[] = 'defaultv6';
+                    if (!isset($swanctl['pools']['defaultv6'])) {
+                        $swanctl['pools']['defaultv6'] = [
+                            'addrs' => "{$a_client['pool_address_v6']}/{$a_client['pool_netbits_v6']}"
+                        ];
+                    }
                 }
-
-                if (!empty($ph1ent['certref'])) {
-                    $connection['local-0']['certs'] = "cert-{$ph1ent['ikeid']}.crt";
-                    $connection['send_cert'] = 'always';
+                if (!empty($pools)) {
+                    $connection['pools'] = join(',', $pools);
                 }
-                if (!empty($ph1ent['caref'])) {
-                    $ca = lookup_ca($ph1ent['caref']);
-                    if (!empty($ca)) {
-                        $cert = base64_decode($ca['crt']);
-                        $x509cert = openssl_x509_parse(openssl_x509_read($cert));
-                        if (is_array($x509cert) && isset($x509cert['hash'])) {
-                            $connection['remote-0']['cacerts'] = "{$x509cert['hash']}.0.crt";
+            }
+
+            switch ($ph1ent['authentication_method']) {
+                case 'eap-tls':
+                    $connection['local-0']['auth'] = 'eap-tls';
+                    $connection['remote-0']['auth'] = 'eap-tls';
+                    break;
+                case 'psk_eap-tls':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'eap-tls';
+                    $connection['remote-0']['eap_id'] = '%any';
+                    break;
+                case 'eap-mschapv2':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'eap-mschapv2';
+                    $connection['remote-0']['eap_id'] = '%any';
+                    break;
+                case 'rsa_eap-mschapv2':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'pubkey';
+                    $connection['remote-1']['eap_id'] = '%any';
+                    $connection['remote-1']['auth'] = 'eap-mschapv2';
+                    break;
+                case 'eap-radius':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'eap-radius';
+                    $connection['remote-0']['eap_id'] = '%any';
+                    $connection['send_certreq'] = 'no';
+                    if (!isset($connection['pools'])) {
+                        $connection['pools'] = 'radius';
+                    }
+                    break;
+                case 'xauth_rsa_server':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'pubkey';
+                    $connection['remote-1']['auth'] = 'xauth-pam';
+                    break;
+                case 'xauth_psk_server':
+                    $connection['local-0']['auth'] = 'psk';
+                    $connection['remote-0']['auth'] = 'psk';
+                    $connection['remote-1']['auth'] = 'xauth-pam';
+                    break;
+                case 'pre_shared_key':
+                    $connection['local-0']['auth'] = 'psk';
+                    $connection['remote-0']['auth'] = 'psk';
+                    break;
+                case 'rsasig':
+                case 'pubkey':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'pubkey';
+                    break;
+                case 'hybrid_rsa_server':
+                    $connection['local-0']['auth'] = 'pubkey';
+                    $connection['remote-0']['auth'] = 'xauth';
+                    break;
+            }
+
+            if (!empty($ph1ent['certref'])) {
+                $connection['local-0']['certs'] = "cert-{$ph1ent['ikeid']}.crt";
+                $connection['send_cert'] = 'always';
+            }
+            if (!empty($ph1ent['caref'])) {
+                $ca = lookup_ca($ph1ent['caref']);
+                if (!empty($ca)) {
+                    $cert = base64_decode($ca['crt']);
+                    $x509cert = openssl_x509_parse(openssl_x509_read($cert));
+                    if (is_array($x509cert) && isset($x509cert['hash'])) {
+                        $connection['remote-0']['cacerts'] = "{$x509cert['hash']}.0.crt";
+                    }
+                }
+            }
+            if (!empty($ph1ent['local-kpref'])) {
+                $connection['local-0']['pubkeys'] = "{$ph1ent['local-kpref']}.pem";
+            }
+            if (!empty($ph1ent['peer-kpref'])) {
+                $connection['remote-0']['pubkeys'] = "{$ph1ent['peer-kpref']}.pem";
+            }
+            if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
+                $list = [];
+                foreach (explode(',', $ph1ent['hash-algorithm']) as $halgo) {
+                    $entry = "{$ph1ent['encryption-algorithm']['name']}";
+                    if (isset($ph1ent['encryption-algorithm']['keylen'])) {
+                         $entry .= "{$ph1ent['encryption-algorithm']['keylen']}";
+                    }
+                    $entry .= "-{$halgo}";
+                    if (!empty($ph1ent['dhgroup'])) {
+                        foreach (explode(',', $ph1ent['dhgroup']) as $dhgrp) {
+                            $entryd = $entry;
+                            $modp = ipsec_convert_to_modp($dhgrp);
+                            if (!empty($modp)) {
+                                $entryd .= "-{$modp}";
+                            }
+                            $list[] = $entryd;
                         }
                     }
                 }
-                if (!empty($ph1ent['local-kpref'])) {
-                    $connection['local-0']['pubkeys'] = "{$ph1ent['local-kpref']}.pem";
+                $connection['proposals'] = implode(',', array_reverse($list));
+            }
+
+            // XXX: should enforce explicit choice in the gui, it's also a phase 2 property in reality
+            if (!empty($ph1ent['auto']) && $ph1ent['auto'] != 'add') {
+                $start_action = $ph1ent['auto'];
+            } elseif (isset($ph1ent['mobile']) || ($ph1ent['auto'] ?? '')  == 'add') {
+                $start_action = 'none';
+            } elseif (!empty($config['ipsec']['auto_routes_disable'])) {
+                $start_action = 'start';
+            } else {
+                $start_action = 'trap';
+            }
+
+            $parsed_phase2 = ipsec_parse_phase2($ph1ent['ikeid']);
+
+            $base_child_conf = [
+                'start_action' => $start_action,
+                'policies' => empty($ph1ent['noinstallpolicy']) ? 'yes' : 'no',
+                'mode' => $parsed_phase2['type'],
+                'sha256_96' => isset($ph1ent['sha256_96']) ? 'yes' : 'no'
+            ];
+            if (!empty($ph1ent['inactivity_timeout'])) {
+                $base_child_conf['inactivity'] = "{$ph1ent['inactivity_timeout']} s";
+            }
+            if (!empty($ph1ent['closeaction']) && in_array($ph1ent['closeaction'], ['hold', 'restart'])) {
+                $base_child_conf['close_action'] = $ph1ent['closeaction'] == 'hold' ? 'trap' : 'start';
+            }
+            if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
+                if (empty($ph1ent['dpd_action']) && in_array($start_action, ['trap', 'start'])) {
+                    $base_child_conf['dpd_action'] = 'start';
+                } elseif (!empty($ph1ent['dpd_action']) && $ph1ent['dpd_action'] == 'restart') {
+                    $base_child_conf['dpd_action'] = 'start';
                 }
-                if (!empty($ph1ent['peer-kpref'])) {
-                    $connection['remote-0']['pubkeys'] = "{$ph1ent['peer-kpref']}.pem";
-                }
-                if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
-                    $list = [];
-                    foreach (explode(',', $ph1ent['hash-algorithm']) as $halgo) {
-                        $entry = "{$ph1ent['encryption-algorithm']['name']}";
-                        if (isset($ph1ent['encryption-algorithm']['keylen'])) {
-                             $entry .= "{$ph1ent['encryption-algorithm']['keylen']}";
-                        }
-                        $entry .= "-{$halgo}";
-                        if (!empty($ph1ent['dhgroup'])) {
-                            foreach (explode(',', $ph1ent['dhgroup']) as $dhgrp) {
-                                $entryd = $entry;
-                                $modp = ipsec_convert_to_modp($dhgrp);
-                                if (!empty($modp)) {
-                                    $entryd .= "-{$modp}";
-                                }
-                                $list[] = $entryd;
+            }
+
+            if (
+                isset($ph1ent['tunnel_isolation'])
+                || (!isset($ph1ent['mobile']) && ($ph1ent['iketype'] ?? 'ikev1') == 'ikev1')
+            ) {
+                $this_conn = $connection;
+                $this_conn['children'] = [];
+                for ($idx = 0; $idx < count($parsed_phase2['local_ts']); ++$idx) {
+                    $child_id = sprintf('con%s-%03d', $ph1ent['ikeid'], $idx);
+                    $this_conn['children'][$child_id] = $base_child_conf;
+                    $this_conn['children'][$child_id]['local_ts'] = $parsed_phase2['local_ts'][$idx];
+                    $this_conn['children'][$child_id]['remote_ts'] = $parsed_phase2['remote_ts'][$idx];
+                    $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
+                    foreach (['esp_proposals', 'ah_proposals', 'life_time', 'rekey_time', 'rand_time'] as $fieldname) {
+                        if (isset($parsed_phase2[$fieldname][$idx]) && $parsed_phase2[$fieldname][$idx] != null) {
+                            if (is_array($parsed_phase2[$fieldname][$idx])) {
+                                $this_conn['children'][$child_id][$fieldname] = join(
+                                    ',',
+                                    $parsed_phase2[$fieldname][$idx]
+                                );
+                            } else {
+                                $this_conn['children'][$child_id][$fieldname] = $parsed_phase2[$fieldname][$idx] . " s";
                             }
                         }
                     }
-                    $connection['proposals'] = implode(',', array_reverse($list));
                 }
-
-                // XXX: should enforce explicit choice in the gui, it's also a phase 2 property in reality
-                if (!empty($ph1ent['auto']) && $ph1ent['auto'] != 'add') {
-                    $start_action = $ph1ent['auto'];
-                } elseif (isset($ph1ent['mobile']) || ($ph1ent['auto'] ?? '')  == 'add') {
-                    $start_action = 'none';
-                } elseif (!empty($config['ipsec']['auto_routes_disable'])) {
-                    $start_action = 'start';
-                } else {
-                    $start_action = 'trap';
+                $swanctl['connections']["con{$ph1ent['ikeid']}"] = $this_conn;
+            } else {
+                $this_conn = $connection;
+                $this_connid = "con{$ph1ent['ikeid']}";
+                $this_conn['children'][$this_connid] = $base_child_conf;
+                $this_conn['children'][$this_connid]['local_ts'] = join(',', $parsed_phase2['local_ts']);
+                $this_conn['children'][$this_connid]['remote_ts'] = join(',', $parsed_phase2['remote_ts']);
+                if (!empty($parsed_phase2['reqids'])) {
+                    $this_conn['children'][$this_connid]['reqid'] = $parsed_phase2['reqids'][0];
                 }
-
-                $parsed_phase2 = ipsec_parse_phase2($ph1ent['ikeid']);
-
-                $base_child_conf = [
-                    'start_action' => $start_action,
-                    'policies' => empty($ph1ent['noinstallpolicy']) ? 'yes' : 'no',
-                    'mode' => $parsed_phase2['type'],
-                    'sha256_96' => isset($ph1ent['sha256_96']) ? 'yes' : 'no'
-                ];
-                if (!empty($ph1ent['inactivity_timeout'])) {
-                    $base_child_conf['inactivity'] = "{$ph1ent['inactivity_timeout']} s";
+                if (!empty($parsed_phase2['esp_proposals'])) {
+                    $this_conn['children'][$this_connid]['esp_proposals'] = join(',', $parsed_phase2['esp_proposals']);
                 }
-                if (!empty($ph1ent['closeaction']) && in_array($ph1ent['closeaction'], ['hold', 'restart'])) {
-                    $base_child_conf['close_action'] = $ph1ent['closeaction'] == 'hold' ? 'trap' : 'start';
+                if (!empty($parsed_phase2['ah_proposals'])) {
+                    $this_conn['children'][$this_connid]['ah_proposals'] = join(',', $parsed_phase2['esp_proposals']);
                 }
-                if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
-                    if (empty($ph1ent['dpd_action']) && in_array($start_action, ['trap', 'start'])) {
-                        $base_child_conf['dpd_action'] = 'start';
-                    } elseif (!empty($ph1ent['dpd_action']) && $ph1ent['dpd_action'] == 'restart') {
-                        $base_child_conf['dpd_action'] = 'start';
+                foreach (['life_time', 'rekey_time', 'rand_time'] as $fieldname) {
+                    $values = array_diff($parsed_phase2[$fieldname], [null]);
+                    if (!empty($values)) {
+                        $this_conn['children'][$this_connid][$fieldname] = min($values) . " s";
                     }
                 }
-
-                if (
-                    isset($ph1ent['tunnel_isolation'])
-                    || (!isset($ph1ent['mobile']) && ($ph1ent['iketype'] ?? 'ikev1') == 'ikev1')
-                ) {
-                    $this_conn = $connection;
-                    $this_conn['children'] = [];
-                    for ($idx = 0; $idx < count($parsed_phase2['local_ts']); ++$idx) {
-                        $child_id = sprintf('con%s-%03d', $ph1ent['ikeid'], $idx);
-                        $this_conn['children'][$child_id] = $base_child_conf;
-                        $this_conn['children'][$child_id]['local_ts'] = $parsed_phase2['local_ts'][$idx];
-                        $this_conn['children'][$child_id]['remote_ts'] = $parsed_phase2['remote_ts'][$idx];
-                        $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
-                        foreach (['esp_proposals', 'ah_proposals', 'life_time', 'rekey_time', 'rand_time'] as $fieldname) {
-                            if (isset($parsed_phase2[$fieldname][$idx]) && $parsed_phase2[$fieldname][$idx] != null) {
-                                if (is_array($parsed_phase2[$fieldname][$idx])) {
-                                    $this_conn['children'][$child_id][$fieldname] = join(
-                                        ',',
-                                        $parsed_phase2[$fieldname][$idx]
-                                    );
-                                } else {
-                                    $this_conn['children'][$child_id][$fieldname] = $parsed_phase2[$fieldname][$idx] . " s";
-                                }
-                            }
-                        }
-                    }
-                    $swanctl['connections']["con{$ph1ent['ikeid']}"] = $this_conn;
-                } else {
-                    $this_conn = $connection;
-                    $this_connid = "con{$ph1ent['ikeid']}";
-                    $this_conn['children'][$this_connid] = $base_child_conf;
-                    $this_conn['children'][$this_connid]['local_ts'] = join(',', $parsed_phase2['local_ts']);
-                    $this_conn['children'][$this_connid]['remote_ts'] = join(',', $parsed_phase2['remote_ts']);
-                    if (!empty($parsed_phase2['reqids'])) {
-                        $this_conn['children'][$this_connid]['reqid'] = $parsed_phase2['reqids'][0];
-                    }
-                    if (!empty($parsed_phase2['esp_proposals'])) {
-                        $this_conn['children'][$this_connid]['esp_proposals'] = join(',', $parsed_phase2['esp_proposals']);
-                    }
-                    if (!empty($parsed_phase2['ah_proposals'])) {
-                        $this_conn['children'][$this_connid]['ah_proposals'] = join(',', $parsed_phase2['esp_proposals']);
-                    }
-                    foreach (['life_time', 'rekey_time', 'rand_time'] as $fieldname) {
-                        $values = array_diff($parsed_phase2[$fieldname], [null]);
-                        if (!empty($values)) {
-                            $this_conn['children'][$this_connid][$fieldname] = min($values) . " s";
-                        }
-                    }
-                    $swanctl['connections'][$this_connid] = $this_conn;
-                }
+                $swanctl['connections'][$this_connid] = $this_conn;
             }
         }
     }
+
     $swanctltxt = "# This file is automatically generated. Do not edit\n";
     $swanctltxt .= generate_strongswan_conf($swanctl);
     $swanctltxt .= "# Include config snippets\n";
     $swanctltxt .= "include conf.d/*.conf\n";
+
     file_put_contents("/usr/local/etc/swanctl/swanctl.conf", $swanctltxt);
 
     /* mange process */
