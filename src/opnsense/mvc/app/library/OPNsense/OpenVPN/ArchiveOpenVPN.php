@@ -80,8 +80,8 @@ class ArchiveOpenVPN extends PlainOpenVPN
                 $p12 = $this->export_pkcs12(
                     $this->config['client_crt'],
                     $this->config['client_prv'],
-                    !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
-                    !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+                    !empty($this->config['p12_password']) ? $this->config['p12_password'] : '',
+                    !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : ''
                 );
 
                 file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);

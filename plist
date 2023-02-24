@@ -53,6 +53,7 @@
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/lighttpd_webgui/conf.d/README
 /usr/local/etc/lighttpd_webgui/conf.d/extforward.conf.example
+/usr/local/etc/monit.opnsense.d/00-example.conf
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/opnsense-beep.d/high
 /usr/local/etc/opnsense-beep.d/low
@@ -794,6 +795,7 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/auth/add_user.php
+/usr/local/opnsense/scripts/auth/list_group_members.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
@@ -911,6 +913,7 @@
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
+/usr/local/opnsense/scripts/openvpn/ovpn_status.py
 /usr/local/opnsense/scripts/openvpn/tls_verify.php
 /usr/local/opnsense/scripts/openvpn/user_pass_verify.php
 /usr/local/opnsense/scripts/proxy/deploy_error_pages.py
@@ -997,6 +1000,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
+/usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
