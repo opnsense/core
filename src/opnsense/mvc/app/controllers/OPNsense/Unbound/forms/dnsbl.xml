@@ -42,9 +42,7 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>
-            List of domains to blocklist. Only exact matches and wildcards are supported.
-            Wildcards are supported 2 TLDs down and only at the beginning of a domain,
-            e.g. "*.example.com", but not "*", "*.com" or "example.*.com".
+            List of domains to blocklist.
         </help>
     </field>
     <field>
