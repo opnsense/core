@@ -178,7 +178,7 @@
                 <Required>N</Required>
                 <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
-                <MaskPerItem>1</MaskPerItem>
+                <MaskPerItem>Y</MaskPerItem>
             </wildcards>
             <address type="NetworkField">
                 <Required>N</Required>
