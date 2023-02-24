@@ -65,9 +65,6 @@ $cacheip_file = "/tmp/{$device}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));
 
 if (!is_ipaddr($ip)) {
-    /* remove previously cached IP since it is gone */
-    @unlink($cacheip_file);
-
     /*
      * Take care of OpenVPN and similar if you generate the event
      * to reconfigure an interface.  OpenVPN might be in tap(4)
