@@ -107,6 +107,8 @@ class BaseBlocklistHandler:
         Decides whether a blocklist can be read from a cached file or
         needs to be downloaded. Yields (unformatted) domains either way
         """
+        total_lines = 0
+        from_cache = False
         h = hashlib.md5(uri.encode()).hexdigest()
         cache_loc = '/tmp/bl_cache/'
         if os.path.exists(cache_loc):
@@ -114,17 +116,23 @@ class BaseBlocklistHandler:
             if os.path.exists(filep):
                 fstat = os.stat(filep).st_ctime
                 if (time.time() - fstat) < 72000: # 20 hours, a bit under the recommended cron time
-                    syslog.syslog(syslog.LOG_NOTICE, 'blocklist download: reading from cache')
+                    from_cache = True
                     for line in open(filep):
+                        total_lines += 1
                         yield line
-                    return
 
-        syslog.syslog(syslog.LOG_NOTICE, 'blocklist download: writing to cache')
-        os.makedirs(cache_loc, exist_ok=True)
-        with open(cache_loc + h, 'w') as outf:
-            for line in self._uri_reader(uri):
-                outf.write(line + '\n')
-                yield line
+        if not from_cache:
+            os.makedirs(cache_loc, exist_ok=True)
+            with open(cache_loc + h, 'w') as outf:
+                for line in self._uri_reader(uri):
+                    outf.write(line + '\n')
+                    total_lines += 1
+                    yield line
+
+        syslog.syslog(
+            syslog.LOG_NOTICE, 'blocklist download: %d total lines %s for %s' %
+                (total_lines, 'from cache' if from_cache else 'downloaded', uri)
+        )
 
     def _uri_reader(self, uri):
         """
