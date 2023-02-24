@@ -991,6 +991,8 @@
 /usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
 /usr/local/opnsense/scripts/unbound/blocklists.py
+/usr/local/opnsense/scripts/unbound/blocklists/__init__.py
+/usr/local/opnsense/scripts/unbound/blocklists/default_bl.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/check.sh
 /usr/local/opnsense/scripts/unbound/logger.py
