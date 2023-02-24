@@ -41,7 +41,20 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of domains to blocklist. Only exact matches are supported.</help>
+        <help>
+            List of domains to blocklist.
+        </help>
+    </field>
+    <field>
+        <id>unbound.dnsbl.wildcards</id>
+        <label>Wildcard Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of wildcard domains to blocklist. All subdomains of the given domain will
+            be blocked. Blocking first-level domains is not supported.
+        </help>
     </field>
     <field>
         <id>unbound.dnsbl.address</id>
