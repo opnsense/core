@@ -837,12 +837,12 @@ function clearCalendar(is_clear_description = false) {
         clearTimeRangeDescription();
 }
 
-// FIXME: Values reset, but visually the values remains the same and causes confusion when adding multiple time ranges
 function resetStartAndStopTimes() {
     $('#start-hour').val('0');
     $('#start-minute').val('00');
     $('#stop-hour').val('23');
     $('#stop-minute').val('59');
+    $('.selectpicker.form-control').selectpicker('refresh');
 }
 
 function clearTimeRangeDescription(){
