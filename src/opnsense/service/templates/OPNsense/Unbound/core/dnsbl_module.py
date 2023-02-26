@@ -584,4 +584,3 @@ if __name__ == '__main__' and test_mode:
         print(json.dumps(msg))
     else:
         print(json.dumps({'status': 'OK','action': 'Pass'}))
-
