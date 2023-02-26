@@ -102,10 +102,10 @@
         </Diagnostics>
     </System>
     <Interfaces order="30" cssClass="fa fa-sitemap">
-        <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
-        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+        <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
+        <Assignments order="965" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Settings order="970" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <VIP order="975" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
             </Settings>
@@ -113,19 +113,19 @@
                 <All url="/carp_status.php*" visibility="hidden"/>
             </Status>
         </VIP>
-        <Wireless order="940" cssClass="fa fa-wifi fa-fw">
+        <Wireless order="980" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
         </Wireless>
-        <PPP order="950" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
+        <PPP order="985" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppps"/>
         </PPP>
-        <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
+        <Types VisibleName="Other Types" order="990" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
@@ -139,7 +139,7 @@
                 <Edit url="/interfaces_lagg_edit.php*" visibility="hidden"/>
             </LAGG>
         </Types>
-        <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
+        <Diagnostics order="995" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
             <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
             <Ping url="/diag_ping.php"/>

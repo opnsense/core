@@ -248,7 +248,7 @@ class MenuSystem
         }
 
         // add groups and interfaces to "Interfaces" menu tab...
-        $ordid = 0;
+        $ordid = 901;
         foreach ($iftargets['if'] as $key => $descr) {
             if (array_key_exists($key, $iftargets['gr'])) {
                 $this->appendItem('Interfaces', $key, array(
