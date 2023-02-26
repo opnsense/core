@@ -48,7 +48,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
             $mdl = $this->getModel();
-            $item = (string)$mdl->getNodeByReference('dnsbl.' . $type);
+            $item = $mdl->getNodeByReference('dnsbl.' . $type);
 
             if ($item != null) {
                 $remove = function ($csv, $part) {
@@ -63,7 +63,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $wl = explode(',', (string)$mdl->dnsbl->whitelists);
                 $bl = explode(',', (string)$mdl->dnsbl->blocklists);
 
-                $existing_domains = explode(',', $item);
+                $existing_domains = explode(',', (string)$item);
                 if (in_array($value, $existing_domains)) {
                     // value already in model, no need to re-run a potentially
                     // expensive dnsbl action
