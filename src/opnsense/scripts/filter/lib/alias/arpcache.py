@@ -28,9 +28,10 @@ import fcntl
 import time
 import subprocess
 import ujson
+from .base import BaseContentParser
 
 
-class ArpCache:
+class ArpCache(BaseContentParser):
     """ Static arp cache which lives for the duration of a script
     """
     _cache_filename = "/tmp/alias_filter_arp.cache"
@@ -103,7 +104,8 @@ class ArpCache:
 
         return current_macs
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._now = time.time()
         if len(self._data) == 0:
             self._update()

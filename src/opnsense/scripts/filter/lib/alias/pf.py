@@ -1,7 +1,5 @@
-#!/usr/local/bin/python3
-
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -25,15 +23,40 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 
-    --------------------------------------------------------------------------------------
-    download maxmind GeoLite2 Free database into easy to use alias files [<COUNTRY>-<PROTO>] located
-    in /usr/local/share/GeoIP/alias
 """
-from lib.alias.geoip import GEOIP
 
-# output files and lines processed
-data = GEOIP().download()
-print ("%(file_count)d files written, with a total number of %(address_count)d lines" % data)
-print ("locations filename : %(locations_filename)s" % data)
-print ("IPv4 filename : %(IPv4)s" % data['address_sources'])
-print ("IPv6 filename : %(IPv6)s" % data['address_sources'])
+import subprocess
+
+class PF:
+
+    @staticmethod
+    def list_tables():
+        for line in subprocess.run(['/sbin/pfctl', '-sT'], capture_output=True, text=True).stdout.strip().split('\n'):
+            yield line.strip()
+
+    @staticmethod
+    def list_table(table_name):
+        pfctl_cmd = ['/sbin/pfctl', '-t', table_name, '-T', 'show']
+        for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
+            yield line.strip()
+
+    @staticmethod
+    def flush_network(table_name, ifname):
+        subprocess.run(['/sbin/pfctl', '-t', table_name, '-T', 'replace', '%s:network' % ifname], capture_output=True)
+
+    @staticmethod
+    def flush(table_name):
+        subprocess.run(['/sbin/pfctl', '-t', table_name, '-T', 'flush'], capture_output=True)
+
+    @staticmethod
+    def replace(table_name, filename):
+        sp = subprocess.run(
+            ['/sbin/pfctl', '-t', table_name, '-T', 'replace', '-f', filename],
+            capture_output=True,
+            text=True
+        )
+        return sp.stderr.strip()
+
+    @staticmethod
+    def remove(table_name):
+        subprocess.run(['/sbin/pfctl', '-t', table_name, '-T', 'kill'], capture_output=True)

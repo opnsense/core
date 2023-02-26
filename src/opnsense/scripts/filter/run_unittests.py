@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
-
 """
-    Copyright (c) 2016 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,16 +23,11 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    download maxmind GeoLite2 Free database into easy to use alias files [<COUNTRY>-<PROTO>] located
-    in /usr/local/share/GeoIP/alias
 """
-from lib.alias.geoip import GEOIP
+import unittest
+from tests import *
 
-# output files and lines processed
-data = GEOIP().download()
-print ("%(file_count)d files written, with a total number of %(address_count)d lines" % data)
-print ("locations filename : %(locations_filename)s" % data)
-print ("IPv4 filename : %(IPv4)s" % data['address_sources'])
-print ("IPv6 filename : %(IPv6)s" % data['address_sources'])
+__author__ = 'Ad Schellevis'
+
+if __name__ == '__main__':
+    unittest.main()
