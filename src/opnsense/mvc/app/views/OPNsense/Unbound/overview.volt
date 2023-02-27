@@ -663,10 +663,10 @@
                             },
                             statusMapping: {
                                 0: "query-success",
-                                1: "info",
+                                1: "query-info",
                                 2: "query-warning",
                                 3: "query-danger",
-                                4: "danger"
+                                4: "query-error"
                             }
                         }
                     }).on("loaded.rs.jquery.bootgrid", function (e) {
