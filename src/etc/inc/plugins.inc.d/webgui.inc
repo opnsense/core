@@ -114,16 +114,16 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
 
-    /* only stop the frontend when the generation was successful */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
+    /* regenerate the php.ini files in case the setup has changed */
+    configd_run('template reload OPNsense/WebGui');
+
+    /* stop the frontend when the generation was completed */
+    killbypid('/var/run/lighty-webConfigurator.pid', 'INT', true);
 
     /* flush Phalcon volt templates */
     foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
         unlink($filename);
     }
-
-    /* regenerate the php.ini files in case the setup has changed */
-    configd_run('template reload OPNsense/WebGui');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
