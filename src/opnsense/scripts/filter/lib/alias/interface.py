@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2021-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,10 @@
 """
 import ipaddress
 import subprocess
+from .base import BaseContentParser
 
 
-class InterfaceParser:
+class InterfaceParser(BaseContentParser):
     """ Interface address parser
     """
     _ipv6_networks = dict()
@@ -53,13 +54,14 @@ class InterfaceParser:
                 if mask and addr:
                     cls._ipv6_networks[this_interface].append({"addr": ipaddress.IPv6Address(addr), "mask": mask})
 
-    def __init__(self, interface):
+    def __init__(self, interface, **kwargs):
+        super().__init__(**kwargs)
         self._interface = interface
         # collect addresses on class init (singleton)
         if len(self._ipv6_networks) == 0:
             self._update()
 
-    def iter_dynipv6host(self, pattern):
+    def iter_addresses(self, pattern):
         if self._interface in self._ipv6_networks:
             for network in self._ipv6_networks[self._interface]:
                 # only global addresses apply

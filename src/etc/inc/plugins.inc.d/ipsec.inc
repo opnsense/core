@@ -1289,9 +1289,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
     service_log('Configuring IPsec VPN...', $verbose);
 
     /* cleanup legacy ipsec.conf files */
-    mwexec("rm -rf /usr/local/etc/ipsec.d");
-    @unlink("/usr/local/etc/ipsec.conf");
-    @unlink("/usr/local/etc/ipsec.secrets");
+    mwexec('rm -rf /usr/local/etc/ipsec.d');
+    @unlink('/usr/local/etc/ipsec.conf');
+    @unlink('/usr/local/etc/ipsec.secrets');
 
     ipsec_write_strongswan_conf();
     ipsec_write_cas();
@@ -1528,7 +1528,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $this_conn['children'][$child_id] = $base_child_conf;
                     $this_conn['children'][$child_id]['local_ts'] = $parsed_phase2['local_ts'][$idx];
                     $this_conn['children'][$child_id]['remote_ts'] = $parsed_phase2['remote_ts'][$idx];
-                    $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
+                    if (!isset($ph1ent['mobile'])) {
+                        $this_conn['children'][$child_id]['reqid'] = $parsed_phase2['reqids'][$idx];
+                    }
                     foreach (['esp_proposals', 'ah_proposals', 'life_time', 'rekey_time', 'rand_time'] as $fieldname) {
                         if (isset($parsed_phase2[$fieldname][$idx]) && $parsed_phase2[$fieldname][$idx] != null) {
                             if (is_array($parsed_phase2[$fieldname][$idx])) {
@@ -1549,7 +1551,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 $this_conn['children'][$this_connid] = $base_child_conf;
                 $this_conn['children'][$this_connid]['local_ts'] = join(',', $parsed_phase2['local_ts']);
                 $this_conn['children'][$this_connid]['remote_ts'] = join(',', $parsed_phase2['remote_ts']);
-                if (!empty($parsed_phase2['reqids'])) {
+                if (!empty($parsed_phase2['reqids']) && !isset($ph1ent['mobile'])) {
                     $this_conn['children'][$this_connid]['reqid'] = $parsed_phase2['reqids'][0];
                 }
                 if (!empty($parsed_phase2['esp_proposals'])) {

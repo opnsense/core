@@ -84,7 +84,11 @@ class CSVListField extends BaseField
      */
     public function setMaskPerItem($value)
     {
-        $this->internalMaskPerItem = $value;
+        if (strtoupper(trim($value)) == "Y") {
+            $this->internalMaskPerItem = true;
+        } else {
+            $this->internalMaskPerItem = false;
+        }
     }
 
     /**

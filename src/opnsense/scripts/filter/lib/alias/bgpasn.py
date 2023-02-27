@@ -28,12 +28,13 @@ import csv
 import fcntl
 import time
 import os
-import sys
 import syslog
 import gzip
 import requests
+from .base import BaseContentParser
 
-class BGPASN:
+
+class BGPASN(BaseContentParser):
     _asn_source = 'https://rulesets.opnsense.org/alias/asn.gz'      # source for ASN administration
     _asn_filename = '/usr/local/share/bgp/asn.csv'                  # local copy
     _asn_ttl =  (86400 - 90)                                        # validity in seconds of the local copy
@@ -81,7 +82,8 @@ class BGPASN:
         else:
             cls._asn_fhandle = open(cls._asn_filename, 'rt')
 
-    def __init__(self, proto='IPv4'):
+    def __init__(self, proto='IPv4', **kwargs):
+        super().__init__(**kwargs)
         self.proto = proto.split(',')
         if self._asn_fhandle is None:
             # update local asn list if needed, return a file pointer to a local csv file for reading

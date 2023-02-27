@@ -395,7 +395,7 @@ main.page-content.col-lg-12 {
         padding-left: 0px;
         padding-right: 0px;
         padding-top: 12px;
-        border-bottom: 2px solid #lightergrey;
+        border-bottom: 2px solid map-get($colors, lightergrey);
         border-right: 1px solid #D9D9D9;
         > span {
           &.fa, &.glyphicon {
@@ -594,7 +594,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   }
   }
 
-  > li:last-child > a{
+  li:last-child > a{
     border-right:1px solid transparent !important;
 
     @media (max-width:$screen-xs-max){

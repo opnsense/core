@@ -53,6 +53,7 @@
 /usr/local/etc/inc/xmlrpc/test.inc
 /usr/local/etc/lighttpd_webgui/conf.d/README
 /usr/local/etc/lighttpd_webgui/conf.d/extforward.conf.example
+/usr/local/etc/monit.opnsense.d/00-example.conf
 /usr/local/etc/netflow.conf.example
 /usr/local/etc/opnsense-beep.d/high
 /usr/local/etc/opnsense-beep.d/low
@@ -794,6 +795,7 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
 /usr/local/opnsense/scripts/auth/add_user.php
+/usr/local/opnsense/scripts/auth/list_group_members.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
@@ -807,11 +809,14 @@
 /usr/local/opnsense/scripts/filter/kill_states.py
 /usr/local/opnsense/scripts/filter/kill_table.py
 /usr/local/opnsense/scripts/filter/lib/__init__.py
-/usr/local/opnsense/scripts/filter/lib/alias.py
-/usr/local/opnsense/scripts/filter/lib/arpcache.py
-/usr/local/opnsense/scripts/filter/lib/bgpasn.py
-/usr/local/opnsense/scripts/filter/lib/geoip.py
-/usr/local/opnsense/scripts/filter/lib/interface.py
+/usr/local/opnsense/scripts/filter/lib/alias/__init__.py
+/usr/local/opnsense/scripts/filter/lib/alias/arpcache.py
+/usr/local/opnsense/scripts/filter/lib/alias/base.py
+/usr/local/opnsense/scripts/filter/lib/alias/bgpasn.py
+/usr/local/opnsense/scripts/filter/lib/alias/geoip.py
+/usr/local/opnsense/scripts/filter/lib/alias/interface.py
+/usr/local/opnsense/scripts/filter/lib/alias/pf.py
+/usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
 /usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
@@ -825,6 +830,9 @@
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
 /usr/local/opnsense/scripts/filter/rule_stats.py
+/usr/local/opnsense/scripts/filter/run_unittests.py
+/usr/local/opnsense/scripts/filter/tests/__init__.py
+/usr/local/opnsense/scripts/filter/tests/alias_tests.py
 /usr/local/opnsense/scripts/filter/update_bogons.sh
 /usr/local/opnsense/scripts/filter/update_tables.py
 /usr/local/opnsense/scripts/firmware/changelog.sh
@@ -911,6 +919,7 @@
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
+/usr/local/opnsense/scripts/openvpn/ovpn_status.py
 /usr/local/opnsense/scripts/openvpn/tls_verify.php
 /usr/local/opnsense/scripts/openvpn/user_pass_verify.php
 /usr/local/opnsense/scripts/proxy/deploy_error_pages.py
@@ -973,6 +982,8 @@
 /usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
 /usr/local/opnsense/scripts/unbound/blocklists.py
+/usr/local/opnsense/scripts/unbound/blocklists/__init__.py
+/usr/local/opnsense/scripts/unbound/blocklists/default_bl.py
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/check.sh
 /usr/local/opnsense/scripts/unbound/logger.py
@@ -995,6 +1006,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
+/usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_proxy.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf

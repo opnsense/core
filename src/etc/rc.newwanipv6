@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -62,11 +62,9 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ipv6($interface);
 
 $cacheip_file = "/tmp/{$device}_oldipv6";
+$cacheip = trim(@file_get_contents($cacheip_file));
 
 if (!is_ipaddr($ip)) {
-    /* remove previously cached IP since it is gone */
-    @unlink($cacheip_file);
-
     /*
      * Take care of OpenVPN and similar if you generate the event
      * to reconfigure an interface.  OpenVPN might be in tap(4)
@@ -76,13 +74,15 @@ if (!is_ipaddr($ip)) {
         log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
         return;
     }
+
+    /* force a non-IP value here that makes the problem explicit when debugged */
+    $ip = 'openvpn_xxx';
 }
 
 /* this may be required to cleanse the DNS information no longer available */
 system_resolvconf_generate();
 system_hosts_generate();
 
-$cacheip = trim(@file_get_contents($cacheip_file));
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
     return;
