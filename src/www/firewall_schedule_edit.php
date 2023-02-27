@@ -110,24 +110,25 @@ function initSchedule(array $config_schedules): array {
     ];
 }
 
-function isNameEditable(string $name): bool {
+function getReferences(string $name, ?int $id): string {
     global $config;
 
-    $name = trim($name);
-
-    if (!$name || !isset($config['filter']['rule'])) {
-        return true;
+    if (!($id && $name && isset($config['filter']['rule']))) {
+        return '';
     }
 
-    foreach ($config['filter']['rule'] as $rule) {
+    $references = [];
+    $rules = $config['filter']['rule'] ?? [];
+
+    foreach ($rules as $rule) {
         if ($rule['sched'] != $name) {
             continue;
         }
 
-        return false;
+        $references[] = sprintf('<li>%s</li>', trim($rule['descr']));
     }
 
-    return true;
+    return implode("\n", $references);
 }
 
 function sortByName(array &$config_schedules): void {
@@ -159,7 +160,7 @@ function _getSelectedDaysNonRepeating(array $time_range): ?object {
 
         // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
         // NOTE: First day of the week is Monday based on ISO 8601
-        $day_of_week = date('N', mktime(0, 0, 0, $month, $day, date('Y')));
+        $day_of_week = (int)date('N', mktime(0, 0, 0, $month, $day, date('Y')));
         $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day, date('Y')));
 
         $days_selected[] = sprintf('w%dp%d-m%dd%d', $week_of_year, $day_of_week, $month, $day);
@@ -325,10 +326,10 @@ function getCalendarTableBody($month, $year): string {
     // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
     // NOTE: First day of the week is Monday based on ISO 8601
     $day_of_week = 1;
-    $first_day_week_start = date('N', mktime(0, 0, 0, $month, 1, $year));
+    $first_day_week_start = (int)date('N', mktime(0, 0, 0, $month, 1, $year));
 
     $day_of_month = 1;
-    $max_days_in_month = date('t', mktime(0, 0, 0, $month, 1, $year));
+    $max_days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
     $html_attribs = '';
     $html_text = '';
 
@@ -475,7 +476,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     continue;
                 }
 
-// FIXME: Can the first part (i.e. w6p1) be removed if it's not even going to be used when saving?
                 [$ignore, $month_and_day] = explode('-', $selected_day);
 
                 [$month, $day] = explode('d', $month_and_day);
@@ -654,6 +654,76 @@ function hasSelectedDaysInProgress() {
     return false;
 }
 
+function resetStartAndStopTimes() {
+    $('#start-hour').val('0');
+    $('#start-minute').val('00');
+    $('#stop-hour').val('23');
+    $('#stop-minute').val('59');
+    $('.selectpicker.form-control').selectpicker('refresh');
+}
+
+function clearTimeRangeDescription(){
+    $('#range-description').val('');
+}
+
+function clearCalendar(is_clear_description = false) {
+    _clearSelectedDays();
+
+    const month_select = $('#month-select');
+    const visible_month = (month_select.prop('visible_month')
+        || month_select.prop('options')[0].label
+    );
+
+    $(`#${visible_month}`)
+        .parent()
+        .find('tbody td[data-state]')
+        .filter('[data-state != "white"]')
+        .attr('data-state', 'white');
+
+    resetStartAndStopTimes();
+
+    if (is_clear_description)
+        clearTimeRangeDescription();
+}
+
+// A "false" value is returned to stop the onClick event from propagating
+function removeTimeRange(is_confirm = false) {
+    $(this).blur();
+
+    if (is_confirm && !confirm('Do you really want to delete this time range?'))
+        return false;
+
+    $(this).closest('tr').remove();
+    return false;
+}
+
+function injectTimeRange(
+    days_text,
+    days,
+    start_time,
+    stop_time,
+    range_description,
+    is_clear_calendar = true
+) {
+    const tbody = $('#calendar tbody');
+    const tr = $('<tr></tr>');
+    const edit_click = `return editTimeRange.bind(this)('${days}', '${start_time}', '${stop_time}', '${range_description}');`;
+    const delete_click = `return removeTimeRange.bind(this)(true);`;
+
+    tbody.append(tr);
+    tr.append(`<td><span>${days_text}</span> <input type="hidden" name="days[]" value="${days}" /></td>`);
+    tr.append(`<td><input type="text" name="start_times[]" value="${start_time}" class="time-range-configured" readonly="readonly" /></td>`);
+    tr.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
+    tr.append(`<td><input type="text" name="range_descriptions[]" value="${range_description}" class="time-range-configured" readonly="readonly" /></td>`);
+    tr.append(`<td><a href="#" class="btn btn-default" onclick="${edit_click}"><span class="fa fa-pencil fa-fw"></span></a></td>`);
+    tr.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}"><span class="fa fa-trash fa-fw"></span></a></td>`);
+
+    if (!is_clear_calendar)
+        return;
+
+    clearCalendar(true);
+}
+
 function addTimeRange() {
     const _months = <?= json_encode($months) ?>;
     const _days = <?= json_encode($days) ?>;
@@ -790,65 +860,6 @@ function addTimeRange() {
     }
 }
 
-function injectTimeRange(
-    days_text,
-    days,
-    start_time,
-    stop_time,
-    range_description,
-    is_clear_calendar = true
-) {
-    const tbody = $('#calendar tbody');
-    const tr = $('<tr></tr>');
-    const edit_click = `return editTimeRange.bind(this)('${days}', '${start_time}', '${stop_time}', '${range_description}');`;
-    const delete_click = `return removeTimeRange.bind(this)(true);`;
-
-    tbody.append(tr);
-    tr.append(`<td><span>${days_text}</span> <input type="hidden" name="days[]" value="${days}" /></td>`);
-    tr.append(`<td><input type="text" name="start_times[]" value="${start_time}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><input type="text" name="range_descriptions[]" value="${range_description}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><a href="#" class="btn btn-default" onclick="${edit_click}"><span class="fa fa-pencil fa-fw"></span></a></td>`);
-    tr.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}"><span class="fa fa-trash fa-fw"></span></a></td>`);
-
-    if (!is_clear_calendar)
-        return;
-
-    clearCalendar(true);
-}
-
-function clearCalendar(is_clear_description = false) {
-    _clearSelectedDays();
-
-    const month_select = $('#month-select');
-    const visible_month = (month_select.prop('visible_month')
-        || month_select.prop('options')[0].label
-    );
-
-    $(`#${visible_month}`)
-        .parent()
-        .find('tbody td[data-state]')
-        .filter('[data-state != "white"]')
-        .attr('data-state', 'white');
-
-    resetStartAndStopTimes();
-
-    if (is_clear_description)
-        clearTimeRangeDescription();
-}
-
-function resetStartAndStopTimes() {
-    $('#start-hour').val('0');
-    $('#start-minute').val('00');
-    $('#stop-hour').val('23');
-    $('#stop-minute').val('59');
-    $('.selectpicker.form-control').selectpicker('refresh');
-}
-
-function clearTimeRangeDescription(){
-    $('#range-description').val('');
-}
-
 function editTimeRange(days, start_time, stop_time, range_description) {
     const _refreshSelectPickers = function() {
         $('.selectpicker').selectpicker('refresh');
@@ -892,22 +903,19 @@ function editTimeRange(days, start_time, stop_time, range_description) {
     return _refreshSelectPickers();
 }
 
-// A "false" value is returned to stop the onClick event from propagating
-function removeTimeRange(is_confirm = false) {
-    $(this).blur();
-
-    if (is_confirm && !confirm('Do you really want to delete this time range?'))
-        return false;
-
-    $(this).closest('tr').remove();
-    return false;
-}
-
 
 $(function() {
     // NOTE: Needed to prevent hook_stacked_form_tables() from breaking the
-    // calendar's CSS when selecting days
-    $('#iform td').css('background-color', '');
+    // calendar's CSS when selecting days, as well as making the selections
+    // disappear when the screen gets resized or the orientation changes
+    //
+    // @see /www/javascripts/opnsense_legacy.js
+    const _onResize = function() {
+        $('#iform .table-condensed td').css('background-color', '');
+    };
+
+    $(window).resize(_onResize);
+    _onResize();
 
     const time_ranges = <?= json_encode(getConfiguredTimeRanges($schedule)) ?>;
 
@@ -954,9 +962,18 @@ if (count($save_errors ?? [])) {
                   <tr>
                     <td><em class="fa fa-info-circle text-muted"></em> <?= gettext('Name') ?></td>
                     <td>
-<?php if (isset($id) && !isNameEditable($schedule['name'])): ?>
+<?php
+$references = getReferences($schedule['name'], $id);
+
+if ($references):
+?>
                       <?= $schedule['name'] ?>
-                      <p><?= gettext('This schedule is in use so the name may not be modified!') ?></p>
+                      <div class="text-danger" style="margin-top: 10px;">
+                        <?= gettext('The name may not be modified because this schedule is referenced by the following rules:') ?>
+                        <ul style="margin-top: 10px;">
+                        <?= $references ?>
+                        </ul>
+                      </div>
                       <input name="name" type="hidden" value="<?= $schedule['name'] ?>" />
 <?php else: ?>
                       <input type="text" name="name" value="<?= $schedule['name'] ?>" />
