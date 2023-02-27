@@ -764,7 +764,7 @@ $( document ).ready(function() {
 <?php
                               if (isset($config['virtualip']['vip'])):
                                 foreach ($config['virtualip']['vip'] as $sn):
-                                  if (isset($sn['noexpand']))
+                                  if (empty($sn['noexpand']))
                                     continue;
                                   if ($sn['mode'] == "proxyarp"):
                                     $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
