@@ -135,7 +135,7 @@
 }
 
 .query-info {
-    background-color: #bee5eb;
+    background-color: #d9edf7;
 }
 
 .query-danger {
@@ -144,6 +144,10 @@
 
 .query-warning {
     background-color: #ffeeba;
+}
+
+.query-error {
+    background-color: #dc3545;
 }
 
 #searchFilter {
