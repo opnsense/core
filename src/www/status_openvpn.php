@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$openvpn_status = json_decode(configd_run('openvpn status client,server'), true) ?? [];
+$openvpn_status = json_decode(configd_run('openvpn connections client,server'), true) ?? [];
 $openvpn_cfg = openvpn_config();
 legacy_html_escape_form_data($openvpn_status);
 legacy_html_escape_form_data($openvpn_cfg);
