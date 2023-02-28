@@ -205,10 +205,11 @@ class BlocklistParser:
         self.handlers = handlers
 
     def _get_config(self):
+        cfg = {}
         for handler in self.handlers:
-            cfg = handler.get_config()
-            if cfg:
-                return cfg
+            tmp = handler.get_config()
+            cfg = tmp | cfg
+        return cfg
 
     def _merge_results(self, blocklists):
         """
@@ -244,6 +245,7 @@ class BlocklistParser:
 
         # check if there are wildcards in the dataset
         has_wildcards = False
+
         for item in merged['data']:
             if merged['data'][item].get('wildcard') == True:
                 has_wildcards = True
@@ -254,7 +256,7 @@ class BlocklistParser:
         if not os.path.exists('/var/unbound/data'):
             os.makedirs('/var/unbound/data')
         with open("/var/unbound/data/dnsbl.json.new", 'w') as unbound_outf:
-            if merged:
+            if merged['data']:
                 ujson.dump(merged, unbound_outf)
 
         # atomically replace the current dnsbl so unbound can pick up on it
