@@ -399,16 +399,16 @@ function validateName(array $schedule, array $config_schedules, ?int $id = null)
     $errors = [];
 
     if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $schedule['name'])) {
-        $errors[] = gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _');
+        $errors[] = gettext('The name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _');
     }
     if (strtolower($schedule['name']) == 'lan') {
-        $errors[] = gettext('Schedule may not be named LAN.');
+        $errors[] = gettext('Schedule cannot be named LAN.');
     }
     if (strtolower($schedule['name']) == 'wan') {
-        $errors[] = gettext('Schedule may not be named WAN.');
+        $errors[] = gettext('Schedule cannot be named WAN.');
     }
     if (empty($schedule['name'])) {
-        $errors[] = gettext('Schedule may not use a blank name.');
+        $errors[] = gettext('Schedule cannot use a blank name.');
     }
 
     // Check for name conflicts
@@ -1146,7 +1146,7 @@ if ($references):
 ?>
                       <?= $schedule['name'] ?>
                       <div class="text-danger" style="margin-top: 10px;">
-                        <?= gettext('The name may not be modified because this schedule is referenced by the following rules:') ?>
+                        <?= gettext('The name cannot be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
                         </ul>
