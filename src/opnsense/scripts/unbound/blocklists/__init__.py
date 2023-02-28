@@ -44,6 +44,7 @@ class BaseBlocklistHandler:
         self.config = config
         self.cnf = None
         self.priority = 0
+        self.cache_ttl = 72000
 
         self.cur_bl_location = '/var/unbound/data/dnsbl.json'
 
@@ -115,7 +116,7 @@ class BaseBlocklistHandler:
             filep = cache_loc + h
             if os.path.exists(filep):
                 fstat = os.stat(filep).st_ctime
-                if (time.time() - fstat) < 72000: # 20 hours, a bit under the recommended cron time
+                if (time.time() - fstat) < self.cache_ttl: # 20 hours, a bit under the recommended cron time
                     from_cache = True
                     for line in open(filep):
                         total_lines += 1
@@ -208,7 +209,8 @@ class BlocklistParser:
         cfg = {}
         for handler in self.handlers:
             tmp = handler.get_config()
-            cfg = tmp | cfg
+            if tmp:
+                cfg = tmp | cfg
         return cfg
 
     def _merge_results(self, blocklists):
