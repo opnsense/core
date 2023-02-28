@@ -30,49 +30,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("IPv6.inc");
+require_once 'IPv6.inc';
 
 function killbyname($procname, $sig = 'TERM', $waitforit = false)
 {
-    if (!is_process_running($procname)) {
-        return;
-    }
-
-    mwexecf('/bin/pkill -%s %s', array($sig, $procname));
-
-    if (!$waitforit) {
-        return;
-    }
-
-    while (is_process_running($procname)) {
-        usleep(200 * 1000);
-    }
+    _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit);
 }
 
-function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
+function killbypid($pid_or_file, $sig = 'TERM', $waitforit = false)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        mwexecf('/bin/kill -%s %s', array($sig, $pidfile));
-    } elseif (isvalidpid($pidfile)) {
-        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
-    } else {
+    $pid = $pid_or_file;
+
+    if (strpos($pid_or_file, '/') !== false) {
+        $pid = trim(@file_get_contents($pid_or_file) ?? '');
+    }
+
+    _killbypid($pid, $sig, $waitforit);
+}
+
+function _killbypid($pid, $sig, $waitforit)
+{
+    if (!is_numeric($pid) || $pid <= 1) {
         return;
     }
+
+    mwexecf('/bin/kill -%s %s', [$sig, $pid]);
 
     if (!$waitforit) {
         return;
     }
 
-    while (isvalidpid($pidfile)) {
+    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
         usleep(200 * 1000);
     }
 }
 
 function isvalidpid($pidfile)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        return mwexecf('/bin/kill -0 %s', $pidfile, true) == 0;
-    } elseif (file_exists($pidfile)) {
+    if (file_exists($pidfile)) {
         return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
     }
 
