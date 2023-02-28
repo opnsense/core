@@ -277,6 +277,9 @@ server.tag = "OPNsense"
 # Maximum idle time with nothing being written (php downloading)
 server.max-write-idle = 999
 
+# Set shutdown time to 2 seconds for SIGINT handling
+server.feature-flags = ( "server.graceful-shutdown-timeout" => 2 )
+
 {$lighty_use_syslog}
 
 # files to check for if .../ is requested
