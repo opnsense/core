@@ -132,12 +132,6 @@ function webgui_configure_do($verbose = false, $interface = '')
     /* stop the frontend when the generation was completed */
     killbypid('/var/run/lighty-webConfigurator.pid', 'INT', true);
 
-    /*
-     * Force reloading all php-cgi children to
-     * avoid hiccups with moved include files.
-     */
-    killbyname('php-cgi', 'HUP');
-
     /* start lighttpd */
     if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
         service_log("failed.\n", $verbose);
