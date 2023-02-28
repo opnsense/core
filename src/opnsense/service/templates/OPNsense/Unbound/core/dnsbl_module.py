@@ -280,7 +280,7 @@ class DNSBL:
                         if type(self.dnsbl['data'][key]['source_net']) is list:
                             for item in self.dnsbl['data'][key]['source_net']:
                                 try:
-                                    source_nets.append(ipaddress.ip_network(item))
+                                    source_nets.append(ipaddress.ip_network(item, False))
                                 except ValueError:
                                     log_err("dnsbl_module: unparsable network %s in %s" % (key, item))
                     self.dnsbl['data'][key]['source_net'] = source_nets
