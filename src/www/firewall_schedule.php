@@ -208,7 +208,7 @@ $(document).ready(function() {
                     'action': function() {
                         $('#id').val(id);
                         $('#action').val('del');
-                        $('#iform').submit()
+                        $('#iform').submit();
                     }
                 }
             ]

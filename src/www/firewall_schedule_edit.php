@@ -59,66 +59,84 @@ $months = [
     gettext('December')
 ];
 
-function initSchedule(array $config_schedules): array {
+function _returnToSchedules(): void {
     global $return_to;
 
-    $id = null;
-    $schedule = null;
+    header(url_safe("Location: {$return_to}"));
+    exit;
+}
 
-    // Was the Add button clicked?
-    if (empty($_GET)) {
-        return [
-            'id' => null,
-            'name' => null,
-            'description' => null,
-            'time_ranges' => []
-        ];
-    }
-
-    if (isset($_GET['name'])) {
-        foreach ($config_schedules as $config_id => $config_schedule) {
-            if ($config_schedule['name'] != $_GET['name']) {
-                continue;
-            }
-
-            $id = (int)$config_id;
-            $schedule = $config_schedule;
-            break;
-        }
-    }
-    elseif (isset($_GET['dup'])) {
-        // NOTE: Schedule is being cloned; so $id MUST NOT be set
-        $config_id = $_GET['dup'];
-        $schedule = @$config_schedules[$config_id];
-    }
-    elseif (isset($_GET['id'])) {
-        $id = (int)$_GET['id'];
-        $schedule = @$config_schedules[$id];
-    }
-
+function _getSchedule(?int $id, ?array $schedule): array {
     // Invalid request
-    if (!$schedule) {
-        header(url_safe("Location: {$return_to}"));
-        exit;
+    if ($schedule === null) {
+        _returnToSchedules();
     }
 
     return [
         'id' => $id,
-        'name' => $schedule['name'],
-        'description' => $schedule['descr'],
-        'time_ranges' => @$schedule['timerange'] ?? []
+        'name' => $schedule['name'] ?? null,
+        'description' => $schedule['descr'] ?? null,
+        'time_ranges' => $schedule['timerange'] ?? []
     ];
 }
 
-function getReferences(string $name, ?int $id): string {
+function initSchedule(array $config_schedules): array {
+    // Add button clicked
+    if (empty($_GET)) {
+        return _getSchedule(null, []);
+    }
+
+    // Calendar button clicked on the Rules screen
+    if (isset($_GET['name'])) {
+        foreach ($config_schedules as $id => $schedule) {
+            if ($schedule['name'] != $_GET['name']) {
+                continue;
+            }
+
+            return _getSchedule($id, $schedule);
+        }
+
+        // Invalid request
+        _returnToSchedules();
+    }
+
+    // Clone button clicked
+    if (isset($_GET['dup'])) {
+        $id = (int)$_GET['dup'];
+        $schedule = @$config_schedules[$id];
+
+        // Only the time range is needed when cloning because users should enter
+        // a new name and/or description
+        if ($schedule) {
+            $schedule = ['timerange' => $schedule['timerange']];
+        }
+
+        // NOTE: Schedule is being cloned; so $id MUST NOT be set
+        return _getSchedule(null, $schedule);
+    }
+
+    // Edit button clicked
+    if (isset($_GET['id'])) {
+        $id = (int)$_GET['id'];
+
+        return _getSchedule($id, @$config_schedules[$id]);
+    }
+
+    // Invalid request
+    _returnToSchedules();
+    return [];
+}
+
+function getReferences(string $name): string {
     global $config;
 
-    if (!($id && $name && isset($config['filter']['rule']))) {
+    $rules = $config['filter']['rule'] ?? [];
+
+    if (!($name && $rules)) {
         return '';
     }
 
     $references = [];
-    $rules = $config['filter']['rule'] ?? [];
 
     foreach ($rules as $rule) {
         if ($rule['sched'] != $name) {
@@ -395,7 +413,7 @@ function validateName(array $schedule, array $config_schedules, ?int $id = null)
 
     // Check for name conflicts
     foreach ($config_schedules as $config_id => $config_schedule) {
-        if ($config_schedule['name'] != $schedule['name'] || $config_id == @$id) {
+        if ($config_schedule['name'] != $schedule['name'] || $config_id == $id) {
             continue;
         }
 
@@ -498,7 +516,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!$save_errors) {
-        $id = (isset($id)) ? $id : count($config_schedules);
+        $id = $id ?? count($config_schedules);
         $config_schedules[$id] = [
             'name' => $schedule['name'],
             'descr' => $schedule['description'],
@@ -508,9 +526,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         sortByName($config_schedules);
         write_config();
         filter_configure();
-
-        header(url_safe("Location: {$return_to}"));
-        exit;
+        _returnToSchedules();
     }
 }
 
@@ -520,6 +536,9 @@ include('head.inc');
 ?>
 <body>
 <style>
+label {
+  display: inline;
+}
 #show_all_help_page {
   cursor: pointer;
 }
@@ -574,6 +593,46 @@ function _clearSelectedDays() {
     $('#iform')[0]._selected_days = {};
 }
 
+function injectFlashError(error) {
+    const main_content = $('.page-content-main > .container-fluid > .row');
+
+    let flash_box = main_content.find('div.col-xs-12');
+    flash_box = (!flash_box.length) ? $('<div class="col-xs-12"></div>') : flash_box;
+    flash_box.empty();
+
+    const alert_box = $('<div class="alert alert-danger" role="alert"></div>')
+    const close_button = $('<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>');
+
+    alert_box.append(close_button);
+    alert_box.append(error);
+    flash_box.append(alert_box);
+    main_content.prepend(flash_box);
+
+    const _clearBlurTimer = function() {
+        if (!flash_box._timer)
+            return;
+
+        clearTimeout(flash_box._timer);
+        delete flash_box._timer;
+    };
+
+    flash_box.attr('tabindex', -1).focus();
+
+    flash_box.blur(function() {
+        flash_box.off('blur');
+        _clearBlurTimer();
+
+        flash_box._timer = setTimeout(function() {
+            _clearBlurTimer();
+
+            if (document.activeElement === flash_box[0])
+                return;
+
+            flash_box.empty();
+        }, 1000);
+    });
+}
+
 function _toggleRepeatingDays(day_of_week, is_highlight = false) {
     for (let week_of_year = 1; week_of_year <= 53; week_of_year++) {
         let cell_id = `w${week_of_year}p${day_of_week}`;
@@ -604,9 +663,8 @@ function toggleSingleOrRepeatingDays(cell_id) {
         day_cell = $(`#w${next_week_of_year}p${day_of_week}`);
 
         if (!day_cell.length) {
-            // Something is really wrong if a cell for the following week wasn't
-            // found
-            return alert('Failed to find the correct day to toggle. Please save your schedule and try again.');
+            // Something really wrong must've happened
+            return injectFlashError('Failed to find the correct day to toggle. Please save your schedule and try again.');
         }
     }
 
@@ -645,13 +703,18 @@ function showSelectedMonth() {
     $(`#${selected_month}`).css('display', 'block');
 }
 
-function hasSelectedDaysInProgress() {
+function warnBeforeSave() {
     if (!_isSelectedDaysEmpty()) {
-        alert('You have not saved the specified time range. Please click "Add Time" button to save the time range.');
-        return true;
+        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
+        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(function() {
+            $('#submit').click();
+        });
+
+        // Stop the onSubmit event from propagating
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 function resetStartAndStopTimes() {
@@ -664,6 +727,42 @@ function resetStartAndStopTimes() {
 
 function clearTimeRangeDescription(){
     $('#range-description').val('');
+}
+
+function warnBeforeClearCalender() {
+    const def = $.Deferred();
+
+    $(this).blur();
+
+    if (_isSelectedDaysEmpty())
+        return def.resolve();
+
+    BootstrapDialog.show({
+        'type': BootstrapDialog.TYPE_DANGER,
+        'title': '<?= gettext('Clear Selection(s)?') ?>',
+        'message': '<div style="margin: 10px;"><?= gettext('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!') ?></div>',
+
+        'buttons': [
+            {
+                'label': '<?= gettext('Cancel') ?>',
+                'action': function(dialog) {
+                    dialog.close();
+                    def.reject();
+                }
+            },
+            {
+                'label': '<?= gettext('Clear Selection(s)') ?>',
+                'cssClass': 'btn-danger',
+                'action': function(dialog) {
+                    clearCalendar(true);
+                    dialog.close();
+                    def.resolve();
+                }
+            }
+        ]
+    });
+
+    return def.promise();
 }
 
 function clearCalendar(is_clear_description = false) {
@@ -686,14 +785,49 @@ function clearCalendar(is_clear_description = false) {
         clearTimeRangeDescription();
 }
 
-// A "false" value is returned to stop the onClick event from propagating
 function removeTimeRange(is_confirm = false) {
-    $(this).blur();
+    const _confirmBeforeRemove = function() {
+        const def = $.Deferred();
 
-    if (is_confirm && !confirm('Do you really want to delete this time range?'))
-        return false;
+        if (!is_confirm)
+            return def.resolve();
 
-    $(this).closest('tr').remove();
+        BootstrapDialog.show({
+            'type': BootstrapDialog.TYPE_DANGER,
+            'title': '<?= gettext('Remove Time Range?') ?>',
+            'message': '<div style="margin: 10px;"><?= gettext('Are you sure you want to remove this time range?') ?></div>',
+
+            'buttons': [
+                {
+                    'label': '<?= gettext('Cancel') ?>',
+                    'action': function(dialog) {
+                        dialog.close();
+                        def.reject();
+                    }
+                },
+                {
+                    'label': '<?= gettext('Remove') ?>',
+                    'cssClass': 'btn-danger',
+                    'action': function(dialog) {
+                        dialog.close();
+                        def.resolve();
+                    }
+                }
+            ]
+        });
+
+        return def.promise();
+    };
+
+    const remove_button = $(this);
+
+    remove_button.blur();
+
+    $.when(_confirmBeforeRemove()).then(function() {
+        remove_button.closest('tr').remove();
+    });
+
+    // NOTE: A "false" value is returned to stop the onClick event from propagating
     return false;
 }
 
@@ -740,15 +874,17 @@ function addTimeRange() {
     let days_of_week = [];
     let days_selected = [];
 
+    $(this).blur();
+
     // Do time checks
     if (start_hour > stop_hour)
-        return alert('Error: Start Hour cannot be greater than Stop Hour.');
+        return injectFlashError('Start Hour cannot be greater than Stop Hour.');
 
     if (start_hour === stop_hour && parseInt(start_minute) > parseInt(stop_minute))
-        return alert('Error: Start Minute cannot be greater than Stop Minute.');
+        return injectFlashError('Start Minute cannot be greater than Stop Minute.');
 
     if (_isSelectedDaysEmpty()) {
-        return alert('You must select at least one day before adding time');
+        return injectFlashError('You must select at least one day before adding the time range.');
     }
 
     _getSelectedDays(true).forEach(function(cell_id) {
@@ -860,47 +996,85 @@ function addTimeRange() {
     }
 }
 
-function editTimeRange(days, start_time, stop_time, range_description) {
-    const _refreshSelectPickers = function() {
-        $('.selectpicker').selectpicker('refresh');
+const askToAddOrClearTimeRange = function(range_description) {
+    const def = $.Deferred();
 
-        // Stop the onClick event from propagating
-        return false;
-    };
+    BootstrapDialog.show({
+        'type': BootstrapDialog.TYPE_PRIMARY,
+        'title': '<?= gettext('Modified Time Range In Progress') ?>',
+        'message': '<div style="margin: 10px;">'
+            + `<strong>Range Description:</strong> ${range_description}`
+            + '\n\n'
+            + '<?= gettext('What would you like to do with the time range that you have in progress?') ?>'
+            + '</div>',
+
+        'buttons': [
+            {
+                'label': '<?= gettext('Clear Selection');?>',
+                'action': function(dialog) {
+                    dialog.close();
+                    $.when(warnBeforeClearCalender()).then(def.resolve);
+                }
+            },
+            {
+                'label': '<?= gettext('Add Time & Continue') ?>',
+                'action': function(dialog) {
+                    addTimeRange();
+                    dialog.close();
+                    def.resolve();
+                }
+            }
+        ]
+    });
+
+    return def.promise();
+};
+
+function editTimeRange(days, start_time, stop_time, range_description) {
+    const _doEdit = function() {
+        removeTimeRange.bind(this)();
+        clearCalendar();
+
+        let start_hour, start_min, stop_hour, stop_min;
+        [start_hour, start_min] = start_time.split(':');
+        [stop_hour, stop_min] = stop_time.split(':');
+
+        $('#start-hour').val(start_hour);
+        $('#start-minute').val(start_min);
+        $('#stop-hour').val(stop_hour);
+        $('#stop-minute').val(stop_min);
+        $('#range-description').val(range_description);
+
+        days = days.split(',');
+        days.forEach(function(day) {
+            if (!day)
+                return;
+
+            // Repeating days
+            if (day.length === 1)
+                return toggleSingleOrRepeatingDays(`w1p${day}`);
+
+            // Single day
+            toggleSingleOrRepeatingDays(day);
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+    }.bind(this);
 
     $(this).blur();
 
-    if (hasSelectedDaysInProgress())
-        return _refreshSelectPickers();
+    if (!_isSelectedDaysEmpty()) {
+        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
+        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doEdit);
 
-    clearCalendar();
+        // Stop the onClick event from propagating
+        return false;
+    }
 
-    let start_hour, start_min, stop_hour, stop_min;
-    [start_hour, start_min] = start_time.split(':');
-    [stop_hour, stop_min] = stop_time.split(':');
+    _doEdit();
 
-    $('#start-hour').val(start_hour);
-    $('#start-minute').val(start_min);
-    $('#stop-hour').val(stop_hour);
-    $('#stop-minute').val(stop_min);
-    $('#range-description').val(range_description);
-
-    days = days.split(',');
-    days.forEach(function(day) {
-        if (!day)
-            return;
-
-        // Repeating days
-        if (day.length === 1)
-            return toggleSingleOrRepeatingDays(`w1p${day}`);
-
-        // Single day
-        toggleSingleOrRepeatingDays(day);
-    });
-
-    removeTimeRange.bind(this)();
-
-    return _refreshSelectPickers();
+    // Stop the onClick event from propagating
+    return false;
 }
 
 
@@ -960,10 +1134,13 @@ if (count($save_errors ?? [])) {
                     </td>
                   </tr>
                   <tr>
-                    <td><em class="fa fa-info-circle text-muted"></em> <?= gettext('Name') ?></td>
+                    <td>
+                      <em class="fa fa-info-circle text-muted"></em>
+                      <label for="name"><?= gettext('Name') ?></label>
+                    </td>
                     <td>
 <?php
-$references = getReferences($schedule['name'], $id);
+$references = getReferences($schedule['name']);
 
 if ($references):
 ?>
@@ -976,17 +1153,17 @@ if ($references):
                       </div>
                       <input name="name" type="hidden" value="<?= $schedule['name'] ?>" />
 <?php else: ?>
-                      <input type="text" name="name" value="<?= $schedule['name'] ?>" />
+                      <input type="text" name="name" id="name" value="<?= $schedule['name'] ?>" />
 <?php endif ?>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <a id="help_for_description" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <?= gettext('Description') ?>
+                      <label for="description"><?= gettext('Description') ?></label>
                     </td>
                     <td>
-                      <input type="text" name="description" value="<?= $schedule['description'] ?>" />
+                      <input type="text" name="description" id="description" value="<?= $schedule['description'] ?>" />
                       <br />
                       <div class="hidden" data-for="help_for_description">
                         <?= gettext('You may enter a description here for your reference (not parsed).') ?>
@@ -996,7 +1173,7 @@ if ($references):
                   <tr>
                     <td>
                       <a id="help_for_month" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <?= gettext('Month') ?>
+                      <label for="month-select"><?= gettext('Month') ?></label>
                     </td>
                     <td>
                       <select id="month-select" class="selectpicker"
@@ -1118,7 +1295,7 @@ for ($m = 0; $m < 12; $m++) {
                   <tr>
                     <td>
                       <a id="help_for_timerange_desc" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <?= gettext('Time Range Description') ?>
+                      <label for="range-description"><?= gettext('Range Description') ?></label>
                     </td>
                     <td>
                       <input type="text" id="range-description" />
@@ -1132,10 +1309,10 @@ for ($m = 0; $m < 12; $m++) {
                     <td>
                       <input type="button" value="<?= html_safe(gettext('Add Time')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
-                             onclick="addTimeRange();" />
-                      <input type="button" value="<?= html_safe(gettext('Clear Selection')) ?>"
+                             onclick="addTimeRange.bind(this)();" />
+                      <input type="button" value="<?= html_safe(gettext('Clear Selection(s)')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
-                             onclick="clearCalendar(true);" />
+                             onclick="warnBeforeClearCalender.bind(this)();" />
                     </td>
                   </tr>
                   <tr>
@@ -1162,11 +1339,11 @@ for ($m = 0; $m < 12; $m++) {
                       <input type="submit" name="submit" id="submit"
                              value="<?= html_safe(gettext('Save')) ?>"
                              class="btn btn-primary" style="margin: 0 5px;"
-                             onclick="return !hasSelectedDaysInProgress();" />
+                             onclick="return warnBeforeSave();" />
                       <input type="button" value="<?= html_safe(gettext('Cancel')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
                              onclick="window.location.href='<?= $return_to ?>'" />
-                      <?= (isset($id)) ? sprintf('<input name="id" type="hidden" value="%d" />', $id) : '' ?>
+                      <?= ($id !== null) ? sprintf('<input name="id" type="hidden" value="%d" />', $id) : '' ?>
                     </td>
                   </tr>
                 </tbody>
