@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        system_resolvconf_generate();
+        system_resolver_configure();
         system_cron_configure();
         system_powerd_configure();
         system_kernel_configure();

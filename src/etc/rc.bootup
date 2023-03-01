@@ -83,15 +83,13 @@ system_timezone_configure(true);
 system_firmware_configure(true);
 system_trust_configure(true);
 system_hostname_configure(true);
-system_resolvconf_generate(true);
-system_hosts_generate(true);
+system_resolver_configure(true);
 system_syslog_start(true);
 
 filter_configure_sync(true, false, false); /* apply default policy before interface setup */
 interfaces_hardware(true);
 interfaces_configure(true);
-system_resolvconf_generate(true); /* requires runtime interface configuration */
-system_hosts_generate(true); /* requires runtime interface configuration */
+system_resolver_configure(true); /* adapts to runtime interface configuration */
 filter_configure_sync(true, true, false);
 plugins_configure('early', true);
 system_routing_configure(true, null, false);
