@@ -77,15 +77,15 @@ class Schedule
         $this->_initSchedule();
     }
 
-    private function _setError($message) {
+    private function _setError(string $message): void {
         $this->_errors[] = $message;
     }
 
-    final public function hasErrors() {
+    final public function hasErrors(): bool {
         return !empty($this->_errors);
     }
 
-    final public function getErrors() {
+    final public function getErrors(): array {
         return $this->_errors;
     }
 
@@ -734,7 +734,7 @@ function injectFlashError(error) {
     flash_box = (!flash_box.length) ? $('<div class="col-xs-12"></div>') : flash_box;
     flash_box.empty();
 
-    const alert_box = $('<div class="alert alert-danger" role="alert"></div>')
+    const alert_box = $('<div class="alert alert-danger" role="alert"></div>');
     const close_button = $('<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>');
 
     alert_box.append(close_button);
@@ -1008,14 +1008,14 @@ function addTimeRange() {
 
     $(this).blur();
 
-    if (start_hour > stop_hour)
-        return injectFlashError('Start Hour cannot be greater than Stop Hour.');
-
-    if (start_hour === stop_hour && parseInt(start_minute) > parseInt(stop_minute))
-        return injectFlashError('Start Minute cannot be greater than Stop Minute.');
-
     if (_isSelectedDaysEmpty()) {
         return injectFlashError('You must select at least one day before adding the time range.');
+    }
+
+    if (start_hour > stop_hour
+        || (start_hour === stop_hour && parseInt(start_minute) > parseInt(stop_minute))
+    ) {
+        return injectFlashError('Start Time cannot be ahead of Stop Time.');
     }
 
     _getSelectedDays(true).forEach(function(cell_id) {
