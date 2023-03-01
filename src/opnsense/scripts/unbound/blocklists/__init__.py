@@ -36,7 +36,6 @@ import sys
 import fcntl
 import ujson
 import time
-import hashlib
 from configparser import ConfigParser
 
 class BaseBlocklistHandler:
@@ -68,29 +67,29 @@ class BaseBlocklistHandler:
         """
         pass
 
+    def _blocklist_reader(self, uri):
+        """
+        Used by a derived class to define a caching and/or download routine.
+        """
+        pass
+
+    def _blocklists_in_config(self):
+        """
+        Generator for derived classes to iterate over configured blocklists.
+        """
+        pass
+
     def _load_config(self):
         """
-        Load a configuration. If a cached version exists, will also provide a dictionary
-        containing the differences between the two.
+        Load a configuration file.
         """
         if os.path.exists(self.config):
             self.cnf = ConfigParser()
             self.cnf.read(self.config)
 
-    def _blocklists_in_config(self):
-        """
-        Generator for derived classes to iterate over configured blocklist urls.
-        Assumes <shortcode>=<url> configuration formatting
-        """
-        if self.cnf and self.cnf.has_section('blocklists'):
-            for blocklist in self.cnf['blocklists']:
-                list_type = blocklist.split('_', 1)
-                bl_shortcode = 'Custom' if list_type[0] == 'custom' else list_type[1]
-                yield (self.cnf['blocklists'][blocklist], bl_shortcode)
-
     def _domains_in_blocklist(self, blocklist):
         """
-        Generator for derived classes to iterate over downloaded domains.
+        Generator for derived classes to iterate over cached/downloaded domains.
         """
         for line in self._blocklist_reader(blocklist):
             # cut line into parts before comment marker (if any)
@@ -102,38 +101,6 @@ class BaseBlocklistHandler:
                     break
             if entry:
                 yield entry
-
-    def _blocklist_reader(self, uri):
-        """
-        Decides whether a blocklist can be read from a cached file or
-        needs to be downloaded. Yields (unformatted) domains either way
-        """
-        total_lines = 0
-        from_cache = False
-        h = hashlib.md5(uri.encode()).hexdigest()
-        cache_loc = '/tmp/bl_cache/'
-        if os.path.exists(cache_loc):
-            filep = cache_loc + h
-            if os.path.exists(filep):
-                fstat = os.stat(filep).st_ctime
-                if (time.time() - fstat) < self.cache_ttl: # 20 hours, a bit under the recommended cron time
-                    from_cache = True
-                    for line in open(filep):
-                        total_lines += 1
-                        yield line
-
-        if not from_cache:
-            os.makedirs(cache_loc, exist_ok=True)
-            with open(cache_loc + h, 'w') as outf:
-                for line in self._uri_reader(uri):
-                    outf.write(line + '\n')
-                    total_lines += 1
-                    yield line
-
-        syslog.syslog(
-            syslog.LOG_NOTICE, 'blocklist download: %d total lines %s for %s' %
-                (total_lines, 'from cache' if from_cache else 'downloaded', uri)
-        )
 
     def _uri_reader(self, uri):
         """
