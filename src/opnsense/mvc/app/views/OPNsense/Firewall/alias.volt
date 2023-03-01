@@ -96,7 +96,7 @@
         $("#grid-aliases").bootgrid().on("loaded.rs.jquery.bootgrid", function (e){
             // network content field should only contain valid aliases, we need to fetch them separately
             // since the form field misses context
-            ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
+            ajaxGet("/api/firewall/alias/list_network_aliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
                     let $opt = $("<option/>").val(alias).text(value.name);
@@ -251,13 +251,28 @@
         });
 
         /**
+         * fetch user groups
+         **/
+        ajaxGet("/api/firewall/alias/list_user_groups", {}, function(data){
+            $("#authgroup_content").empty();
+            $.each(data, function(alias, value) {
+                let $opt = $("<option/>").val(alias).text(value.name);
+                $opt.data('subtext', value.description);
+                $("#authgroup_content").append($opt);
+            });
+            $("#authgroup_content").selectpicker('refresh');
+        });
+
+
+        /**
          * hook network group type changes, replicate content
          */
-        $("#network_content").change(function(){
+        $("#network_content, #authgroup_content").change(function(){
+            let target = $(this);
             let $content = $("#alias\\.content");
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
-            $("#network_content").each(function () {
+            target.each(function () {
                $.each($(this).val(), function(key, item){
                    $content.tokenize2().trigger('tokenize:tokens:add', item);
                });
@@ -270,7 +285,6 @@
             });
         });
 
-
         /**
          * Type selector, show correct type input.
          */
@@ -280,6 +294,10 @@
             $("#row_alias\\.interface").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
+                case 'authgroup':
+                    $("#alias_type_authgroup").show();
+                    $("#alias\\.proto").selectpicker('hide');
+                    break;
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
@@ -321,24 +339,17 @@
          */
         $("#alias\\.content").change(function(){
             var items = $(this).val();
-            $(".geoip_select").each(function(){
-                var geo_item = $(this);
-                geo_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    geo_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-
+            ['#authgroup_content', '#network_content', '.geoip_select'].forEach(function(target){
+                $(target).each(function(){
+                    var content_item = $(this);
+                    content_item.val([]);
+                    for (var i=0; i < items.length; ++i) {
+                        content_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
+                    }
+                });
+                $(target).selectpicker('refresh');
             });
-            $(".geoip_select").selectpicker('refresh');
             geoip_update_labels();
-            $("#network_content").each(function(){
-                var network_item = $(this);
-                network_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    network_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-            });
-            $("#network_content").selectpicker('refresh');
         });
 
         /**
@@ -574,7 +585,7 @@
                     <div class="hidden">
                         <!-- filter per type container -->
                         <div id="type_filter_container" class="btn-group">
-                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker"  data-live-search="true" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
@@ -585,6 +596,7 @@
                                 <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="asn">{{ lang._('BGP ASN') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
+                                <option value="authgroup">{{ lang._('(OpenVPN) user groups') }}</option>
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
@@ -813,6 +825,10 @@
                                             <tbody>
                                             </tbody>
                                         </table>
+                                        <div class="alias_type" id="alias_type_authgroup" style="display: none;">
+                                            <select multiple="multiple" class="selectpicker" id="authgroup_content" data-live-search="true">
+                                            </select>
+                                        </div>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
                                         <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">

@@ -38,6 +38,7 @@
                         <mac>MAC address</mac>
                         <asn>BGP ASN</asn>
                         <dynipv6host>Dynamic IPv6 Host</dynipv6host>
+                        <authgroup>OpenVPN group</authgroup>
                         <internal>Internal (automatic)</internal>
                         <external>External (advanced)</external>
                     </OptionValues>
