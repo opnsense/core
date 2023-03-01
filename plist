@@ -811,6 +811,7 @@
 /usr/local/opnsense/scripts/filter/lib/__init__.py
 /usr/local/opnsense/scripts/filter/lib/alias/__init__.py
 /usr/local/opnsense/scripts/filter/lib/alias/arpcache.py
+/usr/local/opnsense/scripts/filter/lib/alias/auth.py
 /usr/local/opnsense/scripts/filter/lib/alias/base.py
 /usr/local/opnsense/scripts/filter/lib/alias/bgpasn.py
 /usr/local/opnsense/scripts/filter/lib/alias/geoip.py
