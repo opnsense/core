@@ -521,13 +521,13 @@ HTML;
 
     private function _validateName(string $name): void {
         if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
-            $this->_setError(gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _'));
+            $this->_setError(gettext('The name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
         }
         if (in_array(strtolower($name), ['lan', 'wan'])) {
-            $this->_setError(gettext(sprintf('Schedule may not be named %s.', $name)));
+            $this->_setError(gettext(sprintf('Schedule cannot be named %s.', $name)));
         }
         if (empty($name)) {
-            $this->_setError(gettext('Schedule may not use a blank name.'));
+            $this->_setError(gettext('Schedule cannot use a blank name.'));
         }
 
         // Check for name conflicts
@@ -1277,7 +1277,7 @@ if ($references):
 ?>
                       <?= $schedule->getData('name') ?>
                       <div class="text-danger" style="margin-top: 10px;">
-                        <?= gettext('The name may not be modified because this schedule is referenced by the following rules:') ?>
+                        <?= gettext('The name cannot be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
                         </ul>
