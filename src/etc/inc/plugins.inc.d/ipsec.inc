@@ -323,7 +323,7 @@ function ipsec_xmlrpc_sync()
 
     $result[] = array(
         'description' => gettext('IPsec'),
-        'section' => 'ipsec',
+        'section' => 'ipsec,OPNsense.Swanctl',
         'id' => 'ipsec',
         'services' => ["strongswan"],
     );
