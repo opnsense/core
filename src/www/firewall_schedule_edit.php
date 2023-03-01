@@ -213,9 +213,9 @@ class Schedule
 
         for ($m = 0; $m < 12; $m++) {
             $options[] = sprintf(
-                '<option value="%d">%s</option>',
-                $month,
-                date('F_y', mktime(0, 0, 0, $month, 1, $year))
+                '<option value="%s">%s</option>',
+                date('Y-m', mktime(0, 0, 0, $month, 1, $year)),
+                date('F (Y)', mktime(0, 0, 0, $month, 1, $year))
             );
 
             if ($month++ < 12) {
@@ -239,58 +239,133 @@ class Schedule
         return implode("\n", $options);
     }
 
-    final public function getHTMLCalendaryBody($month, $year): string {
-        // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
-        // NOTE: First day of the week is Monday based on ISO 8601
-        $day_of_week = 1;
-        $first_day_week_start = (int)date('N', mktime(0, 0, 0, $month, 1, $year));
+    final public function getHTMLMinuteOptions(): string {
+        $minutes = ['00', '15', '30', '45', '59'];
+        $options = [];
 
+        foreach ($minutes as $minute) {
+            $options[] = sprintf(
+                '<option value="%s">%s</option>',
+                $minute,
+                $minute
+            );
+        }
+
+        return implode("\n", $options);
+    }
+
+    private function _getHTMLCalendaryBody($month, $year): string {
+        // ISO 8601 days
+        $monday = 1;
+        $sunday = 7;
+
+        $day_of_week = $monday;
+        $day_of_week_start = (int)date('N', mktime(0, 0, 0, $month, 1, $year));
         $day_of_month = 1;
-        $max_days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
-        $html_attribs = '';
-        $html_text = '';
+        $last_day_of_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
 
-        $table_rows = [];
+        $total_cells = ceil($last_day_of_month / 7) * 7;
+        $cell_text = '';
+        $rows = [];
 
-        while ($day_of_month <= $max_days_in_month) {
+        for ($c = 1; $c <= $total_cells; $c++) {
+            $cell_attribs = '';
             $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day_of_month, $year));
 
-            // Is it Monday?
-            if ($day_of_week == 1) {
-                $table_rows[] = '<tr>';
+            if ($day_of_week == $monday) {
+                $rows[] = '<tr>';
             }
 
-            if ($first_day_week_start == $day_of_week
-                || ($html_text && $day_of_month <= $max_days_in_month)
-            ) {
+            if ($day_of_week == $day_of_week_start || $cell_text) {
                 $cell_id = sprintf('w%dp%d', $week_of_year, $day_of_week);
-                $toggle_cell_id = sprintf(
-                    '%s-m%dd%d',
-                    $cell_id,
-                    $month,
-                    $day_of_month
-                );
+                $select_cell_id = sprintf('%s-m%dd%d', $cell_id, $month, $day_of_month);
+                $cell_text = '';
 
-                $html_attribs = sprintf(
-                    ' id="%s" class="calendar-day" onclick="toggleSingleOrRepeatingDays(\'%s\');"',
-                    $cell_id,
-                    $toggle_cell_id
-                );
+                if ($day_of_month <= $last_day_of_month) {
+                    $cell_attribs = sprintf(
+                        ' id="%s" class="calendar-day" onclick="toggleSingleOrRepeatingDays(\'%s\');"',
+                        $cell_id,
+                        $select_cell_id
+                    );
 
-                $html_text = $day_of_month;
+                    $cell_text = $day_of_month;
+                }
+
                 $day_of_month++;
             }
 
-            $table_rows[] = sprintf('<td%s>%s</td>', $html_attribs, $html_text);
+            $rows[] = sprintf('<td%s>%s</td>', $cell_attribs, $cell_text);
 
-            // Is it Sunday or the last day of the month?
-            if ($day_of_week++ >= 7 || $day_of_month > $max_days_in_month) {
-                $day_of_week = 1;
-                $table_rows[] = '</tr>';
+            if ($day_of_week++ < $sunday) {
+                continue;
             }
+
+            $day_of_week = 1;
+            $rows[] = '</tr>';
         }
 
-        return implode("\n", $table_rows);
+        return implode("\n", $rows);
+    }
+
+    final public function getHTMLCalendar(): string {
+        $month = (int)date('n');
+        $year = (int)date('Y');
+
+        $calendar = [];
+
+        for ($m = 0; $m < 12; $m++) {
+            $id = date('Y-m', mktime(0, 0, 0, $month, 1, $year));
+            $month_year = date('F (Y)', mktime(0, 0, 0, $month, 1, $year));
+            $display = (!$m) ? 'block' : 'none';
+            $body = $this->_getHTMLCalendaryBody($month, $year);
+
+            $calendar[] = <<<HTML
+                      <div id="{$id}" style="position: relative; display: {$display};">
+                        <table id="calTable{$month}{$year}" class="table table-condensed table-bordered">
+                          <thead>
+                            <tr>
+                              <td colspan="7" style="text-align: center">{$month_year}</td>
+                            </tr>
+                            <tr>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p1');">
+                                {$this->_days[0]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p2');">
+                                {$this->_days[1]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p3');">
+                                {$this->_days[2]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p4');">
+                                {$this->_days[3]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p5');">
+                                {$this->_days[4]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p6');">
+                                {$this->_days[5]}
+                              </td>
+                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p7');">
+                                {$this->_days[6]}
+                              </td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {$body}
+                          </tbody>
+                        </table>
+                      </div>
+HTML;
+
+            if ($month++ < 12) {
+                continue;
+            }
+
+            $month = 1;
+            $year++;
+        }
+
+        return implode("\n", $calendar);
     }
 
     private function _getSelectedDaysNonRepeating(array $time_range): ?object {
@@ -308,8 +383,7 @@ class Schedule
             $month = (int)$month;
             $day = (int)$selected_days[$selection_num];
 
-            // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
-            // NOTE: First day of the week is Monday based on ISO 8601
+            // ISO 8601 days
             $day_of_week = (int)date('N', mktime(0, 0, 0, $month, $day, date('Y')));
             $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day, date('Y')));
 
@@ -320,7 +394,7 @@ class Schedule
             $next_selected_day = (int)$selected_days[$selection_num + 1];
             $next_selected_month = (int)$selected_months[$selection_num + 1];
 
-            // Continue to the next day when working on a range (i.e. Feb 6 - 8)
+            // Continue to the next day when working on a range (i.e. Feb 6-8)
             if ($month == $next_selected_month && ($day + 1) == $next_selected_day) {
                 continue;
             }
@@ -449,11 +523,8 @@ class Schedule
         if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
             $this->_setError(gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _'));
         }
-        if (strtolower($name) == 'lan') {
-            $this->_setError(gettext('Schedule may not be named LAN.'));
-        }
-        if (strtolower($name) == 'wan') {
-            $this->_setError(gettext('Schedule may not be named WAN.'));
+        if (in_array(strtolower($name), ['lan', 'wan'])) {
+            $this->_setError(gettext(sprintf('Schedule may not be named %s.', $name)));
         }
         if (empty($name)) {
             $this->_setError(gettext('Schedule may not use a blank name.'));
@@ -758,10 +829,10 @@ function showSelectedMonth() {
 
     // The first month will always be visible by default when the page loads;
     // otherwise, the visible_month property should be set
-    const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].label;
+    const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].value;
     $(`#${visible_month}`).css('display', 'none');
 
-    const selected_month = month_select.prop('selectedOptions')[0].label;
+    const selected_month = month_select.prop('selectedOptions')[0].value;
     month_select.prop('visible_month', selected_month);
     $(`#${selected_month}`).css('display', 'block');
 }
@@ -773,7 +844,7 @@ function warnBeforeSave() {
             $('#submit').click();
         });
 
-        // Stop the onSubmit event from propagating
+        // Stops the onSubmit event from propagating
         return false;
     }
 
@@ -832,9 +903,7 @@ function clearCalendar(is_clear_description = false) {
     _clearSelectedDays();
 
     const month_select = $('#month-select');
-    const visible_month = (month_select.prop('visible_month')
-        || month_select.prop('options')[0].label
-    );
+    const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].value;
 
     $(`#${visible_month}`)
         .parent()
@@ -939,7 +1008,6 @@ function addTimeRange() {
 
     $(this).blur();
 
-    // Do time checks
     if (start_hour > stop_hour)
         return injectFlashError('Start Hour cannot be greater than Stop Hour.');
 
@@ -1130,13 +1198,13 @@ function editTimeRange(days, start_time, stop_time, range_description) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doEdit);
 
-        // Stop the onClick event from propagating
+        // Stops the onClick event from propagating
         return false;
     }
 
     _doEdit();
 
-    // Stop the onClick event from propagating
+    // Stops the onClick event from propagating
     return false;
 }
 
@@ -1240,63 +1308,15 @@ if ($references):
                     </td>
                     <td>
                       <select id="month-select" class="selectpicker"
-                              data-width="auto" data-live-search="true" onchange="showSelectedMonth.bind(this)();">
+                              data-width="auto" data-live-search="true"
+                              onchange="showSelectedMonth.bind(this)();">
                         <?= $schedule->getHTMLMonthOptions(); ?>
                       </select>
                       <br />
                       <br />
-<?php
-$month = (int)date('n');
-$year = (int)date('Y');
 
-for ($m = 0; $m < 12; $m++) {
-    $month_year = date('F_y', mktime(0, 0, 0, $month, 1, $year));
-?>
-<!-- TODO: Create helper method -->
-                      <div id="<?= $month_year ?>" style="position: relative; display: <?= (!$m) ? 'block' : 'none' ?>;">
-                        <table id="calTable<?= $month . $year ?>" class="table table-condensed table-bordered">
-                          <thead>
-                            <tr>
-                              <td colspan="7" style="text-align: center"><?= $month_year ?></td>
-                            </tr>
-                            <tr>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p1');">
-                                <?= gettext('Mon') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p2');">
-                                <?= gettext('Tue') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p3');">
-                                <?= gettext('Wed') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p4');">
-                                <?= gettext('Thu') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p5');">
-                                <?= gettext('Fri') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p6');">
-                                <?= gettext('Sat') ?>
-                              </td>
-                              <td class="calendar-header-day" onclick="toggleSingleOrRepeatingDays('w1p7');">
-                                <?= gettext('Sun') ?>
-                              </td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?= $schedule->getHTMLCalendaryBody($month, $year) ?>
-                          </tbody>
-                        </table>
-                      </div>
-<?php
-    if ($month++ < 12) {
-        continue;
-    }
+                      <?= $schedule->getHTMLCalendar(); ?>
 
-    $month = 1;
-    $year++;
-}
-?>
                       <div class="hidden" data-for="help_for_month">
                         <br />
                         <?= gettext('Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.') ?>
@@ -1321,14 +1341,9 @@ for ($m = 0; $m < 12; $m++) {
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <?= $schedule->getHTML24HourOptions() ?>
                               </select>
-<!-- TODO: Create helper method -->
                               <select id="start-minute" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
-                                <option value="00">00</option>
-                                <option value="15">15</option>
-                                <option value="30">30</option>
-                                <option value="45">45</option>
-                                <option value="59">59</option>
+                                  <?= $schedule->getHTMLMinuteOptions() ?>
                               </select>
                             </div>
                           </td>
@@ -1338,14 +1353,9 @@ for ($m = 0; $m < 12; $m++) {
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <?= $schedule->getHTML24HourOptions() ?>
                               </select>
-<!-- TODO: Create helper method -->
                               <select id="stop-minute" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
-                                <option value="00">00</option>
-                                <option value="15">15</option>
-                                <option value="30">30</option>
-                                <option value="45">45</option>
-                                <option value="59" selected="selected">59</option>
+                                <?= $schedule->getHTMLMinuteOptions() ?>
                               </select>
                             </div>
                           </td>
