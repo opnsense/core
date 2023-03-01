@@ -32,253 +32,397 @@
 require_once('guiconfig.inc');
 require_once('filter.inc');
 
-$return_to = '/firewall_schedule.php';
+class Schedule
+{
+    private const RETURN_URL = 'firewall_schedule.php';
 
-$days = [
-    gettext('Mon'),
-    gettext('Tue'),
-    gettext('Wed'),
-    gettext('Thu'),
-    gettext('Fri'),
-    gettext('Sat'),
-    gettext('Sun')
-];
+    private $_days;
+    private $_months;
+    private $_rules;
+    private $_config;
+    private $_id;
+    private $_data;
+    private $_errors;
 
-$months = [
-    gettext('January'),
-    gettext('February'),
-    gettext('March'),
-    gettext('April'),
-    gettext('May'),
-    gettext('June'),
-    gettext('July'),
-    gettext('August'),
-    gettext('September'),
-    gettext('October'),
-    gettext('November'),
-    gettext('December')
-];
+    public function __construct() {
+        $this->_rules = config_read_array('filter', 'rule') ?? [];
+        $this->_config = &config_read_array('schedules', 'schedule');
+        $this->_errors = [];
 
-function _returnToSchedules(): void {
-    global $return_to;
+        $this->_days = [
+            gettext('Mon'),
+            gettext('Tue'),
+            gettext('Wed'),
+            gettext('Thu'),
+            gettext('Fri'),
+            gettext('Sat'),
+            gettext('Sun')
+        ];
 
-    header(url_safe("Location: {$return_to}"));
-    exit;
-}
+        $this->_months = [
+            gettext('January'),
+            gettext('February'),
+            gettext('March'),
+            gettext('April'),
+            gettext('May'),
+            gettext('June'),
+            gettext('July'),
+            gettext('August'),
+            gettext('September'),
+            gettext('October'),
+            gettext('November'),
+            gettext('December')
+        ];
 
-function _getSchedule(?int $id, ?array $schedule): array {
-    // Invalid request
-    if ($schedule === null) {
-        _returnToSchedules();
+        $this->_initSchedule();
     }
 
-    return [
-        'id' => $id,
-        'name' => $schedule['name'] ?? null,
-        'description' => $schedule['descr'] ?? null,
-        'time_ranges' => $schedule['timerange'] ?? []
-    ];
-}
-
-function initSchedule(array $config_schedules): array {
-    // Add button clicked
-    if (empty($_GET)) {
-        return _getSchedule(null, []);
+    private function _setError($message) {
+        $this->_errors[] = $message;
     }
 
-    // Calendar button clicked on the Rules screen
-    if (isset($_GET['name'])) {
-        foreach ($config_schedules as $id => $schedule) {
-            if ($schedule['name'] != $_GET['name']) {
-                continue;
+    final public function hasErrors() {
+        return !empty($this->_errors);
+    }
+
+    final public function getErrors() {
+        return $this->_errors;
+    }
+
+    final public function returnToSchedules(): void {
+        header(url_safe(sprintf('Location: /%s', self::RETURN_URL)));
+        exit;
+    }
+
+    final public function getReturnURL(): string {
+        return self::RETURN_URL;
+    }
+
+    private function _escapeData(): void {
+        $this->_data = (array)$this->_data;
+        legacy_html_escape_form_data($this->_data);
+        $this->_data = (object)$this->_data;
+    }
+
+    private function _setData(?array $data): void {
+        // Invalid request
+        if ($data === null) {
+            $this->returnToSchedules();
+        }
+
+        $this->_data = (object)[
+            'name' => $data['name'] ?? null,
+            'description' => $data['descr'] ?? null,
+            'time_ranges' => $data['timerange'] ?? []
+        ];
+
+        $this->_escapeData();
+    }
+
+    final public function getData(?string $prop = null) {
+        if ($prop !== null) {
+            return $this->_data->{$prop} ?? null;
+        }
+
+        return $this->_data;
+    }
+
+    private function _initSchedule(): void {
+        // Add button clicked
+        if (empty($_GET)) {
+            $this->_setData([]);
+            return;
+        }
+
+        // Calendar button clicked on the Rules screen
+        if (isset($_GET['name'])) {
+            foreach ($this->_config as $id => $schedule) {
+                if ($schedule['name'] != $_GET['name']) {
+                    continue;
+                }
+
+                $this->_id = $id;
+                $this->_setData($schedule);
+                return ;
             }
 
-            return _getSchedule($id, $schedule);
+            // Invalid request
+            $this->returnToSchedules();
+        }
+
+        // Clone button clicked
+        if (isset($_GET['dup'])) {
+            $this->_id = (int)$_GET['dup'];
+            $schedule = @$this->_config[$this->_id];
+
+            // Only the time range is needed when cloning because users should enter
+            // a new name and/or description
+            if ($schedule) {
+                $schedule = ['timerange' => $schedule['timerange']];
+            }
+
+            // NOTE: Schedule is being cloned; so $_id MUST NOT be set
+            $this->_id = null;
+
+            $this->_setData($schedule);
+            return;
+        }
+
+        // Edit button clicked
+        if (isset($_GET['id'])) {
+            $this->_id = (int)$_GET['id'];
+
+            $this->_setData(@$this->_config[$this->_id]);
+            return;
         }
 
         // Invalid request
-        _returnToSchedules();
+        $this->returnToSchedules();
     }
 
-    // Clone button clicked
-    if (isset($_GET['dup'])) {
-        $id = (int)$_GET['dup'];
-        $schedule = @$config_schedules[$id];
+    final public function hasID(): bool {
+        return ($this->_id !== null);
+    }
 
-        // Only the time range is needed when cloning because users should enter
-        // a new name and/or description
-        if ($schedule) {
-            $schedule = ['timerange' => $schedule['timerange']];
+    final public function getID(): ?int {
+        return $this->_id;
+    }
+
+    final public function getHTMLReferences(): string {
+        if (!($this->_data->name && $this->_rules)) {
+            return '';
         }
 
-        // NOTE: Schedule is being cloned; so $id MUST NOT be set
-        return _getSchedule(null, $schedule);
-    }
+        $references = [];
 
-    // Edit button clicked
-    if (isset($_GET['id'])) {
-        $id = (int)$_GET['id'];
+        foreach ($this->_rules as $rule) {
+            if (@$rule['sched'] != $this->_data->name) {
+                continue;
+            }
 
-        return _getSchedule($id, @$config_schedules[$id]);
-    }
-
-    // Invalid request
-    _returnToSchedules();
-    return [];
-}
-
-function getReferences(string $name): string {
-    global $config;
-
-    $rules = $config['filter']['rule'] ?? [];
-
-    if (!($name && $rules)) {
-        return '';
-    }
-
-    $references = [];
-
-    foreach ($rules as $rule) {
-        if ($rule['sched'] != $name) {
-            continue;
+            $references[] = sprintf('<li>%s</li>', trim($rule['descr']));
         }
 
-        $references[] = sprintf('<li>%s</li>', trim($rule['descr']));
+        return implode("\n", $references);
     }
 
-    return implode("\n", $references);
-}
+    final public function getHTMLMonthOptions(): string {
+        $month = (int)date('n');
+        $year = (int)date('Y');
+        $options = [];
 
-function sortByName(array &$config_schedules): void {
-    if (empty($config_schedules)) {
-        return;
+        for ($m = 0; $m < 12; $m++) {
+            $options[] = sprintf(
+                '<option value="%d">%s</option>',
+                $month,
+                date('F_y', mktime(0, 0, 0, $month, 1, $year))
+            );
+
+            if ($month++ < 12) {
+                continue;
+            }
+
+            $month = 1;
+            $year++;
+        }
+
+        return implode("\n", $options);
     }
 
-    usort($config_schedules, function ($a, $b) {
-        return strcmp($a['name'], $b['name']);
-    });
-}
+    final public function getHTML24HourOptions(): string {
+        $options = [];
 
-function _getSelectedDaysNonRepeating(array $time_range): ?object {
-    global $months;
+        for ($h = 0; $h < 24; $h++) {
+            $options[] = sprintf('<option value="%d">%d</option>', $h, $h);
+        }
 
-    if (empty($time_range['month'])) {
-        return null;
+        return implode("\n", $options);
     }
 
-    $day_range_start = null;
-    $days_selected = [];
-    $days_selected_text = [];
-    $selected_months = explode(',', $time_range['month']);
-    $selected_days = explode(',', $time_range['day']);
-
-    foreach ($selected_months as $selection_num => $month) {
-        $month = (int)$month;
-        $day = (int)$selected_days[$selection_num];
-
+    final public function getHTMLCalendaryBody($month, $year): string {
         // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
         // NOTE: First day of the week is Monday based on ISO 8601
-        $day_of_week = (int)date('N', mktime(0, 0, 0, $month, $day, date('Y')));
-        $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day, date('Y')));
+        $day_of_week = 1;
+        $first_day_week_start = (int)date('N', mktime(0, 0, 0, $month, 1, $year));
 
-        $days_selected[] = sprintf('w%dp%d-m%dd%d', $week_of_year, $day_of_week, $month, $day);
+        $day_of_month = 1;
+        $max_days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
+        $html_attribs = '';
+        $html_text = '';
 
-        $day_range_start = $day_range_start ?? $day;
-        $month_short = substr($months[$month - 1], 0, 3);
-        $next_selected_day = (int)$selected_days[$selection_num + 1];
-        $next_selected_month = (int)$selected_months[$selection_num + 1];
+        $table_rows = [];
 
-        // Continue to the next day when working on a range (i.e. Feb 6 - 8)
-        if ($month == $next_selected_month && ($day + 1) == $next_selected_day) {
-            continue;
+        while ($day_of_month <= $max_days_in_month) {
+            $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day_of_month, $year));
+
+            // Is it Monday?
+            if ($day_of_week == 1) {
+                $table_rows[] = '<tr>';
+            }
+
+            if ($first_day_week_start == $day_of_week
+                || ($html_text && $day_of_month <= $max_days_in_month)
+            ) {
+                $cell_id = sprintf('w%dp%d', $week_of_year, $day_of_week);
+                $toggle_cell_id = sprintf(
+                    '%s-m%dd%d',
+                    $cell_id,
+                    $month,
+                    $day_of_month
+                );
+
+                $html_attribs = sprintf(
+                    ' id="%s" class="calendar-day" onclick="toggleSingleOrRepeatingDays(\'%s\');"',
+                    $cell_id,
+                    $toggle_cell_id
+                );
+
+                $html_text = $day_of_month;
+                $day_of_month++;
+            }
+
+            $table_rows[] = sprintf('<td%s>%s</td>', $html_attribs, $html_text);
+
+            // Is it Sunday or the last day of the month?
+            if ($day_of_week++ >= 7 || $day_of_month > $max_days_in_month) {
+                $day_of_week = 1;
+                $table_rows[] = '</tr>';
+            }
         }
 
-        // Prepare the friendly labels for selected days
-        if ($day == $day_range_start) {
-            $days_selected_text[] = sprintf('%s %s', $month_short, $day);
-            $day_range_start = null;
-            continue;
+        return implode("\n", $table_rows);
+    }
+
+    private function _getSelectedDaysNonRepeating(array $time_range): ?object {
+        if (empty($time_range['month'])) {
+            return null;
         }
 
-        $days_selected_text[] = sprintf(
-            '%s %s - %s',
-            $month_short,
-            $day_range_start,
-            $day
-        );
         $day_range_start = null;
-    }
+        $days_selected = [];
+        $days_selected_text = [];
+        $selected_months = explode(',', $time_range['month']);
+        $selected_days = explode(',', $time_range['day']);
 
-    return (object)[
-        'days_selected_text' => implode(', ', $days_selected_text),
-        'days_selected' => implode(',', $days_selected)
-    ];
-}
+        foreach ($selected_months as $selection_num => $month) {
+            $month = (int)$month;
+            $day = (int)$selected_days[$selection_num];
 
-function _getSelectedDaysRepeating(array $time_range): ?object {
-    global $days;
+            // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
+            // NOTE: First day of the week is Monday based on ISO 8601
+            $day_of_week = (int)date('N', mktime(0, 0, 0, $month, $day, date('Y')));
+            $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day, date('Y')));
 
-    if (!isset($time_range['position'])) {
-        return null;
-    }
+            $days_selected[] = sprintf('w%dp%d-m%dd%d', $week_of_year, $day_of_week, $month, $day);
 
-    $day_range_start = null;
-    $days_selected_text = [];
-    $days_of_week = explode(',', $time_range['position']);
+            $day_range_start = $day_range_start ?? $day;
+            $month_short = substr($this->_months[$month - 1], 0, 3);
+            $next_selected_day = (int)$selected_days[$selection_num + 1];
+            $next_selected_month = (int)$selected_months[$selection_num + 1];
 
-    // Make days display as a range instead of a comma-delimited list; for
-    // example, instead of "Mon, Tues, Wed", display "Mon - Wed" instead
-    foreach ($days_of_week as $i => $day_of_week) {
-        $day_of_week = (int)$day_of_week;
+            // Continue to the next day when working on a range (i.e. Feb 6 - 8)
+            if ($month == $next_selected_month && ($day + 1) == $next_selected_day) {
+                continue;
+            }
 
-        if (!$day_of_week) {
-            continue;
-        }
+            // Prepare the friendly labels for selected days
+            if ($day == $day_range_start) {
+                $days_selected_text[] = sprintf('%s %s', $month_short, $day);
+                $day_range_start = null;
+                continue;
+            }
 
-        $day_range_start = $day_range_start ?? $day_of_week;
-        $next_selected_day = $days_of_week[$i + 1];
-
-        // Continue to the next day when working on a range (i.e. Feb 6 - 8)
-        if (($day_of_week + 1) == $next_selected_day) {
-            continue;
-        }
-
-        $start_day = $days[$day_range_start - 1];
-        $end_day = $days[$day_of_week - 1];
-
-        if ($day_of_week == $day_range_start) {
-            $days_selected_text[] = $start_day;
+            $days_selected_text[] = sprintf(
+                '%s %s - %s',
+                $month_short,
+                $day_range_start,
+                $day
+            );
             $day_range_start = null;
-            continue;
         }
 
-        $days_selected_text[] = sprintf('%s - %s', $start_day, $end_day);
+        return (object)[
+            'days_selected_text' => implode(', ', $days_selected_text),
+            'days_selected' => implode(',', $days_selected)
+        ];
+    }
+
+    private function _getSelectedDaysRepeating(array $time_range): ?object {
+        if (!isset($time_range['position'])) {
+            return null;
+        }
+
         $day_range_start = null;
-    }
+        $days_selected_text = [];
+        $days_of_week = explode(',', $time_range['position']);
 
-    return (object)[
-        'days_selected_text' => implode(', ', $days_selected_text),
-        'days_selected' => $time_range['position']
-    ];
-}
+        // Make days display as a range instead of a comma-delimited list; for
+        // example, instead of "Mon, Tues, Wed", display "Mon - Wed" instead
+        foreach ($days_of_week as $i => $day_of_week) {
+            $day_of_week = (int)$day_of_week;
 
-function getConfiguredTimeRanges(array $schedule): array {
-    if (!isset($schedule['time_ranges'])) {
-        return [];
-    }
+            if (!$day_of_week) {
+                continue;
+            }
 
-    $time_ranges = [];
+            $day_range_start = $day_range_start ?? $day_of_week;
+            $next_selected_day = $days_of_week[$i + 1];
 
-    foreach ($schedule['time_ranges'] as $time_range) {
-        if (!$time_range) {
-            continue;
+            // Continue to the next day when working on a range (i.e. Feb 6 - 8)
+            if (($day_of_week + 1) == $next_selected_day) {
+                continue;
+            }
+
+            $start_day = $this->_days[$day_range_start - 1];
+            $stop_day = $this->_days[$day_of_week - 1];
+
+            if ($day_of_week == $day_range_start) {
+                $days_selected_text[] = $start_day;
+                $day_range_start = null;
+                continue;
+            }
+
+            $days_selected_text[] = sprintf('%s - %s', $start_day, $stop_day);
+            $day_range_start = null;
         }
 
-        [$start_time, $stop_time] = explode('-', $time_range['hour']);
-        $description = rawurldecode($time_range['rangedescr']);
+        return (object)[
+            'days_selected_text' => implode(', ', $days_selected_text),
+            'days_selected' => $time_range['position']
+        ];
+    }
 
-        if ($time_range['month']) {
-            $data = _getSelectedDaysNonRepeating($time_range);
+    final public function getJSONTimeRanges(): string {
+        if (!isset($this->_data->time_ranges)) {
+            return '[]';
+        }
+
+        $time_ranges = [];
+
+        foreach ($this->_data->time_ranges as $time_range) {
+            if (!$time_range) {
+                continue;
+            }
+
+            [$start_time, $stop_time] = explode('-', $time_range['hour']);
+            $description = rawurldecode($time_range['rangedescr']);
+
+            if ($time_range['month']) {
+                $data = $this->_getSelectedDaysNonRepeating($time_range);
+
+                if (!$data) {
+                    continue;
+                }
+
+                $data->start_time = $start_time;
+                $data->stop_time = $stop_time;
+                $data->description = $description;
+                $time_ranges[] = $data;
+
+                continue;
+            }
+
+            $data = $this->_getSelectedDaysRepeating($time_range);
 
             if (!$data) {
                 continue;
@@ -288,249 +432,168 @@ function getConfiguredTimeRanges(array $schedule): array {
             $data->stop_time = $stop_time;
             $data->description = $description;
             $time_ranges[] = $data;
-
-            continue;
         }
 
-        $data = _getSelectedDaysRepeating($time_range);
+        return json_encode($time_ranges);
+    }
 
-        if (!$data) {
-            continue;
+    final public function getJSONMonths(): string {
+        return json_encode($this->_months);
+    }
+
+    final public function getJSONDays(): string {
+        return json_encode($this->_days);
+    }
+
+    private function _validateName(string $name): void {
+        if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
+            $this->_setError(gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _'));
+        }
+        if (strtolower($name) == 'lan') {
+            $this->_setError(gettext('Schedule may not be named LAN.'));
+        }
+        if (strtolower($name) == 'wan') {
+            $this->_setError(gettext('Schedule may not be named WAN.'));
+        }
+        if (empty($name)) {
+            $this->_setError(gettext('Schedule may not use a blank name.'));
         }
 
-        $data->start_time = $start_time;
-        $data->stop_time = $stop_time;
-        $data->description = $description;
-        $time_ranges[] = $data;
-    }
-
-    return $time_ranges;
-}
-
-function getMonthOptions(): string {
-    $month = (int)date('n');
-    $year = (int)date('Y');
-    $options = [];
-
-    for ($m = 0; $m < 12; $m++) {
-        $options[] = sprintf(
-            '<option value="%d">%s</option>',
-            $month,
-            date('F_y', mktime(0, 0, 0, $month, 1, $year))
-        );
-
-        if ($month++ < 12) {
-            continue;
-        }
-
-        $month = 1;
-        $year++;
-    }
-
-    return implode("\n", $options);
-}
-
-function get24HourOptions(): string {
-    $options = [];
-
-    for ($h = 0; $h < 24; $h++) {
-        $options[] = sprintf('<option value="%d">%d</option>', $h, $h);
-    }
-
-    return implode("\n", $options);
-}
-
-function getCalendarTableBody($month, $year): string {
-    // Mon = 1, Tue = 2, Wed = 3, Thu = 4, Fri = 5, Sat = 6, Sun = 7
-    // NOTE: First day of the week is Monday based on ISO 8601
-    $day_of_week = 1;
-    $first_day_week_start = (int)date('N', mktime(0, 0, 0, $month, 1, $year));
-
-    $day_of_month = 1;
-    $max_days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
-    $html_attribs = '';
-    $html_text = '';
-
-    $table_rows = [];
-
-    while ($day_of_month <= $max_days_in_month) {
-        $week_of_year = (int)date('W', mktime(0, 0, 0, $month, $day_of_month, $year));
-
-        // Is it Monday?
-        if ($day_of_week == 1) {
-            $table_rows[] = '<tr>';
-        }
-
-        if ($first_day_week_start == $day_of_week
-            || ($html_text && $day_of_month <= $max_days_in_month)
-        ) {
-            $cell_id = sprintf('w%dp%d', $week_of_year, $day_of_week);
-            $toggle_cell_id = sprintf(
-                '%s-m%dd%d',
-                $cell_id,
-                $month,
-                $day_of_month
-            );
-
-            $html_attribs = sprintf(
-                ' id="%s" class="calendar-day" onclick="toggleSingleOrRepeatingDays(\'%s\');"',
-                $cell_id,
-                $toggle_cell_id
-            );
-
-            $html_text = $day_of_month;
-            $day_of_month++;
-        }
-
-        $table_rows[] = sprintf('<td%s>%s</td>', $html_attribs, $html_text);
-
-        // Is it Sunday or the last day of the month?
-        if ($day_of_week++ >= 7 || $day_of_month > $max_days_in_month) {
-            $day_of_week = 1;
-            $table_rows[] = '</tr>';
-        }
-    }
-
-    return implode("\n", $table_rows);
-}
-
-// $id will be null when saving a new schedule
-function validateName(array $schedule, array $config_schedules, ?int $id = null): array {
-    $errors = [];
-
-    if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $schedule['name'])) {
-        $errors[] = gettext('The schedule name must be less than 32 characters long and may only consist of the following characters: a-z, A-Z, 0-9, _');
-    }
-    if (strtolower($schedule['name']) == 'lan') {
-        $errors[] = gettext('Schedule may not be named LAN.');
-    }
-    if (strtolower($schedule['name']) == 'wan') {
-        $errors[] = gettext('Schedule may not be named WAN.');
-    }
-    if (empty($schedule['name'])) {
-        $errors[] = gettext('Schedule may not use a blank name.');
-    }
-
-    // Check for name conflicts
-    foreach ($config_schedules as $config_id => $config_schedule) {
-        if ($config_schedule['name'] != $schedule['name'] || $config_id == $id) {
-            continue;
-        }
-
-        $errors[] = gettext('A Schedule with this name already exists.');
-        break;
-    }
-
-    return $errors;
-}
-
-function _isValidTime(string $time): bool {
-    return preg_match('/^[0-9]+:[0-9]+$/', $time);
-}
-
-function validateTimes(string $start_time, string $stop_time): array {
-    $errors = [];
-
-    if (!_isValidTime($start_time)) {
-        $errors[] = gettext(sprintf('Invalid start time - "%s"', $start_time));
-    }
-
-    if (!_isValidTime($stop_time)) {
-        $errors[] = gettext(sprintf('Invalid stop time - "%s"', $stop_time));
-    }
-
-    return $errors;
-}
-
-
-$config_schedules = &config_read_array('schedules', 'schedule');
-$schedule = initSchedule($config_schedules);
-$id = $schedule['id'];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = @$_POST['id'];
-    $id = (!isset($config_schedules[$id])) ? null : (int)$id;
-
-    $schedule = $_POST;
-
-    $save_errors = validateName($schedule, $config_schedules, $id);
-
-    // Parse time ranges
-    $schedule['time_ranges'] = [];
-
-    if ($schedule['days']) {
-        foreach ($schedule['days'] as $range_num => $selected_days) {
-            $start_time = $schedule['start_times'][$range_num];
-            $stop_time = $schedule['stop_times'][$range_num];
-
-            $errors = validateTimes($start_time, $stop_time);
-            if ($errors) {
-                $save_errors = array_merge($save_errors, $errors);
+        // Check for name conflicts
+        //
+        // NOTE: $_id will be null when saving a new schedule
+        foreach ($this->_config as $config_id => $schedule) {
+            if ($schedule['name'] != $name || $config_id == $this->_id) {
                 continue;
             }
 
-            $time_range = [
-                'hour' => sprintf('%s-%s', $start_time, $stop_time),
-                'rangedescr' => rawurlencode($schedule['range_descriptions'][$range_num])
-            ];
+            $this->_setError(gettext('A Schedule with this name already exists.'));
+            break;
+        }
+    }
 
-            // Repeating time ranges
-            if (!strstr($selected_days, '-')) {
-                $schedule['time_ranges'][$range_num] = array_merge(
-                    $time_range,
-                    ['position' => $selected_days]
-                );
+    private function _isValidTime(string $time): bool {
+        return preg_match('/^[0-9]+:[0-9]+$/', $time);
+    }
 
-                continue;
-            }
+    private function _validateTimes(string $start_time, string $stop_time): bool {
+        $is_error = false;
 
-            // Single time ranges
-            $selected_days = explode(',', $selected_days);
-            $months = [];
-            $days = [];
+        if (!$this->_isValidTime($start_time)) {
+            $this->_setError(gettext(sprintf('Invalid start time - "%s"', $start_time)));
+            $is_error = true;
+        }
 
-            foreach ($selected_days as $selected_day) {
-                if (!$selected_day) {
+        if (!$this->_isValidTime($stop_time)) {
+            $this->_setError(gettext(sprintf('Invalid stop time - "%s"', $stop_time)));
+            $is_error = true;
+        }
+
+        return !$is_error;
+    }
+
+    private function _sortConfigByName(): void {
+        if (empty($this->_config)) {
+            return;
+        }
+
+        usort($this->_config, function ($a, $b) {
+            return strcmp($a['name'], $b['name']);
+        });
+    }
+
+    final public function save($data): bool {
+        $this->_data = (object)$data;
+
+        $this->_id = @$this->_data->id;
+        $this->_id = (!isset($this->_config[$this->_id])) ? null : (int)$this->_id;
+
+        $this->_validateName($this->_data->name);
+
+        // Parse time ranges
+        $this->_data->time_ranges = [];
+
+        if ($this->_data->days) {
+            foreach ($this->_data->days as $range_num => $selected_days) {
+                $start_time = $this->_data->start_times[$range_num];
+                $stop_time = $this->_data->stop_times[$range_num];
+
+// FIXME: Create a method for the the logic below
+                if (!$this->_validateTimes($start_time, $stop_time)) {
                     continue;
                 }
 
-                [$ignore, $month_and_day] = explode('-', $selected_day);
+                $time_range = [
+                    'hour' => sprintf('%s-%s', $start_time, $stop_time),
+                    'rangedescr' => rawurlencode($this->_data->range_descriptions[$range_num])
+                ];
 
-                [$month, $day] = explode('d', $month_and_day);
-                $months[] = ltrim($month, 'm');
-                $days[] = $day;
+                // Repeating time ranges
+                if (!strstr($selected_days, '-')) {
+                    $this->_data->time_ranges[$range_num] = array_merge(
+                        $time_range,
+                        ['position' => $selected_days]
+                    );
+
+                    continue;
+                }
+
+                // Single time ranges
+                $selected_days = explode(',', $selected_days);
+                $months = [];
+                $days = [];
+
+                foreach ($selected_days as $selected_day) {
+                    if (!$selected_day) {
+                        continue;
+                    }
+
+                    [$ignore, $month_and_day] = explode('-', $selected_day);
+
+                    [$month, $day] = explode('d', $month_and_day);
+                    $months[] = ltrim($month, 'm');
+                    $days[] = $day;
+                }
+
+                $this->_data->time_ranges[$range_num] = array_merge(
+                    $time_range,
+                    [
+                        'month' => implode(',', $months),
+                        'day' => implode(',', $days)
+                    ]
+                );
             }
-
-            $schedule['time_ranges'][$range_num] = array_merge(
-                $time_range,
-                [
-                    'month' => implode(',', $months),
-                    'day' => implode(',', $days)
-                ]
-            );
         }
-    }
 
-    if (!$schedule['time_ranges']) {
-        $save_errors[] = gettext('The schedule must have at least one time range configured.');
-    }
+        if (!$this->_data->time_ranges) {
+            $this->_setError(gettext('The schedule must have at least one time range configured.'));
+        }
 
-    if (!$save_errors) {
-        $id = $id ?? count($config_schedules);
-        $config_schedules[$id] = [
-            'name' => $schedule['name'],
-            'descr' => $schedule['description'],
-            'timerange' => $schedule['time_ranges']
+        if ($this->hasErrors()) {
+            return false;
+        }
+
+        $this->_id = $this->_id ?? count($this->_config);
+        $this->_config[$this->_id] = [
+            'name' => $this->_data->name,
+            'descr' => $this->_data->description,
+            'timerange' => $this->_data->time_ranges
         ];
 
-        sortByName($config_schedules);
+        $this->_sortConfigByName();
         write_config();
         filter_configure();
-        _returnToSchedules();
+        $this->_escapeData();
+
+        return true;
     }
 }
 
-legacy_html_escape_form_data($schedule);
+$schedule = new Schedule();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $schedule->save($_POST)) {
+    $schedule->returnToSchedules();
+}
 
 include('head.inc');
 ?>
@@ -859,8 +922,8 @@ function injectTimeRange(
 }
 
 function addTimeRange() {
-    const _months = <?= json_encode($months) ?>;
-    const _days = <?= json_encode($days) ?>;
+    const _months = <?= $schedule->getJSONMonths() ?>;
+    const _days = <?= $schedule->getJSONDays() ?>;
     const start_hour = parseInt($('#start-hour').val());
     const start_minute = $('#start-minute').val();
     const stop_hour = parseInt($('#stop-hour').val());
@@ -1091,7 +1154,7 @@ $(function() {
     $(window).resize(_onResize);
     _onResize();
 
-    const time_ranges = <?= json_encode(getConfiguredTimeRanges($schedule)) ?>;
+    const time_ranges = <?= $schedule->getJSONTimeRanges() ?>;
 
     time_ranges.forEach(function(time_range) {
         injectTimeRange(
@@ -1115,8 +1178,8 @@ $(function() {
     <div class="container-fluid">
       <div class="row">
 <?php
-if (count($save_errors ?? [])) {
-    print_input_errors($save_errors);
+if ($schedule->hasErrors()) {
+    print_input_errors($schedule->getErrors());
 }
 ?>
         <section class="col-xs-12">
@@ -1140,20 +1203,20 @@ if (count($save_errors ?? [])) {
                     </td>
                     <td>
 <?php
-$references = getReferences($schedule['name']);
+$references = $schedule->getHTMLReferences();
 
 if ($references):
 ?>
-                      <?= $schedule['name'] ?>
+                      <?= $schedule->getData('name') ?>
                       <div class="text-danger" style="margin-top: 10px;">
                         <?= gettext('The name may not be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
                         </ul>
                       </div>
-                      <input name="name" type="hidden" value="<?= $schedule['name'] ?>" />
+                      <input name="name" type="hidden" value="<?= $schedule->getData('name') ?>" />
 <?php else: ?>
-                      <input type="text" name="name" id="name" value="<?= $schedule['name'] ?>" />
+                      <input type="text" name="name" id="name" value="<?= $schedule->getData('name') ?>" />
 <?php endif ?>
                     </td>
                   </tr>
@@ -1163,7 +1226,7 @@ if ($references):
                       <label for="description"><?= gettext('Description') ?></label>
                     </td>
                     <td>
-                      <input type="text" name="description" id="description" value="<?= $schedule['description'] ?>" />
+                      <input type="text" name="description" id="description" value="<?= $schedule->getData('description') ?>" />
                       <br />
                       <div class="hidden" data-for="help_for_description">
                         <?= gettext('You may enter a description here for your reference (not parsed).') ?>
@@ -1178,7 +1241,7 @@ if ($references):
                     <td>
                       <select id="month-select" class="selectpicker"
                               data-width="auto" data-live-search="true" onchange="showSelectedMonth.bind(this)();">
-                        <?= getMonthOptions(); ?>
+                        <?= $schedule->getHTMLMonthOptions(); ?>
                       </select>
                       <br />
                       <br />
@@ -1189,6 +1252,7 @@ $year = (int)date('Y');
 for ($m = 0; $m < 12; $m++) {
     $month_year = date('F_y', mktime(0, 0, 0, $month, 1, $year));
 ?>
+<!-- TODO: Create helper method -->
                       <div id="<?= $month_year ?>" style="position: relative; display: <?= (!$m) ? 'block' : 'none' ?>;">
                         <table id="calTable<?= $month . $year ?>" class="table table-condensed table-bordered">
                           <thead>
@@ -1220,7 +1284,7 @@ for ($m = 0; $m < 12; $m++) {
                             </tr>
                           </thead>
                           <tbody>
-                            <?= getCalendarTableBody($month, $year) ?>
+                            <?= $schedule->getHTMLCalendaryBody($month, $year) ?>
                           </tbody>
                         </table>
                       </div>
@@ -1255,8 +1319,9 @@ for ($m = 0; $m < 12; $m++) {
                             <div class="input-group">
                               <select id="start-hour" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
-                                <?= get24HourOptions() ?>
+                                <?= $schedule->getHTML24HourOptions() ?>
                               </select>
+<!-- TODO: Create helper method -->
                               <select id="start-minute" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <option value="00">00</option>
@@ -1271,8 +1336,9 @@ for ($m = 0; $m < 12; $m++) {
                             <div class="input-group">
                               <select id="stop-hour" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
-                                <?= get24HourOptions() ?>
+                                <?= $schedule->getHTML24HourOptions() ?>
                               </select>
+<!-- TODO: Create helper method -->
                               <select id="stop-minute" class="selectpicker form-control"
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <option value="00">00</option>
@@ -1316,7 +1382,7 @@ for ($m = 0; $m < 12; $m++) {
                     </td>
                   </tr>
                   <tr>
-                    <th colspan="2"><?= gettext('Schedule repeat') ?></th>
+                    <th colspan="2"><?= gettext('Schedule Repeat') ?></th>
                   </tr>
                   <tr>
                     <td><?= gettext('Configured Ranges') ?></td>
@@ -1342,8 +1408,8 @@ for ($m = 0; $m < 12; $m++) {
                              onclick="return warnBeforeSave();" />
                       <input type="button" value="<?= html_safe(gettext('Cancel')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
-                             onclick="window.location.href='<?= $return_to ?>'" />
-                      <?= ($id !== null) ? sprintf('<input name="id" type="hidden" value="%d" />', $id) : '' ?>
+                             onclick="window.location.href='<?= $schedule->getReturnURL() ?>'" />
+                      <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
                     </td>
                   </tr>
                 </tbody>
