@@ -504,6 +504,7 @@ function system_host_route($host, $gateway)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
+        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_WARNING);
         return;
     }
 
@@ -519,21 +520,29 @@ function system_host_route($host, $gateway)
     mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
-function system_default_route($gateway, $family, $interface, $far = false)
+function system_default_route($gateway, $interface, $far = false)
 {
+    if (is_ipaddrv4($gateway)) {
+        $family = 'inet';
+    } elseif (is_ipaddrv6($gateway)) {
+        $family = 'inet6';
+    } else {
+        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_WARNING);
+        return;
+    }
+
     $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
 
-    switch ($family) {
-        case 'inet':
-            break;
-        case 'inet6':
-            if (is_linklocal($gateway)) {
-                $gateway .= "%{$realif}";
-            }
-            break;
-        default:
-            log_msg("ROUTING: unknown address family '{$family}'", LOG_ERR);
-            return;
+    if (is_linklocal($gateway)) {
+        $gateway .= "%{$realif}";
+    }
+
+    /* XXX while this does prevent unnecessary work it cannot detect a flip of far gateway setting */
+    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
+    $current = trim(exec($tmpcmd), " \n");
+    if ($current == $gateway) {
+        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
+        return;
     }
 
     if ($family == 'inet') {
@@ -554,12 +563,6 @@ function system_default_route($gateway, $family, $interface, $far = false)
         $realif = null;
     }
 
-    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-    $current = trim(exec($tmpcmd), " \n");
-    if ($current == $gateway) {
-        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
-        return;
-    }
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
@@ -590,7 +593,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
             if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
                 log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $ipproto, $gateway['interface'], isset($gateway['fargw']));
+                system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
             } else {
                 log_msg("ROUTING: skipping {$logproto} default route");
             }
