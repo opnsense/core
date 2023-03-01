@@ -521,13 +521,13 @@ HTML;
 
     private function _validateName(string $name): void {
         if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
-            $this->_setError(gettext('The name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
+            $this->_setError(gettext('Schedule name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
         }
         if (in_array(strtolower($name), ['lan', 'wan'])) {
             $this->_setError(gettext(sprintf('Schedule cannot be named %s.', $name)));
         }
         if (empty($name)) {
-            $this->_setError(gettext('Schedule cannot use a blank name.'));
+            $this->_setError(gettext('Schedule name is required.'));
         }
 
         // Check for name conflicts
@@ -538,7 +538,7 @@ HTML;
                 continue;
             }
 
-            $this->_setError(gettext('A Schedule with this name already exists.'));
+            $this->_setError(gettext('A schedule with this name already exists.'));
             break;
         }
     }
@@ -551,12 +551,12 @@ HTML;
         $is_error = false;
 
         if (!$this->_isValidTime($start_time)) {
-            $this->_setError(gettext(sprintf('Invalid start time - "%s"', $start_time)));
+            $this->_setError(gettext(sprintf('Invalid start time: %s', $start_time)));
             $is_error = true;
         }
 
         if (!$this->_isValidTime($stop_time)) {
-            $this->_setError(gettext(sprintf('Invalid stop time - "%s"', $stop_time)));
+            $this->_setError(gettext(sprintf('Invalid stop time: %s', $stop_time)));
             $is_error = true;
         }
 
@@ -1009,13 +1009,13 @@ function addTimeRange() {
     $(this).blur();
 
     if (_isSelectedDaysEmpty()) {
-        return injectFlashError('You must select at least one day before adding the time range.');
+        return injectFlashError('One or more days must be selected before the time range can be added.');
     }
 
     if (start_hour > stop_hour
         || (start_hour === stop_hour && parseInt(start_minute) > parseInt(stop_minute))
     ) {
-        return injectFlashError('Start Time cannot be ahead of Stop Time.');
+        return injectFlashError('Start Time must not be ahead of the Stop Time.');
     }
 
     _getSelectedDays(true).forEach(function(cell_id) {
