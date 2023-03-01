@@ -6,7 +6,7 @@ here https://docs.opnsense.org/security.html
 ## Supported Versions
 
 OPNsense is a security platform which is released on regular intervals. In
-order to find the latest still supported version, please visit https://docs.opnsense.org/releases.html 
+order to find the latest still supported version, please visit https://docs.opnsense.org/releases.html
 
 For both the community and business edition only the last published major
 branches are supported in terms of security updates. Major versions will be
@@ -21,4 +21,4 @@ Where XX equals the year (e.g. 23 for 2023)
 
 ## Reporting a Vulnerability
 
-Please check https://docs.opnsense.org/security.html#reporting-an-incident 
+Please check https://docs.opnsense.org/security.html#reporting-an-incident
