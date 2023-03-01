@@ -58,11 +58,12 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
+/* this may be required to cleanse the DNS information no longer available */
+system_resolvconf_generate();
+system_hosts_generate();
+
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ip($interface);
-
-$cacheip_file = "/tmp/{$device}_oldip";
-$cacheip = trim(@file_get_contents($cacheip_file));
 
 if (!is_ipaddr($ip)) {
     /*
@@ -71,7 +72,7 @@ if (!is_ipaddr($ip)) {
      * mode and not have an IP address.
      */
     if (substr($device, 0, 4) != 'ovpn') {
-        log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
+        log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_INFO);
         return;
     }
 
@@ -79,9 +80,8 @@ if (!is_ipaddr($ip)) {
     $ip = 'openvpn_xxx';
 }
 
-/* this may be required to cleanse the DNS information no longer available */
-system_resolvconf_generate();
-system_hosts_generate();
+$cacheip_file = "/tmp/{$device}_oldip";
+$cacheip = trim(@file_get_contents($cacheip_file));
 
 if ($force == 'no' && $ip == $cacheip) {
     log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
