@@ -539,7 +539,11 @@ function system_default_route($gateway, $family, $interface, $far = false)
     if ($family == 'inet') {
         if (!$far) {
             list (, $network) = interfaces_primary_address($interface);
-            if (ip_in_subnet($gateway, $network)) {
+            if (empty($network) || ip_in_subnet($gateway, $network)) {
+                /*
+                 * If we fail a primary network detection or the local address
+                 * is in the same network as the gateway address do nothing.
+                 */
                 $realif = null;
             } else {
                 log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
