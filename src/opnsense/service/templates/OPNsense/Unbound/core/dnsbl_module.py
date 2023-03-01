@@ -580,7 +580,11 @@ if __name__ == '__main__' and test_mode:
         )
     )
     if match:
-        msg = {'status': 'OK','action': 'Block','blocklist': match.get('bl'),'wildcard': match.get('wildcard')}
+        src_nets = match.get('source_net', [])
+        for i in range(len(src_nets)):
+            src_nets[i] = str(src_nets[i])
+        match['source_net'] = src_nets
+        msg = {'status': 'OK','action': 'Block','policy': match}
         print(json.dumps(msg))
     else:
         print(json.dumps({'status': 'OK','action': 'Pass'}))
