@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -31,11 +31,11 @@
 
 function dhcpd_configure()
 {
-    return array(
-        'dhcp' => array('dhcpd_dhcp_configure:3'),
-        'dhcrelay' => array('dhcpd_dhcrelay_configure:2'),
-        'local' => array('dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'),
-    );
+    return [
+        'dhcp' => ['dhcpd_dhcp_configure:3'],
+        'dhcrelay' => ['dhcpd_dhcrelay_configure:2'],
+        'local' => ['dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'],
+    ]
 }
 
 function dhcpd_radvd_enabled()
@@ -152,13 +152,12 @@ function dhcpd_services()
     return $services;
 }
 
-function dhcpd_radvd_configure($verbose = false, $blacklist = array())
+function dhcpd_radvd_configure($verbose = false, $blacklist = [])
 {
     global $config;
 
-    killbypid('/var/run/radvd.pid', 'TERM', true);
-
     if (!dhcpd_radvd_enabled()) {
+        killbypid('/var/run/radvd.pid');
         return;
     }
 
@@ -282,8 +281,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
                 continue;
             }
 
-            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-            $stanzas[] = "{$subnetv6}/{$vip['subnet_bits']}";
+            /* force subnet to 64 as per radvd complaint "prefix length should be 64 for xzy" */
+            $subnetv6 = gen_subnetv6($vip['subnet'], 64);
+            $stanzas[] = "{$subnetv6}/64";
         }
 
         if ($src_addr) {
@@ -516,7 +516,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
     if (count($radvdifs)) {
-        mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+        if (isvalidpid('/var/run/radvd.pid')) {
+            killbypid('/var/run/radvd.pid', 'HUP');
+        } else {
+            mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+        }
+    } else {
+        /* stop on invalid configuration for legacy condition above */
+        killbypid('/var/run/radvd.pid');
     }
 
     service_log("done.\n", $verbose);
@@ -524,7 +531,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = array())
 
 function dhcpd_dhcp_configure($verbose = false, $family = null, $blacklist = [])
 {
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+    $dirs = ['/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run'];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/dhcpd{$dir}");
@@ -553,16 +560,19 @@ function dhcpd_dhcp4_configure($verbose = false)
     $need_ddns_updates = false;
     $ddns_zones = [];
 
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
-
     if (!dhcpd_dhcpv4_enabled()) {
         /*
          * XXX If there is no enabled server interfaces_staticarp_configure()
          * is not executed as documented.  This likely does not matter, but
          * since it came up as odd in testing make a note here for the future.
          */
+        killbypid('/var/dhcpd/var/run/dhcpd.pid');
         return;
     }
+
+    service_log('Starting DHCPv4 service...', $verbose);
+
+    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = [];
@@ -573,8 +583,6 @@ function dhcpd_dhcp4_configure($verbose = false)
             }
         }
     }
-
-    service_log('Starting DHCPv4 service...', $verbose);
 
     $custoptions = "";
     $ifconfig_details = legacy_interfaces_details();
@@ -1113,7 +1121,7 @@ EOD;
                     $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if (!empty($sm['gateway']) && $sm['gateway'] != "none" && ($sm['gateway'] != $dhcpifconf['gateway'])) {
+                if (!empty($sm['gateway']) && $sm['gateway'] != "none" && (empty($dhcpifconf['gateway']) || $sm['gateway'] != $dhcpifconf['gateway'])) {
                     $dhcpdconf .= "  option routers {$sm['gateway']};\n";
                 }
 
@@ -1252,16 +1260,20 @@ function dhcpd_zones($ddns_zones, $ipproto = 'inet')
     return $dhcpdconf;
 }
 
-function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
+function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
 {
     global $config;
 
-    killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
-    killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
-
     if (!dhcpd_dhcpv6_enabled()) {
+        killbypid('/var/dhcpd/var/run/dhcpdv6.pid');
+        killbypid('/var/run/dhcpleases6.pid');
         return;
     }
+
+    service_log('Starting DHCPv6 service...', $verbose);
+
+    killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
+    killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1276,8 +1288,6 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = array())
             }
         }
     }
-
-    service_log('Starting DHCPv6 service...', $verbose);
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
     foreach (array_keys($iflist) as $ifname) {
@@ -1608,17 +1618,17 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 {
     global $config;
 
-    $dhcrelayifs = array();
-
-    killbypid('/var/run/dhcrelay.pid', 'TERM', true);
-
     $dhcrelaycfg = &config_read_array('dhcrelay');
+    $dhcrelayifs = [];
 
     if (!isset($dhcrelaycfg['enable'])) {
+        killbypid('/var/run/dhcrelay.pid');
         return;
     }
 
     service_log('Starting DHCPv4 relay...', $verbose);
+
+    killbypid('/var/run/dhcrelay.pid', 'TERM', true);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1720,17 +1730,17 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 {
     global $config;
 
-    $dhcrelayifs = array();
-
-    killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
-
     $dhcrelaycfg = &config_read_array('dhcrelay6');
+    $dhcrelayifs = [];
 
     if (!isset($dhcrelaycfg['enable'])) {
+        killbypid('/var/run/dhcrelay6.pid');
         return;
     }
 
     service_log('Starting DHCPv6 relay...', $verbose);
+
+    killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
