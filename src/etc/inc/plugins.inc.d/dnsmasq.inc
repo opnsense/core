@@ -186,19 +186,19 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --no-hosts ';
     }
 
-    if (isset($config['dnsmasq']['dns_forward_max']) && is_numericint($config['dnsmasq']['dns_forward_max'])) {
+    if (isset($config['dnsmasq']['dns_forward_max'])) {
         $args .= " --dns-forward-max={$config['dnsmasq']['dns_forward_max']} ";
     } else {
         $args .= ' --dns-forward-max=5000 ';
     }
 
-    if (isset($config['dnsmasq']['cache_size']) && is_numericint($config['dnsmasq']['cache_size'])) {
+    if (isset($config['dnsmasq']['cache_size'])) {
         $args .= " --cache-size={$config['dnsmasq']['cache_size']} ";
     } else {
         $args .= ' --cache-size=10000 ';
     }
 
-    if (isset($config['dnsmasq']['local_ttl']) && is_numericint($config['dnsmasq']['local_ttl'])) {
+    if (isset($config['dnsmasq']['local_ttl'])) {
         $args .= " --local-ttl={$config['dnsmasq']['local_ttl']} ";
     } else {
         $args .= ' --local-ttl=1 ';
