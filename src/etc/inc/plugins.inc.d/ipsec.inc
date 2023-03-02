@@ -546,7 +546,7 @@ function ipsec_parse_phase2($ikeid)
  */
 function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
 {
-    switch ($idinfo['type']) {
+    switch ($idinfo['type'] ?? 'none') {
         case "address":
             if ($addrbits) {
                 if ($mode == "tunnel6") {
