@@ -687,7 +687,10 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 
         if (!empty($interface)) {
             foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-                /* XXX needs $family awareness of some sort */
+                if ($family !== null && $family !== $gateway['ipprotocol']) {
+                    continue;
+                }
+
                 if ($interface == $gateway['interface']) {
                     $reloads[] = $name;
                 }
