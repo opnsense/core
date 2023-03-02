@@ -106,6 +106,7 @@ class Alias(object):
                     syslog.syslog(syslog.LOG_ERR, 'alias table %s overflow' % self._name)
                     break
                 yield "!%s" % item if address.startswith('!') else str(item)
+            return
         elif address.find('/') > -1:
             # provided address could be a network
             try:
@@ -114,6 +115,7 @@ class Alias(object):
                 return
             except (ipaddress.AddressValueError, ValueError):
                 pass
+            return
         else:
             # check if address is an ipv4/6 address or range
             try:
