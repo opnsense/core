@@ -59,8 +59,7 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 }
 
 /* this may be required to cleanse the DNS information no longer available */
-system_resolvconf_generate();
-system_hosts_generate();
+system_resolver_configure();
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $ip = get_interface_ip($interface);

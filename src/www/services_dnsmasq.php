@@ -127,17 +127,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_dnsmasq['local_ttl'])) {
                 unset($a_dnsmasq['local_ttl']);
             }
+
             write_config();
-            system_resolvconf_generate();
+
+            system_resolver_configure();
             dnsmasq_configure_do();
             plugins_configure('dhcp');
+
             header(url_safe('Location: /services_dnsmasq.php'));
             exit;
         }
     } elseif (isset($pconfig['apply'])) {
         filter_configure();
-        system_resolvconf_generate();
-        system_hosts_generate();
+        system_resolver_configure();
         dnsmasq_configure_do();
         plugins_configure('dhcp');
         clear_subsystem_dirty('hosts');
