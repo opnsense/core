@@ -35,7 +35,7 @@ function dhcpd_configure()
         'dhcp' => ['dhcpd_dhcp_configure:3'],
         'dhcrelay' => ['dhcpd_dhcrelay_configure:2'],
         'local' => ['dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'],
-    ]
+    ];
 }
 
 function dhcpd_radvd_enabled()
