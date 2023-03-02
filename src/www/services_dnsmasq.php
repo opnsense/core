@@ -72,8 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['dns_forward_max']) && !is_numericint($pconfig['dns_forward_max'])) {
             $input_errors[] = gettext("You must specify a valid maximum number of DNS queries");
         }
-        if (isset($pconfig['cache_size']) && $pconfig['cache_size'] !== '' && !is_numericint($pconfig['cache_size'])) {
-            $input_errors[] = gettext("You must specify a valid cache size");
+        if (isset($pconfig['cache_size']) && $pconfig['cache_size'] !== '') {
+            if (!is_numericint($pconfig['cache_size'])) {
+                $input_errors[] = gettext("You must specify a valid cache size");
+            } elseif (!empty($pconfig['dnssec']) && $pconfig['cache_size'] < 150) {
+                $input_errors[] = gettext("You must specify a valid cache size of at least 150 when DNSSEC is enabled");
+            }
         }
         if (isset($pconfig['local_ttl']) && $pconfig['local_ttl'] !== '' && !is_numericint($pconfig['local_ttl'])) {
             $input_errors[] = gettext("You must specify a valid TTL for local DNS");
@@ -421,9 +425,9 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_local_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TTL for local DNS");?></td>
+                  <td><a id="help_for_local_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Local DNS entry TTL') ?></td>
                   <td>
-                    <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" <?=!empty($pconfig['local_ttl']) ? "value=\"{$pconfig['local_ttl']}\"" : "";?> />
+                    <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" value="<?= html_safe($pconfig['local_ttl']) ?>"/>
                     <div class="hidden" data-for="help_for_local_ttl">
                       <?=gettext("This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable disable client-side caching.");?>
                     </div>
