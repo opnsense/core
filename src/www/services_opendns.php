@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dnsallowoverride'] = true;
         }
         write_config('OpenDNS filter configuration change');
-        system_resolvconf_generate();
+        system_resolver_configure();
         plugins_configure('dhcp');
         $savemsg = get_std_save_message();
     }
