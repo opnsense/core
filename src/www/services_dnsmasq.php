@@ -429,7 +429,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" value="<?= html_safe($pconfig['local_ttl']) ?>"/>
                     <div class="hidden" data-for="help_for_local_ttl">
-                      <?=gettext("This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable disable client-side caching.");?>
+                      <?=gettext("This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable client-side caching.");?>
                     </div>
                   </td>
                 </tr>
