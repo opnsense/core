@@ -54,12 +54,6 @@ function webgui_configure_do($verbose = false, $interface = '')
         array_unshift($interfaces, 'lo0');
     }
 
-    @mkdir('/var/lib/php/sessions', 0750, true);
-    /* do not trust PHP with mkdir permission on existing directory */
-    @chmod('/var/lib/php/sessions', 0750);
-    @chown('/var/lib/php/sessions', 'root');
-    @chgrp('/var/lib/php/sessions', 'wheel');
-
     if (!empty($interface) && !in_array($interface, $interfaces)) {
         return;
     }
