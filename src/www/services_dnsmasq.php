@@ -153,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_hosts[$pconfig['id']]);
             write_config();
             mark_subsystem_dirty('hosts');
+            /* ajax call, do not redirect */
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
@@ -161,6 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();
             mark_subsystem_dirty('hosts');
+            /* ajax call, do not redirect */
             exit;
         }
     }
