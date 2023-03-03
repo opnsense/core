@@ -32,7 +32,6 @@
 require_once('guiconfig.inc');
 require_once('filter.inc');
 
-// TODO: Replace gettext() with _() everywhere else
 // Constants for localization that need to be used for static class properties
 define('L10N_JAN', _('January'));
 define('L10N_FEB', _('February'));
@@ -127,12 +126,12 @@ class TimeRange
         $is_error = false;
 
         if (!$this->_isValidTime($this->start_time)) {
-            $this->_setError(gettext(sprintf('Invalid start time: %s', $this->start_time)));
+            $this->_setError(_(sprintf('Invalid start time: %s', $this->start_time)));
             $is_error = true;
         }
 
         if (!$this->_isValidTime($this->stop_time)) {
-            $this->_setError(gettext(sprintf('Invalid stop time: %s', $this->stop_time)));
+            $this->_setError(_(sprintf('Invalid stop time: %s', $this->stop_time)));
             $is_error = true;
         }
 
@@ -146,7 +145,7 @@ class TimeRange
             return true;
         }
 
-        $this->_setError(gettext('One or more days must be selected before the time range can be added.'));
+        $this->_setError(_('One or more days must be selected before the time range can be added.'));
         return false;
     }
 
@@ -312,7 +311,7 @@ class TimeRange
 
     private function _getNonRepeatingMonthAndDays(): ?array {
         if (!strstr($this->days_selected, '-')) {
-            $this->_setError(gettext('Malformed non-repeating selected days'));
+            $this->_setError(_('Malformed non-repeating selected days'));
             return null;
         }
 
@@ -686,13 +685,13 @@ HTML;
 
     private function _validateName(string $name): void {
         if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
-            $this->_setError(gettext('Schedule name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
+            $this->_setError(_('Schedule name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
         }
         if (in_array(strtolower($name), ['lan', 'wan'])) {
-            $this->_setError(gettext(sprintf('Schedule cannot be named %s.', $name)));
+            $this->_setError(_(sprintf('Schedule cannot be named %s.', $name)));
         }
         if (empty($name)) {
-            $this->_setError(gettext('Schedule name is required.'));
+            $this->_setError(_('Schedule name is required.'));
         }
 
         // Check for name conflicts
@@ -703,7 +702,7 @@ HTML;
                 continue;
             }
 
-            $this->_setError(gettext('A schedule with this name already exists.'));
+            $this->_setError(_('A schedule with this name already exists.'));
             break;
         }
     }
@@ -755,7 +754,7 @@ HTML;
         }
 
         if (!$this->_data->time_ranges) {
-            $this->_setError(gettext('The schedule must have at least one time range configured.'));
+            $this->_setError(_('The schedule must have at least one time range configured.'));
         }
 
         if ($this->hasErrors()) {
@@ -990,19 +989,19 @@ function warnBeforeClearCalender() {
 
     BootstrapDialog.show({
         'type': BootstrapDialog.TYPE_DANGER,
-        'title': '<?= gettext('Clear Selection(s)?') ?>',
-        'message': '<div style="margin: 10px;"><?= gettext('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!') ?></div>',
+        'title': '<?= _('Clear Selection(s)?') ?>',
+        'message': '<div style="margin: 10px;"><?= _('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!') ?></div>',
 
         'buttons': [
             {
-                'label': '<?= gettext('Cancel') ?>',
+                'label': '<?= _('Cancel') ?>',
                 'action': function(dialog) {
                     dialog.close();
                     def.reject();
                 }
             },
             {
-                'label': '<?= gettext('Clear Selection(s)') ?>',
+                'label': '<?= _('Clear Selection(s)') ?>',
                 'cssClass': 'btn-danger',
                 'action': function(dialog) {
                     clearCalendar(true);
@@ -1043,19 +1042,19 @@ function removeTimeRange(is_confirm = false) {
 
         BootstrapDialog.show({
             'type': BootstrapDialog.TYPE_DANGER,
-            'title': '<?= gettext('Remove Time Range?') ?>',
-            'message': '<div style="margin: 10px;"><?= gettext('Are you sure you want to remove this time range?') ?></div>',
+            'title': '<?= _('Remove Time Range?') ?>',
+            'message': '<div style="margin: 10px;"><?= _('Are you sure you want to remove this time range?') ?></div>',
 
             'buttons': [
                 {
-                    'label': '<?= gettext('Cancel') ?>',
+                    'label': '<?= _('Cancel') ?>',
                     'action': function(dialog) {
                         dialog.close();
                         def.reject();
                     }
                 },
                 {
-                    'label': '<?= gettext('Remove') ?>',
+                    'label': '<?= _('Remove') ?>',
                     'cssClass': 'btn-danger',
                     'action': function(dialog) {
                         dialog.close();
@@ -1249,23 +1248,23 @@ const askToAddOrClearTimeRange = function(range_description) {
 
     BootstrapDialog.show({
         'type': BootstrapDialog.TYPE_PRIMARY,
-        'title': '<?= gettext('Modified Time Range In Progress') ?>',
+        'title': '<?= _('Modified Time Range In Progress') ?>',
         'message': '<div style="margin: 10px;">'
             + `<strong>Range Description:</strong> ${range_description}`
             + '\n\n'
-            + '<?= gettext('What would you like to do with the time range that you have in progress?') ?>'
+            + '<?= _('What would you like to do with the time range that you have in progress?') ?>'
             + '</div>',
 
         'buttons': [
             {
-                'label': '<?= gettext('Clear Selection');?>',
+                'label': '<?= _('Clear Selection');?>',
                 'action': function(dialog) {
                     dialog.close();
                     $.when(warnBeforeClearCalender()).then(def.resolve);
                 }
             },
             {
-                'label': '<?= gettext('Add Time & Continue') ?>',
+                'label': '<?= _('Add Time & Continue') ?>',
                 'action': function(dialog) {
                     addTimeRange();
                     dialog.close();
@@ -1374,17 +1373,17 @@ if ($schedule->hasErrors()) {
                 <tbody>
                   <tr>
                     <td style="width: 15%">
-                      <strong><?= gettext('Schedule information') ?></strong>
+                      <strong><?= _('Schedule information') ?></strong>
                     </td>
                     <td style="width: 85%; text-align: right">
-                      <small><?= gettext('full help') ?></small>
+                      <small><?= _('full help') ?></small>
                       <em id="show_all_help_page" class="fa fa-toggle-off text-danger"></em>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <em class="fa fa-info-circle text-muted"></em>
-                      <label for="name"><?= gettext('Name') ?></label>
+                      <label for="name"><?= _('Name') ?></label>
                     </td>
                     <td>
 <?php
@@ -1394,7 +1393,7 @@ if ($references):
 ?>
                       <?= $schedule->getData('name') ?>
                       <div class="text-danger" style="margin-top: 10px;">
-                        <?= gettext('The name cannot be modified because this schedule is referenced by the following rules:') ?>
+                        <?= _('The name cannot be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
                         </ul>
@@ -1408,20 +1407,20 @@ if ($references):
                   <tr>
                     <td>
                       <a id="help_for_description" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="description"><?= gettext('Description') ?></label>
+                      <label for="description"><?= _('Description') ?></label>
                     </td>
                     <td>
                       <input type="text" name="description" id="description" value="<?= $schedule->getData('description') ?>" />
                       <br />
                       <div class="hidden" data-for="help_for_description">
-                        <?= gettext('You may enter a description here for your reference (not parsed).') ?>
+                        <?= _('You may enter a description here for your reference (not parsed).') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <a id="help_for_month" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="month-select"><?= gettext('Month') ?></label>
+                      <label for="month-select"><?= _('Month') ?></label>
                     </td>
                     <td>
                       <select id="month-select" class="selectpicker"
@@ -1436,20 +1435,20 @@ if ($references):
 
                       <div class="hidden" data-for="help_for_month">
                         <br />
-                        <?= gettext('Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.') ?>
+                        <?= _('Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <a id="help_for_time" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <?= gettext('Time') ?>
+                      <?= _('Time') ?>
                     </td>
                     <td>
                       <table class="tabcont">
                         <tr>
-                          <td><?= gettext('Start Time') ?></td>
-                          <td><?= gettext('Stop Time') ?></td>
+                          <td><?= _('Start Time') ?></td>
+                          <td><?= _('Stop Time') ?></td>
                         </tr>
                         <tr>
                           <td>
@@ -1481,46 +1480,46 @@ if ($references):
 
                       <div class="hidden" data-for="help_for_time">
                         <br />
-                        <?= gettext('Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.') ?>
+                        <?= _('Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <a id="help_for_timerange_desc" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="range-description"><?= gettext('Range Description') ?></label>
+                      <label for="range-description"><?= _('Range Description') ?></label>
                     </td>
                     <td>
                       <input type="text" id="range-description" />
                       <div class="hidden" data-for="help_for_timerange_desc">
-                        <?= gettext('You may enter a description here for your reference (not parsed).') ?>
+                        <?= _('You may enter a description here for your reference (not parsed).') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input type="button" value="<?= html_safe(gettext('Add Time')) ?>"
+                      <input type="button" value="<?= html_safe(_('Add Time')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
                              onclick="addTimeRange.bind(this)();" />
-                      <input type="button" value="<?= html_safe(gettext('Clear Selection(s)')) ?>"
+                      <input type="button" value="<?= html_safe(_('Clear Selection(s)')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
                              onclick="warnBeforeClearCalender.bind(this)();" />
                     </td>
                   </tr>
                   <tr>
-                    <th colspan="2"><?= gettext('Schedule Repeat') ?></th>
+                    <th colspan="2"><?= _('Schedule Repeat') ?></th>
                   </tr>
                   <tr>
-                    <td><?= gettext('Configured Ranges') ?></td>
+                    <td><?= _('Configured Ranges') ?></td>
                     <td>
                       <table id="calendar">
                         <tbody>
                           <tr>
-                            <td style="width: 35%;"><?= gettext('Day(s)') ?></td>
-                            <td style="width: 12%;"><?= gettext('Start Time') ?></td>
-                            <td style="width: 11%;"><?= gettext('Stop Time') ?></td>
-                            <td style="width: 42%;"><?= gettext('Description') ?></td>
+                            <td style="width: 35%;"><?= _('Day(s)') ?></td>
+                            <td style="width: 12%;"><?= _('Start Time') ?></td>
+                            <td style="width: 11%;"><?= _('Stop Time') ?></td>
+                            <td style="width: 42%;"><?= _('Description') ?></td>
                           </tr>
                         </tbody>
                       </table>
@@ -1530,10 +1529,10 @@ if ($references):
                     <td>&nbsp;</td>
                     <td>
                       <input type="submit" name="submit" id="submit"
-                             value="<?= html_safe(gettext('Save')) ?>"
+                             value="<?= html_safe(_('Save')) ?>"
                              class="btn btn-primary" style="margin: 0 5px;"
                              onclick="return warnBeforeSave();" />
-                      <input type="button" value="<?= html_safe(gettext('Cancel')) ?>"
+                      <input type="button" value="<?= html_safe(_('Cancel')) ?>"
                              class="btn btn-default" style="margin: 0 5px;"
                              onclick="window.location.href='<?= $schedule->getReturnURL() ?>'" />
                       <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
