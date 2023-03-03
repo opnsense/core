@@ -151,7 +151,7 @@ function ifgroup_setup()
     }
 }
 
-function filter_configure_sync($verbose = false, $load_aliases = true, $switch_gw = true)
+function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
 
@@ -250,15 +250,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true, $switch_g
         foreach ($config['nat']['rule'] as $rule) {
             $fw->registerForwardRule(600, $rule);
         }
-    }
-
-    if ($switch_gw && isset($config['system']['gw_switch_default'])) {
-        /*
-         * XXX When gateway switching is enabled we consider different default
-         * gateways.  Although this isn't the right spot for the feature (it's
-         * a monitoring/routing decision), we keep it here for historical reasons.
-         */
-        system_switch_route();
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
