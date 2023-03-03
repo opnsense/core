@@ -512,7 +512,7 @@ function system_host_route($host, $gateway)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -535,7 +535,7 @@ function system_default_route($gateway, $interface, $far = false)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -549,7 +549,7 @@ function system_default_route($gateway, $interface, $far = false)
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
-        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
+        log_msg("ROUTING: keeping current {$family} default gateway '{$gateway}'");
         return;
     }
 
@@ -576,6 +576,7 @@ function system_default_route($gateway, $interface, $far = false)
         $realif = null;
     }
 
+    log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
@@ -605,16 +606,13 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 
         /* determine default gateway without considering monitor status */
         $gateway = $gateways->getDefaultGW([], $ipproto);
-        $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
+        if ($gateway == null) {
+            continue;
+        }
 
-        if ($gateway != null) {
-            log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
-            if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
-            } else {
-                log_msg("ROUTING: skipping {$logproto} default route");
-            }
+        if (empty($interface) || $interface == $gateway['interface']) {
+            log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
+            system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
         }
     }
 
