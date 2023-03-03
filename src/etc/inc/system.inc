@@ -593,17 +593,23 @@ function system_switch_route()
     $down_gateways = return_down_gateways();
 
     if (!empty($down_gateways)) {
-        log_msg(sprintf('ROUTING: ignoring down gateways: %s', $ipprotocol, implode(', ', $down_gateways)), LOG_DEBUG);
+        log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
     }
 
-    foreach (['inet', 'inet6'] as $ipprotocol) {
+    foreach (['inet' => 'ipv4', 'inet6' => 'ipv6'] as $ipproto => $type) {
         /* determine default gateway by considering monitor status */
-        $gateway = $gateways->getDefaultGW($down_gateways, $ipprotocol);
+        $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
         if ($gateway == null) {
             continue;
         }
 
-        system_default_route($gateway['gateway'], $gateway['if'], isset($gateway['fargw']));
+        if (empty($ifdetails[$gateway['if']][$type][0])) {
+            log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}", LOG_ERR);
+            continue;
+        }
+
+        log_msg("ROUTING: switching to {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
+        system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
     }
 }
 
@@ -620,7 +626,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifdetails);
 
-    foreach (['inet', 'inet6'] as $ipproto) {
+    foreach (['inet' => 'ipv4', 'inet6' => 'ipv6'] as $ipproto => $type) {
         if ($family !== null && $family !== $ipproto) {
             continue;
         }
@@ -632,6 +638,11 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         }
 
         if (empty($interface) || $interface == $gateway['interface']) {
+            if (empty($ifdetails[$gateway['if']][$type][0])) {
+                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}", LOG_ERR);
+                continue;
+            }
+
             log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
             system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
         }
