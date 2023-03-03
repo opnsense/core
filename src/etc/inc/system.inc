@@ -586,6 +586,27 @@ function system_default_route($gateway, $interface, $far = false)
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
+function system_switch_route()
+{
+    $ifdetails = legacy_interfaces_details();
+    $gateways = new \OPNsense\Routing\Gateways($ifdetails);
+    $down_gateways = return_down_gateways();
+
+    if (!empty($down_gateways)) {
+        log_msg(sprintf('ROUTING: ignoring down gateways: %s', $ipprotocol, implode(', ', $down_gateways)), LOG_DEBUG);
+    }
+
+    foreach (['inet', 'inet6'] as $ipprotocol) {
+        /* determine default gateway by considering monitor status */
+        $gateway = $gateways->getDefaultGW($down_gateways, $ipprotocol);
+        if ($gateway == null) {
+            continue;
+        }
+
+        system_default_route($gateway['gateway'], $gateway['if'], isset($gateway['fargw']));
+    }
+}
+
 function system_routing_configure($verbose = false, $interface = null, $monitor = true, $family = null)
 {
     service_log('Setting up routes...', $verbose);

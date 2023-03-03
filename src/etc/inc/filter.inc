@@ -253,19 +253,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true, $switch_g
     }
 
     if ($switch_gw && isset($config['system']['gw_switch_default'])) {
-        // When gateway switching is enabled, we might consider a different default gateway.
-        // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
-        // we keep it here for now (historical reasons).
-        $down_gateways = return_down_gateways();
-        foreach (array("inet", "inet6") as $ipprotocol) {
-            if (!empty($down_gateways)) {
-                log_msg(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)), LOG_DEBUG);
-            }
-            $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
-            if ($default_gw !== null && !empty($default_gw['gateway'])) {
-                system_default_route($default_gw['gateway'], $default_gw['if'], isset($default_gw['fargw']));
-            }
-        }
+        /*
+         * XXX When gateway switching is enabled we consider different default
+         * gateways.  Although this isn't the right spot for the feature (it's
+         * a monitoring/routing decision), we keep it here for historical reasons.
+         */
+        system_switch_route();
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
