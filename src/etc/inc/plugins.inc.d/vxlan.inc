@@ -110,7 +110,9 @@ function vxlan_configure_do($verbose = false, $device = null)
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
             $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
             $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
-            $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            if (!empty($interfaces_details[$device_name]['vxlan']['group'])) {
+                $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            }
         }
         // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
