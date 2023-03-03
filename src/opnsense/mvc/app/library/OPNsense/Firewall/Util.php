@@ -95,6 +95,36 @@ class Util
     }
 
     /**
+     * is provided network strict (host bits not set)
+     * @param string $network network
+     * @return boolean
+     */
+    public static function isSubnetStrict($network)
+    {
+        if (self::isSubnet($network)) {
+            list($net, $mask) = explode('/', $network);
+            $ip_net = inet_pton($net);
+            $bits = (strpos($net, ":") !== false && $mask <= 128) ? 128 : 32;
+
+            $ip_mask = "";
+            $significant_bits = $mask;
+            for ($i = 0; $i < $bits/8; $i++) {
+                if ($significant_bits >= 8) {
+                    $ip_mask .= chr(0xFF);
+                    $significant_bits -= 8;
+                } else {
+                    $ip_mask .= chr(~(0xFF >> $significant_bits));
+                    $significant_bits = 0;
+                }
+            }
+
+            return $ip_net == ($ip_net & $ip_mask);
+        }
+
+        return false;
+    }
+
+    /**
      * is provided network a valid wildcard (https://en.wikipedia.org/wiki/Wildcard_mask)
      * @param string $network network
      * @return boolean
