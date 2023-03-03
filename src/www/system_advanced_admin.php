@@ -363,7 +363,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         filter_configure();
         system_login_configure();
-        system_resolver_confiugure();
+        system_resolver_configure();
         plugins_configure('dns');
         plugins_configure('dhcp');
         configd_run('openssh restart', true);
