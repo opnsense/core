@@ -119,6 +119,37 @@ class TimeRange
         return htmlspecialchars($value, ENT_QUOTES | ENT_HTML401);
     }
 
+    private function _isValidTime(string $time): bool {
+        return preg_match('/^[0-9]+:[0-9]+$/', $time);
+    }
+
+    private function _validateTimes(): bool {
+        $is_error = false;
+
+        if (!$this->_isValidTime($this->start_time)) {
+            $this->_setError(gettext(sprintf('Invalid start time: %s', $this->start_time)));
+            $is_error = true;
+        }
+
+        if (!$this->_isValidTime($this->stop_time)) {
+            $this->_setError(gettext(sprintf('Invalid stop time: %s', $this->stop_time)));
+            $is_error = true;
+        }
+
+        return !$is_error;
+    }
+
+    private function _validateSelectedDays(): bool {
+        $this->days_selected = trim($this->days_selected);
+
+        if ($this->days_selected) {
+            return true;
+        }
+
+        $this->_setError(gettext('One or more days must be selected before the time range can be added.'));
+        return false;
+    }
+
     private function _initDescription(array $time_range): void {
         if (@$time_range['description']) {
             $this->description = $this->_escape($time_range['description']);
@@ -134,21 +165,21 @@ class TimeRange
     }
 
     private function _initStartAndStop(array $time_range): void {
-        if (@$time_range['start_time'] && @$time_range['stop_time']) {
+        $this->start_time = '';
+        $this->stop_time = '';
+
+        if (isset($time_range['start_time']) && isset($time_range['stop_time'])) {
             $this->start_time = $this->_escape($time_range['start_time']);
             $this->stop_time = $this->_escape($time_range['stop_time']);
-            return;
         }
 
-        if (@$time_range['hour']) {
+        if (isset($time_range['hour'])) {
             [$start_time, $stop_time] = explode('-', $time_range['hour']);
             $this->start_time = $this->_escape($start_time);
             $this->stop_time = $this->_escape($stop_time);
-            return;
         }
 
-        $this->start_time = '';
-        $this->stop_time = '';
+        $this->_validateTimes();
     }
 
     private function _initSelectedDaysRepeating(string $selected_days_of_week): void {
@@ -249,21 +280,22 @@ class TimeRange
     }
 
     private function _initSelectedDays(array $time_range): void {
-        if (@$time_range['days_selected']) {
+        if (isset($time_range['days_selected'])) {
             $this->days_selected = $this->_escape($time_range['days_selected']);
-            return;
         }
 
-        if (@$time_range['position']) {
+        if (isset($time_range['position'])) {
             $this->_initSelectedDaysRepeating($time_range['position']);
         }
 
-        if (@$time_range['month']) {
+        if (isset($time_range['month'])) {
             $this->_initSelectedDaysNonRepeating(
                 $time_range['month'],
                 $time_range['day']
             );
         }
+
+        $this->_validateSelectedDays();
     }
 
     final public static function getJSONMonths(): string {
@@ -276,26 +308,6 @@ class TimeRange
 
     final public static function getDays(): array {
         return self::$_days;
-    }
-
-    private function _isValidTime(string $time): bool {
-        return preg_match('/^[0-9]+:[0-9]+$/', $time);
-    }
-
-    private function _validateTimes(): bool {
-        $is_error = false;
-
-        if (!$this->_isValidTime($this->start_time)) {
-            $this->_setError(gettext(sprintf('Invalid start time: %s', $this->start_time)));
-            $is_error = true;
-        }
-
-        if (!$this->_isValidTime($this->stop_time)) {
-            $this->_setError(gettext(sprintf('Invalid stop time: %s', $this->stop_time)));
-            $is_error = true;
-        }
-
-        return !$is_error;
     }
 
     private function _getNonRepeatingMonthAndDays(): ?array {
@@ -327,7 +339,7 @@ class TimeRange
     }
 
     final public function getDataForSave(): ?array {
-        if (!$this->_validateTimes()) {
+        if (!($this->_validateTimes() && $this->_validateSelectedDays())) {
             return null;
         }
 
@@ -404,8 +416,14 @@ class Schedule
 
         $time_ranges = $data['timerange'] ?? [];
         foreach ($time_ranges as $time_range) {
-// TODO: Validate $time_range ... check for errors
-            $this->_data->time_ranges[] = new TimeRange($time_range);
+            $time_range = new TimeRange($time_range);
+
+            if ($time_range->hasErrors()) {
+                $this->_mergeErrors($time_range->getErrors());
+                continue;
+            }
+
+            $this->_data->time_ranges[] = $time_range;
         }
     }
 
@@ -719,6 +737,11 @@ HTML;
                     'description' => $this->_data->range_descriptions[$range_num],
                     'days_selected' => $selected_days
                 ]);
+
+                if ($time_range->hasErrors()) {
+                    $this->_mergeErrors($time_range->getErrors());
+                    continue;
+                }
 
                 $data = $time_range->getDataForSave();
 
