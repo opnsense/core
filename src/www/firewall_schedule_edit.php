@@ -220,7 +220,7 @@ class TimeRange implements JsonSerializable
         $this->_days_selected_text = $this->_escape(implode(', ', $days_selected_text));
     }
 
-    private function _getDayCellID(int $month, int $day): string {
+    final public static function getDayCellID(int $month, int $day): string {
         return sprintf('m%dd%d', $month, $day);
     }
 
@@ -238,7 +238,7 @@ class TimeRange implements JsonSerializable
             $month = (int)$month;
             $day = (int)$selected_days[$selection_num];
 
-            $days_selected[] = $this->_getDayCellID($month, $day);
+            $days_selected[] = $this->getDayCellID($month, $day);
 
             $day_range_start = $day_range_start ?? $day;
             $month_short = substr(self::$_months[$month - 1], 0, 3);
@@ -603,7 +603,7 @@ class Schedule
             }
 
             if ($day_of_week == $day_of_week_start || $cell_text) {
-                $cell_id = $this->$this->_getDayCellID($month, $day_of_month);
+                $cell_id = TimeRange::getDayCellID($month, $day_of_month);
                 $cell_text = '';
 
                 if ($day_of_month <= $last_day_of_month) {
@@ -641,7 +641,6 @@ class Schedule
 
         for ($m = 0; $m < 12; $m++) {
             $id = date('Y-m', mktime(0, 0, 0, $month, 1, $year));
-            $month_year = date('F (Y)', mktime(0, 0, 0, $month, 1, $year));
             $display = (!$m) ? 'block' : 'none';
 
             $headers = $this->_getHTMLCalendarHeaders();
@@ -649,11 +648,8 @@ class Schedule
 
             $calendar[] = <<<HTML
                       <div id="{$id}" style="position: relative; display: {$display};">
-                        <table id="calTable{$month}{$year}" class="table table-condensed table-bordered">
+                        <table class="table table-condensed table-bordered">
                           <thead>
-                            <tr>
-                              <td colspan="7" style="text-align: center">{$month_year}</td>
-                            </tr>
                             <tr>
                               {$headers}
                             </tr>
@@ -793,6 +789,18 @@ label {
 #show_all_help_page {
   cursor: pointer;
 }
+.calendar-nav {
+  text-align: center;
+  border-bottom-width: 0 !important;
+  padding: 3px;
+}
+.calendar-nav-button {
+  text-align: center;
+  line-height: 34px;
+  width: 60%;
+  visibility: hidden;
+  cursor: pointer;
+}
 .calendar-header-day {
   text-decoration: underline;
   text-align: center;
@@ -897,10 +905,15 @@ function showSelectedMonth() {
     $(`#${selected_month}`).css('display', 'block');
 }
 
-function _selectMonth(calendar_id) {
+function _selectMonth(calendar_month_id) {
+    if (!(calendar_month_id && $(`#${calendar_month_id}`).length))
+        return;
+
     const month_select = $('#month-select');
 
-    month_select.val(calendar_id);
+    month_select.val(calendar_month_id);
+    month_select.selectpicker('refresh');
+
     showSelectedMonth.bind(month_select[0])();
 }
 
@@ -1354,6 +1367,55 @@ function addTimeRange() {
     );
 }
 
+function _initCalendar() {
+    const month_select = $('#month-select');
+    const month_select_options = month_select.prop('options');
+    const total_options = month_select_options.length;
+    const month_left = $('#month-left');
+    const month_right = $('#month-right');
+
+    const _toggleLeftRightVisibility = function(selected_index) {
+        month_left.css(
+            'visibility',
+            (selected_index <= 0) ? 'hidden' : 'visible'
+        );
+        month_right.css(
+            'visibility',
+            ((selected_index + 1) >= total_options) ? 'hidden' : 'visible'
+        );
+    };
+
+    month_select.change(function() {
+        _toggleLeftRightVisibility($(this).prop('selectedIndex'));
+    });
+
+    month_left.click(function() {
+        let index = month_select.prop('selectedIndex');
+
+        if (index > 0) {
+            index--;
+            _selectMonth((month_select_options[index] || {}).value);
+        }
+
+        _toggleLeftRightVisibility(index);
+    });
+
+    month_right.click(function() {
+        let index = month_select.prop('selectedIndex');
+
+        if (index < total_options) {
+            index++;
+
+            _selectMonth((month_select_options[index] || {}).value);
+        }
+
+        _toggleLeftRightVisibility(index);
+    });
+
+    clearCalendar(true);
+    _toggleLeftRightVisibility(0);
+}
+
 
 $(function() {
     // NOTE: Needed to prevent hook_stacked_form_tables() from breaking the
@@ -1381,7 +1443,7 @@ $(function() {
         );
     });
 
-    clearCalendar(true);
+    _initCalendar();
 });
 //]]>
 </script>
@@ -1453,13 +1515,29 @@ if ($references):
                       <label for="month-select"><?= _('Month') ?></label>
                     </td>
                     <td>
-                      <select id="month-select" class="selectpicker"
-                              data-width="auto" data-live-search="true"
-                              onchange="showSelectedMonth.bind(this)();">
-                        <?= $schedule->getHTMLMonthOptions(); ?>
-                      </select>
-                      <br />
-                      <br />
+                      <table class="table table-condensed table-bordered">
+                        <thead>
+                          <tr>
+                            <td class="calendar-nav" style="border-right-width: 0;">
+                              <div id="month-left" class="calendar-nav-button">
+                                <span class="fa fa-chevron-left"></span>
+                              </div>
+                            </td>
+                            <td colspan="5" class="calendar-nav" style="border: 0;">
+                              <select id="month-select" class="selectpicker"
+                                      data-width="auto" data-live-search="true"
+                                      onchange="showSelectedMonth.bind(this)();">
+                                  <?= $schedule->getHTMLMonthOptions(); ?>
+                              </select>
+                            </td>
+                            <td class="calendar-nav" style="border-left-width: 0;">
+                              <div id="month-right" class="calendar-nav-button" style="float: right;">
+                                <span class="fa fa-chevron-right"></span>
+                              </div>
+                            </td>
+                          </tr>
+                        </thead>
+                      </table>
 
                       <?= $schedule->getHTMLCalendar(); ?>
 
