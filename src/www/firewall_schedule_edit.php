@@ -220,6 +220,10 @@ class TimeRange implements JsonSerializable
         $this->_days_selected_text = $this->_escape(implode(', ', $days_selected_text));
     }
 
+    private function _getDayCellID(int $month, int $day): string {
+        return sprintf('m%dd%d', $month, $day);
+    }
+
     private function _initSelectedDaysNonRepeating(
         string $selected_months,
         string $selected_days
@@ -234,8 +238,7 @@ class TimeRange implements JsonSerializable
             $month = (int)$month;
             $day = (int)$selected_days[$selection_num];
 
-// TODO: Create static method for formatting then update Schedule::_getHTMLCalendaryBody() and getHTMLCalendar()
-            $days_selected[] = sprintf('m%dd%d', $month, $day);
+            $days_selected[] = $this->_getDayCellID($month, $day);
 
             $day_range_start = $day_range_start ?? $day;
             $month_short = substr(self::$_months[$month - 1], 0, 3);
@@ -300,8 +303,12 @@ class TimeRange implements JsonSerializable
         return self::$_days;
     }
 
+    private function _hasNonRepeatingSelectedDays(): bool {
+        return strstr($this->_days_selected, 'm');
+    }
+
     private function _getNonRepeatingMonthAndDays(): ?array {
-        if (!strstr($this->_days_selected, 'm')) {
+        if (!$this->_hasNonRepeatingSelectedDays()) {
             $this->_setError(_('Malformed non-repeating selected days'));
             return null;
         }
@@ -337,7 +344,7 @@ class TimeRange implements JsonSerializable
         ];
 
         // Repeating time ranges
-        if (!strstr($this->_days_selected, 'm')) {
+        if (!$this->_hasNonRepeatingSelectedDays()) {
             $time_range['position'] = $this->_days_selected;
             return $time_range;
         }
@@ -596,12 +603,12 @@ class Schedule
             }
 
             if ($day_of_week == $day_of_week_start || $cell_text) {
-                $cell_id = sprintf('m%dd%d', $month, $day_of_month);
+                $cell_id = $this->$this->_getDayCellID($month, $day_of_month);
                 $cell_text = '';
 
                 if ($day_of_month <= $last_day_of_month) {
                     $cell_attribs = sprintf(
-                        ' id="%s" class="calendar-day p%s" onclick="toggleSingleDay(\'%s\')" data-state="white"',
+                        ' id="%s" class="calendar-day p%d" onclick="toggleSingleDay(\'%s\')" data-state="white"',
                         $cell_id,
                         $day_of_week,
                         $cell_id
