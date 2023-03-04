@@ -73,7 +73,7 @@ trait ErrorTrait {
     }
 }
 
-class TimeRange
+class TimeRange implements JsonSerializable
 {
     use ErrorTrait;
 
@@ -102,11 +102,11 @@ class TimeRange
         L10N_SUN
     ];
 
-    public $description;
-    public $days_selected;
-    public $days_selected_text;
-    public $start_time;
-    public $stop_time;
+    private $_description;
+    private $_days_selected;
+    private $_days_selected_text;
+    private $_start_time;
+    private $_stop_time;
 
     public function __construct(array $time_range) {
         $this->_initDescription($time_range);
@@ -125,13 +125,13 @@ class TimeRange
     private function _validateTimes(): bool {
         $is_error = false;
 
-        if (!$this->_isValidTime($this->start_time)) {
-            $this->_setError(_(sprintf('Invalid start time: %s', $this->start_time)));
+        if (!$this->_isValidTime($this->_start_time)) {
+            $this->_setError(_(sprintf('Invalid start time: %s', $this->_start_time)));
             $is_error = true;
         }
 
-        if (!$this->_isValidTime($this->stop_time)) {
-            $this->_setError(_(sprintf('Invalid stop time: %s', $this->stop_time)));
+        if (!$this->_isValidTime($this->_stop_time)) {
+            $this->_setError(_(sprintf('Invalid stop time: %s', $this->_stop_time)));
             $is_error = true;
         }
 
@@ -139,9 +139,9 @@ class TimeRange
     }
 
     private function _validateSelectedDays(): bool {
-        $this->days_selected = trim($this->days_selected);
+        $this->_days_selected = trim($this->_days_selected);
 
-        if ($this->days_selected) {
+        if ($this->_days_selected) {
             return true;
         }
 
@@ -151,38 +151,38 @@ class TimeRange
 
     private function _initDescription(array $time_range): void {
         if (@$time_range['description']) {
-            $this->description = $this->_escape($time_range['description']);
+            $this->_description = $this->_escape($time_range['description']);
             return;
         }
 
         if (@$time_range['rangedescr']) {
-            $this->description = $this->_escape(rawurldecode($time_range['rangedescr']));
+            $this->_description = $this->_escape(rawurldecode($time_range['rangedescr']));
             return;
         }
 
-        $this->description = '';
+        $this->_description = '';
     }
 
     private function _initStartAndStop(array $time_range): void {
-        $this->start_time = '';
-        $this->stop_time = '';
+        $this->_start_time = '';
+        $this->_stop_time = '';
 
         if (isset($time_range['start_time']) && isset($time_range['stop_time'])) {
-            $this->start_time = $this->_escape($time_range['start_time']);
-            $this->stop_time = $this->_escape($time_range['stop_time']);
+            $this->_start_time = $this->_escape($time_range['start_time']);
+            $this->_stop_time = $this->_escape($time_range['stop_time']);
         }
 
         if (isset($time_range['hour'])) {
             [$start_time, $stop_time] = explode('-', $time_range['hour']);
-            $this->start_time = $this->_escape($start_time);
-            $this->stop_time = $this->_escape($stop_time);
+            $this->_start_time = $this->_escape($start_time);
+            $this->_stop_time = $this->_escape($stop_time);
         }
 
         $this->_validateTimes();
     }
 
     private function _initSelectedDaysRepeating(string $selected_days_of_week): void {
-        $this->days_selected = $this->_escape($selected_days_of_week);
+        $this->_days_selected = $this->_escape($selected_days_of_week);
         $days_selected_text = [];
         $day_range_start = null;
 
@@ -198,7 +198,7 @@ class TimeRange
             $day_range_start = $day_range_start ?? $day_of_week;
             $next_selected_day = $days_of_week[$i + 1];
 
-            // Continue to the next day when working on a range (i.e. Mon - Thu)
+            // Continue to the next day when working on a range (i.e. Mon-Thu)
             if (($day_of_week + 1) == $next_selected_day) {
                 continue;
             }
@@ -212,11 +212,11 @@ class TimeRange
                 continue;
             }
 
-            $days_selected_text[] = sprintf('%s - %s', $start_day, $stop_day);
+            $days_selected_text[] = sprintf('%s-%s', $start_day, $stop_day);
             $day_range_start = null;
         }
 
-        $this->days_selected_text = $this->_escape(implode(', ', $days_selected_text));
+        $this->_days_selected_text = $this->_escape(implode(', ', $days_selected_text));
     }
 
     private function _initSelectedDaysNonRepeating(
@@ -265,7 +265,7 @@ class TimeRange
 
             // Friendly description for a range of days
             $days_selected_text[] = sprintf(
-                '%s %s - %s',
+                '%s %s-%s',
                 $month_short,
                 $day_range_start,
                 $day
@@ -274,13 +274,13 @@ class TimeRange
             $day_range_start = null;
         }
 
-        $this->days_selected = $this->_escape(implode(',', $days_selected));
-        $this->days_selected_text = $this->_escape(implode(', ', $days_selected_text));
+        $this->_days_selected = $this->_escape(implode(',', $days_selected));
+        $this->_days_selected_text = $this->_escape(implode(', ', $days_selected_text));
     }
 
     private function _initSelectedDays(array $time_range): void {
         if (isset($time_range['days_selected'])) {
-            $this->days_selected = $this->_escape($time_range['days_selected']);
+            $this->_days_selected = $this->_escape($time_range['days_selected']);
         }
 
         if (isset($time_range['position'])) {
@@ -310,12 +310,12 @@ class TimeRange
     }
 
     private function _getNonRepeatingMonthAndDays(): ?array {
-        if (!strstr($this->days_selected, '-')) {
+        if (!strstr($this->_days_selected, '-')) {
             $this->_setError(_('Malformed non-repeating selected days'));
             return null;
         }
 
-        $selected_days = explode(',', $this->days_selected);
+        $selected_days = explode(',', $this->_days_selected);
         $months = [];
         $days = [];
 
@@ -343,13 +343,13 @@ class TimeRange
         }
 
         $time_range = [
-            'hour' => sprintf('%s-%s', $this->start_time, $this->stop_time),
-            'rangedescr' => rawurlencode($this->description)
+            'hour' => sprintf('%s-%s', $this->_start_time, $this->_stop_time),
+            'rangedescr' => rawurlencode($this->_description)
         ];
 
         // Repeating time ranges
-        if (!strstr($this->days_selected, '-')) {
-            $time_range['position'] = $this->days_selected;
+        if (!strstr($this->_days_selected, '-')) {
+            $time_range['position'] = $this->_days_selected;
             return $time_range;
         }
 
@@ -361,6 +361,16 @@ class TimeRange
         }
 
         return array_merge($time_range, $month_and_days);
+    }
+
+    final public function jsonSerialize() {
+        return [
+            'description' => $this->_description,
+            'days_selected' => $this->_days_selected,
+            'days_selected_text' => $this->_days_selected_text,
+            'start_time' => $this->_start_time,
+            'stop_time' => $this->_stop_time
+        ];
     }
 }
 
@@ -897,6 +907,10 @@ function _toggleRepeatingDays(day_of_week, is_highlight = false) {
     }
 }
 
+// FIXME: Using wXpY will not work for subsequent years. Instead of using the
+//  week and position as the ID, the month and day MUST be used instead. Also,
+//  since wXpY is needed for selecting repeating days, use it as a CSS class...
+//  well just pY rather.
 function toggleSingleOrRepeatingDays(cell_id) {
     let week_and_position, month_and_day;
     [week_and_position, month_and_day] = cell_id.split('-');
@@ -1079,6 +1093,87 @@ function removeTimeRange(is_confirm = false) {
     return false;
 }
 
+const askToAddOrClearTimeRange = function(range_description) {
+    const def = $.Deferred();
+
+    BootstrapDialog.show({
+        'type': BootstrapDialog.TYPE_PRIMARY,
+        'title': '<?= _('Modified Time Range In Progress') ?>',
+        'message': '<div style="margin: 10px;">'
+            + `<strong>Range Description:</strong> ${range_description}`
+            + '\n\n'
+            + '<?= _('What would you like to do with the time range that you have in progress?') ?>'
+            + '</div>',
+
+        'buttons': [
+            {
+                'label': '<?= _('Clear Selection');?>',
+                'action': function(dialog) {
+                    dialog.close();
+                    $.when(warnBeforeClearCalender()).then(def.resolve);
+                }
+            },
+            {
+                'label': '<?= _('Add Time & Continue') ?>',
+                'action': function(dialog) {
+                    addTimeRange();
+                    dialog.close();
+                    def.resolve();
+                }
+            }
+        ]
+    });
+
+    return def.promise();
+};
+
+function editTimeRange(days, start_time, stop_time, range_description) {
+    const _doEdit = function() {
+        removeTimeRange.bind(this)();
+        clearCalendar();
+
+        let start_hour, start_min, stop_hour, stop_min;
+        [start_hour, start_min] = start_time.split(':');
+        [stop_hour, stop_min] = stop_time.split(':');
+
+        $('#start-hour').val(start_hour);
+        $('#start-minute').val(start_min);
+        $('#stop-hour').val(stop_hour);
+        $('#stop-minute').val(stop_min);
+        $('#range-description').val(range_description);
+
+        days = days.split(',');
+        days.forEach(function(day) {
+            if (!day)
+                return;
+
+            // Repeating days
+            if (day.length === 1)
+                return toggleSingleOrRepeatingDays(`w1p${day}`);
+
+            // Single day
+            toggleSingleOrRepeatingDays(day);
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+    }.bind(this);
+
+    $(this).blur();
+
+    if (!_isSelectedDaysEmpty()) {
+        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
+        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doEdit);
+
+        // Stops the onClick event from propagating
+        return false;
+    }
+
+    _doEdit();
+
+    // Stops the onClick event from propagating
+    return false;
+}
+
 function injectTimeRange(
     days_text,
     days,
@@ -1177,7 +1272,7 @@ function addTimeRange() {
 
             day_range_start = (!day_range_start) ? day : day_range_start;
 
-            // Continue to the next day when working on a range (i.e. Feb 6 - 8)
+            // Continue to the next day when working on a range (i.e. Feb 6-8)
             if (month === next_selected_month && (day + 1) === next_selected_day)
                 return;
 
@@ -1187,7 +1282,7 @@ function addTimeRange() {
                 return;
             }
 
-            days_selected_text.push(`${month_short} ${day_range_start} - ${day}`);
+            days_selected_text.push(`${month_short} ${day_range_start}-${day}`);
             day_range_start = null;
         });
 
@@ -1229,7 +1324,7 @@ function addTimeRange() {
                 return;
             }
 
-            days_selected_text.push(`${start_day} - ${end_day}`);
+            days_selected_text.push(`${start_day}-${end_day}`);
             day_range_start = null;
         });
 
@@ -1241,87 +1336,6 @@ function addTimeRange() {
             range_description
         );
     }
-}
-
-const askToAddOrClearTimeRange = function(range_description) {
-    const def = $.Deferred();
-
-    BootstrapDialog.show({
-        'type': BootstrapDialog.TYPE_PRIMARY,
-        'title': '<?= _('Modified Time Range In Progress') ?>',
-        'message': '<div style="margin: 10px;">'
-            + `<strong>Range Description:</strong> ${range_description}`
-            + '\n\n'
-            + '<?= _('What would you like to do with the time range that you have in progress?') ?>'
-            + '</div>',
-
-        'buttons': [
-            {
-                'label': '<?= _('Clear Selection');?>',
-                'action': function(dialog) {
-                    dialog.close();
-                    $.when(warnBeforeClearCalender()).then(def.resolve);
-                }
-            },
-            {
-                'label': '<?= _('Add Time & Continue') ?>',
-                'action': function(dialog) {
-                    addTimeRange();
-                    dialog.close();
-                    def.resolve();
-                }
-            }
-        ]
-    });
-
-    return def.promise();
-};
-
-function editTimeRange(days, start_time, stop_time, range_description) {
-    const _doEdit = function() {
-        removeTimeRange.bind(this)();
-        clearCalendar();
-
-        let start_hour, start_min, stop_hour, stop_min;
-        [start_hour, start_min] = start_time.split(':');
-        [stop_hour, stop_min] = stop_time.split(':');
-
-        $('#start-hour').val(start_hour);
-        $('#start-minute').val(start_min);
-        $('#stop-hour').val(stop_hour);
-        $('#stop-minute').val(stop_min);
-        $('#range-description').val(range_description);
-
-        days = days.split(',');
-        days.forEach(function(day) {
-            if (!day)
-                return;
-
-            // Repeating days
-            if (day.length === 1)
-                return toggleSingleOrRepeatingDays(`w1p${day}`);
-
-            // Single day
-            toggleSingleOrRepeatingDays(day);
-        });
-
-        $('.selectpicker').selectpicker('refresh');
-    }.bind(this);
-
-    $(this).blur();
-
-    if (!_isSelectedDaysEmpty()) {
-        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
-        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doEdit);
-
-        // Stops the onClick event from propagating
-        return false;
-    }
-
-    _doEdit();
-
-    // Stops the onClick event from propagating
-    return false;
 }
 
 
