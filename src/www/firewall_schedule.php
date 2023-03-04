@@ -34,28 +34,28 @@ require_once('filter.inc');
 $edit_page = 'firewall_schedule_edit.php';
 
 $days = [
-    gettext('Mon'),
-    gettext('Tue'),
-    gettext('Wed'),
-    gettext('Thu'),
-    gettext('Fri'),
-    gettext('Sat'),
-    gettext('Sun')
+    _('Mon'),
+    _('Tue'),
+    _('Wed'),
+    _('Thu'),
+    _('Fri'),
+    _('Sat'),
+    _('Sun')
 ];
 
 $months = [
-    gettext('Jan'),
-    gettext('Feb'),
-    gettext('Mar'),
-    gettext('Apr'),
-    gettext('May'),
-    gettext('Jun'),
-    gettext('Jul'),
-    gettext('Aug'),
-    gettext('Sep'),
-    gettext('Oct'),
-    gettext('Nov'),
-    gettext('Dec')
+    _('Jan'),
+    _('Feb'),
+    _('Mar'),
+    _('Apr'),
+    _('May'),
+    _('Jun'),
+    _('Jul'),
+    _('Aug'),
+    _('Sep'),
+    _('Oct'),
+    _('Nov'),
+    _('Dec')
 ];
 
 function _getSelectedDaysNonRepeating(array $time_range): string {
@@ -65,17 +65,19 @@ function _getSelectedDaysNonRepeating(array $time_range): string {
         return '';
     }
 
-    $selected_months = explode(',', $time_range['month']);
-    $selected_days = explode(',', $time_range['day']);
+    $selected = (object)[
+        'months' => explode(',', $time_range['month']),
+        'days' => explode(',', $time_range['day'])
+    ];
     $day_range_start = null;
 
-    foreach ($selected_months as $i => $month) {
+    foreach ($selected->months as $i => $month) {
         $month = (int)$month;
-        $day = (int)$selected_days[$i];
+        $day = (int)$selected->days[$i];
         $day_range_start = $day_range_start ?? $day;
 
-        $next_month = (int)$selected_months[$i + 1];
-        $next_day = (int)$selected_days[$i + 1];
+        $next_month = (int)$selected->months[$i + 1];
+        $next_day = (int)$selected->days[$i + 1];
 
         if ($month == $next_month && ($day + 1) == $next_day) {
             continue;
@@ -87,7 +89,7 @@ function _getSelectedDaysNonRepeating(array $time_range): string {
             continue;
         }
 
-        $days_selected_text[] = sprintf('%s %s - %s',
+        $days_selected_text[] = sprintf('%s %s-%s',
             $months[$month - 1],
             $day_range_start,
             $day
@@ -131,7 +133,7 @@ function _getSelectedDaysRepeating(array $time_range): string {
             continue;
         }
 
-        $days_selected_text[] = sprintf('%s - %s', $start_day, $end_day);
+        $days_selected_text[] = sprintf('%s-%s', $start_day, $end_day);
         $day_range_start = null;
     }
 
@@ -164,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 continue;
             }
 
-            $delete_error = gettext(sprintf(
+            $delete_error = _(sprintf(
                 'Cannot delete Schedule. Currently in use by %s',
                 $rule['descr']
             ));
@@ -193,18 +195,18 @@ $(document).ready(function() {
 
         BootstrapDialog.show({
             'type': BootstrapDialog.TYPE_DANGER,
-            'title': '<?= gettext('Rules') ?>',
-            'message': '<?= gettext('Do you really want to delete this schedule?') ?>',
+            'title': '<?= _('Rules') ?>',
+            'message': '<?= _('Do you really want to delete this schedule?') ?>',
 
             'buttons': [
                 {
-                    'label': '<?= gettext('No');?>',
+                    'label': '<?= _('No');?>',
                     'action': function(dialog) {
                         dialog.close();
                     }
                 },
                 {
-                    'label': '<?= gettext('Yes') ?>',
+                    'label': '<?= _('Yes') ?>',
                     'action': function() {
                         $('#id').val(id);
                         $('#action').val('del');
@@ -236,11 +238,12 @@ if ($delete_error) {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <td><?= gettext('Name') ?></td>
-                    <td><?= gettext("Time Range(s)") ?></td>
-                    <td><?= gettext("Description") ?></td>
+                    <td><?= _('Name') ?></td>
+                    <td><?= _("Time Range(s)") ?></td>
+                    <td><?= _("Description") ?></td>
                     <td class="text-nowrap">
-                      <a href="<?= $edit_page ?>" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                      <a href="<?= $edit_page ?>" title="<?= html_safe(_('Add')) ?>"
+                         class="btn btn-primary btn-xs" data-toggle="tooltip">
                         <em class="fa fa-plus fa-fw"></em>
                       </a>
                     </td>
@@ -256,7 +259,9 @@ foreach ($config_schedules as $i => $config_schedule):
 <?php
     if (filter_get_time_based_rule_status($config_schedule)):
 ?>
-                      <span data-toggle="tooltip" title="<?= gettext('Schedule is currently active') ?>" class="fa fa-clock-o"></span>
+                      <span title="<?= _('Schedule is currently active') ?>"
+                            class="fa fa-clock-o"
+                            data-toggle="tooltip"></span>
 <?php
     endif;
 ?>
@@ -281,13 +286,18 @@ foreach ($config_schedules as $i => $config_schedule):
                     </td>
                     <td><?= $config_schedule['descr'] ?></td>
                     <td>
-                      <a href="<?= $edit_page ?>?id=<?= $i ?>" title="<?= html_safe(gettext('Edit')) ?>" class="btn btn-default btn-xs" data-toggle="tooltip">
+                      <a href="<?= $edit_page ?>?id=<?= $i ?>"
+                         title="<?= html_safe(_('Edit')) ?>"
+                         class="btn btn-default btn-xs" data-toggle="tooltip">
                         <span class="fa fa-pencil fa-fw"></span>
                       </a>
-                      <a href="<?= $edit_page ?>?dup=<?= $i ?>" title="<?= html_safe(gettext('Clone')) ?>" class="btn btn-default btn-xs" data-toggle="tooltip">
+                      <a href="<?= $edit_page ?>?dup=<?= $i ?>"
+                         title="<?= html_safe(_('Clone')) ?>"
+                         class="btn btn-default btn-xs" data-toggle="tooltip">
                         <span class="fa fa-clone fa-fw"></span>
                       </a>
-                      <a id="del_<?= $i ?>" title="<?= html_safe(gettext('Delete')) ?>" class="act_delete btn btn-default btn-xs" data-toggle="tooltip">
+                      <a id="del_<?= $i ?>" title="<?= html_safe(_('Delete')) ?>"
+                         class="act_delete btn btn-default btn-xs" data-toggle="tooltip">
                         <span class="fa fa-trash fa-fw"></span>
                       </a>
                     </td>
