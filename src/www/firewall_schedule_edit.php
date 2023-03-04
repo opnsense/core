@@ -1484,7 +1484,7 @@ $references = $schedule->getHTMLReferences();
 if ($references):
 ?>
                       <?= $schedule->getData('name') ?>
-                      <div class="text-danger" style="margin-top: 10px;">
+                      <div class="text-warning" style="margin-top: 10px;">
                         <?= _('The name cannot be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
@@ -1503,8 +1503,8 @@ if ($references):
                     </td>
                     <td>
                       <input type="text" name="description" id="description" value="<?= $schedule->getData('description') ?>" />
-                      <br />
                       <div class="hidden" data-for="help_for_description">
+                        <br />
                         <?= _('You may enter a description here for your reference (not parsed).') ?>
                       </div>
                     </td>
@@ -1600,6 +1600,7 @@ if ($references):
                     <td>
                       <input type="text" id="range-description" />
                       <div class="hidden" data-for="help_for_timerange_desc">
+                        <br />
                         <?= _('You may enter a description here for your reference (not parsed).') ?>
                       </div>
                     </td>
