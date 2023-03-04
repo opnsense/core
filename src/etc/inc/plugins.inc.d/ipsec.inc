@@ -1339,7 +1339,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 'remote-0' => [
                     'id' => ipsec_find_id($ph1ent, "peer") ?? '%any'
                 ],
-                'remote_addrs' => !isset($ph1ent['mobile']) && empty($ph1ent['rightallowany']) ? $ph1ent['remote-gateway'] : '%any',
+                'remote_addrs' => !isset($ph1ent['mobile']) && empty($ph1ent['rightallowany']) ? $ph1ent['remote-gateway'] : '0.0.0.0/0,::/0',
                 'encap' => !empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force' ? 'yes' : 'no',
             ];
             if (!isset($ph1ent['reauth_enable']) && !empty($ph1ent['lifetime']) && !empty($ph1ent['margintime'])) {
