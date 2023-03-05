@@ -810,12 +810,20 @@ label {
 button.btn {
   margin-right: 5px;
 }
-.btn-group-justified > button.btn {
-  margin-right: 0;
-}
-.day-of-week-button {
+.btn-group-justified > .day-of-week-button {
   width: 14.2% !important;
   border-radius: 0;
+  margin-right: 0;
+}
+.btn-group-justified > button.btn:first-of-type,
+.input-group > .dropdown.form-control > select.dropdown-hour + button.dropdown-toggle {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.btn-group-justified > button.btn:last-of-type,
+.input-group > .dropdown.form-control > select.dropdown-minute + button.dropdown-toggle {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 .calendar-nav {
   text-align: center;
@@ -1800,11 +1808,11 @@ if ($schedule->hasErrors()) {
                         <tr>
                           <td>
                             <div class="input-group">
-                              <select id="start-hour" class="selectpicker form-control"
+                              <select id="start-hour" class="selectpicker form-control dropdown-hour"
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <?= $schedule->getHTML24HourOptions() ?>
                               </select>
-                              <select id="start-minute" class="selectpicker form-control"
+                              <select id="start-minute" class="selectpicker form-control dropdown-minute"
                                       data-width="auto" data-size="5" data-live-search="true">
                                   <?= $schedule->getHTMLMinuteOptions() ?>
                               </select>
@@ -1812,11 +1820,11 @@ if ($schedule->hasErrors()) {
                           </td>
                           <td>
                             <div class="input-group">
-                              <select id="stop-hour" class="selectpicker form-control"
+                              <select id="stop-hour" class="selectpicker form-control dropdown-hour"
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <?= $schedule->getHTML24HourOptions() ?>
                               </select>
-                              <select id="stop-minute" class="selectpicker form-control"
+                              <select id="stop-minute" class="selectpicker form-control dropdown-minute"
                                       data-width="auto" data-size="5" data-live-search="true">
                                 <?= $schedule->getHTMLMinuteOptions() ?>
                               </select>
