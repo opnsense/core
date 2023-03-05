@@ -566,6 +566,24 @@ class Schedule
         return implode("\n", $options);
     }
 
+    final public function getHTMLDaysOfWeekButtons(): string {
+        $days = TimeRange::getDays();
+        $buttons = [];
+
+        foreach ($days as $index => $day) {
+            $day_of_week = $index + 1;
+
+            $buttons[] = sprintf(
+                '<button id="day-of-week-%d" type="button" class="day-button btn btn-default" onclick="toggleRepeatingDays(%d)">%s</button>',
+                $day_of_week,
+                $day_of_week,
+                $day
+            );
+        }
+
+        return sprintf('<div class="btn-group-justified">%s</div>', implode("\n", $buttons));
+    }
+
     private function _getHTMLCalendarHeaders(): string {
         $days = TimeRange::getDays();
         $headers = [];
@@ -788,6 +806,10 @@ label {
 }
 #show_all_help_page {
   cursor: pointer;
+}
+.day-button {
+  width: 14.2% !important;
+  border-radius: 0;
 }
 .calendar-nav {
   text-align: center;
@@ -1021,6 +1043,69 @@ function clearTimeRangeDescription(){
     $('#range-description').val('');
 }
 
+function _clearCalendar(is_clear_description = false) {
+    _clearSelectedDays();
+
+    const month_select = $('#month-select');
+    const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].value;
+
+    $(`#${visible_month}`)
+        .parent()
+        .find('tbody td[data-state]')
+        .filter('[data-state != "white"]')
+        .attr('data-state', 'white');
+
+    resetStartAndStopTimes();
+
+    if (is_clear_description)
+        clearTimeRangeDescription();
+}
+
+function _clearDaysButtons() {
+    $('.day-button').each(function(index, button) {
+        $(button).removeClass('btn-primary');
+    });
+}
+
+function _showTimeRangeInputRows() {
+    _clearCalendar();
+    _clearDaysButtons();
+
+    $('#range-time-row').show();
+    $('#range-description-row').show();
+    $('#range-buttons-row').show();
+}
+
+function _resetTimeRangeInputRows() {
+    $('#mode-days-button').removeClass('btn-primary');
+    $('#mode-calendar-button').removeClass('btn-primary');
+    $('#range-days-row').hide();
+    $('#range-calendar-row').hide();
+    $('#range-time-row').hide();
+    $('#range-description-row').hide();
+    $('#range-buttons-row').hide();
+}
+
+function showDaysButtons() {
+    $('#mode-days-button').addClass('btn-primary');
+    $('#range-days-row').show();
+
+    $('#mode-calendar-button').removeClass('btn-primary');
+    $('#range-calendar-row').hide();
+
+    _showTimeRangeInputRows();
+}
+
+function showCalendar() {
+    $('#mode-calendar-button').addClass('btn-primary');
+    $('#range-calendar-row').show();
+
+    $('#mode-days-button').removeClass('btn-primary');
+    $('#range-days-row').hide();
+
+    _showTimeRangeInputRows();
+}
+
 function warnBeforeClearCalender() {
     const def = $.Deferred();
 
@@ -1046,7 +1131,7 @@ function warnBeforeClearCalender() {
                 'label': '<?= _('Clear Selection(s)') ?>',
                 'cssClass': 'btn-danger',
                 'action': function(dialog) {
-                    clearCalendar(true);
+                    _clearCalendar(true);
                     dialog.close();
                     def.resolve();
                 }
@@ -1055,24 +1140,6 @@ function warnBeforeClearCalender() {
     });
 
     return def.promise();
-}
-
-function clearCalendar(is_clear_description = false) {
-    _clearSelectedDays();
-
-    const month_select = $('#month-select');
-    const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].value;
-
-    $(`#${visible_month}`)
-        .parent()
-        .find('tbody td[data-state]')
-        .filter('[data-state != "white"]')
-        .attr('data-state', 'white');
-
-    resetStartAndStopTimes();
-
-    if (is_clear_description)
-        clearTimeRangeDescription();
 }
 
 function removeTimeRange(is_confirm = false) {
@@ -1156,9 +1223,22 @@ const askToAddOrClearTimeRange = function(range_description) {
 };
 
 function editTimeRange(days, start_time, stop_time, range_description) {
+    const _toggleMode = function() {
+        if (days.includes('m'))
+            return showCalendar();
+
+        showDaysButtons();
+
+        days.split(',').forEach(function(day) {
+            $(`#day-of-week-${day}`).addClass('btn-primary');
+        });
+    };
+
     const _doEdit = function() {
         removeTimeRange.bind(this)();
-        clearCalendar();
+        _clearCalendar();
+        _clearDaysButtons();
+        _toggleMode();
 
         let start_hour, start_min, stop_hour, stop_min;
         [start_hour, start_min] = start_time.split(':');
@@ -1172,8 +1252,7 @@ function editTimeRange(days, start_time, stop_time, range_description) {
 
         let is_select_month = true;
 
-        days = days.split(',');
-        days.forEach(function(day) {
+        days.split(',').forEach(function(day) {
             if (!day)
                 return;
 
@@ -1215,8 +1294,8 @@ function injectTimeRange(
 ) {
     const tbody = $('#calendar tbody');
     const tr = $('<tr></tr>');
-    const edit_click = `return editTimeRange.bind(this)('${days}', '${start_time}', '${stop_time}', '${range_description}');`;
-    const delete_click = `return removeTimeRange.bind(this)(true);`;
+    const edit_click = `return editTimeRange.bind(this)('${days}', '${start_time}', '${stop_time}', '${range_description}')`;
+    const delete_click = `return removeTimeRange.bind(this)(true)`;
 
     tbody.append(tr);
     tr.append(`<td><span>${days_text}</span> <input type="hidden" name="days[]" value="${days}" /></td>`);
@@ -1229,7 +1308,8 @@ function injectTimeRange(
     if (!is_clear_calendar)
         return;
 
-    clearCalendar(true);
+    _clearCalendar(true);
+    _clearDaysButtons();
 }
 
 function addTimeRange() {
@@ -1358,6 +1438,8 @@ function addTimeRange() {
         day_range_start = null;
     });
 
+    _resetTimeRangeInputRows();
+
     injectTimeRange(
         days_selected_text.join(', '),
         days_selected.join(','),
@@ -1365,6 +1447,15 @@ function addTimeRange() {
         stop_time,
         range_description
     );
+}
+
+function _initDaysButtons() {
+    $('.day-button').each(function(i, button) {
+        $(button).click(function() {
+            $(this).toggleClass('btn-primary');
+            $(this).blur();
+        });
+    });
 }
 
 function _initCalendar() {
@@ -1412,7 +1503,7 @@ function _initCalendar() {
         _toggleLeftRightVisibility(index);
     });
 
-    clearCalendar(true);
+    _clearCalendar(true);
     _toggleLeftRightVisibility(0);
 }
 
@@ -1443,6 +1534,8 @@ $(function() {
         );
     });
 
+    _resetTimeRangeInputRows();
+    _initDaysButtons();
     _initCalendar();
 });
 //]]>
@@ -1459,13 +1552,13 @@ if ($schedule->hasErrors()) {
 }
 ?>
         <section class="col-xs-12">
-          <div class="content-box tab-content">
-            <form method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
+            <div class="content-box tab-content __mb">
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
                     <td style="width: 15%">
-                      <strong><?= _('Schedule information') ?></strong>
+                      <strong><?= _('Schedule Information') ?></strong>
                     </td>
                     <td style="width: 85%; text-align: right">
                       <small><?= _('full help') ?></small>
@@ -1474,15 +1567,12 @@ if ($schedule->hasErrors()) {
                   </tr>
                   <tr>
                     <td>
-                      <em class="fa fa-info-circle text-muted"></em>
+<?php $references = $schedule->getHTMLReferences(); ?>
+                      <?= ($references) ? '<em class="fa fa-info-circle text-muted"></em>' : '' ?>
                       <label for="name"><?= _('Name') ?></label>
                     </td>
                     <td>
-<?php
-$references = $schedule->getHTMLReferences();
-
-if ($references):
-?>
+<?php if ($references): ?>
                       <?= $schedule->getData('name') ?>
                       <div class="text-warning" style="margin-top: 10px;">
                         <?= _('The name cannot be modified because this schedule is referenced by the following rules:') ?>
@@ -1509,7 +1599,87 @@ if ($references):
                       </div>
                     </td>
                   </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="content-box tab-content __mb">
+              <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
                   <tr>
+                    <th colspan="2"><?= _('Configured Ranges') ?></th>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <table id="calendar">
+                        <tbody>
+                          <tr>
+                            <td style="width: 35%;"><?= _('Day(s)') ?></td>
+                            <td style="width: 12%;"><?= _('Start Time') ?></td>
+                            <td style="width: 11%;"><?= _('Stop Time') ?></td>
+                            <td style="width: 42%;"><?= _('Description') ?></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="content-box tab-content __mb">
+              <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
+                  <tr>
+                    <th colspan="2"><?= _('New Range') ?></th>
+                  </tr>
+                  <tr>
+                    <td style="width: 150px;">
+                      <a id="help_for_mode" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <label><?= _('Mode') ?></label>
+                    </td>
+                    <td>
+                      <button id="mode-days-button" type="button" class="btn btn-default"
+                              style="margin-right: 10px;"
+                              onclick="showDaysButtons()">
+                        <?= html_safe(_('Week Days')) ?>
+                      </button>
+                      <button id="mode-calendar-button" type="button" class="btn btn-default"
+                              onclick="showCalendar()">
+                        <?= html_safe(_('Specific Dates')) ?>
+                      </button>
+
+                      <div class="hidden" data-for="help_for_mode">
+                        <br />
+                        <?= _('Select "Week Days" to set up a time range for repeating days of the week or "Specific Dates" to choose dates on a calendar.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="range-days-row">
+                    <td>
+                      <a id="help_for_days" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <label for="month-select"><?= _('Days') ?></label>
+                    </td>
+                    <td>
+                      <?= $schedule->getHTMLDaysOfWeekButtons() ?>
+
+                      <div class="hidden" data-for="help_for_days">
+                        <br />
+                        <?= _('Select the applicable day(s) for the time range') ?>
+                      </div>
+
+                      <?php
+                      // Hack to make sure the striping continues for the table
+                      // rows below because the tables above appear to disrupt
+                      // the striping for the rows that follow
+                      ?>
+                      <table style="visibility: hidden;">
+                        <tr><td></td></tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr id="range-calendar-row">
                     <td>
                       <a id="help_for_month" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
                       <label for="month-select"><?= _('Month') ?></label>
@@ -1538,16 +1708,24 @@ if ($references):
                           </tr>
                         </thead>
                       </table>
-
                       <?= $schedule->getHTMLCalendar(); ?>
+
+                      <?php
+                      // Hack to make sure the striping continues for the table
+                      // rows below because the tables above appear to disrupt
+                      // the striping for the rows that follow
+                      ?>
+                      <table style="visibility: hidden;">
+                        <tr><td></td></tr>
+                      </table>
 
                       <div class="hidden" data-for="help_for_month">
                         <br />
-                        <?= _('Click individual date to select that date only. Click the appropriate weekday Header to select all occurrences of that weekday.') ?>
+                        <?= _('Click an individual date to select that date only. Click the appropriate day header to select all occurrences of that day.') ?>
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr id="range-time-row">
                     <td>
                       <a id="help_for_time" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
                       <?= _('Time') ?>
@@ -1588,11 +1766,11 @@ if ($references):
 
                       <div class="hidden" data-for="help_for_time">
                         <br />
-                        <?= _('Select the time range for the day(s) selected on the Month(s) above. A full day is 0:00-23:59.') ?>
+                        <?= _('Select the time range for the day(s) selected above. A full day is 0:00-23:59.') ?>
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr id="range-description-row">
                     <td>
                       <a id="help_for_timerange_desc" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
                       <label for="range-description"><?= _('Range Description') ?></label>
@@ -1605,52 +1783,47 @@ if ($references):
                       </div>
                     </td>
                   </tr>
+                  <tr id="range-buttons-row">
+                    <td>&nbsp;</td>
+                    <td>
+                      <button type="button" class="btn btn-default"
+                              style="margin-right: 10px;"
+                              onclick="addTimeRange.bind(this)()">
+                        <?= html_safe(_('Add Time')) ?>
+                      </button>
+                      <button type="button" class="btn btn-default"
+                              onclick="warnBeforeClearCalender.bind(this)()">
+                        <?= html_safe(_('Clear Selection(s)')) ?>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="content-box tab-content __mb">
+              <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input type="button" value="<?= html_safe(_('Add Time')) ?>"
-                             class="btn btn-default" style="margin: 0 5px;"
-                             onclick="addTimeRange.bind(this)();" />
-                      <input type="button" value="<?= html_safe(_('Clear Selection(s)')) ?>"
-                             class="btn btn-default" style="margin: 0 5px;"
-                             onclick="warnBeforeClearCalender.bind(this)();" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th colspan="2"><?= _('Schedule Repeat') ?></th>
-                  </tr>
-                  <tr>
-                    <td><?= _('Configured Ranges') ?></td>
-                    <td>
-                      <table id="calendar">
-                        <tbody>
-                          <tr>
-                            <td style="width: 35%;"><?= _('Day(s)') ?></td>
-                            <td style="width: 12%;"><?= _('Start Time') ?></td>
-                            <td style="width: 11%;"><?= _('Stop Time') ?></td>
-                            <td style="width: 42%;"><?= _('Description') ?></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <input type="submit" name="submit" id="submit"
-                             value="<?= html_safe(_('Save')) ?>"
-                             class="btn btn-primary" style="margin: 0 5px;"
-                             onclick="return warnBeforeSave();" />
-                      <input type="button" value="<?= html_safe(_('Cancel')) ?>"
-                             class="btn btn-default" style="margin: 0 5px;"
-                             onclick="window.location.href='<?= $schedule->getReturnURL() ?>'" />
+                      <button type="submit" name="submit" id="submit"
+                              class="btn btn-primary" style="margin-right: 10px;"
+                              onclick="return warnBeforeSave()">
+                        <?= html_safe(_('Save')) ?>
+                      </button>
+                      <button type="button" class="btn btn-default"
+                              onclick="window.location.href='<?= $schedule->getReturnURL() ?>'">
+                        <?= html_safe(_('Cancel')) ?>
+                      </button>
                       <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
                     </td>
                   </tr>
                 </tbody>
               </table>
-            </form>
-          </div>
+            </div>
+
+          </form>
         </section>
       </div>
     </div>
