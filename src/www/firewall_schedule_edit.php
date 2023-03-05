@@ -574,7 +574,7 @@ class Schedule
             $day_of_week = $index + 1;
 
             $buttons[] = sprintf(
-                '<button id="day-of-week-%d" type="button" class="day-button btn btn-default" onclick="toggleRepeatingDays(%d)">%s</button>',
+                '<button id="day-of-week-%d" type="button" class="day-of-week-button btn btn-default" onclick="toggleRepeatingDays(%d)">%s</button>',
                 $day_of_week,
                 $day_of_week,
                 $day
@@ -807,7 +807,7 @@ label {
 #show_all_help_page {
   cursor: pointer;
 }
-.day-button {
+.day-of-week-button {
   width: 14.2% !important;
   border-radius: 0;
 }
@@ -1061,15 +1061,23 @@ function _clearCalendar(is_clear_description = false) {
         clearTimeRangeDescription();
 }
 
-function _clearDaysButtons() {
-    $('.day-button').each(function(index, button) {
-        $(button).removeClass('btn-primary');
+function _activateButton(button) {
+    $(button).addClass('active');
+}
+
+function _deactivateButton(button) {
+    $(button).removeClass('active');
+}
+
+function _clearDaysOfWeekButtons() {
+    $('.day-of-week-button').each(function(index, button) {
+        _deactivateButton(button);
     });
 }
 
 function _showTimeRangeInputRows() {
     _clearCalendar();
-    _clearDaysButtons();
+    _clearDaysOfWeekButtons();
 
     $('#range-time-row').show();
     $('#range-description-row').show();
@@ -1077,8 +1085,9 @@ function _showTimeRangeInputRows() {
 }
 
 function _resetTimeRangeInputRows() {
-    $('#mode-days-button').removeClass('btn-primary');
-    $('#mode-calendar-button').removeClass('btn-primary');
+    _deactivateButton('#mode-days-button');
+    _deactivateButton('#mode-calendar-button');
+
     $('#range-days-row').hide();
     $('#range-calendar-row').hide();
     $('#range-time-row').hide();
@@ -1086,24 +1095,54 @@ function _resetTimeRangeInputRows() {
     $('#range-buttons-row').hide();
 }
 
-function showDaysButtons() {
-    $('#mode-days-button').addClass('btn-primary');
-    $('#range-days-row').show();
+function showDaysOfWeekButtons() {
+    const _doShow = function() {
+        _activateButton('#mode-days-button');
+        $('#range-days-row').show();
 
-    $('#mode-calendar-button').removeClass('btn-primary');
-    $('#range-calendar-row').hide();
+        _deactivateButton('#mode-calendar-button');
+        $('#range-calendar-row').hide();
 
-    _showTimeRangeInputRows();
+        _showTimeRangeInputRows();
+    };
+
+    if (!_isSelectedDaysEmpty()) {
+        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
+        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doShow);
+
+        // Stops the onClick event from propagating
+        return false;
+    }
+
+    _doShow();
+
+    // Stops the onClick event from propagating
+    return false;
 }
 
 function showCalendar() {
-    $('#mode-calendar-button').addClass('btn-primary');
-    $('#range-calendar-row').show();
+    const _doShow = function() {
+        _activateButton('#mode-calendar-button');
+        $('#range-calendar-row').show();
 
-    $('#mode-days-button').removeClass('btn-primary');
-    $('#range-days-row').hide();
+        _deactivateButton('#mode-days-button');
+        $('#range-days-row').hide();
 
-    _showTimeRangeInputRows();
+        _showTimeRangeInputRows();
+    };
+
+    if (!_isSelectedDaysEmpty()) {
+        // NOTE: askToAddOrClearTimeRange() will only resolve the promise
+        $.when(askToAddOrClearTimeRange($('#range-description').val())).then(_doShow);
+
+        // Stops the onClick event from propagating
+        return false;
+    }
+
+    _doShow();
+
+    // Stops the onClick event from propagating
+    return false;
 }
 
 function warnBeforeClearCalender() {
@@ -1184,7 +1223,7 @@ function removeTimeRange(is_confirm = false) {
         remove_button.closest('tr').remove();
     });
 
-    // NOTE: A "false" value is returned to stop the onClick event from propagating
+    // Stops the onClick event from propagating
     return false;
 }
 
@@ -1227,17 +1266,17 @@ function editTimeRange(days, start_time, stop_time, range_description) {
         if (days.includes('m'))
             return showCalendar();
 
-        showDaysButtons();
+        showDaysOfWeekButtons();
 
         days.split(',').forEach(function(day) {
-            $(`#day-of-week-${day}`).addClass('btn-primary');
+            _activateButton(`#day-of-week-${day}`);
         });
     };
 
     const _doEdit = function() {
         removeTimeRange.bind(this)();
         _clearCalendar();
-        _clearDaysButtons();
+        _clearDaysOfWeekButtons();
         _toggleMode();
 
         let start_hour, start_min, stop_hour, stop_min;
@@ -1309,7 +1348,7 @@ function injectTimeRange(
         return;
 
     _clearCalendar(true);
-    _clearDaysButtons();
+    _clearDaysOfWeekButtons();
 }
 
 function addTimeRange() {
@@ -1449,10 +1488,10 @@ function addTimeRange() {
     );
 }
 
-function _initDaysButtons() {
-    $('.day-button').each(function(i, button) {
+function _initDaysOfWeekButtons() {
+    $('.day-of-week-button').each(function(i, button) {
         $(button).click(function() {
-            $(this).toggleClass('btn-primary');
+            $(this).toggleClass('active');
             $(this).blur();
         });
     });
@@ -1535,7 +1574,7 @@ $(function() {
     });
 
     _resetTimeRangeInputRows();
-    _initDaysButtons();
+    _initDaysOfWeekButtons();
     _initCalendar();
 });
 //]]>
@@ -1640,13 +1679,13 @@ if ($schedule->hasErrors()) {
                       <label><?= _('Mode') ?></label>
                     </td>
                     <td>
-                      <button id="mode-days-button" type="button" class="btn btn-default"
-                              style="margin-right: 10px;"
-                              onclick="showDaysButtons()">
+                      <button id="mode-days-button" type="button"
+                              class="btn btn-default" style="margin-right: 10px;"
+                              onclick="return showDaysOfWeekButtons()">
                         <?= html_safe(_('Week Days')) ?>
                       </button>
-                      <button id="mode-calendar-button" type="button" class="btn btn-default"
-                              onclick="showCalendar()">
+                      <button id="mode-calendar-button" type="button"
+                              class="btn btn-default" onclick="return showCalendar()">
                         <?= html_safe(_('Specific Dates')) ?>
                       </button>
 
