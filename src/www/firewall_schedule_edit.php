@@ -807,6 +807,12 @@ label {
 #show_all_help_page {
   cursor: pointer;
 }
+button.btn {
+  margin-right: 5px;
+}
+.btn-group-justified > button.btn {
+  margin-right: 0;
+}
 .day-of-week-button {
   width: 14.2% !important;
   border-radius: 0;
@@ -827,6 +833,7 @@ label {
   text-decoration: underline;
   text-align: center;
   cursor: pointer;
+  border-bottom-width: 0 !important;
 }
 .calendar-day {
   text-align: center;
@@ -1069,39 +1076,42 @@ function _deactivateButton(button) {
     $(button).removeClass('active');
 }
 
-function _clearDaysOfWeekButtons() {
+function _clearCalendarAndDaysOfWeek(is_clear_description = false) {
+    _clearCalendar(is_clear_description);
+
     $('.day-of-week-button').each(function(index, button) {
         _deactivateButton(button);
     });
 }
 
 function _showTimeRangeInputRows() {
-    _clearCalendar();
-    _clearDaysOfWeekButtons();
+    _clearCalendarAndDaysOfWeek();
 
     $('#range-time-row').show();
     $('#range-description-row').show();
     $('#range-buttons-row').show();
 }
 
-function _resetTimeRangeInputRows() {
-    _deactivateButton('#mode-days-button');
-    _deactivateButton('#mode-calendar-button');
+function resetTimeRangeInputRows() {
+    _deactivateButton('#mode-week-days-button');
+    _deactivateButton('#mode-specific-dates-button');
 
-    $('#range-days-row').hide();
-    $('#range-calendar-row').hide();
+    $('#range-week-days-row').hide();
+    $('#range-specific-dates-row').hide();
     $('#range-time-row').hide();
     $('#range-description-row').hide();
     $('#range-buttons-row').hide();
+
+    _clearCalendarAndDaysOfWeek(true);
 }
 
-function showDaysOfWeekButtons() {
+function showWeekDaysRow() {
     const _doShow = function() {
-        _activateButton('#mode-days-button');
-        $('#range-days-row').show();
+        _activateButton('#mode-week-days-button');
+        $('#range-week-days-row').show();
 
-        _deactivateButton('#mode-calendar-button');
-        $('#range-calendar-row').hide();
+        _deactivateButton('#mode-specific-dates-button');
+        $('#range-specific-dates-row').hide();
 
         _showTimeRangeInputRows();
     };
@@ -1120,13 +1130,13 @@ function showDaysOfWeekButtons() {
     return false;
 }
 
-function showCalendar() {
+function showSpecificDatesRow() {
     const _doShow = function() {
-        _activateButton('#mode-calendar-button');
-        $('#range-calendar-row').show();
+        _activateButton('#mode-specific-dates-button');
+        $('#range-specific-dates-row').show();
 
-        _deactivateButton('#mode-days-button');
-        $('#range-days-row').hide();
+        _deactivateButton('#mode-week-days-button');
+        $('#range-week-days-row').hide();
 
         _showTimeRangeInputRows();
     };
@@ -1155,22 +1165,23 @@ function warnBeforeClearCalender() {
 
     BootstrapDialog.show({
         'type': BootstrapDialog.TYPE_DANGER,
-        'title': '<?= _('Clear Selection(s)?') ?>',
+        'title': '<?= _('Clear Selections?') ?>',
         'message': '<div style="margin: 10px;"><?= _('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!') ?></div>',
 
         'buttons': [
             {
                 'label': '<?= _('Cancel') ?>',
+                'cssClass': 'btn btn-default',
                 'action': function(dialog) {
                     dialog.close();
                     def.reject();
                 }
             },
             {
-                'label': '<?= _('Clear Selection(s)') ?>',
-                'cssClass': 'btn-danger',
+                'label': '<?= _('Clear') ?>',
+                'cssClass': 'btn btn-danger',
                 'action': function(dialog) {
-                    _clearCalendar(true);
+                    _clearCalendarAndDaysOfWeek();
                     dialog.close();
                     def.resolve();
                 }
@@ -1196,6 +1207,7 @@ function removeTimeRange(is_confirm = false) {
             'buttons': [
                 {
                     'label': '<?= _('Cancel') ?>',
+                    'cssClass': 'btn btn-default',
                     'action': function(dialog) {
                         dialog.close();
                         def.reject();
@@ -1203,7 +1215,7 @@ function removeTimeRange(is_confirm = false) {
                 },
                 {
                     'label': '<?= _('Remove') ?>',
-                    'cssClass': 'btn-danger',
+                    'cssClass': 'btn btn-danger',
                     'action': function(dialog) {
                         dialog.close();
                         def.resolve();
@@ -1234,21 +1246,30 @@ const askToAddOrClearTimeRange = function(range_description) {
         'type': BootstrapDialog.TYPE_PRIMARY,
         'title': '<?= _('Modified Time Range In Progress') ?>',
         'message': '<div style="margin: 10px;">'
-            + `<strong>Range Description:</strong> ${range_description}`
+            + `<strong>Range Description:</strong> ${range_description || '<em>N/A</em>'}`
             + '\n\n'
             + '<?= _('What would you like to do with the time range that you have in progress?') ?>'
             + '</div>',
 
         'buttons': [
             {
-                'label': '<?= _('Clear Selection');?>',
+                'label': '<?= _('Cancel') ?>',
+                'cssClass': 'btn btn-default',
+                'action': function(dialog) {
+                    dialog.close();
+                }
+            },
+            {
+                'label': '<?= _('Clear') ?>',
+                'cssClass': 'btn btn-danger',
                 'action': function(dialog) {
                     dialog.close();
                     $.when(warnBeforeClearCalender()).then(def.resolve);
                 }
             },
             {
-                'label': '<?= _('Add Time & Continue') ?>',
+                'label': '<?= _('Add & Continue') ?>',
+                'cssClass': 'btn btn-primary',
                 'action': function(dialog) {
                     addTimeRange();
                     dialog.close();
@@ -1264,9 +1285,9 @@ const askToAddOrClearTimeRange = function(range_description) {
 function editTimeRange(days, start_time, stop_time, range_description) {
     const _toggleMode = function() {
         if (days.includes('m'))
-            return showCalendar();
+            return showSpecificDatesRow();
 
-        showDaysOfWeekButtons();
+        showWeekDaysRow();
 
         days.split(',').forEach(function(day) {
             _activateButton(`#day-of-week-${day}`);
@@ -1275,8 +1296,7 @@ function editTimeRange(days, start_time, stop_time, range_description) {
 
     const _doEdit = function() {
         removeTimeRange.bind(this)();
-        _clearCalendar();
-        _clearDaysOfWeekButtons();
+        _clearCalendarAndDaysOfWeek();
         _toggleMode();
 
         let start_hour, start_min, stop_hour, stop_min;
@@ -1347,8 +1367,7 @@ function injectTimeRange(
     if (!is_clear_calendar)
         return;
 
-    _clearCalendar(true);
-    _clearDaysOfWeekButtons();
+    _clearCalendarAndDaysOfWeek(true);
 }
 
 function addTimeRange() {
@@ -1406,7 +1425,7 @@ function addTimeRange() {
         let days_selected_text = [];
 
         // Prepare the friendly label to make it easier to read on the list of
-        // "Configured Ranges"
+        // "Configured Time Ranges"
         non_repeating_selections.forEach(function(selected, i) {
             if (!(selected.month && !isNaN(selected.month)))
                 return;
@@ -1448,7 +1467,7 @@ function addTimeRange() {
     let days_selected_text = [];
 
     // Prepare the friendly label to make it easier to read on the list of
-    // "Configured Ranges"
+    // "Configured Time Ranges"
     days_selected.sort();
 
     // ISO 8601 days
@@ -1477,7 +1496,7 @@ function addTimeRange() {
         day_range_start = null;
     });
 
-    _resetTimeRangeInputRows();
+    resetTimeRangeInputRows();
 
     injectTimeRange(
         days_selected_text.join(', '),
@@ -1573,7 +1592,7 @@ $(function() {
         );
     });
 
-    _resetTimeRangeInputRows();
+    resetTimeRangeInputRows();
     _initDaysOfWeekButtons();
     _initCalendar();
 });
@@ -1646,7 +1665,7 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
-                    <th colspan="2"><?= _('Configured Ranges') ?></th>
+                    <th colspan="2"><?= _('Configured Time Ranges') ?></th>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>
@@ -1671,7 +1690,7 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
-                    <th colspan="2"><?= _('New Range') ?></th>
+                    <th colspan="2"><?= _('New Time Range') ?></th>
                   </tr>
                   <tr>
                     <td style="width: 150px;">
@@ -1679,31 +1698,32 @@ if ($schedule->hasErrors()) {
                       <label><?= _('Mode') ?></label>
                     </td>
                     <td>
-                      <button id="mode-days-button" type="button"
-                              class="btn btn-default" style="margin-right: 10px;"
-                              onclick="return showDaysOfWeekButtons()">
+                      <button id="mode-week-days-button" type="button"
+                              class="btn btn-default"
+                              onclick="return showWeekDaysRow()">
                         <?= html_safe(_('Week Days')) ?>
                       </button>
-                      <button id="mode-calendar-button" type="button"
-                              class="btn btn-default" onclick="return showCalendar()">
+                      <button id="mode-specific-dates-button" type="button"
+                              class="btn btn-default" onclick="return showSpecificDatesRow()">
                         <?= html_safe(_('Specific Dates')) ?>
                       </button>
 
                       <div class="hidden" data-for="help_for_mode">
                         <br />
-                        <?= _('Select "Week Days" to set up a time range for repeating days of the week or "Specific Dates" to choose dates on a calendar.') ?>
+                        <?= _('Select "Week Days" to configure a time range for repeating days of the week or "Specific Dates" to choose dates on a calendar.') ?>
                       </div>
                     </td>
                   </tr>
-                  <tr id="range-days-row">
+
+                  <tr id="range-week-days-row">
                     <td>
-                      <a id="help_for_days" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="month-select"><?= _('Days') ?></label>
+                      <a id="help_for_week_days" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <?= _('Week Days') ?>
                     </td>
                     <td>
                       <?= $schedule->getHTMLDaysOfWeekButtons() ?>
 
-                      <div class="hidden" data-for="help_for_days">
+                      <div class="hidden" data-for="help_for_week_days">
                         <br />
                         <?= _('Select the applicable day(s) for the time range') ?>
                       </div>
@@ -1718,10 +1738,11 @@ if ($schedule->hasErrors()) {
                       </table>
                     </td>
                   </tr>
-                  <tr id="range-calendar-row">
+
+                  <tr id="range-specific-dates-row">
                     <td>
-                      <a id="help_for_month" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="month-select"><?= _('Month') ?></label>
+                      <a id="help_for_specific_dates" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <?= _('Specific Dates') ?>
                     </td>
                     <td>
                       <table class="table table-condensed table-bordered">
@@ -1758,12 +1779,13 @@ if ($schedule->hasErrors()) {
                         <tr><td></td></tr>
                       </table>
 
-                      <div class="hidden" data-for="help_for_month">
+                      <div class="hidden" data-for="help_for_specific_dates">
                         <br />
                         <?= _('Click an individual date to select that date only. Click the appropriate day header to select all occurrences of that day.') ?>
                       </div>
                     </td>
                   </tr>
+
                   <tr id="range-time-row">
                     <td>
                       <a id="help_for_time" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
@@ -1809,10 +1831,11 @@ if ($schedule->hasErrors()) {
                       </div>
                     </td>
                   </tr>
+
                   <tr id="range-description-row">
                     <td>
                       <a id="help_for_timerange_desc" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
-                      <label for="range-description"><?= _('Range Description') ?></label>
+                      <label for="range-description"><?= _('Description') ?></label>
                     </td>
                     <td>
                       <input type="text" id="range-description" />
@@ -1822,17 +1845,21 @@ if ($schedule->hasErrors()) {
                       </div>
                     </td>
                   </tr>
+
                   <tr id="range-buttons-row">
                     <td>&nbsp;</td>
                     <td>
                       <button type="button" class="btn btn-default"
-                              style="margin-right: 10px;"
-                              onclick="addTimeRange.bind(this)()">
-                        <?= html_safe(_('Add Time')) ?>
+                              onclick="resetTimeRangeInputRows()">
+                        <?= html_safe(_('Cancel')) ?>
                       </button>
-                      <button type="button" class="btn btn-default"
+                      <button type="button" class="btn btn-danger"
                               onclick="warnBeforeClearCalender.bind(this)()">
-                        <?= html_safe(_('Clear Selection(s)')) ?>
+                        <?= html_safe(_('Clear')) ?>
+                      </button>
+                      <button type="button" class="btn btn-primary"
+                              onclick="addTimeRange.bind(this)()">
+                          <?= html_safe(_('Add')) ?>
                       </button>
                     </td>
                   </tr>
@@ -1846,16 +1873,19 @@ if ($schedule->hasErrors()) {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <button type="submit" name="submit" id="submit"
-                              class="btn btn-primary" style="margin-right: 10px;"
-                              onclick="return warnBeforeSave()">
-                        <?= html_safe(_('Save')) ?>
-                      </button>
-                      <button type="button" class="btn btn-default"
-                              onclick="window.location.href='<?= $schedule->getReturnURL() ?>'">
-                        <?= html_safe(_('Cancel')) ?>
-                      </button>
                       <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
+
+                      <div style="float: right;">
+                        <button type="button" class="btn btn-default"
+                                onclick="window.location.href='<?= $schedule->getReturnURL() ?>'">
+                          <?= html_safe(_('Cancel')) ?>
+                        </button>
+                        <button type="submit" name="submit" id="submit"
+                                class="btn btn-primary"
+                                onclick="return warnBeforeSave()">
+                          <?= html_safe(_('Save')) ?>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
