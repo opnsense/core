@@ -34,6 +34,8 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+exit_on_bootup();
+
 $argument = isset($argv[1]) ? trim($argv[1]) : 'wan';
 
 interface_configure(true, $argument, true);

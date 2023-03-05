@@ -39,4 +39,20 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceTemplate = 'OPNsense/IPsec';
     protected static $internalServiceName = 'ipsec';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function invokeInterfaceRegistration()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function reconfigureForceRestart()
+    {
+        return 0;
+    }
 }

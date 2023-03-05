@@ -185,105 +185,104 @@ include("head.inc");
           <form method="post" name="iform">
             <input name="id" type="hidden" value="<?=$id;?>" />
             <input name="input_type" type="hidden" value="<?=$input_type;?>" />
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><?=gettext("System Privileges");?></td>
-                <td style="width:78%">
-                    <table class="table table-condensed table-hoover">
-                        <thead>
-                            <tr>
-                                <th style="width:70px;"><?=gettext("Allowed");?></th>
-                                <th><?=gettext("Description");?></th>
-                            </tr>
-                            <tr>
-                                <th>
-                                    <input type="checkbox" id="search_selected"> <small><?=gettext("(filter)");?></small>
-                                </th>
-                                <th>
-                                    <input type="text" placeholder="<?=gettext("search");?>" id="search">
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="priv_container">
-                        <table class="table table-condensed table-hoover">
-                            <thead>
-                                <tr>
-                                    <th style="width:70px;"></th>
-                                    <th style="width:50px;"></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
+            <table class="table table-striped ">
+              <thead>
+                <tr>
+                  <th><?=gettext("System Privileges");?></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                      <table class="table table-condensed table-hoover">
+                          <thead>
+                              <tr>
+                                  <th style="width:70px;"><?=gettext("Allowed");?></th>
+                                  <th style="width:350px;"><?=gettext("Description");?></th>
+                                  <th><?=gettext("Endpoints");?></th>
+                              </tr>
+                              <tr>
+                                  <th>
+                                      <input type="checkbox" id="search_selected"> <small><?=gettext("(filter)");?></small>
+                                  </th>
+                                  <th colspan="2">
+                                      <input type="text" placeholder="<?=gettext("search");?>" id="search">
+                                  </th>
+                              </tr>
+                          </thead>
+                      </table>
+                      <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="priv_container">
+                          <table class="table table-condensed table-hoover">
+                              <thead>
+                                  <tr>
+                                      <th style="width:70px;"></th>
+                                      <th style="width:50px;"></th>
+                                      <th style="width:300px;"></th>
+                                      <th></tH>
+                                  </tr>
+                              </thead>
+                              <tbody>
 <?php
-                            foreach ($priv_list as $pname => $pdata) {
-                                 $pnamesafe = !empty($pdata['name']) ? $pdata['name'] : $pname;
-                                 switch (substr($pname, 0, 5)) {
-                                     case 'page-':
-                                         $pdesc = gettext('GUI');
-                                         break;
-                                     case 'user-':
-                                         $pdesc = gettext('User');
-                                         break;
-                                     default:
-                                         $pdesc = gettext('N/A');
-                                         break;
-                                 } ?>
-                                <tr class="acl_item" data-search-phrase="<?= $pdesc . ' ' . $pnamesafe ?>">
-                                    <td>
-                                        <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
-                                    </td>
-                                    <td><?= $pdesc ?></td>
-                                    <td><?= $pnamesafe ?>
+                              foreach ($priv_list as $pname => $pdata) {
+                                   $pnamesafe = !empty($pdata['name']) ? $pdata['name'] : $pname;
+                                   switch (substr($pname, 0, 5)) {
+                                       case 'page-':
+                                           $pdesc = gettext('GUI');
+                                           break;
+                                       case 'user-':
+                                           $pdesc = gettext('User');
+                                           break;
+                                       default:
+                                           $pdesc = gettext('N/A');
+                                           break;
+                                   }
+                                   $search_phrase = $pdesc . ' ' . $pnamesafe;
+                                   if (!empty($pdata['match'])) {
+                                       $search_phrase .= implode(' ', $pdata['match']);
+                                   }
+                                    ?>
+                                  <tr class="acl_item" data-search-phrase="<?= $search_phrase ?>">
+                                      <td>
+                                          <input name="sysprivs[]" type="checkbox" value="<?= $pname ?>" <?= !empty($a_privs) && in_array($pname, $a_privs) ? 'checked="checked"' : '' ?>>
+                                      </td>
+                                      <td><?= $pdesc ?></td>
+                                      <td><?= $pnamesafe ?></td>
+                                      <td>
 <?php
-                                      if (!empty($pdata['match'])):?>
-                                      <i class="fa fa-info-circle" style="cursor: pointer" data-toggle="collapse" href="#<?=$pname;?>"></i>
-                                      <div class="collapse" id="<?=$pname;?>">
-                                        <table class="table table-condensed">
-                                          <thead>
-                                            <tr>
-                                                <th><?=gettext("endpoint");?>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
+                                        foreach (!empty($pdata['match']) ? $pdata['match'] : [] as $match):?>
+                                          <small>/<?=$match;?></small><br/>
 <?php
-                                          foreach ($pdata['match'] as $match):?>
-                                            <tr><td>/<?=$match;?></td></tr>
+                                        endforeach;?>
+                                      </td>
+                                  </tr>
 <?php
-                                          endforeach;?>
-                                          </tbody>
-                                        </table>
-                                      </div>
-<?php
-                                      endif;?>
-                                    </td>
-                                </tr>
-<?php
-                            } ?>
-                            </tbody>
-                        </table>
-                    </div>
-                    <table class="table table-condensed table-hoover">
-                        <thead>
-                            <tr>
-                                <th style="width:50px;"><input type="checkbox" id="selectall"></th>
-                                <th><?=gettext("Select all (visible)");?></th>
-                            </tr>
-                            <tr>
-                                <th style="width:50px;"><input type="checkbox" id="deselectall"></th>
-                                <th><?=gettext("Deselect all (visible)");?></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </td>
-              </tr>
-              <tr>
-                <td>&nbsp;</td>
-                <td>
-                  <input type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
-                  <input class="btn btn-default" type="button" value="<?=html_safe(gettext("Cancel"));?>" onclick="history.back()" />
-                </td>
-              </tr>
+                              } ?>
+                              </tbody>
+                          </table>
+                      </div>
+                      <table class="table table-condensed table-hoover">
+                          <thead>
+                              <tr>
+                                  <th style="width:50px;"><input type="checkbox" id="selectall"></th>
+                                  <th><?=gettext("Select all (visible)");?></th>
+                              </tr>
+                              <tr>
+                                  <th style="width:50px;"><input type="checkbox" id="deselectall"></th>
+                                  <th><?=gettext("Deselect all (visible)");?></th>
+                              </tr>
+                          </thead>
+                      </table>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>
+                    <input type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+                    <input class="btn btn-default" type="button" value="<?=html_safe(gettext("Cancel"));?>" onclick="history.back()" />
+                  </td>
+                </tr>
+            </tfoot>
             </table>
           </form>
         </div>

@@ -51,7 +51,6 @@ if ($_POST) {
         }
         fclose($fd_pic);
         if (!$data) {
-            log_error("Warning, could not read file " . $_FILES['pictfile']['tmp_name']);
             die("Could not read temporary file");
         } else {
             $picname = basename($_FILES['uploadedfile']['name']);

@@ -88,7 +88,10 @@ class AsyncLookup:
 
     async def request_ittr(self, addresses):
         self._results = {}
-        dnsResolver = Resolver()
+        try:
+            dnsResolver = Resolver()
+        except dns.resolver.NoResolverConfiguration:
+            return
         dnsResolver.timeout = 2
         tasks = []
         for address in addresses:

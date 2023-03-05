@@ -63,36 +63,59 @@ $.fn.UIBootgrid = function (params) {
      *  register commands
      */
     this.getCommands = function() {
-        return {
-            "command-add": {
+        let result = {
+            "add": {
                 method: this_grid.command_add,
-                requires: ['get', 'set']
+                requires: ['get', 'set'],
+                sequence: 100
             },
-            "command-edit": {
+            "edit": {
                 method: this_grid.command_edit,
-                requires: ['get', 'set']
+                classname: 'fa fa-fw fa-pencil',
+                requires: ['get', 'set'],
+                sequence: 100
             },
-            "command-delete": {
+            "delete": {
                 method: this_grid.command_delete,
-                requires: ['del']
+                classname: 'fa fa-fw fa-trash-o',
+                requires: ['del'],
+                sequence: 500
             },
-            "command-copy": {
+            "copy": {
                 method: this_grid.command_copy,
-                requires: ['get', 'set']
+                classname: 'fa fa-fw fa-clone',
+                requires: ['get', 'set'],
+                sequence: 200
             },
-            "command-info": {
+            "info": {
                 method: this_grid.command_info,
-                requires: ['info']
+                classname: 'fa fa-fw fa-info-circle',
+                requires: ['info'],
+                sequence: 500
             },
-            "command-toggle": {
+            "toggle": {
                 method: this_grid.command_toggle,
-                requires: ['toggle']
+                requires: ['toggle'],
+                sequence: 100
             },
-            "command-delete-selected": {
+            "delete-selected": {
                 method: this_grid.command_delete_selected,
-                requires: ['del']
+                requires: ['del'],
+                sequence: 100
             }
         };
+        // register additional commands
+        if ( 'commands' in params) {
+            $.each(params['commands'], function( k, v ) {
+                if (result[k] === undefined) {
+                    result[k] = {requires: [], sequence: 1};
+                }
+                $.each(v, function(ck, cv) {
+                    result[k][ck] = cv;
+                });
+            });
+        }
+        return result;
     };
 
     /**
@@ -106,12 +129,49 @@ $.fn.UIBootgrid = function (params) {
             multiSelect: true,
             rowCount:[7,14,20,50,100,-1],
             url: params['search'],
+            ajaxSettings: {
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+            },
+            requestHandler: function (request) {
+                return JSON.stringify(request);
+            },
+            datakey: 'uuid',
             useRequestHandlerOnGet: false,
             formatters: {
-                "commands": function (column, row) {
-                    return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                        '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                commands: function (column, row) {
+                    let html = [];
+                    // sort commands by sequence
+                    let commands = this_grid.getCommands();
+                    let commandlist = Array();
+                    Object.keys(commands).map(function (k) {
+                        let item = commands[k];
+                        item.name = k;
+                        commandlist.push(item)
+                    });
+                    commandlist = commandlist.sort(function(a,b) {
+                        return (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0);}
+                    );
+                    let rowid = params.datakey !== undefined ? params.datakey : 'uuid';
+                    commandlist.map(function(command){
+                        let has_option = command.classname !== undefined;
+                        let option_title_str = command.title !== undefined ? " title=\""+command.title+"\"" : "";
+                        for (let i=0; i < command.requires.length; i++) {
+                            if (!(command.requires[i] in params)) {
+                                has_option = false;
+                            }
+                        }
+
+                        if (has_option) {
+                            html.push("<button type=\"button\" " + option_title_str +
+                                " class=\"btn btn-xs btn-default bootgrid-tooltip command-"+command.name+
+                                "\" data-row-id=\"" + row[rowid] + "\">"+
+                                "<span class=\""+command.classname+"\"></span></button> "
+                            );
+                        }
+                    });
+
+                    return html.join('\n');
                 },
                 "commandsWithInfo": function(column, row) {
                     return '<button type="button" class="btn btn-xs btn-default command-info bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-info-circle"></span></button> ' +
@@ -142,6 +202,16 @@ $.fn.UIBootgrid = function (params) {
             $.each(params['options'],  function(key, value) {
                 if (typeof(value) === 'object' && Array.isArray(value) == false) {
                     gridopt[key] = Object.assign({}, gridopt[key], value);
+                } else if (key == 'requestHandler'){
+                    gridopt[key] = function(request) {
+                        let response = value(request);
+                        // automatic type conversion, we expect a json (string) as result
+                        if (typeof(response) === 'string') {
+                            return response;
+                        } else {
+                            return JSON.stringify(response);
+                        }
+                    };
                 } else {
                     gridopt[key] = value;
                 }
@@ -192,8 +262,14 @@ $.fn.UIBootgrid = function (params) {
             $('.selectpicker').selectpicker('refresh');
             // clear validation errors (if any)
             clearFormValidation('frm_' + editDlg);
-            // show dialog
-            $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            if ($('#'+editDlg).hasClass('modal')) {
+                // show dialog
+                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            } else {
+                // when edit dialog isn't a modal, fire click event
+                $('#'+editDlg).click();
+            }
+
             if (this_grid.onBeforeRenderDialog) {
                 this_grid.onBeforeRenderDialog(payload).done(function(){
                     dfObj.resolve();
@@ -217,7 +293,11 @@ $.fn.UIBootgrid = function (params) {
                 $('#'+editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
                 saveDlg.click(function(){
                     saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
@@ -249,12 +329,16 @@ $.fn.UIBootgrid = function (params) {
         event.stopPropagation();
         let editDlg = this_grid.attr('data-editDialog');
         if (editDlg !== undefined) {
-            let uuid = $(this).data("row-id");
+            let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
             let saveDlg = $("#btn_"+editDlg+"_save").unbind('click');
             this_grid.show_edit_dialog(event, params['get'] + uuid).done(function(){
                 saveDlg.unbind('click').click(function(){
                     saveFormToEndpoint(params['set']+uuid, 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
@@ -317,12 +401,21 @@ $.fn.UIBootgrid = function (params) {
                 // clear validation errors (if any)
                 clearFormValidation('frm_' + editDlg);
 
-                // show dialog for pipe edit
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                if ($('#'+editDlg).hasClass('modal')) {
+                    // show dialog
+                    $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+                } else {
+                    // when edit dialog isn't a modal, fire click event
+                    $('#'+editDlg).click();
+                }
                 // define save action
                 $("#btn_"+editDlg+"_save").unbind('click').click(function(){
                     saveFormToEndpoint(params['add'], 'frm_' + editDlg, function(){
-                            $("#"+editDlg).modal('hide');
+                            if ($('#'+editDlg).hasClass('modal')) {
+                                $("#"+editDlg).modal('hide');
+                            } else {
+                                $("#"+editDlg).change();
+                            }
                             std_bootgrid_reload(this_grid.attr('id'));
                             this_grid.showSaveAlert(event);
                         }, true);
@@ -392,7 +485,7 @@ $.fn.UIBootgrid = function (params) {
                     } else if ($(this).hasClass('command-edit')) {
                         $(this).attr('title', $.fn.UIBootgrid.defaults.editText);
                     } else if ($(this).hasClass('command-toggle')) {
-                        if ($(this).data('value') == 1) {
+                        if ($(this).data('value') === 1) {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.disableText);
                         } else {
                             $(this).attr('title', $.fn.UIBootgrid.defaults.enableText);
@@ -419,8 +512,8 @@ $.fn.UIBootgrid = function (params) {
                         }
                     }
                     if (has_option) {
-                        grid.find("."+k).unbind('click').on("click", commands[k].method);
-                    } else if ($("."+k).length > 0) {
+                        grid.find(".command-"+k).unbind('click').on("click", commands[k].method);
+                    } else if ($(".command-"+k).length > 0) {
                         console.log("not all requirements met to link " + k);
                     }
                 });

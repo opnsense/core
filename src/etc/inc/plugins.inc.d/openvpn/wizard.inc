@@ -715,9 +715,6 @@ function step12_submitphpaction()
     if (isset($pconfig['step10']['dynip'])) {
         $server['dynamic_ip'] = $pconfig['step10']['dynip'];
     }
-    if (isset($pconfig['step10']['addrpool'])) {
-        $server['pool_enable'] = $pconfig['step10']['addrpool'];
-    }
     if (isset($pconfig['step10']['defaultdomain'])) {
         $server['dns_domain'] = $pconfig['step10']['defaultdomain'];
     }

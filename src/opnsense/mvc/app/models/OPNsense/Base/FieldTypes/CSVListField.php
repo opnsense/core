@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Phalcon\Filter\Validation\Validator\Regex;
+use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * Class CSVListField
@@ -65,12 +65,30 @@ class CSVListField extends BaseField
     protected $internalMask = null;
 
     /**
+     * @var bool marks if regex validation should occur on a per-item basis.
+     */
+    protected $internalMaskPerItem = false;
+
+    /**
      * set validation mask
      * @param string $value regexp validation mask
      */
     public function setMask($value)
     {
         $this->internalMask = $value;
+    }
+
+    /**
+     * set mask per csv
+     * @param bool $value
+     */
+    public function setMaskPerItem($value)
+    {
+        if (strtoupper(trim($value)) == "Y") {
+            $this->internalMaskPerItem = true;
+        } else {
+            $this->internalMaskPerItem = false;
+        }
     }
 
     /**
@@ -133,8 +151,27 @@ class CSVListField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null && $this->internalMask != null) {
-            $validators[] = new Regex(array('message' => $this->internalValidationMessage,
-                'pattern' => trim($this->internalMask)));
+            $validators[] = new CallbackValidator(['callback' => function ($data) {
+                $regex_match = function ($value, $pattern) {
+                    $matches = [];
+                    preg_match(trim($pattern), $value, $matches);
+                    return $matches[0] == $value;
+                };
+
+                if ($this->internalMaskPerItem) {
+                    $items = explode($this->separatorchar, $this->internalValue);
+                    foreach ($items as $item) {
+                        if (!$regex_match($item, $this->internalMask)) {
+                            return ["\"" . $item . "\" is invalid. " . $this->internalValidationMessage];
+                        }
+                    }
+                } else {
+                    if (!$regex_match($this->internalValue, $this->internalMask)) {
+                        return [$this->internalValidationMessage];
+                    }
+                }
+                return [];
+            }]);
         }
         return $validators;
     }

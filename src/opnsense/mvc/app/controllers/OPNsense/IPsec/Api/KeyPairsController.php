@@ -112,4 +112,54 @@ class KeyPairsController extends ApiMutableModelControllerBase
 
         return $response;
     }
+
+    /**
+     * Generate keypair
+     * @param string $type (rsa, ecdsa)
+     * @return array
+     */
+    public function genKeyPairAction($type, $size = null)
+    {
+        $certtype = null;
+        $keylength = null;
+        $attrs = [];
+        if ($type == 'rsa') {
+            if (!empty($size) && !in_array($size, ['1024', '2048', '3072', '4096', '8192'])) {
+                return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
+            }
+            $attrs['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+            $attrs['private_key_bits'] = !empty($size) ? $size : 2048;
+        } elseif ($type == 'ecdsa') {
+            if (!empty($size) && !in_array($size, ['256', '384', '521'])) {
+                return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
+            }
+            $attrs['private_key_type'] = OPENSSL_KEYTYPE_EC;
+            switch ($size ?? '384') {
+                case '256';
+                    $attrs['curve_name'] = "secp256r1";
+                    break;
+                case '384';
+                    $attrs['curve_name'] = "secp384r1";
+                    break;
+                case '521';
+                    $attrs['curve_name'] = "secp521r1";
+                    break;
+            }
+        } else {
+            return ['status' => 'failed', 'message' => sprintf('invalid type %s', $type)];
+        }
+
+        $pkey = openssl_pkey_new($attrs);
+        if ($pkey === false) {
+            return ['status' => 'failed', 'message' => 'unable to generate key'];
+        }
+
+        $keyDetails = openssl_pkey_get_details($pkey);
+        openssl_pkey_export($pkey, $pkeyout);
+        return [
+            'pubkey' => $keyDetails['key'],
+            'privkey' => $pkeyout,
+            'status' => 'ok'
+        ];
+    }
 }

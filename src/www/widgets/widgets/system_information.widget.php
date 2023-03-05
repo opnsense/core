@@ -104,6 +104,9 @@ require_once("system.inc");
       $("#system_information_widget_memory .progress-bar").css("width",  mem_perc + "%").attr("aria-valuenow", mem_perc + "%");
       var mem_text = mem_perc + " % " + "( " + parseInt(data['kernel']['memory']['used']/1024/1024) + "/";
       mem_text += parseInt(data['kernel']['memory']['total']/1024/1024) + " MB )";
+      if (data['kernel']['memory']['arc_txt'] !== undefined) {
+          mem_text += " { " + data['kernel']['memory']['arc_txt'] + " }";
+      }
       $("#system_information_widget_memory .state_text").html(mem_text);
 
 

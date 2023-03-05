@@ -51,7 +51,7 @@ class HostField extends BaseField
                 $parts = preg_split('/ /', $data, -1, PREG_SPLIT_NO_EMPTY);
                 $tokens = [];
                 foreach ($parts as $part) {
-                    if (Util::isIpAddress($part) || Util::isSubnet($part)) {
+                    if (Util::isIpAddress($part) || Util::isSubnet($part) || Util::isMACAddress($part)) {
                         $tokens[] = 'net';
                     } elseif (in_array(strtolower($part), ['and', 'or', 'not'])) {
                         $tokens[] = strtolower($part);

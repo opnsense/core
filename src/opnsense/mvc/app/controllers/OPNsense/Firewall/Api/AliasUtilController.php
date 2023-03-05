@@ -79,9 +79,7 @@ class AliasUtilController extends ApiControllerBase
         $backend = new Backend();
         $result = json_decode($backend->configdRun("filter list tables json"));
         if ($result !== null) {
-            // return sorted (case insensitive)
-            natcasesort($result);
-            $result = array_values($result);
+            sort($result, SORT_NATURAL | SORT_FLAG_CASE);
         }
         return $result;
     }
@@ -119,7 +117,11 @@ class AliasUtilController extends ApiControllerBase
             return $item;
         }, $entry_keys);
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !empty($this->request->getPost('sort'))
+        ) {
             $sortcolumn = array_key_first($this->request->getPost('sort'));
             $sort_order = $this->request->getPost('sort')[$sortcolumn];
             if (!empty(array_column($formatted_full, $sortcolumn))) {

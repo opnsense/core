@@ -109,7 +109,11 @@ class ServiceController extends ApiMutableServiceControllerBase
             return $item;
         }, array_slice($entry_keys, $offset, $itemsPerPage));
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !empty($this->request->getPost('sort'))
+        ) {
             $keys = array_keys($this->request->getPost('sort'));
             $order = $this->request->getPost('sort')[$keys[0]];
             $keys = array_column($formatted, $keys[0]);

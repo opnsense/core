@@ -29,7 +29,6 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Core\Config;
-use OPNsense\Core\Backend;
 
 /**
  * Class LDAP connector
@@ -334,11 +333,10 @@ class LDAP extends Base implements IAuthConnector
     public function connect($bind_url, $userdn = null, $password = null, $timeout = 30)
     {
         $retval = false;
-        set_error_handler(
-            function () {
-                null;
-            }
-        );
+
+        set_error_handler(function () {
+            /* do nothing */
+        });
 
         $this->closeLDAPHandle();
 
@@ -468,97 +466,6 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
-     * update user group policies when configured
-     * @param string $username authenticated username
-     */
-    private function updatePolicies($username)
-    {
-        if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
-            $user = $this->getUser($username);
-            // gather known and user configured groups to be able to compare the results from ldap
-            $user_groups = array();
-            $known_groups = array();
-            $cnf = Config::getInstance()->object();
-            if (isset($cnf->system->group)) {
-                foreach ($cnf->system->group as $group) {
-                    $known_groups[] = strtolower((string)$group->name);
-                    // when user is known, collect current groups
-                    if ($user != null && in_array((string)$user->uid, (array)$group->member)) {
-                        $user_groups[] = strtolower((string)$group->name);
-                    }
-                }
-            }
-            // collect all groups from the memberof attribute, store full object path for logging
-            // first cn= defines our local groupname
-            $ldap_groups = array();
-            foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
-                if (stripos($member, "cn=") === 0) {
-                    $ldap_groups[strtolower(explode(",", substr($member, 3))[0])] = $member;
-                }
-            }
-            // list of enabled groups (all when empty), so we can ignore some local groups if needed
-            if (!empty($this->ldapSyncMemberOfLimit)) {
-                $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
-            } else {
-                $sync_groups = $known_groups;
-            }
-            //
-            // sort groups and intersect with $sync_groups to determine difference.
-            natcasesort($sync_groups);
-            natcasesort($user_groups);
-            natcasesort($ldap_groups);
-            $diff_ugrp = array_intersect($sync_groups, $user_groups);
-            $diff_lgrp = array_intersect($sync_groups, array_keys($ldap_groups));
-            if ($diff_lgrp != $diff_ugrp) {
-                // update when changed
-                if ($user == null && $this->ldapSyncCreateLocalUsers) {
-                    // user creation when enabled
-                    $add_user = json_decode((new Backend())->configdpRun("auth add user", array($username)), true);
-                    if (!empty($add_user) && $add_user['status'] == 'ok') {
-                        Config::getInstance()->forceReload();
-                        $user = $this->getUser($username);
-                    }
-                }
-                if ($user == null) {
-                    return;
-                }
-                // Lock our configuration while updating, remove now unassigned groups and add new ones
-                // if returned by ldap.
-                $cnf = Config::getInstance()->lock(true)->object();
-                foreach ($cnf->system->group as $group) {
-                    $lc_groupname = strtolower((string)$group->name);
-                    if (in_array($lc_groupname, $sync_groups)) {
-                        if (
-                            in_array((string)$user->uid, (array)$group->member)
-                              && empty($ldap_groups[$lc_groupname])
-                        ) {
-                            unset($group->member[array_search((string)$user->uid, (array)$group->member)]);
-                            syslog(LOG_NOTICE, sprintf(
-                                'User: policy change for %s unlink group %s',
-                                $username,
-                                (string)$group->name
-                            ));
-                        } elseif (
-                            !in_array((string)$user->uid, (array)$group->member)
-                              && !empty($ldap_groups[$lc_groupname])
-                        ) {
-                            syslog(LOG_NOTICE, sprintf(
-                                'User: policy change for %s link group %s [%s]',
-                                $username,
-                                (string)$group->name,
-                                $ldap_groups[$lc_groupname]
-                            ));
-                            $group->addChild('member', (string)$user->uid);
-                        }
-                    }
-                }
-                Config::getInstance()->save();
-                (new Backend())->configdpRun("auth user changed", array($username));
-            }
-        }
-    }
-
-    /**
      * authenticate user against ldap server
      * @param string $username username to authenticate
      * @param string $password user password
@@ -606,7 +513,20 @@ class LDAP extends Base implements IAuthConnector
                         }
                     }
                     // update group policies when applicable
-                    $this->updatePolicies($username);
+                    if ($this->ldapSyncMemberOf && !empty($this->lastAuthProperties['memberof'])) {
+                        // list of enabled groups, so we can ignore some local groups if needed
+                        if (!empty($this->ldapSyncMemberOfLimit)) {
+                            $sync_groups = explode(",", strtolower($this->ldapSyncMemberOfLimit));
+                        } else {
+                            $sync_groups = [];
+                        }
+                        $this->setGroupMembership(
+                            $username,
+                            $this->lastAuthProperties['memberof'],
+                            $sync_groups,
+                            $this->ldapSyncCreateLocalUsers
+                        );
+                    }
                 }
             }
         }

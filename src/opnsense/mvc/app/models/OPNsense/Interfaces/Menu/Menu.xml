@@ -1,5 +1,9 @@
 <menu>
     <Interfaces>
+        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+            <Settings url="/ui/interfaces/vip"/>
+            <Status url="/ui/diagnostics/interface/vip"/>
+        </VIP>
         <Types>
             <VXLAN url="/ui/interfaces/vxlan"/>
             <Loopback url="/ui/interfaces/loopback"/>

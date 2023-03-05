@@ -191,7 +191,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (is_uploaded_file($_FILES['conffile']['tmp_name'])) {
             $data = file_get_contents($_FILES['conffile']['tmp_name']);
             if(empty($data)) {
-                log_error(sprintf('Warning, could not read file %s', $_FILES['conffile']['tmp_name']));
                 $input_errors[] = sprintf(gettext("Warning, could not read file %s"), $_FILES['conffile']['tmp_name']);
             }
         } else {

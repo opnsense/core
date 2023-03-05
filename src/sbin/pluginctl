@@ -122,7 +122,7 @@ if (isset($opts['h'])) {
     }
 } elseif (isset($opts['r'])) {
    $cmd = array_shift($args);
-   $result = plugins_run($cmd, false, $args);
+   $result = plugins_run($cmd, $args);
    if (!empty($result)) {
       $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
       echo $response;

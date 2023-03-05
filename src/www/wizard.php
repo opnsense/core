@@ -179,9 +179,9 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
         return;
     if ($arraynum != '')
         $field_conv .= "[" . $arraynum . "]";
-    if (($field_type == 'checkbox' && $updatetext != 'on') || $updatetext == '') {
+    if (($field_type == 'checkbox' && $updatetext != '1') || $updatetext == '') {
         /*
-         * item is a checkbox, it should have the value "on"
+         * item is a checkbox, it should have the value "1"
          * if it was checked
          */
         $var = "\$config{$field_conv}";
@@ -834,7 +834,7 @@ include("head.inc");
                                             $checked = '';
                                             if ($value != '')
                                                 $checked = " checked=\"checked\"";
-                                            echo "<td class=\"vtable\"><input value=\"on\" type='checkbox' id='" . $name . "' name='" . $name . "' " . $checked;
+                                            echo "<td class=\"vtable\"><input value=\"1\" type='checkbox' id='" . $name . "' name='" . $name . "' " . $checked;
                                             if (isset($field['enablefields']) || isset($field['checkenablefields']))
                                                 echo " onclick=\"enablechange()\"";
                                             else if (isset($field['disablefields']) || isset($field['checkdisablefields']))

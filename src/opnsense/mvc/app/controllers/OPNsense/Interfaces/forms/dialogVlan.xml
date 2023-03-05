@@ -4,9 +4,9 @@
         <label>Device</label>
         <type>text</type>
         <help>
-          Leave empty to generate a device name for you. Custom names are possible,
-          but only if the start of the name matches the type and contains standard alphanumeric characters
-          or underscores (e.g. vlan_1_2_3, qinq_1_2_3).
+          Leave empty to generate a device name. Custom names are possible, but only if the
+          start of the name matches the required prefix and contains numeric characters or
+          dots, e.g. "vlan0.1.2" or "qinq0.3.4".
         </help>
     </field>
     <field>

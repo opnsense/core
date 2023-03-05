@@ -40,8 +40,9 @@
 JSONFILE="/tmp/pkg_upgrade.json"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 OUTFILE="/tmp/pkg_update.out"
-LICENSEFILE="/usr/local/opnsense/license.json"
 TEE="/usr/bin/tee -a"
+
+LICENSEFILE="/usr/local/opnsense/version/core.license"
 
 CUSTOMPKG=${1}
 
@@ -85,15 +86,18 @@ fi
 echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
-echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
-if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
-    echo "done" >> ${LOCKFILE}
+# business subscriptions come with additional license metadata
+if [ -n "$(opnsense-update -K)" ]; then
+    echo -n "Fetching subscription information, please wait... " >> ${LOCKFILE}
+    if fetch -qT 5 -o ${LICENSEFILE} "$(opnsense-update -M)/subscription" >> ${LOCKFILE} 2>&1; then
+        echo "done" >> ${LOCKFILE}
+    fi
+else
+    rm -f ${LICENSEFILE}
 fi
 
-# business subscriptions come with a license, fetch the metadata so product.php is able to use it
-if opnsense-update -M | egrep -iq '\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\/'; then
-    echo -n "Fetching license information, please wait... " >> ${LOCKFILE}
-    fetch -qT 5 -o $LICENSEFILE  "`opnsense-update -M`/subscription"
+echo -n "Fetching changelog information, please wait... " >> ${LOCKFILE}
+if /usr/local/opnsense/scripts/firmware/changelog.sh fetch >> ${LOCKFILE} 2>&1; then
     echo "done" >> ${LOCKFILE}
 fi
 

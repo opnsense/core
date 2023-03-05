@@ -177,10 +177,7 @@ function ntpd_configure_do($verbose = false)
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting NTP service...';
-        flush();
-    }
+    service_log('Starting NTP service...', $verbose);
 
     $driftfile = '/var/db/ntpd.drift';
     $statsdir = '/var/log/ntp';
@@ -343,9 +340,6 @@ function ntpd_configure_do($verbose = false)
 
     $ntpcfg .= "\n\n";
 
-    /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
-    $ntpcfg .= "disable monitor\n";
-
     if (
         !empty($config['ntpd']['clockstats']) ||
         !empty($config['ntpd']['loopstats']) ||
@@ -462,7 +456,5 @@ function ntpd_configure_do($verbose = false)
         mwexecf_bg('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }

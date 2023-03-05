@@ -1,0 +1,203 @@
+<?php
+
+/*
+ * Copyright (C) 2022 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+namespace OPNsense\Interfaces\Api;
+
+use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
+use OPNsense\Base\UserException;
+use OPNsense\Base\ApiMutableModelControllerBase;
+
+class VipSettingsController extends ApiMutableModelControllerBase
+{
+    protected static $internalModelName = 'vip';
+    protected static $internalModelClass = 'OPNsense\Interfaces\Vip';
+
+    /**
+     * extract network field into subnet + bits for model
+     */
+    private function getVipOverlay()
+    {
+        $overlay = ['network' => ''];
+        $tmp = $this->request->getPost('vip');
+        if (!empty($tmp['network'])) {
+            $parts = explode('/', $tmp['network'], 2);
+            $overlay['subnet'] = $parts[0];
+            if (count($parts) < 2) {
+                $overlay['subnet_bits'] = strpos($parts[0], ':') !== false ? 128 : 32;
+            } else {
+                $overlay['subnet_bits'] = $parts[1];
+            }
+        }
+        return $overlay;
+    }
+
+    /**
+     * retrieve first unused VHID number
+     */
+    public function getUnusedVhidAction()
+    {
+        $vhids = [];
+        foreach ($this->getModel()->vip->iterateItems() as $vip) {
+            if (!in_array((string)$vip->vhid, $vhids) && !empty((string)$vip->vhid)) {
+                $vhids[] = (string)$vip->vhid;
+            }
+        }
+        for ($i = 1; $i <= 255; $i++) {
+            if (!in_array((string)$i, $vhids)) {
+                return ['vhid' => $i, 'status' => 'ok'];
+            }
+        }
+        return ['status' => 'not_found'];
+    }
+
+    /**
+     * remap subnet and subnet_bits to network (which represents combined field)
+     */
+    private function handleFormValidations($response)
+    {
+        if (!empty($response['validations'])) {
+            foreach (array_keys($response['validations']) as $fieldname) {
+                if (in_array($fieldname, ['vip.subnet', 'vip.subnet_bits'])) {
+                    if (empty($response['validations']['vip.network'])) {
+                        $response['validations']['vip.network'] = [];
+                    }
+                    if (is_array($response['validations'][$fieldname])) {
+                        $response['validations']['vip.network'] = array_merge(
+                            $response['validations']['vip.network'],
+                            $response['validations'][$fieldname]
+                        );
+                    } else {
+                        $response['validations']['vip.network'][] = $response['validations'][$fieldname];
+                    }
+                    unset($response['validations'][$fieldname]);
+                }
+            }
+        }
+        return $response;
+    }
+
+    public function searchItemAction()
+    {
+        // Forms only use POST, but since search offers both GET and POST, let's keep this compatible
+        $mode = $this->request->get('mode') ?? $this->request->getPost('mode');
+        $filter_funct = null;
+        if (!empty($mode)) {
+            $filter_funct = function ($record) use ($mode) {
+                return in_array($record->mode, $mode);
+            };
+        }
+        $result = $this->searchBase(
+            'vip',
+            ['interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits', 'vhid', 'advbase', 'advskew'],
+            'descr',
+            $filter_funct
+        );
+
+        if (!empty($result['rows'])) {
+            foreach ($result['rows'] as &$row) {
+                $row['address'] = sprintf("%s/%s", $row['subnet'], $row['subnet_bits']);
+                $row['vhid_txt'] = $row['vhid'];
+                if ($row['mode'] == 'CARP') {
+                    $row['vhid_txt'] = sprintf(
+                        gettext('%s (freq. %s/%s)'),
+                        $row['vhid'],
+                        $row['advbase'],
+                        $row['advskew']
+                    );
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function setItemAction($uuid)
+    {
+        $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+        $validations = [];
+        if ($node != null && explode('/', $_POST['vip']['network'])[0] != (string)$node->subnet) {
+            $validations = $this->getModel()->whereUsed((string)$node->subnet);
+            if (!empty($validations)) {
+                // XXX a bit unpractical, but we can not validate previous values from the model so
+                //     we are obligated to return this as a single error (even if the form has other issues too)
+                return [
+                    'result' => 'failed',
+                    'validations' => [
+                        'vip.network' => array_slice($validations, 0, 2)
+                    ]
+                ];
+            } elseif (!file_exists("/tmp/delete_vip_{$uuid}.todo")) {
+                file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+            }
+        }
+
+        return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
+    }
+
+    public function addItemAction()
+    {
+        return $this->handleFormValidations($this->addBase('vip', 'vip', $this->getVipOverlay()));
+    }
+
+    public function getItemAction($uuid = null)
+    {
+        $vip = $this->getBase('vip', 'vip', $uuid);
+        // Merge subnet + netmask into network field
+        if (!empty($vip['vip']) && !empty($vip['vip']['subnet'])) {
+            $vip['vip']['network'] = $vip['vip']['subnet'] . "/" . $vip['vip']['subnet_bits'];
+        } elseif (!empty($vip['vip'])) {
+            $vip['vip']['network'] = '';
+        }
+        unset($vip['vip']['subnet']);
+        unset($vip['vip']['subnet_bits']);
+        return $vip;
+    }
+
+    public function delItemAction($uuid)
+    {
+        $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+        $validations = $this->getModel()->whereUsed((string)$node->subnet);
+        if (!empty($validations)) {
+            throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
+        }
+        $response = $this->delBase("vip", $uuid);
+        if (($response['result'] ?? '') == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+        }
+        return $response;
+    }
+
+    public function reconfigureAction()
+    {
+        $result = array("status" => "failed");
+        if ($this->request->isPost()) {
+            $result['status'] = strtolower(trim((new Backend())->configdRun('interface vip configure')));
+        }
+        return $result;
+    }
+}

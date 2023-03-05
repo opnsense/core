@@ -180,7 +180,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['ealgos'] = ['aes256gcm16'];
         $pconfig['hash-algorithm-option'] = ['hmac_sha256'];
         $pconfig['pfsgroup'] = "0";
-        $pconfig['lifetime'] = "3600";
         $pconfig['uniqid'] = uniqid();
 
         // init empty
@@ -226,6 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (($pconfig['localid_netbits'] != 0 && !$pconfig['localid_netbits']) || !is_numeric($pconfig['localid_netbits'])) {
                     $input_errors[] = gettext('A valid local network bit count must be specified.');
                 }
+                /* FALLTHROUGH */
             case 'address':
                 if (!$pconfig['localid_address'] || !is_ipaddr($pconfig['localid_address'])) {
                     $input_errors[] = gettext('A valid local network IP address must be specified.');

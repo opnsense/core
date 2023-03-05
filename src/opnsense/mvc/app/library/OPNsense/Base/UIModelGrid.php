@@ -62,16 +62,16 @@ class UIModelGrid
         $fields,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
         $sortBy = empty($defaultSort) ? array() : array($defaultSort);
         $sortDescending = false;
 
-        if ($request->has('sort') && is_array($request->get("sort"))) {
+        if ($request->hasPost('sort') && is_array($request->get("sort"))) {
             $sortBy = array_keys($request->get("sort"));
-            if ($request->get("sort")[$sortBy[0]] == "desc") {
+            if (!empty($sortBy) && $request->get("sort")[$sortBy[0]] == "desc") {
                 $sortDescending = true;
             }
         }
@@ -109,7 +109,7 @@ class UIModelGrid
         $sortDescending = false,
         $searchPhrase = '',
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
         $result = array('rows' => array());
 

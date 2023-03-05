@@ -63,10 +63,10 @@ function vxlan_configure_do($verbose = false, $device = null)
     $changed_devices = array();
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems());
 
-    if ($verbose && !empty($vxlans)) {
-        echo 'Configuring VXLAN interfaces...';
-        flush();
+    if (!empty($vxlans)) {
+        service_log(sprintf('Configuring VXLAN interface%s...', empty($device) ? 's' : " {$device}"), $verbose);
     }
+
     $all_addresses = array();
     $known_addresses = array();
     foreach ($interfaces_details as $intf) {
@@ -110,7 +110,9 @@ function vxlan_configure_do($verbose = false, $device = null)
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
             $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
             $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
-            $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            if (!empty($interfaces_details[$device_name]['vxlan']['group'])) {
+                $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            }
         }
         // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
@@ -148,8 +150,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
     }
 
-    if ($verbose && !empty($vxlans)) {
-        echo "done.\n";
+    if (!empty($vxlans)) {
+        service_log("done.\n", $verbose);
     }
 
     // configure interface when device has changed

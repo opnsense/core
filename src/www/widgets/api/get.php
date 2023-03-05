@@ -49,15 +49,15 @@ require_once("interfaces.inc");
 if (!empty($_REQUEST['load'])) {
     $loadPluginsList = explode(',', $_REQUEST['load']);
 } else {
-    $loadPluginsList = array();
+    $loadPluginsList = [];
 }
 
 // add metadata
-$result['system'] = $g['product_name'];
+$result['system'] = product::getInstance()->name();
 // available plugins
-$result['plugins'] = array();
+$result['plugins'] = [];
 // collected data
-$result['data'] = array();
+$result['data'] = [];
 
 // probe plugins
 foreach (glob(__DIR__."/plugins/*.inc") as $filename) {

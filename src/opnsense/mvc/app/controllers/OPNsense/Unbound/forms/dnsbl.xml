@@ -6,6 +6,13 @@
         <help>Enable the usage of DNS blocklists.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.safesearch</id>
+        <label>Enable SafeSearch</label>
+        <type>checkbox</type>
+        <style>safesearch</style>
+        <help>Enable the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
+    </field>
+    <field>
         <id>unbound.dnsbl.type</id>
         <label>Type of DNSBL</label>
         <type>select_multiple</type>
@@ -29,26 +36,39 @@
         <help>List of domains to whitelist. You can use regular expressions.</help>
     </field>
     <field>
+        <id>unbound.dnsbl.blocklists</id>
+        <label>Blocklist Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to blocklist. Only exact matches are supported.</help>
+    </field>
+    <field>
+        <id>unbound.dnsbl.wildcards</id>
+        <label>Wildcard Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of wildcard domains to blocklist. All subdomains of the given domain will
+            be blocked. Blocking first-level domains is not supported.
+        </help>
+    </field>
+    <field>
         <id>unbound.dnsbl.address</id>
         <label>Destination Address</label>
         <type>text</type>
         <advanced>true</advanced>
-        <help>Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0)</help>
+        <help>
+            Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0).
+            Not used when "Return NXDOMAIN" is checked.
+        </help>
     </field>
     <field>
-        <id>unbound.miscellaneous.privatedomain</id>
-        <label>Private Domains</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
-        <help>List of domains to mark as private. You only need this for some DNSBL lists which resolve to private addresses.</help>
-    </field>
-    <field>
-        <id>unbound.miscellaneous.insecuredomain</id>
-        <label>Insecure Domains</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
-        <help>List of domains to mark as insecure. DNSSEC chain of trust is ignored towards the domain name.</help>
+        <id>unbound.dnsbl.nxdomain</id>
+        <label>Return NXDOMAIN</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Use the DNS response code NXDOMAIN instead of a destination address.</help>
     </field>
 </form>

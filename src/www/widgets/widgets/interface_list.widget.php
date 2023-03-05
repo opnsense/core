@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $ifinfo = $ifsinfo[$ifdescr]; ?>
   <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
-    <td style="width:15%; word-break: break-word;">
+    <td style="width:5%; word-break: break-word;">
 <?php if (isset($ifinfo['ppplink'])): ?>
       <span title="3g" class="fa fa-mobile text-success"></span>
 <?php elseif (isset($config['interfaces'][$ifdescr]['wireless'])): ?>
@@ -139,11 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       <span title="cablenic" class="fa fa-exchange text-danger"></span>
 <?php endif ?>
 <?php endif ?>
-      &nbsp;
+    </td>
+    <td style="width:15%; word-break: break-word;">
       <strong>
         <u>
-          <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
-            <?= htmlspecialchars($ifname) ?>
+          <span onclick="location.href='/interfaces.php?if=<?= html_safe($ifdescr) ?>'" style="cursor:pointer">
+            <?= html_safe($ifname) ?>
           </span>
         </u>
       </strong>
@@ -156,16 +157,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <?php elseif ($ifinfo['status'] == "no carrier"): ?>
       <span class="fa fa-times text-danger"></span>
 <?php else: ?>
-      <?= htmlspecialchars($ifinfo['status']) ?>
+      <?= html_safe($ifinfo['status']) ?>
 <?php endif ?>
     </td>
-    <td style="width:35%; word-break: break-word;">
-      <?= htmlspecialchars(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
+    <td style="width:32%; word-break: break-word;">
+      <?= html_safe(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
     </td>
-    <td style="width:45%; word-break: break-word;">
-      <?= htmlspecialchars($ifinfo['ipaddr']) ?>
+    <td style="width:43%; word-break: break-word;">
+      <?= html_safe($ifinfo['ipaddr']) ?>
       <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= htmlspecialchars(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+      <?= html_safe(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
     </td>
   </tr>
 <?php endforeach ?>

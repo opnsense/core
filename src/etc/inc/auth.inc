@@ -93,9 +93,9 @@ function index_users()
 {
     global $config;
 
-    $userindex = array();
+    $userindex = [];
 
-    if (is_array($config['system']['user'])) {
+    if (!empty($config['system']['user'])) {
         $i = 0;
         foreach ($config['system']['user'] as $userent) {
             $userindex[$userent['name']] = $i;
@@ -301,10 +301,10 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     global $config;
 
     if (empty($user['password'])) {
-        log_error(sprintf(
+        log_msg(sprintf(
             gettext('There is something wrong in your config because user %s password is missing!'),
             $user['name']
-        ));
+        ), LOG_ERR);
         return;
     }
 
@@ -356,18 +356,20 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 
-    /* passwords only when integrated auth is disabled or forced */
-    if (!$force_password && empty($config['system']['disableintegratedauth'])) {
-        $user_pass = '*';
-    }
+    if (!$force_password) {
+        /* passwords only when integrated auth is disabled or forced */
+        if (empty($config['system']['disableintegratedauth'])) {
+            $user_pass = '*';
+        }
 
-    /* read from pw db if not provided (batch mode) */
-    if ($userattrs === null) {
-        $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
-        $pwread = fgets($fd);
-        pclose($fd);
-        if (substr_count($pwread, ':')) {
-            $userattrs = explode(':', trim($pwread));
+        /* read from pw db if not provided (batch mode) */
+        if ($userattrs === null) {
+            $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
+            $pwread = fgets($fd);
+            pclose($fd);
+            if (substr_count($pwread, ':')) {
+                $userattrs = explode(':', trim($pwread));
+            }
         }
     }
 

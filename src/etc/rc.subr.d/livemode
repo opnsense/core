@@ -59,7 +59,7 @@ if (is_install_media()) {
         echo "\n";
 
         /* tailored for OPNsense to occupy same width below */
-        $namex = $g['product_name'];
+        $namex = product::getInstance()->name();
 
         $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
                     "login as 'root' to continue in live mode, or as 'installer' to start the\n" .

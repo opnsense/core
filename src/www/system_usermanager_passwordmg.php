@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = gettext('Your password does not match the selected security policies. Please provide a new one.');
     }
 
-    $pconfig['language'] = $userFound ? $config['system']['user'][$userindex[$username]]['language'] : null;
+    $pconfig['language'] = $userFound ? $config['system']['user'][$userindex[$username]]['language'] ?? '' : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;

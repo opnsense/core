@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,6 +63,16 @@ class Util
     }
 
     /**
+     * is provided address a mac address.
+     * @param string $network address
+     * @return boolean
+     */
+    public static function isMACAddress($address)
+    {
+        return !empty(filter_var($address, FILTER_VALIDATE_MAC));
+    }
+
+    /**
      * is provided network valid
      * @param string $network network
      * @return boolean
@@ -81,6 +91,36 @@ class Util
                 }
             }
         }
+        return false;
+    }
+
+    /**
+     * is provided network strict (host bits not set)
+     * @param string $network network
+     * @return boolean
+     */
+    public static function isStrict($network)
+    {
+        if (self::isSubnet($network)) {
+            list($net, $mask) = explode('/', $network);
+            $ip_net = inet_pton($net);
+            $bits = (strpos($net, ":") !== false && $mask <= 128) ? 128 : 32;
+
+            $ip_mask = "";
+            $significant_bits = $mask;
+            for ($i = 0; $i < $bits/8; $i++) {
+                if ($significant_bits >= 8) {
+                    $ip_mask .= chr(0xFF);
+                    $significant_bits -= 8;
+                } else {
+                    $ip_mask .= chr(~(0xFF >> $significant_bits));
+                    $significant_bits = 0;
+                }
+            }
+
+            return $ip_net == ($ip_net & $ip_mask);
+        }
+
         return false;
     }
 
@@ -165,7 +205,7 @@ class Util
 
                     if (!empty($alias['content'])) {
                         $tmp = array_slice($alias['content'], 0, 10);
-                        asort($tmp, SORT_NATURAL);
+                        asort($tmp, SORT_NATURAL | SORT_FLAG_CASE);
                         if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
@@ -198,6 +238,7 @@ class Util
         $result = array();
         foreach (self::$aliasObject->aliasIterator() as $node) {
             if (!empty($name) && (string)$node['name'] == $name && $node['type'] == 'port') {
+                $aliases[] = $name;
                 foreach ($node['content'] as $address) {
                     if (Util::isAlias($address)) {
                         if (!in_array($address, $aliases)) {
@@ -242,7 +283,7 @@ class Util
      */
     public static function isPort($number, $allow_range = true)
     {
-        $tmp = explode(':', $number);
+        $tmp = $number !== null ? explode(':', $number) : [];
         foreach ($tmp as $port) {
             if (
                 (filter_var($port, FILTER_VALIDATE_INT, array(
@@ -296,5 +337,54 @@ class Util
             }
         }
         return md5(json_encode($rule));
+    }
+
+    /**
+     * Find the smallest possible subnet mask for given IP range
+     * @param array ips (start, end)
+     * @return int smallest mask
+     */
+    public static function smallestCIDR($ips, $family = 'inet')
+    {
+        if ($family == 'inet6') {
+            foreach ($ips as $id => $ip) {
+                $ips[$id] = unpack('N*', inet_pton($ip));
+            }
+
+            for ($bits = 0; $bits <= 128; $bits += 1) {
+                $mask1 = (0xffffffff << max($bits - 96, 0)) & 0xffffffff;
+                $mask2 = (0xffffffff << max($bits - 64, 0)) & 0xffffffff;
+                $mask3 = (0xffffffff << max($bits - 32, 0)) & 0xffffffff;
+                $mask4 = (0xffffffff << $bits) & 0xffffffff;
+                $test = [];
+                foreach ($ips as $ip) {
+                    $test[sprintf('%032b%032b%032b%032b', $ip[1] & $mask1, $ip[2] & $mask2, $ip[3] & $mask3, $ip[4] & $mask4)] = true;
+                }
+                if (count($test) == 1) {
+                    /* one element means CIDR size matches all */
+                    break;
+                }
+            }
+
+            return 128 - $bits;
+        } else {
+            foreach ($ips as $id => $ip) {
+                $ips[$id] = ip2long($ip);
+            }
+
+            for ($bits = 0; $bits <= 32; $bits += 1) {
+                $mask = (0xffffffff << $bits) & 0xffffffff;
+                $test = [];
+                foreach ($ips as $ip) {
+                    $test[$ip & $mask] = true;
+                }
+                if (count($test) == 1) {
+                    /* one element means CIDR size matches all */
+                    break;
+                }
+            }
+
+            return 32 - $bits;
+        }
     }
 }

@@ -68,7 +68,7 @@ function authenticate_user($username, $password)
         }
     }
 
-    log_error('Unable to retrieve authenticator for ' . $username);
+    log_msg('Unable to retrieve authenticator for ' . $username, LOG_ERR);
 
     return false;
 }

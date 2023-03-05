@@ -1,7 +1,9 @@
+advanced.conf:/var/unbound/advanced.conf
 blocklists.conf:/tmp/unbound-blocklists.conf
+safesearch.conf:/usr/local/etc/unbound.opnsense.d/safesearch.conf
 dot.conf:/usr/local/etc/unbound.opnsense.d/dot.conf
 private_domains.conf:/var/unbound/private_domains.conf
 domainoverrides.conf:/usr/local/etc/unbound.opnsense.d/domainoverrides.conf
-miscellaneous.conf:/usr/local/etc/unbound.opnsense.d/miscellaneous.conf
 root.min.hints:/var/unbound/root.hints
 unbound_dhcpd.conf:/usr/local/etc/unbound_dhcpd.conf
+dnsbl_module.py:/var/unbound/dnsbl_module.py

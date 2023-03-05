@@ -89,7 +89,8 @@ function filter_rules_sort()
     /* strip the sequence numbers again, add uuid's where not available */
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         unset($config['filter']['rule'][$i]['seq']);
-        if (empty($config['filter']['rule'][$i]['@attributes'])
+        if (
+            empty($config['filter']['rule'][$i]['@attributes'])
             && empty($config['filter']['rule'][$i]['@attributes']['uuid'])
         ) {
             $config['filter']['rule'][$i]['@attributes'] = ['uuid' => generate_uuid()];
@@ -150,23 +151,18 @@ function ifgroup_setup()
     }
 }
 
-function filter_configure_sync($verbose = false, $load_aliases = true)
+function filter_configure_sync($verbose = false, $load_aliases = true, $switch_gw = true)
 {
     global $config;
 
-    if ($verbose) {
-        echo 'Configuring firewall.';
-        flush();
-    }
+    service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
 
     ifgroup_setup();
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+
+    service_log('.', $verbose);
 
     // initialize fw plugin object
     $fw = filter_core_get_initialized_plugin_system();
@@ -256,25 +252,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (isset($config['system']['gw_switch_default'])) {
-        // When gateway switching is enabled, we might consider a different default gateway.
-        // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
-        // we keep it here for now (historical reasons).
-        $down_gateways = return_down_gateways();
-        foreach (array("inet", "inet6") as $ipprotocol) {
-            if (!empty($down_gateways)) {
-                log_error(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)));
-            }
-            $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
-            if ($default_gw !== null && !empty($default_gw['gateway'])) {
-                system_default_route(
-                    $default_gw['gateway'],
-                    $ipprotocol,
-                    $default_gw['if'],
-                    isset($default_gw['fargw'])
-                );
-            }
-        }
+    if ($switch_gw && isset($config['system']['gw_switch_default'])) {
+        /*
+         * XXX When gateway switching is enabled we consider different default
+         * gateways.  Although this isn't the right spot for the feature (it's
+         * a monitoring/routing decision), we keep it here for historical reasons.
+         */
+        system_switch_route();
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
@@ -283,20 +267,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $aliases .= "\n# Plugins tables\n";
     $aliases .= $fw->tablesToText();
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     $natrules = "\n# NAT Redirects\n";
     $natrules .= "no nat proto carp all\n";
     $natrules .= "no rdr proto carp all\n";
     $natrules .= $fw->outputNatRules();
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     /* enable pf if we need to, otherwise disable */
     if (!isset($config['system']['disablefilter'])) {
@@ -306,18 +284,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
-        if ($verbose) {
-            echo "done.\n";
-        }
+        service_log("done.\n", $verbose);
 
         return;
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     $limitrules = '';
 
@@ -377,6 +351,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
     }
 
+    /* if pf already generated a hostid, reuse it */
+    $current_hostid = get_current_hostid();
+    if (!empty($current_hostid)) {
+        $limitrules .= "set hostid {$current_hostid}\n";
+    }
+
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
@@ -404,10 +384,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
 
         return;
     }
@@ -447,10 +426,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
         unlock($filterlck);
         closelog();
+        reopenlog();
 
-        if ($verbose) {
-            echo "failed.\n";
-        }
+        service_log("failed.\n", $verbose);
 
         return;
     }
@@ -464,20 +442,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         mwexec('/sbin/pfctl -t bogonsv6 -T kill');
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     if ($load_aliases) {
         configd_run('template reload OPNsense/Filter');
         configd_run('filter refresh_aliases', true);
     }
 
-    if ($verbose) {
-        echo '.';
-        flush();
-    }
+    service_log('.', $verbose);
 
     /* enable permanent promiscuous mode to avoid dmesg noise */
     mwexec('/sbin/ifconfig pflog0 promisc');
@@ -488,10 +460,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     unlock($filterlck);
     closelog();
+    reopenlog();
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function filter_generate_scrubbing(&$FilterIflist)
@@ -835,6 +806,17 @@ function default_state_size()
     $max_states = (int) ($physmem / 10) * 1000;
 
     return $max_states;
+}
+
+function get_current_hostid()
+{
+    exec('/sbin/pfctl -si -v 2>/dev/null', $output);
+    foreach ($output as $line) {
+        if (strpos($line, 'Hostid:') !== false) {
+            return preg_split("/(\s+)/", $line)[1];
+        }
+    }
+    return null;
 }
 
 function get_protocols()

@@ -17,6 +17,17 @@
             <pattern>api/ipsec/legacy-subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec>
+    <page-vpn-ipsec-connections>
+        <name>VPN: IPsec connections [new]</name>
+        <patterns>
+            <pattern>ui/ipsec/connections</pattern>
+            <pattern>ui/ipsec/vti</pattern>
+            <pattern>api/ipsec/connections/*</pattern>
+            <pattern>api/ipsec/pools/*</pattern>
+            <pattern>api/ipsec/vti/*</pattern>
+            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+        </patterns>
+    </page-vpn-ipsec-connections>
 
     <!-- ACLs for legacy code -->
     <page-vpn-ipsec-editphase1>
@@ -34,7 +45,8 @@
     <page-vpn-ipsec-editkeys>
         <name>VPN: IPsec: Edit Pre-Shared Keys</name>
         <patterns>
-            <pattern>vpn_ipsec_keys_edit.php*</pattern>
+            <pattern>api/ipsec/pre_shared_keys</pattern>
+            <pattern>ui/ipsec/pre_shared_keys</pattern>
         </patterns>
     </page-vpn-ipsec-editkeys>
     <page-vpn-ipsec-mobile>
@@ -43,23 +55,18 @@
             <pattern>vpn_ipsec_mobile.php*</pattern>
         </patterns>
     </page-vpn-ipsec-mobile>
-    <page-vpn-ipsec-listkeys>
-        <name>VPN: IPsec: Pre-Shared Keys List</name>
-        <patterns>
-            <pattern>vpn_ipsec_keys.php*</pattern>
-        </patterns>
-    </page-vpn-ipsec-listkeys>
     <page-status-ipsec>
         <name>Status: IPsec</name>
         <patterns>
             <pattern>ui/ipsec/sessions</pattern>
-            <pattern>api/ipsec/sessions</pattern>
+            <pattern>api/ipsec/sessions/*</pattern>
         </patterns>
     </page-status-ipsec>
     <page-status-ipsec-leases>
         <name>Status: IPsec: Leasespage</name>
         <patterns>
-            <pattern>diag_ipsec_leases.php*</pattern>
+            <pattern>ui/ipsec/leases</pattern>
+            <pattern>api/ipsec/leases/*</pattern>
         </patterns>
     </page-status-ipsec-leases>
     <page-status-ipsec-sad>
@@ -74,6 +81,7 @@
         <patterns>
             <pattern>ui/ipsec/spd</pattern>
             <pattern>api/ipsec/spd/*</pattern>
+            <pattern>api/ipsec/manual_spd/*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>

@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -28,7 +28,7 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	22.7
+CORE_ABI?=	23.1
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
 CORE_NICKNAME?=	Not Yet
@@ -107,24 +107,18 @@ CORE_PKGVERSION=	${CORE_VERSION}
 
 CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
 
-.if "${CORE_FLAVOUR}" == OpenSSL
-CORE_REPOSITORY?=	${CORE_ABI}/latest
-.elif "${CORE_FLAVOUR}" == LibreSSL
-CORE_REPOSITORY?=	${CORE_ABI}/libressl
-.else
-CORE_REPOSITORY?=	unsupported/${CORE_FLAVOUR:tl}
-.endif
 
 CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
 CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
+CORE_REPOSITORY?=	${CORE_ABI}/latest
 CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2022
+CORE_COPYRIGHT_YEARS?=	2014-2023
 
 CORE_DEPENDS_amd64?=	beep \
 			suricata-devel
@@ -175,7 +169,10 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-netaddr \
+			py${CORE_PYTHON}-numpy \
+			py${CORE_PYTHON}-pandas \
 			py${CORE_PYTHON}-requests \
 			py${CORE_PYTHON}-sqlite3 \
 			py${CORE_PYTHON}-ujson \

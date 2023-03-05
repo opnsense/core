@@ -62,6 +62,7 @@ function unbound_services()
     $pconfig['description'] = gettext('Unbound DNS');
     $pconfig['php']['restart'] = array('unbound_configure_do');
     $pconfig['php']['start'] = array('unbound_configure_do');
+    $pconfig['php']['stop'] = array('unbound_service_stop');
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 
@@ -99,27 +100,48 @@ function unbound_optimization()
     return $optimization;
 }
 
+function unbound_service_stop()
+{
+    global $config;
+
+    mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
+
+    if (empty($config['unbound']['cacheflush'])) {
+        if (isvalidpid('/var/run/unbound.pid')) {
+            configd_run('unbound cache dump');
+        }
+    } else {
+        unbound_cache_flush();
+    }
+
+    killbypid('/var/run/unbound_logger.pid', 'TERM', true);
+    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
+    killbypid('/var/run/unbound.pid', 'TERM', true);
+
+    mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
+    mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
+}
+
 function unbound_generate_config()
 {
     global $config;
 
-    if (!unbound_enabled()) {
-        return;
-    }
+    $pythonv = readlink('/usr/local/bin/python3');
+    $python_dir = "/usr/local/lib/{$pythonv}";
+    $chroot_python_dir = "/var/unbound{$python_dir}";
 
-    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+    $dirs = ['/data', '/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run', $python_dir];
 
     foreach ($dirs as $dir) {
         mwexecf('/bin/mkdir -p %s', "/var/unbound{$dir}");
     }
 
-    if (mwexecf('/sbin/mount -uw %s', '/var/unbound/dev', true)) {
-        mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
-    }
+    mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
+    mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
 
     $optimization = unbound_optimization();
 
-    $module_config = '';
+    $module_config = 'python ';
     $anchor_file = '';
     $dns64_config = '';
 
@@ -140,45 +162,14 @@ function unbound_generate_config()
         $module_config .= 'iterator';
     }
 
-    $qnameminstrict = '';
-    if (!empty($config['unbound']['qnameminstrict'])) {
-        $qnameminstrict = <<<EOF
-qname-minimisation: yes
-qname-minimisation-strict: yes
-
-EOF;
-    }
-
+    $private_addr = "";
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
-        $private_addr = <<<EOF
-# For DNS Rebinding prevention
-#
-# All these addresses are either private or should not be routable in the global IPv4 or IPv6 internet.
-#
-# IPv4 Addresses
-#
-private-address: 0.0.0.0/8       # Broadcast address
-private-address: 10.0.0.0/8
-private-address: 100.64.0.0/10
-private-address: 127.0.0.0/8     # Loopback Localhost
-private-address: 169.254.0.0/16
-private-address: 172.16.0.0/12
-private-address: 192.0.2.0/24    # Documentation network TEST-NET
-private-address: 192.168.0.0/16
-private-address: 198.18.0.0/15   # Used for testing inter-network communications
-private-address: 198.51.100.0/24 # Documentation network TEST-NET-2
-private-address: 203.0.113.0/24  # Documentation network TEST-NET-3
-private-address: 233.252.0.0/24  # Documentation network MCAST-TEST-NET
-#
-# IPv6 Addresses
-#
-private-address: ::1/128         # Loopback Localhost
-private-address: 2001:db8::/32   # Documentation network IPv6
-private-address: fc00::/8        # Unique local address (ULA) part of "fc00::/7", not defined yet
-private-address: fd00::/8        # Unique local address (ULA) part of "fc00::/7", "/48" prefix group
-private-address: fe80::/10       # Link-local address (LLA)
-
-EOF;
+        $advanced = config_read_array('OPNsense', 'unboundplus', 'advanced');
+        if (!empty($advanced) && !empty($advanced['privateaddress'])) {
+            foreach (explode(',', $advanced['privateaddress']) as $address) {
+                $private_addr .= "private-address: {$address}\n";
+            }
+        }
     }
 
     $bindints = '';
@@ -230,27 +221,6 @@ EOF;
     unbound_acls_config();
 
     $port = is_port($config['unbound']['port'] ?? null) ? $config['unbound']['port'] : '53';
-    $hide_id = !empty($config['unbound']['hideidentity']) ? "yes" : "no";
-    $hide_version = !empty($config['unbound']['hideversion']) ? "yes" : "no";
-    $prefetch = !empty($config['unbound']['prefetch']) ? "yes" : "no";
-    $prefetch_key = !empty($config['unbound']['prefetchkey']) ? "yes" : "no";
-    $outgoing_num_tcp = !empty($config['unbound']['outgoing_num_tcp']) ? $config['unbound']['outgoing_num_tcp'] : "10";
-    $incoming_num_tcp = !empty($config['unbound']['incoming_num_tcp']) ? $config['unbound']['incoming_num_tcp'] : "10";
-    $num_queries_per_thread = !empty($config['unbound']['num_queries_per_thread']) ? $config['unbound']['num_queries_per_thread'] : "4096";
-    $outgoing_range = $num_queries_per_thread * 2;
-    $jostle_timeout = !empty($config['unbound']['jostle_timeout']) ? $config['unbound']['jostle_timeout'] : "200";
-    $cache_max_ttl = !empty($config['unbound']['cache_max_ttl']) ? $config['unbound']['cache_max_ttl'] : "86400";
-    $cache_min_ttl = !empty($config['unbound']['cache_min_ttl']) ? $config['unbound']['cache_min_ttl'] : "0";
-    $infra_host_ttl = !empty($config['unbound']['infra_host_ttl']) ? $config['unbound']['infra_host_ttl'] : "900";
-    $infra_cache_numhosts = !empty($config['unbound']['infra_cache_numhosts']) ? $config['unbound']['infra_cache_numhosts'] : "10000";
-    $unwanted_reply_threshold = !empty($config['unbound']['unwanted_reply_threshold']) && is_numeric($config['unbound']['unwanted_reply_threshold']) ? $config['unbound']['unwanted_reply_threshold'] : "0";
-    $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
-    $extended_statistics = !empty($config['unbound']['extended_statistics']) ? 'yes' : 'no';
-    $log_queries = !empty($config['unbound']['log_queries']) ? 'yes' : 'no';
-    $msgcachesize = !empty($config['unbound']['msgcachesize']) ? $config['unbound']['msgcachesize'] : 4;
-    $rrsetcachesize = $msgcachesize * 2;
-    $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? 'yes' : 'no';
-    $serveexpired = !empty($config['unbound']['serveexpired']) ? 'yes' : 'no';
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -313,50 +283,29 @@ pidfile: /var/run/unbound.pid
 root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
-verbosity: {$verbosity}
-extended-statistics: {$extended_statistics}
-log-queries: {$log_queries}
-hide-identity: {$hide_id}
-hide-version: {$hide_version}
+include: /var/unbound/advanced.conf
 harden-referral-path: no
 do-ip4: yes
 do-ip6: {$do_ip6}
 do-udp: yes
 do-tcp: yes
 do-daemonize: yes
-so-reuseport: ${so_reuseport}
+so-reuseport: {$so_reuseport}
 module-config: "{$module_config}"
-cache-max-ttl: {$cache_max_ttl}
-cache-min-ttl: {$cache_min_ttl}
-harden-dnssec-stripped: {$dnssecstripped}
-serve-expired: {$serveexpired}
-outgoing-num-tcp: {$outgoing_num_tcp}
-incoming-num-tcp: {$incoming_num_tcp}
-num-queries-per-thread: {$num_queries_per_thread}
-outgoing-range: {$outgoing_range}
-infra-host-ttl: {$infra_host_ttl}
-infra-cache-numhosts: {$infra_cache_numhosts}
-unwanted-reply-threshold: {$unwanted_reply_threshold}
-jostle-timeout: {$jostle_timeout}
-msg-cache-size: {$msgcachesize}m
-rrset-cache-size: {$rrsetcachesize}m
 {$optimization['number_threads']}
 {$optimization['msg_cache_slabs']}
 {$optimization['rrset_cache_slabs']}
 {$optimization['infra_cache_slabs']}
 {$optimization['key_cache_slabs']}
-{$qnameminstrict}
 {$anchor_file}
 {$forward_local}
 {$dns64_config}
-prefetch: {$prefetch}
-prefetch-key: {$prefetch_key}
 
 # Interface IP(s) to bind to
 {$bindints}
 {$outgoingints}
 
-# DNS Rebinding
+# Private networks for DNS Rebinding prevention (when enabled)
 {$private_addr}
 
 # Private domains (DNS Rebinding)
@@ -375,6 +324,9 @@ include: /var/unbound/host_entries.conf
 include: /var/unbound/etc/*.conf
 
 {$forward_conf}
+
+python:
+python-script: dnsbl_module.py
 
 remote-control:
     control-enable: yes
@@ -399,29 +351,18 @@ function unbound_cache_flush()
 function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
-    $domain = '';
 
-    if (empty($config['unbound']['cacheflush'])) {
-        if (isvalidpid('/var/run/unbound.pid')) {
-            configd_run('unbound cache dump');
-        }
-    } else {
-        unbound_cache_flush();
-    }
-
-    unbound_generate_config();
-
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    unbound_service_stop();
 
     if (!unbound_enabled()) {
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting Unbound DNS...';
-        flush();
-    }
+    service_log('Starting Unbound DNS...', $verbose);
+
+    unbound_generate_config();
+
+    $domain = '';
 
     if (isset($config['unbound']['regdhcp'])) {
         $domain = $config['system']['domain'];
@@ -430,11 +371,15 @@ function unbound_configure_do($verbose = false, $unused = '')
         }
     }
 
+    if (isset($config['unbound']['stats'])) {
+        @touch('/var/unbound/data/stats');
+    } else {
+        @unlink('/var/unbound/data/stats');
+    }
+
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function unbound_add_host_entries($ifconfig_details = null)
@@ -621,6 +566,7 @@ function unbound_add_host_entries($ifconfig_details = null)
     file_put_contents('/var/unbound/host_entries.conf', $unbound_entries);
 
     closelog();
+    reopenlog();
 }
 
 function unbound_acls_subnets()

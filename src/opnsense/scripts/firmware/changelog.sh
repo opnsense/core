@@ -48,12 +48,12 @@ changelog_checksum()
 
 changelog_url()
 {
-	CORE_ABI=$(opnsense-version -a)
+	CORE_ABI=$(opnsense-version -x)
 	SYS_ABI=$(opnsense-verify -a)
 
 	URLPREFIX="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}"
 
-	if opnsense-update -M | egrep -iq '\/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}\/'; then
+	if [ -n "$(opnsense-update -K)" ]; then
 		# changelogs differ for business subscriptions
 		URLPREFIX=$(opnsense-update -M)
 	fi
@@ -65,14 +65,10 @@ changelog_fetch()
 {
 	mkdir -p ${DESTDIR}
 
-	CHECKSUM=$(changelog_checksum ${DESTDIR}/changelog.txz)
 	URL=$(changelog_url)
 
 	${FETCH} -mo ${DESTDIR}/changelog.txz "${URL}"
-
-	if [ "${CHECKSUM}" != "$(changelog_checksum ${DESTDIR}/changelog.txz)" ]; then
-		${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
-	fi
+	${FETCH} -o ${DESTDIR}/changelog.txz.sig "${URL}.sig"
 
 	opnsense-verify -q ${DESTDIR}/changelog.txz
 

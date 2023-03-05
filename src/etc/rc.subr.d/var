@@ -79,3 +79,6 @@ if [ ${USE_MFS_VAR} -ne 0 ]; then
 	mount -t tmpfs -o size=$((MAX_MEM_SYS / 100 * MAX_MFS_VAR)) tmpfs /var/log
 	echo "done."
 fi
+
+# prep boog log
+: > /var/log/boot.log

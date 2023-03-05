@@ -30,17 +30,22 @@
 require_once('guiconfig.inc');
 require_once('system.inc');
 
+phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
+phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
+
+use phpseclib3\File\ASN1;
+use phpseclib3\File\X509;
+
 function csr_generate(&$cert, $keylen_curve, $dn, $digest_alg, $extns)
 {
     $configFilename = create_temp_openssl_config($extns);
-
-
-    $args = array(
+    $args = [
         'config' => $configFilename,
         'req_extensions' => 'v3_req',
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
-    );
+    ];
+
     if (is_numeric($keylen_curve)) {
         $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
         $args['private_key_bits'] = (int)$keylen_curve;
@@ -99,7 +104,7 @@ function parse_csr($csr_str)
         return array('parse_success' => false);
     }
 
-    $x509_lib = new \phpseclib3\File\X509();
+    $x509_lib = new X509();
     $csr = $x509_lib->loadCSR($csr_str);
     if ($csr === false) {
         return array('parse_success' => false);
@@ -127,8 +132,7 @@ function parse_csr($csr_str)
                             case 'id-ce-extKeyUsage':
                                 $ret['extendedKeyUsage'] = array();
                                 foreach ($column['extnValue'] as $usage) {
-                                    array_push($ret['extendedKeyUsage'], strpos($usage, 'id-kp-') === 0 ? $x509_lib->getOID($usage)
-                                                                                                        : $usage);
+                                    array_push($ret['extendedKeyUsage'], strpos($usage, 'id-kp-') === 0 ? ASN1::getOID($usage) : $usage);
                                 }
                                 break;
 

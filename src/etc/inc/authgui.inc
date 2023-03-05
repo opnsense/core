@@ -132,6 +132,7 @@ function session_auth()
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         log_msg($message, $prio);
         closelog();
+        reopenlog();
     }
 
     if (session_status() == PHP_SESSION_NONE) {
@@ -249,7 +250,7 @@ function session_auth()
 
         if (isset($_COOKIE[session_name()])) {
             $secure = $config['system']['webgui']['protocol'] == "https";
-            setcookie(session_name(), '', time() - 42000, '/', null, $secure, true);
+            setcookie(session_name(), '', time() - 42000, '/', '', $secure, true);
         }
 
         /* and destroy it */
@@ -295,7 +296,7 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];
         }
-        log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
+        log_msg("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
         header(url_safe("Location: /{$page}"));
         exit;
     } else {
@@ -309,9 +310,8 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
  */
 function display_error_form($text)
 {
-    global $g;
-
     $themename = htmlspecialchars(get_current_theme());
+    $product = product::getInstance();
 
     ?><!doctype html>
 <html lang="en" class="no-js">
@@ -326,7 +326,7 @@ function display_error_form($text)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?= gettext('Error') ?> | <?= $g['product_name'] ?></title>
+    <title><?= gettext('Error') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
@@ -347,11 +347,12 @@ function display_error_form($text)
 
 function display_login_form($Login_Error)
 {
-    global $config, $g;
+    global $config;
 
     $themename = htmlspecialchars(get_current_theme());
+    $product = product::getInstance();
 
-    setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
+    setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', '', $config['system']['webgui']['protocol'] == 'https', true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
 <html lang="en" class="no-js">
@@ -365,7 +366,7 @@ function display_login_form($Login_Error)
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title><?= gettext('Login') ?> | <?= $g['product_name'] ?></title>
+    <title><?= gettext('Login') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
@@ -421,8 +422,8 @@ function display_login_form($Login_Error)
 
       </main>
       <div class="login-foot text-center">
-        <a target="_blank" href="<?=$g['product_website']?>"><?=$g['product_name']?></a> (c) <?=$g['product_copyright_years']?>
-        <a target="_blank" href="<?=$g['product_copyright_url']?>"><?=$g['product_copyright_owner']?></a>
+        <a target="_blank" href="<?= $product->website() ?>"><?= $product->name() ?></a> (c) <?= $product->copyright_years() ?>
+        <a target="_blank" href="<?= $product->copyright_url() ?>"><?= $product->copyright_owner() ?></a>
       </div>
 
     </div>

@@ -70,20 +70,11 @@ function webgui_configure_do($verbose = false, $interface = '')
         array_unshift($interfaces, 'lo0');
     }
 
-    @mkdir('/var/lib/php/sessions', 0750, true);
-    /* do not trust PHP with mkdir permission on existing directory */
-    @chmod('/var/lib/php/sessions', 0750);
-    @chown('/var/lib/php/sessions', 'root');
-    @chgrp('/var/lib/php/sessions', 'wheel');
-
     if (!empty($interface) && !in_array($interface, $interfaces)) {
         return;
     }
 
-    if ($verbose) {
-        echo 'Starting web GUI...';
-        flush();
-    }
+    service_log('Starting web GUI...', $verbose);
 
     $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
 
@@ -131,23 +122,15 @@ function webgui_configure_do($verbose = false, $interface = '')
         $ca = ca_chain($cert);
     }
 
-    if (!webgui_generate_config($portarg, $crt, $key, $ca, $listeners)) {
-        if ($verbose) {
-            echo "deferred.\n";
-        }
-        return;
-    }
+    webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
 
-    /* only stop the frontend when the generation was successful */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
+    /* regenerate the php.ini files in case the setup has changed */
+    configd_run('template reload OPNsense/WebGui');
 
     /* flush Phalcon volt templates */
     foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
         unlink($filename);
     }
-
-    /* regenerate the php.ini files in case the setup has changed */
-    configd_run('template reload OPNsense/WebGui');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -156,39 +139,27 @@ function webgui_configure_do($verbose = false, $interface = '')
         @touch('/var/run/development');
     }
 
-    /*
-     * Force reloading all php-cgi children to
-     * avoid hiccups with moved include files.
-     */
-    killbyname('php-cgi', 'HUP');
+    /* stop the frontend when the generation was completed */
+    killbypid('/var/run/lighty-webConfigurator.pid', 'INT', true);
 
     /* start lighttpd */
-    if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
-        if ($verbose) {
-            echo "failed.\n";
-        }
+    if (!count($listeners) || mwexec('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
+        service_log("failed.\n", $verbose);
     } else {
-        if ($verbose) {
-            echo "done.\n";
-        }
+        service_log("done.\n", $verbose);
     }
 }
 
 function webgui_create_selfsigned($verbose = false)
 {
-    global $config, $g;
+    global $config;
 
     $a_ca = &config_read_array('ca');
     $a_cert = &config_read_array('cert');
 
-    if ($verbose) {
-        echo 'Creating self-signed web GUI certificate...';
-        flush();
-    }
+    service_log('Creating self-signed web GUI certificate...', $verbose);
 
-    log_error('Creating TLS certificate for this host');
-
-    $cert = array();
+    $cert = [];
     $cert['refid'] = uniqid();
     $cert['descr'] = 'Web GUI TLS certificate';
 
@@ -200,7 +171,7 @@ function webgui_create_selfsigned($verbose = false)
         '-newkey rsa:4096 -sha256 -days 397 -nodes -x509 ' .
         '-subj "/CN="%s"/C=NL/ST=Zuid-Holland/L=Middelharnis/O="%s" self-signed web certificate" ' .
         '-addext "subjectAltName = DNS:"%s -keyout /tmp/ssl.key -out /tmp/ssl.crt',
-        array($dns, $g['product_name'], $dns)
+        [$dns, product::getInstance()->name(), $dns]
     );
 
     $crt = file_get_contents('/tmp/ssl.crt');
@@ -217,9 +188,7 @@ function webgui_create_selfsigned($verbose = false)
 
     write_config('Created web GUI TLS certificate');
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function webgui_generate_config($port, $cert, $key, $ca, $listeners)
@@ -314,6 +283,9 @@ server.tag = "OPNsense"
 
 # Maximum idle time with nothing being written (php downloading)
 server.max-write-idle = 999
+
+# Set shutdown time to 2 seconds for SIGINT handling
+server.feature-flags = ( "server.graceful-shutdown-timeout" => 2 )
 
 {$lighty_use_syslog}
 
@@ -530,10 +502,5 @@ EOD;
         }
     }
 
-    if (false === file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config)) {
-        log_error('Error: cannot write configuration');
-        return 0;
-    }
-
-    return 1;
+    @file_put_contents('/var/etc/lighty-webConfigurator.conf', $lighty_config);
 }

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/local/sbin/configctl -dq unbound dnsbl

@@ -119,7 +119,6 @@ core_check()
 {
 	echo ">>> Check for core packages consistency" | ${TEE} ${LOCKFILE}
 
-	CRYPTO=$(opnsense-version -f | tr '[[:upper:]]' '[[:lower:]]')
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
@@ -130,7 +129,7 @@ core_check()
 
 	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
-	for DEP in $( (echo ${CORE}; echo ${CRYPTO}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1

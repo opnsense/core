@@ -12,8 +12,9 @@
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
-        <Settings url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
-        <Traffic url="/ui/diagnostics/traffic" cssClass="fa fa-line-chart fa-fw"/>
+        <Settings order="10" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
+        <Traffic order="20" url="/ui/diagnostics/traffic" cssClass="fa fa-line-chart fa-fw"/>
+        <DNS order="30" VisibleName="Unbound DNS" url="/ui/unbound/overview" cssClass="fa fa-bar-chart fa-fw"/>
     </Reporting>
     <System order="20" cssClass="fa fa-server">
         <Access cssClass="fa fa-users fa-fw">
@@ -92,6 +93,7 @@
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Audit url="/ui/diagnostics/log/core/audit"/>
             <Backend url="/ui/diagnostics/log/core/configd"/>
+            <Boot url="/ui/diagnostics/log/core/boot"/>
             <General url="/ui/diagnostics/log/core/system"/>
             <WebGUI VisibleName="Web GUI" url="/ui/diagnostics/log/core/lighttpd"/>
         </LogFiles>
@@ -105,14 +107,6 @@
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <VIP order="930" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
-            <Settings url="/firewall_virtual_ip.php">
-                <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
-            </Settings>
-            <Status url="/carp_status.php">
-                <All url="/carp_status.php*" visibility="hidden"/>
-            </Status>
-        </VIP>
         <Wireless order="940" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>

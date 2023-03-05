@@ -1,23 +1,39 @@
 <acl>
+    <page-firewall-virtualipaddress-edit>
+        <name>Interfaces: Virtual IPs: Settings</name>
+        <patterns>
+            <pattern>ui/interfaces/vip</pattern>
+            <pattern>api/interfaces/vip_settings/*</pattern>
+        </patterns>
+    </page-firewall-virtualipaddress-edit>
+    <page-status-carp>
+        <name>Interfaces: Virtual IPs: Status</name>
+        <patterns>
+            <pattern>ui/diagnostics/interface/vip</pattern>
+            <pattern>api/diagnostics/interface/carp_status</pattern>
+            <pattern>api/diagnostics/interface/get_vip_status/*</pattern>
+            <pattern>api/diagnostics/interface/get_pfsync_nodes/*</pattern>
+        </patterns>
+    </page-status-carp>
     <page-interfaces-vxlan>
         <name>Interfaces: VXLAN</name>
         <patterns>
             <pattern>ui/interfaces/vxlan</pattern>
-            <pattern>api/interfaces/vxlan</pattern>
+            <pattern>api/interfaces/vxlan_settings/*</pattern>
         </patterns>
     </page-interfaces-vxlan>
     <page-interfaces-loopback>
         <name>Interfaces: Loopback</name>
         <patterns>
             <pattern>ui/interfaces/loopback</pattern>
-            <pattern>api/interfaces/loopback</pattern>
+            <pattern>api/interfaces/loopback_settings/*</pattern>
         </patterns>
     </page-interfaces-loopback>
     <page-interfaces-vlan-edit>
         <name>Interfaces: VLAN</name>
         <patterns>
           <pattern>ui/interfaces/vlan</pattern>
-          <pattern>api/interfaces/vlan</pattern>
+          <pattern>api/interfaces/vlan_settings/*</pattern>
         </patterns>
     </page-interfaces-vlan-edit>
 </acl>

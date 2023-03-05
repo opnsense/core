@@ -51,8 +51,9 @@ class ApiControllerBase extends ControllerRoot
         $fields = null,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
+        $records = is_array($records) ? $records : []; // safeguard input, we are only able to search arrays.
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
         $currentPage = intval($this->request->getPost('current', 'int', 1));
@@ -60,7 +61,11 @@ class ApiControllerBase extends ControllerRoot
         $entry_keys = array_keys($records);
         $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
 
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost('sort'))) {
+        if (
+            $this->request->hasPost('sort') &&
+            is_array($this->request->getPost('sort')) &&
+            !empty($this->request->getPost('sort'))
+        ) {
             $keys = array_keys($this->request->getPost('sort'));
             $order = $this->request->getPost('sort')[$keys[0]];
             $keys = array_column($records, $keys[0]);
@@ -75,7 +80,7 @@ class ApiControllerBase extends ControllerRoot
         }
 
         $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
-            if (is_callable($filter_funct) && !$filter_funct($record)) {
+            if (is_callable($filter_funct) && !$filter_funct($records[$key])) {
                 // not applicable according to $filter_funct()
                 return false;
             } elseif (!empty($searchPhrase)) {
@@ -123,7 +128,10 @@ class ApiControllerBase extends ControllerRoot
                 if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
                     return "Invalid JSON syntax";
                 }
-                $_POST = $jsonRawBody;
+                $_POST = is_array($jsonRawBody) ? $jsonRawBody : [];
+                foreach ($_POST as $key => $value) {
+                    $_REQUEST[$key] = $value;
+                }
                 break;
             case 'application/x-www-form-urlencoded':
             case 'application/x-www-form-urlencoded;charset=utf-8':

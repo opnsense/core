@@ -71,11 +71,13 @@ for conns in s.list_conns():
             if connKey.find('local-') == 0:
                 if 'id' in conns[connection_id][connKey]:
                     result[connection_id]['local-id'] = conns[connection_id][connKey]['id']
-                result[connection_id]['local-class'].append(conns[connection_id][connKey]['class'])
+                if 'class' in conns[connection_id][connKey]:
+                    result[connection_id]['local-class'].append(conns[connection_id][connKey]['class'])
             elif connKey.find('remote-') == 0:
                 if 'id' in conns[connection_id][connKey]:
                     result[connection_id]['remote-id'] = conns[connection_id][connKey]['id']
-                result[connection_id]['remote-class'].append(conns[connection_id][connKey]['class'])
+                if 'class' in conns[connection_id][connKey]:
+                    result[connection_id]['remote-class'].append(conns[connection_id][connKey]['class'])
         result[connection_id]['local-class'] = b'+'.join(result[connection_id]['local-class'])
         result[connection_id]['remote-class'] = b'+'.join(result[connection_id]['remote-class'])
 

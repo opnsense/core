@@ -2,4 +2,6 @@
 
 /usr/local/etc/rc.syshook stop
 
-exec /sbin/shutdown -or now
+/sbin/shutdown -or now
+
+while :; do sleep 1; done

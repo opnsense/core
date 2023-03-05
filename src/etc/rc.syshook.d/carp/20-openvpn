@@ -36,12 +36,12 @@ $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
 if ($type != 'MASTER' && $type != 'BACKUP') {
-    log_error("Carp '$type' event unknown from source '{$subsystem}'");
+    log_msg("Carp '$type' event unknown from source '{$subsystem}'");
     exit(1);
 }
 
 if (!strstr($subsystem, '@')) {
-    log_error("Carp '$type' event triggered from wrong source '{$subsystem}'");
+    log_msg("Carp '$type' event triggered from wrong source '{$subsystem}'");
     exit(1);
 }
 
@@ -51,6 +51,6 @@ $friendly = convert_real_interface_to_friendly_interface_name($iface);
 $carp_iface = "{$friendly}_vip{$vhid}";
 $descr = convert_friendly_interface_to_friendly_descr($carp_iface);
 
-log_error(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
+log_msg(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
 
 openvpn_configure_do(false, $carp_iface, true);

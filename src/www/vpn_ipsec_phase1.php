@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ,encryption-algorithm,lifetime,authentication_method,descr,nat_traversal,rightallowany,inactivity_timeout
     ,interface,iketype,dpd_delay,dpd_maxfail,dpd_action,remote-gateway,pre-shared-key,certref,margintime,rekeyfuzz
     ,caref,local-kpref,peer-kpref,reauth_enable,rekey_enable,auto,tunnel_isolation,authservers,mobike,keyingtries
-    ,closeaction";
+    ,closeaction,unique";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -143,7 +143,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['encryption-algorithm'] = ["name" => "aes256gcm16"];
         $pconfig['hash-algorithm'] = ['sha256'];
         $pconfig['dhgroup'] = array('14');
-        $pconfig['lifetime'] = "28800";
         $pconfig['nat_traversal'] = "on";
         $pconfig['installpolicy'] = true;
         $pconfig['authservers'] = array();
@@ -348,6 +347,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Invalid argument for close action.');
     }
 
+    if (!empty($pconfig['unique']) && !in_array($pconfig['unique'], ['no', 'replace', 'never', 'keep'])) {
+        $input_errors[] = gettext('Invalid argument for unique.');
+    }
+
     if (!empty($pconfig['dpd_enable'])) {
         if (!is_numeric($pconfig['dpd_delay'])) {
             $input_errors[] = gettext("A numeric value must be specified for DPD delay.");
@@ -404,7 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,margintime,rekeyfuzz,inactivity_timeout,keyingtries
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr,local-kpref,peer-kpref
-        ,nat_traversal,auto,mobike,closeaction";
+        ,nat_traversal,auto,mobike,closeaction,unique";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -474,16 +477,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_phase1[] = $ph1ent;
         }
 
-        /* if the remote gateway changed and the interface is not WAN then remove route */
-        if ($pconfig['interface'] != 'wan') {
-            if ($old_ph1ent['remote-gateway'] != $pconfig['remote-gateway']) {
-                /* XXX does this even apply? only use of system.inc at the top! */
-                system_host_route($old_ph1ent['remote-gateway'], $old_ph1ent['remote-gateway'], true, false);
-            }
-        }
-
         write_config();
         mark_subsystem_dirty('ipsec');
+
         header(url_safe('Location: /ui/ipsec/tunnels'));
         exit;
     }
@@ -998,7 +994,7 @@ endforeach; ?>
 <?php
                       foreach (auth_get_authserver_list() as $auth_server):
                         if ($auth_server['type'] == "radius"):?>
-                        <option value="<?=$auth_server['name'];?>" <?=in_array($auth_server['name'],$pconfig['authservers']) ? 'selected="selected"' : "";?>>
+                        <option value="<?=$auth_server['name'];?>" <?=!empty($pconfig['authservers']) && in_array($auth_server['name'] ?? '', $pconfig['authservers']) ? 'selected="selected"' : "";?>>
                           <?=htmlspecialchars($auth_server['name']);?>
                         </option>
 <?php
@@ -1100,15 +1096,6 @@ endforeach; ?>
                       </select>
                       <div class="hidden" data-for="help_for_dhgroup">
                         <?=gettext("Must match the setting chosen on the remote side."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Lifetime"); ?></td>
-                    <td>
-                      <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
-                      <div class="hidden" data-for="help_for_lifetime">
-                        <?=gettext("seconds"); ?>
                       </div>
                     </td>
                   </tr>
@@ -1228,6 +1215,29 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_unique" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Unique"); ?></td>
+                    <td>
+                      <select name="unique" class="selectpicker">
+                        <option value="" <?= empty($pconfig['unique']) ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Replace"); ?>
+                        </option>
+                        <option value="no" <?= $pconfig['unique'] == "no" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("No"); ?>
+                        </option>
+                        <option value="never" <?= $pconfig['unique'] == "never" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Never"); ?>
+                        </option>
+                        <option value="keep" <?= $pconfig['unique'] == "keep" ? "selected=\"selected\"" :"" ;?> >
+                          <?=gettext("Keep"); ?>
+                        </option>
+                      </select>
+                      <div class="hidden" data-for="help_for_unique">
+                          <?=gettext(
+                            "Connection uniqueness policy to enforce. To avoid multiple connections from the same user, a uniqueness policy can be enforced."
+                          )?>
+                      </div>
+                    </td>
+                  </tr>                  <tr>
                     <td><a id="help_for_dpd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Dead Peer Detection"); ?></td>
                     <td>
                       <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
@@ -1278,6 +1288,15 @@ endforeach; ?>
                           "How many attempts should be made to negotiate a connection, or a replacement for one, before giving up (default 3). ".
                           "Leave empty for default, -1 for forever or any positive integer for the number of tries"
                         ); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Lifetime"); ?></td>
+                    <td>
+                      <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
+                      <div class="hidden" data-for="help_for_lifetime">
+                        <?=gettext("seconds"); ?>
                       </div>
                     </td>
                   </tr>

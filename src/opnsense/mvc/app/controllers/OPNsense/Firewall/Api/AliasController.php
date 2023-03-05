@@ -34,6 +34,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Category;
 
 /**
  * @package OPNsense\Firewall
@@ -51,18 +52,81 @@ class AliasController extends ApiMutableModelControllerBase
     public function searchItemAction()
     {
         $type = $this->request->get('type');
-        $filter_funct = null;
-        if (!empty($type)) {
-            $filter_funct = function ($record) use ($type) {
-                return in_array($record->type, $type);
-            };
-        }
-        return $this->searchBase(
+        $category = $this->request->get('category');
+        $filter_funct = function ($record) use ($type, $category) {
+            $match_type = empty($type) || in_array($record->type, $type);
+            $match_cat = empty($category) || array_intersect(explode(',', $record->categories), $category);
+            return $match_type && $match_cat;
+        };
+
+        $result = $this->searchBase(
             "aliases.alias",
-            array('enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'),
+            ['enabled', 'name', 'description', 'type', 'content', 'current_items', 'last_updated'],
             "name",
             $filter_funct
         );
+
+        /**
+         * remap some source data from the model as searchBase() is not able to distinct this.
+         * - category uuid's
+         * - unix group id's to names in content fields
+         */
+        $categories = [];
+        $types = [];
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $alias) {
+            $categories[$key] = !empty((string)$alias->categories) ? explode(',', (string)$alias->categories) : [];
+            $types[$key] = (string)$alias->type;
+        }
+        $group_mapping = null;
+        foreach ($result['rows'] as &$record) {
+            $record['categories_uuid'] = $categories[$record['uuid']];
+            if ($types[$record['uuid']] == 'authgroup') {
+                if ($group_mapping === null) {
+                    $group_mapping = $this->listUserGroupsAction();
+                }
+                $groups = [];
+                foreach (explode(',', $record['content']) as $grp) {
+                    if (isset($group_mapping[$grp])) {
+                        $groups[] = $group_mapping[$grp]['name'];
+                    }
+                }
+                $record['content'] = implode(',', $groups);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * list categories and usage
+     * @return array
+     */
+    public function listCategoriesAction()
+    {
+        $response = ['rows' => []];
+        $catcount = [];
+        foreach ($this->getModel()->aliases->alias->iterateItems() as $alias) {
+            if (!empty((string)$alias->categories)) {
+                foreach (explode(',', (string)$alias->categories) as $cat) {
+                    if (!isset($catcount[$cat])) {
+                        $catcount[$cat] = 0;
+                    }
+                    $catcount[$cat] += 1;
+                }
+            }
+        }
+        $mdlcat = new Category();
+        foreach ($mdlcat->categories->category->iterateItems() as $key => $category) {
+            $response['rows'][] = [
+                "uuid" => $key,
+                "name" => (string)$category->name,
+                "color" => (string)$category->color,
+                "used" => isset($catcount[$key]) ? $catcount[$key] : 0
+            ];
+        }
+        array_multisort(array_column($response['rows'], "name"), SORT_ASC, SORT_NATURAL, $response['rows']);
+
+        return $response;
     }
 
     /**
@@ -76,7 +140,12 @@ class AliasController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
         $old_name = $node != null ? (string)$node->name : null;
-        if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("alias")) {
+        if (
+            $old_name !== null &&
+            $this->request->isPost() &&
+            $this->request->hasPost("alias") &&
+            !empty($this->request->getPost("alias")['name'])
+        ) {
             $new_name = $this->request->getPost("alias")['name'];
             if ($new_name != $old_name) {
                 // replace aliases, setBase() will synchronise the changes to disk
@@ -182,7 +251,12 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function listCountriesAction()
     {
-        $result = array();
+        $result = [
+            'EU' => [
+                'name' => gettext('Unclassified'),
+                'region' => 'Europe'
+            ]
+        ];
 
         foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
             $line = trim($line);
@@ -207,6 +281,29 @@ class AliasController extends ApiMutableModelControllerBase
             if (!empty($result[$line[0]]) && empty($result[$line[0]]['region'])) {
                 $result[$line[0]]['region'] = explode('/', $line[2])[0];
             }
+        }
+        return $result;
+    }
+
+    /**
+     * list user groups
+     * @return array user groups
+     */
+    public function listUserGroupsAction()
+    {
+        $result = [];
+        $cnf = Config::getInstance()->object();
+        if (isset($cnf->system->group)) {
+            foreach ($cnf->system->group as $group) {
+                $name = (string)$group->name;
+                if ($name != 'all') {
+                    $result[(string)$group->gid] = [
+                        "name" => $name,
+                        "gid" => (string)$group->gid
+                    ];
+                }
+            }
+            ksort($result);
         }
         return $result;
     }

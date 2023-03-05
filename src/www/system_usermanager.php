@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk',
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv',
                             'otp_seed', 'email', 'shell', 'comment', 'landing_page');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
@@ -339,7 +339,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['descr'] = $pconfig['descr'];
             $userent['expires'] = $pconfig['expires'];
             $userent['authorizedkeys'] = base64_encode(trim($pconfig['authorizedkeys']));
-            $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
             if (!empty($pconfig['gen_otp_seed'])) {
                 // generate 160bit base32 encoded secret
                 $userent['otp_seed'] = Base32\Base32::encode(random_bytes(20));
@@ -955,12 +954,6 @@ $( document ).ready(function() {
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>
                       <textarea name="authorizedkeys" id="authorizedkeys" style="max-width: inherit;" class="form-control" cols="65" rows="1" placeholder="<?=gettext("Paste an authorized keys file here.");?>" wrap='off'><?=$pconfig['authorizedkeys'];?></textarea>
-                    </td>
-                  </tr>
-                  <tr id="ipsecpskrow">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPsec Pre-Shared Key");?></td>
-                    <td>
-                      <input name="ipsecpsk" type="text" size="65" value="<?=$pconfig['ipsecpsk'];?>" />
                     </td>
                   </tr>
                   <tr>

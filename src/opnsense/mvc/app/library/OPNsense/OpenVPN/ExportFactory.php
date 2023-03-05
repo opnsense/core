@@ -58,7 +58,7 @@ class ExportFactory
                     );
                 }
             } catch (\ReflectionException $e) {
-                null; // skip when unable to parse
+                /* skip when unable to parse */
             }
         }
         return $providers;

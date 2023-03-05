@@ -40,6 +40,58 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'dot';
 
+    public function updateBlocklistAction()
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type')) {
+            Config::getInstance()->lock();
+            $domain = $this->request->getPost('domain');
+            $type = $this->request->getPost('type');
+            $mdl = $this->getModel();
+            $item = $mdl->getNodeByReference('dnsbl.' . $type);
+
+            if ($item != null) {
+                $remove = function ($csv, $part) {
+                    while (($i = array_search($part, $csv)) !== false) {
+                        unset($csv[$i]);
+                    }
+                    return implode(',', $csv);
+                };
+
+                // strip off any trailing dot
+                $value = rtrim($domain, '.');
+                $wl = explode(',', (string)$mdl->dnsbl->whitelists);
+                $bl = explode(',', (string)$mdl->dnsbl->blocklists);
+
+                $existing_domains = explode(',', (string)$item);
+                if (in_array($value, $existing_domains)) {
+                    // value already in model, no need to re-run a potentially
+                    // expensive dnsbl action
+                    return ["status" => "OK"];
+                }
+
+                // Check if domains should be switched around in the model
+                if ($type == 'whitelists' && in_array($value, $bl)) {
+                    $mdl->dnsbl->blocklists = $remove($bl, $value);
+                } elseif ($type == 'blocklists' && in_array($value, $wl)) {
+                    $mdl->dnsbl->whitelists = $remove($wl, $value);
+                }
+
+                // update the model
+                $list = array_filter($existing_domains); // removes all empty entries
+                $list[] = $value;
+                $mdl->dnsbl->$type = implode(',', $list);
+
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+
+                $service = new \OPNsense\Unbound\Api\ServiceController();
+                $result = $service->dnsblAction();
+            }
+        }
+        return $result;
+    }
+
     public function getNameserversAction()
     {
         if ($this->request->isGet()) {
@@ -63,7 +115,8 @@ class SettingsController extends ApiMutableModelControllerBase
         if (substr($method, -6) == 'Action') {
             $fn = preg_replace('/Dot/', 'Forward', $method);
             if (method_exists(get_class($this), $fn)) {
-                if (preg_match("/forward/i", $this->request->getHTTPReferer())) {
+                // set the type to forward if the request came from the corresponding gui page or is explicitly set in the API call
+                if (preg_match("/forward/i", $this->request->getHTTPReferer()) || ($this->request->getPost('dot') && $this->request->getPost('dot')['type'] == 'forward')) {
                     $this->type = "forward";
                 }
                 return $this->$fn(...$args);

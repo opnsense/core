@@ -255,6 +255,16 @@
                 <default>0</default>
                 <Required>Y</Required>
             </LogPayload>
+            <verbosity type="OptionField">
+                <Required>N</Required>
+                <BlankDesc>DEFAULT (0)</BlankDesc>
+                <OptionValues>
+                    <v>INFO (1)</v>
+                    <vv>PERF (2)</vv>
+                    <vvv>CONFIG (3)</vvv>
+                    <vvvv>DEBUG (4)</vvvv>
+                </OptionValues>
+            </verbosity>
         </general>
     </items>
 </model>

@@ -93,7 +93,7 @@ sub process_file
             $start = $1;
             $start =~ s/[,\s\-]+//g;
         }
-        if ( $line =~ s/(\d\d\d\d\s*,?\s+)// ) {
+        if ( $line =~ s/^(\d\d\d\d\s*,?\s+)// ) {
             $end = $1;
             $end =~ s/[,\s]+//g;
         }
@@ -113,7 +113,7 @@ sub process_file
 
 find( \&process_file, $src );
 
-for ( sort keys %copyrights ) {
+for ( sort { lc($a) cmp lc($b) } keys %copyrights ) {
     my $date = $copyrights{$_}[0];
     next if $date == 0;
     $date = join '-', @{ $copyrights{$_} } if $copyrights{$_}[1] != $date;

@@ -79,7 +79,11 @@ class SettingsController extends ApiMutableModelControllerBase
             $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+            if (
+                $this->request->hasPost('sort') &&
+                is_array($this->request->getPost("sort")) &&
+                !empty($this->request->getPost("sort"))
+            ) {
                 $sortStr = '';
                 $sortBy = array_keys($this->request->getPost("sort"));
                 if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {

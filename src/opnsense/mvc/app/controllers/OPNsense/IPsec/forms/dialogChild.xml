@@ -1,0 +1,131 @@
+<form>
+    <field>
+        <id>child.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>child.connection</id>
+        <label>Connection</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>child.sha256_96</id>
+        <label>sha256_96</label>
+        <type>checkbox</type>
+        <help>
+          HMAC-SHA-256 is used with 128-bit truncation with IPsec.
+          For compatibility with implementations that incorrectly use 96-bit truncation this option may be enabled to
+          configure the shorter truncation length in the kernel.
+          This is not negotiated, so this only works with peers that use the incorrect truncation length (or have this option enabled)
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>child.mode</id>
+        <label>Mode</label>
+        <type>dropdown</type>
+        <help>
+          IPsec Mode to establish CHILD_SA with.
+          tunnel negotiates the CHILD_SA in IPsec Tunnel Mode whereas transport uses IPsec Transport Mode.
+          pass and drop are used to install shunt policies which explicitly bypass the defined traffic from IPsec processing or drop it, respectively.
+        </help>
+    </field>
+    <field>
+        <id>child.policies</id>
+        <label>Policies</label>
+        <type>checkbox</type>
+        <help>
+          Whether to install IPsec policies or not.
+          Disabling this can be useful in some scenarios e.g. VTI where policies are not managed by the IKE daemon
+        </help>
+    </field>
+    <field>
+        <id>child.start_action</id>
+        <label>Start action</label>
+        <type>dropdown</type>
+        <help>
+          Action to perform after loading the configuration.
+          The default of none loads the connection only, which then can be manually initiated or used as a responder configuration.
+          The value trap installs a trap policy which triggers the tunnel as soon as matching traffic has been detected.
+          The value start initiates the connection actively.
+          To immediately initiate a connection for which trap policies have been installed, user Trap+start.
+        </help>
+    </field>
+    <field>
+        <id>child.close_action</id>
+        <label>Close action</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+          Action to perform after a CHILD_SA gets closed by the peer.
+          The default of none does not take any action.
+          trap installs a trap policy for the CHILD_SA (note that this is redundant if start_action includes trap).
+          start tries to immediately re-create the CHILD_SA.
+
+          close_action does not provide any guarantee that the CHILD_SA is kept alive.
+          It acts on explicit close messages only but not on negotiation failures.
+          Use trap policies to reliably re-create failed CHILD_SAs
+        </help>
+    </field>
+    <field>
+        <id>child.dpd_action</id>
+        <label>DPD action</label>
+        <type>dropdown</type>
+        <help>
+          Action to perform for this CHILD_SA on DPD timeout.
+          The default clear closes the CHILD_SA and does not take further action.
+          trap installs a trap policy, which will catch matching traffic and tries to re-negotiate the tunnel on-demand
+          (note that this is redundant if start_action includes trap.
+          restart immediately tries to re-negotiate the CHILD_SA under a fresh IKE_SA.
+        </help>
+    </field>
+    <field>
+        <id>child.reqid</id>
+        <label>Reqid</label>
+        <type>text</type>
+        <help>
+          This might be helpful in some scenarios, like route based tunnels (VTI), but works only if each CHILD_SA configuration is instantiated not more than once.
+          The default uses dynamic reqids, allocated incrementally
+        </help>
+    </field>
+    <field>
+        <id>child.esp_proposals</id>
+        <label>ESP proposals</label>
+        <type>select_multiple</type>
+    </field>
+    <field>
+        <id>child.local_ts</id>
+        <label>Local</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.</help>
+    </field>
+    <field>
+        <id>child.remote_ts</id>
+        <label>Remote</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.</help>
+    </field>
+    <field>
+        <id>child.rekey_time</id>
+        <label>Rekey time (s)</label>
+        <type>text</type>
+        <help>
+          Time to schedule CHILD_SA rekeying.
+          CHILD_SA rekeying refreshes key material, optionally using a Diffie-Hellman exchange if a group is specified in the proposal.
+          To avoid rekey collisions initiated by both ends simultaneously, a value in the range of rand_time
+          gets subtracted to form the effective soft lifetime.
+          By default CHILD_SA rekeying is scheduled every hour, minus rand_time
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>child.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

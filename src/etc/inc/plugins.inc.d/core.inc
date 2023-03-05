@@ -213,8 +213,8 @@ function core_devices()
 
     foreach (config_read_array('ppps', 'ppp') as $dev) {
         $ppp_names[$dev['if']] = [
-            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'], $dev['username']),
-            'ifdescr' => sprintf('%s', $dev['descr']),
+            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'] ?? '', $dev['username']),
+            'ifdescr' => sprintf('%s', $dev['descr'] ?? ''),
             'ipaddr' => $dev['type'],
             'name' => $dev['if'],
         ];
@@ -476,8 +476,15 @@ function core_xmlrpc_sync()
 function core_configure()
 {
     return [
-        'dns_reload' => ['system_resolvconf_generate', 'system_hosts_generate'],
+        'dns_reload' => ['system_resolver_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
+    ];
+}
+
+function core_run()
+{
+    return [
+        'host_routes' => 'system_resolvconf_host_routes',
     ];
 }
 

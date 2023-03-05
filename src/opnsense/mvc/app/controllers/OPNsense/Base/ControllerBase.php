@@ -42,6 +42,57 @@ class ControllerBase extends ControllerRoot
     protected $content_security_policy = array();
 
     /**
+     *  @return array list of javascript files to be included in default.volt
+     */
+    protected function templateJSIncludes()
+    {
+        return [
+          // legacy browser functions
+          '/ui/js/polyfills.js',
+          // JQuery
+          '/ui/js/jquery-3.5.1.min.js',
+          // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
+          '/ui/js/tokenize2.js',
+          // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
+          '/ui/js/jquery.bootgrid.js',
+          // Bootstrap type ahead
+          '/ui/js/bootstrap3-typeahead.min.js',
+          // OPNsense standard toolkit
+          '/ui/js/opnsense.js',
+          '/ui/js/opnsense_theme.js',
+          '/ui/js/opnsense_ui.js',
+          '/ui/js/opnsense_bootgrid_plugin.js',
+          '/ui/js/opnsense_status.js',
+          // bootstrap script
+          '/ui/js/bootstrap.min.js',
+          '/ui/js/bootstrap-select.min.js',
+          // bootstrap dialog
+          '/ui/js/bootstrap-dialog.min.js'
+        ];
+    }
+
+    /**
+     *  @return array list of css files to be included in default.volt (used themed versions if available)
+     */
+    protected function templateCSSIncludes()
+    {
+        return [
+            // default theme
+            'css/main.css',
+            // Stylesheet for fancy select/dropdown
+            '/css/bootstrap-select-1.13.3.css',
+            // bootstrap dialog
+            '/css/bootstrap-dialog.css',
+            // Font awesome
+            '/ui/css/font-awesome.min.css',
+            // JQuery Tokenize2 (https://zellerda.github.io/Tokenize2/)
+            '/css/tokenize2.css',
+            // Bootgrid (grid system from http://www.jquery-bootgrid.com/ )
+            '/css/jquery.bootgrid.css'
+        ];
+    }
+
+    /**
      * convert xml form definition to simple data structure to use in our Volt templates
      *
      * @param $xmlNode
@@ -223,6 +274,10 @@ class ControllerBase extends ControllerRoot
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
+
+        // Javascript includes
+        $this->view->javascript_files = $this->templateJSIncludes();
+        $this->view->css_files = $this->templateCSSIncludes();
 
         // set security policies
         $policies = array(

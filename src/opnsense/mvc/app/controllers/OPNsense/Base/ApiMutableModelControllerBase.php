@@ -90,7 +90,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $configObj = Config::getInstance()->object();
             $usages = array();
             // find uuid's in our config.xml
-            foreach ($configObj->xpath("//text()[.='{$uuid}']") as $node) {
+            foreach ($configObj->xpath("//text()[contains(.,'{$uuid}')]") as $node) {
                 $referring_node = $node->xpath("..")[0];
                 if (!empty($referring_node->attributes()['uuid'])) {
                     // this looks like a model node, try to find module name (first tag with version attribute)
@@ -313,8 +313,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array
      * @throws \ReflectionException when binding to the model class fails
      */
-    public function searchBase($path, $fields, $defaultSort = null, $filter_funct = null, $sort_flags = SORT_NATURAL)
-    {
+    public function searchBase(
+        $path,
+        $fields,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
+    ) {
         $this->sessionClose();
         $element = $this->getModel();
         foreach (explode('.', $path) as $step) {
@@ -443,28 +448,43 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function setBase($post_field, $path, $uuid, $overlay = null)
     {
-        if ($this->request->isPost() && $this->request->hasPost($post_field)) {
+        if ($this->request->isPost() && $this->request->hasPost($post_field) && $uuid != null) {
             $mdl = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                if ($node != null) {
-                    $node->setNodes($this->request->getPost($post_field));
-                    if (is_array($overlay)) {
-                        $node->setNodes($overlay);
-                    }
-                    $result = $this->validate($node, $post_field);
-                    if (empty($result['validations'])) {
-                        // save config if validated correctly
-                        $this->save();
-                        $result = array("result" => "saved");
-                    } else {
-                        $result["result"] = "failed";
-                    }
-                    return $result;
+            $node = $mdl->getNodeByReference($path . '.' . $uuid);
+            if ($node == null) {
+                if (
+                    !is_string($uuid) ||
+                    preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
+                ) {
+                    // invalid uuid, upsert not allowed
+                    return ["result" => "failed"];
+                }
+                // set is an "upsert" operation, if we don't know the uuid, it's ok to create it.
+                // this eases scriptable actions where a single unique entry should be pushed atomically to
+                // multiple hosts.
+                $node = $mdl->getNodeByReference($path);
+                if ($node != null && $node->isArrayType()) {
+                    $node = $node->Add();
+                    $node->setAttributeValue("uuid", $uuid);
                 }
             }
+            if ($node != null) {
+                $node->setNodes($this->request->getPost($post_field));
+                if (is_array($overlay)) {
+                    $node->setNodes($overlay);
+                }
+                $result = $this->validate($node, $post_field);
+                if (empty($result['validations'])) {
+                    // save config if validated correctly
+                    $this->save();
+                    $result = ["result" => "saved"];
+                } else {
+                    $result["result"] = "failed";
+                }
+                return $result;
+            }
         }
-        return array("result" => "failed");
+        return ["result" => "failed"];
     }
 
     /**

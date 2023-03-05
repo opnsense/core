@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig  = array();
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
-    $pconfig['auto_routes_disable'] = isset($config['ipsec']['auto_routes_disable']);
     $pconfig['max_ikev1_exchanges'] = !empty($config['ipsec']['max_ikev1_exchanges']) ? $config['ipsec']['max_ikev1_exchanges'] : null;
     if (!empty($config['ipsec']['passthrough_networks'])) {
         $pconfig['passthrough_networks'] = explode(',', $config['ipsec']['passthrough_networks']);
@@ -50,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
-            $pconfig["ipsec_{$lkey}"] = null;
+            $pconfig["ipsec_{$lkey}"] = '0';
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -102,11 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['ipsec']['passthrough_networks'] = implode(',', $pconfig['passthrough_networks']);
         } elseif (isset($config['ipsec']['passthrough_networks'])) {
             unset($config['ipsec']['passthrough_networks']);
-        }
-        if (!empty($pconfig['auto_routes_disable'])) {
-            $config['ipsec']['auto_routes_disable'] = true;
-        } elseif (isset($config['ipsec']['auto_routes_disable'])) {
-            unset($config['ipsec']['auto_routes_disable']);
         }
 
         if (!empty($pconfig['max_ikev1_exchanges'])) {
@@ -204,18 +198,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_auto_routes_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not install routes"); ?></td>
-                      <td style="width:78%" class="vtable">
-                        <input name="auto_routes_disable" type="checkbox" id="auto_routes_disable" value="yes" <?= !empty($pconfig['auto_routes_disable']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Do not automatically install routes"); ?></strong>
-                        <div class="hidden" data-for="help_for_auto_routes_disable">
-                            <?=gettext("By default, IPsec installs routes when a tunnel becomes active. " .
-                                                  "Select this option to prevent automatically adding routes" .
-                                                  " to the system routing table. See charon.install_routes"); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
                       <td><a id="help_for_max_ikev1_exchanges" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum IKEv1 phase 2 exchanges"); ?></td>
                       <td style="width:78%" class="vtable">
                         <input name="max_ikev1_exchanges" type="text" id="max_ikev1_exchanges" value="<?=$pconfig['max_ikev1_exchanges'];?>" />
@@ -237,7 +219,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <?= $ldescr ?>
                         <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>">
 <?php foreach (IPSEC_LOG_LEVELS as $lidx => $lvalue): ?>
-                          <option value="<?=$lidx?>" <?= (isset($pconfig["ipsec_{$lkey}"]) && $pconfig["ipsec_{$lkey}"] == $lidx) || (!isset($pconfig["ipsec_{$lkey}"]) && $lidx == "0") ? 'selected="selected"' : '' ?>>
+                          <option value="<?=$lidx?>" <?=$pconfig["ipsec_{$lkey}"] == $lidx ? 'selected="selected"' : '' ?>>
                                 <?=$lvalue?>
                           </option>
 <?php endforeach ?>

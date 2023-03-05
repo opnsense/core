@@ -58,7 +58,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             /* auto-number new device */
             $ifid = 0;
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
-                if (preg_match("/^({$prefix})(\d)*$/i",(string)$node->vlanif)) {
+                if (preg_match("/^{$prefix}[\d]+$/", (string)$node->vlanif)) {
                     $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
                 }
             }
@@ -82,7 +82,20 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase('vlan', ['vlanif', 'if', 'tag', 'pcp', 'descr'], 'vlanif');
+        $ifnames = [];
+        $configHandle = Config::getInstance()->object();
+        if (!empty($configHandle->interfaces)) {
+            foreach ($configHandle->interfaces->children() as $ifname => $node) {
+                $ifnames[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
+            }
+        }
+        $results = $this->searchBase('vlan', ['vlanif', 'if', 'tag', 'pcp', 'descr'], 'vlanif');
+        foreach ($results['rows'] as &$record) {
+            if (isset($ifnames[$record['vlanif']])) {
+                $record['vlanif'] = sprintf("%s [%s]", $record['vlanif'], $ifnames[$record['vlanif']]);
+            }
+        }
+        return $results;
     }
 
     public function setItemAction($uuid)
@@ -91,8 +104,8 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $new_vlanif = $this->generateVlanIfName($node);
         $children = 0;
-        foreach ($this->getModel()->vlan->iterateItems() as $node) {
-            if ((string)$node->if == $old_vlanif) {
+        foreach ($this->getModel()->vlan->iterateItems() as $cnode) {
+            if ((string)$cnode->if == $old_vlanif) {
                 $children++;
             }
         }
@@ -120,7 +133,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                 $result = [
                   "result" => "failed",
                   "validations" => [
-                      "vlan.if" => gettext("Interface is assigned and you cannot change the parent while assigned.")
+                      "vlan.vlanif" => gettext("Interface is assigned and you cannot change the device name while assigned.")
                   ]
                 ];
             }
@@ -146,6 +159,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $children = 0;

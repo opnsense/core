@@ -79,9 +79,8 @@ function loopback_configure_do($verbose = false, $device = null)
     $configured_devices = ['lo0']; // lo0 should always be configured
     $loopbacks = iterator_to_array((new \OPNsense\Interfaces\Loopback())->loopback->iterateItems());
 
-    if ($verbose && !empty($loopbacks)) {
-        echo 'Configuring Loopback interfaces...';
-        flush();
+    if (!empty($loopbacks)) {
+        service_log(sprintf('Configuring Loopback interface%s...', empty($device) ? 's' : " {$device}"), $verbose);
     }
 
     // (re)configure loopback devices
@@ -107,8 +106,8 @@ function loopback_configure_do($verbose = false, $device = null)
         }
     }
 
-    if ($verbose && !empty($loopbacks)) {
-        echo "done.\n";
+    if (!empty($loopbacks)) {
+        service_log("done.\n", $verbose);
     }
 }
 

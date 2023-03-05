@@ -37,5 +37,6 @@ class SpdController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/IPsec/spd');
+        $this->view->formDialogSPD = $this->getForm('dialogSPD');
     }
 }

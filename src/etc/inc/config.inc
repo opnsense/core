@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -29,10 +29,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* XXX make this a getter function for traceability */
-$g = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
+final class product
+{
+    private static $instance = null;
+    private static $data = null;
 
-openlog($g['product_id'], LOG_ODELAY, LOG_USER);
+    public static function getInstance(): product
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    private function __construct()
+    {
+        self::$data = json_decode(file_get_contents('/usr/local/opnsense/version/core'), true);
+
+        /* boot detection */
+        $bootflag = '/var/run/booting';
+        @touch($bootflag);
+        $fp = fopen($bootflag, 'r');
+        self::$data['product_booting'] = $fp && !flock($fp, LOCK_SH | LOCK_NB);
+    }
+
+    private function __clone()
+    {
+    }
+
+    public function __wakeup()
+    {
+        throw new Exception('Cannot unserialize singleton');
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (!empty(self::$data['product_' . $name])) {
+            return self::$data['product_' . $name];
+        }
+    }
+}
+
+function reopenlog()
+{
+    openlog(product::getInstance()->id(), LOG_ODELAY, LOG_USER);
+}
+
+reopenlog();
+
 register_shutdown_function('closelog');
 
 require_once("xmlparse.inc");
@@ -208,7 +253,7 @@ function make_config_revision_entry($desc = '')
     if (!empty($_SESSION['Username'])) {
         $username = $_SESSION['Username'];
     } else {
-        $username = '(' . trim(shell_exec('/usr/bin/whoami')) . ')';
+        $username = '(' . shell_safe('/usr/bin/whoami') . ')';
     }
 
     if (!empty($_SERVER['REMOTE_ADDR'])) {

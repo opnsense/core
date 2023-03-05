@@ -14,6 +14,11 @@ https://docs.opnsense.org/development/architecture.html
 Our aim is to gradually evolve to a new codebase instead of using a
 big bang approach into something new.
 
+<a href="https://scan.coverity.com/projects/opnsense-core">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/26974/badge.svg"/>
+</a>
+
 Build tools
 ===========
 
@@ -61,7 +66,6 @@ Several OPTIONS exist to customise the package, e.g.:
 * CORE_DEPENDS: a list of required dependencies for the package
 * CORE_DEPENDS_ARCH: a list of special <ARCH>-required packages
 * CORE_ORIGIN: sets a FreeBSD compatible package/ports origin
-* CORE_FLAVOUR: can be set to "OpenSSL" or "LibreSSL"
 * CORE_COMMENT: a short description of the package
 * CORE_MAINTAINER: email of the package maintainer
 * CORE_WWW: web url of the package

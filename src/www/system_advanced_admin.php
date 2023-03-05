@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
     $pconfig['autologout'] = $config['system']['autologout'];
-    $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
+    $pconfig['enablesshd'] = $config['system']['ssh']['enabled'] ?? null;
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
     $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
@@ -390,7 +390,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         filter_configure();
         system_login_configure();
-        system_hosts_generate();
+        system_resolver_configure();
         system_cron_configure();
         plugins_configure('dns');
         plugins_configure('dhcp');

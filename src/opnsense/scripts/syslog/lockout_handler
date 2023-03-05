@@ -43,7 +43,8 @@ all_rules = {
     '.*Invalid user.*': False,
     '.*Illegal user.*': False,
     '.*Postponed keyboard-interactive for invalid user.*': False,
-    '.*authentication error for illegal user.*': False
+    '.*authentication error for illegal user.*': False,
+    '.*Authentication error for .*': False
 }
 
 if __name__ == '__main__':
@@ -95,7 +96,7 @@ if __name__ == '__main__':
                     if ip not in suspects:
                         suspects[ip] = list()
 
-                    ts = datetime.datetime.strptime(line[0:15].split()[-1], "%H:%M:%S")
+                    ts = datetime.datetime.strptime(line[line.find(':')-2:][:8], "%H:%M:%S")
                     if len(suspects[ip]) == 0 or abs((ts - suspects[ip][-1]).total_seconds()) > 2:
                         # a single attempt can lead to multiple log entries, suppress likely duplicates
                         suspects[ip].append(ts)
@@ -104,4 +105,6 @@ if __name__ == '__main__':
                             ip, inputargs.pf_table, len(suspects[ip])
                         ))
                         subprocess.run(['/sbin/pfctl', '-t', inputargs.pf_table, '-T', 'add', str(ip)],
-                                        capture_output=True)
+                                         capture_output=True)
+                        # kill active state(s) for this ip address as well.
+                        subprocess.run(['/sbin/pfctl', '-k', ip], capture_output=True)

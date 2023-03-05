@@ -45,22 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set defaults
     $pconfig['interface'] = 'wan';
     if (isset($configId)) {
-      // copy 1-to-1 attributes
-      foreach (array('disabled','interface','descr','log','category') as $fieldname) {
-          if (isset($a_npt[$configId][$fieldname])) {
-              $pconfig[$fieldname] = $a_npt[$configId][$fieldname];
-          }
-      }
-      // load attributes with some kind of logic
-      address_to_pconfig(
-          $a_npt[$configId]['source'], $pconfig['src'], $pconfig['srcmask'],
-          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
-      );
+        // copy 1-to-1 attributes
+        foreach (array('disabled','interface','descr','log','category') as $fieldname) {
+            if (isset($a_npt[$configId][$fieldname])) {
+                $pconfig[$fieldname] = $a_npt[$configId][$fieldname];
+            }
+        }
+        // load attributes with some kind of logic
+        address_to_pconfig(
+            $a_npt[$configId]['source'], $pconfig['src'], $pconfig['srcmask'],
+            $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
+        );
 
-      address_to_pconfig(
-          $a_npt[$configId]['destination'], $pconfig['dst'],
-          $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
-      );
+        address_to_pconfig(
+            $a_npt[$configId]['destination'], $pconfig['dst'],
+            $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__'], $pconfig['__unused__']
+        );
     }
 
     // initialize empty form values
@@ -87,50 +87,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfieldsn = array(gettext("Interface"));
     $reqdfields[] = "src";
     $reqdfieldsn[] = gettext("Source prefix");
-    $reqdfields[] = "dst";
-    $reqdfieldsn[] = gettext("Destination prefix");
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
     if (!is_ipaddroralias($pconfig['src'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."), $pconfig['src']);
     }
-    if (!is_ipaddroralias($pconfig['dst'])) {
+    if (!empty($pconfig['dst']) && !is_ipaddroralias($pconfig['dst'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."), $pconfig['dst']);
     }
 
     if (count($input_errors) == 0) {
-       $natent = [];
+        $natent = [];
 
-       $natent['disabled'] = isset($pconfig['disabled']) ? true : false;
-       $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
-       $natent['descr'] = $pconfig['descr'];
-       $natent['interface'] = $pconfig['interface'];
-       $natent['log'] = !empty($pconfig['log']);
+        $natent['disabled'] = isset($pconfig['disabled']) ? true : false;
+        $natent['category'] = !empty($pconfig['category']) ? implode(",", $pconfig['category']) : null;
+        $natent['descr'] = $pconfig['descr'];
+        $natent['interface'] = $pconfig['interface'];
+        $natent['log'] = !empty($pconfig['log']);
 
-       pconfig_to_address($natent['source'], trim($pconfig['src']), $pconfig['srcmask']);
-       pconfig_to_address($natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']);
+        pconfig_to_address($natent['source'], trim($pconfig['src']), $pconfig['srcmask']);
+        if (!empty($pconfig['dst'])) {
+            pconfig_to_address($natent['destination'], trim($pconfig['dst']), $pconfig['srcmask']);
+        }
 
-       if (isset($id)) {
-           $a_npt[$id] = $natent;
-       } elseif (isset($after)) {
-           array_splice($a_npt, $after+1, 0, array($natent));
-       } else {
-           $a_npt[] = $natent;
+        if (isset($id)) {
+            $a_npt[$id] = $natent;
+        } elseif (isset($after)) {
+            array_splice($a_npt, $after+1, 0, array($natent));
+        } else {
+            $a_npt[] = $natent;
        }
 
-       OPNsense\Core\Config::getInstance()->fromArray($config);
-       $catmdl = new OPNsense\Firewall\Category();
-       if ($catmdl->sync()) {
-           $catmdl->serializeToConfig();
-           $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
-       }
+        OPNsense\Core\Config::getInstance()->fromArray($config);
+        $catmdl = new OPNsense\Firewall\Category();
+        if ($catmdl->sync()) {
+            $catmdl->serializeToConfig();
+            $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
+        }
 
-       write_config();
-       mark_subsystem_dirty('natconf');
+        write_config();
+        mark_subsystem_dirty('natconf');
 
-       header(url_safe('Location: /firewall_nat_npt.php'));
-       exit;
+        header(url_safe('Location: /firewall_nat_npt.php'));
+        exit;
     }
 }
 
@@ -194,7 +194,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Internal IPv6 Prefix"); ?></td>
+                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Internal IPv6 Prefix"); ?></td>
                     <td>
                       <table style="border:0;">
                         <tr>
@@ -216,11 +216,11 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("External IPv6 Prefix"); ?></td>
+                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("External IPv6 Prefix"); ?></td>
                     <td>
                       <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("External IPv6 Prefix");?>"/>
                       <div class="hidden" data-for="help_for_dst">
-                        <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
+                        <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. Leave empty to auto-detect the prefix address. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
                       </div>
                     </td>
                   </tr>

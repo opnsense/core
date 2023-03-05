@@ -36,7 +36,7 @@ function rrd_create($rrdcreatecmd)
     exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
     if ($rrdcreatereturn != 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
-        log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
+        log_msg(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput), LOG_ERR);
     }
     unset($rrdcreateoutput);
     return $rrdcreatereturn;
@@ -46,10 +46,7 @@ function rrd_configure($verbose = false, $bootup = false)
 {
     global $config;
 
-    if ($verbose) {
-        echo 'Generating RRD graphs...';
-        flush();
-    }
+    service_log('Generating RRD graphs...', $verbose);
 
     $rrddbpath = "/var/db/rrd/";
 
@@ -326,13 +323,13 @@ function rrd_configure($verbose = false, $bootup = false)
 
         /* the pf states gathering function. */
         $rrdupdatesh .= "\n";
-        $rrdupdatesh .= "pfctl_si_out=\"` $pfctl -si > /tmp/pfctl_si_out `\"\n";
-        $rrdupdatesh .= "pfctl_ss_out=\"` $pfctl -ss > /tmp/pfctl_ss_out`\"\n";
-        $rrdupdatesh .= "pfrate=\"` cat /tmp/pfctl_si_out | egrep \"inserts|removals\" | awk '{ pfrate = \$3 + pfrate } {print pfrate}'|tail -1 `\"\n";
-        $rrdupdatesh .= "pfstates=\"` cat /tmp/pfctl_ss_out | egrep -v \"<\\-.*?<\\-|\\->.*?\\->\" | wc -l|sed 's/ //g'`\"\n";
-        $rrdupdatesh .= "pfnat=\"` cat /tmp/pfctl_ss_out | egrep '<\\-.*?<\\-|\\->.*?\\->' | wc -l|sed 's/ //g' `\"\n";
-        $rrdupdatesh .= "srcip=\"` cat /tmp/pfctl_ss_out | egrep -v '<\\-.*?<\\-|\\->.*?\\->' | grep '\\->' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u|wc -l|sed 's/ //g' `\"\n";
-        $rrdupdatesh .= "dstip=\"` cat /tmp/pfctl_ss_out | egrep -v '<\\-.*?<\\-|\\->.*?\\->' | grep '<\\-' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u|wc -l|sed 's/ //g' `\"\n";
+        $rrdupdatesh .= "pfctl_si_out=\"`$pfctl -si > /tmp/pfctl_si_out`\"\n";
+        $rrdupdatesh .= "pfctl_ss_out=\"`$pfctl -ss > /tmp/pfctl_ss_out`\"\n";
+        $rrdupdatesh .= "pfrate=\"`cat /tmp/pfctl_si_out | egrep \"inserts|removals\" | awk '{ pfrate = \$3 + pfrate } {print pfrate}' | tail -1`\"\n";
+        $rrdupdatesh .= "pfstates=\"`cat /tmp/pfctl_ss_out | egrep -v \"<-[^<]*<-|->[^-]*->\" | wc -l | sed 's/ //g'`\"\n";
+        $rrdupdatesh .= "pfnat=\"`cat /tmp/pfctl_ss_out | egrep '<-[^<]*<-|->[^-]*->' | wc -l | sed 's/ //g'`\"\n";
+        $rrdupdatesh .= "srcip=\"`cat /tmp/pfctl_ss_out | egrep -v '<-[^<]*<-|->[^-]*->' | grep -- '->' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u | wc -l | sed 's/ //g'`\"\n";
+        $rrdupdatesh .= "dstip=\"`cat /tmp/pfctl_ss_out | egrep -v '<-[^<]*<-|->[^-]*->' | grep -- '<-' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u | wc -l | sed 's/ //g'`\"\n";
         $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$states N:\$pfrate:\$pfstates:\$pfnat:\$srcip:\$dstip\n\n";
         /* End pf states statistics */
 
@@ -588,9 +585,7 @@ EOD;
         chown($database, "nobody");
     }
 
-    if ($verbose) {
-        echo "done.\n";
-    }
+    service_log("done.\n", $verbose);
 }
 
 function rrd_create_gateway_quality($rrd_file, $unknown = false)
@@ -658,14 +653,14 @@ function rrd_import()
             $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
             if (file_put_contents($xml_file, gzinflate(base64_decode($rrd['xmldata']))) === false) {
-                log_error("Cannot write $xml_file");
+                log_msg("Cannot write $xml_file", LOG_ERR);
                 continue;
             }
             $output = array();
             $status = null;
             exec("/usr/local/bin/rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
             if ($status) {
-                log_error("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.");
+                log_msg("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.", LOG_ERR);
                 continue;
             }
             unlink($xml_file);
@@ -674,7 +669,7 @@ function rrd_import()
             $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $rrd_fd = fopen($rrd_file, "w");
             if (!$rrd_fd) {
-                log_error("Cannot write $rrd_file");
+                log_msg("Cannot write $rrd_file", LOG_ERR);
                 continue;
             }
             $data = base64_decode($rrd['data']);
@@ -683,16 +678,16 @@ function rrd_import()
             if ($dcomp) {
                 /* If the decompression worked, write the decompressed data */
                 if (fwrite($rrd_fd, $dcomp) === false) {
-                    log_error("fwrite $rrd_file failed");
+                    log_msg("fwrite $rrd_file failed", LOG_ERR);
                     continue;
                 }
             } elseif (fwrite($rrd_fd, $data) === false) {
                   /* If the decompression failed, it wasn't compressed, so write raw data */
-                  log_error("fwrite $rrd_file failed");
+                  log_msg("fwrite $rrd_file failed", LOG_ERR);
                   continue;
             }
             if (fclose($rrd_fd) === false) {
-                log_error("fclose $rrd_file failed");
+                log_msg("fclose $rrd_file failed", LOG_ERR);
                 continue;
             }
         }

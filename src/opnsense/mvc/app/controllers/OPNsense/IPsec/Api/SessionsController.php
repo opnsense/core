@@ -31,6 +31,7 @@ namespace OPNsense\IPsec\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\IPsec\Swanctl;
 
 /**
  * Class SessionsController
@@ -57,18 +58,25 @@ class SessionsController extends ApiControllerBase
         if (!empty($config->ipsec->phase1)) {
             foreach ($config->ipsec->phase1 as $p1) {
                 if (!empty((string)$p1->ikeid)) {
-                    $phase1s[(string)$p1->ikeid] = $p1;
+                    $phase1s[(string)$p1->ikeid] = (string)$p1->descr;
                 }
             }
+        }
+        foreach ((new Swanctl())->Connections->Connection->iterateItems() as $node_uuid => $node) {
+            $phase1s[(string)$node_uuid] = (string)$node->description;
         }
         if (!empty($data)) {
             foreach ($data as $conn => $payload) {
                 $record = $payload;
-                $record['ikeid'] = substr(explode('-', $conn)[0], 3);
+                if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $conn) == 1) {
+                    $record['ikeid'] = $conn;
+                } else {
+                    $record['ikeid'] = substr(explode('-', $conn)[0], 3);
+                }
                 $record['phase1desc'] = null;
                 $record['name'] = $conn;
                 if (!empty($phase1s[$record['ikeid']])) {
-                    $record['phase1desc'] = (string)$phase1s[$record['ikeid']]->descr;
+                    $record['phase1desc'] = $phase1s[$record['ikeid']];
                 }
                 $record['connected'] = !empty($record['sas']);
                 unset($record['children']);
@@ -95,11 +103,19 @@ class SessionsController extends ApiControllerBase
             foreach ($config->ipsec->phase2 as $p2) {
                 if (!empty((string)$p2->reqid)) {
                     $reqids[(string)$p2->reqid] = [
-                        "ikeid" => (string)$p2->ikeid,
-                        "phase2desc" => (string)$p2->descr
+                        'ikeid' => (string)$p2->ikeid,
+                        'phase2desc' => (string)$p2->descr
                     ];
                 }
             }
+        }
+
+        $phase2s = [];
+        foreach ((new Swanctl())->children->child->iterateItems() as $node_uuid => $node) {
+            $phase2s[(string)$node_uuid] = [
+                'ikeid' => (string)$node->connection,
+                'phase2desc' => (string)$node->description
+            ];
         }
         if (!empty($data[$selected_conn]) && !empty($data[$selected_conn]['sas'])) {
             foreach ($data[$selected_conn]['sas'] as $sa) {
@@ -109,6 +125,8 @@ class SessionsController extends ApiControllerBase
                         $record['remote-host'] = $sa['remote-host'];
                         if (!empty($reqids[$csa['reqid']])) {
                             $record = array_merge($record, $reqids[$csa['reqid']]);
+                        } elseif (!empty($phase2s[$csa['name']])) {
+                            $record = array_merge($record, $phase2s[$csa['name']]);
                         }
                         foreach ($record as $key => $val) {
                             if (is_array($val)) {

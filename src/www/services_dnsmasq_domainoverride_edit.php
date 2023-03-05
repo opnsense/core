@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_GET['id']) && !empty($a_domainOverrides[$_POST['id']])) {
+    if (isset($_POST['id']) && !empty($a_domainOverrides[$_POST['id']])) {
         $id = $_POST['id'];
     }
     $input_errors= array();

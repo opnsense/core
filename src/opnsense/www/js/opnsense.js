@@ -44,13 +44,13 @@ function htmlDecode(value) {
  /**
  *
  * Map input fields from given parent tag to structure of named arrays.
+ * When a type_formatter attribute exists on the input element, this will be called with the val() content first
  *
  * @param parent tag id in dom
  * @return array
  */
 function getFormData(parent) {
-
-    var data = {};
+    let data = {};
     $("#"+parent+" input,#"+parent+" select,#"+parent+" textarea" ).each(function() {
         if ($(this).prop('id') === undefined || $(this).prop('id') === "") {
             // we need an id.
@@ -96,9 +96,14 @@ function getFormData(parent) {
                     // deserialize the field content - used for JS maintained fields
                     node[keypart] = sourceNode.data('data');
                 } else {
-                    // regular input type
                     node[keypart] = sourceNode.val();
                 }
+                // Might need a parser to convert to the correct format
+                // (attribute type_formatter as function name)
+                if (sourceNode.attr('type_formatter') !== undefined && window[sourceNode.attr('type_formatter')] !== undefined) {
+                    node[keypart] = window[sourceNode.attr('type_formatter')](node[keypart]);
+                }
+
             }
         });
     });
@@ -142,13 +147,27 @@ function setFormData(parent,data) {
                             targetNode.tokenize2().trigger('tokenize:clear');
                         }
                         targetNode.empty(); // flush
-                        $.each(node[keypart],function(indxItem, keyItem){
-                            var opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
-                            if (keyItem["selected"] != "0") {
-                                opt.attr('selected', 'selected');
+                        if (Array.isArray(node[keypart]) && node[keypart][0] !== undefined && node[keypart][0].key !== undefined) {
+                            // key value (sorted) list
+                            // (eg node[keypart][0] = {selected: 0, value: 'my item', key: 'item'})
+                            for (i=0; i < node[keypart].length; ++i) {
+                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(node[keypart][i].value);
+                                if (String(node[keypart][i].selected) !== "0") {
+                                    opt.attr('selected', 'selected');
+                                }
+                                targetNode.append(opt);
                             }
-                            targetNode.append(opt);
-                        });
+                        } else{
+                            // default "dictionary" type select items
+                            // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
+                            $.each(node[keypart],function(indxItem, keyItem){
+                                let opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                                if (String(keyItem["selected"]) !== "0") {
+                                    opt.attr('selected', 'selected');
+                                }
+                                targetNode.append(opt);
+                            });
+                        }
                     } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type
                         targetNode.prop("checked", node[keypart] != 0);
@@ -160,7 +179,7 @@ function setFormData(parent,data) {
                     } else if (targetNode.hasClass('json-data')) {
                         // if the input field is JSON data, serialize the data into the field
                         targetNode.data('data', node[keypart]);
-                    } else {
+                    } else if (targetNode.attr('type') !== 'file') {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
                     }
@@ -180,11 +199,19 @@ function setFormData(parent,data) {
 function handleFormValidation(parent,validationErrors) {
     $( "#"+parent).find("[id]").each(function() {
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
+            let message = validationErrors[$(this).prop('id')];
+            $("span[id='help_block_" + $(this).prop('id') + "']").empty();
+            if (typeof message === 'object') {
+                for (let i=0 ; i < message.length ; ++i)  {
+                    $("span[id='help_block_" + $(this).prop('id') + "']").append($("<div>").text(message[i]));
+                }
+            } else {
+                $("span[id='help_block_" + $(this).prop('id') + "']").text(message);
+            }
             $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
-            $("span[id='help_block_" + $(this).prop('id') + "']").text(validationErrors[$(this).prop('id')]);
         } else {
             $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
-            $("span[id='help_block_" + $(this).prop('id') + "']").text("");
+            $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
 }

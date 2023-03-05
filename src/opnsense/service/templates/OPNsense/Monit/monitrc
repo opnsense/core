@@ -135,7 +135,7 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%      endfor %}
 {%     endif %}
 {%     if service.start|default('') != '' %}
-   start program = "{{ service.start }}"
+   start program = "{{ service.start }}" with timeout {{service.starttimeout|default('30')}} seconds
 {%     endif %}
 {%     if service.stop|default('') != '' %}
    stop program = "{{ service.stop }}"
@@ -164,3 +164,5 @@ check {{ service.type }} {{ service.name }} {{ path }}
 {%   endfor %}
 {%  endif %}
 {% endif %}
+
+include /usr/local/etc/monit.opnsense.d/*.conf

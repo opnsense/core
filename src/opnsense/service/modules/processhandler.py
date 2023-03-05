@@ -181,7 +181,7 @@ class HandlerClient(threading.Thread):
                 if len(data_parts) > 2:
                     exec_params = data_parts[2:]
                 else:
-                    exec_params = None
+                    exec_params = []
 
                 # when running in background, return this message uuid and detach socket
                 if exec_in_background:
@@ -353,7 +353,7 @@ class ActionHandler(object):
         action_obj = self.find_action(command, action, parameters)
 
         if action_obj is not None:
-            if parameters is not None and len(parameters) > action_obj.get_parameter_start_pos():
+            if len(parameters) > action_obj.get_parameter_start_pos():
                 action_params = parameters[action_obj.get_parameter_start_pos():]
 
             return '%s\n' % action_obj.execute(action_params, message_uuid)
@@ -417,7 +417,7 @@ class Action(object):
         if self.message is not None:
             log_param = list()
             # make sure message items match input
-            if self.message.count('%s') > 0 and parameters is not None and len(parameters) > 0:
+            if self.message.count('%s') > 0 and len(parameters) > 0:
                 log_param = parameters[0:self.message.count('%s')]
             if len(log_param) < self.message.count('%s'):
                 for i in range(self.message.count('%s') - len(log_param)):

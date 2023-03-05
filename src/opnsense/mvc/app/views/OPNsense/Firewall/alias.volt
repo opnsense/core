@@ -27,6 +27,11 @@
         margin-bottom: 0px;
         font-style: italic;
     }
+
+    ul.dropdown-menu.inner > li > a > span.text  {
+        width: 100% !important;
+    }
+
 </style>
 <script>
     $( document ).ready(function() {
@@ -42,10 +47,13 @@
                     if ( $('#type_filter').val().length > 0) {
                         request['type'] = $('#type_filter').val();
                     }
+                    if ( $('#category_filter').val().length > 0) {
+                        request['category'] = $('#category_filter').val();
+                    }
                     return request;
                 },
                 formatters: {
-                    "commands": function (column, row) {
+                    commands: function (column, row) {
                         if (row.uuid.includes('-') === true) {
                             // exclude buttons for internal aliases (which uses names instead of valid uuid's)
                             return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
@@ -53,7 +61,7 @@
                                 '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                         }
                     },
-                    "rowtoggle": function (column, row) {
+                    rowtoggle: function (column, row) {
                         if (!row.uuid.includes('-')) {
                             return '<span class="fa fa-fw fa-check-square-o"></span>';
                         } else if (parseInt(row[column.id], 2) === 1) {
@@ -62,18 +70,33 @@
                             return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
                         }
                     },
+                    name : function (column, row) {
+                        if (row.categories_uuid.length === 0) {
+                            return row.name;
+                        } else {
+                            let html = [row.name + ' '];
+                            for (i=0; i < row.categories_uuid.length ; ++i) {
+                                let item = $("#"+row.categories_uuid[i]);
+                                if (item && item.data('color')) {
+                                    html.push("<i class='fa fa-circle category-item' style='color:#"+
+                                           item.data('color')+"' title='"+item.text()+"'></i>");
+                                }
+                            }
+                            return html.join('&nbsp;');
+                        }
+                    }
                 }
             }
         });
 
-        $("#type_filter").change(function(){
+        $("#type_filter, #category_filter").change(function(){
             $('#grid-aliases').bootgrid('reload');
         });
 
         $("#grid-aliases").bootgrid().on("loaded.rs.jquery.bootgrid", function (e){
             // network content field should only contain valid aliases, we need to fetch them separately
             // since the form field misses context
-            ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
+            ajaxGet("/api/firewall/alias/list_network_aliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
                     let $opt = $("<option/>").val(alias).text(value.name);
@@ -82,9 +105,36 @@
                 });
                 $("#network_content").selectpicker('refresh');
             });
+            $(".category-item").tooltip();
+        }).on("load.rs.jquery.bootgrid", function (e){
+            // reload categories before grid load
+            ajaxCall('/api/firewall/alias/list_categories', {}, function(data, status){
+                if (data.rows !== undefined) {
+                    let current_selection = $("#category_filter").val();
+                    $("#category_filter").empty();
+                    for (i=0; i < data.rows.length ; ++i) {
+                        let row = data.rows[i];
+                        let opt_val = $('<div/>').html(row.name).text();
+                        let bgcolor = row.color != "" ? row.color : '31708f;'; // set category color
+                        let option = $("<option/>").val(row.uuid).html(row.name);
+                        if (row.used > 0) {
+                            option.data(
+                              'content',
+                              "<span>"+opt_val + "</span>"+
+                              "<span style='background:#"+bgcolor+";' class='badge pull-right'>" + row.used + "</span>"
+                            );
+                            option.data('color', bgcolor);
+                            option.attr('id', row.uuid);
+                        }
+
+                        $("#category_filter").append(option);
+                    }
+                    $("#category_filter").val(current_selection);
+                    $("#category_filter").selectpicker('refresh');
+                }
+            });
         });
-
-
+        $('#grid-aliases').bootgrid().trigger('load.rs.jquery.bootgrid');
 
         /**
          * Open form with alias selected
@@ -201,13 +251,29 @@
         });
 
         /**
+         * fetch user groups
+         **/
+        ajaxGet("/api/firewall/alias/list_user_groups", {}, function(data){
+            $("#authgroup_content").empty();
+            $.each(data, function(alias, value) {
+                let $opt = $("<option/>").val(alias).text(value.name);
+                $opt.data('subtext', value.description);
+                $("#authgroup_content").append($opt);
+            });
+            $("#authgroup_content").selectpicker('refresh');
+        });
+
+
+        /**
          * hook network group type changes, replicate content
          */
-        $("#network_content").change(function(){
+        $("#network_content, #authgroup_content").change(function(){
+            let target = $(this);
+            console.log(target);
             let $content = $("#alias\\.content");
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
-            $("#network_content").each(function () {
+            target.each(function () {
                $.each($(this).val(), function(key, item){
                    $content.tokenize2().trigger('tokenize:tokens:add', item);
                });
@@ -220,7 +286,6 @@
             });
         });
 
-
         /**
          * Type selector, show correct type input.
          */
@@ -230,6 +295,10 @@
             $("#row_alias\\.interface").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
+                case 'authgroup':
+                    $("#alias_type_authgroup").show();
+                    $("#alias\\.proto").selectpicker('hide');
+                    break;
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
@@ -271,24 +340,18 @@
          */
         $("#alias\\.content").change(function(){
             var items = $(this).val();
-            $(".geoip_select").each(function(){
-                var geo_item = $(this);
-                geo_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    geo_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-
+            ['#authgroup_content', '#network_content', '.geoip_select'].forEach(function(target){
+                console.log(target);
+                $(target).each(function(){
+                    var content_item = $(this);
+                    content_item.val([]);
+                    for (var i=0; i < items.length; ++i) {
+                        content_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
+                    }
+                });
+                $(target).selectpicker('refresh');
             });
-            $(".geoip_select").selectpicker('refresh');
             geoip_update_labels();
-            $("#network_content").each(function(){
-                var network_item = $(this);
-                network_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    network_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-            });
-            $("#network_content").selectpicker('refresh');
         });
 
         /**
@@ -462,6 +525,7 @@
         }
         loadSettings();
 
+
         /**
          * reconfigure
          */
@@ -523,7 +587,7 @@
                     <div class="hidden">
                         <!-- filter per type container -->
                         <div id="type_filter_container" class="btn-group">
-                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker"  data-live-search="true" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
@@ -534,8 +598,11 @@
                                 <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="asn">{{ lang._('BGP ASN') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
+                                <option value="authgroup">{{ lang._('(OpenVPN) user groups') }}</option>
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
+                            </select>
+                            <select id="category_filter"  data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
                             </select>
                         </div>
                     </div>
@@ -544,7 +611,7 @@
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                            <th data-column-id="name" data-width="20em" data-type="string">{{ lang._('Name') }}</th>
+                            <th data-column-id="name" data-width="20em" data-formatter="name">{{ lang._('Name') }}</th>
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
@@ -655,7 +722,7 @@
                                         <input type="text" class="form-control" size="50" id="alias.name">
                                         <div class="hidden" data-for="help_for_alias.name">
                                             <small>
-                                                {{lang._('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.')}}
+                                                {{lang._('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores. Aliases can be nested using this name.')}}
                                             </small>
                                         </div>
                                     </td>
@@ -676,6 +743,22 @@
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
+                                    </td>
+                                </tr>
+                                <tr id="row_alias.categories">
+                                    <td>
+                                        <div class="control-label" id="control_label_alias.type">
+                                            <a id="help_for_alias.categories" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <b>{{lang._('Categories')}}</b>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.categories">
+                                            {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.updatefreq">
@@ -744,6 +827,10 @@
                                             <tbody>
                                             </tbody>
                                         </table>
+                                        <div class="alias_type" id="alias_type_authgroup" style="display: none;">
+                                            <select multiple="multiple" class="selectpicker" id="authgroup_content" data-live-search="true">
+                                            </select>
+                                        </div>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
                                         <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">

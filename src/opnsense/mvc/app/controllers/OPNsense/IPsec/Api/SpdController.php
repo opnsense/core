@@ -31,6 +31,7 @@ namespace OPNsense\IPsec\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\IPsec\Swanctl;
 
 /**
  * Class SpdController
@@ -64,11 +65,23 @@ class SpdController extends ApiControllerBase
                 if (!empty((string)$p2->reqid) && !empty($phase1s[(string)$p2->ikeid])) {
                     $p1 = $phase1s[(string)$p2->ikeid];
                     $reqids[(string)$p2->reqid] = [
-                        "ikeid" => (string)$p2->ikeid,
-                        "phase1desc" => (string)$p1->descr,
-                        "phase2desc" => (string)$p2->descr
+                        'ikeid' => (string)$p2->ikeid,
+                        'phase1desc' => (string)$p1->descr,
+                        'phase2desc' => (string)$p2->descr
                     ];
                 }
+            }
+        }
+        // merge MVC request id's when set
+        $mdl = new Swanctl();
+        foreach ($mdl->children->child->iterateItems() as $node_uuid => $node) {
+            if (!empty((string)$node->reqid) && empty($reqids[(string)$node->reqid])) {
+                $conn = $mdl->getNodeByReference('Connections.Connection.' . (string)$node->connection);
+                $reqids[(string)$node->reqid] = [
+                    'ikeid' => (string)$node->connection,
+                    'phase1desc' => !empty($conn) ? (string)$conn->description : '',
+                    'phase2desc' => (string)$node->description
+                ];
             }
         }
         foreach ($records as &$record) {

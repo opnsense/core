@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $vpnid = 0;
     $pconfig['verbosity_level'] = 1;
     $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
+    $pconfig['crypto'] = "";
     $pconfig['tlsmode'] = "auth";
     $pconfig['autokey_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
-            ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
+            ,dynamic_ip,topology_subnet,serverbridge_dhcp
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
@@ -101,14 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['interface'] = 'any';
         $pconfig['protocol'] = 'UDP';
         $pconfig['local_port'] = openvpn_port_next($pconfig['protocol']);
-        $pconfig['pool_enable'] = "yes";
         $pconfig['cert_depth'] = 1;
         // init all fields used in the form
         $init_fields = "mode,protocol,authmode,dev_mode,interface,local_port
             ,description,custom_options,crypto,tunnel_network
             ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
             ,local_networkv6,maxclients,compression,passtos,client2client
-            ,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
+            ,dynamic_ip,topology_subnet,serverbridge_dhcp
             ,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
             ,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
@@ -380,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $copy_fields = "mode,protocol,dev_mode,local_port,description,crypto,digest
                 ,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
                 ,gwredir,local_network,local_networkv6,maxclients,compression
-                ,passtos,client2client,dynamic_ip,pool_enable,topology_subnet,local_group
+                ,passtos,client2client,dynamic_ip,topology_subnet,local_group
                 ,serverbridge_dhcp,serverbridge_interface,serverbridge_dhcp_start
                 ,serverbridge_dhcp_end,dns_domain,dns_domain_search,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,push_block_outside_dns,ntp_server1,ntp_server2,netbios_enable
@@ -992,23 +992,21 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
+                      <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (fallback)"); ?></td>
                       <td>
                         <select name="crypto" class="selectpicker">
 <?php
-                        $cipherlist = openvpn_get_cipherlist();
-                        foreach ($cipherlist as $name => $desc) :
-                            $selected = "";
-                            if ($name == $pconfig['crypto']) {
-                                $selected = " selected=\"selected\"";
-                            }
-                        ?>
+                        foreach (openvpn_get_cipherlist() as $name => $desc) :
+                            $selected = $name == $pconfig['crypto'] ? " selected=\"selected\"" : "";?>
                           <option value="<?=$name;?>"<?=$selected?>>
                             <?=htmlspecialchars($desc);?>
                           </option>
 <?php
                         endforeach; ?>
                         </select>
+                        <div class="hidden" data-for="help_for_crypto">
+                          <?= gettext('Fallback cipher selection in case none of the default data-ciphers is supported by the client. Only preserved for backwards compatibility reasons.') ?>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -1339,17 +1337,6 @@ $( document ).ready(function() {
                         <div class="hidden" data-for="help_for_dynamic_ip">
                           <span>
                             <?=gettext("Allow connected clients to retain their connections if their IP address changes"); ?>.<br />
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width:22%"><a id="help_for_pool_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address Pool"); ?></td>
-                      <td>
-                        <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?=!empty($pconfig['pool_enable']) ? "checked=\"checked\"" : "" ;?> />
-                        <div class="hidden" data-for="help_for_pool_enable">
-                          <span>
-                            <?=gettext("Provide a virtual adapter IP address to clients (see Tunnel Network)"); ?><br />
                           </span>
                         </div>
                       </td>

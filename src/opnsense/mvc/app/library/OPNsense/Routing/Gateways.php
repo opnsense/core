@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019-2022 Deciso B.V.
+ * Copyright (C) 2019-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,6 +95,65 @@ class Gateways
         }
 
         return $router;
+    }
+
+    /**
+     * return the device name present in the system for the specific configuration
+     * @param string $ifname name of the interface
+     * @param array $ifcfg configuration of interface
+     * @param string $ipproto inet/inet6 type
+     * @return string $realif target device name
+     */
+    private function getRealInterface($definedIntf, $ifname, $ipproto = 'inet')
+    {
+        if (empty($definedIntf[$ifname])) {
+            /* name already resolved or invalid */
+            return $ifname;
+        }
+
+        $ifcfg = $definedIntf[$ifname];
+        $realif = $ifcfg['if'];
+
+        if (isset($ifcfg['wireless']) && !strstr($realif, '_wlan')) {
+            $realif .= '_wlan0';
+        }
+
+        if ($ipproto == 'inet6') {
+            switch ($ifcfg['ipaddrv6'] ?? 'none') {
+                case '6rd':
+                case '6to4':
+                    $realif = "{$ifname}_stf";
+                    break;
+                case 'dhcp6':
+                case 'slaac':
+                case 'staticv6':
+                    if (isset($ifcfg['dhcp6usev4iface'])) {
+                        break;
+                    }
+                    switch ($ifcfg['ipaddr'] ?? 'none') {
+                        case 'l2tp':
+                        case 'pppoe':
+                        case 'pptp':
+                            if (!empty($this->configHandle->ppps)) {
+                                foreach ($this->configHandle->ppps->children() as $ppp) {
+                                    if ($realif == $ppp->if) {
+                                        $ports = explode(',', $ppp->ports);
+                                        $realif = $this->getRealInterface($definedIntf, $ports[0]);
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $realif;
     }
 
     /**
@@ -195,8 +254,8 @@ class Gateways
                             // default address family
                             $gw_arr['ipprotocol'] = 'inet';
                         }
-                        $gw_arr["if"] = $definedIntf[$gw_arr["interface"]]['if'];
-                        $gw_arr["attribute"] = $i++;
+                        $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
+                        $gw_arr['attribute'] = $i++;
                         if (Util::isIpAddress($gateway->gateway)) {
                             if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
                                 $gw_arr['monitor'] = $gw_arr['gateway'];
@@ -223,7 +282,7 @@ class Gateways
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $realif = $ipproto == 'inet6' && in_array($ifcfg['ipaddrv6'] ?? null, ['6to4', '6rd']) ? "{$ifname}_stf" : $ifcfg['if'];
+                    $realif = $this->getRealInterface($definedIntf, $ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
@@ -258,8 +317,7 @@ class Gateways
                         }
                     }
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
-                        // if name is already taken, don't try to add a new (virtual) entry
-                        null;
+                        /* if name is already taken, don't try to add a new (virtual) entry */
                     } elseif (($router = $this->getRouterFromFile($realif, $ipproto)) != null) {
                         $thisconf['gateway'] = $router;
                         if (empty($thisconf['monitor_disable']) && empty($thisconf['monitor'])) {

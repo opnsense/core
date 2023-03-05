@@ -1,8 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2019 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2014-2015 Deciso B.V.
  * Copyright (C) 2010 Jim Pingle <jimp@pfsense.org>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
@@ -91,12 +91,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$servers = openvpn_get_active_servers();
-legacy_html_escape_form_data($servers);
-$sk_servers = openvpn_get_active_servers("p2p");
-legacy_html_escape_form_data($sk_servers);
-$clients = openvpn_get_active_clients();
-legacy_html_escape_form_data($clients);
+$openvpn_status = json_decode(configd_run('openvpn connections client,server'), true) ?? [];
+$openvpn_cfg = openvpn_config();
+legacy_html_escape_form_data($openvpn_status);
+legacy_html_escape_form_data($openvpn_cfg);
 
 include("head.inc"); ?>
 
@@ -136,7 +134,7 @@ include("head.inc"); ?>
     <div class="row">
       <section class="col-xs-12">
         <!-- XXX unused? <form method="get" name="iform">-->
-<?php foreach ($servers as $i => $server): ?>
+<?php foreach ($openvpn_cfg['openvpn-server'] as $i => $server): ?>
           <div class="tab-content content-box __mb">
             <div class="table-responsive">
               <table class="table table-striped">
@@ -158,27 +156,42 @@ include("head.inc"); ?>
                     <td><strong><?= gettext('Connected Since') ?></strong></td>
                     <td><strong><?= gettext('Bytes Sent') ?></strong></td>
                     <td><strong><?= gettext('Bytes Received') ?></strong></td>
-                    <td></td>
+                    <td><strong><?= gettext('Status') ?></strong></td>
                   </tr>
-<?php if (empty($server['conns'])): ?>
+<?php if (empty($openvpn_status['server'][$server['vpnid']]) || empty($openvpn_status['server'][$server['vpnid']]['client_list'])): ?>
+<?php   if (!empty($openvpn_status['server'][$server['vpnid']]) && isset($openvpn_status['server'][$server['vpnid']]['write_bytes'])):?>
+<?php $conn = $openvpn_status['server'][$server['vpnid']];?>
                   <tr>
-                    <td colspan="7"><?= gettext('No OpenVPN clients are connected to this instance.') ?></td>
-                  </tr>
-<?php else: ?>
-<?php foreach ($server['conns'] as $conn): ?>
-                  <tr id="<?= html_safe("r:{$server['mgmt']}:{$conn['remote_host']}") ?>">
-                    <td><?= $conn['common_name'] ?></td>
-                    <td><?= $conn['remote_host'] ?></td>
-                    <td><?= $conn['virtual_addr'] ?></td>
-                    <td><?= $conn['connect_time'] ?></td>
+                    <td><?= $conn['common_name'] ?? '' ?></td>
+                    <td><?= $conn['real_address'] ?? '' ?></td>
+                    <td><?= $conn['virtual_addr'] ?? '' ?></td>
+                    <td><?= date('Y-m-d H:i:s', $conn['timestamp']) ?></td>
                     <td><?= format_bytes($conn['bytes_sent']) ?></td>
-                    <td><?= format_bytes($conn['bytes_recv']) ?></td>
+                    <td><?= format_bytes($conn['bytes_received']) ?></td>
+                    <td><?= $conn['status'];?> </td>
+                  </tr>
+<?php   else:?>
+                  <tr>
+                    <td colspan="7">
+                      <?= gettext('No OpenVPN clients are connected to this instance.') ?>
+                    </td>
+                  </tr>
+<?php   endif ?>
+<?php else: ?>
+<?php foreach ($openvpn_status['server'][$server['vpnid']]['client_list'] as $conn): ?>
+                  <tr>
+                    <td><?= $conn['common_name'] ?></td>
+                    <td><?= $conn['real_address'] ?></td>
+                    <td><?= $conn['virtual_address'] ?></td>
+                    <td><?= $conn['connected_since'] ?></td>
+                    <td><?= format_bytes($conn['bytes_sent']) ?></td>
+                    <td><?= format_bytes($conn['bytes_received']) ?></td>
                     <td>
-<?php if (count($server['conns']) != 1 || $conn['common_name'] != '[error]'): ?>
-                      <button data-client-port="<?= $server['mgmt']; ?>"
-                        data-client-ip="<?= $conn['remote_host']; ?>"
+<?php if ($conn['common_name'] != '[error]'): ?>
+                      <button data-client-port="server<?= $server['vpnid']; ?>"
+                        data-client-ip="<?= $conn['real_address']; ?>"
                         data-common_name="<?= $conn['common_name']; ?>"
-                        title="<?= gettext("Kill client connection from") . " " . $conn['remote_host']; ?>"
+                        title="<?= gettext("Kill client connection from") . " " . $conn['real_address']; ?>"
                         class="act_kill_client btn btn-default">
                         <i class="fa fa-times fa-fw"></i>
                       </button>
@@ -187,7 +200,7 @@ include("head.inc"); ?>
                   </tr>
 <?php endforeach ?>
 <?php endif ?>
-<?php if (!empty($server['routes'])): ?>
+<?php if (!empty($openvpn_status['server'][$server['vpnid']]) && !empty($openvpn_status['server'][$server['vpnid']]['routing_table'])): ?>
                   <tr>
                     <td colspan="7">
                       <span style="cursor:pointer;" class="act_show_routes" id="showroutes_<?= $i ?>">
@@ -203,12 +216,12 @@ include("head.inc"); ?>
                     <td><strong><?= gettext('Last Used') ?></strong></td>
                     <td colspan="3">
                   </tr>
-<?php foreach ($server['routes'] as $conn): ?>
+<?php foreach ($openvpn_status['server'][$server['vpnid']]['routing_table'] as $conn): ?>
                   <tr style="display:none;" data-for="showroutes_<?= $i ?>" id="<?= html_safe("r:{$server['mgmt']}:{$conn['remote_host']}") ?>">
                     <td><?= $conn['common_name'] ?></td>
-                    <td><?= $conn['remote_host'] ?></td>
-                    <td><?= $conn['virtual_addr'] ?></td>
-                    <td><?= $conn['last_time'] ?></td>
+                    <td><?= $conn['real_address'] ?></td>
+                    <td><?= $conn['virtual_address'] ?></td>
+                    <td><?= $conn['last_ref'] ?></td>
                     <td colspan="3">
                   </tr>
 <?php endforeach ?>
@@ -222,48 +235,8 @@ include("head.inc"); ?>
             </div>
           </div>
 <?php endforeach ?>
-<?php if (!empty($sk_servers)): ?>
-          <div class="tab-content content-box __mb">
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <tbody>
-                  <tr>
-                    <td colspan="8"><strong><?= gettext('Peer to Peer Server Instance Statistics') ?></strong></td>
-                  </tr>
-                  <tr>
-                    <td><strong><?= gettext('Name') ?></strong></td>
-                    <td><strong><?= gettext('Remote Host') ?></strong></td>
-                    <td><strong><?= gettext('Virtual Addr') ?></strong></td>
-                    <td><strong><?= gettext('Connected Since') ?></strong></td>
-                    <td><strong><?= gettext('Bytes Sent') ?></strong></td>
-                    <td><strong><?= gettext('Bytes Received') ?></strong></td>
-                    <td><strong><?= gettext('Status') ?></strong></td>
-                    <td></td>
-                  </tr>
-<?php foreach ($sk_servers as $sk_server): ?>
-                  <tr id="<?= html_safe("r:{$sk_server['port']}:{$sk_server['vpnid']}") ?>">
-                    <td><?= $sk_server['name'] ?></td>
-                    <td><?= $sk_server['remote_host'] ?></td>
-                    <td><?= $sk_server['virtual_addr'] ?></td>
-                    <td><?= $sk_server['connect_time'] ?></td>
-                    <td><?= format_bytes($sk_server['bytes_sent']) ?></td>
-                    <td><?= format_bytes($sk_server['bytes_recv']) ?></td>
-                    <td><?= $sk_server['status'] ?></td>
-                    <td>
-                      <div>
-                        <?php $ssvc = service_by_name('openvpn', array('id' => $sk_server['vpnid'])); ?>
-                        <?= service_control_icon($ssvc, true); ?>
-                        <?= service_control_links($ssvc, true); ?>
-                      </div>
-                    </td>
-                  </tr>
-<?php endforeach ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-<?php endif ?>
-<?php if (!empty($clients)): ?>
+
+<?php if (!empty($openvpn_cfg['openvpn-client'])): ?>
           <div class="tab-content content-box __mb">
             <div class="table-responsive">
               <table class="table table-striped">
@@ -281,15 +254,16 @@ include("head.inc"); ?>
                     <td><strong><?= gettext('Status') ?></strong></td>
                     <td></td>
                   </tr>
-<?php foreach ($clients as $client): ?>
+<?php foreach ($openvpn_cfg['openvpn-client'] as $client): ?>
+<?php $conn = $openvpn_status['client'][$client['vpnid']] ?? [];?>
                   <tr id="<?= html_safe("r:{$client['port']}:{$client['vpnid']}") ?>">
                     <td><?= $client['name'] ?></td>
-                    <td><?= $client['remote_host'] ?></td>
-                    <td><?= $client['virtual_addr'] ?></td>
-                    <td><?= $client['connect_time'] ?></td>
-                    <td><?= format_bytes($client['bytes_sent']) ?></td>
-                    <td><?= format_bytes($client['bytes_recv']) ?></td>
-                    <td><?= $client['status'] ?></td>
+                    <td><?= $conn['remote_host']  ?? ''?></td>
+                    <td><?= $conn['virtual_addr'] ?? '' ?></td>
+                    <td><?= !empty($conn) ? date('Y-m-d H:i:s', $conn['timestamp']) : ''  ?></td>
+                    <td><?= format_bytes($conn['write_bytes'] ?? '0') ?></td>
+                    <td><?= format_bytes($conn['read_bytes'] ?? '0') ?></td>
+                    <td><?= !empty($conn) ? $conn['status'] : '' ?></td>
                     <td>
                       <div>
                         <?php $ssvc = service_by_name('openvpn', array('id' => $client['vpnid'])); ?>
@@ -304,7 +278,7 @@ include("head.inc"); ?>
             </div>
           </div>
 <?php endif ?>
-<?php if (empty($clients) && empty($servers) && empty($sk_servers)): ?>
+<?php if (empty($openvpn_cfg['openvpn-server']) && empty($openvpn_cfg['openvpn-client'])): ?>
           <div class="tab-content content-box __mb">
             <div class="table-responsive">
               <table class="table-responsive table table-striped">

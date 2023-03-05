@@ -207,7 +207,7 @@ for CONTENT in ${DO_CONTENTS}; do
 	echo "${CONTENT}" >> ${FILE}
 	# null route handling for delegated prefix
 	if [ ${MD} = "prefix" ]; then
-		route add -${AF} ${CONTENT} ::1
+		route add -${AF} -blackhole ${CONTENT} ::1
 	fi
 done
 
