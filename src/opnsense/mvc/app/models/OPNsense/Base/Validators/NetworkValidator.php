@@ -111,7 +111,7 @@ class NetworkValidator extends BaseValidator
                         }
                     }
 
-                    if ($this->getOption('strict') === true && !Util::isStrict($cidr)) {
+                    if ($this->getOption('strict') === true && !Util::isSubnetStrict($cidr)) {
                         $result = false;
                     }
                 }

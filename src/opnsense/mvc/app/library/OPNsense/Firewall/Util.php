@@ -99,7 +99,7 @@ class Util
      * @param string $network network
      * @return boolean
      */
-    public static function isStrict($network)
+    public static function isSubnetStrict($network)
     {
         if (self::isSubnet($network)) {
             list($net, $mask) = explode('/', $network);
