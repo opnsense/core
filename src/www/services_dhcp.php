@@ -49,7 +49,7 @@ function validate_partial_mac_list($maclist)
 function reconfigure_dhcpd()
 {
     system_resolver_configure();
-    plugins_configure('hosts');
+    plugins_configure('dns');
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp4_configure();
     clear_subsystem_dirty('staticmaps');

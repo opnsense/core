@@ -43,9 +43,10 @@ function unbound_configure()
         'bootup' => array('unbound_configure_do'),
         'dns' => array('unbound_configure_do'),
         'early' => array('unbound_cache_flush'),
-        'hosts' => array('unbound_hosts_generate:0'),
         'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
+        'unbound_start' => array('unbound_configure_do'),
+        'unbound_stop' => array('unbound_service_stop'),
     );
 }
 
@@ -379,6 +380,8 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
+    waitforpid('/var/run/unbound.pid', 10);
+
     service_log("done.\n", $verbose);
 }
 
@@ -647,18 +650,6 @@ function unbound_acls_config()
     }
 
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
-}
-
-function unbound_hosts_generate()
-{
-    if (!unbound_enabled()) {
-        return;
-    }
-
-    $ifconfig_details = legacy_interfaces_details();
-    unbound_add_host_entries($ifconfig_details);
-
-    killbypid('/var/run/unbound.pid', 'HUP');
 }
 
 function unbound_local_zone_types()
