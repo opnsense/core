@@ -108,7 +108,7 @@ class Util
 
             $ip_mask = "";
             $significant_bits = $mask;
-            for ($i = 0; $i < $bits/8; $i++) {
+            for ($i = 0; $i < $bits / 8; $i++) {
                 if ($significant_bits >= 8) {
                     $ip_mask .= chr(0xFF);
                     $significant_bits -= 8;
