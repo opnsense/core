@@ -489,8 +489,12 @@ function core_run()
     ];
 }
 
-function core_routing_batch($verbose, $interfaces = [])
+function core_routing_batch($verbose, $interfaces = [null])
 {
+    if (!is_array($interfaces)) {
+        $interfaces = [$interfaces];
+    }
+
     foreach ($interfaces as $interface) {
         system_routing_configure($verbose, $interface);
     }
