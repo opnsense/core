@@ -1590,6 +1590,9 @@ function ipsec_configure_do($verbose = false, $interface = '')
     ipsec_configure_spd();
 
     service_log("done.\n", $verbose);
+
+    /* reload routes on all attached VTI devices */
+    plugins_configure('route_reload', $verbose, [array_keys(array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices()))]);
 }
 
 function generate_strongswan_conf(array $tree, $level = 0): string
