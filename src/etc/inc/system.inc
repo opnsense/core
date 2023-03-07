@@ -580,7 +580,7 @@ function system_default_route($gateway, $interface, $far = false)
 
 function system_routing_configure($verbose = false, $interface = null, $monitor = true)
 {
-    service_log('Setting up routes...', $verbose);
+    service_log(sprintf('Setting up route%s...', empty($interface) ? 's' : " {$interface}"), $verbose);
 
     if (!empty($interface)) {
         log_msg("ROUTING: entering configure using '${interface}'", LOG_DEBUG);
@@ -665,18 +665,20 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     service_log("done.\n", $verbose);
 
     if ($monitor) {
-        $reloads = [];
-
         if (!empty($interface)) {
+            $reloads = [];
+
             foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
                 if ($interface == $gateway['interface']) {
                     $reloads[] = $name;
                 }
             }
-        }
 
-        foreach (count($reloads) ? $reloads : [null] as $reload) {
-            plugins_configure('monitor', $verbose, [$reload]);
+            foreach ($reloads as $reload) {
+                plugins_configure('monitor', $verbose, [$reload]);
+            }
+        } else {
+            plugins_configure('monitor', $verbose);
         }
     }
 }

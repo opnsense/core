@@ -250,9 +250,21 @@ function plugins_firewall($fw)
 
 function plugins_configure($hook, $verbose = false, $args = [])
 {
+    $logargs = [];
+
     array_unshift($args, $verbose);
 
-    log_msg(sprintf('plugins_configure %s (%s)', $hook, implode(',', $args)), LOG_INFO);
+    foreach ($args as $arg) {
+        if (is_null($arg)) {
+            $logargs[] = 'null';
+        } elseif (is_array($arg)) {
+            $logargs[] = '[' . implode(',', $arg) . ']';
+        } else {
+            $logargs[] = $arg;
+        }
+    }
+
+    log_msg(sprintf('plugins_configure %s (%s)', $hook, implode(',', $logargs)), LOG_INFO);
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -286,7 +298,7 @@ function plugins_configure($hook, $verbose = false, $args = [])
                             'plugins_configure %s (execute task : %s(%s))',
                             $hook,
                             $argf,
-                            implode(',', array_slice($args, 0, $argc))
+                            implode(',', array_slice($logargs, 0, $argc))
                         ), LOG_DEBUG);
                         try {
                             call_user_func_array($argf, array_slice($args, 0, $argc));

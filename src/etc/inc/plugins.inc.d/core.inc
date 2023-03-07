@@ -477,6 +477,7 @@ function core_configure()
 {
     return [
         'dns_reload' => ['system_resolver_configure'],
+        'route_reload' => ['core_routing_batch:2'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];
 }
@@ -486,6 +487,17 @@ function core_run()
     return [
         'host_routes' => 'system_resolvconf_host_routes',
     ];
+}
+
+function core_routing_batch($verbose, $interfaces = [null])
+{
+    if (!is_array($interfaces)) {
+        $interfaces = [$interfaces];
+    }
+
+    foreach ($interfaces as $interface) {
+        system_routing_configure($verbose, $interface);
+    }
 }
 
 /**
