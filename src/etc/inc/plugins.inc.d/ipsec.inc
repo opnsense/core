@@ -1346,9 +1346,16 @@ function ipsec_configure_do($verbose = false, $interface = '')
                 'remote-0' => [
                     'id' => ipsec_find_id($ph1ent, "peer") ?? '%any'
                 ],
-                'remote_addrs' => !isset($ph1ent['mobile']) && empty($ph1ent['rightallowany']) ? $ph1ent['remote-gateway'] : '0.0.0.0/0,::/0',
                 'encap' => !empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force' ? 'yes' : 'no',
             ];
+            if (!isset($ph1ent['mobile'])) {
+                $connection['remote_addrs'] = $ph1ent['remote-gateway'];
+                if (!empty($ph1ent['rightallowany'])) {
+                    $connection['remote_addrs'] .= ',0.0.0.0/0,::/0';
+                }
+            } else {
+                $connection['remote_addrs'] = '%any'; // default
+            }
             if (!isset($ph1ent['reauth_enable']) && !empty($ph1ent['lifetime']) && !empty($ph1ent['margintime'])) {
                 // XXX: should probably move to a gui setting for reauth_time and deprecate "Disable Reauth"
                 $connection['reauth_time'] =  ($ph1ent['lifetime'] - $ph1ent['margintime']) . ' s';
