@@ -1667,7 +1667,6 @@ function ipsec_get_configured_vtis()
                     $configured_intf[$intfnm] = ['reqid' => $reqid];
                     $configured_intf[$intfnm]['local'] = ipsec_get_phase1_src($ph1ent);
                     $configured_intf[$intfnm]['remote'] = $ph1ent['remote-gateway'];
-                    $configured_intf[$intfnm]['interface'] = $ph1ent['interface'];
                     $configured_intf[$intfnm]['descr'] = $descr;
                     $configured_intf[$intfnm]['networks'] = [];
                 }
