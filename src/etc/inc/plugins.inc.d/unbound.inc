@@ -43,7 +43,6 @@ function unbound_configure()
         'bootup' => array('unbound_configure_do'),
         'dns' => array('unbound_configure_do'),
         'early' => array('unbound_cache_flush'),
-        'hosts' => array('unbound_hosts_generate:0'),
         'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
     );
@@ -647,15 +646,6 @@ function unbound_acls_config()
     }
 
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
-}
-
-function unbound_hosts_generate()
-{
-    if (!unbound_enabled()) {
-        return;
-    }
-
-    unbound_configure_do();
 }
 
 function unbound_local_zone_types()
