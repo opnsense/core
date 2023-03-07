@@ -655,9 +655,6 @@ function unbound_hosts_generate()
         return;
     }
 
-    $ifconfig_details = legacy_interfaces_details();
-    unbound_add_host_entries($ifconfig_details);
-
     unbound_configure_do();
 }
 
