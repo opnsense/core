@@ -41,5 +41,12 @@ class M1_0_1 extends BaseModelMigration
         if (in_array((string)$model->flavour, ['latest', 'libressl'])) {
             $model->flavour = null;
         }
+        if (!empty((string)$model->mirror)) {
+            $is_business = stripos((string)$model->mirror, 'opnsense-update.deciso.com') > 1;
+            if ($is_business) {
+                $url = explode('/', (string)$model->mirror);
+                $model->subscription = array_pop($url);
+            }
+        }
     }
 }
