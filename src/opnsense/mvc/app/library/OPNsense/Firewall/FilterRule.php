@@ -293,4 +293,77 @@ class FilterRule extends Rule
         }
         return $ruleTxt;
     }
+
+    /**
+     * Legacy and MVC use different fields, which at some point need to be merged.
+     * parseFilterRules already does this for the rule output, but gui parts are left with a mix of things
+     */
+    private function uiConvertNet($network)
+    {
+        $suffix = str_ends_with($network, 'ip') ?  gettext("address") :  gettext("net");
+        $ifname = rtrim($network, 'ip');
+        if (!empty($this->interfaceMapping[$ifname])) {
+            $if = $this->interfaceMapping[$ifname];
+            return (!empty($if['descr']) ? $if['descr'] : $ifname) . " " . $suffix;
+        } elseif ($ifname == '(self)') {
+            return gettext("This Firewall");
+        }
+        return $network;
+    }
+    public function getUIFromAddress()
+    {
+        if (!empty($this->rule['from'])) {
+            return $this->rule['from'];
+        } elseif (isset($this->rule['source']['address'])) {
+            return $this->rule['source']['address'];
+        } elseif (isset($this->rule['source']['any'])) {
+            return '*';
+        } elseif (isset($this->rule['source']['network'])) {
+            return $this->uiConvertNet($this->rule['source']['network']);
+        }
+        return '*';
+    }
+    public function isUIFromNot()
+    {
+        return isset($this->rule['source']) && isset($this->rule['source']['not']);
+    }
+    public function getUIFromPort()
+    {
+        if (!empty($this->rule['from_port'])) {
+            return $this->rule['from_port'];
+        } elseif (isset($this->rule['source']['port'])) {
+            return $this->rule['source']['port'];
+        }
+        return '*';
+    }
+    public function getUIToAddress()
+    {
+        if (!empty($this->rule['to'])) {
+            return $this->rule['to'];
+        } elseif (isset($this->rule['destination']['address'])) {
+            return $this->rule['destination']['address'];
+        } elseif (isset($this->rule['destination']['any'])) {
+            return '*';
+        } elseif (isset($this->rule['destination']['network'])) {
+            return $this->uiConvertNet($this->rule['destination']['network']);
+        }
+        return '*';
+    }
+    public function isUIToNot()
+    {
+        return isset($this->rule['destination']) && isset($this->rule['destination']['not']);
+    }
+    public function getUIToPort()
+    {
+        if (!empty($this->rule['to_port'])) {
+            return $this->rule['to_port'];
+        } elseif (isset($this->rule['destination']['port'])) {
+            return $this->rule['destination']['port'];
+        }
+        return '*';
+    }
+    public function getUIGateway()
+    {
+       return !empty($this->rule['gateway']) ? $this->rule['gateway'] : "*";
+    }
 }
