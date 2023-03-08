@@ -364,6 +364,6 @@ class FilterRule extends Rule
     }
     public function getUIGateway()
     {
-       return !empty($this->rule['gateway']) ? $this->rule['gateway'] : "*";
+        return !empty($this->rule['gateway']) ? $this->rule['gateway'] : "*";
     }
 }
