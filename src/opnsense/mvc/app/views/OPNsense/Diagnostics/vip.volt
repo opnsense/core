@@ -21,10 +21,10 @@
                           $("#carp_status_disable").show();
                       }
                       if (data.carp.maintenancemode == '1') {
-                          $("#carp_maintance_mode").html('<span class="fa fa-fw fa-check"></span>');
+                          $("#carp_maintenance_mode").html('<span class="fa fa-fw fa-check"></span>');
                           $("#carp_status_maintenance > b").text("{{ lang._('Leave Persistent CARP Maintenance Mode') }}");
                       } else {
-                          $("#carp_maintance_mode").html('');
+                          $("#carp_maintenance_mode").html('');
                           $("#carp_status_maintenance > b").text("{{ lang._('Enter Persistent CARP Maintenance Mode') }}");
                       }
                       $("#carp_status_maintenance").show();
@@ -121,8 +121,8 @@
               </td>
           </tr>
           <tr>
-              <td>{{ lang._('Persistent maintance mode')}}</td>
-              <td id='carp_maintance_mode'>-</td>
+              <td>{{ lang._('Persistent maintenance mode')}}</td>
+              <td id='carp_maintenance_mode'>-</td>
               <td>
                 <button class="btn btn-primary carp_action" id="carp_status_maintenance" style="display: none;"
                         data-endpoint='/api/diagnostics/interface/carp_status/maintenance'
