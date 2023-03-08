@@ -144,8 +144,7 @@ core)
 		target_abi_minor=${product_abi#*.}
 
 		IS_BUSINESS=$(echo ${product_id} | grep -c -- '-business')
-		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.mirror | \
-		    grep -c 'opnsense-update\.deciso\.com')
+		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.subscription | grep -c '.')
 
 		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" -o ]; then
 			case ${target_abi_minor} in

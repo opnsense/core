@@ -270,7 +270,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SystemController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
@@ -553,6 +552,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.xml
