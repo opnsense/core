@@ -757,8 +757,8 @@
                     packagesInfo(true);
                 } else {
                     let validation_msgs = '<ul>';
-                    for (i = 0; i < data['status_msgs'].length; i++) {
-                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msgs'][i]).text() + '</li>';
+                    for (i = 0; i < data['status_msg'].length; i++) {
+                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msg'][i]).text() + '</li>';
                     }
                     validation_msgs += '</ul>';
 

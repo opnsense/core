@@ -1137,66 +1137,43 @@ class FirmwareController extends ApiControllerBase
     {
         $response = ['status' => 'failure'];
 
-        if ($this->request->isPost()) {
-            $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
-            $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
-            $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
-            $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
-
-            $ret = $this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription);
-            if (count($ret)) {
-                $response['status_msgs'] = $ret;
-            } else {
-                $config = Config::getInstance()->object();
-                $response['status'] = 'ok';
-
-                // config data without model, prepare xml structure and write data
-                if (!isset($config->system->firmware)) {
-                    $config->system->addChild('firmware');
-                }
-
-                if (!isset($config->system->firmware->mirror)) {
-                    $config->system->firmware->addChild('mirror');
-                }
-                if (empty($selSubscription)) {
-                    $config->system->firmware->mirror = $selectedMirror;
-                } else {
-                    // prepend subscription
-                    $config->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
-                }
-                if (empty($config->system->firmware->mirror)) {
-                    unset($config->system->firmware->mirror);
-                }
-
-                if (!isset($config->system->firmware->flavour)) {
-                    $config->system->firmware->addChild('flavour');
-                }
-                $config->system->firmware->flavour = $selectedFlavour;
-                if (empty($config->system->firmware->flavour)) {
-                    unset($config->system->firmware->flavour);
-                }
-
-                if (!isset($config->system->firmware->type)) {
-                    $config->system->firmware->addChild('type');
-                }
-                $config->system->firmware->type = $selectedType;
-                if (empty($config->system->firmware->type)) {
-                    unset($config->system->firmware->type);
-                }
-
-                if (!@count($config->system->firmware->children())) {
-                    unset($config->system->firmware);
-                }
-
-                Config::getInstance()->save();
-
-                $this->sessionClose(); // long running action, close session
-
-                $backend = new Backend();
-                $backend->configdRun('firmware flush');
-                $backend->configdRun("firmware configure");
-            }
+        if (!$this->request->isPost()) {
+            return $response;
         }
+
+        $mdl = $this->getModel();
+
+        $selectedMirror = filter_var($this->request->getPost('mirror', null, ''), FILTER_SANITIZE_URL);
+        $selectedFlavour = filter_var($this->request->getPost('flavour', null, ''), FILTER_SANITIZE_URL);
+        $selectedType = filter_var($this->request->getPost('type', null, ''), FILTER_SANITIZE_URL);
+        $selSubscription = filter_var($this->request->getPost('subscription', null, ''), FILTER_SANITIZE_URL);
+
+        $ret = $this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription);
+        if (count($ret)) {
+            $response['status_msg'] = $ret;
+            return $response;
+        }
+
+        $response['status'] = 'ok';
+
+	if (!empty($selSubscription)) {
+	    /* prepend subscription */
+            $selectedMirror .= '/' . $selSubscription;
+	}
+
+	$mdl->mirror = $selectedMirror;
+	$mdl->flavour = $selectedFlavour;
+	$mdl->type = $selectedType;
+        /* discards plugins on purpose for the time being */
+
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+
+	$this->sessionClose(); // long running action, close session
+
+	$backend = new Backend();
+	$backend->configdRun('firmware flush');
+	$backend->configdRun('firmware configure');
 
         return $response;
     }
