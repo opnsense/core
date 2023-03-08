@@ -988,15 +988,6 @@ class FirmwareController extends ApiMutableModelControllerBase
     }
 
     /**
-     * retrieve current firmware configuration options
-     * @return array
-     */
-    public function getAction()
-    {
-        return $this->getModelNodes();
-    }
-
-    /**
      * set firmware configuration options
      * @return array status
      */
@@ -1008,20 +999,19 @@ class FirmwareController extends ApiMutableModelControllerBase
             return $response;
         }
 
+        $values = $this->request->getPost(static::$internalModelName);
+
+        foreach ($values as $key => &$value) {
+            if ($key == 'plugins') {
+                /* discards plugins on purpose for the time being */
+                unset($values[$key]);
+            } else {
+                $value = filter_var($value, FILTER_SANITIZE_URL);
+            }
+        }
+
         $mdl = $this->getModel();
-
-        /* XXX emulates: $mdl->setNodes($this->request->getPost(static::$internalModelName)); */
-
-        $selectedMirror = filter_var($this->request->getPost('mirror', null, ''), FILTER_SANITIZE_URL);
-        $selectedFlavour = filter_var($this->request->getPost('flavour', null, ''), FILTER_SANITIZE_URL);
-        $selectedType = filter_var($this->request->getPost('type', null, ''), FILTER_SANITIZE_URL);
-        $selSubscription = filter_var($this->request->getPost('subscription', null, ''), FILTER_SANITIZE_URL);
-
-        $mdl->mirror = $selectedMirror;
-        $mdl->flavour = $selectedFlavour;
-        $mdl->type = $selectedType;
-        $mdl->subscription = $selSubscription;
-        /* discards plugins on purpose for the time being */
+        $mdl->setNodes($values);
 
         $ret = $this->validate();
         if (!empty($ret['result'])) {

@@ -654,7 +654,8 @@
 
         // handle firmware config options
         ajaxGet('/api/core/firmware/get_options', {}, function(firmwareoptions, status) {
-            ajaxGet('/api/core/firmware/get', {}, function(firmwareconfig, status) {
+            ajaxGet('/api/core/firmware/get', {}, function(config, status) {
+                var firmwareconfig = config['firmware'];
                 var custom_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
@@ -665,7 +666,6 @@
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
-                            .data("has_subscription", firmwareoptions['families_has_subscription'].length > 0)
                             .prop('selected', selected)
                     );
                 });
@@ -678,11 +678,7 @@
                     );
                 }
 
-                if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                    $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
-                } else {
-                    $("#firmware_mirror_subscription").val("");
-                }
+                $("#firmware_subscription").val(firmwareconfig['subscription']);
 
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
@@ -750,8 +746,8 @@
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            confopt.subscription = $("#firmware_mirror_subscription").val();
-            ajaxCall('/api/core/firmware/set', confopt, function(data, status) {
+            confopt.subscription = $("#firmware_subscription").val();
+            ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data['status'] == 'ok') {
                     packagesInfo(true);
@@ -1013,10 +1009,10 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
+                                <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
-                                    <input type="text" id="firmware_mirror_subscription">
-                                    <div class="hidden" data-for="help_for_mirror_subscription">
+                                    <input type="text" id="firmware_subscription">
+                                    <div class="hidden" data-for="help_for_subscription">
                                         {{ lang._('Provide subscription key.') }}
                                     </div>
                                 </td>
