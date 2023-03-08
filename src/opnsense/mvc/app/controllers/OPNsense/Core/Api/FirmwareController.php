@@ -857,7 +857,7 @@ class FirmwareController extends ApiControllerBase
         /* package infos are flat lists with 3 pipes as delimiter */
         foreach (array('remote', 'local') as $type) {
             $current = $backend->configdRun("firmware ${type}");
-            $current = explode("\n", trim($current));
+            $current = explode("\n", trim($current ?? ''));
 
             foreach ($current as $line) {
                 $expanded = explode('|||', $line);

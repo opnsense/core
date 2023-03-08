@@ -1,6 +1,6 @@
 <model>
     <mount>//system/firmware</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
         OPNsense Firmware settings
     </description>

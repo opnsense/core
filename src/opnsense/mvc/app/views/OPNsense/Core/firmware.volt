@@ -655,12 +655,12 @@
         // handle firmware config options
         ajaxGet('/api/core/firmware/getFirmwareOptions', {}, function(firmwareoptions, status) {
             ajaxGet('/api/core/firmware/getFirmwareConfig', {}, function(firmwareconfig, status) {
-                var other_selected = true;
+                var custom_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
                     if ((key != "" && firmwareconfig['mirror'].indexOf(key) != -1) || key == firmwareconfig['mirror']) {
                         selected = true;
-                        other_selected = false;
+                        custom_selected = false;
                     }
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
@@ -670,11 +670,11 @@
                     );
                 });
                 if (firmwareoptions['mirrors_allow_custom']) {
-                    $("#firmware_mirror").prepend($("<option/>")
+                    $("#firmware_mirror :first-child").after($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
-                        .text("(other)")
-                        .data("other", 1)
-                        .prop('selected', other_selected)
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
                     );
                 }
 
@@ -687,12 +687,12 @@
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
 
-                other_selected = true;
+                custom_selected = true;
                 $.each(firmwareoptions.flavours, function(key, value) {
                     var selected = false;
                     if (key == firmwareconfig['flavour']) {
                         selected = true;
-                        other_selected = false;
+                        custom_selected = false;
                     }
                     $("#firmware_flavour").append($("<option/>")
                             .attr("value",key)
@@ -701,11 +701,11 @@
                     );
                 });
                 if (firmwareoptions['flavours_allow_custom']) {
-                    $("#firmware_flavour").prepend($("<option/>")
+                    $("#firmware_flavour :first-child").after($("<option/>")
                         .attr("value", firmwareconfig['flavour'])
-                        .text("(other)")
-                        .data("other", 1)
-                        .prop('selected', other_selected)
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
                     );
                 }
                 $("#firmware_flavour").selectpicker('refresh');
@@ -729,18 +729,18 @@
 
         $("#firmware_mirror").change(function(){
             $("#firmware_mirror_value").val($(this).val());
-            if ($(this).find(':selected').data("other") == 1) {
-                $("#firmware_mirror_other").show();
+            if ($(this).find(':selected').data("custom") == 1) {
+                $("#firmware_mirror_custom").show();
             } else {
-                $("#firmware_mirror_other").hide();
+                $("#firmware_mirror_custom").hide();
             }
         });
         $("#firmware_flavour").change(function() {
             $("#firmware_flavour_value").val($(this).val());
-            if ($(this).find(':selected').data("other") == 1) {
-                $("#firmware_flavour_other").show();
+            if ($(this).find(':selected').data("custom") == 1) {
+                $("#firmware_flavour_custom").show();
             } else {
-                $("#firmware_flavour_other").hide();
+                $("#firmware_flavour_custom").hide();
             }
         });
 
@@ -975,7 +975,7 @@
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
-                                    <div style="display:none;" id="firmware_mirror_other">
+                                    <div style="display:none;" id="firmware_mirror_custom">
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
                                     <div class="hidden" data-for="help_for_mirror">
@@ -990,11 +990,11 @@
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
-                                    <div style="display:none;" id="firmware_flavour_other">
+                                    <div style="display:none;" id="firmware_flavour_custom">
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
                                     <div class="hidden" data-for="help_for_flavour">
-                                        {{ lang._('Select the firmware cryptography flavour.') }}
+                                        {{ lang._('Select an alternate firmware flavour.') }}
                                     </div>
                                 </td>
                                 <td></td>

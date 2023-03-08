@@ -98,13 +98,9 @@
         </mirror>
     </mirrors>
     <flavours allow_custom="true">
-        <flavour>
+        <flavour has_subscription="true">
             <name/>
             <description>(default)</description>
-        </flavour>
-        <flavour has_subscription="true">
-            <name>latest</name>
-            <description>OpenSSL</description>
         </flavour>
     </flavours>
     <families>
