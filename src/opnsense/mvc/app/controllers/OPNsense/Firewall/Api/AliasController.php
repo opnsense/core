@@ -471,7 +471,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (isset($cnf->system->firmware) && !empty($cnf->system->firmware->mirror)) {
                 // XXX: we might add some attribute in firmware to store subscription status, since we now only store uri
                 $result[static::$internalModelName]['geoip']['subscription'] =
-                    strpos($cnf->system->firmware->mirror, "opnsense-update.deciso.com") !== false;
+                    strpos($cnf->system->firmware->mirror, 'opnsense-update.deciso.com') !== false;
             }
 
             $result[static::$internalModelName]['geoip']['address_count'] = 0;

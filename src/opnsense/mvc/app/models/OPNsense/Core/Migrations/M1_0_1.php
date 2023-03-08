@@ -42,7 +42,7 @@ class M1_0_1 extends BaseModelMigration
             $model->flavour = null;
         }
         if (!empty((string)$model->mirror)) {
-            $is_business = stripos((string)$model->mirror, 'opnsense-update.deciso.com') > 1;
+            $is_business = strpos((string)$model->mirror, 'opnsense-update.deciso.com') !== false;
             if ($is_business) {
                 $url = explode('/', (string)$model->mirror);
                 $model->subscription = array_pop($url);
