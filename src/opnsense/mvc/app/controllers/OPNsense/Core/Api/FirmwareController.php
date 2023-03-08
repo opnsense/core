@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -32,6 +32,7 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Firmware;
 
 /**
  * Class FirmwareController
@@ -39,6 +40,34 @@ use OPNsense\Core\Config;
  */
 class FirmwareController extends ApiControllerBase
 {
+    /**
+     * @var null|BaseModel model object to work on
+     */
+    private $modelHandle = null;
+
+    /**
+     * Get (or create) model object
+     * @return null|BaseModel
+     */
+    private function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = new Firmware();
+        }
+        return $this->modelHandle;
+    }
+
+    /**
+     * Query model items
+     * @return array plain model settings (non repeating items)
+     * @throws \ReflectionException when not bound to model
+     */
+    protected function getModelNodes()
+    {
+        return $this->getModel()->getNodes();
+        return $result;
+    }
+
     /**
      * return bytes in human-readable form
      * @param integer $bytes bytes to convert
@@ -1097,26 +1126,7 @@ class FirmwareController extends ApiControllerBase
      */
     public function getFirmwareConfigAction()
     {
-        $config = Config::getInstance()->object();
-        $result = array();
-
-        $result['flavour'] = '';
-        $result['mirror'] = '';
-        $result['type'] = '';
-
-        if (!empty($config->system->firmware->flavour)) {
-            $result['flavour'] = (string)$config->system->firmware->flavour;
-        }
-
-        if (!empty($config->system->firmware->type)) {
-            $result['type'] = (string)$config->system->firmware->type;
-        }
-
-        if (!empty($config->system->firmware->mirror)) {
-            $result['mirror'] = (string)$config->system->firmware->mirror;
-        }
-
-        return $result;
+        return $this->getModelNodes();
     }
 
     /**
