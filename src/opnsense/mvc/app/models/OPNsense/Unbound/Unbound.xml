@@ -113,6 +113,9 @@
             </cacheminttl>
             <infrahostttl type="NumericField">
             </infrahostttl>
+            <infrakeepprobing type="BooleanField">
+                <default>0</default>
+            </infrakeepprobing>
             <infracachenumhosts type="NumericField">
             </infracachenumhosts>
             <unwantedreplythreshold type="NumericField">
