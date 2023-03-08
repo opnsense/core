@@ -653,8 +653,8 @@
         });
 
         // handle firmware config options
-        ajaxGet('/api/core/firmware/getFirmwareOptions', {}, function(firmwareoptions, status) {
-            ajaxGet('/api/core/firmware/getFirmwareConfig', {}, function(firmwareconfig, status) {
+        ajaxGet('/api/core/firmware/get_options', {}, function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/get', {}, function(firmwareconfig, status) {
                 var custom_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
@@ -751,7 +751,7 @@
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
             confopt.subscription = $("#firmware_mirror_subscription").val();
-            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data, status) {
+            ajaxCall('/api/core/firmware/set', confopt, function(data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data['status'] == 'ok') {
                     packagesInfo(true);

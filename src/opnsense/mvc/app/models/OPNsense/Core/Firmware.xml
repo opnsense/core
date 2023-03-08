@@ -21,5 +21,9 @@
             <Required>N</Required>
             <default></default>
         </type>
+        <subscription type="TextField">
+            <Required>N</Required>
+            <default></default>
+        </subscription>
     </items>
 </model>
