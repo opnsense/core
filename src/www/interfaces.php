@@ -1545,7 +1545,9 @@ include("head.inc");
       //
       // new gateway action
       //
-      $("#gwsave").click(function(){
+      $('#gwsave').click(function () {
+          event.preventDefault();
+          $('#gwsave').prop('disabled', true);
           var iface = $('#if').val();
           var name = $('#name').val();
           var descr = $('#gatewaydescr').val();
@@ -1568,6 +1570,7 @@ include("head.inc");
                 } else {
                     alert("Sorry, we could not create your IPv4 gateway at this time.");
                 }
+                $('#gwsave').prop('disabled', false);
             },
             success: function(response) {
                 $("#addgateway").toggleClass("hidden visible");
@@ -1577,6 +1580,7 @@ include("head.inc");
                 }
                 $('#gateway').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
                 $('#gateway').selectpicker('refresh');
+                $('#gwsave').prop('disabled', false);
             }
           });
       });
@@ -1587,7 +1591,9 @@ include("head.inc");
       //
       // new gateway v6 action
       //
-      $("#gwsavev6").click(function(){
+      $('#gwsavev6').click(function () {
+          event.preventDefault();
+          $('#gwsavev6').prop('disabled', true);
           var iface = $('#if').val();
           var name = $('#namev6').val();
           var descr = $('#gatewaydescrv6').val();
@@ -1606,6 +1612,7 @@ include("head.inc");
                 } else {
                     alert("Sorry, we could not create your IPv6 gateway at this time.");
                 }
+                $('#gwsavev6').prop('disabled', false);
             },
             success: function(response) {
                 $("#addgatewayv6").toggleClass("hidden visible");
@@ -1615,6 +1622,7 @@ include("head.inc");
                 }
                 $('#gatewayv6').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
                 $('#gatewayv6').selectpicker('refresh');
+                $('#gwsavev6').prop('disabled', false);
             }
           });
       });
