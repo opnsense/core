@@ -58,7 +58,11 @@ $months = [
     _('Dec')
 ];
 
-function _getSelectedDaysNonRepeating(array $time_range): string {
+function _getOrdinal($date) {
+    return date('jS', mktime(1, 1, 1, 1, $date));
+}
+
+function _getNonRepeatingDates(array $time_range): string {
     global $months;
 
     if (!@$time_range['month']) {
@@ -70,6 +74,7 @@ function _getSelectedDaysNonRepeating(array $time_range): string {
         'days' => explode(',', $time_range['day'])
     ];
     $day_range_start = null;
+    $days_selected_text = [];
 
     foreach ($selected->months as $i => $month) {
         $month = (int)$month;
@@ -84,7 +89,12 @@ function _getSelectedDaysNonRepeating(array $time_range): string {
         }
 
         if ($day == $day_range_start) {
-            $days_selected_text[] = sprintf('%s %s', $months[$month - 1], $day);
+            $days_selected_text[] = sprintf(
+                '%s %s',
+                $months[$month - 1],
+                _getOrdinal($day)
+            );
+
             $day_range_start = null;
             continue;
         }
@@ -100,7 +110,43 @@ function _getSelectedDaysNonRepeating(array $time_range): string {
     return nl2br(implode("\n", $days_selected_text));
 }
 
-function _getSelectedDaysRepeating(array $time_range): string {
+function _getRepeatingMonthlyDates(array $time_range): string {
+    if (!@$time_range['day']) {
+        return '';
+    }
+
+    $days = explode(',', $time_range['day']);
+
+    $day_range_start = null;
+    $days_selected_text = ['(Monthly)'];
+
+    foreach ($days as $i => $day) {
+        $day = (int)$day;
+        $day_range_start = $day_range_start ?? $day;
+
+        $next_day = (int)$days[$i + 1];
+
+        if (($day + 1) == $next_day) {
+            continue;
+        }
+
+        if ($day == $day_range_start) {
+            $days_selected_text[] = _getOrdinal($day);
+            $day_range_start = null;
+            continue;
+        }
+
+        $days_selected_text[] = sprintf('%s-%s',
+            _getOrdinal($day_range_start),
+            _getOrdinal($day)
+        );
+        $day_range_start = null;
+    }
+
+    return nl2br(implode("\n", $days_selected_text));
+}
+
+function _getRepeatingWeeklyDays(array $time_range): string {
     global $days;
 
     if (!@$time_range['position']) {
@@ -109,6 +155,7 @@ function _getSelectedDaysRepeating(array $time_range): string {
 
     $days_of_week = explode(',', $time_range['position']);
     $day_range_start = null;
+    $days_selected_text = ['(Weekly)'];
 
     foreach ($days_of_week as $i => $day_of_week) {
         $day_of_week = (int)$day_of_week;
@@ -140,12 +187,16 @@ function _getSelectedDaysRepeating(array $time_range): string {
     return nl2br(implode("\n", $days_selected_text));
 }
 
-function getSelectedDays(array $time_range): string {
+function getSelectedDates(array $time_range): string {
     if (@$time_range['month']) {
-        return _getSelectedDaysNonRepeating($time_range);
+        return _getNonRepeatingDates($time_range);
     }
 
-    return _getSelectedDaysRepeating($time_range);
+    if (@$time_range['day']) {
+        return _getRepeatingMonthlyDates($time_range);
+    }
+
+    return _getRepeatingWeeklyDays($time_range);
 }
 
 
@@ -239,8 +290,8 @@ if ($delete_error) {
                 <thead>
                   <tr>
                     <td><?= _('Name') ?></td>
-                    <td><?= _("Time Range(s)") ?></td>
-                    <td><?= _("Description") ?></td>
+                    <td><?= _('Time Ranges') ?></td>
+                    <td><?= _('Description') ?></td>
                     <td class="text-nowrap">
                       <a href="<?= $edit_page ?>" title="<?= html_safe(_('Add')) ?>"
                          class="btn btn-primary btn-xs" data-toggle="tooltip">
@@ -275,7 +326,7 @@ foreach ($config_schedules as $i => $config_schedule):
         }
 ?>
                         <tr>
-                          <td><?= getSelectedDays($time_range) ?></td>
+                          <td><?= getSelectedDates($time_range) ?></td>
                           <td><?= $time_range['hour'] ?></td>
                           <td><?= rawurldecode($time_range['rangedescr']) ?></td>
                         </tr>
