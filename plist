@@ -978,6 +978,7 @@
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
+/usr/local/opnsense/scripts/system/rrd_pfstate_info.py
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/status.php
 /usr/local/opnsense/scripts/system/sysctl.py
