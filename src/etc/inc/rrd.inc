@@ -323,14 +323,7 @@ function rrd_configure($verbose = false, $bootup = false)
 
         /* the pf states gathering function. */
         $rrdupdatesh .= "\n";
-        $rrdupdatesh .= "pfctl_si_out=\"`$pfctl -si > /tmp/pfctl_si_out`\"\n";
-        $rrdupdatesh .= "pfctl_ss_out=\"`$pfctl -ss > /tmp/pfctl_ss_out`\"\n";
-        $rrdupdatesh .= "pfrate=\"`cat /tmp/pfctl_si_out | egrep \"inserts|removals\" | awk '{ pfrate = \$3 + pfrate } {print pfrate}' | tail -1`\"\n";
-        $rrdupdatesh .= "pfstates=\"`cat /tmp/pfctl_ss_out | egrep -v \"<-[^<]*<-|->[^-]*->\" | wc -l | sed 's/ //g'`\"\n";
-        $rrdupdatesh .= "pfnat=\"`cat /tmp/pfctl_ss_out | egrep '<-[^<]*<-|->[^-]*->' | wc -l | sed 's/ //g'`\"\n";
-        $rrdupdatesh .= "srcip=\"`cat /tmp/pfctl_ss_out | egrep -v '<-[^<]*<-|->[^-]*->' | grep -- '->' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u | wc -l | sed 's/ //g'`\"\n";
-        $rrdupdatesh .= "dstip=\"`cat /tmp/pfctl_ss_out | egrep -v '<-[^<]*<-|->[^-]*->' | grep -- '<-' | awk '{print \$3}' | awk -F: '{print \$1}' | sort -u | wc -l | sed 's/ //g'`\"\n";
-        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$states N:\$pfrate:\$pfstates:\$pfnat:\$srcip:\$dstip\n\n";
+        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$states N:`/usr/local/opnsense/scripts/system/rrd_pfstate_info.py`\n\n";
         /* End pf states statistics */
 
         /* CPU, create CPU statistics database */
