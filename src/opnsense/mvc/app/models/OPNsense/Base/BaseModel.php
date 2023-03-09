@@ -667,7 +667,7 @@ abstract class BaseModel
             uksort($versions, "version_compare");
             foreach ($versions as $mig_version => $filename) {
                 if (
-                    version_compare($this->internal_current_model_version ?? '0,0.0', $mig_version, '<') &&
+                    version_compare($this->internal_current_model_version ?? '0.0.0', $mig_version, '<') &&
                     version_compare($this->internal_model_version, $mig_version, '>=')
                 ) {
                     // execute upgrade action
