@@ -1019,11 +1019,6 @@ class FirmwareController extends ApiMutableModelControllerBase
             return $response;
         }
 
-        if (!empty((string)$mdl->subscription)) {
-            /* append subscription */
-            $mdl->mirror = (string)$mdl->mirror . '/' . (string)$mdl->subscription;
-        }
-
         $response['status'] = 'ok';
         $this->save();
 

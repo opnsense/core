@@ -659,7 +659,7 @@
                 var custom_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
-                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) != -1) || key == firmwareconfig['mirror']) {
+                    if (key == firmwareconfig['mirror']) {
                         selected = true;
                         custom_selected = false;
                     }

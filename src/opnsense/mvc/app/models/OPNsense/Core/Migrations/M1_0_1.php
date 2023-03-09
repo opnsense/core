@@ -29,15 +29,19 @@
 namespace OPNsense\Core\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Firmware;
 
 class M1_0_1 extends BaseModelMigration
 {
     /**
-     * Migrate BE release type
+     * Migrate subscription and remove old flavour types
      * @param $model
      */
     public function run($model)
     {
+        if (!($model instanceof Firmware)) {
+            return;
+        }
         if (in_array((string)$model->flavour, ['latest', 'libressl'])) {
             $model->flavour = null;
         }
@@ -46,6 +50,7 @@ class M1_0_1 extends BaseModelMigration
             if ($is_business) {
                 $url = explode('/', (string)$model->mirror);
                 $model->subscription = array_pop($url);
+                $model->mirror = implode('/', $url);
             }
         }
     }

@@ -763,9 +763,21 @@ function system_firmware_configure($verbose = false)
 
     /* calculate the effective ABI */
     $args = [ exec_safe('-A %s', shell_safe('opnsense-version -x')) ];
+    $url_sub = '';
+
+    if (!empty($config['system']['firmware']['subscription'])) {
+        /*
+         * Append the url now that it is not in the mirror anymore.
+         * This only ever works if the mirror is set to a non-default.
+         */
+        $url_sub = '/' . $config['system']['firmware']['subscription'];
+    } else {
+        /* clear the license file when no subscription key is set */
+        @unlink('/usr/local/opnsense/version/core.license');
+    }
 
     if (!empty($config['system']['firmware']['mirror'])) {
-        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
+        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror'] . $url_sub));
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
@@ -774,11 +786,6 @@ function system_firmware_configure($verbose = false)
 
     /* rewrite the config via the defaults and possible arguments */
     mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
-
-    /* clear the license file when no subscription key is set */
-    if (empty(shell_safe('/usr/local/sbin/opnsense-update -K'))) {
-        @unlink('/usr/local/opnsense/version/core.license');
-    }
 
     service_log("done.\n", $verbose);
 }

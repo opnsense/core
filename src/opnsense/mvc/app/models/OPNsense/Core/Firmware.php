@@ -113,17 +113,11 @@ class Firmware extends BaseModel
     {
         $validOptions = $this->getRepositoryOptions();
 
-        /* XXX for now make sure the subscription is removed if given */
-        $mirror_stripped = (string)$this->mirror;
-        if (!empty((string)$this->subscription)) {
-            $mirror_stripped = str_replace('/' . (string)$this->subscription, '', $mirror_stripped);
-        }
-
         /* standard model validations */
         $messages = parent::performValidation($validateFullModel);
 
         /* extended validations */
-        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][$mirror_stripped])) {
+        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][(string)$this->mirror])) {
             $messages->appendMessage(new Message(gettext('Unable to set invalid firmware mirror'), 'mirror'));
         }
         if (!$validOptions['flavours_allow_custom'] && !isset($validOptions['flavours'][(string)$this->flavour])) {
@@ -132,7 +126,7 @@ class Firmware extends BaseModel
         if (!isset($validOptions['families'][(string)$this->type])) {
             $messages->appendMessage(new Message(gettext('Unable to set invalid firmware release type'), 'type'));
         }
-        if (in_array($mirror_stripped, $validOptions['mirrors_has_subscription'])) {
+        if (in_array((string)$this->mirror, $validOptions['mirrors_has_subscription'])) {
             if (!preg_match('/^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/i', (string)$this->subscription)) {
                 $messages->appendMessage(new Message(gettext('A valid subscription is required for this firmware mirror'), 'subscription'));
             }
