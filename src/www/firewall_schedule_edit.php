@@ -511,7 +511,8 @@ class Schedule
         $this->_data = (object)[
             'name' => $data['name'] ?? null,
             'description' => $data['descr'] ?? null,
-            'time_ranges' => []
+            'time_ranges' => [],
+            'is_disabled' => (bool)$data['is_disabled']
         ];
 
         // NOTE: legacy_html_escape_form_data() doesn't escape objects;
@@ -916,7 +917,8 @@ HTML;
         $this->_config[$this->_id] = [
             'name' => $this->_data->name,
             'descr' => $this->_data->description,
-            'timerange' => $this->_data->time_ranges
+            'timerange' => $this->_data->time_ranges,
+            'is_disabled' => (string)(@$this->_data->is_disabled == 'yes')
         ];
 
         $this->_sortConfigByName();
@@ -1906,6 +1908,21 @@ if ($schedule->hasErrors()) {
                   </tr>
                   <tr>
                     <td>
+                      <a id="help_for_disabled" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <label for="is_disabled"><?= _('Disabled') ?></label>
+                    </td>
+                    <td>
+                      <input type="checkbox" name="is_disabled" id="is_disabled" value="yes"
+                             <?= ($schedule->getData('is_disabled')) ? 'checked="checked"' : '' ?> />
+                      <?= _('Disable this schedule') ?>
+                      <div class="hidden" data-for="help_for_disabled">
+                        <br />
+                        <?= _('Set this option to disable this schedule without removing it from the list.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
 <?php $references = $schedule->getHTMLReferences(); ?>
                       <?= ($references) ? '<em class="fa fa-info-circle text-muted"></em>' : '' ?>
                       <label for="name"><?= _('Name') ?></label>
@@ -1954,7 +1971,7 @@ if ($schedule->hasErrors()) {
                       <table id="calendar">
                         <tbody>
                           <tr>
-                            <td style="width: 35%;"><?= _('Day(s)/Date(s)') ?></td>
+                            <td style="width: 35%;"><?= _('Day or Dates') ?></td>
                             <td style="width: 12%;"><?= _('Start Time') ?></td>
                             <td style="width: 11%;"><?= _('Stop Time') ?></td>
                             <td style="width: 42%;"><?= _('Description') ?></td>

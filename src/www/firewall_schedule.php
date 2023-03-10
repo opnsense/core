@@ -199,8 +199,29 @@ function getSelectedDates(array $time_range): string {
     return _getRepeatingWeeklyDays($time_range);
 }
 
+function getReferences($schedule): string {
+    global $config_rules;
+
+    if (!($schedule['name'] && $config_rules)) {
+        return 'N/A';
+    }
+
+    $references = [];
+
+    foreach ($config_rules as $rule) {
+        if (@$rule['sched'] != $schedule['name']) {
+            continue;
+        }
+
+        $references[] = sprintf('<div>%s</div>', trim($rule['descr']));
+    }
+
+    return ($references) ? implode("\n", $references) : 'N/A';
+}
+
 
 $config_schedules = &config_read_array('schedules', 'schedule');
+$config_rules = config_read_array('filter', 'rule') ?? [];
 $delete_error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -289,10 +310,11 @@ if ($delete_error) {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <td><?= _('Name') ?></td>
+                    <td colspan="2"></td>
+                    <td style="min-width: 100px;"><?= _('Name') ?></td>
                     <td><?= _('Time Ranges') ?></td>
-                    <td><?= _('Description') ?></td>
-                    <td class="text-nowrap">
+                    <td style="min-width: 150px;"><?= _('Description') ?></td>
+                    <td class="text-nowrap" style="width: 120px;">
                       <a href="<?= $edit_page ?>" title="<?= html_safe(_('Add')) ?>"
                          class="btn btn-primary btn-xs" data-toggle="tooltip">
                         <em class="fa fa-plus fa-fw"></em>
@@ -302,40 +324,70 @@ if ($delete_error) {
                 </thead>
                 <tbody>
 <?php
-foreach ($config_schedules as $i => $config_schedule):
+foreach ($config_schedules as $i => $schedule):
+    $references = getReferences($schedule);
 ?>
-                  <tr ondblclick="document.location='<?= $edit_page ?>?id=<?= $i ?>';">
-                    <td>
-                      <?= $config_schedule['name'] ?>
+                  <tr ondblclick="document.location='<?= $edit_page ?>?id=<?= $i ?>'"
+                      class="rule<?= (@$schedule['is_disabled']) ? ' text-muted' : '' ?>">
+                    <td style="width: 15px;">
 <?php
-    if (filter_get_time_based_rule_status($config_schedule)):
+    if (!@$schedule['is_disabled']):
+?>
+                      <span title="<?= _('Schedule is enabled') ?>"
+                            class="fa fa-play text-success"
+                            data-toggle="tooltip"></span>
+<?php
+    else:
+?>
+                      <span title="<?= _('Schedule is disabled') ?>"
+                            class="fa fa-times text-danger"
+                            data-toggle="tooltip"></span>
+<?php
+    endif;
+?>
+                    </td>
+                    <td style="width: 15px;">
+<?php
+    if (!@$schedule['is_disabled'] && filter_get_time_based_rule_status($schedule)):
 ?>
                       <span title="<?= _('Schedule is currently active') ?>"
-                            class="fa fa-clock-o"
+                            class="fa fa-clock-o text-success"
+                            data-toggle="tooltip"></span>
+<?php
+    else:
+?>
+                      <span title="<?= _('Schedule is currently inactive') ?>"
+                            class="fa fa-clock-o text-muted"
                             data-toggle="tooltip"></span>
 <?php
     endif;
 ?>
                     </td>
                     <td>
+                      <span title="<div><strong><?= _('References:') ?></strong></div><?= $references ?>"
+                            data-toggle="tooltip" data-html="true">
+                        <?= $schedule['name'] ?>
+                      </span>
+                    </td>
+                    <td>
                       <table class="table table-condensed table-striped">
 <?php
-    foreach ($config_schedule['timerange'] as $time_range):
+    foreach ($schedule['timerange'] as $time_range):
         if (!$time_range) {
             continue;
         }
 ?>
                         <tr>
-                          <td><?= getSelectedDates($time_range) ?></td>
-                          <td><?= $time_range['hour'] ?></td>
-                          <td><?= rawurldecode($time_range['rangedescr']) ?></td>
+                          <td style="width: 80px;"><?= getSelectedDates($time_range) ?></td>
+                          <td style="width: 80px;"><?= $time_range['hour'] ?></td>
+                          <td style="width: 150px;"><?= rawurldecode($time_range['rangedescr']) ?></td>
                         </tr>
 <?php
     endforeach;
 ?>
                       </table>
                     </td>
-                    <td><?= $config_schedule['descr'] ?></td>
+                    <td><?= $schedule['descr'] ?></td>
                     <td>
                       <a href="<?= $edit_page ?>?id=<?= $i ?>"
                          title="<?= html_safe(_('Edit')) ?>"

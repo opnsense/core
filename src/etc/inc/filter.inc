@@ -681,9 +681,14 @@ function filter_rules_legacy(&$FilterIflist)
 function filter_get_time_based_rule_status($schedule)
 {
     /* no schedule? rule should be installed */
-    if (empty($schedule)) {
+    if (!$schedule) {
         return true;
     }
+
+    if (@$schedule['is_disabled']) {
+        return false;
+    }
+
     /*
      * iterate through time blocks and determine
      * if the rule should be installed or not.
