@@ -884,6 +884,7 @@ $( document ).ready(function() {
                     </td>
                     <td class="view-info">
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
+                        <?=!empty($filterent['source']['not']) ? '!' : '';?>
                         <?=filter_rule_item_alias_tooltip($filterent['source']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['source']));?>
@@ -900,6 +901,7 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
+                        <?=!empty($filterent['destination']['not']) ? '!' : '';?>
                         <?=filter_rule_item_alias_tooltip($filterent['destination']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
