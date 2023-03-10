@@ -664,23 +664,30 @@ function filter_rules_legacy(&$FilterIflist)
  <schedules>
    <schedule>
      <name>ScheduleMultipleTime</name>
-     <descr>main descr</descr>
+     <description>main description</description>
      <time>
-       <position>0,1,2</position>
-       <hour>0:0-24:0</hour>
-       <desc>time range 2</desc>
+       <days_of_week>1,2,3</days_of_week>
+       <start_stop_time>0:00-23:59</start_stop_time>
+       <description>Repeating Weekly - Mon-Tue</description>
      </time>
      <time>
-       <position>4,5,6</position>
-       <hour>0:0-24:0</hour>
-       <desc>time range 1</desc>
+       <months></months>
+       <days>1,15,28,29,30,31</days>
+       <start_stop_time>0:00-23:59</start_stop_time>
+       <description>Repeating Monthly - 1st, 15th, 28th-31st</description>
+     </time>
+     <time>
+       <months>2,2,2</months>
+       <days>4,5,6</days>
+       <start_stop_time>0:00-23:59</start_stop_time>
+       <description>Non-repeating - Feb 4-6</description>
      </time>
    </schedule>
  </schedules>
 */
 function filter_get_time_based_rule_status($schedule)
 {
-    /* no schedule? rule should be installed */
+    // Allow the rule when no schedule defined
     if (!$schedule) {
         return true;
     }
@@ -689,103 +696,94 @@ function filter_get_time_based_rule_status($schedule)
         return false;
     }
 
-    /*
-     * iterate through time blocks and determine
-     * if the rule should be installed or not.
-     */
-    foreach ($schedule['timerange'] as $timeday) {
-        if (empty($timeday['month'])) {
-            $monthstatus = true;
-        } else {
-            $monthstatus = filter_tdr_month($timeday['month']);
-        }
-        if (empty($timeday['day'])) {
-            $daystatus = true;
-        } else {
-            $daystatus = filter_tdr_day($timeday['day']);
-        }
-        if (empty($timeday['hour'])) {
-            $hourstatus = true;
-        } else {
-            $hourstatus = filter_tdr_hour($timeday['hour']);
-        }
-        if (empty($timeday['position'])) {
-            $positionstatus = true;
-        } else {
-            $positionstatus = filter_tdr_position($timeday['position']);
+    // DEPRECATED: The following references the legacy property names
+    if (!@$schedule['time_ranges']) {
+        foreach ($schedule['timerange'] as $time_range) {
+            if (filter_tdr_month(@$time_range['month'])
+                && filter_tdr_day(@$time_range['day'])
+                && filter_tdr_position(@$time_range['position'])
+                && filter_tdr_hour(@$time_range['hour'])
+            ) {
+                return true;
+            }
         }
 
-        if ($monthstatus == true && $daystatus == true && $positionstatus == true && $hourstatus == true) {
+        return false;
+    }
+
+    // Determine if the schedule is active and running based on the current date
+    // and time to determine if the firewall rule should be applied
+    foreach ($schedule['time_ranges'] as $time_range) {
+        if (filter_tdr_month(@$time_range['months'])
+            && filter_tdr_day(@$time_range['days'])
+            && filter_tdr_position(@$time_range['days_of_week'])
+            && filter_tdr_hour(@$time_range['start_stop_time'])
+        ) {
             return true;
         }
     }
+
     return false;
 }
 
-function filter_tdr_day($schedule)
+// Is there at least one day selected or is the current day in the selected
+// range of days?
+function filter_tdr_day($days_selected)
 {
-    /*
-     * Calculate day of month.
-     * IE: 29th of may
-     */
-    $date = date("d");
-    $defined_days = explode(",", $schedule);
-    foreach ($defined_days as $dd) {
-        if ($date == $dd) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function filter_tdr_hour($schedule)
-{
-    /* $schedule should be a string such as 16:00-19:00 */
-    $tmp = explode("-", $schedule);
-    $starting_time = strtotime($tmp[0]);
-    $ending_time = strtotime($tmp[1]);
-    $now = strtotime("now");
-    if ($now >= $starting_time && $now < $ending_time) {
+    if (empty($days_selected)) {
         return true;
     }
-    return false;
+
+    $current_day = date('d');
+    $days_selected = explode(',', $days_selected);
+
+    return in_array($current_day, $days_selected);
 }
 
-function filter_tdr_position($schedule)
+// Is the start/stop time defined or is the current time within the selected
+// time range?
+function filter_tdr_hour($start_stop_time)
 {
-    /*
-     * Calculate position, ie: day of week.
-     * Sunday = 7, Monday = 1, Tuesday = 2
-     * Weds = 3, Thursday = 4, Friday = 5,
-     * Saturday = 6
-     * ...
-     */
-    $weekday = date("w");
-    if ($weekday == 0) {
-        $weekday = 7;
+    if (empty($start_stop_time)) {
+        return true;
     }
-    $schedule_days = explode(",", $schedule);
-    foreach ($schedule_days as $day) {
-        if ($day == $weekday) {
-            return true;
-        }
-    }
-    return false;
+
+    // Start and stop time MUST be formatted as hh:mm-hh:mm
+    [$start_time, $stop_time] = explode('-', $start_stop_time);
+
+    $now = time();
+    $start_time = strtotime($start_time);
+    $stop_time = strtotime($stop_time);
+
+    return ($now >= $start_time && $now < $stop_time);
 }
 
-function filter_tdr_month($schedule)
+// Is there at least one day of the week selected or is the current day in the
+// selected range of days?
+function filter_tdr_position($days_of_week_selected)
 {
-    /*
-     * Calculate month
-     */
-    $todays_month = date("n");
-    $months = explode(",", $schedule);
-    foreach ($months as $month) {
-        if ($month == $todays_month) {
-            return true;
-        }
+    if (empty($days_of_week_selected)) {
+        return true;
     }
-    return false;
+
+    // ISO 8601 day of the week
+    $current_day = date('N');
+    $days_of_week_selected = explode(',', $days_of_week_selected);
+
+    return in_array($current_day, $days_of_week_selected);
+}
+
+// Is there at least one month selected or is the current month in the selected
+// range of months?
+function filter_tdr_month($months_selected) {
+    if (empty($months_selected)) {
+        return true;
+    }
+
+    $current_month = date('n');
+    $months_selected = explode(',', $months_selected);
+
+    return in_array($current_month, $months_selected);
 }
 
 function filter_setup_logging_interfaces(&$FilterIflist)

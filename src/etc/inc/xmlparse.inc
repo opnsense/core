@@ -47,7 +47,7 @@ function listtags()
       'package', 'passthrumac', 'phase1', 'phase2', 'ppp', 'pppoe', 'priv', 'proxyarpnet', 'pool', 'pages', 'pipe',
       'radnsserver', 'roll', 'route', 'row', 'rrddatafile', 'rule',
       'schedule', 'service', 'servernat', 'servers', 'serversdisabled', 'staticmap', 'subqueue',
-      'tab', 'timerange', 'tunnel',
+      'tab', 'timerange', 'time_ranges', 'tunnel',
       'user',
       'vip', 'virtual_server', 'vlan',
       'winsserver', 'wolentry', 'widget',

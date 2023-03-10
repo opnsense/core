@@ -208,6 +208,22 @@ function firewall_rule_item_log($filterent)
         return "fa fa-info-circle fa-fw text-muted";
     }
 }
+
+function getScheduleDescription($name) {
+    global $config;
+
+    if (!isset($config['schedules']['schedule'])) {
+        return '';
+    }
+
+    foreach ($config['schedules']['schedule'] as $schedule) {
+        if ($schedule['name'] == $name) {
+            return htmlspecialchars($schedule['description'] ?? $schedule['descr'] ?? '');
+        }
+    }
+
+    return '';
+}
 /***********************************************************************************************************
  *
  ***********************************************************************************************************/
@@ -930,22 +946,9 @@ $( document ).ready(function() {
                     </td>
                     <td class="view-info hidden-xs hidden-sm">
 <?php
-                      if (!empty($filterent['sched'])):?>
-<?php
-                        $schedule_descr = "";
-                        if (isset($config['schedules']['schedule']))
-                        {
-                            foreach ($config['schedules']['schedule'] as $schedule)
-                            {
-                                if ($schedule['name'] == $filterent['sched'])
-                                {
-                                    $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
-                                    break;
-                                }
-                            }
-                        }
+                      if (!empty($filterent['sched'])):
 ?>
-                        <span title="<?=htmlspecialchars($schedule_descr);?>" data-toggle="tooltip">
+                        <span title="<?= getScheduleDescription($filterent['sched']) ?>" data-toggle="tooltip">
                           <?=htmlspecialchars($filterent['sched']);?>&nbsp;
                         </span>
                         <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"

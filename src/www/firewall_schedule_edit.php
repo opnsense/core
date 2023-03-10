@@ -150,17 +150,8 @@ class TimeRange implements JsonSerializable
     }
 
     private function _initDescription(array $time_range): void {
-        if (@$time_range['description']) {
-            $this->_description = $this->_escape($time_range['description']);
-            return;
-        }
-
-        if (@$time_range['rangedescr']) {
-            $this->_description = $this->_escape(rawurldecode($time_range['rangedescr']));
-            return;
-        }
-
-        $this->_description = '';
+        $description = $time_range['description'] ?? $time_range['rangedescr'] ?? '';
+        $this->_description = $this->_escape(rawurldecode($description));
     }
 
     private function _initStartAndStop(array $time_range): void {
@@ -172,8 +163,10 @@ class TimeRange implements JsonSerializable
             $this->_stop_time = $this->_escape($time_range['stop_time']);
         }
 
-        if (isset($time_range['hour'])) {
-            [$start_time, $stop_time] = explode('-', $time_range['hour']);
+        $start_stop_time = $time_range['start_stop_time'] ?? $time_range['hour'] ?? null;
+
+        if ($start_stop_time) {
+            [$start_time, $stop_time] = explode('-', $start_stop_time);
             $this->_start_time = $this->_escape($start_time);
             $this->_stop_time = $this->_escape($stop_time);
         }
@@ -181,7 +174,7 @@ class TimeRange implements JsonSerializable
         $this->_validateTimes();
     }
 
-    private function _getOrdinal($date) {
+    private function _getOrdinalDate($date) {
         return date('jS', mktime(1, 1, 1, 1, $date));
     }
 
@@ -246,7 +239,7 @@ class TimeRange implements JsonSerializable
 
             // Friendly description for individual repeating day
             if ($date == $date_range_start) {
-                $dates_selected_text[] = $this->_getOrdinal($date);
+                $dates_selected_text[] = $this->_getOrdinalDate($date);
                 $date_range_start = null;
                 continue;
             }
@@ -254,8 +247,8 @@ class TimeRange implements JsonSerializable
             // Friendly description for a range of dates
             $dates_selected_text[] = sprintf(
                 '%s-%s',
-                $this->_getOrdinal($date_range_start),
-                $this->_getOrdinal($date)
+                $this->_getOrdinalDate($date_range_start),
+                $this->_getOrdinalDate($date)
             );
 
             $date_range_start = null;
@@ -275,24 +268,24 @@ class TimeRange implements JsonSerializable
 
     private function _initNonRepeatingDates(
         string $selected_months,
-        string $selected_dates
+        string $selected_days
     ): void {
         $date_range_start = null;
         $dates_selected = [];
         $dates_selected_text = [];
         $selected_months = explode(',', $selected_months);
-        $selected_dates = explode(',', $selected_dates);
+        $selected_days = explode(',', $selected_days);
 
         foreach ($selected_months as $selection_num => $month) {
             $month = (int)$month;
-            $date = (int)$selected_dates[$selection_num];
+            $date = (int)$selected_days[$selection_num];
 
             $dates_selected[] = $this->getDayCellID($month, $date);
 
             $date_range_start = $date_range_start ?? $date;
             $month_short = substr(self::$_months[$month - 1], 0, 3);
             $next_selected_month = (int)$selected_months[$selection_num + 1];
-            $next_selected_date = (int)$selected_dates[$selection_num + 1];
+            $next_selected_date = (int)$selected_days[$selection_num + 1];
 
             // Continue to the next day when working on a range (i.e. Feb 6-8)
             if ($month == $next_selected_month && ($date + 1) == $next_selected_date) {
@@ -304,7 +297,7 @@ class TimeRange implements JsonSerializable
                 $dates_selected_text[] = sprintf(
                     '%s %s',
                     $month_short,
-                    $this->_getOrdinal($date)
+                    $this->_getOrdinalDate($date)
                 );
 
                 $date_range_start = null;
@@ -328,10 +321,9 @@ class TimeRange implements JsonSerializable
 
     private function _isRepeatingWeekly(?array $time_range = null): bool {
         if ($time_range) {
-// TODO: $time_range['days_of_week'] is here for future support whenever it's ready
-            return (!empty($time_range['position'])
-                || !empty($time_range['days_of_week'])
-            );
+            $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? null;
+
+            return !empty($days_of_week);
         }
 
 // TODO: Refactor to check for 'w'
@@ -342,10 +334,10 @@ class TimeRange implements JsonSerializable
 
     private function _isRepeatingMonthly(?array $time_range = null): bool {
         if ($time_range) {
-// TODO: $time_range['dates'] is here for future support whenever it's ready
-            return (!empty($time_range['day']) && empty($time_range['month'])
-                || !empty($time_range['dates']) && empty($time_range['months'])
-            );
+            $months = $time_range['months'] ?? $time_range['month'] ?? null;
+            $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+            return !empty($days) && empty($months);
         }
 
         return strstr($this->_dates_selected, 'd') && !strstr($this->_dates_selected, 'm');
@@ -357,22 +349,26 @@ class TimeRange implements JsonSerializable
         }
 
         if ($this->_isRepeatingWeekly($time_range)) {
-            $this->_initRepeatingWeeklyDays($time_range['position']);
+            $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? '';
+
+            $this->_initRepeatingWeeklyDays($days_of_week);
             $this->_validateSelectedDates();
             return;
         }
 
         if ($this->_isRepeatingMonthly($time_range)) {
-            $this->_initRepeatingMonthlyDates($time_range['day']);
+            $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+            $this->_initRepeatingMonthlyDates($days);
             $this->_validateSelectedDates();
             return;
         }
 
-        if (isset($time_range['month'])) {
-            $this->_initNonRepeatingDates(
-                $time_range['month'],
-                $time_range['day']
-            );
+        $months = $time_range['months'] ?? $time_range['month'] ?? null;
+        $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+        if ($months && $days) {
+            $this->_initNonRepeatingDates($months, $days);
         }
 
         $this->_validateSelectedDates();
@@ -411,8 +407,8 @@ class TimeRange implements JsonSerializable
         }
 
         return [
-            'month' => implode(',', $months),
-            'day' => implode(',', $days)
+            'months' => implode(',', $months),
+            'days' => implode(',', $days)
         ];
     }
 
@@ -422,12 +418,12 @@ class TimeRange implements JsonSerializable
         }
 
         $time_range = [
-            'hour' => sprintf('%s-%s', $this->_start_time, $this->_stop_time),
-            'rangedescr' => rawurlencode($this->_description)
+            'start_stop_time' => sprintf('%s-%s', $this->_start_time, $this->_stop_time),
+            'description' => rawurlencode($this->_description)
         ];
 
         if ($this->_isRepeatingWeekly()) {
-            $time_range['position'] = $this->_dates_selected;
+            $time_range['days_of_week'] = $this->_dates_selected;
             return $time_range;
         }
 
@@ -444,8 +440,8 @@ class TimeRange implements JsonSerializable
             }
 
             return array_merge($time_range, [
-                'month' => '',
-                'day' => implode(',', $days)
+                'months' => '',
+                'days' => implode(',', $days)
             ]);
         }
 
@@ -510,7 +506,7 @@ class Schedule
 
         $this->_data = (object)[
             'name' => $data['name'] ?? null,
-            'description' => $data['descr'] ?? null,
+            'description' => $data['description'] ?? $data['descr'] ?? null,
             'time_ranges' => [],
             'is_disabled' => (bool)$data['is_disabled']
         ];
@@ -519,7 +515,8 @@ class Schedule
         // TimeRange will perform its own escaping
         $this->_escapeData();
 
-        $time_ranges = $data['timerange'] ?? [];
+        $time_ranges = $data['time_ranges'] ?? $data['timerange'] ?? [];
+
         foreach ($time_ranges as $time_range) {
             $time_range = new TimeRange($time_range);
 
@@ -568,10 +565,11 @@ class Schedule
             $this->_id = (int)$_GET['dup'];
             $schedule = @$this->_config[$this->_id];
 
-            // Only the time range is needed when cloning because users should enter
-            // a new name and/or description
+            // Only the time range is needed when cloning because users should
+            // enter a new name and/or description
             if ($schedule) {
-                $schedule = ['timerange' => $schedule['timerange']];
+                $time_ranges = $schedule['time_ranges'] ?? $schedule['timerange'] ?? [];
+                $schedule = ['time_ranges' => $time_ranges];
             }
 
             // NOTE: Schedule is being cloned; so $_id MUST NOT be set
@@ -693,28 +691,28 @@ class Schedule
         // ISO 8601 days
         $monday = 1;
         $sunday = 7;
-        $last_date = 31;
+        $last_day = 31;
 
         $day_of_week = $monday;
         $groups = [];
 
-        for ($date = 1; $date <= $last_date; $date++) {
+        for ($day = 1; $day <= $last_day; $day++) {
             if ($day_of_week == $monday) {
                 $groups[] = '<div class="btn-group" data-toggle="buttons">';
             }
 
-            $input = sprintf('<input type="checkbox" autocomplete="off" /> %d', $date);
+            $input = sprintf('<input type="checkbox" autocomplete="off" /> %d', $day);
 
             $groups[] = sprintf(
-                '<label id="day-of-month-%d" class="btn btn-default" onclick="toggleRepeatingMonthlyDate(%d)">%s</label>',
-                $date,
-                $date,
+                '<label id="day-of-month-%d" class="btn btn-default" onclick="toggleRepeatingMonthlyDay(%d)">%s</label>',
+                $day,
+                $day,
                 $input
             );
 
-            $day_of_week = ($date % $sunday) + 1;
+            $day_of_week = ($day % $sunday) + 1;
 
-            if ($day_of_week == $monday || $date == $last_date) {
+            if ($day_of_week == $monday || $day == $last_day) {
                 $groups[] = '</div>';
             }
         }
@@ -870,6 +868,8 @@ HTML;
     }
 
     final public function save($data): bool {
+        $unsaved_time_ranges = $this->_data->time_ranges;
+
         $this->_data = (object)$data;
 
         $this->_id = @$this->_data->id;
@@ -880,13 +880,13 @@ HTML;
         // Parse time ranges
         $this->_data->time_ranges = [];
 
-        if ($this->_data->dates) {
-            foreach ($this->_data->dates as $range_num => $selected_dates) {
+        if ($this->_data->selected_dates) {
+            foreach ($this->_data->selected_dates as $range_num => $dates) {
                 $time_range = new TimeRange([
                     'start_time' => $this->_data->start_times[$range_num],
                     'stop_time' => $this->_data->stop_times[$range_num],
                     'description' => $this->_data->range_descriptions[$range_num],
-                    'dates_selected' => $selected_dates
+                    'dates_selected' => $dates
                 ]);
 
                 if ($time_range->hasErrors()) {
@@ -910,14 +910,15 @@ HTML;
         }
 
         if ($this->hasErrors()) {
+            $this->_data->time_ranges = $unsaved_time_ranges;
             return false;
         }
 
         $this->_id = $this->_id ?? count($this->_config);
         $this->_config[$this->_id] = [
             'name' => $this->_data->name,
-            'descr' => $this->_data->description,
-            'timerange' => $this->_data->time_ranges,
+            'description' => $this->_data->description,
+            'time_ranges' => $this->_data->time_ranges,
             'is_disabled' => (string)(@$this->_data->is_disabled == 'yes')
         ];
 
@@ -1167,21 +1168,21 @@ function toggleRepeatingWeeklyDay(day_of_week) {
     _addSelectedDates(day_of_week);
 }
 
-function toggleRepeatingMonthlyDate(date) {
+function toggleRepeatingMonthlyDay(day) {
     for (let month = 1; month <= 12; month++) {
-        let selected_day = `d${date}`;
-        let date_cell = $(`#m${month}d${date}`);
+        let selected_day = `d${day}`;
+        let day_button = $(`#m${month}d${day}`);
 
-        if (!date_cell.length)
+        if (!day_button.length)
             continue;
 
-        if (date_cell.attr('data-state') !== 'white') {
-            date_cell.attr('data-state', 'white');
+        if (day_button.attr('data-state') !== 'white') {
+            day_button.attr('data-state', 'white');
             _removeSelectedDates(selected_day);
             continue;
         }
 
-        date_cell.attr('data-state', 'red');
+        day_button.attr('data-state', 'red');
         _addSelectedDates(selected_day);
     }
 }
@@ -1345,7 +1346,7 @@ function _isNonRepeating(selection) {
 
 function _injectTimeRange(
     dates_text,
-    dates,
+    selected_dates,
     start_time,
     stop_time,
     range_description,
@@ -1353,11 +1354,11 @@ function _injectTimeRange(
 ) {
     const tbody = $('#calendar tbody');
     const tr = $('<tr></tr>');
-    const edit_click = `return editTimeRange.bind(this)('${dates}', '${start_time}', '${stop_time}', '${range_description}')`;
+    const edit_click = `return editTimeRange.bind(this)('${selected_dates}', '${start_time}', '${stop_time}', '${range_description}')`;
     const delete_click = `return removeTimeRange.bind(this)(true)`;
 
     tbody.append(tr);
-    tr.append(`<td><span>${dates_text}</span> <input type="hidden" name="dates[]" value="${dates}" /></td>`);
+    tr.append(`<td><span>${dates_text}</span> <input type="hidden" name="selected_dates[]" value="${selected_dates}" /></td>`);
     tr.append(`<td><input type="text" name="start_times[]" value="${start_time}" class="time-range-configured" readonly="readonly" /></td>`);
     tr.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
     tr.append(`<td><input type="text" name="range_descriptions[]" value="${range_description}" class="time-range-configured" readonly="readonly" /></td>`);
@@ -1476,13 +1477,13 @@ function _injectNonRepeatingDates(
     stop_time,
     description
 ) {
-    const _getPreparedMonthAndDate = function(selection) {
-        let month, date;
-        [month, date] = (selection || '').split('d');
+    const _getPreparedMonthAndDay = function(selection) {
+        let month, day;
+        [month, day] = (selection || '').split('d');
 
         return {
             'month': parseInt(month.slice(1)),
-            'date': parseInt(date)
+            'day': parseInt(day)
         };
     };
 
@@ -1493,31 +1494,31 @@ function _injectNonRepeatingDates(
     // Prepare the friendly label to make it easier to read on the list of
     // "Configured Time Ranges"
     dates_selected.forEach(function(selected, i) {
-        selected = _getPreparedMonthAndDate(selected);
+        selected = _getPreparedMonthAndDay(selected);
 
         if (!(selected.month && !isNaN(selected.month)))
             return;
 
-        date_range_start = (!date_range_start) ? selected.date : date_range_start;
+        date_range_start = (!date_range_start) ? selected.day : date_range_start;
 
-        const next_selected = _getPreparedMonthAndDate(dates_selected[i + 1]);
+        const next_selected = _getPreparedMonthAndDay(dates_selected[i + 1]);
 
         // Continue to the next day when working on a range (i.e. Feb 6-8)
         if (selected.month === next_selected.month
-            && (selected.date + 1) === next_selected.date
+            && (selected.day + 1) === next_selected.day
         ) {
             return;
         }
 
         const month_short = _months[selected.month - 1].slice(0, 3);
 
-        if (selected.date === date_range_start) {
-            dates_selected_text.push(`${month_short} ${selected.date}`);
+        if (selected.day === date_range_start) {
+            dates_selected_text.push(`${month_short} ${selected.day}`);
             date_range_start = null;
             return;
         }
 
-        dates_selected_text.push(`${month_short} ${date_range_start}-${selected.date}`);
+        dates_selected_text.push(`${month_short} ${date_range_start}-${selected.day}`);
         date_range_start = null;
     });
 
@@ -1715,22 +1716,22 @@ function showCustomRow() {
     return false;
 }
 
-function editTimeRange(dates, start_time, stop_time, range_description) {
+function editTimeRange(selected_dates, start_time, stop_time, range_description) {
     const _toggleMode = function() {
-        if (dates.includes('m'))
+        if (selected_dates.includes('m'))
             return showCustomRow();
 
-        if (dates.includes('d')) {
+        if (selected_dates.includes('d')) {
             showRepeatMonthlyRow();
 
-            return dates.split(',').forEach(function(date) {
+            return selected_dates.split(',').forEach(function(date) {
                 _activateButton(`#day-of-month-${date.slice(1)}`);
             });
         }
 
         showRepeatWeeklyRow();
 
-        dates.split(',').forEach(function(day) {
+        selected_dates.split(',').forEach(function(day) {
             _activateButton(`#day-of-week-${day}`);
         });
     };
@@ -1752,7 +1753,7 @@ function editTimeRange(dates, start_time, stop_time, range_description) {
 
         let is_select_month = true;
 
-        dates.split(',').forEach(function(date) {
+        selected_dates.split(',').forEach(function(date) {
             if (!date)
                 return;
 
@@ -1762,7 +1763,7 @@ function editTimeRange(dates, start_time, stop_time, range_description) {
             }
 
             if (date.includes('d'))
-                return toggleRepeatingMonthlyDate(date.slice(1));
+                return toggleRepeatingMonthlyDay(date.slice(1));
 
             toggleRepeatingWeeklyDay(date);
         });
@@ -1966,7 +1967,7 @@ if ($schedule->hasErrors()) {
                     <th colspan="2"><?= _('Configured Time Ranges') ?></th>
                   </tr>
                   <tr>
-                    <td>&nbsp;</td>
+                    <td></td>
                     <td>
                       <table id="calendar">
                         <tbody>
@@ -2155,7 +2156,7 @@ if ($schedule->hasErrors()) {
 
                       <div class="hidden" data-for="help_for_time">
                         <br />
-                        <?= _('Select the time range for the day(s) selected above. A full day is 0:00-23:59.') ?>
+                        <?= _('Select the start and stop times. A full day is 0:00-23:59.') ?>
                       </div>
                     </td>
                   </tr>
@@ -2175,7 +2176,7 @@ if ($schedule->hasErrors()) {
                   </tr>
 
                   <tr id="range-buttons-row">
-                    <td>&nbsp;</td>
+                    <td></td>
                     <td>
                       <button type="button" class="btn btn-default"
                               onclick="resetTimeRangeInputRows()">
@@ -2199,7 +2200,6 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
-                    <td>&nbsp;</td>
                     <td>
                       <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
 

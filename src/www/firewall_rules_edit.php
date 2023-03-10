@@ -1332,15 +1332,17 @@ include("head.inc");
                             <?=gettext("none");?>
                           </option>
 <?php
-                        if (isset($config['schedules']['schedule']) && count($config['schedules']['schedule']) > 0) :
-                        foreach($config['schedules']['schedule'] as $schedule):
+                        $schedules = $config['schedules']['schedule'] ?? [];
+
+                        foreach($schedules as $schedule):
+                            $schedule_name = htmlspecialchars($schedule['name']);
 ?>
-                          <option value="<?=htmlspecialchars($schedule['name']);?>" <?= $pconfig['sched'] == $schedule['name'] ? " selected=\"selected\"" : "";?> >
-                            <?=htmlspecialchars($schedule['name']);?>
+                          <option value="<?= $schedule_name ?>" <?= ($pconfig['sched'] == $schedule['name']) ? ' selected="selected"' : '' ?>>
+                            <?= $schedule_name ?>
                           </option>
 <?php
                         endforeach;
-                        endif;?>
+?>
                         </select>
                         <div class="hidden" data-for="help_for_schedule">
                             <p><?=gettext("Leave as 'none' to leave the rule enabled all the time.");?></p>

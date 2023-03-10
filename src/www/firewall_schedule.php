@@ -33,7 +33,7 @@ require_once('filter.inc');
 
 $edit_page = 'firewall_schedule_edit.php';
 
-$days = [
+$l10n_days = [
     _('Mon'),
     _('Tue'),
     _('Wed'),
@@ -43,7 +43,7 @@ $days = [
     _('Sun')
 ];
 
-$months = [
+$l10n_months = [
     _('Jan'),
     _('Feb'),
     _('Mar'),
@@ -63,15 +63,18 @@ function _getOrdinal($date) {
 }
 
 function _getNonRepeatingDates(array $time_range): string {
-    global $months;
+    global $l10n_months;
 
-    if (!@$time_range['month']) {
+    $months = $time_range['months'] ?? $time_range['month'] ?? null;
+    $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+    if (!($months && $days)) {
         return '';
     }
 
     $selected = (object)[
-        'months' => explode(',', $time_range['month']),
-        'days' => explode(',', $time_range['day'])
+        'months' => explode(',', $months),
+        'days' => explode(',', $days)
     ];
     $day_range_start = null;
     $days_selected_text = [];
@@ -91,7 +94,7 @@ function _getNonRepeatingDates(array $time_range): string {
         if ($day == $day_range_start) {
             $days_selected_text[] = sprintf(
                 '%s %s',
-                $months[$month - 1],
+                $l10n_months[$month - 1],
                 _getOrdinal($day)
             );
 
@@ -99,8 +102,9 @@ function _getNonRepeatingDates(array $time_range): string {
             continue;
         }
 
-        $days_selected_text[] = sprintf('%s %s-%s',
-            $months[$month - 1],
+        $days_selected_text[] = sprintf(
+            '%s %s-%s',
+            $l10n_months[$month - 1],
             $day_range_start,
             $day
         );
@@ -111,14 +115,15 @@ function _getNonRepeatingDates(array $time_range): string {
 }
 
 function _getRepeatingMonthlyDates(array $time_range): string {
-    if (!@$time_range['day']) {
+    $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+    if (!$days) {
         return '';
     }
 
-    $days = explode(',', $time_range['day']);
-
     $day_range_start = null;
     $days_selected_text = ['(Monthly)'];
+    $days = explode(',', $days);
 
     foreach ($days as $i => $day) {
         $day = (int)$day;
@@ -147,13 +152,15 @@ function _getRepeatingMonthlyDates(array $time_range): string {
 }
 
 function _getRepeatingWeeklyDays(array $time_range): string {
-    global $days;
+    global $l10n_days;
 
-    if (!@$time_range['position']) {
+    $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? null;
+
+    if (!$days_of_week) {
         return '';
     }
 
-    $days_of_week = explode(',', $time_range['position']);
+    $days_of_week = explode(',', $days_of_week);
     $day_range_start = null;
     $days_selected_text = ['(Weekly)'];
 
@@ -171,8 +178,8 @@ function _getRepeatingWeeklyDays(array $time_range): string {
             continue;
         }
 
-        $start_day = $days[$day_range_start - 1];
-        $end_day = $days[$day_of_week - 1];
+        $start_day = $l10n_days[$day_range_start - 1];
+        $end_day = $l10n_days[$day_of_week - 1];
 
         if ($day_of_week == $day_range_start) {
             $days_selected_text[] = $start_day;
@@ -188,11 +195,15 @@ function _getRepeatingWeeklyDays(array $time_range): string {
 }
 
 function getSelectedDates(array $time_range): string {
-    if (@$time_range['month']) {
+    $months = $time_range['months'] ?? $time_range['month'] ?? null;
+
+    if ($months) {
         return _getNonRepeatingDates($time_range);
     }
 
-    if (@$time_range['day']) {
+    $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+    if ($days) {
         return _getRepeatingMonthlyDates($time_range);
     }
 
@@ -350,7 +361,7 @@ foreach ($config_schedules as $i => $schedule):
 <?php
     if (!@$schedule['is_disabled'] && filter_get_time_based_rule_status($schedule)):
 ?>
-                      <span title="<?= _('Schedule is currently active') ?>"
+                      <span title="<?= _('Schedule is currently running') ?>"
                             class="fa fa-clock-o text-success"
                             data-toggle="tooltip"></span>
 <?php
@@ -372,22 +383,27 @@ foreach ($config_schedules as $i => $schedule):
                     <td>
                       <table class="table table-condensed table-striped">
 <?php
-    foreach ($schedule['timerange'] as $time_range):
+    $time_ranges = $schedule['time_ranges'] ?? $schedule['timerange'] ?? [];
+
+    foreach ($time_ranges as $time_range):
         if (!$time_range) {
             continue;
         }
+
+        $start_stop_time = $time_range['start_stop_time'] ?? $time_range['hour'] ?? '';
+        $description = $time_range['description'] ?? $time_range['rangedescr'] ?? '';
 ?>
                         <tr>
                           <td style="width: 80px;"><?= getSelectedDates($time_range) ?></td>
-                          <td style="width: 80px;"><?= $time_range['hour'] ?></td>
-                          <td style="width: 150px;"><?= rawurldecode($time_range['rangedescr']) ?></td>
+                          <td style="width: 80px;"><?= $start_stop_time ?></td>
+                          <td style="width: 150px;"><?= rawurldecode($description) ?></td>
                         </tr>
 <?php
     endforeach;
 ?>
                       </table>
                     </td>
-                    <td><?= $schedule['descr'] ?></td>
+                    <td><?= $schedule['description'] ?? $schedule['descr'] ?? '' ?></td>
                     <td>
                       <a href="<?= $edit_page ?>?id=<?= $i ?>"
                          title="<?= html_safe(_('Edit')) ?>"
