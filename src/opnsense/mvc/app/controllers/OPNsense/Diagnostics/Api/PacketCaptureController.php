@@ -156,6 +156,11 @@ class PacketCaptureController extends ApiMutableModelControllerBase
         if (!empty($payload) && !empty($payload['filename'])) {
             $this->response->setContentType('application/octet-stream');
             $this->response->setRawHeader("Content-Disposition: attachment; filename=" . basename($payload['filename']));
+            $this->response->setRawHeader("Content-length: " . filesize($payload['filename']));
+            $this->response->setRawHeader("Pragma: no-cache");
+            $this->response->setRawHeader("Expires: 0");
+            ob_clean();
+            flush();
             readfile($payload['filename']);
         }
     }
