@@ -1270,7 +1270,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
         set_single_sysctl('net.key.preferred_oldsa', '0');
     }
 
-    $ipseccfg = isset($config['ipsec']) ? $config['ipsec'] : [];
+    $ipseccfg = $config['ipsec'] ?? [];
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
