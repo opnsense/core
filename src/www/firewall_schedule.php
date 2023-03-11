@@ -226,6 +226,65 @@ function getReferences($schedule): string {
     return ($references) ? implode("\n", $references) : 'N/A';
 }
 
+function _delete(int $id) {
+    global $config_schedules, $config;
+
+    // Make sure rule is not being referenced by filter rule
+    $rules = $config['filter']['rule'] ?? [];
+
+    foreach ($rules as $rule) {
+        if ($rule['sched'] != $config_schedules[$id]['name']) {
+            continue;
+        }
+
+        return _(sprintf(
+            'Cannot delete Schedule. Currently in use by %s',
+            $rule['descr']
+        ));
+    }
+
+    unset($config_schedules[$id]);
+    write_config();
+
+    header(url_safe(sprintf('Location: /%s', basename(__FILE__))));
+    exit;
+}
+
+function _toggle(int $id) {
+    global $config_schedules;
+
+    $is_disabled = (string)!$config_schedules[$id]['is_disabled'];
+    $config_schedules[$id]['is_disabled'] = $is_disabled;
+    $result = write_config();
+
+    if (!$result || $result == -1) {
+        http_response_code(500);
+
+        $last_error = error_get_last();
+
+        echo json_encode([
+             'status' => 'error',
+             'message' => $last_error['message'] ?? 'An unknown error occurred'
+        ]);
+
+        exit;
+    }
+
+    $is_running = (!$is_disabled && filter_get_time_based_rule_status($config_schedules[$id]));
+
+    echo json_encode([
+        'status' => 'success',
+        'data' => [
+            'id' => $id,
+            'is_disabled' => (bool)$is_disabled,
+            'is_running' => $is_running,
+            'toggle_title' => _(($is_disabled) ? 'Schedule is disabled' : 'Schedule is enabled'),
+            'running_title' => _(($is_running) ? 'Schedule is currently running' : 'Schedule is currently inactive')
+        ]
+    ]);
+
+    exit;
+}
 
 $config_schedules = &config_read_array('schedules', 'schedule');
 $config_rules = config_read_array('filter', 'rule') ?? [];
@@ -236,28 +295,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = @$_POST['id'];
     $id = (!isset($config_schedules[$id])) ? null : (int)$id;
 
-    if ($id && @$_POST['action'] == 'del') {
-        // Make sure rule is not being referenced by filter rule
-        $rules = $config['filter']['rule'] ?? [];
+    if ($id !== null && @$_POST['action']) {
+        switch ($_POST['action']) {
+            case 'del':
+                $delete_error = _delete($id);
+                break;
 
-        foreach ($rules as $rule) {
-            if ($rule['sched'] != $config_schedules[$id]['name']) {
-                continue;
-            }
-
-            $delete_error = _(sprintf(
-                'Cannot delete Schedule. Currently in use by %s',
-                $rule['descr']
-            ));
-            break;
-        }
-
-        if (!$delete_error) {
-            unset($config_schedules[$id]);
-            write_config();
-
-            header(url_safe(sprintf('Location: /%s', basename(__FILE__))));
-            exit;
+            // XHR
+            case 'toggle':
+                _toggle($id);
+                break;
         }
     }
 }
@@ -269,8 +316,8 @@ legacy_html_escape_form_data($config_schedules);
 <body>
 <script>
 $(document).ready(function() {
-    $('.act_delete').click(function() {
-        const id = $(this).attr('id').split('_').pop(-1);
+    $('.action-delete').click(function() {
+        const id = $(this).data('id');
 
         BootstrapDialog.show({
             'type': BootstrapDialog.TYPE_DANGER,
@@ -295,6 +342,65 @@ $(document).ready(function() {
             ]
         });
     });
+
+    $('.action-toggle').click(function(e){
+        e.preventDefault();
+
+        const toggle_button = $(this);
+        const spinner = 'fa-spinner fa-pulse';
+
+        toggle_button.addClass(spinner);
+
+        $.ajax('<?= basename(__FILE__) ?>', {
+            'type': 'post',
+            'cache': false,
+            'dataType': 'json',
+            'data': {
+                'action': 'toggle',
+                'id': toggle_button.data('id')
+            },
+
+            'success': function(response) {
+                const data = response.data;
+
+                toggle_button.prop('title', data.toggle_title).tooltip('fixTitle').tooltip('hide');
+                toggle_button.removeClass('fa-play text-success fa-times text-danger');
+                toggle_button.addClass((data.is_disabled) ? 'fa-times text-danger' : 'fa-play text-success');
+
+                const row = toggle_button.closest('.rule');
+                const running_icon = row.find('.fa-clock-o');
+
+                running_icon.prop('title', data.running_title).tooltip('fixTitle').tooltip('hide');
+                running_icon.removeClass('text-success text-muted');
+                running_icon.addClass((data.is_running) ? 'text-success' : 'text-muted');
+
+                const addOrRemoveClass = (data.is_disabled) ? 'addClass' : 'removeClass';
+                row[addOrRemoveClass]('text-muted');
+
+                toggle_button.removeClass(spinner);
+            },
+
+            'error': function(response) {
+                BootstrapDialog.show({
+                    'type': BootstrapDialog.TYPE_DANGER,
+                    'title': '<?= _('Unknown Error') ?>',
+                    'message': response.responseJSON.message,
+
+                    'buttons': [
+                        {
+                            'label': '<?= _('Close') ?>',
+                            'cssClass': 'btn btn-default',
+                            'action': function(dialog) {
+                                dialog.close();
+                            }
+                        }
+                    ]
+                });
+
+                toggle_button.removeClass(spinner);
+            }
+        });
+  });
 });
 </script>
 
@@ -333,42 +439,27 @@ if ($delete_error) {
 <?php
 foreach ($config_schedules as $i => $schedule):
     $references = getReferences($schedule);
+    $is_disabled = @$schedule['is_disabled'];
 ?>
                   <tr ondblclick="document.location='<?= $edit_page ?>?id=<?= $i ?>'"
-                      class="rule<?= (@$schedule['is_disabled']) ? ' text-muted' : '' ?>">
+                      class="rule<?= ($is_disabled) ? ' text-muted' : '' ?>">
                     <td style="width: 15px;">
 <?php
-    if (!@$schedule['is_disabled']):
+    $title = (!$is_disabled) ? _('Schedule is enabled') : _('Schedule is disabled');
+    $css = (!$is_disabled) ? 'fa-play text-success' : 'fa-times text-danger';
 ?>
-                      <span title="<?= _('Schedule is enabled') ?>"
-                            class="fa fa-play text-success"
+                      <span title="<?= $title ?>" class="action-toggle fa <?= $css ?>"
+                            style="cursor: pointer;" data-id="<?= $i ?>"
                             data-toggle="tooltip"></span>
-<?php
-    else:
-?>
-                      <span title="<?= _('Schedule is disabled') ?>"
-                            class="fa fa-times text-danger"
-                            data-toggle="tooltip"></span>
-<?php
-    endif;
-?>
                     </td>
                     <td style="width: 15px;">
 <?php
-    if (!@$schedule['is_disabled'] && filter_get_time_based_rule_status($schedule)):
+    $is_running = (!$is_disabled && filter_get_time_based_rule_status($schedule));
+    $title = ($is_running) ? _('Schedule is currently running') : _('Schedule is currently inactive');
+    $css = ($is_running) ? 'text-success' : 'text-muted';
 ?>
-                      <span title="<?= _('Schedule is currently running') ?>"
-                            class="fa fa-clock-o text-success"
+                      <span title="<?= $title ?>" class="fa fa-clock-o <?= $css ?>"
                             data-toggle="tooltip"></span>
-<?php
-    else:
-?>
-                      <span title="<?= _('Schedule is currently inactive') ?>"
-                            class="fa fa-clock-o text-muted"
-                            data-toggle="tooltip"></span>
-<?php
-    endif;
-?>
                     </td>
                     <td>
                       <span title="<div><strong><?= _('References:') ?></strong></div><?= $references ?>"
@@ -411,8 +502,9 @@ foreach ($config_schedules as $i => $schedule):
                          class="btn btn-default btn-xs" data-toggle="tooltip">
                         <span class="fa fa-clone fa-fw"></span>
                       </a>
-                      <a id="del_<?= $i ?>" title="<?= html_safe(_('Delete')) ?>"
-                         class="act_delete btn btn-default btn-xs" data-toggle="tooltip">
+                      <a title="<?= html_safe(_('Delete')) ?>"
+                         class="action-delete btn btn-default btn-xs"
+                         data-id="<?= $i ?>" data-toggle="tooltip">
                         <span class="fa fa-trash fa-fw"></span>
                       </a>
                     </td>
