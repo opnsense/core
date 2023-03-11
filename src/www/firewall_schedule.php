@@ -58,11 +58,11 @@ $l10n_months = [
     _('Dec')
 ];
 
-function _getOrdinal($date) {
+function _getOrdinalDate($date) {
     return date('jS', mktime(1, 1, 1, 1, $date));
 }
 
-function _getNonRepeatingDates(array $time_range): string {
+function _getCustomDatesLabel(array $time_range): string {
     global $l10n_months;
 
     $months = $time_range['months'] ?? $time_range['month'] ?? null;
@@ -77,7 +77,7 @@ function _getNonRepeatingDates(array $time_range): string {
         'days' => explode(',', $days)
     ];
     $day_range_start = null;
-    $days_selected_text = [];
+    $label = [];
 
     foreach ($selected->months as $i => $month) {
         $month = (int)$month;
@@ -92,29 +92,25 @@ function _getNonRepeatingDates(array $time_range): string {
         }
 
         if ($day == $day_range_start) {
-            $days_selected_text[] = sprintf(
-                '%s %s',
-                $l10n_months[$month - 1],
-                _getOrdinal($day)
-            );
+            $label[] = sprintf('%s %s', $l10n_months[$month - 1], _getOrdinalDate($day));
 
             $day_range_start = null;
             continue;
         }
 
-        $days_selected_text[] = sprintf(
+        $label[] = sprintf(
             '%s %s-%s',
             $l10n_months[$month - 1],
-            $day_range_start,
-            $day
+            _getOrdinalDate($day_range_start),
+            _getOrdinalDate($day)
         );
         $day_range_start = null;
     }
 
-    return nl2br(implode("\n", $days_selected_text));
+    return nl2br(implode("\n", $label));
 }
 
-function _getRepeatingMonthlyDates(array $time_range): string {
+function _getRepeatingMonthlyDatesLabel(array $time_range): string {
     $days = $time_range['days'] ?? $time_range['day'] ?? null;
 
     if (!$days) {
@@ -122,7 +118,7 @@ function _getRepeatingMonthlyDates(array $time_range): string {
     }
 
     $day_range_start = null;
-    $days_selected_text = ['(Monthly)'];
+    $label = ['(Monthly)'];
     $days = explode(',', $days);
 
     foreach ($days as $i => $day) {
@@ -136,22 +132,22 @@ function _getRepeatingMonthlyDates(array $time_range): string {
         }
 
         if ($day == $day_range_start) {
-            $days_selected_text[] = _getOrdinal($day);
+            $label[] = _getOrdinalDate($day);
             $day_range_start = null;
             continue;
         }
 
-        $days_selected_text[] = sprintf('%s-%s',
-            _getOrdinal($day_range_start),
-            _getOrdinal($day)
+        $label[] = sprintf('%s-%s',
+                                        _getOrdinalDate($day_range_start),
+                                        _getOrdinalDate($day)
         );
         $day_range_start = null;
     }
 
-    return nl2br(implode("\n", $days_selected_text));
+    return nl2br(implode("\n", $label));
 }
 
-function _getRepeatingWeeklyDays(array $time_range): string {
+function _getRepeatingWeeklyDaysLabel(array $time_range): string {
     global $l10n_days;
 
     $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? null;
@@ -162,7 +158,7 @@ function _getRepeatingWeeklyDays(array $time_range): string {
 
     $days_of_week = explode(',', $days_of_week);
     $day_range_start = null;
-    $days_selected_text = ['(Weekly)'];
+    $label = ['(Weekly)'];
 
     foreach ($days_of_week as $i => $day_of_week) {
         $day_of_week = (int)$day_of_week;
@@ -182,32 +178,32 @@ function _getRepeatingWeeklyDays(array $time_range): string {
         $end_day = $l10n_days[$day_of_week - 1];
 
         if ($day_of_week == $day_range_start) {
-            $days_selected_text[] = $start_day;
+            $label[] = $start_day;
             $day_range_start = null;
             continue;
         }
 
-        $days_selected_text[] = sprintf('%s-%s', $start_day, $end_day);
+        $label[] = sprintf('%s-%s', $start_day, $end_day);
         $day_range_start = null;
     }
 
-    return nl2br(implode("\n", $days_selected_text));
+    return nl2br(implode("\n", $label));
 }
 
-function getSelectedDates(array $time_range): string {
+function getSelectedDatesLabel(array $time_range): string {
     $months = $time_range['months'] ?? $time_range['month'] ?? null;
 
     if ($months) {
-        return _getNonRepeatingDates($time_range);
+        return _getCustomDatesLabel($time_range);
     }
 
     $days = $time_range['days'] ?? $time_range['day'] ?? null;
 
     if ($days) {
-        return _getRepeatingMonthlyDates($time_range);
+        return _getRepeatingMonthlyDatesLabel($time_range);
     }
 
-    return _getRepeatingWeeklyDays($time_range);
+    return _getRepeatingWeeklyDaysLabel($time_range);
 }
 
 function getReferences($schedule): string {
@@ -394,7 +390,7 @@ foreach ($config_schedules as $i => $schedule):
         $description = $time_range['description'] ?? $time_range['rangedescr'] ?? '';
 ?>
                         <tr>
-                          <td style="width: 80px;"><?= getSelectedDates($time_range) ?></td>
+                          <td style="width: 80px;"><?= getSelectedDatesLabel($time_range) ?></td>
                           <td style="width: 80px;"><?= $start_stop_time ?></td>
                           <td style="width: 150px;"><?= rawurldecode($description) ?></td>
                         </tr>

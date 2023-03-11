@@ -65,7 +65,7 @@ trait ErrorTrait {
     }
 
     public function getErrors(): array {
-        return $this->_errors;
+        return array_unique($this->_errors);
     }
 
     private function _mergeErrors(array $errors): void {
@@ -77,7 +77,7 @@ class TimeRange implements JsonSerializable
 {
     use ErrorTrait;
 
-    private static $_months = [
+    private static $_l10n_months = [
         L10N_JAN,
         L10N_FEB,
         L10N_MAR,
@@ -92,7 +92,7 @@ class TimeRange implements JsonSerializable
         L10N_DEC
     ];
 
-    private static $_days = [
+    private static $_l10n_days = [
         L10N_MON,
         L10N_TUE,
         L10N_WED,
@@ -103,8 +103,12 @@ class TimeRange implements JsonSerializable
     ];
 
     private $_description;
-    private $_dates_selected;
-    private $_dates_selected_text;
+    private $_label;
+
+    private $_days_of_week;
+    private $_months;
+    private $_days;
+
     private $_start_time;
     private $_stop_time;
 
@@ -139,9 +143,7 @@ class TimeRange implements JsonSerializable
     }
 
     private function _validateSelectedDates(): bool {
-        $this->_dates_selected = trim($this->_dates_selected);
-
-        if ($this->_dates_selected) {
+        if ($this->_days_of_week || $this->_months || $this->_days) {
             return true;
         }
 
@@ -179,12 +181,12 @@ class TimeRange implements JsonSerializable
     }
 
     private function _initRepeatingWeeklyDays(string $selected_days_of_week): void {
-        $this->_dates_selected = $this->_escape($selected_days_of_week);
-        $days_selected_text = [];
-        $day_range_start = null;
+        $this->_days_of_week = $this->_escape($selected_days_of_week);
 
         // ISO 8601 days
         $days_of_week = explode(',', $selected_days_of_week);
+        $day_range_start = null;
+        $label = [];
 
         foreach ($days_of_week as $i => $day_of_week) {
             $day_of_week = (int)$day_of_week;
@@ -201,51 +203,48 @@ class TimeRange implements JsonSerializable
                 continue;
             }
 
-            $start_day = self::$_days[$day_range_start - 1];
-            $stop_day = self::$_days[$day_of_week - 1];
+            $start_day = self::$_l10n_days[$day_range_start - 1];
+            $stop_day = self::$_l10n_days[$day_of_week - 1];
 
+            // Friendly description for a repeating day
             if ($day_of_week == $day_range_start) {
-                $days_selected_text[] = $start_day;
+                $label[] = $start_day;
                 $day_range_start = null;
                 continue;
             }
 
-            $days_selected_text[] = sprintf('%s-%s', $start_day, $stop_day);
+            // Friendly description for a range of days
+            $label[] = sprintf('%s-%s', $start_day, $stop_day);
             $day_range_start = null;
         }
 
-        $this->_dates_selected_text = sprintf(
-            '(Weekly) %s',
-            $this->_escape(implode(', ', $days_selected_text))
-        );
+        $this->_label = sprintf('(Weekly) %s', $this->_escape(implode(', ', $label)));
     }
 
     private function _initRepeatingMonthlyDates(string $selected_dates): void {
         $date_range_start = null;
-        $dates_selected = [];
-        $dates_selected_text = [];
-        $selected_dates = explode(',', $selected_dates);
+        $label = [];
+        $dates = explode(',', $selected_dates);
 
-        foreach ($selected_dates as $selection_num => $date) {
+        foreach ($dates as $selection_num => $date) {
             $date = (int)$date;
-            $dates_selected[] = sprintf('d%d', $date);
             $date_range_start = $date_range_start ?? $date;
-            $next_selected_date = (int)$selected_dates[$selection_num + 1];
+            $next_selected_date = (int)$dates[$selection_num + 1];
 
             // Continue to the next day when working on a range (i.e. 6-8)
             if (($date + 1) == $next_selected_date) {
                 continue;
             }
 
-            // Friendly description for individual repeating day
+            // Friendly description for a repeating date
             if ($date == $date_range_start) {
-                $dates_selected_text[] = $this->_getOrdinalDate($date);
+                $label[] = $this->_getOrdinalDate($date);
                 $date_range_start = null;
                 continue;
             }
 
             // Friendly description for a range of dates
-            $dates_selected_text[] = sprintf(
+            $label[] = sprintf(
                 '%s-%s',
                 $this->_getOrdinalDate($date_range_start),
                 $this->_getOrdinalDate($date)
@@ -254,69 +253,55 @@ class TimeRange implements JsonSerializable
             $date_range_start = null;
         }
 
-        $this->_dates_selected = $this->_escape(implode(',', $dates_selected));
-
-        $this->_dates_selected_text = sprintf(
-            '(Monthly) %s',
-            $this->_escape(implode(', ', $dates_selected_text))
-        );
+        $this->_days = $this->_escape($selected_dates);
+        $this->_label = sprintf('(Monthly) %s', $this->_escape(implode(', ', $label)));
     }
 
-    final public static function getDayCellID(int $month, int $day): string {
-        return sprintf('m%dd%d', $month, $day);
-    }
-
-    private function _initNonRepeatingDates(
+    private function _initCustomDates(
         string $selected_months,
         string $selected_days
     ): void {
         $date_range_start = null;
-        $dates_selected = [];
-        $dates_selected_text = [];
-        $selected_months = explode(',', $selected_months);
-        $selected_days = explode(',', $selected_days);
+        $label = [];
+        $months = explode(',', $selected_months);
+        $days = explode(',', $selected_days);
 
-        foreach ($selected_months as $selection_num => $month) {
+        foreach ($months as $selection_num => $month) {
             $month = (int)$month;
-            $date = (int)$selected_days[$selection_num];
-
-            $dates_selected[] = $this->getDayCellID($month, $date);
+            $date = (int)$days[$selection_num];
 
             $date_range_start = $date_range_start ?? $date;
-            $month_short = substr(self::$_months[$month - 1], 0, 3);
-            $next_selected_month = (int)$selected_months[$selection_num + 1];
-            $next_selected_date = (int)$selected_days[$selection_num + 1];
+            $month_short = substr(self::$_l10n_months[$month - 1], 0, 3);
+            $next_selected_month = (int)$months[$selection_num + 1];
+            $next_selected_date = (int)$days[$selection_num + 1];
 
             // Continue to the next day when working on a range (i.e. Feb 6-8)
             if ($month == $next_selected_month && ($date + 1) == $next_selected_date) {
                 continue;
             }
 
-            // Friendly description for individual non-repeating day
+            // Friendly description for custom date
             if ($date == $date_range_start) {
-                $dates_selected_text[] = sprintf(
-                    '%s %s',
-                    $month_short,
-                    $this->_getOrdinalDate($date)
-                );
+                $label[] = sprintf('%s %s', $month_short, $this->_getOrdinalDate($date));
 
                 $date_range_start = null;
                 continue;
             }
 
             // Friendly description for a range of dates
-            $dates_selected_text[] = sprintf(
+            $label[] = sprintf(
                 '%s %s-%s',
                 $month_short,
-                $date_range_start,
-                $date
+                $this->_getOrdinalDate($date_range_start),
+                $this->_getOrdinalDate($date)
             );
 
             $date_range_start = null;
         }
 
-        $this->_dates_selected = $this->_escape(implode(',', $dates_selected));
-        $this->_dates_selected_text = $this->_escape(implode(', ', $dates_selected_text));
+        $this->_months = $this->_escape($selected_months);
+        $this->_days = $this->_escape($selected_days);
+        $this->_label = $this->_escape(implode(', ', $label));
     }
 
     private function _isRepeatingWeekly(?array $time_range = null): bool {
@@ -326,10 +311,7 @@ class TimeRange implements JsonSerializable
             return !empty($days_of_week);
         }
 
-// TODO: Refactor to check for 'w'
-        return !(strstr($this->_dates_selected, 'm')
-            || strstr($this->_dates_selected, 'd')
-        );
+        return !empty($this->_days_of_week);
     }
 
     private function _isRepeatingMonthly(?array $time_range = null): bool {
@@ -340,76 +322,53 @@ class TimeRange implements JsonSerializable
             return !empty($days) && empty($months);
         }
 
-        return strstr($this->_dates_selected, 'd') && !strstr($this->_dates_selected, 'm');
+        return !empty($this->_days) && empty($this->_months);
+    }
+
+    private function _isCustom(?array $time_range = null): bool {
+        if ($time_range) {
+            $months = $time_range['months'] ?? $time_range['month'] ?? null;
+            $days = $time_range['days'] ?? $time_range['day'] ?? null;
+
+            return !empty($months) && !empty($days);
+        }
+
+        return !empty($this->_months) && !empty($this->_days);
     }
 
     private function _initSelectedDates(array $time_range): void {
-        if (isset($time_range['dates_selected'])) {
-            $this->_dates_selected = $this->_escape($time_range['dates_selected']);
-        }
-
         if ($this->_isRepeatingWeekly($time_range)) {
             $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? '';
 
             $this->_initRepeatingWeeklyDays($days_of_week);
-            $this->_validateSelectedDates();
-            return;
         }
 
         if ($this->_isRepeatingMonthly($time_range)) {
             $days = $time_range['days'] ?? $time_range['day'] ?? null;
 
             $this->_initRepeatingMonthlyDates($days);
-            $this->_validateSelectedDates();
-            return;
         }
 
-        $months = $time_range['months'] ?? $time_range['month'] ?? null;
-        $days = $time_range['days'] ?? $time_range['day'] ?? null;
+        if ($this->_isCustom($time_range)) {
+            $months = $time_range['months'] ?? $time_range['month'] ?? null;
+            $days = $time_range['days'] ?? $time_range['day'] ?? null;
 
-        if ($months && $days) {
-            $this->_initNonRepeatingDates($months, $days);
+            $this->_initCustomDates($months, $days);
         }
 
         $this->_validateSelectedDates();
     }
 
     final public static function getJSONMonths(): string {
-        return json_encode(self::$_months);
+        return json_encode(self::$_l10n_months);
     }
 
     final public static function getJSONDays(): string {
-        return json_encode(self::$_days);
+        return json_encode(self::$_l10n_days);
     }
 
     final public static function getDays(): array {
-        return self::$_days;
-    }
-
-    private function _getNonRepeatingMonthAndDays(): ?array {
-        if ($this->_isRepeatingWeekly() || $this->_isRepeatingMonthly()) {
-            $this->_setError(_('Malformed non-repeating selected dates'));
-            return null;
-        }
-
-        $selected_dates = explode(',', $this->_dates_selected);
-        $months = [];
-        $days = [];
-
-        foreach ($selected_dates as $selected_date) {
-            if (!$selected_date) {
-                continue;
-            }
-
-            [$month, $day] = explode('d', $selected_date);
-            $months[] = ltrim($month, 'm');
-            $days[] = $day;
-        }
-
-        return [
-            'months' => implode(',', $months),
-            'days' => implode(',', $days)
-        ];
+        return self::$_l10n_days;
     }
 
     final public function getDataForSave(): ?array {
@@ -423,42 +382,37 @@ class TimeRange implements JsonSerializable
         ];
 
         if ($this->_isRepeatingWeekly()) {
-            $time_range['days_of_week'] = $this->_dates_selected;
+            $time_range['days_of_week'] = $this->_days_of_week;
             return $time_range;
         }
 
         if ($this->_isRepeatingMonthly()) {
-            $selected_dates = explode(',', $this->_dates_selected);
-            $days = [];
-
-            foreach ($selected_dates as $date) {
-                if (!$date) {
-                    continue;
-                }
-
-                $days[] = ltrim($date, 'd');
-            }
-
             return array_merge($time_range, [
                 'months' => '',
-                'days' => implode(',', $days)
+                'days' => $this->_days
             ]);
         }
 
-        $month_and_days = $this->_getNonRepeatingMonthAndDays();
-
-        if (!$month_and_days) {
+        if (!$this->_isCustom()) {
+            $this->_setError(_('Malformed custom date selection'));
             return null;
         }
 
-        return array_merge($time_range, $month_and_days);
+        return array_merge($time_range, [
+            'months' => $this->_months,
+            'days' => $this->_days
+        ]);
     }
 
     final public function jsonSerialize() {
         return [
             'description' => $this->_description,
-            'dates_selected' => $this->_dates_selected,
-            'dates_selected_text' => $this->_dates_selected_text,
+            'selections' => [
+                'days_of_week' => $this->_days_of_week ?? '',
+                'months' => $this->_months ?? '',
+                'days' => $this->_days ?? ''
+            ],
+            'label' => $this->_label,
             'start_time' => $this->_start_time,
             'stop_time' => $this->_stop_time
         ];
@@ -757,15 +711,15 @@ class Schedule
             }
 
             if ($day_of_week == $day_of_week_start || $cell_text) {
-                $cell_id = TimeRange::getDayCellID($month, $day_of_month);
                 $cell_text = '';
 
                 if ($day_of_month <= $last_day_of_month) {
                     $cell_attribs = sprintf(
-                        ' id="%s" class="calendar-day p%d" onclick="toggleNonRepeatingDate(\'%s\')" data-state="white"',
-                        $cell_id,
+                        ' id="%s" class="calendar-day dow%d" onclick="toggleCustomDate.bind(this)()" data-month="%d" data-day="%d" data-state="white"',
+                        sprintf('m%dd%d', $month, $day_of_month),
                         $day_of_week,
-                        $cell_id
+                        $month,
+                        $day_of_month
                     );
 
                     $cell_text = $day_of_month;
@@ -880,13 +834,17 @@ HTML;
         // Parse time ranges
         $this->_data->time_ranges = [];
 
-        if ($this->_data->selected_dates) {
-            foreach ($this->_data->selected_dates as $range_num => $dates) {
+        // NOTE: selected_days_of_week, selected_months, and selected_days will
+        // have the same number of entries
+        if ($this->_data->selected_days_of_week) {
+            foreach ($this->_data->selected_days_of_week as $range_num => $days) {
                 $time_range = new TimeRange([
                     'start_time' => $this->_data->start_times[$range_num],
                     'stop_time' => $this->_data->stop_times[$range_num],
                     'description' => $this->_data->range_descriptions[$range_num],
-                    'dates_selected' => $dates
+                    'days_of_week' => $days,
+                    'months' => $this->_data->selected_months[$range_num],
+                    'days' => $this->_data->selected_days[$range_num]
                 ]);
 
                 if ($time_range->hasErrors()) {
@@ -904,6 +862,10 @@ HTML;
                 $this->_data->time_ranges[] = $data;
             }
         }
+
+        unset($this->_data->selected_days_of_week);
+        unset($this->_data->selected_months);
+        unset($this->_data->selected_days);
 
         if (!$this->_data->time_ranges) {
             $this->_setError(_('The schedule must have at least one time range configured.'));
@@ -995,42 +957,112 @@ button.btn {
 </style>
 <script>
 //<![CDATA[
-function _addSelectedDates(cell_id_or_day_of_week) {
-    $('#iform')[0]._selected_dates[cell_id_or_day_of_week] = 1;
+function _initTimeRangeSelections() {
+    $('#iform')[0]._time_ranges = {
+        'weekly': {},
+        'monthly': {},
+        'custom': {}
+    };
 }
 
-function _removeSelectedDates(cell_id_or_day_of_week) {
+function _addTimeRangeSelection(type, value) {
+    $('#iform')[0]._time_ranges[type][value] = 1;
+}
+
+function _removeTimeRangeSelection(type, value) {
+    delete $('#iform')[0]._time_ranges[type][value];
+}
+
+function _addTimeRangeSelectionCustom(month, day) {
+    month = String(month).padStart(2, '0');
+    day = String(day).padStart(2, '0');
+
+    _addTimeRangeSelection('custom', `${month}|${day}`);
+}
+
+function _removeTimeRangeSelectionCustom(month, day) {
+    month = String(month).padStart(2, '0');
+    day = String(day).padStart(2, '0');
+
+    _removeTimeRangeSelection('custom', `${month}|${day}`);
+}
+
+function _getTimeRangeSelections(is_sort = false) {
     const iform = $('#iform')[0];
 
-    if (!(cell_id_or_day_of_week in iform._selected_dates))
-        return;
+    const _getNonEmpty = function(value) {
+        return !!String(value).trim();
+    };
 
-    delete iform._selected_dates[cell_id_or_day_of_week];
-}
-
-function _getSelectedDates(is_sort = false) {
-    let selected_dates = Object.keys($('#iform')[0]._selected_dates || {});
-
-    selected_dates = selected_dates.filter(function(selected_day) {
-        return !!String(selected_day).trim();
-    });
+    let selections = {
+        'weekly': Object.keys(iform._time_ranges.weekly || {}).filter(_getNonEmpty),
+        'monthly': Object.keys(iform._time_ranges.monthly || {}).filter(_getNonEmpty),
+        'custom': Object.keys(iform._time_ranges.custom || {}).filter(_getNonEmpty)
+    };
 
     if (!is_sort)
-        return selected_dates;
+        return selections;
 
-    selected_dates.sort();
+    selections.weekly.sort();
+    selections.monthly.sort();
+    selections.custom.sort();
 
-    return selected_dates;
+    return selections;
 }
 
-function _isSelectedDatesEmpty() {
-    return !_getSelectedDates().length;
+function _isTimeRangeSelectionEmpty(selections = null) {
+    selections = selections || _getTimeRangeSelections();
+
+    return !(selections.weekly.length + selections.monthly.length + selections.custom.length);
 }
 
-function _clearSelectedDates() {
+function _getFlattenedTimeRangeSelect(selections) {
+    let data = {
+        'days_of_week': '',
+        'months': '',
+        'days': ''
+    };
+
+    if (_isTimeRangeSelectionEmpty(selections))
+        return data;
+
+    if (selections.weekly.length) {
+        data.days_of_week = selections.weekly.join(',');
+        return data;
+    }
+
+    if (selections.monthly.length) {
+        data.days = selections.monthly.join(',');
+        return data;
+    }
+
+    // Assume the rest are custom selections
+    data.months = [];
+    data.days = [];
+
+    selections.custom.forEach(function(month_and_day) {
+        let month, day;
+
+        [month, day] = month_and_day.split('|');
+
+        data.months.push(month);
+        data.days.push(day);
+    });
+
+    data.months = data.months.join(',');
+    data.days = data.days.join(',');
+
+    return data;
+}
+
+function _clearTimeRangeSelection() {
     // Use an object instead of an array to leverage hash-sieving for faster
     // lookups and to prevent duplicates
-    $('#iform')[0]._selected_dates = {};
+    const iform = $('#iform')[0];
+
+    iform._time_ranges.weekly = {};
+    iform._time_ranges.monthly = {};
+    iform._time_ranges.custom = {};
 }
 
 function injectFlashError(error) {
@@ -1098,44 +1130,51 @@ function _selectMonth(calendar_month_id) {
     showSelectedMonth.bind(month_select[0])();
 }
 
-function toggleNonRepeatingDate(cell_id, is_select_month = false) {
-    const day_cell = $(`#${cell_id}`);
+function toggleCustomDate(is_select_month = false) {
+    const day_cell = $(this);
 
     if (!day_cell.length)
         return injectFlashError('Failed to find the correct day to toggle. Please save your schedule and try again.');
 
+    const month = day_cell.data('month');
+    const day = day_cell.data('day');
+
     // ISO 8601 day
-    const day_of_week = day_cell.attr('class').slice('-1');
-    const day_cells = $(`.p${day_of_week}`);
+    const day_of_week = day_cell.attr('class').slice(-1);
+    const day_cells = $(`.dow${day_of_week}`);
 
     if (day_cell.attr('data-state') !== 'white') {
         day_cell.attr('data-state', 'white');
-        _removeSelectedDates(cell_id);
+        _removeTimeRangeSelectionCustom(month, day);
 
         // Ensure that the repeating day gets removed...
-        _removeSelectedDates(day_of_week);
+        _removeTimeRangeSelection('weekly', day_of_week);
 
-        // ... then each individual non-repeating day gets selected when needed
+        // ... then each custom date gets selected when needed
         return day_cells.filter('[data-state = "lightcoral"]').each(function(i, cell) {
-            $(cell).attr('data-state', 'red');
-            _addSelectedDates(cell.id)
+            cell = $(cell);
+            cell.attr('data-state', 'red');
+
+            _addTimeRangeSelectionCustom(cell.data('month'), cell.data('day'));
         });
     }
 
     day_cell.attr('data-state', 'red');
-    _addSelectedDates(cell_id);
+    _addTimeRangeSelectionCustom(month, day);
 
-    // When manually selecting individual non-repeating dates, ensure that each
-    // individual day gets replaced with the day of the week instead so that the
-    // data will get saved simply as a repeating day
+    // When manually selecting custom dates, ensure that each individual day is
+    // replaced with the day of the week instead so that the data will get saved
+    // simply as a repeating day
     if (day_cells.length === day_cells.filter('[data-state != "white"]').length) {
         day_cells.attr('data-state', 'lightcoral');
 
         day_cells.filter('[data-state = "lightcoral"]').each(function(i, cell) {
-            _removeSelectedDates(cell.id);
+            cell = $(cell);
+
+            _removeTimeRangeSelectionCustom(cell.data('month'), cell.data('day'));
         });
 
-        _addSelectedDates(day_of_week);
+        _addTimeRangeSelection('weekly', day_of_week);
     }
 
     if (!is_select_month)
@@ -1147,7 +1186,7 @@ function toggleNonRepeatingDate(cell_id, is_select_month = false) {
 
 // ISO 8601 day
 function toggleRepeatingWeeklyDay(day_of_week) {
-    const day_cells = $(`.p${day_of_week}`);
+    const day_cells = $(`.dow${day_of_week}`);
 
     if (!day_cells.length)
         return injectFlashError('Failed to find the correct days to toggle. Please save your schedule and try again.');
@@ -1156,21 +1195,22 @@ function toggleRepeatingWeeklyDay(day_of_week) {
 
     if (day_cells.length === selected_days.length) {
         day_cells.attr('data-state', 'white');
-        return _removeSelectedDates(day_of_week);
+        return _removeTimeRangeSelection('weekly', day_of_week);
     }
 
-    // Ensure that all individual non-repeating days get removed
+    // Ensure that all custom dates get removed
     selected_days.each(function(i, cell) {
-        _removeSelectedDates(cell.id);
+        cell = $(cell);
+
+        _removeTimeRangeSelectionCustom(cell.data('month'), cell.data('day'));
     });
 
     day_cells.attr('data-state', 'lightcoral');
-    _addSelectedDates(day_of_week);
+    _addTimeRangeSelection('weekly', day_of_week);
 }
 
 function toggleRepeatingMonthlyDay(day) {
     for (let month = 1; month <= 12; month++) {
-        let selected_day = `d${day}`;
         let day_button = $(`#m${month}d${day}`);
 
         if (!day_button.length)
@@ -1178,12 +1218,12 @@ function toggleRepeatingMonthlyDay(day) {
 
         if (day_button.attr('data-state') !== 'white') {
             day_button.attr('data-state', 'white');
-            _removeSelectedDates(selected_day);
+            _removeTimeRangeSelection('monthly', day);
             continue;
         }
 
         day_button.attr('data-state', 'red');
-        _addSelectedDates(selected_day);
+        _addTimeRangeSelection('monthly', day);
     }
 }
 
@@ -1196,7 +1236,7 @@ function _deactivateButton(button) {
 }
 
 function _clearCalendar(is_clear_description = false) {
-    _clearSelectedDates();
+    _clearTimeRangeSelection();
 
     const month_select = $('#month-select');
     const visible_month = month_select.prop('visible_month') || month_select.prop('options')[0].value;
@@ -1234,7 +1274,7 @@ function warnBeforeClearCalender() {
 
     $(this).blur();
 
-    if (_isSelectedDatesEmpty())
+    if (_isTimeRangeSelectionEmpty())
         return def.resolve();
 
     BootstrapDialog.show({
@@ -1266,7 +1306,7 @@ function warnBeforeClearCalender() {
     return def.promise();
 }
 
-function resetTimeRangeInputRows() {
+function _hideTimeRangeInputRows() {
     _deactivateButton('#mode-repeat-weekly-button');
     _deactivateButton('#mode-repeat-monthly-button');
     _deactivateButton('#mode-custom-button');
@@ -1274,6 +1314,11 @@ function resetTimeRangeInputRows() {
     $('#range-repeat-weekly-row').hide();
     $('#range-repeat-monthly-row').hide();
     $('#range-custom-row').hide();
+}
+
+function resetTimeRangeInputRows() {
+    _hideTimeRangeInputRows();
+
     $('#range-time-row').hide();
     $('#range-description-row').hide();
     $('#range-buttons-row').hide();
@@ -1328,42 +1373,33 @@ function removeTimeRange(is_confirm = false) {
     return false;
 }
 
-function _isRepeatingWeekly(selection) {
-    return !isNaN(parseInt(selection));
-}
-
-function _isRepeatingMonthly(selection) {
-    selection = String(selection);
-
-    return selection.includes('d') && !selection.includes('m');
-}
-
-function _isNonRepeating(selection) {
-    selection = String(selection);
-
-    return selection.includes('d') && selection.includes('m');
-}
-
 function _injectTimeRange(
-    dates_text,
-    selected_dates,
+    label,
+    selections,
     start_time,
     stop_time,
-    range_description,
+    description,
     is_clear_calendar = true
 ) {
-    const tbody = $('#calendar tbody');
-    const tr = $('<tr></tr>');
-    const edit_click = `return editTimeRange.bind(this)('${selected_dates}', '${start_time}', '${stop_time}', '${range_description}')`;
+    const body = $('#calendar tbody');
+    const edit_click = `return editTimeRange.bind(this)('${start_time}', '${stop_time}', '${description}')`;
     const delete_click = `return removeTimeRange.bind(this)(true)`;
 
-    tbody.append(tr);
-    tr.append(`<td><span>${dates_text}</span> <input type="hidden" name="selected_dates[]" value="${selected_dates}" /></td>`);
-    tr.append(`<td><input type="text" name="start_times[]" value="${start_time}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><input type="text" name="range_descriptions[]" value="${range_description}" class="time-range-configured" readonly="readonly" /></td>`);
-    tr.append(`<td><a href="#" class="btn btn-default" onclick="${edit_click}"><span class="fa fa-pencil fa-fw"></span></a></td>`);
-    tr.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}"><span class="fa fa-trash fa-fw"></span></a></td>`);
+    const edit_cell = $('<td></td>');
+    edit_cell.append(`<a href="#" class="btn btn-default" onclick="${edit_click}"><span class="fa fa-pencil fa-fw"></span></a>`);
+    edit_cell.append(`<input type="hidden" name="selected_days_of_week[]" value="${selections.days_of_week}" />`);
+    edit_cell.append(`<input type="hidden" name="selected_months[]" value="${selections.months}" />`);
+    edit_cell.append(`<input type="hidden" name="selected_days[]" value="${selections.days}" />`);
+
+    const row = $('<tr></tr>');
+    row.append(`<td><span>${label}</span></td>`);
+    row.append(`<td><input type="text" name="start_times[]" value="${start_time}" class="time-range-configured" readonly="readonly" /></td>`);
+    row.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
+    row.append(`<td><input type="text" name="range_descriptions[]" value="${description}" class="time-range-configured" readonly="readonly" /></td>`);
+    row.append(edit_cell);
+    row.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}"><span class="fa fa-trash fa-fw"></span></a></td>`);
+
+    body.append(row);
 
     if (!is_clear_calendar)
         return;
@@ -1371,25 +1407,41 @@ function _injectTimeRange(
     resetTimeRangeInputRows();
 }
 
+function _getOrdinalDate(date) {
+    if (date > 3 && date < 21)
+        return `${date}th`;
+
+    switch (date % 10) {
+        case 1:
+            return `${date}st`;
+        case 2:
+            return `${date}nd`;
+        case 3:
+            return `${date}rd`;
+    }
+
+    return `${date}th`;
+}
+
 function _injectRepeatingWeeklyDays(
-    days_selected,
+    selections,
     start_time,
     stop_time,
     description
 ) {
     const _days = <?= TimeRange::getJSONDays() ?>;
     let day_range_start = null;
-    let days_selected_text = [];
+    let label = [];
 
     // Prepare the friendly label to make it easier to read on the list of
     // "Configured Time Ranges"
-    days_selected.forEach(function(day_of_week, i) {
+    selections.weekly.forEach(function(day_of_week, i) {
         day_of_week = parseInt(day_of_week);
 
         if (!(day_of_week && !isNaN(day_of_week)))
             return;
 
-        let next_selected_day = parseInt(days_selected[i + 1]);
+        let next_selected_day = parseInt(selections.weekly[i + 1]);
 
         day_range_start = (!day_range_start) ? day_of_week : day_range_start;
 
@@ -1401,134 +1453,115 @@ function _injectRepeatingWeeklyDays(
         let end_day = _days[day_of_week - 1];
 
         if (day_of_week === day_range_start) {
-            days_selected_text.push(start_day);
+            label.push(start_day);
             day_range_start = null;
             return;
         }
 
-        days_selected_text.push(`${start_day}-${end_day}`);
+        label.push(`${start_day}-${end_day}`);
         day_range_start = null;
     });
 
-    days_selected_text = days_selected_text.join(', ');
+    label = label.join(', ');
+    label = `(<?= _('Weekly') ?>) ${label}`;
 
-    _injectTimeRange(
-        `(<?= _('Weekly') ?>) ${days_selected_text} `,
-        days_selected.join(','),
-        start_time,
-        stop_time,
-        description
-    );
+    selections = _getFlattenedTimeRangeSelect(selections);
+
+    _injectTimeRange(label, selections, start_time, stop_time, description);
 }
 
 function _injectRepeatingMonthlyDates(
-    dates_selected,
+    selections,
     start_time,
     stop_time,
     description
 ) {
-    const _getPreparedDate = function(selection) {
-        return parseInt((selection || '').slice(1));
-    };
-
     let date_range_start = null;
-    let dates_selected_text = [];
+    let label = [];
 
     // Prepare the friendly label to make it easier to read on the list of
     // "Configured Time Ranges"
-    dates_selected.forEach(function(selected, i) {
-        let date = _getPreparedDate(selected);
+    selections.monthly.forEach(function(day, i) {
+        let date = parseInt(day);
 
         if (!(date && !isNaN(date)))
             return;
 
         date_range_start = (!date_range_start) ? date : date_range_start;
 
-        const next_date = _getPreparedDate(dates_selected[i + 1]);
+        const next_date = parseInt(selections.monthly[i + 1]);
 
         // Continue to the next day when working on a range (i.e. 6-8)
         if ((date + 1) === next_date)
             return;
 
         if (date === date_range_start) {
-            dates_selected_text.push(date);
+            label.push(_getOrdinalDate(date));
             date_range_start = null;
             return;
         }
 
-        dates_selected_text.push(`${date_range_start}-${date}`);
+        label.push(`${_getOrdinalDate(date_range_start)}-${_getOrdinalDate(date)}`);
         date_range_start = null;
     });
 
-    dates_selected_text = dates_selected_text.join(', ');
+    label = label.join(', ');
+    label = `(<?= _('Monthly') ?>) ${label}`;
 
-    _injectTimeRange(
-        `(<?= _('Monthly') ?>) ${dates_selected_text}`,
-        dates_selected.join(','),
-        start_time,
-        stop_time,
-        description
-    );
+    selections = _getFlattenedTimeRangeSelect(selections);
+
+    _injectTimeRange(label, selections, start_time, stop_time, description);
 }
 
-function _injectNonRepeatingDates(
-    dates_selected,
+function _injectCustomDates(
+    selections,
     start_time,
     stop_time,
     description
 ) {
-    const _getPreparedMonthAndDay = function(selection) {
-        let month, day;
-        [month, day] = (selection || '').split('d');
-
-        return {
-            'month': parseInt(month.slice(1)),
-            'day': parseInt(day)
-        };
-    };
-
     const _months = <?= TimeRange::getJSONMonths() ?>;
     let date_range_start = null;
-    let dates_selected_text = [];
+    let label = [];
 
     // Prepare the friendly label to make it easier to read on the list of
     // "Configured Time Ranges"
-    dates_selected.forEach(function(selected, i) {
-        selected = _getPreparedMonthAndDay(selected);
+    selections.custom.forEach(function(month_and_day, i) {
+        let month, day, next_selected_month, next_selected_day;
 
-        if (!(selected.month && !isNaN(selected.month)))
+        [month, day] = month_and_day.split('|');
+
+        month = parseInt(month);
+        day = parseInt(day);
+
+        if (!(month && !isNaN(month)))
             return;
 
-        date_range_start = (!date_range_start) ? selected.day : date_range_start;
+        date_range_start = (!date_range_start) ? day : date_range_start;
 
-        const next_selected = _getPreparedMonthAndDay(dates_selected[i + 1]);
+        [next_selected_month, next_selected_day] = (selections.custom[i + 1] || '').split('|');
+
+        next_selected_month = parseInt(next_selected_month);
+        next_selected_day = parseInt(next_selected_day);
 
         // Continue to the next day when working on a range (i.e. Feb 6-8)
-        if (selected.month === next_selected.month
-            && (selected.day + 1) === next_selected.day
-        ) {
+        if (month === next_selected_month && (day + 1) === next_selected_day)
             return;
-        }
 
-        const month_short = _months[selected.month - 1].slice(0, 3);
+        const month_short = _months[month - 1].slice(0, 3);
 
-        if (selected.day === date_range_start) {
-            dates_selected_text.push(`${month_short} ${selected.day}`);
+        if (day === date_range_start) {
+            label.push(`${month_short} ${_getOrdinalDate(day)}`);
             date_range_start = null;
             return;
         }
 
-        dates_selected_text.push(`${month_short} ${date_range_start}-${selected.day}`);
+        label.push(`${month_short} ${_getOrdinalDate(date_range_start)}-${_getOrdinalDate(day)}`);
         date_range_start = null;
     });
 
-    _injectTimeRange(
-        dates_selected_text.join(', '),
-        dates_selected.join(','),
-        start_time,
-        stop_time,
-        description
-    );
+    selections = _getFlattenedTimeRangeSelect(selections);
+
+    _injectTimeRange(label.join(', '), selections, start_time, stop_time, description);
 }
 
 function addTimeRange() {
@@ -1540,7 +1573,7 @@ function addTimeRange() {
     const stop_time = `${stop_hour}:${stop_minute}`;
     const description = $('#range-description').val();
 
-    if (_isSelectedDatesEmpty())
+    if (_isTimeRangeSelectionEmpty())
         return injectFlashError('One or more days/dates must be selected before the time range can be added.');
 
     if (start_hour > stop_hour
@@ -1549,37 +1582,19 @@ function addTimeRange() {
         return injectFlashError('Start Time must not be ahead of the Stop Time.');
     }
 
-    let dates_selected = _getSelectedDates(true);
-
-    if (!dates_selected.length)
+    if (_isTimeRangeSelectionEmpty())
         return;
 
-    if (_isRepeatingWeekly(dates_selected)) {
-        return _injectRepeatingWeeklyDays(
-            dates_selected,
-            start_time,
-            stop_time,
-            description
-        );
-    }
+    let selections = _getTimeRangeSelections(true);
 
-    if (_isRepeatingMonthly(dates_selected)) {
-        return _injectRepeatingMonthlyDates(
-            dates_selected,
-            start_time,
-            stop_time,
-            description
-        );
-    }
+    if (selections.weekly.length)
+        return _injectRepeatingWeeklyDays(selections, start_time, stop_time, description);
 
-    if (_isNonRepeating(dates_selected)) {
-        return _injectNonRepeatingDates(
-            dates_selected,
-            start_time,
-            stop_time,
-            description
-        );
-    }
+    if (selections.monthly.length)
+        return _injectRepeatingMonthlyDates(selections, start_time, stop_time, description);
+
+    if (selections.custom.length)
+        return _injectCustomDates(selections, start_time, stop_time, description);
 
     injectFlashError('Unable to add time range. Please check your selections and try again.');
 }
@@ -1637,18 +1652,15 @@ function _showTimeRangeInputRows() {
 
 function showRepeatWeeklyRow() {
     const _doShow = function() {
+        _hideTimeRangeInputRows();
+
         _activateButton('#mode-repeat-weekly-button');
         $('#range-repeat-weekly-row').show();
-
-        _deactivateButton('#mode-repeat-monthly-button');
-        _deactivateButton('#mode-custom-button');
-        $('#range-repeat-monthly-row').hide();
-        $('#range-custom-row').hide();
 
         _showTimeRangeInputRows();
     };
 
-    if (!_isSelectedDatesEmpty()) {
+    if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(_askToAddOrClearTimeRange($('#range-description').val())).then(_doShow);
 
@@ -1664,18 +1676,15 @@ function showRepeatWeeklyRow() {
 
 function showRepeatMonthlyRow() {
     const _doShow = function() {
+        _hideTimeRangeInputRows();
+
         _activateButton('#mode-repeat-monthly-button');
         $('#range-repeat-monthly-row').show();
-
-        _deactivateButton('#mode-repeat-weekly-button');
-        _deactivateButton('#mode-custom-button');
-        $('#range-repeat-weekly-row').hide();
-        $('#range-custom-row').hide();
 
         _showTimeRangeInputRows();
     };
 
-    if (!_isSelectedDatesEmpty()) {
+    if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(_askToAddOrClearTimeRange($('#range-description').val())).then(_doShow);
 
@@ -1691,18 +1700,15 @@ function showRepeatMonthlyRow() {
 
 function showCustomRow() {
     const _doShow = function() {
+        _hideTimeRangeInputRows();
+
         _activateButton('#mode-custom-button');
         $('#range-custom-row').show();
-
-        _deactivateButton('#mode-repeat-weekly-button');
-        _deactivateButton('#mode-repeat-monthly-button');
-        $('#range-repeat-weekly-row').hide();
-        $('#range-repeat-monthly-row').hide();
 
         _showTimeRangeInputRows();
     };
 
-    if (!_isSelectedDatesEmpty()) {
+    if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(_askToAddOrClearTimeRange($('#range-description').val())).then(_doShow);
 
@@ -1716,22 +1722,40 @@ function showCustomRow() {
     return false;
 }
 
-function editTimeRange(selected_dates, start_time, stop_time, range_description) {
+function editTimeRange(start_time, stop_time, range_description) {
+    let selected_days_of_week, selected_months, selected_days;
+
+    // NOTE: Selections are stored in the hidden inputs
+    [selected_days_of_week, selected_months, selected_days] = $(this).siblings();
+
+    selected_days_of_week = $(selected_days_of_week).val().trim();
+    selected_days_of_week = (selected_days_of_week) ? selected_days_of_week.split(',') : [];
+
+    selected_months = $(selected_months).val().trim();
+    selected_months = (selected_months) ? selected_months.split(',') : [];
+
+    selected_days = $(selected_days).val().trim();
+    selected_days = (selected_days) ? selected_days.split(',') : [];
+
+    const _refreshSelectPickers = function() {
+        $('.selectpicker').selectpicker('refresh');
+    };
+
     const _toggleMode = function() {
-        if (selected_dates.includes('m'))
+        if (selected_months.length)
             return showCustomRow();
 
-        if (selected_dates.includes('d')) {
+        if (selected_days.length) {
             showRepeatMonthlyRow();
 
-            return selected_dates.split(',').forEach(function(date) {
-                _activateButton(`#day-of-month-${date.slice(1)}`);
+            return selected_days.forEach(function(date) {
+                _activateButton(`#day-of-month-${date}`);
             });
         }
 
         showRepeatWeeklyRow();
 
-        selected_dates.split(',').forEach(function(day) {
+        selected_days_of_week.forEach(function(day) {
             _activateButton(`#day-of-week-${day}`);
         });
     };
@@ -1751,29 +1775,35 @@ function editTimeRange(selected_dates, start_time, stop_time, range_description)
         $('#stop-minute').val(stop_min);
         $('#range-description').val(range_description);
 
-        let is_select_month = true;
+        if (selected_days.length) {
+            if (selected_months.length) {
+                let is_select_month = true;
 
-        selected_dates.split(',').forEach(function(date) {
-            if (!date)
-                return;
+                selected_months.forEach(function(month, index) {
+                    let day_cell = $(`#m${month}d${selected_days[index]}`);
 
-            if (date.includes('m')) {
-                toggleNonRepeatingDate(date, is_select_month);
-                return is_select_month = false;
+                    if (!day_cell.length)
+                        return injectFlashError('Failed to find the correct day to toggle. Please save your schedule and try again.');
+
+                    toggleCustomDate.bind(day_cell)(is_select_month);
+                    is_select_month = false;
+                });
+
+                return _refreshSelectPickers();
             }
 
-            if (date.includes('d'))
-                return toggleRepeatingMonthlyDay(date.slice(1));
+            selected_days.forEach(toggleRepeatingMonthlyDay);
+        }
 
-            toggleRepeatingWeeklyDay(date);
-        });
+        if (selected_days_of_week.length)
+            selected_days_of_week.forEach(toggleRepeatingWeeklyDay);
 
-        $('.selectpicker').selectpicker('refresh');
+        _refreshSelectPickers();
     }.bind(this);
 
     $(this).blur();
 
-    if (!_isSelectedDatesEmpty()) {
+    if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(_askToAddOrClearTimeRange($('#range-description').val())).then(_doEdit);
 
@@ -1837,7 +1867,7 @@ function _initCalendar() {
 }
 
 function warnBeforeSave() {
-    if (!_isSelectedDatesEmpty()) {
+    if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
         $.when(_askToAddOrClearTimeRange($('#range-description').val())).then(function() {
             $('#submit').click();
@@ -1868,8 +1898,8 @@ $(function() {
 
     time_ranges.forEach(function(time_range) {
         _injectTimeRange(
-            time_range.dates_selected_text,
-            time_range.dates_selected,
+            time_range.label,
+            time_range.selections,
             time_range.start_time,
             time_range.stop_time,
             time_range.description,
@@ -1877,6 +1907,7 @@ $(function() {
         );
     });
 
+    _initTimeRangeSelections();
     resetTimeRangeInputRows();
     _initCalendar();
 });
