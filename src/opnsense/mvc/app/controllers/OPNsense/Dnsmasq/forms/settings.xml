@@ -1,0 +1,178 @@
+<model title="Settings" name="settings" endpoint="settings">
+    <box>
+        <header id="general_options" label="General Options"/>
+        <field id="enable" type="onoff" label="Enable">
+        </field>
+        <field id="listen_port" type="text" label="Listen Port">
+            <help> The port used for responding to DNS queries. It should normally be left blank unless another service needs to bind to TCP/UDP port 53.</help>
+        </field>
+        <field id="network_interfaces" type="select_multiple" label="Network Interfaces">
+            <help>Interface IPs used by Dnsmasq for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.</help>
+        </field>
+        <field id="bind_mode" type="checkbox" label="Bind Mode">
+            <help>If this option is set, Dnsmasq will only bind to the interfaces containing the IP addresses selected above, rather than binding to all interfaces and discarding queries to other addresses. This option does not work with IPv6. If set, Dnsmasq will not bind to IPv6 addresses.</help>
+        </field>
+        <field id="DNSSEC" type="checkbox" label="DNSSEC">
+            <help></help>
+        </field>
+        <field id="dhcp_registration" type="checkbox" label="DHCP Registration">
+            <help> If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered in Dnsmasq, so that their name can be resolved.</help>
+        </field>
+        <field id="dhcp_domain_override" type="text" label="DHCP Domain Override">
+            <help> The domain name to use for DHCP hostname registration. If empty, the default system domain is used. Note that all DHCP leases will be assigned to the same domain. If this is undesired, static DHCP lease registration is able to provide coherent mappings.</help>
+        </field>
+        <field id="static_dhcp" type="checkbox" label="Static DHCP">
+            <help> If this option is set, then DHCP static mappings will be registered in Dnsmasq, so that their name can be resolved. You should also set the domain in System: General setup to the proper value.</help>
+        </field>
+        <field id="prefer_dhcp" type="checkbox" label="Prefer DHCP">
+            <help> If this option is set, then DHCP mappings will be resolved before the manual list of names below. This only affects the name given for a reverse lookup (PTR).</help>
+        </field>
+        <header id="dns_query_forwarding" label="DNS Query Forwarding"/>
+        <field id="dns_query_query_servers_sequentially" type="checkbox" label="Query DNS servers sequentially ">
+            <help> If this option is set, Dnsmasq will query the DNS servers sequentially in the order specified (System: General Setup: DNS Servers), rather than all at once in parallel.</help>
+        </field>
+        <field id="dns_query_forwarding_require_domain" type="checkbox" label="Require domain">
+            <help> If this option is set, Dnsmasq will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.</help>
+        </field>
+        <field id="dns_query_forwarding_private_lookups" type="checkbox" label="Do not forward private reverse lookups">
+            <help> If this option is set, Dnsmasq will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned. </help>
+        </field>
+        <separator/>
+        <field id="no_hosts_lookup" type="checkbox" label="No Hosts Lookup">
+            <help>Do not read hostnames in /etc/hosts.</help>
+        </field>
+        <field id="log_queries" type="checkbox" label="Log Queries">
+            <help>Log the results of DNS queries.</help>
+        </field>
+        <field id="Maximum concurrent queries" type="text" label="Maximum concurrent queries">
+            <help>Set the maximum number of concurrent DNS queries. On configurations with tight resources, this value may need to be reduced.</help>
+        </field>
+        <field id="Cache Size" type="text" label="Cache Size">
+            <help>Set the size of the cache. Setting the cache size to zero disables caching. Please note that huge cache size impacts performance.</help>
+        </field>
+        <field id="Local DNS entry TTL" type="text" label="Local DNS entry TTL">
+            <help>This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable client-side caching.</help>
+        </field>
+    </box>
+    <box>
+        <bootgrid id="host_overrides" label="Host Overrides">
+            <help>Entries in this section override individual results from the forwarders. Use these for changing DNS results or for adding custom DNS records.</help>
+            <columns>
+                <column id="host" width="" sortable="false">Host</column>
+                <column id="domain" width="" sortable="false">Domain</column>
+                <column id="ip" width="" sortable="false">IP</column>
+                <column id="description" width="" sortable="false">Description</column>
+            </columns>
+            <api>
+                <search>/api/dnsmasq/settings/bootgrid/search</search>
+                <get>/api/dnsmasq/settings/bootgrid/get</get>
+                <set>/api/dnsmasq/settings/bootgrid/set</set>
+                <add>/api/dnsmasq/settings/bootgrid/add</add>
+                <del>/api/dnsmasq/settings/bootgrid/del</del>
+                <info>/api/dnsmasq/settings/info</info>
+                <toggle>/api/dnsmasq/settings/bootgrid/toggle</toggle>
+                <import>/api/dnsmasq/settings/importgrid</import>
+                <export>/api/dnsmasq/settings/bootgrid/export</export>
+            </api>
+            <row_count>20,50,100,200,500,1000,-1</row_count>
+            <dialog node="host_overrides">
+                <label>Edit Override</label>
+                <field id="enabled" label="Enabled" type="checkbox">
+                    <help>Enable or disable this override.</help>
+                </field>
+                <field id="host" label="Host" type="text">
+                    <help>Name of the host, without domain part e.g. myhost</help>
+                    <hint>myhost</hint>
+                </field>
+                <field id="domain" label="Domain" type="text">
+                    <hint>example.com</hint>
+                    <help>Domain of the host e.g. example.com</help>
+                </field>
+                <field id="ip_address" label="IP Address" type="text">
+                    <hint>192.168.100.100</hint>
+                    <help>IP address of the host e.g. 192.168.100.100 or fd00:abcd::1</help>
+                </field>
+                <field id="description" label="Description" type="text">
+                    <help>You may enter a description here for your reference (not parsed).</help>
+                </field>
+                <bootgrid id="override_aliases" label="Override Aliases">
+                    <help>Enter additional names for this host.</help>
+                    <columns>
+                        <column id="host" width="5em" sortable="false">Host</column>
+                        <column id="domain" width="90em" sortable="false">Domain</column>
+                        <column id="description" width="90em" sortable="false">Description</column>
+                    </columns>
+                    <api>
+                        <search>/api/dnsmasq/settings/bootgrid/search</search>
+                        <get>/api/dnsmasq/settings/bootgrid/get</get>
+                        <set>/api/dnsmasq/settings/bootgrid/set</set>
+                        <add>/api/dnsmasq/settings/bootgrid/add</add>
+                        <del>/api/dnsmasq/settings/bootgrid/del</del>
+                        <info>/api/dnsmasq/settings/info</info>
+                        <toggle>/api/dnsmasq/settings/bootgrid/toggle</toggle>
+                    </api>
+                    <dialog node="aliases">
+                        <label>Edit Aliases</label>
+                        <field id="Host" label="Enabled" type="text">
+                            <help>This will enable or disable the blocklist entry.</help>
+                        </field>
+                        <field id="domain" label="Domain" type="text">
+                            <help></help>
+                            <hint>*.example.com</hint>
+                        </field>
+                        <field id="description" label="Description" type="text">
+                            <style></style>
+                            <help></help>
+                        </field>
+                    </dialog>
+                </bootgrid>
+            </dialog>
+        </bootgrid>
+    </box>
+    <box>
+        <bootgrid id="domain_overrides" label="Domain Overrides">
+            <help>Entries in this area override an entire domain, and subdomains, by specifying an authoritative DNS server to be queried for that domain.</help>
+            <columns>
+                <column id="domain" width="11em" sortable="false">Domain</column>
+                <column id="ip_address" width="5em" sortable="false">IP Address</column>
+                <column id="port" width="90em" sortable="false">Port</column>
+                <column id="source_ip" width="5em" sortable="false">Source IP</column>
+                <column id="description" width="90em" sortable="false">Description</column>
+            </columns>
+            <api>
+                <search>/api/dnsmasq/settings/bootgrid/search</search>
+                <get>/api/dnsmasq/settings/bootgrid/get</get>
+                <set>/api/dnsmasq/settings/bootgrid/set</set>
+                <add>/api/dnsmasq/settings/bootgrid/add</add>
+                <del>/api/dnsmasq/settings/bootgrid/del</del>
+                <info>/api/dnsmasq/settings/info</info>
+                <toggle>/api/dnsmasq/settings/bootgrid/toggle</toggle>
+                <import>/api/dnsmasq/settings/importgrid</import>
+                <export>/api/dnsmasq/settings/bootgrid/export</export>
+            </api>
+            <row_count>20,50,100,200,500,1000,-1</row_count>
+            <dialog node="entries">
+                <label>Edit Domain Override</label>
+                <field id="domain" label="Domain" type="text">
+                    <help>Domain to override (NOTE: this does not have to be a valid TLD!) e.g. test or mycompany.localdomain or 1.168.192.in-addr.arpa</help>
+                    <hint>*.example.com</hint>
+                </field>
+                <field id="ip_address" label="IP Address" type="text">
+                    <style></style>
+                    <help>IP address of the authoritative DNS server for this domain e.g. 192.168.100.100 Or enter # for an exclusion to pass through this host/subdomain to standard nameservers instead of a previous override. Or enter ! for lookups for this host/subdomain to NOT be forwarded anywhere.</help>
+                </field>
+                <field id="port" label="Port" type="text">
+                    <style></style>
+                    <help>Specify a non standard port number here, leave blank for default</help>
+                </field>
+                <field id="source_ip" label="Source IP" type="text">
+                    <style></style>
+                    <help>Source IP address for queries to the DNS server for the override domain. Leave blank unless your DNS server is accessed through a VPN tunnel.</help>
+                </field>
+                <field id="description" label="Description" type="text">
+                    <help>You may enter a description here for your reference (not parsed).</help>
+                </field>
+            </dialog>
+        </bootgrid>
+    </box>
+</model>

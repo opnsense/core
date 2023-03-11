@@ -1,0 +1,243 @@
+{##
+ # OPNsense® is Copyright © 2022 by Deciso B.V.
+ # Copyright (C) 2022 agh1467@protonmail.com
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1.  Redistributions of source code must retain the above copyright notice,
+ #     this list of conditions and the following disclaimer.
+ #
+ # 2.  Redistributions in binary form must reproduce the above copyright notice,
+ #     this list of conditions and the following disclaimer in the documentation
+ #     and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
+{#
+ # Template for a command button which executes a pre-defined command (with optional input from the user).
+ #
+ # Allows for specifying an API endpoint to call when pressed, allowing for output to be returned to the user.
+ #
+ # This is called primarily by form_input_tr.volt for building input fields for each row of the form table.
+ #
+ # Expects two variables to be present in the environment (these will be provided when called by form_input_tr.volt):
+ # this_field           A SimpleXMLElement of the field to be rendered.
+ # this_field_id        The id of the given field (in the form: modelname.field_id).
+ #
+ # XML field element definition:
+ # /field                                   The <field> XML element as a SimpleXMLElement object.
+ # /field/function                          Optional, specify what function to use for the command.
+ # /field/readonly                          (Only for function: field) Set the field as read-only
+ # /field/hint                              (Only for function: field) Provide a hint to display to the user what to type into the field. XXX maybe mention placeholder?
+ # /field/separator                         (Only for function: selectpicker) Defines the separator for selectpicker XXX <-- needs elaborated, something to do with selectpicker function
+ # /field/style                             Specify a pre-defined CSS style to use for this field.
+ # /field/width                             Width of XXX
+ # /field/size                              Size of XXX
+ # /field/output                            Default: false, Boolean, display output (true) or not (false).
+ # /field/buttons                           Sub-element containing button elements.
+ # /field/buttons/button['id']              Unique identifier for the button
+ # /field/buttons/button['type']            The type of button that it is, used for SimpleActionButton functionality.
+ # /field/buttons/button['label']           Label to be used for displaying to the user.
+ # /field/buttons/button['endpoint']        (Only for button type: SimpleActionButton) API endpoint to call for that button.
+ # /field/buttons/button['error-title']     (Only for button type: SimpleActionButton) The title of the error window.
+ # /field/buttons/button['service-widget']  (Only for button type: SimpleActionButton) XXX Needs definition.
+ #
+ #
+ # Example Usage in an XML (with comments for clarity):
+ # <!-- intput functionality -->
+ # <field>
+ #   <id>hostname</id>
+ #   <label>Hostname</label>
+ #   <type>command</type>
+ #   <function>field</function>       <!-- options: input, selectpicker, field -->
+ #   <function>input</function>
+ #   <buttons>
+ #     <button id="resolve" type="SimpleActionButton">
+ #       <label>Logout</label>
+ #       <endpoint>/api/dnscryptproxy/diagnostics/command/resolve</endpoint>
+ #       <error-title>Command execution error occurred.</error-title>
+ #       <service-widget></service-widget> <!-- Name of the service for use with updateServiceControlUI -->
+ #     </button>
+ #   </buttons>
+ #   <output>resolve_command</output> <!-- id of output field to display command output -->
+ # </field>
+ #
+ # <!-- selectpicker selectpicker functionality -->
+ # <field>
+ #   <id>config_view</id>
+ #   <label>View dnscrypt-proxy Configuration</label>
+ #   <type>command</type>
+ #   <function>selectpicker</function>
+ #   <api>/api/dnscryptproxy/diagnostics/command/config-view</api>
+ #   <options>
+ #     <option>dnscrypt-proxy.toml</option>
+ #     <option>allowed-ips-internal.txt</option>
+ #     <option>allowed-ips-manual.txt</option>
+ #     <!-- additional option definitions ... --->
+ #   </options>
+ #   <output>config_view_output</output>
+ #   <button_label>View</button_label>
+ #   </field>
+ #
+ # Example Model definition:
+ # Not applicable.
+ #
+ # This template can be either included, or called via partial. For which should be used review:
+ # https://docs.phalcon.io/5.0/en/volt#partial-vs-include
+ #
+ # Example include call in a Volt Template:
+ # {% include "OPNsense/Dnscryptproxy/layout_partials/fields/command.volt" %}
+ #
+ # Example partial call in a Volt tempalte:
+ # {{ partial("OPNsense/Dnscryptproxy/layout_partials/fields/command",
+ #            [
+ #                'this_field':this_field,
+ #                'this_field_id':this_field_id
+ #             ]
+ #    )
+ # }}
+ #
+ #
+ # Available CSS styles to use:
+ # label-primary
+ # label-success
+ # label-info
+ # label-warning
+ # label-danger
+ # label-opnsense
+ # label-opnsense-sm
+ # label-opnsense-xs
+ #}
+{# Built-in: input field for the user to enter in values to send to the command. #}
+{%  if this_field.function == "input" %}
+    <input id="inpt_{{ this_field_id }}_command"
+           class="form-control {{ this_field.style }}"
+           type="text"
+           size="{{this_field.size|default("36")}}"
+           style="height: 34px;
+                  padding-left:11px;
+                  display: inline;"/>
+{# XXX     ^^^^ Migrate this style to CSS #}
+{# Built-in: selectpicker (dropdown box) with various selections #}
+{%  elseif this_field.function == "selectpicker" %}
+    <select id="{{ this_field_id }}"
+            class="selectpicker {{ this_field.style }}"
+            data-size="{{ this_field.size|default(10) }}"
+            data-width="{{ this_field.width|default("334px") }}"
+            data-live-search="true"
+            {{ this_field.separator is defined ?
+            'data-separator="'~this_field.separator~'"' : '' }}>
+{%      for option in this_field.options.option %}
+                    <option value="{{ lang._('%s')|format(option) }}">
+                        {{ lang._('%s')|format(option) }}
+                    </option>
+{%      endfor %}
+                </select>
+{# Built-in: creates XXX #}
+{%  elseif this_field.function == "field" %}
+    <input id="{{ this_field_id }}"
+           class="form-control {{ this_field.style }}"
+           type="text"
+           size="{{ this_field.size|default("50") }}"
+           {{ this_field.readonly ?
+           'readonly="readonly"' : '' }}
+           {{ (this_field.hint) ?
+           'placeholder="'~this_field.hint~'"' : '' }}
+            style="height: 34px;
+                   display: inline-block;
+                   width: 161px;
+                   vertical-align: middle;
+                   margin-left: 3px;">
+{# XXX      ^^^^ style can probably go into CSS #}
+{%  endif %}
+{%  if this_field.buttons %}
+{%      for button in this_field.buttons.children() %}
+{# Support both id defined as an attribute, as well as a sub-element (legacy), flatten to string, may be empty. #}
+{%          set button_id = (button['id']|default(button.id)).__toString() %}
+{# XXX Maybe do error handling here later. #}
+{%          if button_id != "" %}
+{# Support both label defined as an attribute, as well as a sub-element (legacy), flatten to string, may be empty. #}
+{%              set button_label = (button['label']|default(button.label)).__toString() %}
+{# https://forum.phalcon.io/discussion/19045/accessing-object-properties-whose-name-contain-a-hyphen-in-volt
+   Below we reference some variables which have dashes in their names, Volt has no built-in way to do this.
+   Using PHP to do this for now until I figure a way to get in commands to the compiler. #}
+    <button id="btn_{{ this_field_id }}_{{ button_id }}_command"
+            class="btn btn-primary"
+            type="button"
+{%              if button['type'] == "SimpleActionButton" %}
+            data-label="{{ button_label }}"
+            data-endpoint="{{ button.endpoint }}"
+            data-error-title="<?php echo $button->{'error-title'}; ?>"
+            data-service-widget="<?php echo $button->{'service-widget'}; ?>"
+{%              endif %}
+    >
+{# If SimpleActionButton no label or progress spinner, since that will be provided by SimpleActionButton. #}
+{%              if button['type'] != "SimpleActionButton" %}
+        <b>{{ lang._('%s')|format(button_label) }}</b>
+        <i id="btn_{{ this_field_id }}_{{ button_id }}_command_progress"></i>
+{%              endif %}
+    </button>
+{%          endif %}
+{%      endfor %}
+{%  endif %}
+<script>
+{#/*
+ # =============================================================================
+ # command: attachments for command field types
+ # =============================================================================
+ # Attaches to the command button sets up the classes and
+ # defines the API to be called when clicked
+*/#}
+{% if this_field.buttons %}
+{%     for button in this_field.buttons.children() %}
+{%         set button_id = this_field_id~'_'~get_xml_prop(button, 'id') %}
+/*
+{{ get_xml_prop(button, 'id') }}
+*/
+{%         if button_id != "" %}
+{# Support both label defined as an attribute, as well as a sub-element (legacy), flatten to string, may be empty. #}
+{%              set button_label = get_xml_prop(button, 'label') %}
+$('#btn_{{ button_id }}_command').click(function(){
+    var command_input;
+{%              if this_field.function == "input" %}
+    command_input = $("#inpt_" + $.escapeSelector("{{ this_field_id }}_command")).val();
+{%              elseif this_field.function == "selectpicker" %}
+    command_input = $("button[data-id=" + $.escapeSelector("{{ this_field_id }}")).attr('title');
+{%              endif %}
+{#/*
+{%              if this_field.output.__toString() == "true" %}
+//        $('#pre_{{ this_field_id }}_command_output').text("Executing...");
+{%              endif %}
+*/#}
+    $("#btn_{{ button_id }}_command_progress").addClass("fa fa-spinner fa-pulse");
+{%              if button.endpoint %}
+    ajaxCall(url='{{ button.endpoint }}', sendData={'command_input':command_input}, callback=function(data,status) {
+        if (data['status'] != "ok") {
+{%                  if this_field.output.__toString() == "true" %}
+            $('#pre_{{ this_field_id }}_command_output').text(data['status']);
+{%                  endif %}
+        } else {
+{%                  if this_field.output %}
+            $('#pre_{{ this_field_id }}_command_output').text(data['response']);
+{%                  endif %}
+        }
+        toggle("tr_{{ this_field_id }}_command_output", 'tr','visible' );
+        $("#btn_{{ button_id }}_command_progress").removeClass("fa fa-spinner fa-pulse");
+    });
+{%              endif %}
+});
+{%          endif %}
+{%      endfor %}
+{%  endif %}
+</script>

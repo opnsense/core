@@ -1,10 +1,7 @@
 <menu>
     <Services>
         <Dnsmasq VisibleName="Dnsmasq DNS" cssClass="fa fa-tags fa-fw">
-          <Settings order="10" url="/services_dnsmasq.php">
-            <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
-            <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
-          </Settings>
+          <Settings order="10" url="/ui/dnsmasq/settings"/>
           <LogFile VisibleName="Log File" order="50" url="/ui/diagnostics/log/core/dnsmasq"/>
         </Dnsmasq>
     </Services>
