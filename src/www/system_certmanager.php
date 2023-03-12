@@ -505,8 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("This certificate does not appear to be valid.");
             }
         } elseif ($pconfig['certmethod'] == "internal") {
-            $reqdfields = explode(" ", "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
+            $reqdfields = explode(" ", "descr caref keytype keylen curve digest_alg lifetime dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
@@ -516,15 +515,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext("Curve"),
                     gettext("Digest algorithm"),
                     gettext("Lifetime"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['certmethod'] == "external") {
-            $reqdfields = explode(" ", "descr csr_keytype csr_keylen csr_curve csr_digest_alg csr_dn_country csr_dn_state csr_dn_city ".
-                "csr_dn_organization csr_dn_email csr_dn_commonname"
+            $reqdfields = explode(" ", "descr csr_keytype csr_keylen csr_curve csr_digest_alg csr_dn_commonname"
             );
             $reqdfieldsn = array(
                     gettext("Descriptive name"),
@@ -532,11 +525,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext("Key length"),
                     gettext("Curve"),
                     gettext("Digest algorithm"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
                     gettext("Distinguished name Common Name"));
         } elseif ($pconfig['certmethod'] == "existing") {
             $reqdfields = array("certref");
@@ -711,14 +699,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['certmethod'] == "import") {
                     cert_import($cert, $pconfig['cert'], $pconfig['key']);
                 } elseif ($pconfig['certmethod'] == "internal") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
+                    $dn = array('commonName' => $pconfig['dn_commonname']);
                     $extns = array();
+                    if (!empty($pconfig['dn_country'])) {
+                        $dn['countryName'] = $pconfig['dn_country'];
+                    }
+                    if (!empty($pconfig['dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['dn_state'];
+                    }
+                    if (!empty($pconfig['dn_city'])) {
+                        $dn['localityName'] = $pconfig['dn_city'];
+                    }
+                    if (!empty($pconfig['dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['dn_organization'];
+                    }
+                    if (!empty($pconfig['dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['dn_email'];
+                    }
                     if (count($altnames)) {
                         $altnames_tmp = array();
                         foreach ($altnames as $altname) {
@@ -757,16 +754,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                 } elseif ($pconfig['certmethod'] == "external") {
-                    $dn = array(
-                        'countryName' => $pconfig['csr_dn_country'],
-                        'stateOrProvinceName' => $pconfig['csr_dn_state'],
-                        'localityName' => $pconfig['csr_dn_city'],
-                        'organizationName' => $pconfig['csr_dn_organization'],
-                        'emailAddress' => $pconfig['csr_dn_email'],
-                        'commonName' => $pconfig['csr_dn_commonname']);
+                    $dn = array('commonName' => $pconfig['csr_dn_commonname']);
                     $extns = array();
+                    if (!empty($pconfig['csr_dn_country'])) {
+                        $dn['countryName'] = $pconfig['csr_dn_country'];
+                    }
+                    if (!empty($pconfig['csr_dn_state'])) {
+                        $dn['stateOrProvinceName'] = $pconfig['csr_dn_state'];
+                    }
+                    if (!empty($pconfig['csr_dn_city'])) {
+                        $dn['localityName'] = $pconfig['csr_dn_city'];
+                    }
+                    if (!empty($pconfig['csr_dn_organization'])) {
+                        $dn['organizationName'] = $pconfig['csr_dn_organization'];
+                    }
                     if (!empty($pconfig['csr_dn_organizationalunit'])) {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
+                    }
+                    if (!empty($pconfig['csr_dn_email'])) {
+                        $dn['emailAddress'] = $pconfig['csr_dn_email'];
                     }
                     if (count($altnames)) {
                         $altnames_tmp = array();
@@ -1615,6 +1621,8 @@ $( document ).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Country Code");?> : &nbsp;</td>
                 <td>
                   <select name="dn_country" id="dn_country" class="selectpicker">
+                    <option value="">
+                    </option>
 <?php
                   foreach (get_country_codes() as $cc => $cn):?>
                     <option value="<?=$cc;?>" <?=$pconfig['dn_country'] == $cc ? 'selected="selected"' : '';?>>
@@ -1818,6 +1826,8 @@ $( document ).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Country Code");?> : &nbsp;</td>
                 <td>
                   <select name="csr_dn_country" id="csr_dn_country" class="selectpicker">
+                    <option value="">
+                    </option>
 <?php
                   foreach (get_country_codes() as $cc => $cn):?>
                     <option value="<?=$cc;?>" <?=$pconfig['csr_dn_country'] == $cc ? "selected=\"selected\"" : "";?>>
