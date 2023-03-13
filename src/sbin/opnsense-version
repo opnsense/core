@@ -48,7 +48,7 @@ while getopts AacefHilNnOstVvwx OPT; do
 		OUTPUT="${OUTPUT} \${product_email}"
 		;;
 	f)
-		OUTPUT="${OUTPUT} obsolete" # XXX keep this for compat in 23.1
+		OUTPUT="${OUTPUT} OpenSSL" # XXX keep this for compat in 23.1
 		;;
 	H)
 		OUTPUT="${OUTPUT} \${product_hash}"
