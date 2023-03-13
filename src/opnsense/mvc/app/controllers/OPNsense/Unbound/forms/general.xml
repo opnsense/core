@@ -14,7 +14,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.general.listen_interfaces</id>
+        <id>unbound.general.active_interface</id>
         <label>Network Interfaces</label>
         <type>select_multiple</type>
         <help>
@@ -111,7 +111,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.general.outgoing_interfaces</id>
+        <id>unbound.general.outgoing_interface</id>
         <label>Outgoing Network Interfaces</label>
         <type>select_multiple</type>
         <advanced>true</advanced>

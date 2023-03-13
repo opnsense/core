@@ -413,6 +413,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DnsblController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/DotController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/ForwardController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/GeneralController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
@@ -423,6 +424,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/general.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -652,12 +654,14 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundDomainField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundEnabledField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -715,6 +719,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/advanced.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dot.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/general.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overrides.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
