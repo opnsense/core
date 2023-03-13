@@ -182,7 +182,6 @@
 
         $("#btn_start_new").click(function () {
             if (!$("#frm_CaptureSettings_progress").hasClass("fa-spinner")) {
-                $("#dns_results").hide();
                 $("#frm_CaptureSettings_progress").addClass("fa fa-spinner fa-pulse");
                 let callb = function (data) {
                     $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
