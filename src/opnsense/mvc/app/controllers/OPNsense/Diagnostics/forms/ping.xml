@@ -1,0 +1,40 @@
+<form>
+    <field>
+       <id>ping.settings.hostname</id>
+       <label>Hostname or IP</label>
+       <type>text</type>
+       <help><![CDATA[Hostname or address to ping.]]></help>
+    </field>
+    <field>
+      <id>ping.settings.fam</id>
+      <label>Address Family</label>
+      <type>dropdown</type>
+    </field>
+    <field>
+       <id>ping.settings.source_address</id>
+       <label>Source address</label>
+       <type>text</type>
+       <help><![CDATA[Optional source address.]]></help>
+    </field>
+    <field>
+       <id>ping.settings.packetsize</id>
+       <label>Packet size</label>
+       <type>text</type>
+       <help>Specify the number of data bytes to be sent. Keep in mind this is the payload size, an IP and ICMP header are added.</help>
+    </field>
+    <field>
+      <id>ping.settings.disable_frag</id>
+      <label>Do not fragment</label>
+      <type>checkbox</type>
+      <help>
+      Disable fragmentation.
+      Can be helpful to determine the maximum size a transport is able to send.
+      </help>
+    </field>
+    <field>
+       <id>ping.settings.description</id>
+       <label>Description</label>
+       <type>text</type>
+       <help>Description to be displayed in the "jobs" tab.</help>
+    </field>
+</form>

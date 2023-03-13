@@ -166,7 +166,8 @@
     <page-diagnostics-ping>
         <name>Diagnostics: Ping</name>
         <patterns>
-            <pattern>diag_ping.php*</pattern>
+            <pattern>ui/diagnostics/ping</pattern>
+            <pattern>api/diagnostics/ping/*</pattern>
         </patterns>
     </page-diagnostics-ping>
     <page-diagnostics-rebootsystem>
