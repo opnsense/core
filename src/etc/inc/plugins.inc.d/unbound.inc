@@ -222,7 +222,7 @@ function unbound_generate_config()
     unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
-    $port = is_port($general['port'] ?? null) ? $general['port'] : '53';
+    $port = $general['port'] ?? '53';
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -406,7 +406,6 @@ function unbound_add_host_entries($ifconfig_details = null)
     $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
-    $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
 
     if (!empty($general['active_interface'])) {
         $interfaces = explode(",", $general['active_interface']);
@@ -457,7 +456,7 @@ function unbound_add_host_entries($ifconfig_details = null)
         }
     }
 
-    if (!empty($general['wpad'])) {
+    if (!empty($general['enable_wpad'])) {
         $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
         $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
         // default domain
