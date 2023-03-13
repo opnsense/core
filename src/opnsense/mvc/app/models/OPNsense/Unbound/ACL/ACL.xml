@@ -2,7 +2,7 @@
     <page-services-dnsresolver>
         <name>Services: Unbound DNS: General</name>
         <patterns>
-            <pattern>services_unbound.php*</pattern>
+            <pattern>ui/unbound/general/*</pattern>
         </patterns>
     </page-services-dnsresolver>
     <page-services-dnsresolver-acls>

@@ -1,8 +1,7 @@
 <menu>
     <Services>
         <Unbound VisibleName="Unbound DNS" cssClass="fa fa-tags fa-fw">
-            <General_new order="5" url="/ui/unbound/general/"/>
-            <General order="10" url="/services_unbound.php"/>
+            <General order="10" url="/ui/unbound/general/"/>
             <Overrides order="20" url="/ui/unbound/overrides/"/>
             <Advanced order="30" url="/ui/unbound/advanced/"/>
             <ACL VisibleName="Access Lists" order="40" url="/services_unbound_acls.php">

@@ -652,23 +652,3 @@ function unbound_acls_config()
 
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
 }
-
-// XXX: REMOVE
-function unbound_local_zone_types()
-{
-    return array(
-        '' => 'transparent',
-        'always_nxdomain' => 'always_nxdomain',
-        'always_refuse' => 'always_refuse',
-        'always_transparent' => 'always_transparent',
-        'deny' => 'deny',
-        'inform' => 'inform',
-        'inform_deny' => 'inform_deny',
-        'nodefault' => 'nodefault',
-        # requires more plumbing:
-        #'redirect' => 'redirect',
-        'refuse' => 'refuse',
-        'static' => 'static',
-        'typetransparent' => 'typetransparent',
-    );
-}
