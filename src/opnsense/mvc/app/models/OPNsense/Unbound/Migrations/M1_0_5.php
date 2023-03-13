@@ -1,8 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +26,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound\Api;
+namespace OPNsense\Unbound\Migrations;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
 
-class ServiceController extends ApiMutableServiceControllerBase
+class M1_0_5 extends BaseModelMigration
 {
-    protected static $internalServiceClass = '\OPNsense\Unbound\Unbound';
-    protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
-    protected static $internalServiceEnabled = 'general.enabled';
-    protected static $internalServiceName = 'unbound';
-
-    public function dnsblAction()
+    public function run($model)
     {
-        $this->sessionClose();
-        $backend = new Backend();
-        $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
-        return array('status' => $response);
+        $config = Config::getInstance()->object();
+        $new = [];
+        foreach ($model->general->iterateItems() as $key => $node) {
+            if (isset($config->unbound->$key)) {
+                $new[$key] = $config->unbound->$key;
+            }
+        }
+
+        if (isset($config->unbound->enable)) {
+            $new['enabled'] = $config->unbound->enable;
+        }
+
+        $model->general->setNodes($new);
+    }
+
+    public function post($model)
+    {
+        $config = Config::getInstance()->object();
+        foreach ($model->general->iterateItems() as $key => $node) {
+            if (isset($config->unbound->$key)) {
+                unset($config->unbound->$key);
+            }
+        }
+        if (isset($config->unbound->enable)) {
+            unset($config->unbound->enable);
+        }
     }
 }
