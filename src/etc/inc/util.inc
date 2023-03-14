@@ -32,12 +32,12 @@
 
 require_once 'IPv6.inc';
 
-function killbyname($procname, $sig = 'TERM', $waitforit = false)
+function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
     _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit);
 }
 
-function killbypid($pid_or_file, $sig = 'TERM', $waitforit = false)
+function killbypid($pid_or_file, $sig = 'TERM', $waitforit = true)
 {
     $pid = $pid_or_file;
 
@@ -56,7 +56,7 @@ function _killbypid($pid, $sig, $waitforit)
 
     mwexecf('/bin/kill -%s %s', [$sig, $pid]);
 
-    if (!$waitforit) {
+    if (!$waitforit || $sig == 'HUP') {
         return;
     }
 
@@ -197,7 +197,7 @@ function service_control_stop($name, $extras)
             mwexec($cmd);
         }
     } elseif (isset($service['pidfile'])) {
-        killbypid($service['pidfile'], 'TERM', true);
+        killbypid($service['pidfile']);
     } else {
         /* last resort, but not very elegant */
         killbyname($service['name']);

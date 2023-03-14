@@ -572,7 +572,7 @@ function dhcpd_dhcp4_configure($verbose = false)
 
     service_log('Starting DHCPv4 service...', $verbose);
 
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpd.pid');
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = [];
@@ -1272,8 +1272,8 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
 
     service_log('Starting DHCPv6 service...', $verbose);
 
-    killbypid('/var/dhcpd/var/run/dhcpdv6.pid', 'TERM', true);
-    killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpdv6.pid');
+    killbypid('/var/run/dhcpleases6.pid');
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1628,7 +1628,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
     service_log('Starting DHCPv4 relay...', $verbose);
 
-    killbypid('/var/run/dhcrelay.pid', 'TERM', true);
+    killbypid('/var/run/dhcrelay.pid');
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
@@ -1740,7 +1740,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
     service_log('Starting DHCPv6 relay...', $verbose);
 
-    killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
+    killbypid('/var/run/dhcrelay6.pid');
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
