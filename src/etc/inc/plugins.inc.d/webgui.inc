@@ -54,12 +54,6 @@ function webgui_configure_do($verbose = false, $interface = '')
         array_unshift($interfaces, 'lo0');
     }
 
-    @mkdir('/var/lib/php/sessions', 0750, true);
-    /* do not trust PHP with mkdir permission on existing directory */
-    @chmod('/var/lib/php/sessions', 0750);
-    @chown('/var/lib/php/sessions', 'root');
-    @chgrp('/var/lib/php/sessions', 'wheel');
-
     if (!empty($interface) && !in_array($interface, $interfaces)) {
         return;
     }
@@ -114,16 +108,13 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
 
-    /* only stop the frontend when the generation was successful */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
+    /* regenerate the php.ini files in case the setup has changed */
+    configd_run('template reload OPNsense/WebGui');
 
     /* flush Phalcon volt templates */
     foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
         unlink($filename);
     }
-
-    /* regenerate the php.ini files in case the setup has changed */
-    configd_run('template reload OPNsense/WebGui');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -132,14 +123,11 @@ function webgui_configure_do($verbose = false, $interface = '')
         @touch('/var/run/development');
     }
 
-    /*
-     * Force reloading all php-cgi children to
-     * avoid hiccups with moved include files.
-     */
-    killbyname('php-cgi', 'HUP');
+    /* stop the frontend when the generation was completed */
+    killbypid('/var/run/lighty-webConfigurator.pid', 'INT');
 
     /* start lighttpd */
-    if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
+    if (!count($listeners) || mwexec('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
         service_log("failed.\n", $verbose);
     } else {
         service_log("done.\n", $verbose);
@@ -276,6 +264,9 @@ server.tag = "OPNsense"
 
 # Maximum idle time with nothing being written (php downloading)
 server.max-write-idle = 999
+
+# Set shutdown time to 2 seconds for SIGINT handling
+server.feature-flags = ( "server.graceful-shutdown-timeout" => 2 )
 
 {$lighty_use_syslog}
 
