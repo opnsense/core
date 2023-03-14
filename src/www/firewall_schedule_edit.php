@@ -77,7 +77,7 @@ class TimeRange implements JsonSerializable
 {
     use ErrorTrait;
 
-    private static $_l10n_months = [
+    private static $_i18n_months = [
         L10N_JAN,
         L10N_FEB,
         L10N_MAR,
@@ -92,7 +92,7 @@ class TimeRange implements JsonSerializable
         L10N_DEC
     ];
 
-    private static $_l10n_days = [
+    private static $_i18n_days = [
         L10N_MON,
         L10N_TUE,
         L10N_WED,
@@ -104,11 +104,9 @@ class TimeRange implements JsonSerializable
 
     private $_description;
     private $_label;
-
     private $_days_of_week;
     private $_months;
     private $_days;
-
     private $_start_time;
     private $_stop_time;
 
@@ -203,8 +201,8 @@ class TimeRange implements JsonSerializable
                 continue;
             }
 
-            $start_day = self::$_l10n_days[$day_range_start - 1];
-            $stop_day = self::$_l10n_days[$day_of_week - 1];
+            $start_day = self::$_i18n_days[$day_range_start - 1];
+            $stop_day = self::$_i18n_days[$day_of_week - 1];
 
             // Friendly description for a repeating day
             if ($day_of_week == $day_range_start) {
@@ -271,7 +269,7 @@ class TimeRange implements JsonSerializable
             $date = (int)$days[$selection_num];
 
             $date_range_start = $date_range_start ?? $date;
-            $month_short = substr(self::$_l10n_months[$month - 1], 0, 3);
+            $month_short = substr(self::$_i18n_months[$month - 1], 0, 3);
             $next_selected_month = (int)$months[$selection_num + 1];
             $next_selected_date = (int)$days[$selection_num + 1];
 
@@ -360,15 +358,15 @@ class TimeRange implements JsonSerializable
     }
 
     final public static function getJSONMonths(): string {
-        return json_encode(self::$_l10n_months);
+        return json_encode(self::$_i18n_months);
     }
 
     final public static function getJSONDays(): string {
-        return json_encode(self::$_l10n_days);
+        return json_encode(self::$_i18n_days);
     }
 
     final public static function getDays(): array {
-        return self::$_l10n_days;
+        return self::$_i18n_days;
     }
 
     final public function getDataForSave(): ?array {
@@ -428,73 +426,20 @@ class Schedule
     private $_rules;
     private $_config;
     private $_id;
-    private $_data;
+    private $_name;
+    private $_description;
+    private $_time_ranges;
+    private $_start_on;
+    private $_end_on;
+    private $_is_disabled;
 
     public function __construct() {
         $this->_rules = config_read_array('filter', 'rule') ?? [];
         $this->_config = &config_read_array('schedules', 'schedule');
 
-        $this->_initSchedule();
-    }
-
-    final public function returnToSchedules(): void {
-        header(url_safe(sprintf('Location: /%s', self::RETURN_URL)));
-        exit;
-    }
-
-    final public function getReturnURL(): string {
-        return self::RETURN_URL;
-    }
-
-    private function _escapeData(): void {
-        $this->_data = (array)$this->_data;
-        legacy_html_escape_form_data($this->_data);
-        $this->_data = (object)$this->_data;
-    }
-
-    private function _setData(?array $data): void {
-        // Invalid request
-        if ($data === null) {
-            $this->returnToSchedules();
-        }
-
-        $this->_data = (object)[
-            'name' => $data['name'] ?? null,
-            'description' => $data['description'] ?? $data['descr'] ?? null,
-            'time_ranges' => [],
-            'is_disabled' => (bool)$data['is_disabled']
-        ];
-
-        // NOTE: legacy_html_escape_form_data() doesn't escape objects;
-        // TimeRange will perform its own escaping
-        $this->_escapeData();
-
-        $time_ranges = $data['time_ranges'] ?? $data['timerange'] ?? [];
-
-        foreach ($time_ranges as $time_range) {
-            $time_range = new TimeRange($time_range);
-
-            if ($time_range->hasErrors()) {
-                $this->_mergeErrors($time_range->getErrors());
-                continue;
-            }
-
-            $this->_data->time_ranges[] = $time_range;
-        }
-    }
-
-    final public function getData(?string $prop = null) {
-        if ($prop !== null) {
-            return $this->_data->{$prop} ?? null;
-        }
-
-        return $this->_data;
-    }
-
-    private function _initSchedule(): void {
         // Add button clicked
         if (empty($_GET)) {
-            $this->_setData([]);
+            $this->_init([]);
             return;
         }
 
@@ -506,7 +451,7 @@ class Schedule
                 }
 
                 $this->_id = $id;
-                $this->_setData($schedule);
+                $this->_init($schedule);
                 return ;
             }
 
@@ -529,19 +474,95 @@ class Schedule
             // NOTE: Schedule is being cloned; so $_id MUST NOT be set
             $this->_id = null;
 
-            $this->_setData($schedule);
+            $this->_init($schedule);
             return;
         }
 
         // Edit button clicked
         if (isset($_GET['id'])) {
             $this->_id = (int)$_GET['id'];
-            $this->_setData(@$this->_config[$this->_id]);
+            $this->_init(@$this->_config[$this->_id]);
             return;
         }
 
         // Invalid request
         $this->returnToSchedules();
+    }
+
+    final public function returnToSchedules(): void {
+        header(url_safe(sprintf('Location: /%s', self::RETURN_URL)));
+        exit;
+    }
+
+    final public function getReturnURL(): string {
+        return self::RETURN_URL;
+    }
+
+    private function _escape($value) {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_HTML401);
+    }
+
+    private function _init(?array $data): void {
+        // Invalid request
+        if ($data === null) {
+            $this->returnToSchedules();
+        }
+
+        $this->_name = $this->_escape($data['name'] ?? null);
+        $this->_description = $this->_escape($data['description'] ?? $data['descr'] ?? null);
+        $this->_start_on = $this->_escape($data['start_on'] ?? null);
+        $this->_end_on = $this->_escape($data['end_on'] ?? null);
+        $this->_is_disabled = (bool)$data['is_disabled'];
+
+        $time_ranges = $data['time_ranges'] ?? $data['timerange'] ?? [];
+        $this->_time_ranges = [];
+
+        foreach ($time_ranges as $time_range) {
+            $time_range = new TimeRange($time_range);
+
+            if ($time_range->hasErrors()) {
+                $this->_mergeErrors($time_range->getErrors());
+                continue;
+            }
+
+            $this->_time_ranges[] = $time_range;
+        }
+    }
+
+    final public function getName(): ?string {
+        return $this->_name;
+    }
+
+    final public function getDescription(): ?string {
+        return $this->_description;
+    }
+
+    final public function getStartOn(bool $is_javascript_format = false): ?string {
+        if (!$is_javascript_format)
+            return $this->_start_on;
+
+// TODO: Add support for locale
+        return date('m/d/Y', strtotime($this->_start_on));
+    }
+
+    final public function hasStartOn(): bool {
+        return !!$this->_start_on;
+    }
+
+    final public function getEndOn(bool $is_javascript_format = false): ?string {
+        if (!$is_javascript_format)
+            return $this->_end_on;
+
+// TODO: Add support for locale
+        return date('m/d/Y', strtotime($this->_end_on));
+    }
+
+    final public function hasEndOn(): bool {
+        return !!$this->_end_on;
+    }
+
+    final public function isDisabled(): bool {
+        return !!$this->_is_disabled;
     }
 
     final public function hasID(): bool {
@@ -553,14 +574,14 @@ class Schedule
     }
 
     final public function getHTMLReferences(): string {
-        if (!($this->_data->name && $this->_rules)) {
+        if (!($this->_name && $this->_rules)) {
             return '';
         }
 
         $references = [];
 
         foreach ($this->_rules as $rule) {
-            if (@$rule['sched'] != $this->_data->name) {
+            if (@$rule['sched'] != $this->_name) {
                 continue;
             }
 
@@ -780,21 +801,21 @@ HTML;
     }
 
     final public function getJSONTimeRanges(): string {
-        if (!isset($this->_data->time_ranges)) {
+        if (!isset($this->_time_ranges)) {
             return '[]';
         }
 
-        return json_encode($this->_data->time_ranges);
+        return json_encode($this->_time_ranges);
     }
 
-    private function _validateName(string $name): void {
-        if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $name)) {
+    private function _validateName(): void {
+        if (!preg_match('/^[a-zA-Z0-9_\-]{1,32}$/', $this->_name)) {
             $this->_setError(_('Schedule name cannot exceed 32 characters and must only contain the following: a-z, A-Z, 0-9, _'));
         }
-        if (in_array(strtolower($name), ['lan', 'wan'])) {
-            $this->_setError(_(sprintf('Schedule cannot be named %s.', $name)));
+        if (in_array(strtolower($this->_name), ['lan', 'wan'])) {
+            $this->_setError(_(sprintf('Schedule cannot be named %s.', $this->_name)));
         }
-        if (empty($name)) {
+        if (empty($this->_name)) {
             $this->_setError(_('Schedule name is required.'));
         }
 
@@ -802,7 +823,7 @@ HTML;
         //
         // NOTE: $_id will be null when saving a new schedule
         foreach ($this->_config as $config_id => $schedule) {
-            if ($schedule['name'] != $name || $config_id == $this->_id) {
+            if ($schedule['name'] != $this->_name || $config_id == $this->_id) {
                 continue;
             }
 
@@ -822,29 +843,27 @@ HTML;
     }
 
     final public function save($data): bool {
-        $unsaved_time_ranges = $this->_data->time_ranges;
+        $unsaved_time_ranges = $this->_time_ranges;
 
-        $this->_data = (object)$data;
-
-        $this->_id = @$this->_data->id;
+        $data = (object)$data;
         $this->_id = (!isset($this->_config[$this->_id])) ? null : (int)$this->_id;
 
-        $this->_validateName($this->_data->name);
+        $this->_validateName();
 
         // Parse time ranges
-        $this->_data->time_ranges = [];
+        $data->time_ranges = [];
 
         // NOTE: selected_days_of_week, selected_months, and selected_days will
         // have the same number of entries
-        if ($this->_data->selected_days_of_week) {
-            foreach ($this->_data->selected_days_of_week as $range_num => $days) {
+        if ($data->selected_days_of_week) {
+            foreach ($data->selected_days_of_week as $range_num => $days) {
                 $time_range = new TimeRange([
-                    'start_time' => $this->_data->start_times[$range_num],
-                    'stop_time' => $this->_data->stop_times[$range_num],
-                    'description' => $this->_data->range_descriptions[$range_num],
+                    'start_time' => $data->start_times[$range_num],
+                    'stop_time' => $data->stop_times[$range_num],
+                    'description' => $data->range_descriptions[$range_num],
                     'days_of_week' => $days,
-                    'months' => $this->_data->selected_months[$range_num],
-                    'days' => $this->_data->selected_days[$range_num]
+                    'months' => $data->selected_months[$range_num],
+                    'days' => $data->selected_days[$range_num]
                 ]);
 
                 if ($time_range->hasErrors()) {
@@ -852,36 +871,38 @@ HTML;
                     continue;
                 }
 
-                $data = $time_range->getDataForSave();
+                $_time_range = $time_range->getDataForSave();
 
                 if ($time_range->hasErrors()) {
                     $this->_mergeErrors($time_range->getErrors());
                     continue;
                 }
 
-                $this->_data->time_ranges[] = $data;
+                $data->time_ranges[] = $_time_range;
             }
         }
 
-        unset($this->_data->selected_days_of_week);
-        unset($this->_data->selected_months);
-        unset($this->_data->selected_days);
+        unset($data->selected_days_of_week);
+        unset($data->selected_months);
+        unset($data->selected_days);
 
-        if (!$this->_data->time_ranges) {
+        if (!$data->time_ranges) {
             $this->_setError(_('The schedule must have at least one time range configured.'));
         }
 
         if ($this->hasErrors()) {
-            $this->_data->time_ranges = $unsaved_time_ranges;
+            $data->time_ranges = $unsaved_time_ranges;
             return false;
         }
 
         $this->_id = $this->_id ?? count($this->_config);
         $this->_config[$this->_id] = [
-            'name' => $this->_data->name,
-            'description' => $this->_data->description,
-            'time_ranges' => $this->_data->time_ranges,
-            'is_disabled' => (string)(@$this->_data->is_disabled == 'yes')
+            'name' => $data->name,
+            'description' => $data->description,
+            'time_ranges' => $data->time_ranges,
+            'start_on' => ($data->start_on) ? date('Y-m-d', strtotime($data->start_on)) : null,
+            'end_on' => ($data->end_on) ? date('Y-m-d', strtotime($data->end_on)) : null,
+            'is_disabled' => (string)(@$data->is_disabled == 'yes')
         ];
 
         $this->_sortConfigByName();
@@ -953,6 +974,24 @@ button.btn {
   max-width: initial !important;
   border: 0 !important;
   border-radius: 0 !important;
+}
+.start-stop-row {
+  clear: both;
+  height: 37px;
+  line-height: 37px;
+}
+.start-stop-col-left {
+  float: left;
+  width: 20px;
+}
+.start-stop-col-right {
+  float: left;
+  width: 180px;
+}
+.start-stop-col-right input {
+  float: right;
+  margin-top: -7px;
+  width: 94px;
 }
 </style>
 <script>
@@ -1866,6 +1905,91 @@ function _initCalendar() {
     _toggleLeftRightVisibility(0);
 }
 
+function _initStartEndDates() {
+    const _getFollowingDate = function(date) {
+        const following_day = new Date(date);
+
+        following_day.setDate(following_day.getDate() + 1);
+
+        return following_day;
+    };
+
+    const toggle_start_today = $('#toggle-start-today');
+    const toggle_start_on = $('#toggle-start-on');
+    const toggle_end_never = $('#toggle-end-never');
+    const toggle_end_on = $('#toggle-end-on');
+    const start_on = $('#start-on');
+    const end_on = $('#end-on');
+    const today = new Date();
+
+    const end_date = new Date();
+    end_date.setFullYear(end_date.getFullYear() + 5);
+    end_date.setDate(end_date.getDate() - 1);
+
+    let options = {
+        'autoclose': true,
+        'showOnFocus': false,
+        'startDate': today,
+        'endDate': end_date,
+        'weekStart': 1
+    };
+
+    start_on.datepicker(options);
+    start_on.datepicker('setDate', today);
+    start_on.on('changeDate', function(e) {
+        const following_date = _getFollowingDate(e.date);
+
+        end_on.datepicker('setStartDate', following_date);
+
+        if (following_date <= end_on.datepicker('getDate'))
+            return;
+
+        end_on.datepicker('clearDates');
+    });
+    start_on.on('mousedown', function() {
+        $(this).blur();
+
+        if (toggle_start_today.prop('checked'))
+            return false;
+
+        $(this).datepicker('show');
+    });
+
+    options.startDate = _getFollowingDate(today);
+    options.endDate = _getFollowingDate(end_date);
+    end_on.datepicker(options);
+    end_on.on('mousedown', function() {
+        $(this).blur();
+
+        if (toggle_end_never.prop('checked'))
+            return false;
+
+        $(this).datepicker('show');
+    });
+
+    toggle_start_today.on('click', function() {
+        toggle_start_on.prop('checked', false);
+        start_on.datepicker('setDate', today);
+        start_on.prop('readonly', true).addClass('disabled');
+    });
+
+    toggle_start_on.on('click', function() {
+        toggle_start_today.prop('checked', false);
+        start_on.prop('readonly', false).removeClass('disabled');
+    });
+
+    toggle_end_never.on('click', function() {
+        toggle_end_on.prop('checked', false);
+        end_on.datepicker('clearDates');
+        end_on.prop('readonly', true).addClass('disabled');
+    });
+
+    toggle_end_on.on('click', function() {
+        toggle_end_never.prop('checked', false);
+        end_on.prop('readonly', false).removeClass('disabled');
+    });
+}
+
 function warnBeforeSave() {
     if (!_isTimeRangeSelectionEmpty()) {
         // NOTE: askToAddOrClearTimeRange() will only resolve the promise
@@ -1910,6 +2034,7 @@ $(function() {
     _initTimeRangeSelections();
     resetTimeRangeInputRows();
     _initCalendar();
+    _initStartEndDates();
 });
 //]]>
 </script>
@@ -1945,7 +2070,7 @@ if ($schedule->hasErrors()) {
                     </td>
                     <td>
                       <input type="checkbox" name="is_disabled" id="is_disabled" value="yes"
-                             <?= ($schedule->getData('is_disabled')) ? 'checked="checked"' : '' ?> />
+                             <?= ($schedule->isDisabled()) ? 'checked="checked"' : '' ?> />
                       <?= _('Disable this schedule') ?>
                       <div class="hidden" data-for="help_for_disabled">
                         <br />
@@ -1961,16 +2086,16 @@ if ($schedule->hasErrors()) {
                     </td>
                     <td>
 <?php if ($references): ?>
-                      <?= $schedule->getData('name') ?>
+                      <?= $schedule->getName() ?>
                       <div class="text-warning" style="margin-top: 10px;">
                         <?= _('The name cannot be modified because this schedule is referenced by the following rules:') ?>
                         <ul style="margin-top: 10px;">
                         <?= $references ?>
                         </ul>
                       </div>
-                      <input name="name" type="hidden" value="<?= $schedule->getData('name') ?>" />
+                      <input type="hidden" name="name" value="<?= $schedule->getName() ?>" />
 <?php else: ?>
-                      <input type="text" name="name" id="name" value="<?= $schedule->getData('name') ?>" />
+                      <input type="text" name="name" id="name" value="<?= $schedule->getName() ?>" />
 <?php endif ?>
                     </td>
                   </tr>
@@ -1980,7 +2105,7 @@ if ($schedule->hasErrors()) {
                       <label for="description"><?= _('Description') ?></label>
                     </td>
                     <td>
-                      <input type="text" name="description" id="description" value="<?= $schedule->getData('description') ?>" />
+                      <input type="text" name="description" id="description" value="<?= $schedule->getDescription() ?>" />
                       <div class="hidden" data-for="help_for_description">
                         <br />
                         <?= _('You may enter a description here for your reference (not parsed).') ?>
@@ -2231,8 +2356,83 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
+                    <th colspan="2"><?= _('Start &amp; End Date') ?></th>
+                  </tr>
+                  <tr>
+                    <td style="width: 15%">
+                      <a id="help_for_start_date" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
+                      <label><?= _('Starts') ?></label>
+                    </td>
+                    <td style="width: 85%">
+                      <div class="start-stop-row">
+                        <div class="start-stop-col-left">
+                          <input type="radio" id="toggle-start-today"<?= (!$schedule->hasStartOn()) ? ' checked="checked"' : '' ?>>
+                        </div>
+                        <div class="start-stop-col-right" style="line-height: 32px;">
+                          <label for="toggle-start-today">Today</label>
+                        </div>
+                      </div>
+                      <div style="start-stop-row">
+                        <div class="start-stop-col-left">
+                          <input type="radio" id="toggle-start-on"<?= ($schedule->hasStartOn()) ? ' checked="checked"' : '' ?>>
+                        </div>
+                        <div class="start-stop-col-right">
+                          <label for="toggle-start-on">On</label>
+                          <input type="text" id="start-on" name="start_on"
+                                 value="<?= $schedule->getStartOn(true) ?>"
+                                 class="<?= (!$schedule->hasStartOn()) ? 'disabled' : '' ?>"
+                                 data-provide="datepicker" />
+                        </div>
+                      </div>
+                      <div class="hidden" style="clear: both;" data-for="help_for_start_date">
+                        <br />
+                        <?= _('Make the entire schedule effective immediately or on the specified date.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width: 15%">
+                      <a id="help_for_end_date" href="#" class="showhelp"><em
+                                class="fa fa-info-circle"></em></a>
+                      <label><?= _('Ends') ?></label>
+                    </td>
+                    <td style="width: 85%">
+                      <div class="start-stop-row">
+                        <div class="start-stop-col-left">
+                          <input type="radio" id="toggle-end-never"<?= (!$schedule->hasEndOn()) ? ' checked="checked"' : '' ?>>
+                        </div>
+                        <div class="start-stop-col-right" style="line-height: 32px;">
+                          <label for="toggle-end-never">Never</label>
+                        </div>
+                      </div>
+                      <div style="start-stop-row">
+                        <div class="start-stop-col-left">
+                          <input type="radio" id="toggle-end-on"<?= ($schedule->hasEndOn()) ? ' checked="checked"' : '' ?>>
+                        </div>
+                        <div class="start-stop-col-right">
+                          <label for="toggle-end-on">On</label>
+                          <input type="text" id="end-on" name="end_on"
+                                 value="<?= $schedule->getEndOn(true) ?>"
+                                 class="<?= (!$schedule->hasEndOn()) ? 'disabled' : '' ?>"
+                                 data-provide="datepicker" />
+                        </div>
+                      </div>
+                      <div class="hidden" style="clear: both;" data-for="help_for_end_date">
+                        <br />
+                        <?= _('Make the entire schedule persistent or expire immediately on the specified date.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="content-box tab-content __mb">
+              <table class="table table-striped opnsense_standard_table_form">
+                <tbody>
+                  <tr>
                     <td>
-                      <?= ($schedule->hasID()) ? sprintf('<input name="id" type="hidden" value="%d" />', $schedule->getID()) : '' ?>
+                      <?= ($schedule->hasID()) ? sprintf('<input type="hidden" name="id" value="%d" />', $schedule->getID()) : '' ?>
 
                       <div style="float: right;">
                         <button type="button" class="btn btn-default"

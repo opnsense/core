@@ -33,7 +33,7 @@ require_once('filter.inc');
 
 $edit_page = 'firewall_schedule_edit.php';
 
-$l10n_days = [
+$i18n_days = [
     _('Mon'),
     _('Tue'),
     _('Wed'),
@@ -43,7 +43,7 @@ $l10n_days = [
     _('Sun')
 ];
 
-$l10n_months = [
+$i18n_months = [
     _('Jan'),
     _('Feb'),
     _('Mar'),
@@ -63,7 +63,7 @@ function _getOrdinalDate($date) {
 }
 
 function _getCustomDatesLabel(array $time_range): string {
-    global $l10n_months;
+    global $i18n_months;
 
     $months = $time_range['months'] ?? $time_range['month'] ?? null;
     $days = $time_range['days'] ?? $time_range['day'] ?? null;
@@ -92,7 +92,7 @@ function _getCustomDatesLabel(array $time_range): string {
         }
 
         if ($day == $day_range_start) {
-            $label[] = sprintf('%s %s', $l10n_months[$month - 1], _getOrdinalDate($day));
+            $label[] = sprintf('%s %s', $i18n_months[$month - 1], _getOrdinalDate($day));
 
             $day_range_start = null;
             continue;
@@ -100,7 +100,7 @@ function _getCustomDatesLabel(array $time_range): string {
 
         $label[] = sprintf(
             '%s %s-%s',
-            $l10n_months[$month - 1],
+            $i18n_months[$month - 1],
             _getOrdinalDate($day_range_start),
             _getOrdinalDate($day)
         );
@@ -148,7 +148,7 @@ function _getRepeatingMonthlyDatesLabel(array $time_range): string {
 }
 
 function _getRepeatingWeeklyDaysLabel(array $time_range): string {
-    global $l10n_days;
+    global $i18n_days;
 
     $days_of_week = $time_range['days_of_week'] ?? $time_range['position'] ?? null;
 
@@ -174,8 +174,8 @@ function _getRepeatingWeeklyDaysLabel(array $time_range): string {
             continue;
         }
 
-        $start_day = $l10n_days[$day_range_start - 1];
-        $end_day = $l10n_days[$day_of_week - 1];
+        $start_day = $i18n_days[$day_range_start - 1];
+        $end_day = $i18n_days[$day_of_week - 1];
 
         if ($day_of_week == $day_range_start) {
             $label[] = $start_day;
