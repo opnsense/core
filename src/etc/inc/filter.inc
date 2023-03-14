@@ -446,7 +446,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     mwexec('/sbin/ifconfig pflog0 promisc');
 
     /* bring up new instance of filterlog to load new rules */
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    killbypid('/var/run/filterlog.pid');
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
     unlock($filterlck);
