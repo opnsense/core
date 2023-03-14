@@ -46,7 +46,7 @@ function unbound_configure()
         'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
         'unbound_start' => array('unbound_configure_do'),
-        'unbound_stop' => array('unbound_service_stop')
+        'unbound_stop' => array('unbound_service_stop'),
     );
 }
 
