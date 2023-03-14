@@ -13,13 +13,9 @@
                 <Required>Y</Required>
                 <BlankDesc>53</BlankDesc>
             </port>
-            <active_interface type="InterfaceField">
+            <active_interface type=".\UnboundInterfaceField">
                 <Required>N</Required>
                 <Multiple>Y</Multiple>
-                <AllowDynamic>N</AllowDynamic>
-                <filters>
-                    <enable>/^(?!0).*$/</enable>
-                </filters>
             </active_interface>
             <dnssec type="BooleanField">
                 <default>0</default>
@@ -76,14 +72,9 @@
                     <opt11 value="typetransparent">typetransparent</opt11>
                 </OptionValues>
             </local_zone_type>
-            <outgoing_interface type="InterfaceField">
+            <outgoing_interface type=".\UnboundInterfaceField">
                 <Required>N</Required>
                 <Multiple>Y</Multiple>
-                <AllowDynamic>N</AllowDynamic>
-                <filters>
-                    <enable>/^(?!0).*$/</enable>
-                    <virtual>/^(?!1).*$/</virtual>
-                </filters>
             </outgoing_interface>
             <enable_wpad type="BooleanField">
                 <default>0</default>
