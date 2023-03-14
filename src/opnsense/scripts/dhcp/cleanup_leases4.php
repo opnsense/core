@@ -67,7 +67,7 @@ if (!empty($opts['d'])) {
 }
 
 if (isset($opts['s'])) {
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpd.pid');
 } elseif (isvalidpid('/var/dhcpd/var/run/dhcpd.pid')) {
     echo "dhcpd active, can't update lease file";
     exit(1);
