@@ -611,7 +611,7 @@ function rrd_create_gateway_quality($rrd_file, $unknown = false)
 
 function rrd_stop()
 {
-    killbypid('/var/run/updaterrd.sh.pid', 'TERM', true);
+    killbypid('/var/run/updaterrd.sh.pid');
 }
 
 function rrd_export()
