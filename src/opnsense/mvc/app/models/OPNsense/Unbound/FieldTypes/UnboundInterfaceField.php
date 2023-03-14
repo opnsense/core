@@ -54,7 +54,7 @@ class UnboundInterfaceField extends BaseListField
         }
 
         foreach ($config->openvpn->children() as $mode => $setting) {
-            if (!isset($setting->disable) && !empty($setting)) {
+            if (!empty($setting) && empty((string)$setting->disable)) {
                 $key = 'ovpn' . substr($mode, 8, 1) . (string)$setting->vpnid;
                 $type = substr($mode, 8, 6);
                 $this->internalOptionList[$key] = "OpenVPN {$type} (" . (!empty($setting->description) ?
