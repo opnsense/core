@@ -44,10 +44,11 @@ class Unbound extends BaseModel
         $port = $this->general->port;
         foreach ([$enabled, $port] as $node) {
             if ($validateFullModel || $node->isFieldChanged()) {
-                $dnsmasq_port = (string)$config->dnsmasq->port;
-                if (!empty((string)$enabled) && isset($config->dnsmasq->enable) && (string)$port == $dnsmasq_port) {
+                $dnsmasq_port = !empty((string)$config->dnsmasq->port) ? (string)$config->dnsmasq->port : '53';
+                if (!empty((string)$enabled) && !empty((string)$config->dnsmasq->enable) && (string)$port == $dnsmasq_port) {
                     $messages->appendMessage(
-                        new Message(gettext('Dnsmasq is still active on the same port. Disable it before enabling Unbound.'))
+                        new Message(gettext('Dnsmasq is still active on the same port. Disable it before enabling Unbound.'),
+                        'general.'.$node->getInternalXMLTagName())
                     );
                 }
             }
