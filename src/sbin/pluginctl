@@ -101,7 +101,22 @@ if (isset($opts['h'])) {
         }
     }
 } elseif (isset($opts['S'])) {
-    echo json_encode(plugins_services(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    $services = [];
+    foreach (plugins_services() as $service) {
+        /* fail if name filter does not match */
+        if (!empty($args[0]) && $service['name'] != $args[0]) {
+            continue;
+        }
+        /* fail if ID lookup is not possible or does not match */
+        if (isset($args[1]) && $args[1] !== '' && (!array_key_exists('id', $service) || $service['id'] != $args[1])) {
+            continue;
+        }
+        /* fetch status so the caller does not have to */
+        $service['status'] = service_status($service);
+        /* collect all matches contrary to what service_by_name() is doing */
+        $services[] = $service;
+    }
+    echo json_encode($services, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['s'])) {
     $name = !empty($args[0]) ? $args[0] : '';
     $act = !empty($args[1]) ? $args[1] : '';
