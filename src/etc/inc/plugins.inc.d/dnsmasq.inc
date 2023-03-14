@@ -38,26 +38,26 @@ function dnsmasq_enabled()
 
 function dnsmasq_configure()
 {
-    return array(
-        'dns' => array('dnsmasq_configure_do'),
-        'local' => array('dnsmasq_configure_do'),
-        'newwanip' => array('dnsmasq_configure_do'),
-    );
+    return [
+        'dns' => ['dnsmasq_configure_do'],
+        'local' => ['dnsmasq_configure_do'],
+        'newwanip' => ['dnsmasq_configure_do'],
+    ];
 }
 
 function dnsmasq_services()
 {
-    $services = array();
+    $services = [];
 
     if (!dnsmasq_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['name'] = 'dnsmasq';
     $pconfig['description'] = gettext('Dnsmasq DNS');
-    $pconfig['php']['restart'] = array('dnsmasq_configure_do');
-    $pconfig['php']['start'] = array('dnsmasq_configure_do');
+    $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
+    $pconfig['php']['start'] = ['dnsmasq_configure_do'];
     $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
     $services[] = $pconfig;
 
@@ -66,23 +66,23 @@ function dnsmasq_services()
 
 function dnsmasq_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'));
+    $logfacilities['dnsmasq'] = ['facility' => ['dnsmasq']];
 
     return $logfacilities;
 }
 
 function dnsmasq_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
+    $result[] = [
         'description' => gettext('Dnsmasq DNS'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
-        'services' => ["dnsmasq"],
-    );
+        'services' => ['dnsmasq'],
+    ];
 
     return $result;
 }
@@ -91,8 +91,8 @@ function dnsmasq_configure_do($verbose = false)
 {
     global $config;
 
-    killbypid('/var/run/dnsmasq_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/dnsmasq.pid', 'TERM', true);
+    killbypid('/var/run/dnsmasq_dhcpd.pid');
+    killbypid('/var/run/dnsmasq.pid');
 
     if (!dnsmasq_enabled()) {
         return;
@@ -116,7 +116,7 @@ function dnsmasq_configure_do($verbose = false)
     if (!empty($config['dnsmasq']['interface'])) {
         $interfaces = explode(',', $config['dnsmasq']['interface']);
         $interfaces[] = 'lo0';
-        $addresses = array();
+        $addresses = [];
 
         foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
             if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
@@ -228,7 +228,7 @@ function _dnsmasq_add_host_entries()
     $dhosts = '';
 
     if (!isset($dnsmasqcfg['hosts']) || !is_array($dnsmasqcfg['hosts'])) {
-        $dnsmasqcfg['hosts'] = array();
+        $dnsmasqcfg['hosts'] = [];
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
