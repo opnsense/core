@@ -3,6 +3,7 @@
         <name>Services: Unbound DNS: General</name>
         <patterns>
             <pattern>ui/unbound/general/*</pattern>
+            <pattern>api/unbound/general/*</pattern>
         </patterns>
     </page-services-dnsresolver>
     <page-services-dnsresolver-acls>
