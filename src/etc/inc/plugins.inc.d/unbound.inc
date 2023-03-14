@@ -114,9 +114,9 @@ function unbound_service_stop()
         unbound_cache_flush();
     }
 
-    killbypid('/var/run/unbound_logger.pid', 'TERM', true);
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    killbypid('/var/run/unbound_logger.pid');
+    killbypid('/var/run/unbound_dhcpd.pid');
+    killbypid('/var/run/unbound.pid');
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
     mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
@@ -353,7 +353,7 @@ function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
     $mdl = new \OPNsense\Unbound\Unbound();
-    
+
     unbound_service_stop();
 
     if (!unbound_enabled()) {
