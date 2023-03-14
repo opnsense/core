@@ -124,7 +124,7 @@ function webgui_configure_do($verbose = false, $interface = '')
     }
 
     /* stop the frontend when the generation was completed */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'INT', true);
+    killbypid('/var/run/lighty-webConfigurator.pid', 'INT');
 
     /* start lighttpd */
     if (!count($listeners) || mwexec('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
