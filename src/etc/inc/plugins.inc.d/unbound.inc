@@ -378,6 +378,8 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
+    waitforpid('/var/run/unbound.pid', 10);
+
     service_log("done.\n", $verbose);
 }
 
