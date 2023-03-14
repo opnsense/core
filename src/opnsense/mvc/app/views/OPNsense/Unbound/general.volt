@@ -30,6 +30,7 @@
         mapDataToFormUI(data_get_map).done(function(data) {
             console.log(data);
             formatTokenizersUI();
+            $('.selectpicker').selectpicker({title: 'All (recommended)'}).selectpicker('render');
             $('.selectpicker').selectpicker('refresh');
         });
 
