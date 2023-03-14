@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -1310,7 +1310,9 @@ function interface_proxyarp_configure($interface = '')
 
     /* kill any running choparp, on restart "all" */
     if (empty($interface)) {
-        killbyname('choparp'); /* XXX only kills one */
+        foreach (glob('/var/run/choparp_*.pid') as $pidfile) {
+            killbypid($pidfile);
+        }
     }
 
     $paa = array();
