@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -63,17 +63,18 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
-$opts = getopt('cdghirs', [], $optind);
+$opts = getopt('cdghirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -d | -g | -h | -i | -r | -s] ...\n\n";
+    echo "Usage: pluginctl [-c | -d | -g | -h | -i | -r | -S | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-d device mode, lists registered devices\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-i invoke dynamic interface registration\n";
     echo "\t-r run mode (e.g. command)\n";
+    echo "\t-S service dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (isset($opts['d'])) {
@@ -99,6 +100,8 @@ if (isset($opts['h'])) {
             }
         }
     }
+} elseif (isset($opts['S'])) {
+    echo json_encode(plugins_services(), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['s'])) {
     $name = !empty($args[0]) ? $args[0] : '';
     $act = !empty($args[1]) ? $args[1] : '';
