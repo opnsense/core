@@ -903,7 +903,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
         return;
     }
 
-    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
+    killbypid("/var/run/openvpn_{$mode_id}.pid");
 
     if (isset($settings['disable'])) {
         return;
@@ -949,7 +949,7 @@ function openvpn_delete($mode, &$settings)
         $devname = "ovpnc{$vpnid}";
     }
 
-    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
+    killbypid("/var/run/openvpn_{$mode_id}.pid");
 
     mwexecf('/sbin/ifconfig %s destroy', array($devname));
 
