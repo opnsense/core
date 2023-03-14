@@ -28,8 +28,31 @@
 
 namespace OPNsense\Unbound;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
 
 class Unbound extends BaseModel
 {
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $config = Config::getInstance()->object();
+
+        // Check if both Unbound is enabled and the assigned port does not clash with the dnsmasq configuration
+        $enabled = $this->general->enabled;
+        $port = $this->general->port;
+        foreach ([$enabled, $port] as $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $dnsmasq_port = (string)$config->dnsmasq->port;
+                if (!empty((string)$enabled) && isset($config->dnsmasq->enable) && (string)$port == $dnsmasq_port) {
+                    $messages->appendMessage(
+                        new Message(gettext('Dnsmasq is still active on the same port. Disable it before enabling Unbound.'))
+                    );
+                }
+            }
+        }
+
+        return $messages;
+    }
 }

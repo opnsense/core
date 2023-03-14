@@ -169,6 +169,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
 
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
+
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
@@ -353,7 +355,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
             } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
                 $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
-            } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+            } elseif (isset($config['dnsmasq']['enable']) || $unbound_enabled) {
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
@@ -448,7 +450,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             $networkv6 = '::/64';
         }
 
-        if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+        if (isset($config['dnsmasq']['enable']) || $unbound_enabled) {
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
@@ -573,6 +575,8 @@ function dhcpd_dhcp4_configure($verbose = false)
     service_log('Starting DHCPv4 service...', $verbose);
 
     killbypid('/var/dhcpd/var/run/dhcpd.pid');
+
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = [];
@@ -743,7 +747,7 @@ EOPP;
             if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = $dhcpifconf['dnsserver'];
             }
-        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+        } elseif (isset($config['dnsmasq']['enable']) || $unbound_enabled) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
             if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = [$ifcfgip];
@@ -1459,7 +1463,7 @@ EOD;
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
-        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
+        } elseif (isset($config['dnsmasq']['enable']) || $unbound_enabled) {
             $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
         } elseif (!empty($dns_arrv6)) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";

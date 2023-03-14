@@ -47,4 +47,18 @@ class ServiceController extends ApiMutableServiceControllerBase
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
         return array('status' => $response);
     }
+
+    /**
+     * Only used on the general page to account for resolver_configure and dhcp hooks
+     * since these check if unbound is enabled.
+     */
+    public function reconfigureGeneralAction()
+    {
+        $this->sessionClose();
+        $backend = new Backend();
+        $backend->configdRun('dns reload');
+        $result = $this->reconfigureAction();
+        $backend->configdRun('dhcpd restart');
+        return $result;
+    }
 }

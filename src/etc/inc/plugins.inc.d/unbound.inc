@@ -33,7 +33,6 @@
 function unbound_enabled()
 {
     $mdl = new \OPNsense\Unbound\Unbound();
-
     return !empty((string)$mdl->general->enabled);
 }
 
@@ -354,7 +353,7 @@ function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
     $mdl = new \OPNsense\Unbound\Unbound();
-
+    
     unbound_service_stop();
 
     if (!unbound_enabled()) {

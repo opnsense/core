@@ -52,7 +52,7 @@
     <div class="col-md-12">
         <hr/>
         <button class="btn btn-primary" id="reconfigureAct"
-                data-endpoint='/api/unbound/service/reconfigure'
+                data-endpoint='/api/unbound/service/reconfigureGeneral'
                 data-label="{{ lang._('Apply') }}"
                 data-error-title="{{ lang._('Error reconfiguring unbound') }}"
                 type="button">

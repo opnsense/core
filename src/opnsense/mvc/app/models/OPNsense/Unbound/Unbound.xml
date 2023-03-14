@@ -4,7 +4,7 @@
     <version>1.0.5</version>
     <items>
         <general>
-            <enabled type=".\UnboundEnabledField">
+            <enabled type="BooleanField">
                 <default>1</default>
                 <Required>Y</Required>
             </enabled>
@@ -19,7 +19,6 @@
                 <AllowDynamic>N</AllowDynamic>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
-                    <virtual>/^(?!1).*$/</virtual>
                 </filters>
             </active_interface>
             <dnssec type="BooleanField">
