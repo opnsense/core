@@ -106,8 +106,10 @@
         <label>Local Zone Type</label>
         <type>dropdown</type>
         <help>
+            <![CDATA[
             The local zone type used for the system domain.
             Type descriptions are available under "local-zone:" in the <a href="https://nlnetlabs.nl/documentation/unbound/unbound.conf/#local-zone">unbound.conf(5)</a> manual page. The default is 'transparent'.
+            ]]>
         </help>
     </field>
     <field>
