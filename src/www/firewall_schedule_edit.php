@@ -264,9 +264,15 @@ class TimeRange implements JsonSerializable
         $months = explode(',', $selected_months);
         $days = explode(',', $selected_days);
 
+        $selected_months = [];
+        $selected_days = [];
+
         foreach ($months as $selection_num => $month) {
             $month = (int)$month;
             $date = (int)$days[$selection_num];
+
+            $selected_months[] = $month;
+            $selected_days[] = $date;
 
             $date_range_start = $date_range_start ?? $date;
             $month_short = substr(self::$_i18n_months[$month - 1], 0, 3);
@@ -297,8 +303,8 @@ class TimeRange implements JsonSerializable
             $date_range_start = null;
         }
 
-        $this->_months = $this->_escape($selected_months);
-        $this->_days = $this->_escape($selected_days);
+        $this->_months = $this->_escape(implode(',', $selected_months));
+        $this->_days = $this->_escape(implode(',', $selected_days));
         $this->_label = $this->_escape(implode(', ', $label));
     }
 
@@ -1132,8 +1138,8 @@ function _getFlattenedTimeRangeSelect(selections) {
 
         [month, day] = month_and_day.split('|');
 
-        data.months.push(month);
-        data.days.push(day);
+        data.months.push(parseInt(month));
+        data.days.push(parseInt(day));
     });
 
     data.months = data.months.join(',');
@@ -1211,8 +1217,7 @@ function _selectMonth(calendar_month_id) {
 
     const month_select = $('#month-select');
 
-    month_select.val(calendar_month_id);
-    month_select.selectpicker('refresh');
+    month_select.selectpicker('val', calendar_month_id);
 
     showSelectedMonth.bind(month_select[0])();
 }
@@ -1334,11 +1339,10 @@ function _clearCalendar(is_clear_description = false) {
         .filter('[data-state != "white"]')
         .attr('data-state', 'white');
 
-    $('#start-hour').val('0');
-    $('#start-minute').val('00');
-    $('#stop-hour').val('23');
-    $('#stop-minute').val('59');
-    $('.selectpicker.form-control').selectpicker('refresh');
+    $('#start-hour').selectpicker('val', '0');
+    $('#start-minute').selectpicker('val', '00');
+    $('#stop-hour').selectpicker('val', '23');
+    $('#stop-minute').selectpicker('val', '59');
 
     if (is_clear_description)
         $('#range-description').val('');
@@ -1652,10 +1656,10 @@ function _injectCustomDates(
 }
 
 function addTimeRange() {
-    const start_hour = parseInt($('#start-hour').val());
-    const start_minute = $('#start-minute').val();
-    const stop_hour = parseInt($('#stop-hour').val());
-    const stop_minute = $('#stop-minute').val();
+    const start_hour = parseInt($('#start-hour').selectpicker('val'));
+    const start_minute = $('#start-minute').selectpicker('val');
+    const stop_hour = parseInt($('#stop-hour').selectpicker('val'));
+    const stop_minute = $('#stop-minute').selectpicker('val');
     const start_time = `${start_hour}:${start_minute}`;
     const stop_time = `${stop_hour}:${stop_minute}`;
     const description = $('#range-description').val();
@@ -1824,10 +1828,6 @@ function editTimeRange(start_time, stop_time, range_description) {
     selected_days = $(selected_days).val().trim();
     selected_days = (selected_days) ? selected_days.split(',') : [];
 
-    const _refreshSelectPickers = function() {
-        $('.selectpicker').selectpicker('refresh');
-    };
-
     const _toggleMode = function() {
         if (selected_months.length)
             return showCustomRow();
@@ -1856,10 +1856,10 @@ function editTimeRange(start_time, stop_time, range_description) {
         [start_hour, start_min] = start_time.split(':');
         [stop_hour, stop_min] = stop_time.split(':');
 
-        $('#start-hour').val(start_hour);
-        $('#start-minute').val(start_min);
-        $('#stop-hour').val(stop_hour);
-        $('#stop-minute').val(stop_min);
+        $('#start-hour').selectpicker('val', start_hour);
+        $('#start-minute').selectpicker('val', start_min);
+        $('#stop-hour').selectpicker('val', stop_hour);
+        $('#stop-minute').selectpicker('val', stop_min);
         $('#range-description').val(range_description);
 
         if (selected_days.length) {
@@ -1876,7 +1876,7 @@ function editTimeRange(start_time, stop_time, range_description) {
                     is_select_month = false;
                 });
 
-                return _refreshSelectPickers();
+                return;
             }
 
             selected_days.forEach(toggleRepeatingMonthlyDay);
@@ -1884,8 +1884,6 @@ function editTimeRange(start_time, stop_time, range_description) {
 
         if (selected_days_of_week.length)
             selected_days_of_week.forEach(toggleRepeatingWeeklyDay);
-
-        _refreshSelectPickers();
     }.bind(this);
 
     $(this).blur();
@@ -1922,7 +1920,7 @@ function _initCalendar() {
         );
     };
 
-    month_select.change(function() {
+    month_select.on('changed.bs.select', function() {
         _toggleLeftRightVisibility($(this).prop('selectedIndex'));
     });
 
