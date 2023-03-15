@@ -86,12 +86,12 @@ $product = product::getInstance();
       $( document ).ready(function() {
         $('.srv_status_act').click(function(event){
           event.preventDefault();
-          let params = {};
-          params['action'] = $(this).data('service_action');
-          params['service'] = $(this).data('service');
-          params['id'] = $(this).data('service_id');
+          let url = '/api/core/service/' + $(this).data('service_action') + '/' + $(this).data('service');
+          if ($(this).data('service_id') != '') {
+              url += '/' + $(this).data('service_id');
+          }
           $("#OPNsenseStdWaitDialog").modal('show');
-          $.post('/status_services.php',params, function(data) {
+          $.post(url, {}, function (data) {
             // refresh page after service action via server
             location.reload(true);
           });

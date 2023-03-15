@@ -98,9 +98,7 @@
             <WebGUI VisibleName="Web GUI" url="/ui/diagnostics/log/core/lighttpd"/>
         </LogFiles>
         <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
-            <Services url="/status_services.php">
-                <All url="/status_services.php?*" visibility="hidden"/>
-            </Services>
+            <Services url="/ui/core/service"/>
         </Diagnostics>
     </System>
     <Interfaces order="30" cssClass="fa fa-sitemap">
