@@ -74,7 +74,7 @@ if (isset($opts['h'])) {
     echo "\t-h show this help text and exit\n";
     echo "\t-i invoke dynamic interface registration\n";
     echo "\t-r run mode (e.g. command)\n";
-    echo "\t-S service dump\n";
+    echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
 } elseif (isset($opts['d'])) {
@@ -111,8 +111,9 @@ if (isset($opts['h'])) {
         if (isset($args[1]) && $args[1] !== '' && (!array_key_exists('id', $service) || $service['id'] != $args[1])) {
             continue;
         }
-        /* fetch status so the caller does not have to */
-        $service['status'] = service_status($service);
+        /* fetch status so the caller does not have to (one for legacy, one for mvc) */
+        $service['status_msg'] = service_message($service);
+        $service['status'] = strpos($service['status_msg'], 'is running') !== false;
         /* collect all matches contrary to what service_by_name() is doing */
         $services[] = $service;
     }
@@ -121,7 +122,7 @@ if (isset($opts['h'])) {
     $name = !empty($args[0]) ? $args[0] : '';
     $act = !empty($args[1]) ? $args[1] : '';
     $filter = [];
-    if (!empty($args[2])) {
+    if (isset($args[2]) && $args !== '') {
         $filter['id'] = $args[2];
     }
     switch ($act) {
@@ -133,6 +134,9 @@ if (isset($opts['h'])) {
             break;
         case 'restart':
             echo service_control_restart($name, $filter) . PHP_EOL;
+            break;
+        case 'status':
+            echo service_control_status($name, $filter) . PHP_EOL;
             break;
         default:
             echo "Unknown command `$act'\n";
