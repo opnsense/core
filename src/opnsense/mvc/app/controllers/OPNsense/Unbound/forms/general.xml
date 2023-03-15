@@ -64,7 +64,10 @@
         <id>unbound.general.regdhcpstatic</id>
         <label>Register DHCP Static Mappings</label>
         <type>checkbox</type>
-        <help>The default domain name to use for DHCP lease registration. If empty, the system domain is used.</help>
+        <help>
+            <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
+            You should also set the domain in <a href="/system_general.php">System: General setup</a> to the proper value.]]>
+        </help>
     </field>
     <field>
         <id>unbound.general.noreglladdr6</id>
