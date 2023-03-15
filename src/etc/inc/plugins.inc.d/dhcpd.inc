@@ -169,8 +169,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
 
-    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
-
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
@@ -399,6 +397,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         $radvdconf .= "};\n";
     }
 
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
+
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
@@ -576,8 +576,6 @@ function dhcpd_dhcp4_configure($verbose = false)
 
     killbypid('/var/dhcpd/var/run/dhcpd.pid');
 
-    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
-
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = [];
     if (!empty($config['system']['dnsserver'][0])) {
@@ -690,6 +688,7 @@ EOPP;
 
     $iflist = get_configured_interface_with_descr();
     $gwObject = new \OPNsense\Routing\Gateways($ifconfig_details);
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
@@ -1412,6 +1411,8 @@ EOD;
     $dhcpdv6ifs = [];
     $ddns_zones = [];
     $need_ddns_updates = false;
+
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
 
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (!isset($dhcpv6ifconf['enable']) || !isset($iflist[$dhcpv6if])) {
