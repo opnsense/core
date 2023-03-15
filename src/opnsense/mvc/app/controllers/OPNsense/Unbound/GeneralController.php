@@ -1,8 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Michael Muenz <m.muenz@gmail.com>
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,38 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound\Api;
+namespace OPNsense\Unbound;
 
-use OPNsense\Base\ApiMutableServiceControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\IndexController;
 
-class ServiceController extends ApiMutableServiceControllerBase
+class GeneralController extends IndexController
 {
-    protected static $internalServiceClass = '\OPNsense\Unbound\Unbound';
-    protected static $internalServiceTemplate = 'OPNsense/Unbound/*';
-    protected static $internalServiceEnabled = 'general.enabled';
-    protected static $internalServiceName = 'unbound';
-
-    public function dnsblAction()
+    public function indexAction()
     {
-        $this->sessionClose();
-        $backend = new Backend();
-        $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
-        $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
-        return array('status' => $response);
-    }
-
-    /**
-     * Only used on the general page to account for resolver_configure and dhcp hooks
-     * since these check if unbound is enabled.
-     */
-    public function reconfigureGeneralAction()
-    {
-        $this->sessionClose();
-        $backend = new Backend();
-        $backend->configdRun('dns reload');
-        $result = $this->reconfigureAction();
-        $backend->configdRun('dhcpd restart');
-        return $result;
+        $this->view->generalForm = $this->getForm('general');
+        $this->view->pick('OPNsense/Unbound/general');
     }
 }

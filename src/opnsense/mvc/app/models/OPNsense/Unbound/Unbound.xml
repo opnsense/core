@@ -1,11 +1,85 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <items>
-        <service_enabled type="LegacyLinkField">
-            <Source>unbound.enable</Source>
-        </service_enabled>
+        <general>
+            <enabled type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </enabled>
+            <port type="PortField">
+                <default>53</default>
+                <Required>Y</Required>
+                <BlankDesc>53</BlankDesc>
+            </port>
+            <active_interface type=".\UnboundInterfaceField">
+                <Required>N</Required>
+                <Multiple>Y</Multiple>
+            </active_interface>
+            <dnssec type="BooleanField">
+                <default>0</default>
+            </dnssec>
+            <dns64 type="BooleanField">
+                <default>0</default>
+            </dns64>
+            <dns64prefix type="NetworkField">
+                <default>64:ff9b::/96</default>
+                <Required>N</Required>
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
+            </dns64prefix>
+            <noarecords type="BooleanField">
+                <default>0</default>
+            </noarecords>
+            <regdhcp type="BooleanField">
+                <default>0</default>
+            </regdhcp>
+            <regdhcpdomain type="TextField">
+                <Required>N</Required>
+                <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            </regdhcpdomain>
+            <regdhcpstatic type="BooleanField">
+                <default>0</default>
+            </regdhcpstatic>
+            <noreglladdr6 type="BooleanField">
+                <default>0</default>
+            </noreglladdr6>
+            <noregrecords type="BooleanField">
+                <default>0</default>
+            </noregrecords>
+            <txtsupport type="BooleanField">
+                <default>0</default>
+            </txtsupport>
+            <cacheflush type="BooleanField">
+                <default>0</default>
+            </cacheflush>
+            <local_zone_type type="OptionField">
+                <default>transparent</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="transparent">transparent</opt1>
+                    <opt2 value="always_nxdomain">always_nxdomain</opt2>
+                    <opt3 value="always_refuse">always_refuse</opt3>
+                    <opt4 value="always_transparent">always_transparent</opt4>
+                    <opt5 value="deny">deny</opt5>
+                    <opt6 value="inform">inform</opt6>
+                    <opt7 value="inform_deny">inform_deny</opt7>
+                    <opt8 value="nodefault">nodefault</opt8>
+                    <opt9 value="refuse">refuse</opt9>
+                    <opt10 value="static">static</opt10>
+                    <opt11 value="typetransparent">typetransparent</opt11>
+                </OptionValues>
+            </local_zone_type>
+            <outgoing_interface type=".\UnboundInterfaceField">
+                <Required>N</Required>
+                <Multiple>Y</Multiple>
+            </outgoing_interface>
+            <enable_wpad type="BooleanField">
+                <default>0</default>
+            </enable_wpad>
+        </general>
         <advanced>
             <hideidentity type="BooleanField">
                 <default>0</default>
