@@ -111,9 +111,8 @@ if (isset($opts['h'])) {
         if (isset($args[1]) && $args[1] !== '' && (!array_key_exists('id', $service) || $service['id'] != $args[1])) {
             continue;
         }
-        /* fetch status so the caller does not have to (one for legacy, one for mvc) */
-        $service['status_msg'] = service_message($service);
-        $service['status'] = strpos($service['status_msg'], 'is running') !== false;
+        /* fetch status so the caller does not have to */
+        $service['status'] = service_message($service);
         /* collect all matches contrary to what service_by_name() is doing */
         $services[] = $service;
     }
