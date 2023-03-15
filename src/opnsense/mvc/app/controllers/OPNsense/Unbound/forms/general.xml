@@ -80,10 +80,11 @@
         <label>Do not register system A/AAAA records</label>
         <type>checkbox</type>
         <help>
-            If this option is set, then no A/AAAA records for the configured listen interfaces will be generated.
-            If desired, you can manually add them in Unbound DNS: Overrides.
+            <![CDATA[If this option is set, then no A/AAAA records for the configured listen interfaces will be generated.
+            If desired, you can manually add them in
+            <a href="/ui/unbound/overrides/">Unbound DNS: Overrides</a>.
             Use this to control which interface IP addresses are mapped to the system host/domain name
-            as well as to restrict the amount of information exposed in replies to queries for the system host/domain name.
+            as well as to restrict the amount of information exposed in replies to queries for the system host/domain name.]]>
         </help>
     </field>
     <field>
@@ -106,10 +107,9 @@
         <label>Local Zone Type</label>
         <type>dropdown</type>
         <help>
-            <![CDATA[
-            The local zone type used for the system domain.
-            Type descriptions are available under "local-zone:" in the <a href="https://nlnetlabs.nl/documentation/unbound/unbound.conf/#local-zone">unbound.conf(5)</a> manual page. The default is 'transparent'.
-            ]]>
+            <![CDATA[The local zone type used for the system domain.
+            Type descriptions are available under "local-zone:" in the
+            <a href="https://nlnetlabs.nl/documentation/unbound/unbound.conf/#local-zone">unbound.conf(5)</a> manual page. The default is 'transparent'.]]>
         </help>
     </field>
     <field>
