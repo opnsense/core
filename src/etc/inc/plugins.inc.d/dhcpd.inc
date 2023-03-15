@@ -169,6 +169,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
     /* Process all links which need the router advertise daemon */
     $radvdifs = array();
 
+    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
+
     /* handle manually configured DHCP6 server settings first */
     foreach (config_read_array('dhcpdv6') as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface']) && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
@@ -396,8 +398,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
 
         $radvdconf .= "};\n";
     }
-
-    $unbound_enabled = !empty((string)(new \OPNsense\Unbound\Unbound())->general->enabled);
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
