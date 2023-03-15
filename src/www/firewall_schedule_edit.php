@@ -369,7 +369,7 @@ class TimeRange implements JsonSerializable
         return self::$_i18n_days;
     }
 
-    final public function getDataForSave(): ?array {
+    final public function getData(): ?array {
         if (!($this->_validateTimes() && $this->_validateSelectedDates())) {
             return null;
         }
@@ -538,6 +538,9 @@ class Schedule
     }
 
     final public function getStartOn(bool $is_javascript_format = false): ?string {
+        if (!$this->_start_on)
+            return null;
+
         if (!$is_javascript_format)
             return $this->_start_on;
 
@@ -550,6 +553,9 @@ class Schedule
     }
 
     final public function getEndOn(bool $is_javascript_format = false): ?string {
+        if (!$this->_end_on)
+            return null;
+
         if (!$is_javascript_format)
             return $this->_end_on;
 
@@ -571,6 +577,49 @@ class Schedule
 
     final public function getID(): ?int {
         return $this->_id;
+    }
+
+    private function _isPending(): bool {
+        return ($this->_start_on && time() < strtotime($this->_start_on));
+    }
+
+    private function _isExpired(): bool {
+        return ($this->_end_on && time() > strtotime($this->_end_on));
+    }
+
+    private function _getData(array $time_ranges = []): array {
+        if (empty($time_ranges)) {
+            foreach ($this->_time_ranges as $time_range) {
+                $time_ranges[] = $time_range->getData();
+            }
+        }
+
+        return [
+            'name' => $this->_name,
+            'description' => $this->_description,
+            'time_ranges' => $time_ranges,
+            'start_on' => $this->_start_on,
+            'end_on' => $this->_end_on,
+            'is_disabled' => $this->_is_disabled
+        ];
+    }
+
+    final public function getRunStatus(): string {
+        if ($this->_isPending()) {
+            return _('Pending');
+        }
+
+        if ($this->_isExpired()) {
+            return _('Expired');
+        }
+
+        if (!$this->_is_disabled
+            && filter_get_time_based_rule_status($this->_getData())
+        ) {
+            return _('Running');
+        }
+
+        return _('Inactive');
     }
 
     final public function getHTMLReferences(): string {
@@ -871,7 +920,7 @@ HTML;
                     continue;
                 }
 
-                $_time_range = $time_range->getDataForSave();
+                $_time_range = $time_range->getData();
 
                 if ($time_range->hasErrors()) {
                     $this->_mergeErrors($time_range->getErrors());
@@ -896,14 +945,13 @@ HTML;
         }
 
         $this->_id = $this->_id ?? count($this->_config);
-        $this->_config[$this->_id] = [
-            'name' => $data->name,
-            'description' => $data->description,
-            'time_ranges' => $data->time_ranges,
-            'start_on' => ($data->start_on) ? date('Y-m-d', strtotime($data->start_on)) : null,
-            'end_on' => ($data->end_on) ? date('Y-m-d', strtotime($data->end_on)) : null,
-            'is_disabled' => (string)(@$data->is_disabled == 'yes')
-        ];
+        $this->_name = $data->name;
+        $this->_description = $data->description;
+        $this->_start_on = ($data->start_on) ? date('Y-m-d', strtotime($data->start_on)) : null;
+        $this->_end_on = ($data->end_on) ? date('Y-m-d', strtotime($data->end_on)) : null;
+        $this->_is_disabled = (string)(@$data->is_disabled == 'yes');
+
+        $this->_config[$this->_id] = $this->_getData($data->time_ranges);
 
         $this->_sortConfigByName();
         write_config();
@@ -1935,7 +1983,6 @@ function _initStartEndDates() {
     };
 
     start_on.datepicker(options);
-    start_on.datepicker('setDate', today);
     start_on.on('changeDate', function(e) {
         const following_date = _getFollowingDate(e.date);
 
@@ -1954,6 +2001,11 @@ function _initStartEndDates() {
 
         $(this).datepicker('show');
     });
+    start_on.attr('placeHolder', today.toLocaleDateString(undefined, {
+        'month': '2-digit',
+        'day': '2-digit',
+        'year': 'numeric'
+    }));
 
     options.startDate = _getFollowingDate(today);
     options.endDate = _getFollowingDate(end_date);
@@ -1969,12 +2021,13 @@ function _initStartEndDates() {
 
     toggle_start_today.on('click', function() {
         toggle_start_on.prop('checked', false);
-        start_on.datepicker('setDate', today);
+        start_on.datepicker('setDate', null);
         start_on.prop('readonly', true).addClass('disabled');
     });
 
     toggle_start_on.on('click', function() {
         toggle_start_today.prop('checked', false);
+        start_on.datepicker('setDate', today);
         start_on.prop('readonly', false).removeClass('disabled');
     });
 
@@ -2358,12 +2411,18 @@ if ($schedule->hasErrors()) {
                   <tr>
                     <th colspan="2"><?= _('Start &amp; End Date') ?></th>
                   </tr>
+<?php if ($schedule->hasID()): ?>
                   <tr>
-                    <td style="width: 15%">
+                    <td style="width: 15%"><?= _('Run Status') ?></td>
+                    <td style="width: 85%"><?= $schedule->getRunStatus() ?></td>
+                  </tr>
+<?php endif; ?>
+                  <tr>
+                    <td>
                       <a id="help_for_start_date" href="#" class="showhelp"><em class="fa fa-info-circle"></em></a>
                       <label><?= _('Starts') ?></label>
                     </td>
-                    <td style="width: 85%">
+                    <td>
                       <div class="start-stop-row">
                         <div class="start-stop-col-left">
                           <input type="radio" id="toggle-start-today"<?= (!$schedule->hasStartOn()) ? ' checked="checked"' : '' ?>>

@@ -58,8 +58,16 @@ $i18n_months = [
     _('Dec')
 ];
 
-function _getOrdinalDate($date) {
+function _getOrdinalDate(string $date): string {
     return date('jS', mktime(1, 1, 1, 1, $date));
+}
+
+function getFormattedDate(?string $date): string {
+    if (!$date) {
+        return '';
+    }
+
+    return date('m/d/Y', strtotime($date));
 }
 
 function _getCustomDatesLabel(array $time_range): string {
@@ -206,7 +214,7 @@ function getSelectedDatesLabel(array $time_range): string {
     return _getRepeatingWeeklyDaysLabel($time_range);
 }
 
-function getReferences($schedule): string {
+function getReferences(array $schedule): string {
     global $config_rules;
 
     if (!($schedule['name'] && $config_rules)) {
@@ -224,6 +232,14 @@ function getReferences($schedule): string {
     }
 
     return ($references) ? implode("\n", $references) : 'N/A';
+}
+
+function isPending(?string $start_on): bool {
+    return ($start_on && time() < strtotime($start_on));
+}
+
+function isExpired(?string $end_on): bool {
+    return ($end_on && time() > strtotime($end_on));
 }
 
 function _delete(int $id) {
@@ -314,6 +330,11 @@ include('head.inc');
 legacy_html_escape_form_data($config_schedules);
 ?>
 <body>
+<style>
+.action-toggle {
+  cursor: pointer;
+}
+</style>
 <script>
 $(document).ready(function() {
     $('.action-delete').click(function() {
@@ -364,8 +385,8 @@ $(document).ready(function() {
                 const data = response.data;
 
                 toggle_button.prop('title', data.toggle_title).tooltip('fixTitle').tooltip('hide');
-                toggle_button.removeClass('fa-play text-success fa-times text-danger');
-                toggle_button.addClass((data.is_disabled) ? 'fa-times text-danger' : 'fa-play text-success');
+                toggle_button.removeClass('text-success text-danger');
+                toggle_button.addClass((data.is_disabled) ? 'text-danger' : 'text-success');
 
                 const row = toggle_button.closest('.rule');
                 const running_icon = row.find('.fa-clock-o');
@@ -425,6 +446,8 @@ if ($delete_error) {
                   <tr>
                     <td colspan="2"></td>
                     <td style="min-width: 100px;"><?= _('Name') ?></td>
+                    <td><?= _('Starts') ?></td>
+                    <td><?= _('Ends') ?></td>
                     <td><?= _('Time Ranges') ?></td>
                     <td style="min-width: 150px;"><?= _('Description') ?></td>
                     <td class="text-nowrap" style="width: 120px;">
@@ -440,26 +463,35 @@ if ($delete_error) {
 foreach ($config_schedules as $i => $schedule):
     $references = getReferences($schedule);
     $is_disabled = @$schedule['is_disabled'];
+    $is_running = (!$is_disabled && filter_get_time_based_rule_status($schedule));
+    $is_pending = isPending(@$schedule['start_on']);
+    $is_expired = isExpired(@$schedule['end_on']);
+    $title = (!$is_disabled) ? _('Schedule is enabled') : _('Schedule is disabled');
+    $css = (!($is_pending || $is_expired)) ? 'action-toggle fa-play' : 'fa-times';
+    $css .= ($is_disabled) ? ' text-danger' : ' text-success';
+
+    if ($is_pending || $is_expired) {
+        $title = ($is_expired) ? _('Schedule has expired') : _('Schedule is pending');
+        $css .= (($is_expired) ? ' text-danger' : ' text-muted');
+    }
 ?>
                   <tr ondblclick="document.location='<?= $edit_page ?>?id=<?= $i ?>'"
                       class="rule<?= ($is_disabled) ? ' text-muted' : '' ?>">
                     <td style="width: 15px;">
-<?php
-    $title = (!$is_disabled) ? _('Schedule is enabled') : _('Schedule is disabled');
-    $css = (!$is_disabled) ? 'fa-play text-success' : 'fa-times text-danger';
-?>
-                      <span title="<?= $title ?>" class="action-toggle fa <?= $css ?>"
-                            style="cursor: pointer;" data-id="<?= $i ?>"
-                            data-toggle="tooltip"></span>
+                      <span title="<?= $title ?>" class="fa <?= $css ?>"
+                            data-id="<?= $i ?>" data-toggle="tooltip"></span>
                     </td>
                     <td style="width: 15px;">
 <?php
-    $is_running = (!$is_disabled && filter_get_time_based_rule_status($schedule));
-    $title = ($is_running) ? _('Schedule is currently running') : _('Schedule is currently inactive');
-    $css = ($is_running) ? 'text-success' : 'text-muted';
+    if (!($is_pending || $is_expired)) {
+        $title = ($is_running) ? _('Schedule is currently running') : _('Schedule is currently inactive');
+        $css = ($is_running) ? 'text-success' : 'text-muted';
 ?>
                       <span title="<?= $title ?>" class="fa fa-clock-o <?= $css ?>"
                             data-toggle="tooltip"></span>
+<?php
+    }
+?>
                     </td>
                     <td>
                       <span title="<div><strong><?= _('References:') ?></strong></div><?= $references ?>"
@@ -467,6 +499,8 @@ foreach ($config_schedules as $i => $schedule):
                         <?= $schedule['name'] ?>
                       </span>
                     </td>
+                    <td><?= getFormattedDate($schedule['start_on']) ?></td>
+                    <td><?= getFormattedDate($schedule['end_on']) ?></td>
                     <td>
                       <table class="table table-condensed table-striped">
 <?php

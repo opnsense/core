@@ -682,6 +682,9 @@ function filter_rules_legacy(&$FilterIflist)
        <start_stop_time>0:00-23:59</start_stop_time>
        <description>Non-repeating - Feb 4-6</description>
      </time>
+     <start_on>2023-01-01</start_on>
+     <end_on>2023-01-01</end_on>
+     <is_disabled>0</is_disabled>
    </schedule>
  </schedules>
 */
@@ -690,10 +693,6 @@ function filter_get_time_based_rule_status($schedule)
     // Allow the rule when no schedule defined
     if (!$schedule) {
         return true;
-    }
-
-    if (@$schedule['is_disabled']) {
-        return false;
     }
 
     // DEPRECATED: The following references the legacy property names
@@ -708,6 +707,14 @@ function filter_get_time_based_rule_status($schedule)
             }
         }
 
+        return false;
+    }
+
+    $now = time();
+    $is_pending = (@$schedule['start_on'] && $now < strtotime($schedule['start_on']));
+    $is_expired = (@$schedule['end_on'] && $now > strtotime($schedule['end_on']));
+
+    if (@$schedule['is_disabled'] || $is_pending || $is_expired) {
         return false;
     }
 
