@@ -528,7 +528,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "persist-key\n";
     $conf .= "proto {$proto}\n";
     if (!empty($cipher) && $cipher != 'none') {
-        $conf .= "data-ciphers-fallback {$cipher}\n";
+        $conf .= "cipher {$cipher}\n";
     }
     $conf .= "auth {$digest}\n";
     $conf .= "up /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup\n";
