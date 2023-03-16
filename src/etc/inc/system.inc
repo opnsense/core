@@ -866,7 +866,15 @@ function system_sysctl_configure($verbose = false)
 {
     service_log('Setting up extended sysctls...', $verbose);
 
-    set_sysctl(system_sysctl_get());
+    $todo = [];
+    $new_values = system_sysctl_get();
+    $current_values = get_sysctl(array_keys($new_values));
+    foreach ($new_values as $prop => $value) {
+        if (isset($current_values[$prop]) && $current_values[$prop] != $value) {
+            $todo[$prop] = $value;
+        }
+    }
+    set_sysctl($todo);
 
     service_log("done.\n", $verbose);
 }
