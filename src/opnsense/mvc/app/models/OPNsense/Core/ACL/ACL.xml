@@ -521,7 +521,7 @@
     <page-status-services>
         <name>Status: Services</name>
         <patterns>
-            <pattern>ui/core/service/*</pattern>
+            <pattern>ui/core/service</pattern>
             <pattern>api/core/service/*</pattern>
         </patterns>
     </page-status-services>
