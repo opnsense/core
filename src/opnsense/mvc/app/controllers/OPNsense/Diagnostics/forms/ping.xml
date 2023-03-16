@@ -20,7 +20,7 @@
        <id>ping.settings.packetsize</id>
        <label>Packet size</label>
        <type>text</type>
-       <help><![CDATA[Specify the number of data bytes to be sent.]]></help>
+       <help>Specify the number of data bytes to be sent. Keep in mind this is the payload size, an IP and ICMP header are added.</help>
     </field>
     <field>
       <id>ping.settings.disable_frag</id>
@@ -29,7 +29,6 @@
       <help>
       Disable fragmentation.
       Can be helpful to determine the maximum size a transport is able to send.
-      Keep in mind this is the payload size, an IP and ICMP header are added.
       </help>
     </field>
     <field>

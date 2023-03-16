@@ -161,8 +161,12 @@ if __name__ == '__main__':
                 '-p', "%s%s.pid" % (TEMP_DIR, cmd_args.job),
                 '-t',  'ping_%s' % cmd_args.job,
                 '/sbin/ping',
+                '-c', '86400', # hard limit: stop after 1 day
                 '-4' if settings.get('fam', 'ip') == 'ip' else '-6'
             ]
+            if settings.get('source_address', '') != '':
+                args.append('-S')
+                args.append(settings['source_address'])
             if settings.get('packetsize', '') != '':
                 args.append('-s')
                 args.append(settings['packetsize'])
