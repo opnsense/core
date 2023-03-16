@@ -33,7 +33,7 @@
             options:{
                 multiSelect: false,
                 rowSelect: true,
-                selection: true,
+                selection: false,
                 formatters:{
                     commands: function (column, row) {
                         if (row['locked']) {
@@ -92,11 +92,12 @@
         <thead>
           <tr>
             <th data-column-id="id" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+            <th data-column-id="pad" data-type="string" data-sortable="false" data-width="1em"></th>
             <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
             <th data-column-id="locked" data-type="string" data-sortable="false" data-visible="false"></th>
             <th data-column-id="running" data-type="string" data-width="3em" data-formatter="status" data-sortable="false"></th>
-            <th data-column-id="commands" data-width="6em" data-formatter="commands" data-sortable="false"></th>
+            <th data-column-id="commands" data-width="5em" data-formatter="commands" data-sortable="false"></th>
           </tr>
         </thead>
         <tbody>
