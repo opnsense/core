@@ -705,7 +705,7 @@ class Schedule
         foreach ($days as $index => $day) {
             $day_of_week = $index + 1;
 
-            $input = sprintf('<input type="checkbox" autocomplete="off" /> %s', $day);
+            $input = sprintf('<input type="checkbox" autocomplete="off" /> %s',  html_safe($day));
 
             $buttons[] = sprintf(
                 '<label id="day-of-week-%d" class="btn btn-default" onclick="toggleRepeatingWeeklyDay(%d)">%s</label>',
@@ -762,7 +762,7 @@ class Schedule
             $headers[] = sprintf(
                 '<td class="calendar-header-day" onclick="toggleRepeatingWeeklyDay(%d)">%s</td>',
                 $index + 1,
-                $day_of_week
+                html_safe($day_of_week)
             );
         }
 
@@ -1374,12 +1374,12 @@ function warnBeforeClearCalender() {
 
     BootstrapDialog.show({
         'type': BootstrapDialog.TYPE_DANGER,
-        'title': '<?= _('Clear Selections?') ?>',
-        'message': '<div style="margin: 10px;"><?= _('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!') ?></div>',
+        'title': '<?= html_safe(_('Clear Selections?')) ?>',
+        'message': '<div style="margin: 10px;"><?= html_safe(_('Are you sure you want to clear your selection(s)? All unsaved changes will be lost!')) ?></div>',
 
         'buttons': [
             {
-                'label': '<?= _('Cancel') ?>',
+                'label': '<?= html_safe(_('Cancel')) ?>',
                 'cssClass': 'btn btn-default',
                 'action': function(dialog) {
                     dialog.close();
@@ -1387,10 +1387,10 @@ function warnBeforeClearCalender() {
                 }
             },
             {
-                'label': '<?= _('Clear') ?>',
+                'label': '<?= html_safe(_('Clear')) ?>',
                 'cssClass': 'btn btn-danger',
                 'action': function(dialog) {
-                    _clearEntryModeInputs();
+                    _clearEntryModeInputs(true);
                     dialog.close();
                     def.resolve();
                 }
@@ -1430,12 +1430,12 @@ function removeTimeRange(is_confirm = false) {
 
         BootstrapDialog.show({
             'type': BootstrapDialog.TYPE_DANGER,
-            'title': '<?= _('Remove Time Range?') ?>',
-            'message': '<div style="margin: 10px;"><?= _('Are you sure you want to remove this time range?') ?></div>',
+            'title': '<?= html_safe(_('Remove Time Range?')) ?>',
+            'message': '<div style="margin: 10px;"><?= html_safe(_('Are you sure you want to remove this time range?')) ?></div>',
 
             'buttons': [
                 {
-                    'label': '<?= _('Cancel') ?>',
+                    'label': '<?= html_safe(_('Cancel')) ?>',
                     'cssClass': 'btn btn-default',
                     'action': function(dialog) {
                         dialog.close();
@@ -1443,7 +1443,7 @@ function removeTimeRange(is_confirm = false) {
                     }
                 },
                 {
-                    'label': '<?= _('Remove') ?>',
+                    'label': '<?= html_safe(_('Remove')) ?>',
                     'cssClass': 'btn btn-danger',
                     'action': function(dialog) {
                         dialog.close();
@@ -1477,11 +1477,17 @@ function _injectTimeRange(
     is_clear_calendar = true
 ) {
     const body = $('#calendar tbody');
+
+    const edit_title = '<?= html_safe(_('Edit')) ?>';
+    const edit_icon = '<span class="fa fa-pencil fa-fw"></span>';
     const edit_click = `return editTimeRange.bind(this)('${start_time}', '${stop_time}', '${description}')`;
+
+    const delete_title = '<?= html_safe(_('Delete')) ?>';
+    const delete_icon = '<span class="fa fa-trash fa-fw"></span>';
     const delete_click = `return removeTimeRange.bind(this)(true)`;
 
     const edit_cell = $('<td></td>');
-    edit_cell.append(`<a href="#" class="btn btn-default" onclick="${edit_click}"><span class="fa fa-pencil fa-fw"></span></a>`);
+    edit_cell.append(`<a href="#" class="btn btn-default" onclick="${edit_click}" title="${edit_title}" data-toggle="tooltip">${edit_icon}</a>`);
     edit_cell.append(`<input type="hidden" name="selected_days_of_week[]" value="${selections.days_of_week}" />`);
     edit_cell.append(`<input type="hidden" name="selected_months[]" value="${selections.months}" />`);
     edit_cell.append(`<input type="hidden" name="selected_days[]" value="${selections.days}" />`);
@@ -1492,7 +1498,7 @@ function _injectTimeRange(
     row.append(`<td><input type="text" name="stop_times[]" value="${stop_time}" class="time-range-configured" readonly="readonly" /></td>`);
     row.append(`<td><input type="text" name="range_descriptions[]" value="${description}" class="time-range-configured" readonly="readonly" /></td>`);
     row.append(edit_cell);
-    row.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}"><span class="fa fa-trash fa-fw"></span></a></td>`);
+    row.append(`<td><a href="#" class="btn btn-default" onclick="${delete_click}" title="${delete_title}" data-toggle="tooltip">${delete_icon}</a></td>`);
 
     body.append(row);
 
@@ -1558,7 +1564,7 @@ function _injectRepeatingWeeklyDays(
     });
 
     label = label.join(', ');
-    label = `(<?= _('Weekly') ?>) ${label}`;
+    label = `(<?= html_safe(_('Weekly')) ?>) ${label}`;
 
     selections = _getFlattenedTimeRangeSelect(selections);
 
@@ -1601,7 +1607,7 @@ function _injectRepeatingMonthlyDates(
     });
 
     label = label.join(', ');
-    label = `(<?= _('Monthly') ?>) ${label}`;
+    label = `(<?= html_safe(_('Monthly')) ?>) ${label}`;
 
     selections = _getFlattenedTimeRangeSelect(selections);
 
@@ -1699,23 +1705,23 @@ function _askToAddOrClearTimeRange(range_description) {
 
     BootstrapDialog.show({
         'type': BootstrapDialog.TYPE_PRIMARY,
-        'title': '<?= _('Modified Time Range In Progress') ?>',
+        'title': '<?= html_safe(_('Modified Time Range In Progress')) ?>',
         'message': '<div style="margin: 10px;">'
-            + `<strong>Range Description:</strong> ${range_description || '<em>N/A</em>'}`
+            + `<strong><?= html_safe(_('Range Description:')) ?></strong> ${range_description || '<em><?= html_safe(_('N/A')) ?></em>'}`
             + '\n\n'
-            + '<?= _('What would you like to do with the time range that you have in progress?') ?>'
+            + '<?= html_safe(_('What would you like to do with the time range that you have in progress?')) ?>'
             + '</div>',
 
         'buttons': [
             {
-                'label': '<?= _('Cancel') ?>',
+                'label': '<?= html_safe(_('Cancel')) ?>',
                 'cssClass': 'btn btn-default',
                 'action': function(dialog) {
                     dialog.close();
                 }
             },
             {
-                'label': '<?= _('Clear') ?>',
+                'label': '<?= html_safe(_('Clear')) ?>',
                 'cssClass': 'btn btn-danger',
                 'action': function(dialog) {
                     dialog.close();
@@ -1723,7 +1729,7 @@ function _askToAddOrClearTimeRange(range_description) {
                 }
             },
             {
-                'label': '<?= _('Add & Continue') ?>',
+                'label': '<?= html_safe(_('Add & Continue')) ?>',
                 'cssClass': 'btn btn-primary',
                 'action': function(dialog) {
                     addTimeRange();
@@ -2003,7 +2009,7 @@ function _initStartEndDates() {
 
         $(this).datepicker('show');
     });
-    start_on.attr('placeHolder', today.toLocaleDateString(undefined, {
+    start_on.attr('placeholder', today.toLocaleDateString(undefined, {
         'month': '2-digit',
         'day': '2-digit',
         'year': 'numeric'
@@ -2389,10 +2395,6 @@ if ($schedule->hasErrors()) {
                   <tr id="range-buttons-row">
                     <td></td>
                     <td>
-                      <button type="button" class="btn btn-default"
-                              onclick="resetTimeRangeInputRows()">
-                        <?= html_safe(_('Cancel')) ?>
-                      </button>
                       <button type="button" class="btn btn-danger"
                               onclick="warnBeforeClearCalender.bind(this)()">
                         <?= html_safe(_('Clear')) ?>
@@ -2430,7 +2432,7 @@ if ($schedule->hasErrors()) {
                           <input type="radio" id="toggle-start-today"<?= (!$schedule->hasStartOn()) ? ' checked="checked"' : '' ?>>
                         </div>
                         <div class="start-stop-col-right" style="line-height: 32px;">
-                          <label for="toggle-start-today">Today</label>
+                          <label for="toggle-start-today"><?= html_safe(_('Today')) ?></label>
                         </div>
                       </div>
                       <div style="start-stop-row">
@@ -2438,7 +2440,7 @@ if ($schedule->hasErrors()) {
                           <input type="radio" id="toggle-start-on"<?= ($schedule->hasStartOn()) ? ' checked="checked"' : '' ?>>
                         </div>
                         <div class="start-stop-col-right">
-                          <label for="toggle-start-on">On</label>
+                          <label for="toggle-start-on"><?= html_safe(_('On')) ?></label>
                           <input type="text" id="start-on" name="start_on"
                                  value="<?= $schedule->getStartOn(true) ?>"
                                  class="<?= (!$schedule->hasStartOn()) ? 'disabled' : '' ?>"
@@ -2463,7 +2465,7 @@ if ($schedule->hasErrors()) {
                           <input type="radio" id="toggle-end-never"<?= (!$schedule->hasEndOn()) ? ' checked="checked"' : '' ?>>
                         </div>
                         <div class="start-stop-col-right" style="line-height: 32px;">
-                          <label for="toggle-end-never">Never</label>
+                          <label for="toggle-end-never"><?= html_safe(_('Never')) ?></label>
                         </div>
                       </div>
                       <div style="start-stop-row">
@@ -2471,7 +2473,7 @@ if ($schedule->hasErrors()) {
                           <input type="radio" id="toggle-end-on"<?= ($schedule->hasEndOn()) ? ' checked="checked"' : '' ?>>
                         </div>
                         <div class="start-stop-col-right">
-                          <label for="toggle-end-on">On</label>
+                          <label for="toggle-end-on"><?= html_safe(_('On')) ?></label>
                           <input type="text" id="end-on" name="end_on"
                                  value="<?= $schedule->getEndOn(true) ?>"
                                  class="<?= (!$schedule->hasEndOn()) ? 'disabled' : '' ?>"

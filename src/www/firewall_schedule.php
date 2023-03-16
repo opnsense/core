@@ -451,7 +451,7 @@ class Schedule
 
             echo json_encode([
                  'status' => 'error',
-                 'message' => $last_error['message'] ?? 'An unknown error occurred'
+                 'message' => html_safe($last_error['message'] ?? _('An unknown error occurred'))
             ]);
 
             exit;
@@ -460,14 +460,17 @@ class Schedule
         $this->_is_disabled = (bool)$this->_is_disabled;
         $is_running = $this->_isRunning();
 
+        $toggle_title = _(($this->_is_disabled) ? 'Schedule is disabled' : 'Schedule is enabled');
+        $running_title = _(($is_running) ? 'Schedule is currently running' : 'Schedule is currently inactive');
+
         echo json_encode([
             'status' => 'success',
             'data' => [
                 'id' => $this->_id,
                 'is_disabled' => $this->_is_disabled,
                 'is_running' => $is_running,
-                'toggle_title' => _(($this->_is_disabled) ? 'Schedule is disabled' : 'Schedule is enabled'),
-                'running_title' => _(($is_running) ? 'Schedule is currently running' : 'Schedule is currently inactive')
+                'toggle_title' => html_safe($toggle_title),
+                'running_title' => html_safe($running_title)
             ]
         ]);
 
@@ -523,18 +526,18 @@ $(document).ready(function() {
 
         BootstrapDialog.show({
             'type': BootstrapDialog.TYPE_DANGER,
-            'title': '<?= _('Rules') ?>',
-            'message': '<?= _('Do you really want to delete this schedule?') ?>',
+            'title': '<?= html_safe(_('Rules')) ?>',
+            'message': '<?= html_safe(_('Do you really want to delete this schedule?')) ?>',
 
             'buttons': [
                 {
-                    'label': '<?= _('No');?>',
+                    'label': '<?= html_safe(_('No')) ?>',
                     'action': function(dialog) {
                         dialog.close();
                     }
                 },
                 {
-                    'label': '<?= _('Yes') ?>',
+                    'label': '<?= html_safe(_('Yes')) ?>',
                     'action': function() {
                         $('#id').val(id);
                         $('#action').val('del');
@@ -585,12 +588,12 @@ $(document).ready(function() {
             'error': function(response) {
                 BootstrapDialog.show({
                     'type': BootstrapDialog.TYPE_DANGER,
-                    'title': '<?= _('Unknown Error') ?>',
+                    'title': '<?= html_safe(_('Unknown Error')) ?>',
                     'message': response.responseJSON.message,
 
                     'buttons': [
                         {
-                            'label': '<?= _('Close') ?>',
+                            'label': '<?= html_safe(_('Close')) ?>',
                             'cssClass': 'btn btn-default',
                             'action': function(dialog) {
                                 dialog.close();
@@ -632,8 +635,10 @@ if ($delete_error) {
                     <td><?= _('Time Ranges') ?></td>
                     <td style="min-width: 150px;"><?= _('Description') ?></td>
                     <td class="text-nowrap" style="width: 120px;">
-                      <a href="<?= Schedule::EDIT_PAGE ?>" title="<?= html_safe(_('Add')) ?>"
-                         class="btn btn-primary btn-xs" data-toggle="tooltip">
+                      <a href="<?= Schedule::EDIT_PAGE ?>"
+                         class="btn btn-primary btn-xs"
+                         title="<?= html_safe(_('Add')) ?>"
+                         data-toggle="tooltip">
                         <em class="fa fa-plus fa-fw"></em>
                       </a>
                     </td>
@@ -646,23 +651,23 @@ foreach ($schedules as $schedule):
                   <tr ondblclick="document.location='<?= $schedule->getEditURL() ?>'"
                       class="rule<?= ($schedule->isDisabled()) ? ' text-muted' : '' ?>">
                     <td style="width: 15px;">
-                      <span title="<?= $schedule->getToogleButtonTooltip() ?>"
-                            class="fa <?= $schedule->getToogleButtonCSS() ?>"
+                      <span class="fa <?= $schedule->getToogleButtonCSS() ?>"
+                            title="<?= html_safe($schedule->getToogleButtonTooltip()) ?>"
                             data-id="<?= $schedule->getID() ?>" data-toggle="tooltip"></span>
                     </td>
                     <td style="width: 15px;">
 <?php
     if (!($schedule->isPending() || $schedule->isExpired())) {
 ?>
-                      <span title="<?= $schedule->getRunStatusTooltip() ?>"
-                            class="fa fa-clock-o <?= $schedule->getRunStatusCSS() ?>"
+                      <span class="fa fa-clock-o <?= $schedule->getRunStatusCSS() ?>"
+                            title="<?= html_safe($schedule->getRunStatusTooltip()) ?>"
                             data-toggle="tooltip"></span>
 <?php
     }
 ?>
                     </td>
                     <td>
-                      <span title="<div><strong><?= _('References:') ?></strong></div><?= $schedule->getReferences() ?>"
+                      <span title="<div><strong><?= html_safe(_('References:')) ?></strong></div><?= html_safe($schedule->getReferences()) ?>"
                             data-toggle="tooltip" data-html="true">
                         <?= $schedule->getName() ?>
                       </span>
@@ -687,18 +692,21 @@ foreach ($schedules as $schedule):
                     <td><?= $schedule->getDescription() ?></td>
                     <td>
                       <a href="<?= $schedule->getEditURL() ?>"
+                         class="btn btn-default btn-xs"
                          title="<?= html_safe(_('Edit')) ?>"
-                         class="btn btn-default btn-xs" data-toggle="tooltip">
+                         data-toggle="tooltip">
                         <span class="fa fa-pencil fa-fw"></span>
                       </a>
                       <a href="<?= $schedule->getCloneURL() ?>"
+                         class="btn btn-default btn-xs"
                          title="<?= html_safe(_('Clone')) ?>"
-                         class="btn btn-default btn-xs" data-toggle="tooltip">
+                         data-toggle="tooltip">
                         <span class="fa fa-clone fa-fw"></span>
                       </a>
-                      <a title="<?= html_safe(_('Delete')) ?>"
-                         class="action-delete btn btn-default btn-xs"
-                         data-id="<?= $schedule->getID() ?>" data-toggle="tooltip">
+                      <a class="action-delete btn btn-default btn-xs"
+                         title="<?= html_safe(_('Delete')) ?>"
+                         data-id="<?= $schedule->getID() ?>"
+                         data-toggle="tooltip">
                         <span class="fa fa-trash fa-fw"></span>
                       </a>
                     </td>
