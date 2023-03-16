@@ -33,25 +33,25 @@ require_once('guiconfig.inc');
 require_once('filter.inc');
 
 // Constants for localization that need to be used for static class properties
-define('L10N_JAN', _('January'));
-define('L10N_FEB', _('February'));
-define('L10N_MAR', _('March'));
-define('L10N_APR', _('April'));
-define('L10N_MAY', _('May'));
-define('L10N_JUN', _('June'));
-define('L10N_JUL', _('July'));
-define('L10N_AUG', _('August'));
-define('L10N_SEP', _('September'));
-define('L10N_OCT', _('October'));
-define('L10N_NOV', _('November'));
-define('L10N_DEC', _('December'));
-define('L10N_MON', _('Mon'));
-define('L10N_TUE', _('Tue'));
-define('L10N_WED', _('Wed'));
-define('L10N_THU', _('Thu'));
-define('L10N_FRI', _('Fri'));
-define('L10N_SAT', _('Sat'));
-define('L10N_SUN', _('Sun'));
+define('I18N_JAN', _('January'));
+define('I18N_FEB', _('February'));
+define('I18N_MAR', _('March'));
+define('I18N_APR', _('April'));
+define('I18N_MAY', _('May'));
+define('I18N_JUN', _('June'));
+define('I18N_JUL', _('July'));
+define('I18N_AUG', _('August'));
+define('I18N_SEP', _('September'));
+define('I18N_OCT', _('October'));
+define('I18N_NOV', _('November'));
+define('I18N_DEC', _('December'));
+define('I18N_MON', _('Mon'));
+define('I18N_TUE', _('Tue'));
+define('I18N_WED', _('Wed'));
+define('I18N_THU', _('Thu'));
+define('I18N_FRI', _('Fri'));
+define('I18N_SAT', _('Sat'));
+define('I18N_SUN', _('Sun'));
 
 trait ErrorTrait {
     private $_errors = [];
@@ -78,28 +78,28 @@ class TimeRange implements JsonSerializable
     use ErrorTrait;
 
     private static $_i18n_months = [
-        L10N_JAN,
-        L10N_FEB,
-        L10N_MAR,
-        L10N_APR,
-        L10N_MAY,
-        L10N_JUN,
-        L10N_JUL,
-        L10N_AUG,
-        L10N_SEP,
-        L10N_OCT,
-        L10N_NOV,
-        L10N_DEC
+        I18N_JAN,
+        I18N_FEB,
+        I18N_MAR,
+        I18N_APR,
+        I18N_MAY,
+        I18N_JUN,
+        I18N_JUL,
+        I18N_AUG,
+        I18N_SEP,
+        I18N_OCT,
+        I18N_NOV,
+        I18N_DEC
     ];
 
     private static $_i18n_days = [
-        L10N_MON,
-        L10N_TUE,
-        L10N_WED,
-        L10N_THU,
-        L10N_FRI,
-        L10N_SAT,
-        L10N_SUN
+        I18N_MON,
+        I18N_TUE,
+        I18N_WED,
+        I18N_THU,
+        I18N_FRI,
+        I18N_SAT,
+        I18N_SUN
     ];
 
     private $_description;
@@ -429,8 +429,8 @@ class Schedule
 
     private const RETURN_URL = 'firewall_schedule.php';
 
-    private $_rules;
     private $_config;
+    private $_rules;
     private $_id;
     private $_name;
     private $_description;
@@ -440,8 +440,8 @@ class Schedule
     private $_is_disabled;
 
     public function __construct() {
-        $this->_rules = config_read_array('filter', 'rule') ?? [];
         $this->_config = &config_read_array('schedules', 'schedule');
+        $this->_rules = config_read_array('filter', 'rule') ?? [];
 
         // Add button clicked
         if (empty($_GET)) {
@@ -518,7 +518,7 @@ class Schedule
         $this->_description = $this->_escape($data['description'] ?? $data['descr'] ?? null);
         $this->_start_on = $this->_escape($data['start_on'] ?? null);
         $this->_end_on = $this->_escape($data['end_on'] ?? null);
-        $this->_is_disabled = (bool)$data['is_disabled'];
+        $this->_is_disabled = (bool)@$data['is_disabled'];
 
         $time_ranges = $data['time_ranges'] ?? $data['timerange'] ?? [];
         $this->_time_ranges = [];
@@ -903,6 +903,13 @@ HTML;
         $data = (object)$data;
         $this->_id = (!isset($this->_config[$this->_id])) ? null : (int)$this->_id;
 
+        $this->_id = $this->_id ?? count($this->_config);
+        $this->_name = $data->name;
+        $this->_description = $data->description;
+        $this->_start_on = ($data->start_on) ? date('Y-m-d', strtotime($data->start_on)) : null;
+        $this->_end_on = ($data->end_on) ? date('Y-m-d', strtotime($data->end_on)) : null;
+        $this->_is_disabled = (string)(@$data->is_disabled == 'yes');
+
         $this->_validateName();
 
         // Parse time ranges
@@ -949,13 +956,6 @@ HTML;
             $data->time_ranges = $unsaved_time_ranges;
             return false;
         }
-
-        $this->_id = $this->_id ?? count($this->_config);
-        $this->_name = $data->name;
-        $this->_description = $data->description;
-        $this->_start_on = ($data->start_on) ? date('Y-m-d', strtotime($data->start_on)) : null;
-        $this->_end_on = ($data->end_on) ? date('Y-m-d', strtotime($data->end_on)) : null;
-        $this->_is_disabled = (string)(@$data->is_disabled == 'yes');
 
         $this->_config[$this->_id] = $this->_getData($data->time_ranges);
 
@@ -2196,7 +2196,7 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
-                    <th colspan="2"><?= _('Edit Time Range') ?></th>
+                    <th colspan="2"><?= _('Add/Edit Time Range') ?></th>
                   </tr>
                   <tr>
                     <td style="width: 150px;">
@@ -2407,7 +2407,7 @@ if ($schedule->hasErrors()) {
               <table class="table table-striped opnsense_standard_table_form">
                 <tbody>
                   <tr>
-                    <th colspan="2"><?= _('Start &amp; End Date') ?></th>
+                    <th colspan="2"><?= _('Start/End Date') ?></th>
                   </tr>
 <?php if ($schedule->hasID()): ?>
                   <tr>
