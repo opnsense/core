@@ -68,6 +68,7 @@ function core_services()
             'stop' => array('/usr/local/etc/rc.d/configd stop'),
         ),
         'name' => 'configd',
+        'locked' => true,
     );
 
     $services[] = array(
@@ -124,8 +125,8 @@ function core_services()
         'php' => array(
             'restart' => array('webgui_configure_delayed')
         ),
-        'locked' => true,
         'name' => 'webgui',
+        'locked' => true,
     );
 
     return $services;
