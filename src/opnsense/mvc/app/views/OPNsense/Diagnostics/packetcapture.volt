@@ -63,9 +63,6 @@
                         btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-view" title="{{ lang._('view capture') }}" data-detail="normal" data-row-id="' + row.id + '"><span class="fa fa-fw fa-file-o"></span></button> ');
 
                         return btns.join("");
-                        return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                            '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                            '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                     },
                     "status": function (column, row) {
                         if (row.status == 'running') {
