@@ -467,18 +467,22 @@ class Schedule
 
         // Clone button clicked
         if (isset($_GET['dup'])) {
-            $this->_id = (int)$_GET['dup'];
-            $schedule = @$this->_config[$this->_id];
+            // NOTE: $_id MUST NOT be set when cloning
+            $id = (int)$_GET['dup'];
+            $schedule = @$this->_config[$id];
 
-            // Only the time range is needed when cloning because users should
-            // enter a new name and/or description
+            // The name MUST NOT be included since the name MUST be unique
             if ($schedule) {
                 $time_ranges = $schedule['time_ranges'] ?? $schedule['timerange'] ?? [];
-                $schedule = ['time_ranges' => $time_ranges];
-            }
 
-            // NOTE: Schedule is being cloned; so $_id MUST NOT be set
-            $this->_id = null;
+                $schedule = [
+                    'description' => $schedule['description'],
+                    'time_ranges' => $time_ranges,
+                    'start_on' => $schedule['start_on'],
+                    'end_on' => $schedule['end_on'],
+                    'is_disabled' => $schedule['is_disabled']
+                ];
+            }
 
             $this->_init($schedule);
             return;
