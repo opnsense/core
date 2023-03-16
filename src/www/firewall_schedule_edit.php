@@ -1987,8 +1987,17 @@ function _initStartEndDates() {
         'showOnFocus': false,
         'startDate': today,
         'endDate': end_date,
-        'weekStart': 1
+        'weekStart': 1,
+        'language': navigator.language
     };
+
+    let current_date = '<?= $schedule->getStartOn(true) ?>';
+    if (current_date)
+        start_on.datepicker('setDate', current_date);
+
+    current_date = '<?= $schedule->getEndOn(true) ?>';
+    if (current_date)
+        end_on.datepicker('setDate', current_date);
 
     start_on.datepicker(options);
     start_on.on('changeDate', function(e) {
@@ -2442,7 +2451,6 @@ if ($schedule->hasErrors()) {
                         <div class="start-stop-col-right">
                           <label for="toggle-start-on"><?= html_safe(_('On')) ?></label>
                           <input type="text" id="start-on" name="start_on"
-                                 value="<?= $schedule->getStartOn(true) ?>"
                                  class="<?= (!$schedule->hasStartOn()) ? 'disabled' : '' ?>"
                                  data-provide="datepicker" />
                         </div>
@@ -2475,7 +2483,6 @@ if ($schedule->hasErrors()) {
                         <div class="start-stop-col-right">
                           <label for="toggle-end-on"><?= html_safe(_('On')) ?></label>
                           <input type="text" id="end-on" name="end_on"
-                                 value="<?= $schedule->getEndOn(true) ?>"
                                  class="<?= (!$schedule->hasEndOn()) ? 'disabled' : '' ?>"
                                  data-provide="datepicker" />
                         </div>
