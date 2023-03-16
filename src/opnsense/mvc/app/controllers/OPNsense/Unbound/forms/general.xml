@@ -12,6 +12,7 @@
             The port used for responding to DNS queries. It should normally be left blank unless
             another service needs to bind to TCP/UDP port 53.
         </help>
+        <hint>53</hint>
     </field>
     <field>
         <id>unbound.general.active_interface</id>
