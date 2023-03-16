@@ -415,10 +415,10 @@ class Schedule
     }
 
     final public function delete(): void {
-        $config = &config_read_array('schedules', 'schedule');
+        $schedule = &config_read_array('schedules', 'schedule');
 
         foreach ($this->_rules as $rule) {
-            if ($rule['sched'] != $config[$this->_id]['name']) {
+            if ($rule['sched'] != $schedule[$this->_id]['name']) {
                 continue;
             }
 
@@ -430,7 +430,7 @@ class Schedule
             return;
         }
 
-        unset($config[$this->_id]);
+        unset($schedule[$this->_id]);
         write_config();
 
         header(url_safe(sprintf('Location: /%s', basename(__FILE__))));
@@ -438,10 +438,10 @@ class Schedule
     }
 
     final public function toggle(): void {
-        $config = &config_read_array('schedules', 'schedule');
+        $schedule = &config_read_array('schedules', 'schedule');
 
         $this->_is_disabled = (string)!$this->_is_disabled;
-        $config[$this->_id]['is_disabled'] = $this->_is_disabled;
+        $schedule[$this->_id]['is_disabled'] = $this->_is_disabled;
         $result = write_config();
 
         if (!$result || $result == -1) {

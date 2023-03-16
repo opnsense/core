@@ -1988,7 +1988,7 @@ function _initStartEndDates() {
         'startDate': today,
         'endDate': end_date,
         'weekStart': 1,
-        'language': navigator.language
+        'language': '<?= str_replace('_', '-', $config['system']['language']) ?>'
     };
 
     let current_date = '<?= $schedule->getStartOn(true) ?>';
