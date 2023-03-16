@@ -992,7 +992,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (fallback)"); ?></td>
+                      <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
                       <td>
                         <select name="crypto" class="selectpicker">
 <?php
@@ -1005,7 +1005,7 @@ $( document ).ready(function() {
                         endforeach; ?>
                         </select>
                         <div class="hidden" data-for="help_for_crypto">
-                          <?= gettext('Fallback cipher selection in case none of the default data-ciphers is supported by the client. Only preserved for backwards compatibility reasons.') ?>
+                          <?= gettext('Cipher selection for older clients. Only preserved for backwards compatibility reasons.') ?>
                         </div>
                       </td>
                     </tr>
