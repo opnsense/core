@@ -653,46 +653,42 @@
         });
 
         // handle firmware config options
-        ajaxGet('/api/core/firmware/getFirmwareOptions', {}, function(firmwareoptions, status) {
-            ajaxGet('/api/core/firmware/getFirmwareConfig', {}, function(firmwareconfig, status) {
-                var other_selected = true;
+        ajaxGet('/api/core/firmware/get_options', {}, function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/get', {}, function(config, status) {
+                var firmwareconfig = config['firmware'];
+                var custom_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
-                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) != -1) || key == firmwareconfig['mirror']) {
+                    if (key == firmwareconfig['mirror']) {
                         selected = true;
-                        other_selected = false;
+                        custom_selected = false;
                     }
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
-                            .data("has_subscription", firmwareoptions['families_has_subscription'].length > 0)
                             .prop('selected', selected)
                     );
                 });
                 if (firmwareoptions['mirrors_allow_custom']) {
-                    $("#firmware_mirror").prepend($("<option/>")
+                    $("#firmware_mirror :first-child").after($("<option/>")
                         .attr("value", firmwareconfig['mirror'])
-                        .text("(other)")
-                        .data("other", 1)
-                        .prop('selected', other_selected)
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
                     );
                 }
 
-                if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
-                    $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
-                } else {
-                    $("#firmware_mirror_subscription").val("");
-                }
+                $("#firmware_subscription").val(firmwareconfig['subscription']);
 
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
 
-                other_selected = true;
+                custom_selected = true;
                 $.each(firmwareoptions.flavours, function(key, value) {
                     var selected = false;
                     if (key == firmwareconfig['flavour']) {
                         selected = true;
-                        other_selected = false;
+                        custom_selected = false;
                     }
                     $("#firmware_flavour").append($("<option/>")
                             .attr("value",key)
@@ -701,11 +697,11 @@
                     );
                 });
                 if (firmwareoptions['flavours_allow_custom']) {
-                    $("#firmware_flavour").prepend($("<option/>")
+                    $("#firmware_flavour :first-child").after($("<option/>")
                         .attr("value", firmwareconfig['flavour'])
-                        .text("(other)")
-                        .data("other", 1)
-                        .prop('selected', other_selected)
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
                     );
                 }
                 $("#firmware_flavour").selectpicker('refresh');
@@ -729,18 +725,18 @@
 
         $("#firmware_mirror").change(function(){
             $("#firmware_mirror_value").val($(this).val());
-            if ($(this).find(':selected').data("other") == 1) {
-                $("#firmware_mirror_other").show();
+            if ($(this).find(':selected').data("custom") == 1) {
+                $("#firmware_mirror_custom").show();
             } else {
-                $("#firmware_mirror_other").hide();
+                $("#firmware_mirror_custom").hide();
             }
         });
         $("#firmware_flavour").change(function() {
             $("#firmware_flavour_value").val($(this).val());
-            if ($(this).find(':selected').data("other") == 1) {
-                $("#firmware_flavour_other").show();
+            if ($(this).find(':selected').data("custom") == 1) {
+                $("#firmware_flavour_custom").show();
             } else {
-                $("#firmware_flavour_other").hide();
+                $("#firmware_flavour_custom").hide();
             }
         });
 
@@ -750,15 +746,15 @@
             confopt.mirror = $("#firmware_mirror_value").val();
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
-            confopt.subscription = $("#firmware_mirror_subscription").val();
-            ajaxCall('/api/core/firmware/setFirmwareConfig', confopt, function(data, status) {
+            confopt.subscription = $("#firmware_subscription").val();
+            ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
                 if (data['status'] == 'ok') {
                     packagesInfo(true);
                 } else {
                     let validation_msgs = '<ul>';
-                    for (i = 0; i < data['status_msgs'].length; i++) {
-                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msgs'][i]).text() + '</li>';
+                    for (i = 0; i < data['status_msg'].length; i++) {
+                        validation_msgs += '<li>' + $("<textarea/>").html(data['status_msg'][i]).text() + '</li>';
                     }
                     validation_msgs += '</ul>';
 
@@ -975,7 +971,7 @@
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
-                                    <div style="display:none;" id="firmware_mirror_other">
+                                    <div style="display:none;" id="firmware_mirror_custom">
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
                                     <div class="hidden" data-for="help_for_mirror">
@@ -990,11 +986,11 @@
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
-                                    <div style="display:none;" id="firmware_flavour_other">
+                                    <div style="display:none;" id="firmware_flavour_custom">
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
                                     <div class="hidden" data-for="help_for_flavour">
-                                        {{ lang._('Select the firmware cryptography flavour.') }}
+                                        {{ lang._('Select an alternate firmware flavour.') }}
                                     </div>
                                 </td>
                                 <td></td>
@@ -1013,10 +1009,10 @@
                             </tr>
                             <tr>
                                 <td style="width: 20px;"></td>
-                                <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
+                                <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
                                 <td>
-                                    <input type="text" id="firmware_mirror_subscription">
-                                    <div class="hidden" data-for="help_for_mirror_subscription">
+                                    <input type="text" id="firmware_subscription">
+                                    <div class="hidden" data-for="help_for_subscription">
                                         {{ lang._('Provide subscription key.') }}
                                     </div>
                                 </td>

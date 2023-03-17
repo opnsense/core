@@ -41,15 +41,16 @@ if (isset($cnf->system->user)) {
 if (isset($cnf->system->group)) {
     foreach ($cnf->system->group as $group) {
         $group_name = (string)$group->name;
-        if (empty($group_name)) {
+        $gid = (string)$group->gid;
+        if (empty($group_name) || empty($gid)) {
             continue;
         }
-        $result[$group_name] = [];
+        $result[$gid] = ['name' => $group_name, 'members' => []];
         if (isset($group->member)) {
             foreach ($group->member as $member) {
                 $member_uid = (string)$member;
                 if (isset($uid_map[$member_uid])) {
-                    $result[$group_name][] = $uid_map[$member_uid];
+                    $result[$gid]['members'][] = $uid_map[$member_uid];
                 }
             }
         }

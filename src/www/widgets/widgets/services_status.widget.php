@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2007 Sam Wenham
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2005 Scott Ullrich <sullrich@gmail.com>
@@ -33,17 +33,79 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$services = plugins_services();
-
 if (isset($_POST['servicestatusfilter'])) {
-    $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
+    $config['widgets']['servicestatusfilter'] = $_POST['servicestatusfilter'];
     write_config("Saved Service Status Filter via Dashboard");
     header(url_safe('Location: /index.php'));
     exit;
 }
 
 ?>
-<div id="services_status-settings" class="widgetconfigdiv" style="display:none;">
+
+<script>
+    $(window).on('load', function () {
+        function control_services(action, id, title, icon) {
+            return '<span data-service_action="' + action + '" data-service="' + id + '" ' +
+              'class="btn btn-xs btn-default srv_status_act2" title="' + title + '">' +
+              '<i class="fa fa-' + icon + ' fa-fw"></i></span>';
+        }
+        function fetch_services() {
+            ajaxGet('/api/core/service/search', {}, function(data, status) {
+                if (data['rows'] !== undefined) {
+                    $.each(data['rows'], function(key, value) {
+                        /* does not like the slash in the element id */
+                        value.key = value.id.split('/').join('__');
+                        let $item = $("#service_widget_id_" + value.key);
+                        if ($item.length == 0) {
+                            $item = $("<tr>").attr('id', "service_widget_id_" + value.key);
+                            $item.append($('<td/>'));
+                            $item.append($('<td/>'));
+                            $item.append($('<td style="width:3em;;"/>'));
+                            $item.append($('<td style="width:5em; white-space: nowrap;"/>'));
+                            $item.hide();
+                            $("#service_widget_table").append($item);
+                        }
+                        $item.find('td:eq(0)').text(value.name);
+                        $item.find('td:eq(1)').text(value.description);
+                        if (value.running) {
+                            $item.find('td:eq(2)').html('<span class="label label-opnsense label-opnsense-xs label-success pull-right" title="<?= gettext('Running') ?>"><i class="fa fa-play fa-fw"></i></span>');
+                        } else {
+                            $item.find('td:eq(2)').html('<span class="label label-opnsense label-opnsense-xs label-danger pull-right" title="<?= gettext('Stopped') ?>"><i class="fa fa-stop fa-fw"></i></span>');
+                        }
+                        if (value.locked) {
+                            $item.find('td:eq(3)').html(control_services('restart', value.id, "<?= gettext('Restart') ?>", 'repeat'));
+                        } else if (value.running) {
+                            $item.find('td:eq(3)').html(control_services('restart', value.id, "<?= gettext('Restart') ?>", 'repeat') +
+                                control_services('stop', value.id, "<?= gettext('Stop') ?>", 'stop'));
+                        } else {
+                            $item.find('td:eq(3)').html(control_services('start', value.id, "<?= gettext('Start') ?>", 'play'));
+                        }
+                        let hide_items = $("#servicestatusfilter").val().split(',');
+                        if (!hide_items.includes(value.name)) {
+                            $item.show();
+                        } else {
+                            $item.hide();
+                        }
+                    });
+                    $('.srv_status_act2').click(function (event) {
+                        event.preventDefault();
+                        let url = '/api/core/service/' + $(this).data('service_action') + '/' + $(this).data('service');
+                        $("#OPNsenseStdWaitDialog").modal('show');
+                        $.post(url, {}, function (data) {
+                            // refresh page after service action via server
+                            location.reload(true);
+                        });
+                    });
+                }
+            });
+            setTimeout(fetch_services, 5000);
+        }
+        fetch_services();
+    });
+</script>
+
+<!-- service options -->
+<div id="services_status-settings" style="display:none;">
   <form action="/widgets/widgets/services_status.widget.php" method="post" name="iformd">
     <table class="table table-condensed">
       <thead>
@@ -53,11 +115,11 @@ if (isset($_POST['servicestatusfilter'])) {
       </thead>
       <tbody>
         <tr>
-          <td><input type="text" name="servicestatusfilter" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?? '' ?>" /></td>
+          <td><input type="text" name="servicestatusfilter" id="servicestatusfilter" value="<?= html_safe($config['widgets']['servicestatusfilter'] ?? '') ?>" /></td>
         </tr>
         <tr>
           <td>
-            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
+            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>" />
           </td>
         </tr>
       </tbody>
@@ -65,37 +127,17 @@ if (isset($_POST['servicestatusfilter'])) {
   </form>
 </div>
 
-<table class="table table-striped table-condensed">
+<!-- service table -->
+<table id="service_widget_table" class="table table-striped table-condensed">
   <thead>
     <tr>
       <th><?= gettext('Service') ?></th>
       <th><?= gettext('Description') ?></th>
-      <th style="width:100px;"><?= gettext('Status') ?></th>
+      <th style="width:3em;"></th>
+      <th style="width:5em;"></th>
     </tr>
   </thead>
   <tbody>
-<?php
-  $skipservices = explode(',', $config['widgets']['servicestatusfilter'] ?? '');
-  if (count($services) > 0):
-      foreach ($services as $service):
-          if (!$service['name'] || in_array($service['name'], $skipservices)) {
-              continue;
-          } ?>
-        <tr>
-          <td><?=$service['name'];?></td>
-          <td><?=$service['description'];?></td>
-          <td style="white-space: nowrap;">
-             <?= service_control_icon($service, true); ?>
-             <?= service_control_links($service, true); ?>
-          </td>
-        </tr>
-<?php
-      endforeach;
-  else:?>
-  <tr><td colspan="3"><?=gettext("No services found");?></td></tr>
-<?php
-  endif;?>
-  </tbody>
 </table>
 
 <!-- needed to display the widget settings menu -->

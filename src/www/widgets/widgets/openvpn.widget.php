@@ -29,7 +29,7 @@
 require_once("guiconfig.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-$openvpn_status = json_decode(configd_run('openvpn status client,server'), true) ?? [];
+$openvpn_status = json_decode(configd_run('openvpn connections client,server'), true) ?? [];
 $openvpn_cfg = openvpn_config();
 foreach ($openvpn_cfg as $section => &$ovpncfg) {
     foreach ($ovpncfg as &$item) {

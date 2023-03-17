@@ -166,7 +166,8 @@
     <page-diagnostics-ping>
         <name>Diagnostics: Ping</name>
         <patterns>
-            <pattern>diag_ping.php*</pattern>
+            <pattern>ui/diagnostics/ping</pattern>
+            <pattern>api/diagnostics/ping/*</pattern>
         </patterns>
     </page-diagnostics-ping>
     <page-diagnostics-rebootsystem>
@@ -520,7 +521,8 @@
     <page-status-services>
         <name>Status: Services</name>
         <patterns>
-            <pattern>status_services.php*</pattern>
+            <pattern>ui/core/service</pattern>
+            <pattern>api/core/service/*</pattern>
         </patterns>
     </page-status-services>
     <page-status-systemlogs-portalauth>

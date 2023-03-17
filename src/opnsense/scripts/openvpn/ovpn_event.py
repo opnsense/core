@@ -66,6 +66,11 @@ def main(params):
         sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
     elif params.script_type == 'client-disconnect':
         sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
+    elif params.script_type == 'learn-address':
+        if os.fork() == 0:
+            sys.exit(subprocess.run(
+                ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
+            ).returncode)
 
 
 if __name__ == '__main__':

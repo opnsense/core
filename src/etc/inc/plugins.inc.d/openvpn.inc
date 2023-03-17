@@ -528,7 +528,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "persist-key\n";
     $conf .= "proto {$proto}\n";
     if (!empty($cipher) && $cipher != 'none') {
-        $conf .= "data-ciphers-fallback {$cipher}\n";
+        $conf .= "cipher {$cipher}\n";
     }
     $conf .= "auth {$digest}\n";
     $conf .= "up /usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup\n";
@@ -666,6 +666,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 }
                 if (!empty($settings['authmode'])) {
                     $conf .= "auth-user-pass-verify \"/usr/local/opnsense/scripts/openvpn/ovpn_event.py '{$vpnid}'\" via-env\n";
+                    $conf .= "learn-address \"/usr/local/opnsense/scripts/openvpn/ovpn_event.py '{$vpnid}'\"\n";
                 }
                 break;
         }
@@ -903,7 +904,7 @@ function openvpn_restart($mode, $settings, $carp_event = false)
         return;
     }
 
-    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
+    killbypid("/var/run/openvpn_{$mode_id}.pid");
 
     if (isset($settings['disable'])) {
         return;
@@ -949,7 +950,7 @@ function openvpn_delete($mode, &$settings)
         $devname = "ovpnc{$vpnid}";
     }
 
-    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
+    killbypid("/var/run/openvpn_{$mode_id}.pid");
 
     mwexecf('/sbin/ifconfig %s destroy', array($devname));
 

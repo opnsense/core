@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
-            $pconfig["ipsec_{$lkey}"] = '0';
+            $pconfig["ipsec_{$lkey}"] = '1';
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -87,13 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($config['ipsec'])) {
             foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
-                if (empty($pconfig["ipsec_{$lkey}"])) {
-                    if (isset($config['ipsec']["ipsec_{$lkey}"])) {
-                        unset($config['ipsec']["ipsec_{$lkey}"]);
-                    }
-                } else {
-                    $config['ipsec']["ipsec_{$lkey}"] = $pconfig["ipsec_{$lkey}"];
-                }
+                $config['ipsec']["ipsec_{$lkey}"] = $pconfig["ipsec_{$lkey}"];
             }
         }
 

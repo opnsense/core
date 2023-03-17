@@ -32,9 +32,8 @@
 
 function unbound_enabled()
 {
-    global $config;
-
-    return isset($config['unbound']['enable']);
+    $mdl = new \OPNsense\Unbound\Unbound();
+    return !empty((string)$mdl->general->enabled);
 }
 
 function unbound_configure()
@@ -43,9 +42,10 @@ function unbound_configure()
         'bootup' => array('unbound_configure_do'),
         'dns' => array('unbound_configure_do'),
         'early' => array('unbound_cache_flush'),
-        'hosts' => array('unbound_hosts_generate:0'),
         'local' => array('unbound_configure_do'),
         'newwanip' => array('unbound_configure_do:2'),
+        'unbound_start' => array('unbound_configure_do'),
+        'unbound_stop' => array('unbound_service_stop'),
     );
 }
 
@@ -102,11 +102,11 @@ function unbound_optimization()
 
 function unbound_service_stop()
 {
-    global $config;
+    $mdl = new \OPNsense\Unbound\Unbound();
 
     mwexec('/usr/local/bin/flock -E 0 -o /tmp/unbound_start.lock true');
 
-    if (empty($config['unbound']['cacheflush'])) {
+    if (empty((string)$mdl->general->cacheflush)) {
         if (isvalidpid('/var/run/unbound.pid')) {
             configd_run('unbound cache dump');
         }
@@ -114,9 +114,9 @@ function unbound_service_stop()
         unbound_cache_flush();
     }
 
-    killbypid('/var/run/unbound_logger.pid', 'TERM', true);
-    killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    killbypid('/var/run/unbound_logger.pid');
+    killbypid('/var/run/unbound_dhcpd.pid');
+    killbypid('/var/run/unbound.pid');
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
     mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
@@ -125,6 +125,7 @@ function unbound_service_stop()
 function unbound_generate_config()
 {
     global $config;
+    $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
     $pythonv = readlink('/usr/local/bin/python3');
     $python_dir = "/usr/local/lib/{$pythonv}";
@@ -145,17 +146,17 @@ function unbound_generate_config()
     $anchor_file = '';
     $dns64_config = '';
 
-    if (isset($config['unbound']['dns64'])) {
-        if (!empty($config['unbound']['dns64prefix'])) {
-            $dns64_config .= "\ndns64-prefix: {$config['unbound']['dns64prefix']}";
+    if (!empty($general['dns64'])) {
+        if (!empty($general['dns64prefix'])) {
+            $dns64_config .= "\ndns64-prefix: {$general['dns64prefix']}";
         }
-        if (isset($config['unbound']['noarecords'])) {
+        if (!empty($general['noarecords'])) {
             $module_config .= 'respip ';
             $dns64_config .= "\nresponse-ip: 0.0.0.0/0 redirect";
         }
         $module_config .= 'dns64 ';
     }
-    if (isset($config['unbound']['dnssec'])) {
+    if (!empty($general['dnssec'])) {
         $module_config .= 'validator iterator';
         $anchor_file = 'auto-trust-anchor-file: /var/unbound/root.key';
     } else {
@@ -173,8 +174,8 @@ function unbound_generate_config()
     }
 
     $bindints = '';
-    if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = explode(',', $config['unbound']['active_interface']);
+    if (!empty($general['active_interface'])) {
+        $active_interfaces = explode(',', $general['active_interface']);
         $active_interfaces[] = 'lo0';
         $addresses = array();
 
@@ -202,9 +203,9 @@ function unbound_generate_config()
 
     $outgoingints = '';
     $ifconfig_details = legacy_interfaces_details();
-    if (!empty($config['unbound']['outgoing_interface'])) {
+    if (!empty($general['outgoing_interface'])) {
         $outgoingints = "# Outgoing interfaces to be used\n";
-        $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
+        $outgoing_interfaces = explode(",", $general['outgoing_interface']);
         foreach ($outgoing_interfaces as $outif) {
             $outip = get_interface_ip($outif, $ifconfig_details);
             if (!empty($outip)) {
@@ -220,12 +221,12 @@ function unbound_generate_config()
     unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
-    $port = is_port($config['unbound']['port'] ?? null) ? $config['unbound']['port'] : '53';
+    $port = $general['port'] ?? '53';
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
 
-    if (isset($config['unbound']['regdhcp'])) {
+    if (!empty($general['regdhcp'])) {
         $include_dhcpleases = 'include: /var/unbound/dhcpleases.conf';
         @touch('/var/unbound/dhcpleases.conf');
     } else {
@@ -351,6 +352,7 @@ function unbound_cache_flush()
 function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
+    $mdl = new \OPNsense\Unbound\Unbound();
 
     unbound_service_stop();
 
@@ -363,15 +365,14 @@ function unbound_configure_do($verbose = false, $unused = '')
     unbound_generate_config();
 
     $domain = '';
-
-    if (isset($config['unbound']['regdhcp'])) {
+    if (!empty((string)$mdl->general->regdhcp)) {
         $domain = $config['system']['domain'];
-        if (isset($config['unbound']['regdhcpdomain'])) {
-            $domain = $config['unbound']['regdhcpdomain'];
+        if (!empty((string)$mdl->general->regdhcpdomain)) {
+            $domain = (string)$mdl->general->regdhcpdomain;
         }
     }
 
-    if (isset($config['unbound']['stats'])) {
+    if (isset($config['unbound']['stats'])) { /* XXX */
         @touch('/var/unbound/data/stats');
     } else {
         @unlink('/var/unbound/data/stats');
@@ -379,21 +380,21 @@ function unbound_configure_do($verbose = false, $unused = '')
 
     mwexecf_bg('/usr/local/bin/flock -n -E 0 -o /tmp/unbound_start.lock /usr/local/opnsense/scripts/unbound/start.sh %s', [$domain]);
 
+    waitforpid('/var/run/unbound.pid', 10);
+
     service_log("done.\n", $verbose);
 }
 
 function unbound_add_host_entries($ifconfig_details = null)
 {
     global $config;
+    $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
-    $local_zone_type = 'transparent';
     $ptr_records = ['127.0.0.1', '::1'];
 
     openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
 
-    if (!empty($config['unbound']['local_zone_type'])) {
-        $local_zone_type = $config['unbound']['local_zone_type'];
-    }
+    $local_zone_type = $general['local_zone_type'] ?? 'transparent';
 
     $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
 
@@ -405,13 +406,13 @@ function unbound_add_host_entries($ifconfig_details = null)
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
 
-    if (!empty($config['unbound']['active_interface'])) {
-        $interfaces = explode(",", $config['unbound']['active_interface']);
+    if (!empty($general['active_interface'])) {
+        $interfaces = explode(",", $general['active_interface']);
     } else {
         $interfaces = array_keys(get_configured_interface_with_descr());
     }
 
-    if (empty($config['unbound']['noregrecords'])) {
+    if (empty($general['noregrecords'])) {
         foreach ($interfaces as $interface) {
             if ($interface == 'lo0' || substr($interface, 0, 4) == 'ovpn') {
                 continue;
@@ -439,7 +440,7 @@ function unbound_add_host_entries($ifconfig_details = null)
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']} {$record} {$addr}\"\n";
             }
 
-            if (empty($config['unbound']['noreglladdr6'])) {
+            if (empty($general['noreglladdr6'])) {
                 if (!empty($lladdr6)) {
                     /* cannot embed scope */
                     $lladdr6 = explode('%', $lladdr6)[0];
@@ -454,7 +455,7 @@ function unbound_add_host_entries($ifconfig_details = null)
         }
     }
 
-    if (isset($config['unbound']['enable_wpad'])) {
+    if (!empty($general['enable_wpad'])) {
         $webui_protocol = !empty($config['system']['webgui']['protocol']) ? $config['system']['webgui']['protocol'] : 'https';
         $webui_port = !empty($config['system']['webgui']['port']) ? $config['system']['webgui']['port'] : 443;
         // default domain
@@ -534,7 +535,7 @@ function unbound_add_host_entries($ifconfig_details = null)
                             break;
                     }
 
-                    if (!empty($alias['description']) && isset($config['unbound']['txtsupport'])) {
+                    if (!empty($alias['description']) && !empty($general['txtsupport'])) {
                         $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} TXT \"" . addslashes($alias['description']) . "\"'\n";
                     }
                 }
@@ -542,7 +543,7 @@ function unbound_add_host_entries($ifconfig_details = null)
         }
     }
 
-    if (isset($config['unbound']['regdhcpstatic'])) {
+    if (!empty($general['regdhcpstatic'])) {
         require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
 
         foreach (dhcpd_staticmap($config['system']['domain'], $ifconfig_details) as $host) {
@@ -557,7 +558,7 @@ function unbound_add_host_entries($ifconfig_details = null)
                 $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
                 $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
             }
-            if (!empty($host['descr']) && isset($config['unbound']['txtsupport'])) {
+            if (!empty($host['descr']) && !empty($general['txtsupport'])) {
                 $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
             }
         }
@@ -572,11 +573,12 @@ function unbound_add_host_entries($ifconfig_details = null)
 function unbound_acls_subnets()
 {
     global $config;
+    $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
     $any = true;
 
-    if (!empty($config['unbound']['active_interface'])) {
-        $active_interfaces = array_flip(explode(',', $config['unbound']['active_interface']));
+    if (!empty($general['active_interface'])) {
+        $active_interfaces = array_flip(explode(',', $general['active_interface']));
         $any = false;
     } else {
         $active_interfaces = get_configured_interface_with_descr();
@@ -647,35 +649,4 @@ function unbound_acls_config()
     }
 
     file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
-}
-
-function unbound_hosts_generate()
-{
-    if (!unbound_enabled()) {
-        return;
-    }
-
-    $ifconfig_details = legacy_interfaces_details();
-    unbound_add_host_entries($ifconfig_details);
-
-    killbypid('/var/run/unbound.pid', 'HUP');
-}
-
-function unbound_local_zone_types()
-{
-    return array(
-        '' => 'transparent',
-        'always_nxdomain' => 'always_nxdomain',
-        'always_refuse' => 'always_refuse',
-        'always_transparent' => 'always_transparent',
-        'deny' => 'deny',
-        'inform' => 'inform',
-        'inform_deny' => 'inform_deny',
-        'nodefault' => 'nodefault',
-        # requires more plumbing:
-        #'redirect' => 'redirect',
-        'refuse' => 'refuse',
-        'static' => 'static',
-        'typetransparent' => 'typetransparent',
-    );
 }

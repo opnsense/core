@@ -644,7 +644,7 @@ abstract class BaseModel
     {
         if ($this->internal_mountpoint == ':memory:') {
             return false;
-        } elseif (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+        } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
             $migObjects = array();
             $logger = new Logger(
@@ -667,7 +667,7 @@ abstract class BaseModel
             uksort($versions, "version_compare");
             foreach ($versions as $mig_version => $filename) {
                 if (
-                    version_compare($this->internal_current_model_version, $mig_version, '<') &&
+                    version_compare($this->internal_current_model_version ?? '0.0.0', $mig_version, '<') &&
                     version_compare($this->internal_model_version, $mig_version, '>=')
                 ) {
                     // execute upgrade action
@@ -690,10 +690,8 @@ abstract class BaseModel
                             $upgradePerformed = true;
                         } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
-                                $this->internal_current_model_version .
-                                " to " . $mig_version . " in " .
-                                $class_info->getName() .
-                                " [skipping step]");
+                                $this->getVersion() .  " to " . $mig_version . " in " .
+                                $class_info->getName() .  " [skipping step]");
                         }
                         $this->internal_current_model_version = $mig_version;
                     }
@@ -724,6 +722,6 @@ abstract class BaseModel
      */
     public function getVersion()
     {
-        return $this->internal_current_model_version;
+        return $this->internal_current_model_version ?? '<unversioned>';
     }
 }

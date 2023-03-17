@@ -41,9 +41,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>
-            List of domains to blocklist.
-        </help>
+        <help>List of domains to blocklist. Only exact matches are supported.</help>
     </field>
     <field>
         <id>unbound.dnsbl.wildcards</id>
