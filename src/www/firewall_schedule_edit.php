@@ -547,30 +547,16 @@ class Schedule
         return $this->_description;
     }
 
-    final public function getStartOn(bool $is_javascript_format = false): ?string {
-        if (!$this->_start_on)
-            return null;
-
-        if (!$is_javascript_format)
-            return $this->_start_on;
-
-// TODO: Add support for locale
-        return date('m/d/Y', strtotime($this->_start_on));
+    final public function getStartOn(): ?string {
+        return (!$this->_start_on) ? null : $this->_start_on;
     }
 
     final public function hasStartOn(): bool {
         return !!$this->_start_on;
     }
 
-    final public function getEndOn(bool $is_javascript_format = false): ?string {
-        if (!$this->_end_on)
-            return null;
-
-        if (!$is_javascript_format)
-            return $this->_end_on;
-
-// TODO: Add support for locale
-        return date('m/d/Y', strtotime($this->_end_on));
+    final public function getEndOn(): ?string {
+        return (!$this->_end_on) ? null : $this->_end_on;
     }
 
     final public function hasEndOn(): bool {
@@ -1991,13 +1977,13 @@ function _initStartEndDates() {
         'language': '<?= str_replace('_', '-', $config['system']['language']) ?>'
     };
 
-    let current_date = '<?= $schedule->getStartOn(true) ?>';
+    let current_date = '<?= $schedule->getStartOn() ?>';
     if (current_date)
-        start_on.datepicker('setDate', current_date);
+        start_on.datepicker('setDate', new Date(current_date));
 
-    current_date = '<?= $schedule->getEndOn(true) ?>';
+    current_date = '<?= $schedule->getEndOn() ?>';
     if (current_date)
-        end_on.datepicker('setDate', current_date);
+        end_on.datepicker('setDate', new Date(current_date));
 
     start_on.datepicker(options);
     start_on.on('changeDate', function(e) {
