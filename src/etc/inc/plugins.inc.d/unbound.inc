@@ -221,7 +221,7 @@ function unbound_generate_config()
     unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
-    $port = $general['port'] ?? '53';
+    $port = $general['port'];
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';

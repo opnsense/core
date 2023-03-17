@@ -39,13 +39,15 @@ class M1_0_5 extends BaseModelMigration
         $new = [];
         foreach ($model->general->iterateItems() as $key => $node) {
             if (isset($config->unbound->$key)) {
+                if ($key == 'port' && empty($config->unbound->port)) {
+                    $model->general->port->applyDefault();
+                    continue;
+                }
                 $new[$key] = $config->unbound->$key;
             }
         }
 
-        if (isset($config->unbound->enable)) {
-            $new['enabled'] = $config->unbound->enable;
-        }
+        $new['enabled'] = isset($config->unbound->enable) ? '1' : '0';
 
         $model->general->setNodes($new);
     }
