@@ -848,61 +848,51 @@
                     <table class="table table-striped table-condensed">
                         <tbody>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Type') }}</td>
                                 <td id="product_id"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Version') }}</td>
                                 <td id="product_version"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Architecture') }}</td>
                                 <td id="product_arch"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Commit') }}</td>
                                 <td id="product_hash"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Mirror') }}</td>
                                 <td id="product_mirror"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Repositories') }}</td>
                                 <td id="product_repos"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Updated on') }}</td>
                                 <td id="product_time"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Checked on') }}</td>
                                 <td id="product_time_check"></td>
                                 <td></td>
                             </tr>
                             <tr style='display:none'>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;">{{ lang._('Licensed until') }}</td>
                                 <td id="product_license_valid_to"></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 20px;"></td>
                                 <td style="width: 150px;"></td>
                                 <td style="min-width: 500px;">
                                     <button class="btn btn-primary" id="checkupdate"><i class="fa fa-refresh"></i> {{ lang._('Check for updates') }}</button>
