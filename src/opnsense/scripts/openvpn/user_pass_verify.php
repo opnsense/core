@@ -96,6 +96,18 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     if (empty($username) || empty($password)) {
         return "username or password missing ({$method} - {$auth_file})";
     }
+    if (strpos($password, 'SCRV1:') === 0) {
+        // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
+        // validate and concat password into our default pin+password
+        $tmp = explode(':', $password);
+        if (count($tmp) == 3) {
+            $pass = base64_decode($tmp[1]);
+            $pin = base64_decode($tmp[2]);
+            if ($pass !== false && $pin !== false) {
+                $password = $pin . $pass;
+            }
+        }
+    }
     $a_server = $serverid !== null ? get_openvpn_server($serverid) : null;
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";

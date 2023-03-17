@@ -209,6 +209,20 @@ function firewall_rule_item_log($filterent)
     }
 }
 
+function filter_rule_item_alias_tooltip($alias_name)
+{
+    $alias_descr = htmlspecialchars(get_alias_description($alias_name));
+    $alias_name = htmlspecialchars($alias_name);
+    $result = "<span title=\"${alias_descr}\" data-toggle=\"tooltip\"  data-html=\"true\">";
+    $result .= $alias_name . "&nbsp;";
+    $result .= "</span>";
+    $result .= "<a href=\"/ui/firewall/alias/index/${alias_name}\"";
+    $result .= "  title=\"". gettext("edit alias") ."\" data-toggle=\"tooltip\">";
+    $result .= "<i class=\"fa fa-list\"></i>";
+    $result .= "</a>";
+    return $result;
+}
+
 function getScheduleDescription($name) {
     global $config;
 
@@ -754,7 +768,10 @@ $( document ).ready(function() {
                 ];
                 foreach ($fw->iterateFilterRules() as $rule):
                     $is_selected = false;
-                    if ($rule->getInterface() == $selected_if) {
+                    if (empty($ifgroups) && $rule->ruleOrigin() == 'group'){
+                        // group view, skip group section (groups can't be nested)
+                        $is_selected = false;
+                    } elseif ($rule->getInterface() == $selected_if) {
                         // interface view and this interface is selected
                         $is_selected = true;
                     } elseif ($selected_if == "FloatingRules" && $rule->ruleOrigin() == 'floating') {
@@ -806,19 +823,21 @@ $( document ).ready(function() {
                           <?=firewall_rule_item_proto($filterent);?>
                       </td>
                       <td class="view-info">
-                          <?=!empty($filterent['from']) ? $filterent['from'] : "*";?>
+                          <?=$rule->isUIFromNot() ? '!' : '';?>
+                          <?= is_alias($rule->getUIFromAddress()) ? filter_rule_item_alias_tooltip($rule->getUIFromAddress()) : htmlspecialchars($rule->getUIFromAddress());?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=isset($filterent['from_port']) ? $filterent['from_port'] : "*";?>
+                        <?= is_alias($rule->getUIFromPort()) ? filter_rule_item_alias_tooltip($rule->getUIFromPort()) : htmlspecialchars(pprint_port($rule->getUIFromPort()));?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=!empty($filterent['to']) ? $filterent['to'] : "*";?>
+                          <?=$rule->isUIToNot() ? '!' : '';?>
+                          <?= is_alias($rule->getUIToAddress()) ? filter_rule_item_alias_tooltip($rule->getUIToAddress()) : htmlspecialchars($rule->getUIToAddress());?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=isset($filterent['to_port']) ? $filterent['to_port'] : "*";?>
+                          <?= is_alias($rule->getUIToPort()) ? filter_rule_item_alias_tooltip($rule->getUIToPort()) : htmlspecialchars(pprint_port($rule->getUIToPort()));?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                        <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
+                        <?= $rule->getUIGateway();?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
                       <td class="view-info">
@@ -881,13 +900,8 @@ $( document ).ready(function() {
                     </td>
                     <td class="view-info">
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_address($filterent['source']));?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['address']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=!empty($filterent['source']['not']) ? '!' : '';?>
+                        <?=filter_rule_item_alias_tooltip($filterent['source']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['source']));?>
 <?php                 endif; ?>
@@ -895,13 +909,7 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_port($filterent['source']['port'])); ?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['port']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=filter_rule_item_alias_tooltip($filterent['source']['port']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_port(isset($filterent['source']['port']) ? $filterent['source']['port'] : null)); ?>
 <?php                 endif; ?>
@@ -909,13 +917,8 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['address']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=!empty($filterent['destination']['not']) ? '!' : '';?>
+                        <?=filter_rule_item_alias_tooltip($filterent['destination']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
 <?php                 endif; ?>
@@ -923,13 +926,7 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['port']) && is_alias($filterent['destination']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_port($filterent['destination']['port'])); ?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['port']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=filter_rule_item_alias_tooltip($filterent['destination']['port']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_port(isset($filterent['destination']['port']) ? $filterent['destination']['port'] : null)); ?>
 <?php                 endif; ?>

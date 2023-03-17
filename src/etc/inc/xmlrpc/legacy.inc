@@ -127,8 +127,8 @@ function filter_configure_xmlrpc()
     require_once("interfaces.inc");
 
     system_routing_configure();
+    system_resolver_configure();
     filter_configure();
-    system_hosts_generate();
 
     return true;
 }

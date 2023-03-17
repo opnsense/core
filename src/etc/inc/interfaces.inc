@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008-2009 Ermal Luçi
  * Copyright (C) 2005 Espen Johansen
@@ -886,14 +886,14 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
                             configdp_run('interface reconfigure', [$interface], true);
                             break;
                         }
-                        killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
+                        killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
                         break;
                     }
                 }
             }
             break;
         case 'dhcp':
-            killbypid("/var/run/dhclient.{$realif}.pid", 'TERM', true);
+            killbypid("/var/run/dhclient.{$realif}.pid");
             break;
         default:
             break;
@@ -1245,7 +1245,7 @@ EOD;
     unset($mpdconf);
 
     /* stop the service as a precaution */
-    killbypid("/var/run/{$ppp['type']}_{$interface}.pid", 'TERM', true);
+    killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
@@ -1310,7 +1310,9 @@ function interface_proxyarp_configure($interface = '')
 
     /* kill any running choparp, on restart "all" */
     if (empty($interface)) {
-        killbyname('choparp');
+        foreach (glob('/var/run/choparp_*.pid') as $pidfile) {
+            killbypid($pidfile);
+        }
     }
 
     $paa = array();
@@ -2703,7 +2705,7 @@ function interface_dhcpv6_configure($interface, $wancfg)
     $realifv6 = get_real_interface($interface, 'inet6');
 
     /* always kill rtsold in case of reconfigure */
-    killbypid('/var/run/rtsold.pid', 'TERM', true);
+    killbypid('/var/run/rtsold.pid');
 
     $rtsoldcommand = exec_safe(
         '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a -u',
@@ -3113,7 +3115,7 @@ function interface_dhcp_configure($interface = 'wan')
         return;
     }
 
-    killbypid("/var/run/dhclient.{$wanif}.pid", 'TERM', true);
+    killbypid("/var/run/dhclient.{$wanif}.pid");
 
     $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
     if (!$fd) {

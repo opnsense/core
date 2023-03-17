@@ -38,6 +38,7 @@ from .uri import UriParser
 from .arpcache import ArpCache
 from .bgpasn import BGPASN
 from .interface import InterfaceParser
+from .auth import AuthGroup
 from .base import BaseContentParser
 
 
@@ -215,6 +216,8 @@ class Alias(object):
             return ArpCache(**self._properties)
         elif self._type == 'asn':
             return BGPASN(**self._properties)
+        elif self._type == 'authgroup':
+            return AuthGroup(**self._properties)
         else:
             return None
 

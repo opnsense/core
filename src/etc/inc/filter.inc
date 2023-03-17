@@ -151,7 +151,7 @@ function ifgroup_setup()
     }
 }
 
-function filter_configure_sync($verbose = false, $load_aliases = true, $switch_gw = true)
+function filter_configure_sync($verbose = false, $load_aliases = true)
 {
     global $config;
 
@@ -249,22 +249,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true, $switch_g
         // register user forward rules
         foreach ($config['nat']['rule'] as $rule) {
             $fw->registerForwardRule(600, $rule);
-        }
-    }
-
-    if ($switch_gw && isset($config['system']['gw_switch_default'])) {
-        // When gateway switching is enabled, we might consider a different default gateway.
-        // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
-        // we keep it here for now (historical reasons).
-        $down_gateways = return_down_gateways();
-        foreach (array("inet", "inet6") as $ipprotocol) {
-            if (!empty($down_gateways)) {
-                log_msg(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)), LOG_DEBUG);
-            }
-            $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
-            if ($default_gw !== null && !empty($default_gw['gateway'])) {
-                system_default_route($default_gw['gateway'], $default_gw['if'], isset($default_gw['fargw']));
-            }
         }
     }
 
@@ -462,7 +446,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true, $switch_g
     mwexec('/sbin/ifconfig pflog0 promisc');
 
     /* bring up new instance of filterlog to load new rules */
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    killbypid('/var/run/filterlog.pid');
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
     unlock($filterlck);

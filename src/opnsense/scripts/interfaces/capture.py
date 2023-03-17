@@ -173,7 +173,7 @@ if __name__ == '__main__':
         result['status'] = 'ok'
         result['interfaces'] = {}
         for filename in glob.glob("%s%s*.pcap" % (TEMP_DIR, cmd_args.job)):
-            intf = filename.split('_')[-1].split('.')[0]
+            intf = filename.split('_', 1)[-1].rsplit('.', 1)[0]
             result['interfaces'][intf] = {'rows': []}
             args = []
             if cmd_args.detail == 'normal':

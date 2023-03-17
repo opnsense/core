@@ -322,6 +322,16 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.infrakeepprobing</id>
+        <label>Keep probing down hosts</label>
+        <type>checkbox</type>
+        <help>
+            Keep probing hosts that are down in the infrastructure host cache. Hosts that are down are probed
+            about every 120 seconds with an exponential backoff. If hosts do not respond within this time period,
+            they are marked as down for the duration of the host cache TTL.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.infracachenumhosts</id>
         <label>Number of Hosts to cache</label>
         <type>text</type>

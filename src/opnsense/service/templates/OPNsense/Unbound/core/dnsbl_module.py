@@ -280,7 +280,7 @@ class DNSBL:
                         if type(self.dnsbl['data'][key]['source_net']) is list:
                             for item in self.dnsbl['data'][key]['source_net']:
                                 try:
-                                    source_nets.append(ipaddress.ip_network(item))
+                                    source_nets.append(ipaddress.ip_network(item, False))
                                 except ValueError:
                                     log_err("dnsbl_module: unparsable network %s in %s" % (key, item))
                     self.dnsbl['data'][key]['source_net'] = source_nets
@@ -580,7 +580,11 @@ if __name__ == '__main__' and test_mode:
         )
     )
     if match:
-        msg = {'status': 'OK','action': 'Block','blocklist': match.get('bl'),'wildcard': match.get('wildcard')}
+        src_nets = match.get('source_net', [])
+        for i in range(len(src_nets)):
+            src_nets[i] = str(src_nets[i])
+        match['source_net'] = src_nets
+        msg = {'status': 'OK','action': 'Block','policy': match}
         print(json.dumps(msg))
     else:
         print(json.dumps({'status': 'OK','action': 'Pass'}))

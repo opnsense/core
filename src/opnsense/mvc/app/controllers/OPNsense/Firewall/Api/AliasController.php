@@ -66,13 +66,32 @@ class AliasController extends ApiMutableModelControllerBase
             $filter_funct
         );
 
-        // append category uuid's so we can use these in the frontend
-        $tmp = [];
+        /**
+         * remap some source data from the model as searchBase() is not able to distinct this.
+         * - category uuid's
+         * - unix group id's to names in content fields
+         */
+        $categories = [];
+        $types = [];
         foreach ($this->getModel()->aliases->alias->iterateItems() as $key => $alias) {
-            $tmp[$key] = !empty((string)$alias->categories) ? explode(',', (string)$alias->categories) : [];
+            $categories[$key] = !empty((string)$alias->categories) ? explode(',', (string)$alias->categories) : [];
+            $types[$key] = (string)$alias->type;
         }
+        $group_mapping = null;
         foreach ($result['rows'] as &$record) {
-            $record['categories_uuid'] = $tmp[$record['uuid']];
+            $record['categories_uuid'] = $categories[$record['uuid']];
+            if ($types[$record['uuid']] == 'authgroup') {
+                if ($group_mapping === null) {
+                    $group_mapping = $this->listUserGroupsAction();
+                }
+                $groups = [];
+                foreach (explode(',', $record['content']) as $grp) {
+                    if (isset($group_mapping[$grp])) {
+                        $groups[] = $group_mapping[$grp]['name'];
+                    }
+                }
+                $record['content'] = implode(',', $groups);
+            }
         }
 
         return $result;
@@ -267,6 +286,29 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
+     * list user groups
+     * @return array user groups
+     */
+    public function listUserGroupsAction()
+    {
+        $result = [];
+        $cnf = Config::getInstance()->object();
+        if (isset($cnf->system->group)) {
+            foreach ($cnf->system->group as $group) {
+                $name = (string)$group->name;
+                if ($name != 'all') {
+                    $result[(string)$group->gid] = [
+                        "name" => $name,
+                        "gid" => (string)$group->gid
+                    ];
+                }
+            }
+            ksort($result);
+        }
+        return $result;
+    }
+
+    /**
      * list network alias types
      * @return array indexed by country alias name
      */
@@ -429,7 +471,7 @@ class AliasController extends ApiMutableModelControllerBase
             if (isset($cnf->system->firmware) && !empty($cnf->system->firmware->mirror)) {
                 // XXX: we might add some attribute in firmware to store subscription status, since we now only store uri
                 $result[static::$internalModelName]['geoip']['subscription'] =
-                    strpos($cnf->system->firmware->mirror, "opnsense-update.deciso.com") !== false;
+                    strpos($cnf->system->firmware->mirror, 'opnsense-update.deciso.com') !== false;
             }
 
             $result[static::$internalModelName]['geoip']['address_count'] = 0;

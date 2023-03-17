@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -202,7 +202,8 @@ function system_resolvconf_generate($verbose = false)
         $search[] = $syscfg['dnssearchdomain'];
     }
 
-    if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable']))) {
+    $unbound = new \OPNsense\Unbound\Unbound();
+    if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || !empty((string)$unbound->general->enabled))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
@@ -486,6 +487,12 @@ function system_hosts_generate($verbose = false)
     service_log("done.\n", $verbose);
 }
 
+function system_resolver_configure($verbose = false)
+{
+    system_resolvconf_generate($verbose);
+    system_hosts_generate($verbose);
+}
+
 function system_hostname_configure($verbose = false)
 {
     service_log('Setting hostname: ', $verbose);
@@ -506,7 +513,7 @@ function system_host_route($host, $gateway)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -529,7 +536,7 @@ function system_default_route($gateway, $interface, $far = false)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -543,7 +550,7 @@ function system_default_route($gateway, $interface, $far = false)
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
-        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
+        log_msg("ROUTING: keeping current {$family} default gateway '{$gateway}'");
         return;
     }
 
@@ -570,6 +577,7 @@ function system_default_route($gateway, $interface, $far = false)
         $realif = null;
     }
 
+    log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
@@ -581,7 +589,9 @@ function system_default_route($gateway, $interface, $far = false)
 
 function system_routing_configure($verbose = false, $interface = null, $monitor = true, $family = null)
 {
-    service_log('Setting up routes...', $verbose);
+    global $config;
+
+    service_log(sprintf('Setting up route%s...', empty($interface) ? 's' : " {$interface}"), $verbose);
 
     if (!empty($interface)) {
         log_msg("ROUTING: entering configure using '${interface}'", LOG_DEBUG);
@@ -591,24 +601,30 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifdetails);
+    $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
 
-    foreach (['inet', 'inet6'] as $ipproto) {
+    if (!empty($down_gateways)) {
+        log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
+    }
+
+    foreach (['inet' => 'ipv4', 'inet6' => 'ipv6'] as $ipproto => $type) {
         if ($family !== null && $family !== $ipproto) {
             continue;
         }
 
-        /* determine default gateway without considering monitor status */
-        $gateway = $gateways->getDefaultGW([], $ipproto);
-        $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
+        $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
+        if ($gateway == null) {
+            continue;
+        }
 
-        if ($gateway != null) {
-            log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
-            if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
-            } else {
-                log_msg("ROUTING: skipping {$logproto} default route");
+        if (isset($config['system']['gw_switch_default']) || empty($interface) || $interface == $gateway['interface']) {
+            if (empty($ifdetails[$gateway['if']][$type][0])) {
+                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}", LOG_ERR);
+                continue;
             }
+
+            log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
+            system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
         }
     }
 
@@ -677,19 +693,24 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     service_log("done.\n", $verbose);
 
     if ($monitor) {
-        $reloads = [];
-
         if (!empty($interface)) {
+            $reloads = [];
+
             foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-                /* XXX needs $family awareness of some sort */
+                if ($family !== null && $family !== $gateway['ipprotocol']) {
+                    continue;
+                }
+
                 if ($interface == $gateway['interface']) {
                     $reloads[] = $name;
                 }
             }
-        }
 
-        foreach (count($reloads) ? $reloads : [null] as $reload) {
-            plugins_configure('monitor', $verbose, [$reload]);
+            foreach ($reloads as $reload) {
+                plugins_configure('monitor', $verbose, [$reload]);
+            }
+        } else {
+            plugins_configure('monitor', $verbose);
         }
     }
 }
@@ -743,9 +764,21 @@ function system_firmware_configure($verbose = false)
 
     /* calculate the effective ABI */
     $args = [ exec_safe('-A %s', shell_safe('opnsense-version -x')) ];
+    $url_sub = '';
+
+    if (!empty($config['system']['firmware']['subscription'])) {
+        /*
+         * Append the url now that it is not in the mirror anymore.
+         * This only ever works if the mirror is set to a non-default.
+         */
+        $url_sub = '/' . $config['system']['firmware']['subscription'];
+    } else {
+        /* clear the license file when no subscription key is set */
+        @unlink('/usr/local/opnsense/version/core.license');
+    }
 
     if (!empty($config['system']['firmware']['mirror'])) {
-        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror']));
+        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror'] . $url_sub));
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
@@ -754,11 +787,6 @@ function system_firmware_configure($verbose = false)
 
     /* rewrite the config via the defaults and possible arguments */
     mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
-
-    /* clear the license file when no subscription key is set */
-    if (empty(shell_safe('/usr/local/sbin/opnsense-update -K'))) {
-        @unlink('/usr/local/opnsense/version/core.license');
-    }
 
     service_log("done.\n", $verbose);
 }
@@ -864,7 +892,15 @@ function system_sysctl_configure($verbose = false)
 {
     service_log('Setting up extended sysctls...', $verbose);
 
-    set_sysctl(system_sysctl_get());
+    $todo = [];
+    $new_values = system_sysctl_get();
+    $current_values = get_sysctl(array_keys($new_values));
+    foreach ($new_values as $prop => $value) {
+        if (isset($current_values[$prop]) && $current_values[$prop] != $value) {
+            $todo[$prop] = $value;
+        }
+    }
+    set_sysctl($todo);
 
     service_log("done.\n", $verbose);
 }

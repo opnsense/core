@@ -76,6 +76,11 @@ class NetworkField extends BaseField
     private $internalAsList = false;
 
     /**
+     * @var bool when set, host bits with a value other than zero are not allowed in the notation if a mask is provided
+     */
+    private $internalStrict = false;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -151,6 +156,19 @@ class NetworkField extends BaseField
     }
 
     /**
+     * select if host bits are allowed in the notation
+     * @param $value
+     */
+    public function setStrict($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalStrict = true;
+        } else {
+            $this->internalStrict = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -184,7 +202,8 @@ class NetworkField extends BaseField
                     'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired,
                     'netMaskAllowed' => $this->internalNetMaskAllowed,
-                    'version' => $this->internalAddressFamily
+                    'version' => $this->internalAddressFamily,
+                    'strict' => $this->internalStrict
                     ));
             }
         }

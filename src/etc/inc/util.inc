@@ -30,49 +30,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("IPv6.inc");
+require_once 'IPv6.inc';
 
-function killbyname($procname, $sig = 'TERM', $waitforit = false)
+/* XXX only two callers left, better remove this unreliable function */
+function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
-    if (!is_process_running($procname)) {
-        return;
-    }
-
-    mwexecf('/bin/pkill -%s %s', array($sig, $procname));
-
-    if (!$waitforit) {
-        return;
-    }
-
-    while (is_process_running($procname)) {
-        usleep(200 * 1000);
-    }
+    /* pgrep -n only kills the newest matching process */
+    _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit);
 }
 
-function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
+function killbypid($pid_or_file, $sig = 'TERM', $waitforit = true)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        mwexecf('/bin/kill -%s %s', array($sig, $pidfile));
-    } elseif (isvalidpid($pidfile)) {
-        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
-    } else {
+    $pid = $pid_or_file;
+
+    if (strpos($pid_or_file, '/') !== false) {
+        $pid = trim(@file_get_contents($pid_or_file) ?? '');
+    }
+
+    _killbypid($pid, $sig, $waitforit);
+}
+
+function _killbypid($pid, $sig, $waitforit)
+{
+    if (!is_numeric($pid) || $pid <= 1) {
         return;
     }
 
-    if (!$waitforit) {
+    mwexecf('/bin/kill -%s %s', [$sig, $pid]);
+
+    if (!$waitforit || $sig == 'HUP') {
         return;
     }
 
-    while (isvalidpid($pidfile)) {
+    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
         usleep(200 * 1000);
     }
 }
 
 function isvalidpid($pidfile)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        return mwexecf('/bin/kill -0 %s', $pidfile, true) == 0;
-    } elseif (file_exists($pidfile)) {
+    if (file_exists($pidfile)) {
         return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
     }
 
@@ -103,7 +100,7 @@ function is_process_running($process)
     return (intval($retval) == 0);
 }
 
-function service_by_name($name, $filter = array())
+function service_by_name($name, $filter = [])
 {
     $services = plugins_services();
 
@@ -122,7 +119,7 @@ function service_by_name($name, $filter = array())
         }
     }
 
-    return array();
+    return [];
 }
 
 function service_status($service)
@@ -138,17 +135,75 @@ function service_status($service)
     return is_process_running($service['name']);
 }
 
-function service_control_start($name, $extras)
+function service_message($service)
 {
-    $filter = array();
+   /*
+    * Emulate the following messages from rc system:
+    *
+    *     syslog_ng is running as pid 11645.
+    *     syslog_ng is not running.
+    */
 
-    if (!empty($extras['id'])) {
+    $pid = '';
+    $status = false;
+
+    if (!empty($service['nocheck'])) {
+        /* do not expose pid / may not exist */
+        $status = true;
+    } elseif (isset($service['pidfile'])) {
+        $status = isvalidpid($service['pidfile']);
+        if ($status) {
+            /* could be wrong pid but best effort only */
+            $pid = ' as pid ' . trim(@file_get_contents($service['pidfile']) ?? '');
+        }
+    } else {
+        $status = is_process_running($service['name']);
+        if ($status) {
+            /* could be wrong pid but best effort only */
+            $pid = ' as pid ' . shell_safe('/bin/pgrep -anx %s', $service['name']);
+        }
+    }
+
+    return sprintf('%s is %s.', service_name($service), $status ? 'running' . $pid : 'not running');
+}
+
+function service_name($service)
+{
+    return $service['name'] . (array_key_exists('id', $service) ? "[{$service['id']}]" : '');
+}
+
+function service_control_get($name, $extras)
+{
+    $filter = [];
+
+    if (array_key_exists('id', $extras) && $extras['id'] !== '') {
         $filter['id'] = $extras['id'];
     }
 
     $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
+    if (empty($service)) {
+        $name .= isset($filter['id']) ? "[{$filter['id']}]" : '';
+        return sprintf(gettext("Could not find unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    return $service;
+}
+
+function service_control_status($name, $extras)
+{
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
+    }
+
+    return htmlspecialchars(service_message($service));
+}
+
+function service_control_start($name, $extras)
+{
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['start'])) {
@@ -157,7 +212,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['php']['start'])) {
         foreach ($service['php']['start'] as $cmd) {
-            $params = array();
+            $params = [];
             if (isset($service['php']['args'])) {
                 foreach ($service['php']['args'] as $param) {
                     $params[] = $service[$param];
@@ -170,23 +225,17 @@ function service_control_start($name, $extras)
             mwexec($cmd);
         }
     } else {
-        return sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
     }
 
-    return sprintf(gettext("Service `%s' has been started."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been started."), htmlspecialchars(service_name($service)));
 }
 
 function service_control_stop($name, $extras)
 {
-    $filter = array();
-
-    if (!empty($extras['id'])) {
-        $filter['id'] = $extras['id'];
-    }
-
-    $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not stop unknown service `%s'"), htmlspecialchars($name));
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['stop'])) {
@@ -202,26 +251,20 @@ function service_control_stop($name, $extras)
             mwexec($cmd);
         }
     } elseif (isset($service['pidfile'])) {
-        killbypid($service['pidfile'], 'TERM', true);
+        killbypid($service['pidfile']);
     } else {
         /* last resort, but not very elegant */
         killbyname($service['name']);
     }
 
-    return sprintf(gettext("Service `%s' has been stopped."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been stopped."), htmlspecialchars(service_name($service)));
 }
 
 function service_control_restart($name, $extras)
 {
-    $filter = array();
-
-    if (!empty($extras['id'])) {
-        $filter['id'] = $extras['id'];
-    }
-
-    $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not restart unknown service `%s'"), htmlspecialchars($name));
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['restart'])) {
@@ -230,7 +273,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['php']['restart'])) {
         foreach ($service['php']['restart'] as $cmd) {
-            $params = array();
+            $params = [];
             if (isset($service['php']['args'])) {
                 foreach ($service['php']['args'] as $param) {
                     $params[] = $service[$param];
@@ -243,10 +286,10 @@ function service_control_restart($name, $extras)
             mwexec($cmd);
         }
     } else {
-        return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
     }
 
-    return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars(service_name($service)));
 }
 
 function is_subsystem_dirty($subsystem = '')

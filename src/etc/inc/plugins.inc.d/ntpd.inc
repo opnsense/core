@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -50,6 +50,7 @@ function ntpd_services()
     $pconfig['description'] = gettext('Network Time Daemon');
     $pconfig['php']['restart'] = array('ntpd_configure_do');
     $pconfig['php']['start'] = array('ntpd_configure_do');
+    $pconfig['pidfile'] = '/var/run/ntpd.pid';
 
     if (!empty($config['ntpd']['clientmode'])) {
         $pconfig['nocheck'] = true;
@@ -171,7 +172,7 @@ function ntpd_configure_do($verbose = false)
 {
     global $config;
 
-    killbyname('ntpd', 'TERM', true);
+    killbypid('/var/run/ntpd.pid');
 
     if (!ntpd_enabled()) {
         return;
@@ -451,7 +452,7 @@ function ntpd_configure_do($verbose = false)
     @mkdir('/var/empty', 0775, true);
 
     if (empty($config['ntpd']['clientmode'])) {
-        mwexecf('/usr/local/sbin/ntpd -g -c %s', ['/var/etc/ntpd.conf']);
+        mwexecf('/usr/local/sbin/ntpd -g -p %s -c %s', ['/var/run/ntpd.pid', '/var/etc/ntpd.conf']);
     } else {
         mwexecf_bg('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
     }

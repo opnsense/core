@@ -31,6 +31,7 @@
 namespace OPNsense\Base\Validators;
 
 use OPNsense\Base\BaseValidator;
+use OPNsense\Firewall\Util;
 use Phalcon\Messages\Message;
 
 /**
@@ -46,7 +47,7 @@ class NetworkValidator extends BaseValidator
      *      noPrivate   : true, false (default)
      *      noSubnet    : true, false (default)
      *      netMaskRequired : true, false (default)
-     *
+     *      strict:     : true, false (default)
      *
      * @param $validator
      * @param string $attribute
@@ -89,6 +90,7 @@ class NetworkValidator extends BaseValidator
                 if ($this->getOption('netMaskAllowed') === false) {
                     $result = false;
                 } else {
+                    $cidr = $value;
                     $parts = explode("/", $value);
                     if (count($parts) > 2 || !ctype_digit($parts[1])) {
                         // more parts then expected or second part is not numeric
@@ -107,6 +109,10 @@ class NetworkValidator extends BaseValidator
                                 $result = false;
                             }
                         }
+                    }
+
+                    if ($this->getOption('strict') === true && !Util::isSubnetStrict($cidr)) {
+                        $result = false;
                     }
                 }
             } elseif ($this->getOption('netMaskRequired') === true) {

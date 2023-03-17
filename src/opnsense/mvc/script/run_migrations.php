@@ -55,7 +55,6 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
                     if ($mig_performed) {
-                        $version_pre = !empty($version_pre) ? $version_pre : '<unversioned>';
                         echo "Migrated " .  $mdl_class_info->getName() .
                             " from " . $version_pre .
                             " to " . $version_post . "\n";
