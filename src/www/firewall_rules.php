@@ -223,21 +223,50 @@ function filter_rule_item_alias_tooltip($alias_name)
     return $result;
 }
 
-function getScheduleDescription($name) {
+function _getSchedule(string $name): ?array {
     global $config;
 
     if (!isset($config['schedules']['schedule'])) {
-        return '';
+        return null;
     }
 
     foreach ($config['schedules']['schedule'] as $schedule) {
         if ($schedule['name'] == $name) {
-            return htmlspecialchars($schedule['description'] ?? $schedule['descr'] ?? '');
+            return $schedule;
         }
     }
 
-    return '';
+    return null;
 }
+
+function getHTMLSchedule(?string $name): string {
+    if (empty($name)) {
+        return '*';
+    }
+
+    $schedule = _getSchedule($name);
+
+    $description = sprintf(
+        '<span title="%s" data-toggle="tooltip">%s&nbsp;</span>',
+        htmlspecialchars($schedule['description'] ?? $schedule['descr'] ?? ''),
+        htmlspecialchars($name)
+    );
+
+    $icon = sprintf(
+        '<span class="fa fa-calendar %s"></span>',
+        (filter_get_time_based_rule_status($schedule)) ? 'text-success' : 'text-muted'
+    );
+
+    $link = sprintf(
+        '<a href="/firewall_schedule_edit.php?name=%s" title="%s" data-toggle="tooltip">%s</a>',
+        htmlspecialchars($name),
+        html_safe(_('Edit')),
+        $icon
+    );
+
+    return sprintf("%s\n%s", $description, $link);
+}
+
 /***********************************************************************************************************
  *
  ***********************************************************************************************************/
@@ -942,28 +971,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                     </td>
                     <td class="view-info hidden-xs hidden-sm">
-<?php
-                      if (!empty($filterent['sched'])):
-?>
-                        <span title="<?= getScheduleDescription($filterent['sched']) ?>" data-toggle="tooltip">
-                          <?=htmlspecialchars($filterent['sched']);?>&nbsp;
-                        </span>
-                        <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"
-                            title="<?= html_safe(gettext('Edit')) ?>" data-toggle="tooltip">
-<?php
-                        if (filter_get_time_based_rule_status($schedule)):?>
-                          <i class="fa fa-calendar text-success"></i>
-<?php
-                        else:?>
-                          <i class="fa fa-calendar text-muted"></i>
-<?php
-                        endif;?>
-                        </a>
-<?php
-                      else: ?>
-                      *
-<?php
-                       endif;?>
+                      <?= getHTMLSchedule(@$filterent['sched']) ?>
                     </td>
                     <td class="view-info">
                       <?php if ($intf_count == '*'):?>
