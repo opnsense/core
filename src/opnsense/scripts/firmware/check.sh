@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -394,6 +394,7 @@ cat > ${JSONFILE} << EOF
     "product_id":"${product_id}",
     "product_target":"${product_target}",
     "product_version":"${product_version}",
+    "product_abi":"${product_xabi}",
     "reinstall_packages":[${packages_reinstall}],
     "remove_packages":[${packages_removed}],
     "repository":"${repository}",
