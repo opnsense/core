@@ -114,13 +114,13 @@
                 <name>Enable Resolver</name>
                 <type>checkbox</type>
                 <value>yes</value>
-                <bindstofield>unbound->enable</bindstofield>
+                <bindstofield>OPNsense->unboundplus->general->enabled</bindstofield>
             </field>
             <field>
                 <name>Enable DNSSEC Support</name>
                 <type>checkbox</type>
                 <value></value>
-                <bindstofield>unbound->dnssec</bindstofield>
+                <bindstofield>OPNsense->unboundplus->general->dnssec</bindstofield>
             </field>
             <field>
                 <name>Harden DNSSEC data</name>

@@ -269,6 +269,8 @@ class FirmwareController extends ApiMutableModelControllerBase
                 $active_status = 'upgrade';
             }
 
+            $subscription = strpos($response['product']['product_mirror'], '${SUBSCRIPTION}') !== false;
+
             if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
@@ -285,7 +287,7 @@ class FirmwareController extends ApiMutableModelControllerBase
                 $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'forbidden') {
-                $response['status_msg'] = gettext('The repository did not grant access.');
+                $response['status_msg'] = $subscription ? gettext('The provided subscription is invalid.') : gettext('The repository did not grant access.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'revoked') {
                 $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
@@ -297,7 +299,7 @@ class FirmwareController extends ApiMutableModelControllerBase
                 $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $response['product_target']);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
-                $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
+                $response['status_msg'] = $subscription ? sprintf(gettext('The matching %s %s series does not yet exist.'), $response['product']['product_name'], $response['product_abi']) : gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif ($active_count) {
                 if ($active_count == 1) {
