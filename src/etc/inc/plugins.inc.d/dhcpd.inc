@@ -1126,6 +1126,8 @@ EOD;
 
                 if (!empty($sm['gateway']) && $sm['gateway'] != "none" && (empty($dhcpifconf['gateway']) || $sm['gateway'] != $dhcpifconf['gateway'])) {
                     $dhcpdconf .= "  option routers {$sm['gateway']};\n";
+                } elseif ($sm['gateway'] == "none") {
+                    $dhcpdconf .= "  option routers no-gateway-assigned;\n";
                 }
 
                 $smdnscfg = "";
