@@ -634,7 +634,7 @@ if ($delete_error) {
                     <td><?= _('Ends') ?></td>
                     <td><?= _('Time Ranges') ?></td>
                     <td style="min-width: 150px;"><?= _('Description') ?></td>
-                    <td class="text-nowrap" style="width: 120px;">
+                    <td class="text-nowrap" style="width: 125px;">
                       <a href="<?= Schedule::EDIT_PAGE ?>"
                          class="btn btn-primary btn-xs"
                          title="<?= html_safe(_('Add')) ?>"
@@ -707,7 +707,7 @@ foreach ($schedules as $schedule):
                          title="<?= html_safe(_('Delete')) ?>"
                          data-id="<?= $schedule->getID() ?>"
                          data-toggle="tooltip">
-                        <span class="fa fa-trash fa-fw"></span>
+                        <span class="fa fa-trash fa-fw text-danger"></span>
                       </a>
                     </td>
                   </tr>

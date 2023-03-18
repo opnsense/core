@@ -1350,6 +1350,16 @@ function _clearEntryModeInputs(is_clear_description = false) {
     });
 }
 
+function _resetTimeRangeInputRows() {
+    _hideTimeRangeInputRows();
+
+    $('#range-time-row').hide();
+    $('#range-description-row').hide();
+    $('#range-buttons-row').hide();
+
+    _clearEntryModeInputs(true);
+}
+
 function warnBeforeClearCalender() {
     const def = $.Deferred();
 
@@ -1376,7 +1386,7 @@ function warnBeforeClearCalender() {
                 'label': '<?= html_safe(_('Clear')) ?>',
                 'cssClass': 'btn btn-danger',
                 'action': function(dialog) {
-                    _clearEntryModeInputs(true);
+                    _resetTimeRangeInputRows()
                     dialog.close();
                     def.resolve();
                 }
@@ -1395,16 +1405,6 @@ function _hideTimeRangeInputRows() {
     $('#range-repeat-weekly-row').hide();
     $('#range-repeat-monthly-row').hide();
     $('#range-custom-row').hide();
-}
-
-function resetTimeRangeInputRows() {
-    _hideTimeRangeInputRows();
-
-    $('#range-time-row').hide();
-    $('#range-description-row').hide();
-    $('#range-buttons-row').hide();
-
-    _clearEntryModeInputs(true);
 }
 
 function removeTimeRange(is_confirm = false) {
@@ -1469,7 +1469,7 @@ function _injectTimeRange(
     const edit_click = `return editTimeRange.bind(this)('${start_time}', '${stop_time}', '${description}')`;
 
     const delete_title = '<?= html_safe(_('Delete')) ?>';
-    const delete_icon = '<span class="fa fa-trash fa-fw"></span>';
+    const delete_icon = '<span class="fa fa-trash fa-fw text-danger"></span>';
     const delete_click = `return removeTimeRange.bind(this)(true)`;
 
     const edit_cell = $('<td></td>');
@@ -1491,7 +1491,7 @@ function _injectTimeRange(
     if (!is_clear_calendar)
         return;
 
-    resetTimeRangeInputRows();
+    _resetTimeRangeInputRows();
 }
 
 function _getOrdinalDate(date) {
@@ -2088,7 +2088,7 @@ $(function() {
     });
 
     _initTimeRangeSelections();
-    resetTimeRangeInputRows();
+    _resetTimeRangeInputRows();
     _initCalendar();
     _initStartEndDates();
 });
