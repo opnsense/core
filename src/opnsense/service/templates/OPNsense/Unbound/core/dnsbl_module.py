@@ -173,7 +173,7 @@ class ModuleContext:
         else:
             info = (t, None, None, qtype_str, qname)
 
-        domain = qname.rstrip('.')
+        domain = qname.rstrip('.').lower()
 
         rr_types = (RR_TYPE_A, RR_TYPE_AAAA, RR_TYPE_CNAME, RR_TYPE_HTTPS)
 
