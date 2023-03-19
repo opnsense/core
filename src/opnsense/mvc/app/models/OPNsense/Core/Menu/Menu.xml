@@ -217,7 +217,7 @@
             <ClientExport order="40" VisibleName="Client Export" url="/ui/openvpn/export">
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>
             </ClientExport>
-            <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
+            <Status order="60" VisibleName="Connection Status" url="/ui/openvpn/status"/>
             <LogFile order="70" VisibleName="Log File" url="/ui/diagnostics/log/core/openvpn"/>
         </OpenVPN>
     </VPN>

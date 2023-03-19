@@ -514,7 +514,8 @@
     <page-status-openvpn>
         <name>Status: OpenVPN</name>
         <patterns>
-            <pattern>status_openvpn.php*</pattern>
+            <pattern>ui/openvpn/status</pattern>
+            <pattern>api/openvpn/service/*</pattern>
         </patterns>
     </page-status-openvpn>
     <page-status-services>
