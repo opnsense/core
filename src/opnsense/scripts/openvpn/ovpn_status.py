@@ -99,7 +99,7 @@ def ovpn_state(filename):
         if len(tmp) > 2 and tmp[0].isdigit():
             response['timestamp'] = int(tmp[0])
             response['status'] = tmp[1].lower()
-            response['virtual_addr'] = tmp[3] if len(tmp) > 3 else ""
+            response['virtual_address'] = tmp[3] if len(tmp) > 3 else ""
             response['remote_host'] = tmp[4] if len(tmp) > 4 else ""
 
     return response
