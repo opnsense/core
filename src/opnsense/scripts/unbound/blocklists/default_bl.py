@@ -58,14 +58,14 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                 else:
                     if self.domain_pattern.match(domain):
                         per_file_stats['blocklist'] += 1
-                        if entry in result:
+                        if domain in result:
                             # duplicate domain, signify in dataset for debugging purposes
-                            if 'duplicates' in result[entry]:
-                                result[entry]['duplicates'] += ',%s' % bl_shortcode
+                            if 'duplicates' in result[domain]:
+                                result[domain]['duplicates'] += ',%s' % bl_shortcode
                             else:
-                                result[entry]['duplicates'] = '%s' % bl_shortcode
+                                result[domain]['duplicates'] = '%s' % bl_shortcode
                         else:
-                            result[entry] = {'bl': bl_shortcode, 'wildcard': False}
+                            result[domain] = {'bl': bl_shortcode, 'wildcard': False}
                     else:
                         per_file_stats['skip'] += 1
             syslog.syslog(
