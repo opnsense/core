@@ -52,9 +52,8 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         result = {}
         for blocklist, bl_shortcode in self._blocklists_in_config():
             per_file_stats = {'uri': blocklist, 'skip': 0, 'blocklist': 0}
-            for entry in self._domains_in_blocklist(blocklist):
-                domain = entry.lower()
-                if self._whitelist_pattern.match(entry):
+            for domain in self._domains_in_blocklist(blocklist):
+                if self._whitelist_pattern.match(domain):
                     per_file_stats['skip'] += 1
                 else:
                     if self.domain_pattern.match(domain):
@@ -82,9 +81,10 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                         if self.domain_pattern.match(entry):
                             result[entry] = {'bl': 'Manual', 'wildcard': False}
                 elif key.startswith('wildcard'):
-                    if self.domain_pattern.match(value):
+                    entry = value.rstrip().lower()
+                    if self.domain_pattern.match(entry):
                         # do not apply whitelist to wildcard domains
-                        result[value] = {'bl': 'Manual', 'wildcard': True}
+                        result[entry] = {'bl': 'Manual', 'wildcard': True}
 
         return result
 
@@ -109,7 +109,7 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         cache_loc = '/tmp/bl_cache/'
         if os.path.exists(cache_loc):
             filep = cache_loc + h
-            if os.path.exists(filep):
+            if os.path.exists(filep) and os.path.getsize(filep) > 0:
                 fstat = os.stat(filep).st_ctime
                 if (time.time() - fstat) < self.cache_ttl: # 20 hours, a bit under the recommended cron time
                     from_cache = True
