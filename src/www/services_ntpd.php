@@ -60,9 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     foreach ($copy_fields as $fieldname) {
-        if (isset($a_ntpd[$fieldname])) {
-            $pconfig[$fieldname] = $a_ntpd[$fieldname];
-        }
+        $pconfig[$fieldname] = isset($a_ntpd[$fieldname]) ? $a_ntpd[$fieldname] : '';
     }
 
     // base64 encoded
