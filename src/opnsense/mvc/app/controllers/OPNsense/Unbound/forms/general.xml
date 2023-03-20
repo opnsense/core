@@ -8,11 +8,7 @@
         <id>unbound.general.port</id>
         <label>Listen Port</label>
         <type>text</type>
-        <help>
-            The port used for responding to DNS queries. Defaults to port 53.
-            Change this if another service needs to bind to TCP/UDP port 53.
-        </help>
-        <hint>53</hint>
+        <help>The TCP/UDP port used for responding to DNS queries.</help>
     </field>
     <field>
         <id>unbound.general.active_interface</id>
