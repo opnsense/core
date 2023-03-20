@@ -105,8 +105,8 @@ class Vip extends BaseModel
                     }
                 }
             }
+            $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
             if ((string)$node->mode == 'carp') {
-                $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
                 if (empty((string)$node->password)) {
                     $messages->appendMessage(
                         new Message(
