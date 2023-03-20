@@ -100,7 +100,7 @@ class BaseBlocklistHandler:
                 if entry not in ['127.0.0.1', '0.0.0.0']:
                     break
             if entry:
-                yield entry
+                yield entry.lower()
 
     def _uri_reader(self, uri):
         """

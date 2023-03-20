@@ -312,7 +312,7 @@ class DNSBL:
         if not query.type in ('A', 'AAAA', 'CNAME', 'HTTPS'):
             return False
 
-        domain = query.domain.rstrip('.')
+        domain = query.domain.rstrip('.').lower()
         sub = domain
         match = None
         while match is None:
