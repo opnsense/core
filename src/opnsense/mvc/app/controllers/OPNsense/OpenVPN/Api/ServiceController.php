@@ -99,7 +99,7 @@ class ServiceController extends ApiControllerBase
                 if (!in_array($idx, $vpnids) && empty((string)$cnf->disable)) {
                     $records[] = [
                         'id' => $idx,
-                        'service_id' =>  "openvpn/".$idx,
+                        'service_id' =>  "openvpn/" . $idx,
                         'type' => $role,
                         'description' => (string)$cnf->description ?? '',
                         'connected_since' => null,
@@ -158,12 +158,12 @@ class ServiceController extends ApiControllerBase
         $server_id = $this->request->get('server_id', null);
         $session_id = $this->request->get('session_id', null);
         if ($server_id != null && $session_id != null) {
-            $data = json_decode((new Backend())->configdpRun('openvpn kill',[$server_id, $session_id]) ?? '', true);
+            $data = json_decode((new Backend())->configdpRun('openvpn kill', [$server_id, $session_id]) ?? '', true);
             if (!empty($data)) {
                 return $data;
             }
             return ['result' => 'failed'];
-        } else{
+        } else {
             return ['status' => 'invalid'];
         }
     }
@@ -172,7 +172,7 @@ class ServiceController extends ApiControllerBase
      * @param int $id server/client id to start
      * @return array
      */
-    public function startServiceAction($id=null)
+    public function startServiceAction($id = null)
     {
         if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
@@ -189,7 +189,7 @@ class ServiceController extends ApiControllerBase
      * @param int $id server/client id to stop
      * @return array
      */
-    public function stopServiceAction($id=null)
+    public function stopServiceAction($id = null)
     {
         if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
@@ -206,7 +206,7 @@ class ServiceController extends ApiControllerBase
      * @param int $id server/client id to restart
      * @return array
      */
-    public function restartServiceAction($id=null)
+    public function restartServiceAction($id = null)
     {
         if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
