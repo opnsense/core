@@ -289,6 +289,9 @@
       </range>
     </lan>
   </dhcpd>
+  <unbound>
+    <enable>1</enable>
+  </unbound>
   <snmpd>
     <syslocation/>
     <syscontact/>
@@ -378,12 +381,4 @@
     <sequence>system_information-container:00000000-col3:show,services_status-container:00000001-col4:show,gateways-container:00000002-col4:show,interface_list-container:00000003-col4:show</sequence>
     <column_count>2</column_count>
   </widgets>
-  <OPNsense>
-    <unboundplus version="1.0.5">
-      <general>
-        <enabled>1</enabled>
-        <port>53</port>
-      </general>
-    </unboundplus>
-  </OPNsense>
 </opnsense>
