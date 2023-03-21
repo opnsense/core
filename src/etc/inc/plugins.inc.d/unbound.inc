@@ -385,16 +385,17 @@ function unbound_configure_do($verbose = false, $unused = '')
     service_log("done.\n", $verbose);
 }
 
-function unbound_add_host_entries($ifconfig_details = null)
+function unbound_add_host_entries($ifconfig_details)
 {
     global $config;
+
     $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
     $ptr_records = ['127.0.0.1', '::1'];
 
-    openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
+    openlog('unbound', LOG_DAEMON, LOG_LOCAL4);
 
-    $local_zone_type = $general['local_zone_type'] ?? 'transparent';
+    $local_zone_type = $general['local_zone_type'];
 
     $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
 
