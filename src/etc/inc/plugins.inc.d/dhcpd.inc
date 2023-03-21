@@ -515,11 +515,15 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
 
     file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
-    killbypid('/var/run/radvd.pid');
-
     if (count($radvdifs)) {
-        /* only start in valid configuration for legacy condition */
-        mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+        if (isvalidpid('/var/run/radvd.pid')) {
+            killbypid('/var/run/radvd.pid', 'HUP');
+        } else {
+            mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
+        }
+    } else {
+        /* stop on invalid configuration for legacy condition above */
+        killbypid('/var/run/radvd.pid');
     }
 
     service_log("done.\n", $verbose);
