@@ -590,7 +590,7 @@ $.fn.SimpleActionButton = function(params) {
         });
     }
 
-    return this.each(function (){
+    return this.each(function () {
         const button = this_button.construct();
         return button;
     });
