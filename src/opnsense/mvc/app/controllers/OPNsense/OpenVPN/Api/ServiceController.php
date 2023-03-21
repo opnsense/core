@@ -174,7 +174,7 @@ class ServiceController extends ApiControllerBase
      */
     public function startServiceAction($id=null)
     {
-        if (!$this->request->isPost()) {
+        if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
         }
 
@@ -191,7 +191,7 @@ class ServiceController extends ApiControllerBase
      */
     public function stopServiceAction($id=null)
     {
-        if (!$this->request->isPost()) {
+        if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
         }
 
@@ -208,7 +208,7 @@ class ServiceController extends ApiControllerBase
      */
     public function restartServiceAction($id=null)
     {
-        if (!$this->request->isPost()) {
+        if (!$this->request->isPost() || $id == null) {
             return ['result' => 'failed'];
         }
 
