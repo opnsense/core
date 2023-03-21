@@ -553,21 +553,21 @@ stdDialogRemoveItem.defaults = {
  *      data-service-widget="service" (optional service widget to signal)
  *      data-error-title="My error message"
  */
-$.fn.SimpleActionButton = function (params) {
+$.fn.SimpleActionButton = function(params) {
     let this_button = this;
-    this.construct = function() {
+    this.construct = function () {
         let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
         this_button.html(label_content);
-        this_button.on('click', function(){
+        this_button.on('click', function () {
             this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
-            let pre_action = function() {
+            let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
             if (params && params.onPreAction) {
                 pre_action = params.onPreAction;
             }
-            pre_action().done(function() {
-                ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
+            pre_action().done(function () {
+                ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
@@ -584,10 +584,13 @@ $.fn.SimpleActionButton = function (params) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
                 });
+            }).fail(function () {
+                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
             });
         });
     }
-    return this.each(function(){
+
+    return this.each(function (){
         const button = this_button.construct();
         return button;
     });
