@@ -269,7 +269,6 @@
          */
         $("#network_content, #authgroup_content").change(function(){
             let target = $(this);
-            console.log(target);
             let $content = $("#alias\\.content");
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
@@ -341,7 +340,6 @@
         $("#alias\\.content").change(function(){
             var items = $(this).val();
             ['#authgroup_content', '#network_content', '.geoip_select'].forEach(function(target){
-                console.log(target);
                 $(target).each(function(){
                     var content_item = $(this);
                     content_item.val([]);
