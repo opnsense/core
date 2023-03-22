@@ -187,16 +187,13 @@
                 $('#maintabs').html(tabs);
                 $('#tab_1').toggleClass('active');
                 // map interface descriptions
-                ajaxGet("/api/diagnostics/systemhealth/getInterfaces" , {}, function (data, status) {
-                    $(".rrd-item").each(function(){
-                        var rrd_item = $(this);
-                        var rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
-                        $.map(data, function(value, key){
-                            if (key.toLowerCase() == rrd_item_name) {
-                                rrd_item.html(value['descr']);
-                            }
-
-                        });
+                $(".rrd-item").each(function(){
+                    var rrd_item = $(this);
+                    var rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
+                    $.map(data['interfaces'], function(value, key){
+                        if (key.toLowerCase() == rrd_item_name) {
+                            rrd_item.html(value['descr']);
+                        }
                     });
                 });
             } else {
