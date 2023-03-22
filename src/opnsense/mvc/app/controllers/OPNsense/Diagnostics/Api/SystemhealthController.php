@@ -495,16 +495,36 @@ class SystemhealthController extends ApiControllerBase
         $response = $backend->configdRun('health list');
         $healthList = json_decode($response, true);
 
+        $interfaces = $this->getInterfacesAction();
+
         $result['data'] = array();
         if (is_array($healthList)) {
             foreach ($healthList as $healthItem => $details) {
                 if (!array_key_exists($details['topic'], $result['data'])) {
-                    $result['data'][$details['topic']] = array();
+                    $result['data'][$details['topic']] = [];
                 }
-                $result['data'][$details['topic']][] = $details['itemName'];
+                if (in_array($details['topic'], ['packets', 'traffic'])) {
+                    if (isset($interfaces[$details['itemName']])) {
+                        $desc = $interfaces[$details['itemName']]['descr'];
+                    } else {
+                        $desc =  $details['itemName'];
+                    }
+                    $result['data'][$details['topic']][$details['itemName']] = $desc;
+                } else {
+                    $result['data'][$details['topic']][] = $details['itemName'];
+                }
             }
         }
+        foreach (['packets', 'traffic'] as $key) {
+            if (isset($result['data'][$key])) {
+                natcasesort($result['data'][$key]);
+                $result['data'][$key] = array_keys($result['data'][$key]);
+            }
+        }
+
         ksort($result['data']);
+
+        $result["interfaces"] = $interfaces;
         $result["result"] = "ok";
 
         // Category => Items
@@ -603,7 +623,7 @@ class SystemhealthController extends ApiControllerBase
         $config = Config::getInstance()->object();
         if ($config->interfaces->count() > 0) {
             foreach ($config->interfaces->children() as $key => $node) {
-                $intfmap[(string)$key] = array("descr" => !empty((string)$node->descr) ? (string)$node->descr : $key);
+                $intfmap[(string)$key] = ["descr" => !empty((string)$node->descr) ? (string)$node->descr : $key];
             }
         }
         return $intfmap;
