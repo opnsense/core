@@ -741,7 +741,8 @@
     <page-openvpn-csc>
         <name>VPN: OpenVPN: Client Specific Override</name>
         <patterns>
-            <pattern>vpn_openvpn_csc.php*</pattern>
+            <pattern>ui/openvpn/client_overwrites</pattern>
+            <pattern>api/openvpn/client_overwrites/*</pattern>
         </patterns>
     </page-openvpn-csc>
     <page-openvpn-server>
