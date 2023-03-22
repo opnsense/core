@@ -30,37 +30,57 @@
 
 function webgui_configure()
 {
-    return array(
-        'early' => array('webgui_configure_do'),
-        'local' => array('webgui_configure_do'),
-        'newwanip' => array('webgui_configure_do:2'),
-        'webgui' => array('webgui_configure_do'),
-    );
+    return [
+        'early' => ['webgui_configure_do'],
+        'local' => ['webgui_configure_do'],
+        'newwanip' => ['webgui_configure_do:2'],
+        'webgui' => ['webgui_configure_do'],
+    ];
 }
 
-function webgui_configure_delayed()
+function webgui_services()
 {
-    configd_run('webgui restart 3', true);
+    return [[
+        'pidfile' => '/var/run/lighty-webConfigurator.pid',
+        'description' => gettext('Web GUI'),
+        'php' => ['restart' => ['webgui_configure_defer']],
+        'name' => 'webgui',
+        'locked' => true,
+    ]];
+}
+
+function webgui_configure_defer($verbose = false, $sleep = 3)
+{
+    service_log('Starting web GUI...', $verbose);
+    configdp_run('webgui restart', [$sleep], true);
+    service_log("deferred.\n", $verbose);
 }
 
 function webgui_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    $interfaces = array();
+    $interfaces = [];
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
         /* place loopback with good IPv4 first for server.bind */
         array_unshift($interfaces, 'lo0');
     }
 
-    if (!empty($interface) && !in_array($interface, $interfaces)) {
+    /* 'newwanip' configuration is the only event to take second argument */
+    if (!empty($interface)) {
+        if (in_array($interface, $interfaces)) {
+            /* funnel through configd to avoid race conditions */
+            webgui_configure_defer($verbose, 0);
+        }
+
+        /* nothing else to do */
         return;
     }
 
     service_log('Starting web GUI...', $verbose);
 
-    $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
+    $listeners = count($interfaces) ? [] : ['0.0.0.0', '::'];
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
         if ($info['scope']) {
