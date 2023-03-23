@@ -52,7 +52,7 @@ function webgui_services()
 function webgui_configure_defer($verbose = false, $sleep = 3)
 {
     service_log('Starting web GUI...', $verbose);
-    configdp_run('webgui restart', [$sleep], true);
+    configdp_run('webgui restart', [$sleep]);
     service_log("deferred.\n", $verbose);
 }
 
