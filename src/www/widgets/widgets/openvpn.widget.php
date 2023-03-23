@@ -45,9 +45,8 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         // link kill buttons
         $(".act_kill_client").click(function(event){
             event.preventDefault();
-            var port = $(this).data("client-port");
-            var ip = $(this).data("client-ip");
-            $.post('/status_openvpn.php', {action: 'kill', port:port, remipp:ip}, function(data) {
+            let params = {server_id:  $(this).data("client-port"), session_id: $(this).data("client-ip")};
+            $.post('/api/openvpn/service/kill_session/', params, function(data, status){
                 location.reload();
             });
         });
@@ -77,7 +76,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
             <td><?=$conn['common_name'] ?? '';?><br/><?=$conn['connected_since'] ?? '';?></td>
             <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?></td>
             <td>
-               <span class="fa fa-times fa-fw act_kill_client" data-client-port="server<?=$server['vpnid'];?>"
+               <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['vpnid'];?>"
                  data-client-ip="<?=$conn['real_address'];?>"
                  style='cursor:pointer;'
                  title='Kill client connection from <?=$conn['real_address']; ?>'>

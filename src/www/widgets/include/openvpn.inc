@@ -1,4 +1,4 @@
 <?php
 
 $openvpn_title = gettext('OpenVPN');
-$openvpn_title_link = 'status_openvpn.php';
+$openvpn_title_link = 'ui/openvpn/status';
