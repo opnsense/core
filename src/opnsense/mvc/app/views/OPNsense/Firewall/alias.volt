@@ -87,7 +87,7 @@
                     },
                     timestamp: function (column, row) {
                         if (row[column.id] && row[column.id].includes('.')) {
-                            return row[column.id].split('.')[0];
+                            return row[column.id].split('.')[0].replace('T', ' ');
                         }
                         return row[column.id];
                     }
