@@ -81,6 +81,15 @@ class LogController extends ApiControllerBase
                     $severities
                 ]);
                 $result = json_decode($response, true);
+                foreach ($result['rows'] as &$record) {
+                    if (!$record['timestamp'] && $record['line']) {
+                        $regex = '/^\s*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2}|Z)?)\s*(.*)$/';
+                        if (preg_match($regex, $record['line'], $matches)) {
+                            $record['timestamp'] = $matches[1];
+                            $record['line'] = $matches[2];
+                        }
+                    }
+                }
                 if ($result != null) {
                     $result['rowCount'] = count($result['rows']);
                     $result['total'] = $result['total_rows'];
@@ -104,6 +113,13 @@ class LogController extends ApiControllerBase
                 $this->response->setRawHeader("Content-Type: text/csv");
                 $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
                 foreach (json_decode($response, true)['rows'] as $row) {
+                    if (!$row['timestamp'] && $row['line']) {
+                        $regex = '/^\s*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2}|Z)?)\s*(.*)$/';
+                        if (preg_match($regex, $row['line'], $matches)) {
+                            $row['timestamp'] = $matches[1];
+                            $row['line'] = $matches[2];
+                        }
+                    }
                     printf("%s\t%s\t%s\t%s\n", $row['timestamp'], $row['severity'], $row['process_name'], $row['line']);
                 }
                 return;
