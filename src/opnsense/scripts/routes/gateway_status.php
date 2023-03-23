@@ -31,12 +31,12 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
-
-$result = array();
+$result = [];
 $gateways_status = return_gateways_status();
+
 foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName() as $gname => $gw) {
-    $gatewayItem = array('name' => $gname);
-    $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : "~";
+    $gatewayItem = ['name' => $gname];
+    $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : '~';
     if (!empty($gateways_status[$gname])) {
         $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
         $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
@@ -57,6 +57,9 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
                 break;
             case 'loss':
                 $gatewayItem['status_translated'] = gettext('Packetloss');
+                break;
+            case 'delay+loss':
+                $gatewayItem['status_translated'] = join(', ', [gettext('Latency'), gettext('Packetloss')]);
                 break;
             default:
                 $gatewayItem['status_translated'] = gettext('Pending');

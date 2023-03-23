@@ -548,6 +548,9 @@ class Gateways
                                     case 'force_down':
                                         $is_up = false;
                                         break;
+                                    case 'delay+loss':
+                                        $is_up = stristr($gw_group->trigger, 'latency') === false && stristr($gw_group->trigger, 'loss') === false;
+                                        break;
                                     case 'delay':
                                         $is_up = stristr($gw_group->trigger, 'latency') === false;
                                         break;
