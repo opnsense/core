@@ -103,7 +103,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     endforeach; ?>
 
 <?php
-    if (!empty($openvpn_cfg['openvpn-server'])) {?>
+    if (!empty($openvpn_cfg['openvpn-client'])) {?>
     <table class="table table-striped table-condensed">
       <thead>
           <tr>
