@@ -202,8 +202,7 @@ function system_resolvconf_generate($verbose = false)
         $search[] = $syscfg['dnssearchdomain'];
     }
 
-    $unbound = new \OPNsense\Unbound\Unbound();
-    if (!isset($syscfg['dnslocalhost']) && (isset($config['dnsmasq']['enable']) || !empty((string)$unbound->general->enabled))) {
+    if (!isset($syscfg['dnslocalhost']) && !empty(service_by_name('*', ['ports' => ['53']]))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
