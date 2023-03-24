@@ -553,7 +553,7 @@ stdDialogRemoveItem.defaults = {
  *      data-service-widget="service" (optional service widget to signal)
  *      data-error-title="My error message"
  */
-$.fn.SimpleActionButton = function(params) {
+$.fn.SimpleActionButton = function (params) {
     let this_button = this;
     this.construct = function () {
         let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
