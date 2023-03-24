@@ -38,31 +38,34 @@ function unbound_enabled()
 
 function unbound_configure()
 {
-    return array(
-        'bootup' => array('unbound_configure_do'),
-        'dns' => array('unbound_configure_do'),
-        'early' => array('unbound_cache_flush'),
-        'local' => array('unbound_configure_do'),
-        'newwanip' => array('unbound_configure_do:2'),
-        'unbound_start' => array('unbound_configure_do'),
-        'unbound_stop' => array('unbound_service_stop'),
-    );
+    return [
+        'bootup' => ['unbound_configure_do'],
+        'dns' => ['unbound_configure_do'],
+        'early' => ['unbound_cache_flush'],
+        'local' => ['unbound_configure_do'],
+        'newwanip' => ['unbound_configure_do:2'],
+        'unbound_start' => ['unbound_configure_do'],
+        'unbound_stop' => ['unbound_service_stop'],
+    ];
 }
 
 function unbound_services()
 {
-    $services = array();
+    $services = [];
 
     if (!unbound_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $mdl = new \OPNsense\Unbound\Unbound();
+
+    $pconfig = [];
     $pconfig['name'] = 'unbound';
+    $pconfig['ports'] = [(string)$mdl->general->port];
     $pconfig['description'] = gettext('Unbound DNS');
-    $pconfig['php']['restart'] = array('unbound_configure_do');
-    $pconfig['php']['start'] = array('unbound_configure_do');
-    $pconfig['php']['stop'] = array('unbound_service_stop');
+    $pconfig['php']['restart'] = ['unbound_configure_do'];
+    $pconfig['php']['start'] = ['unbound_configure_do'];
+    $pconfig['php']['stop'] = ['unbound_service_stop'];
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 
@@ -71,14 +74,14 @@ function unbound_services()
 
 function unbound_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
-        'description' => gettext('Unbound DNS'),
+    $result[] = [
         'section' => 'unbound,OPNsense.unboundplus',
+        'description' => gettext('Unbound DNS'),
+        'services' => ['unbound'],
         'id' => 'dnsresolver',
-        'services' => ["unbound"],
-    );
+    ];
 
     return $result;
 }
