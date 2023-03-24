@@ -105,11 +105,12 @@ function service_by_name($name, $filter = [])
     $services = plugins_services();
 
     foreach ($services as $service) {
-        if ($service['name'] != $name) {
+        /* skip unless filter wildcard is set */
+        if ($name != '*' && $service['name'] != $name) {
             continue;
         }
         if (!count($filter)) {
-            /* force match if filter wasn't set (standard behaviour) */
+            /* force (mis)match if filter is empty (standard behaviour) */
             $filter['name'] = $name;
         }
         foreach ($filter as $key => $value) {
