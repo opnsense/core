@@ -100,6 +100,11 @@ function is_process_running($process)
     return (intval($retval) == 0);
 }
 
+function service_by_filter($filter = [])
+{
+    return service_by_name('*', $filter);
+}
+
 function service_by_name($name, $filter = [])
 {
     $services = plugins_services();
@@ -114,7 +119,10 @@ function service_by_name($name, $filter = [])
             $filter['name'] = $name;
         }
         foreach ($filter as $key => $value) {
-            if (isset($service[$key]) && $service[$key] == $value) {
+            if (
+                isset($service[$key]) && ($service[$key] == $value ||
+                (is_array($service[$key]) && in_array($value, $service[$key])))
+            ) {
                 return $service;
             }
         }

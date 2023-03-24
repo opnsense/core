@@ -202,7 +202,7 @@ function system_resolvconf_generate($verbose = false)
         $search[] = $syscfg['dnssearchdomain'];
     }
 
-    if (!isset($syscfg['dnslocalhost']) && !empty(service_by_name('*', ['ports' => ['53']]))) {
+    if (!isset($syscfg['dnslocalhost']) && !empty(service_by_filter(['ports' => '53']))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
