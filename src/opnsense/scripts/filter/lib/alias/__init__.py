@@ -95,7 +95,6 @@ class Alias(object):
         # the generated alias contents, without dependencies
         self._filename_alias_content = '/var/db/aliastables/%s.self.txt' % self._name
 
-
     def items(self):
         """ return unparsed (raw) alias entries without dependencies
             :return: iterator
