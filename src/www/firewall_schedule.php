@@ -217,7 +217,7 @@ legacy_html_escape_form_data($a_schedules);
                                   }
                                 }
                                 $timeFriendly = $starttime . "-" . $stoptime;
-                                $description = $timerange['rangedescr'];
+                                $description = rawurldecode($timerange['rangedescr']);
 
                                 ?><tr><td><?=$dayFriendly;?></td><td><?=$timeFriendly;?></td><td><?=$description;?></td></tr><?php
                               }
