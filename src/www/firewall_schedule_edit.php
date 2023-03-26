@@ -616,12 +616,12 @@ function insertElements(label, start_hour, start_min, stop_hour, stop_min, descr
     td.innerHTML="<input type='text' readonly='readonly' name='stoptime"+schCounter+"' id='stoptime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+stop_hour+":"+stop_min+"' />";
     tr.appendChild(td);
 
-    td = document.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='timedescr"+schCounter+"' id='timedescr"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+ description+"' />";
-    tr.appendChild(td);
+    td = $("<input type='text' readonly='readonly' name='timedescr"+schCounter+"' id='timedescr"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;'/>");
+    td.val(description);
+    tr.appendChild(td[0]);
 
     td = document.createElement("td");
-    td.innerHTML = `<a onclick="editRow(this, '${days}', '${start_hour}:${start_min}', '${stop_hour}:${stop_min}', '${description}'); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>`;
+    td.innerHTML = `<a onclick="editRow(this, '${days}', '${start_hour}:${start_min}', '${stop_hour}:${stop_min}', ${schCounter}); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>`;
     tr.appendChild(td);
 
     td = document.createElement("td");
@@ -676,7 +676,7 @@ function clearDescr(){
   $('#timerangedescr').val('');
 }
 
-function editRow(el, days, start_time, stop_time, description) {
+function editRow(el, days, start_time, stop_time, seq) {
   if (!checkForRanges())
     return;
 
@@ -688,11 +688,12 @@ function editRow(el, days, start_time, stop_time, description) {
   [start_hour, start_min] = start_time.split(':');
   [stop_hour, stop_min] = stop_time.split(':');
 
+
   $('#starttimehour').selectpicker('val', start_hour);
   $('#starttimemin').selectpicker('val', start_min);
   $('#stoptimehour').selectpicker('val', stop_hour);
   $('#stoptimemin').selectpicker('val', stop_min);
-  $('#timerangedescr').val(description);
+  $('#timerangedescr').val($("#timedescr"+seq).val());
 
   let first_selected_month = days.search('m');
   if (first_selected_month !== -1) {
@@ -1098,7 +1099,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                                   <input type='text' readonly='readonly' name='timedescr<?=$counter; ?>' id='timedescr<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$timedescr; ?>' />
                                 </td>
                                 <td>
-                                  <a onclick="editRow(this, '<?= $days ?>', '<?= $starttime ?>', '<?= $stoptime ?>', '<?= $timedescr ?>'); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
+                                  <a onclick="editRow(this, '<?= $days ?>', '<?= $starttime ?>', '<?= $stoptime ?>', '<?=$counter;?>'); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
                                 </td>
                                 <td>
                                   <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a>
