@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $timeparts['day'] = $daystr;
           }
           $timeparts['hour'] = $timehourstr;
-          $timeparts['rangedescr'] = rawurlencode($timedescrstr);
+          $timeparts['rangedescr'] = $timedescrstr;
           $pconfig['timerange'][$x] = $timeparts;
       }
     }
@@ -983,7 +983,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                                   if ($timerange){
                                     $dayFriendly = "";
                                     $tempFriendlyTime = "";
-                                    $timedescr = rawurldecode($timerange['rangedescr']);
+                                    $timedescr = $timerange['rangedescr'];
                                     //get hours
                                     $temptimerange = $timerange['hour'];
                                     $temptimeseparator = strrpos($temptimerange, "-");
