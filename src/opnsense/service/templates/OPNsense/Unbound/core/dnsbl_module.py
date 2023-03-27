@@ -42,6 +42,8 @@ import uuid
 import ipaddress
 import traceback
 import argparse
+import dns
+import dns.name
 from threading import Lock
 from collections import deque
 
@@ -118,6 +120,10 @@ class Query:
     @property
     def domain(self):
         return self._domain
+
+    @domain.setter
+    def domain(self, value):
+        self._domain = value
 
     @property
     def request(self):
@@ -436,6 +442,36 @@ def deinit(id):
 def inform_super(id, qstate, superqstate, qdata):
     return True
 
+def set_answer_block(qstate, qdata, query, bl=None):
+    ctx = mod_env['context']
+    dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
+
+    if ctx.rcode == RCODE_NXDOMAIN:
+        # exit early
+        qstate.return_rcode = RCODE_NXDOMAIN
+        query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+                    time_diff_ms(qdata['start_time']), dnssec_status, 0)
+        mod_env['logger'].log_entry(query)
+        return True
+
+    ttl = 3600
+    msg = DNSMessage(query.domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
+    if (query.type == 'A'):
+        msg.answer.append("%s %s IN A %s" % (query.domain, ttl, ctx.dst_addr))
+    if not msg.set_return_msg(qstate):
+        log_err("dnsbl_module: unable to create response for %s, dropping query" % query.domain)
+        query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
+            time_diff_ms(qdata['start_time']), dnssec_status, 0)
+        mod_env['logger'].log_entry(query)
+        return False
+    if ctx.dnssec_enabled:
+        qstate.return_msg.rep.security = dnssec_status
+
+    query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+        time_diff_ms(qdata['start_time']), dnssec_status, ttl)
+    mod_env['logger'].log_entry(query)
+    return True
+
 def operate(id, event, qstate, qdata):
     if event == MODULE_EVENT_NEW:
         qdata['start_time'] = time.time()
@@ -444,39 +480,12 @@ def operate(id, event, qstate, qdata):
 
         match = mod_env['dnsbl'].policy_match(query, qstate)
         if match:
-            ctx = mod_env['context']
-            qstate.return_rcode = ctx.rcode
             bl = match.get('bl')
-            dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
-            ttl = 3600
 
-            if ctx.rcode == RCODE_NXDOMAIN:
-                # exit early
-                query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
-                    time_diff_ms(qdata['start_time']), dnssec_status, 0)
-                mod_env['logger'].log_entry(query)
-                qstate.ext_state[id] = MODULE_FINISHED
-                return True
-
-            msg = DNSMessage(query.domain, RR_TYPE_A, RR_CLASS_IN, PKT_QR | PKT_RA | PKT_AA)
-
-            if (query.type == 'A'):
-                msg.answer.append("%s %s IN A %s" % (query.domain, ttl, ctx.dst_addr))
-
-            if not msg.set_return_msg(qstate):
+            if not set_answer_block(qstate, qdata, query, bl):
                 qstate.ext_state[id] = MODULE_ERROR
-                log_err("dnsbl_module: unable to create response for %s, dropping query" % query.domain)
-                query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
-                    time_diff_ms(qdata['start_time']), dnssec_status, 0)
-                mod_env['logger'].log_entry(query)
                 return True
 
-            if ctx.dnssec_enabled:
-                qstate.return_msg.rep.security = dnssec_status
-
-            query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
-                    time_diff_ms(qdata['start_time']), dnssec_status, ttl)
-            mod_env['logger'].log_entry(query)
             qstate.ext_state[id] = MODULE_FINISHED
             return True
         else:
@@ -494,12 +503,33 @@ def operate(id, event, qstate, qdata):
             rcode = RCODE_SERVFAIL
             ttl = 0
 
-            if qstate.return_msg:
-                if qstate.return_msg.rep:
-                    r = qstate.return_msg.rep
-                    dnssec = r.security
-                    rcode = r.flags & 0xF
-                    ttl = r.ttl
+            if obj_path_exists(qstate, 'return_msg.rep'):
+                r = qstate.return_msg.rep
+                dnssec = r.security
+                rcode = r.flags & 0xF
+                ttl = r.ttl
+
+                if (obj_path_exists(r, 'an_numrrsets') and obj_path_exists(r, 'rrsets')) and r.an_numrrsets > 1:
+                    for i in range(r.an_numrrsets):
+                        rrset = r.rrsets[i]
+                        if obj_path_exists(rrset, 'rk') and obj_path_exists(rrset, 'entry.data'):
+                            rrset_key = rrset.rk
+                            data = rrset.entry.data
+                            if obj_path_exists(rrset_key, 'type_str'):
+                                if rrset_key.type_str == 'CNAME':
+                                    # there might be multiple CNAMEs in the RRset
+                                    for j in range(data.count):
+                                        dname = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
+                                        query.domain = dname
+                                        match = mod_env['dnsbl'].policy_match(query, qstate)
+                                        if match:
+                                            invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+                                            if not set_answer_block(qstate, qdata, query, match.get('bl')):
+                                                qstate.ext_state[id] = MODULE_ERROR
+                                                return True
+                                            else:
+                                                qstate.ext_state[id] = MODULE_FINISHED
+                                                return True
 
             query.set_response(ACTION_PASS, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
             logger.log_entry(query)
