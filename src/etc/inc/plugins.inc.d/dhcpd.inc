@@ -364,9 +364,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
 
             foreach ($dnslist_tmp as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
+                if (!is_ipaddrv6($server)) {
+                    continue;
                 }
+                if (count($dnslist) >= 3) {
+                    log_msg("The radvd RDNSS entry $server cannot be added due to too many addresses.", LOG_WARNING);
+                    continue;
+                }
+                $dnslist[] = $server;
             }
 
             if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['domainsearchlist'])) {
@@ -437,7 +442,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $dnslist = array();
+        $dnslist = [];
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $ifconfig_details);
 
@@ -456,9 +461,14 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
+                if (!is_ipaddrv6($server)) {
+                    continue;
                 }
+                if (count($dnslist) >= 3) {
+                    log_msg("The radvd RDNSS entry $server cannot be added due to too many addresses.", LOG_WARNING);
+                    continue;
+                }
+                $dnslist[] = $server;
             }
         }
 
