@@ -30,12 +30,23 @@
 
 function webgui_configure()
 {
-    return array(
-        'early' => array('webgui_configure_do'),
-        'local' => array('webgui_configure_do'),
-        'newwanip' => array('webgui_configure_do:2'),
-        'webgui' => array('webgui_configure_do'),
-    );
+    return [
+        'early' => ['webgui_configure_do'],
+        'local' => ['webgui_configure_do'],
+        'newwanip' => ['webgui_configure_do:2'],
+        'webgui' => ['webgui_configure_do'],
+    ];
+}
+
+function webgui_services()
+{
+    return [[
+        'pidfile' => '/var/run/lighty-webConfigurator.pid',
+        'description' => gettext('Web GUI'),
+        'php' => ['restart' => ['webgui_configure_delayed']],
+        'name' => 'webgui',
+        'locked' => true,
+    ]];
 }
 
 function webgui_configure_delayed()
@@ -47,7 +58,7 @@ function webgui_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    $interfaces = array();
+    $interfaces = [];
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
         /* place loopback with good IPv4 first for server.bind */
@@ -60,7 +71,7 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     service_log('Starting web GUI...', $verbose);
 
-    $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
+    $listeners = count($interfaces) ? [] : ['0.0.0.0', '::'];
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
         if ($info['scope']) {
