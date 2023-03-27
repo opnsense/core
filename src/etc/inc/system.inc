@@ -510,7 +510,7 @@ function system_host_route($host, $gateway)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid host gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -533,7 +533,7 @@ function system_default_route($gateway, $interface, $far = false)
     } elseif (is_ipaddrv6($gateway)) {
         $family = 'inet6';
     } else {
-        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_WARNING);
+        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
@@ -547,12 +547,14 @@ function system_default_route($gateway, $interface, $far = false)
     $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
     $current = trim(exec($tmpcmd), " \n");
     if ($current == $gateway) {
-        log_msg("ROUTING: keeping current default gateway '{$gateway}'", LOG_INFO);
+        log_msg("ROUTING: keeping current {$family} default gateway '{$gateway}'");
         return;
     }
 
     if ($family == 'inet') {
-        if (!$far) {
+        $dynamicgw = trim(@file_get_contents("/tmp/${realif}_router") ?? '');
+        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
+            /* special case tries to turn on far gateway when required for dynamic gateway */
             list (, $network) = interfaces_primary_address($interface);
             if (empty($network) || ip_in_subnet($gateway, $network)) {
                 /*
@@ -563,12 +565,16 @@ function system_default_route($gateway, $interface, $far = false)
             } else {
                 log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
             }
+        } elseif (!$far) {
+            /* standard case disables host routes when not set in a static gateway */
+            $realif = null;
         }
     } else {
         /* IPv6 does not support far gateway notion */
         $realif = null;
     }
 
+    log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
     if (!empty($realif)) {
