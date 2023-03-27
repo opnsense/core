@@ -100,20 +100,29 @@ function is_process_running($process)
     return (intval($retval) == 0);
 }
 
+function service_by_filter($filter = [])
+{
+    return service_by_name('*', $filter);
+}
+
 function service_by_name($name, $filter = [])
 {
     $services = plugins_services();
 
     foreach ($services as $service) {
-        if ($service['name'] != $name) {
+        /* skip unless filter wildcard is set */
+        if ($name != '*' && $service['name'] != $name) {
             continue;
         }
         if (!count($filter)) {
-            /* force match if filter wasn't set (standard behaviour) */
+            /* force (mis)match if filter is empty (standard behaviour) */
             $filter['name'] = $name;
         }
         foreach ($filter as $key => $value) {
-            if (isset($service[$key]) && $service[$key] == $value) {
+            if (
+                isset($service[$key]) && ($service[$key] == $value ||
+                (is_array($service[$key]) && in_array($value, $service[$key])))
+            ) {
                 return $service;
             }
         }
