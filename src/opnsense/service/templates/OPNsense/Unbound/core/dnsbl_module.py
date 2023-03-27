@@ -496,11 +496,13 @@ def operate(id, event, qstate, qdata):
     if event == MODULE_EVENT_MODDONE:
         # Iterator finished, show response (if any)
         logger = mod_env['logger']
-        if logger.stats_enabled and 'query' in qdata and 'start_time' in qdata:
+        qstate.ext_state[id] = MODULE_FINISHED
+        if 'query' in qdata and 'start_time' in qdata:
             query = qdata['query']
 
             dnssec = sec_status_unchecked
             rcode = RCODE_SERVFAIL
+            log_act = ACTION_PASS
             ttl = 0
 
             if obj_path_exists(qstate, 'return_msg.rep'):
@@ -509,32 +511,32 @@ def operate(id, event, qstate, qdata):
                 rcode = r.flags & 0xF
                 ttl = r.ttl
 
-                if (obj_path_exists(r, 'an_numrrsets') and obj_path_exists(r, 'rrsets')) and r.an_numrrsets > 1:
+                if  (obj_path_exists(r, 'an_numrrsets') and obj_path_exists(r, 'rrsets')) and r.an_numrrsets > 1:
                     for i in range(r.an_numrrsets):
                         rrset = r.rrsets[i]
                         if obj_path_exists(rrset, 'rk') and obj_path_exists(rrset, 'entry.data'):
                             rrset_key = rrset.rk
                             data = rrset.entry.data
-                            if obj_path_exists(rrset_key, 'type_str'):
-                                if rrset_key.type_str == 'CNAME':
-                                    # there might be multiple CNAMEs in the RRset
-                                    for j in range(data.count):
-                                        dname = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
-                                        query.domain = dname
-                                        match = mod_env['dnsbl'].policy_match(query, qstate)
-                                        if match:
-                                            invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
-                                            if not set_answer_block(qstate, qdata, query, match.get('bl')):
-                                                qstate.ext_state[id] = MODULE_ERROR
-                                                return True
-                                            else:
-                                                qstate.ext_state[id] = MODULE_FINISHED
-                                                return True
+                            if obj_path_exists(rrset_key, 'type_str') and rrset_key.type_str == 'CNAME':
+                                # there might be multiple CNAMEs in the RRset
+                                for j in range(data.count):
+                                    query.domain = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
+                                    match = mod_env['dnsbl'].policy_match(query, qstate)
+                                    if match:
+                                        invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+                                        if not set_answer_block(qstate, qdata, query, match.get('bl')):
+                                            qstate.ext_state[id] = MODULE_ERROR
+                                        break
+                                else:
+                                    continue
+                                # exit on policy_match()
+                                log_act = ACTION_BLOCK
+                                break
 
-            query.set_response(ACTION_PASS, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
-            logger.log_entry(query)
+            if logger.stats_enabled:
+                query.set_response(log_act, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
+                logger.log_entry(query)
 
-        qstate.ext_state[id] = MODULE_FINISHED
         return True
 
     if event == MODULE_EVENT_PASS:
