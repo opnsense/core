@@ -519,12 +519,16 @@ def operate(id, event, qstate, qdata):
                             if (obj_path_exists(rrset_key, 'type_str') and obj_path_exists(data, 'count')) and rrset_key.type_str == 'CNAME':
                                 # there might be multiple CNAMEs in the RRset
                                 for j in range(data.count):
-                                    # change the queried domain to whatever the CNAME refers to, this means this is also
-                                    # the domain that will be logged. In the future we could perhaps point out that this is
-                                    # due to CNAME redirection.
+                                    # temporarily change the queried domain name to the CNAME alias so we can apply our policy on it.
+                                    # after we're done we change it back to the original query so as to not confuse users
+                                    # looking at the logged queries.
+                                    tmp = query.domain
                                     query.domain = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
                                     match = mod_env['dnsbl'].policy_match(query, qstate)
+                                    query.domain = tmp
                                     if match:
+                                        # the iterator module has already resolved the answer and cached it,
+                                        # make sure we remove it from the cache in order to block future queries for the same domain
                                         invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
                                         if not set_answer_block(qstate, qdata, query, match.get('bl')):
                                             qstate.ext_state[id] = MODULE_ERROR
