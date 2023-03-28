@@ -445,13 +445,15 @@ def inform_super(id, qstate, superqstate, qdata):
 def set_answer_block(qstate, qdata, query, bl=None):
     ctx = mod_env['context']
     dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
+    logger = mod_env['logger']
 
     if ctx.rcode == RCODE_NXDOMAIN:
         # exit early
         qstate.return_rcode = RCODE_NXDOMAIN
-        query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
-                    time_diff_ms(qdata['start_time']), dnssec_status, 0)
-        mod_env['logger'].log_entry(query)
+        if logger.stats_enabled:
+            query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+                        time_diff_ms(qdata['start_time']), dnssec_status, 0)
+            mod_env['logger'].log_entry(query)
         return True
 
     ttl = 3600
@@ -460,16 +462,18 @@ def set_answer_block(qstate, qdata, query, bl=None):
         msg.answer.append("%s %s IN A %s" % (query.domain, ttl, ctx.dst_addr))
     if not msg.set_return_msg(qstate):
         log_err("dnsbl_module: unable to create response for %s, dropping query" % query.domain)
-        query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
-            time_diff_ms(qdata['start_time']), dnssec_status, 0)
-        mod_env['logger'].log_entry(query)
+        if logger.stats_enabled:
+            query.set_response(ACTION_DROP, SOURCE_LOCAL, bl, RCODE_SERVFAIL,
+                time_diff_ms(qdata['start_time']), dnssec_status, 0)
+            mod_env['logger'].log_entry(query)
         return False
     if ctx.dnssec_enabled:
         qstate.return_msg.rep.security = dnssec_status
 
-    query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
-        time_diff_ms(qdata['start_time']), dnssec_status, ttl)
-    mod_env['logger'].log_entry(query)
+    if logger.stats_enabled:
+        query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
+            time_diff_ms(qdata['start_time']), dnssec_status, ttl)
+        mod_env['logger'].log_entry(query)
     return True
 
 def operate(id, event, qstate, qdata):
@@ -480,9 +484,7 @@ def operate(id, event, qstate, qdata):
 
         match = mod_env['dnsbl'].policy_match(query, qstate)
         if match:
-            bl = match.get('bl')
-
-            if not set_answer_block(qstate, qdata, query, bl):
+            if not set_answer_block(qstate, qdata, query, match.get('bl')):
                 qstate.ext_state[id] = MODULE_ERROR
                 return True
 
@@ -502,7 +504,6 @@ def operate(id, event, qstate, qdata):
 
             dnssec = sec_status_unchecked
             rcode = RCODE_SERVFAIL
-            log_act = ACTION_PASS
             ttl = 0
 
             if obj_path_exists(qstate, 'return_msg.rep'):
@@ -511,13 +512,15 @@ def operate(id, event, qstate, qdata):
                 rcode = r.flags & 0xF
                 ttl = r.ttl
 
-                if  (obj_path_exists(r, 'an_numrrsets') and obj_path_exists(r, 'rrsets')) and r.an_numrrsets > 1:
+                # if the count of RRsets > 1, then there are at least two different answer types.
+                # this is most likely a CNAME, check if it is and refers to a fqdn that we should block
+                if (obj_path_exists(r, 'an_numrrsets') and r.an_numrrsets > 1) and obj_path_exists(r, 'rrsets'):
                     for i in range(r.an_numrrsets):
                         rrset = r.rrsets[i]
                         if obj_path_exists(rrset, 'rk') and obj_path_exists(rrset, 'entry.data'):
                             rrset_key = rrset.rk
                             data = rrset.entry.data
-                            if obj_path_exists(rrset_key, 'type_str') and rrset_key.type_str == 'CNAME':
+                            if (obj_path_exists(rrset_key, 'type_str') and obj_path_exists(data, 'count')) and rrset_key.type_str == 'CNAME':
                                 # there might be multiple CNAMEs in the RRset
                                 for j in range(data.count):
                                     query.domain = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
@@ -526,15 +529,11 @@ def operate(id, event, qstate, qdata):
                                         invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
                                         if not set_answer_block(qstate, qdata, query, match.get('bl')):
                                             qstate.ext_state[id] = MODULE_ERROR
-                                        break
-                                else:
-                                    continue
-                                # exit on policy_match()
-                                log_act = ACTION_BLOCK
-                                break
+                                        # block and exit on any match
+                                        return True
 
             if logger.stats_enabled:
-                query.set_response(log_act, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
+                query.set_response(ACTION_PASS, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
                 logger.log_entry(query)
 
         return True
