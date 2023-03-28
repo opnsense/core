@@ -506,7 +506,7 @@ def operate(id, event, qstate, qdata):
                 r = qstate.return_msg.rep
                 dnssec = r.security if r.security else sec_status_unchecked
                 rcode = (r.flags & 0xF) if r.flags else RCODE_SERVFAIL
-                ttl = r.ttl if r.tll else 0
+                ttl = r.ttl if r.ttl else 0
 
                 # if the count of RRsets > 1, then there are at least two different answer types.
                 # this is most likely a CNAME, check if it is and refers to a fqdn that we should block
