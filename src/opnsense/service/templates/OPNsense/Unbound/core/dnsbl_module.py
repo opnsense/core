@@ -502,15 +502,11 @@ def operate(id, event, qstate, qdata):
         if 'query' in qdata and 'start_time' in qdata:
             query = qdata['query']
 
-            dnssec = sec_status_unchecked
-            rcode = RCODE_SERVFAIL
-            ttl = 0
-
             if obj_path_exists(qstate, 'return_msg.rep'):
                 r = qstate.return_msg.rep
-                dnssec = r.security
-                rcode = r.flags & 0xF
-                ttl = r.ttl
+                dnssec = r.security if r.security else sec_status_unchecked
+                rcode = (r.flags & 0xF) if r.flags else RCODE_SERVFAIL
+                ttl = r.ttl if r.tll else 0
 
                 # if the count of RRsets > 1, then there are at least two different answer types.
                 # this is most likely a CNAME, check if it is and refers to a fqdn that we should block
@@ -523,6 +519,9 @@ def operate(id, event, qstate, qdata):
                             if (obj_path_exists(rrset_key, 'type_str') and obj_path_exists(data, 'count')) and rrset_key.type_str == 'CNAME':
                                 # there might be multiple CNAMEs in the RRset
                                 for j in range(data.count):
+                                    # change the queried domain to whatever the CNAME refers to, this means this is also
+                                    # the domain that will be logged. In the future we could perhaps point out that this is
+                                    # due to CNAME redirection.
                                     query.domain = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
                                     match = mod_env['dnsbl'].policy_match(query, qstate)
                                     if match:
@@ -532,9 +531,9 @@ def operate(id, event, qstate, qdata):
                                         # block and exit on any match
                                         return True
 
-            if logger.stats_enabled:
-                query.set_response(ACTION_PASS, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
-                logger.log_entry(query)
+                if logger.stats_enabled:
+                    query.set_response(ACTION_PASS, SOURCE_RECURSION, None, rcode, time_diff_ms(qdata['start_time']), dnssec, ttl)
+                    logger.log_entry(query)
 
         return True
 
