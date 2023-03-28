@@ -14,6 +14,15 @@
         </help>
     </field>
     <field>
+        <id>spd.connection_child</id>
+        <label>Connection child</label>
+        <type>dropdown</type>
+        <help>
+            Connection child to register this manual item on. Please note that an established tunnel needs
+            to reconnect in order to add the entry as we use an updown event.
+        </help>
+    </field>
+    <field>
         <id>spd.source</id>
         <label>Source network</label>
         <type>text</type>

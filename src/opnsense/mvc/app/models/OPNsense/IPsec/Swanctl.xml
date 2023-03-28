@@ -413,8 +413,17 @@
                 <reqid type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <Required>Y</Required>
                 </reqid>
+                <connection_child type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.IPsec.Swanctl</source>
+                            <items>children.child</items>
+                            <display>connection,description</display>
+                            <display_format>%s - %s</display_format>
+                        </host>
+                    </Model>
+                </connection_child>
                 <source type="NetworkField">
                     <Required>Y</Required>
                     <WildcardEnabled>N</WildcardEnabled>
