@@ -117,6 +117,10 @@ class Query:
     def type(self):
         return self._type
 
+    @type.setter
+    def type(self, value):
+        self._type = value
+
     @property
     def domain(self):
         return self._domain
@@ -521,7 +525,8 @@ def operate(id, event, qstate, qdata):
                                 for j in range(data.count):
                                     # temporarily change the queried domain name to the CNAME alias so we can apply our policy on it.
                                     # after we're done we change it back to the original query so as to not confuse users
-                                    # looking at the logged queries.
+                                    # looking at the logged queries. We do however change the type to CNAME if a match is found
+                                    # to indicate that a CNAME was the reason for blocking this domain.
                                     tmp = query.domain
                                     query.domain = dns.name.from_wire(data.rr_data[j], 2)[0].to_text(omit_final_dot=True)
                                     match = mod_env['dnsbl'].policy_match(query, qstate)
@@ -529,7 +534,9 @@ def operate(id, event, qstate, qdata):
                                     if match:
                                         # the iterator module has already resolved the answer and cached it,
                                         # make sure we remove it from the cache in order to block future queries for the same domain
-                                        invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+                                        if obj_path_exists(qstate, 'return_msg.qinfo'):
+                                            invalidateQueryInCache(qstate, qstate.return_msg.qinfo)
+                                        query.type = 'CNAME'
                                         if not set_answer_block(qstate, qdata, query, match.get('bl')):
                                             qstate.ext_state[id] = MODULE_ERROR
                                         # block and exit on any match
