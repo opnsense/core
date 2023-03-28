@@ -125,17 +125,17 @@ if __name__ == '__main__':
                 if (a != 'include' and r != 'include') and (diffs_added[a] or diffs_removed[r]):
                     skip_download = False
 
-        # exclude (white) lists, compile to regex to be used to filter blocklist entries
         if cnf.has_section('exclude'):
             exclude_list = set()
             for exclude_item in cnf['exclude']:
+                pattern = cnf['exclude'][exclude_item]
                 try:
-                    re.compile(cnf['exclude'][exclude_item], re.IGNORECASE)
-                    exclude_list.add(cnf['exclude'][exclude_item])
+                    re.compile(pattern, re.IGNORECASE)
+                    exclude_list.add(pattern)
                 except re.error:
                     syslog.syslog(syslog.LOG_ERR,
                         'blocklist download : skip invalid whitelist exclude pattern "%s" (%s)' % (
-                            exclude_item, cnf['exclude'][exclude_item]
+                            exclude_item, pattern
                         )
                     )
             if not exclude_list:
@@ -145,13 +145,14 @@ if __name__ == '__main__':
             whitelist_pattern = re.compile(wp, re.IGNORECASE)
             syslog.syslog(syslog.LOG_NOTICE, 'blocklist download : exclude domains matching %s' % wp)
 
+        if cnf.has_section('settings'):
+            if cnf.has_option('settings', 'address'):
+                blocklist_items['config']['dst_addr'] = cnf.get('settings', 'address')
+            if cnf.has_option('settings', 'rcode'):
+                blocklist_items['config']['rcode'] = cnf.get('settings', 'rcode')
+
         if not skip_download:
             # fetch all blocklists, will replace the existing file used by Unbound
-            if cnf.has_section('settings'):
-                if cnf.has_option('settings', 'address'):
-                    blocklist_items['config']['dst_addr'] = cnf.get('settings', 'address')
-                if cnf.has_option('settings', 'rcode'):
-                    blocklist_items['config']['rcode'] = cnf.get('settings', 'rcode')
             if cnf.has_section('blocklists'):
                 for blocklist in cnf['blocklists']:
                     list_type = blocklist.split('_', 1)
@@ -173,7 +174,7 @@ if __name__ == '__main__':
                             else:
                                 if domain_pattern.match(domain):
                                     file_stats['blocklist'] += 1
-                                    blocklist_items['data'][entry] = {"bl": bl_shortcode}
+                                    blocklist_items['data'][entry] = {'bl': bl_shortcode, 'wildcard': False}
                                 else:
                                     file_stats['skip'] += 1
 
@@ -188,20 +189,37 @@ if __name__ == '__main__':
                     entry = cnf['include'][item].rstrip().lower()
                     if not whitelist_pattern.match(entry):
                         if domain_pattern.match(entry):
-                            blocklist_items['data'][entry] = {"bl": "Custom"}
+                            blocklist_items['data'][entry] = {'bl': 'Manual','wildcard': False}
+                    if '*' in entry:
+                        blocklist_items['data'][entry.replace('*.', '')] = {'bl': 'Manual', 'wildcard': True}
 
         else:
             # only modify the existing list, administrate on added and removed exact custom matches
             syslog.syslog(syslog.LOG_NOTICE, 'blocklist: skip download')
-            if (diffs_added['include'] or diffs_removed['include']) and os.path.exists('/var/unbound/data/dnsbl.json'):
+            if os.path.exists('/var/unbound/data/dnsbl.json'):
                 blocklist_items = ujson.load(open('/var/unbound/data/dnsbl.json', 'r'))
-                for item in diffs_removed['include']:
-                    # include entry may have been overridden by the whitelist, so use pop()
-                    blocklist_items['data'].pop(item[1].rstrip().lower(), None)
-                for item in diffs_added['include']:
-                    entry = item[1].rstrip().lower()
-                    if not whitelist_pattern.match(entry):
-                        blocklist_items['data'][entry] = {"bl": "Custom"}
+                if diffs_removed['include']:
+                    for item in diffs_removed['include']:
+                        entry = item[1].replace('*.', '').rstrip().lower()
+                        # include entry may have been overridden by the whitelist, so use pop()
+                        blocklist_items['data'].pop(entry, None)
+
+                if diffs_added['include']:
+                    for item in diffs_added['include']:
+                        entry = item[1].rstrip().lower()
+                        if not whitelist_pattern.match(entry):
+                            if domain_pattern.match(entry):
+                                blocklist_items['data'][entry] = {'bl': 'Manual', 'wildcard': False}
+                        if '*' in entry:
+                            blocklist_items['data'][entry.replace('*.', '')] = {'bl': 'Manual', 'wildcard': True}
+
+        # check if there are wildcards in the dataset
+        has_wildcards = False
+        for item in blocklist_items['data']:
+            if blocklist_items['data'][item]['wildcard'] == True:
+                has_wildcards = True
+                break
+        blocklist_items['config']['has_wildcards'] = has_wildcards
 
         with open('/tmp/unbound-blocklists.conf.cache', 'w') as cache_config:
             # cache the current config so we can diff on it the next time
