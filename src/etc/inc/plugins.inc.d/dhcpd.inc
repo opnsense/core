@@ -353,7 +353,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 $dnslist_tmp = $dhcpv6ifconf['dnsserver'];
             } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
                 $dnslist_tmp = $dhcpv6ifconf['radnsserver'];
-            } elseif (!empty(service_by_filter(['ports' => '53']))) {
+            } elseif (!empty(service_by_filter(['dns_ports' => '53']))) {
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
@@ -453,7 +453,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             $networkv6 = '::/64';
         }
 
-        if (!empty(service_by_filter(['ports' => '53']))) {
+        if (!empty(service_by_filter(['dns_ports' => '53']))) {
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
@@ -753,7 +753,7 @@ EOPP;
             if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = $dhcpifconf['dnsserver'];
             }
-        } elseif (!empty(service_by_filter(['ports' => '53']))) {
+        } elseif (!empty(service_by_filter(['dns_ports' => '53']))) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
             if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = [$ifcfgip];
@@ -1469,7 +1469,7 @@ EOD;
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
-        } elseif (!empty(service_by_filter(['ports' => '53']))) {
+        } elseif (!empty(service_by_filter(['dns_ports' => '53']))) {
             $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
         } elseif (!empty($dns_arrv6)) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dns_arrv6) . ";";
