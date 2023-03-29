@@ -50,6 +50,7 @@ function ntpd_services()
     $pconfig['description'] = gettext('Network Time Daemon');
     $pconfig['php']['restart'] = array('ntpd_configure_do');
     $pconfig['php']['start'] = array('ntpd_configure_do');
+    /* the pidfile for ntpd is unreliable - DO NOT USE IT */
 
     if (!empty($config['ntpd']['clientmode'])) {
         $pconfig['nocheck'] = true;
