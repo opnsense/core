@@ -600,47 +600,29 @@ function addTimeRange(){
 }
 
 function insertElements(label, start_hour, start_min, stop_hour, stop_min, description, days) {
+    const css = 'word-wrap: break-word; width: 100%; border: 0;';
+
+    const tr = $('<tr></tr>');
+    tr.append(`<td><span>${label}</span></td>`);
+    tr.append(`<td><input type="text" readonly="readonly" id="starttime${schCounter}" name="starttime${schCounter}" style="${css}" value="${start_hour}:${start_min}" /></td>`);
+    tr.append(`<td><input type="text" readonly="readonly" id="stoptime${schCounter}" name="stoptime${schCounter}" style="${css}" value="${stop_hour}:${stop_min}" /></td>`);
+
+    const range_desc = $(`<input type="text" readonly="readonly" id="timedescr${schCounter}" name="timedescr${schCounter}" style="${css}" />`);
+    range_desc.val(description);
+    $('<td></td>').append(range_desc).appendTo(tr);
+
+    tr.append(`<td><a onclick="return editRow.bind(this)(${schCounter})" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a></td>`);
+    tr.append(`<td><a onclick="return removeRow.bind(this)()" href="#" class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a></td>`);
+    tr.append(`<td><input type="hidden" id="schedule${schCounter}" name="schedule${schCounter}" value="${days}" /></td>`);
+
     //add it to the schedule list
-    let d = document;
-    let tbody = document.getElementById("scheduletable").getElementsByTagName("tbody").item(0);
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
-    td.innerHTML= "<span>"+label+"</span>";
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='starttime"+schCounter+"' id='starttime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+start_hour+":"+start_min+"' />";
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    td.innerHTML="<input type='text' readonly='readonly' name='stoptime"+schCounter+"' id='stoptime"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;' value='"+stop_hour+":"+stop_min+"' />";
-    tr.appendChild(td);
-
-    td = $("<input type='text' readonly='readonly' name='timedescr"+schCounter+"' id='timedescr"+schCounter+"' style=' word-wrap:break-word; width:100%; border:0px solid;'/>");
-    td.val(description);
-    tr.appendChild(td[0]);
-
-    td = document.createElement("td");
-    td.innerHTML = `<a onclick="editRow(this, '${days}', '${start_hour}:${start_min}', '${stop_hour}:${stop_min}', ${schCounter}); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>`;
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default\"><span class=\"fa fa-trash fa-fw\"></span></a>";
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    td.innerHTML="<input type='hidden' id='schedule"+schCounter+"' name='schedule"+schCounter+"' value='"+ days+"' />";
-    tr.appendChild(td);
-    tbody.appendChild(tr);
-
-    schCounter++;
+    $('#scheduletable tbody').append(tr);
 
     //reset calendar and time and descr
     clearCalendar();
     clearTime();
     clearDescr();
 }
-
 
 function clearCalendar(){
   var tempstr, daycell = "";
@@ -676,25 +658,27 @@ function clearDescr(){
   $('#timerangedescr').val('');
 }
 
-function editRow(el, days, start_time, stop_time, seq) {
+function editRow(row_num) {
   if (!checkForRanges())
-    return;
+    return false;
 
   //reset calendar and time
   clearCalendar();
   clearTime();
 
   let start_hour, start_min, stop_hour, stop_min;
-  [start_hour, start_min] = start_time.split(':');
-  [stop_hour, stop_min] = stop_time.split(':');
+  [start_hour, start_min] = $(`#starttime${row_num}`).val().split(':');
+  [stop_hour, stop_min] = $(`#stoptime${row_num}`).val().split(':');
 
   $('#starttimehour').selectpicker('val', start_hour);
   $('#starttimemin').selectpicker('val', start_min);
   $('#stoptimehour').selectpicker('val', stop_hour);
   $('#stoptimemin').selectpicker('val', stop_min);
-  $('#timerangedescr').val($("#timedescr"+seq).val());
+  $('#timerangedescr').val($(`#timedescr${row_num}`).val());
 
+  let days = $(`#schedule${row_num}`).val();
   let first_selected_month = days.search('m');
+
   if (first_selected_month !== -1) {
       first_selected_month = days.substring(first_selected_month);
       first_selected_month = first_selected_month.split('d')[0].slice(1);
@@ -718,32 +702,31 @@ function editRow(el, days, start_time, stop_time, seq) {
     daytoggle(day);
   });
 
-  removeRownoprompt(el);
+  return removeRownoprompt.bind(this)();
 }
 
-function removeRownoprompt(el) {
-    while (el && el.nodeName.toLowerCase() != "tr") {
-      el = el.parentNode;
-    }
-    if (el) {
-      el.remove();
-    }
+function removeRownoprompt() {
+    $(this).closest('tr').remove();
+    return false;
 }
 
+function removeRow() {
+  if (!confirm("Do you really want to delete this time range?"))
+      return false;
 
-function removeRow(el) {
-  if (confirm("Do you really want to delete this time range?")){
-    while (el && el.nodeName.toLowerCase() != "tr") {
-      el = el.parentNode;
-    }
-    if (el) {
-      el.remove();
-    }
-  }
+  return removeRownoprompt.bind(this)();
 }
 
-// XXX Workaround: hook_stacked_form_tables breaks CSS query otherwise
-$( function() { $('#iform td').css({ 'background-color' : '' }); })
+$(function() {
+  // XXX Workaround: hook_stacked_form_tables breaks CSS query otherwise
+  $('#iform td').css({ 'background-color' : '' });
+
+  // Decode time range descriptions previously encoded via escape()
+  $('.range-description').each(function(i, description) {
+    description = $(description);
+    description.val(decodeURIComponent(description.val()));
+  });
+});
 
 //]]>
 </script>
@@ -984,6 +967,7 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                                     $dayFriendly = "";
                                     $tempFriendlyTime = "";
                                     $timedescr = $timerange['rangedescr'];
+
                                     //get hours
                                     $temptimerange = $timerange['hour'];
                                     $temptimeseparator = strrpos($temptimerange, "-");
@@ -1089,19 +1073,19 @@ $( function() { $('#iform td').css({ 'background-color' : '' }); })
                                   <span><?=$tempFriendlyTime; ?></span>
                                 </td>
                                 <td>
-                                  <input type='text' readonly='readonly' name='starttime<?=$counter; ?>' id='starttime<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$starttime; ?>' />
+                                  <input type='text' readonly='readonly' name='starttime<?=$counter; ?>' id='starttime<?=$counter; ?>' style='word-wrap:break-word; width:100%; border:0;' value='<?=$starttime; ?>' />
                                 </td>
                                 <td>
-                                  <input type='text' readonly='readonly' name='stoptime<?=$counter; ?>' id='stoptime<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$stoptime; ?>' />
+                                  <input type='text' readonly='readonly' name='stoptime<?=$counter; ?>' id='stoptime<?=$counter; ?>' style='word-wrap:break-word; width:100%; border:0;' value='<?=$stoptime; ?>' />
                                 </td>
                                 <td>
-                                  <input type='text' readonly='readonly' name='timedescr<?=$counter; ?>' id='timedescr<?=$counter; ?>' style=' word-wrap:break-word; width:100%; border:0px solid;' value='<?=$timedescr; ?>' />
+                                  <input type='text' readonly='readonly' name='timedescr<?=$counter; ?>' id='timedescr<?=$counter; ?>' class="range-description" style='word-wrap:break-word; width:100%; border:0;' value='<?=$timedescr; ?>' />
                                 </td>
                                 <td>
-                                  <a onclick="editRow(this, '<?= $days ?>', '<?= $starttime ?>', '<?= $stoptime ?>', '<?=$counter;?>'); return false;" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
+                                  <a onclick="return editRow.bind(this)(<?= $counter ?>)" href="#" class="btn btn-default"><span class="fa fa-pencil fa-fw"></span></a>
                                 </td>
                                 <td>
-                                  <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a>
+                                  <a onclick="return removeRow.bind(this)()" href="#" class="btn btn-default"><span class="fa fa-trash fa-fw"></span></a>
                                 </td>
                                 <td>
                                   <input type='hidden' id='schedule<?=$counter; ?>' name='schedule<?=$counter; ?>' value='<?=$days; ?>' />
