@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2022 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2022-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,7 @@ spd_add_cmd = 'spdadd -%(ipproto)s %(source)s %(destination)s any ' \
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--connection_child', help='uuid of the connection child')
     parser.add_argument('--reqid', default=os.environ.get('PLUTO_REQID'))
     parser.add_argument('--local', default=os.environ.get('PLUTO_ME'))
     parser.add_argument('--remote', default=os.environ.get('PLUTO_PEER'))
@@ -56,28 +57,32 @@ if __name__ == '__main__':
         if os.path.exists(spd_filename):
             cnf = ConfigParser()
             cnf.read(spd_filename)
-            conf_section = 'spd_%s' % cmd_args.reqid
-            if cnf.has_section(conf_section):
-                spds = {}
-                for opt in cnf.options(conf_section):
-                    if opt.count('_') == 1:
-                        tmp = opt.split('_')
-                        seqid = tmp[1]
-                        if seqid not in spds:
-                            spds[seqid] = {
-                                'reqid': cmd_args.reqid,
-                                'local' : cmd_args.local,
-                                'remote' : cmd_args.remote,
-                                'destination': os.environ.get('PLUTO_PEER_CLIENT')
-                            }
-                        if cnf.get(conf_section, opt).strip() != '':
-                            spds[seqid][tmp[0]] = cnf.get(conf_section, opt).strip()
-                # (re)aaply manual policies if specified
-                cur_spds = list_spds(req_id=cmd_args.reqid, automatic=False)
+            spds = []
+            for section in cnf.sections():
+                if cnf.get(section, 'reqid') == cmd_args.reqid \
+                        or cnf.get(section, 'connection_child') == cmd_args.connection_child:
+                    spds.append({
+                        'reqid': cmd_args.reqid,
+                        'local' : cmd_args.local,
+                        'remote' : cmd_args.remote,
+                        'destination': os.environ.get('PLUTO_PEER_CLIENT')
+                    })
+                    for opt in cnf.options(section):
+                        if cnf.get(section, opt).strip() != '':
+                            spds[-1][opt] = cnf.get(section, opt).strip()
+
+                # (re)apply manual policies if specified
+                cur_spds = list_spds(automatic=False)
                 set_key = []
                 for spd in cur_spds:
-                    set_key.append('spddelete -n %(src)s %(dst)s any -P %(direction)s;' % spd)
-                for spd in spds.values():
+                    policy_found = False
+                    for mspd in spds:
+                        if mspd['source'] == spd['src'] and mspd['destination'] == spd['dst']:
+                            policy_found = True
+                    if policy_found or spd['reqid'] == cmd_args.reqid:
+                        set_key.append('spddelete -n %(src)s %(dst)s any -P %(direction)s;' % spd)
+
+                for spd in spds:
                     if None in spd.values():
                         # incomplete, skip
                         continue

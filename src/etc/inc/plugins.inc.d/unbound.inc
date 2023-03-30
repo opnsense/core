@@ -61,7 +61,7 @@ function unbound_services()
 
     $pconfig = [];
     $pconfig['name'] = 'unbound';
-    $pconfig['ports'] = [(string)$mdl->general->port];
+    $pconfig['dns_ports'] = [(string)$mdl->general->port];
     $pconfig['description'] = gettext('Unbound DNS');
     $pconfig['php']['restart'] = ['unbound_configure_do'];
     $pconfig['php']['start'] = ['unbound_configure_do'];
