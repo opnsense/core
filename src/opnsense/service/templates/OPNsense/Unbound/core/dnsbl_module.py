@@ -222,7 +222,7 @@ class Logger:
             try:
                 while len(self._pipe_buffer) > 0:
                     l = self._pipe_buffer.popleft()
-                    res = "{} {} {} {} {} {} {} {} {} {} {} {} {}\n".format(*l)
+                    res = "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}\n".format(*['' if x is None else x for x in l])
                     os.write(self._pipe_fd, res.encode())
             except (BrokenPipeError, BlockingIOError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
