@@ -410,6 +410,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogPipe.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogQueue.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AclController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AdvancedController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/DiagnosticsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/OverviewController.php
@@ -423,6 +424,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/advanced.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogAcl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
@@ -725,6 +727,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Unbound/acl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/advanced.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dot.volt

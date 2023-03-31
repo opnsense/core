@@ -4,7 +4,7 @@
             <General order="10" url="/ui/unbound/general/"/>
             <Overrides order="20" url="/ui/unbound/overrides/"/>
             <Advanced order="30" url="/ui/unbound/advanced/"/>
-            <ACL VisibleName="Access Lists_new" order="35" url="/ui/unbound/acl/"></ACL>
+            <ACLnew VisibleName="Access Lists_new" order="35" url="/ui/unbound/acl/"/>
             <ACL VisibleName="Access Lists" order="40" url="/services_unbound_acls.php">
                 <All url="/services_unbound_acls.php*" visibility="hidden"/>
             </ACL>

@@ -194,6 +194,78 @@
             <unwantedreplythreshold type="NumericField">
             </unwantedreplythreshold>
         </advanced>
+        <acls>
+            <allowall type="BooleanField">
+                <default>1</default>
+                <Required>N</Required>
+            </allowall>
+            <acl type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type="TextField">
+                    <Required>N</Required>
+                </name>
+                <action type="OptionField">
+                    <default>allow</default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <opt1 value="allow">Allow</opt1>
+                        <opt2 value="deny">Deny</opt2>
+                        <opt3 value="refuse">Refuse</opt3>
+                        <opt4 value="allow_snoop">Allow Snoop</opt4>
+                        <opt5 value="deny_non_local">Deny Non-local</opt5>
+                        <opt6 value="refuse_non_local">Refuse Non-local</opt6>
+                    </OptionValues>
+                </action>
+                <networks type="NetworkField">
+                    <Multiple>Y</Multiple>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <FieldSeparator>,</FieldSeparator>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <asList>Y</asList>
+                </networks>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
+                    <ValidationMessage></ValidationMessage>
+                </description>
+            </acl>
+        </acls>
+<!--        <acl_networks>-->
+<!--            <networks type="ArrayField">-->
+<!--                <enabled type="BooleanField">-->
+<!--                    <default>1</default>-->
+<!--                    <Required>Y</Required>-->
+<!--                </enabled>-->
+<!--                <acl type="ModelRelationField">-->
+<!--                    <Model>-->
+<!--                        <acl>-->
+<!--                            <source>OPNsense.Unbound.Unbound</source>-->
+<!--                            <items>acls.acl</items>-->
+<!--                            <display>name</display>-->
+<!--                        </acl>-->
+<!--                    </Model>-->
+<!--                </acl>-->
+<!--                <src_nets type="NetworkField">-->
+<!--                    <Multiple>Y</Multiple>-->
+<!--                    <Required>N</Required>-->
+<!--                    <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>-->
+<!--                    <WildcardEnabled>N</WildcardEnabled>-->
+<!--                    <FieldSeparator>,</FieldSeparator>-->
+<!--                    <NetMaskRequired>Y</NetMaskRequired>-->
+<!--                    <asList>Y</asList>-->
+<!--                </src_nets>-->
+<!--                <description type="TextField">-->
+<!--                    <Required>N</Required>-->
+<!--                    <mask>/^(.){1,255}$/u</mask>-->
+<!--                    <ValidationMessage>Description should be a string between 1 and 255 characters.</ValidationMessage>-->
+<!--                </description>-->
+<!--            </networks>-->
+<!--        </acl_networks>-->
         <dnsbl>
             <enabled type="BooleanField">
                 <default>0</default>
