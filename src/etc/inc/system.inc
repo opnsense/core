@@ -237,6 +237,9 @@ function system_resolvconf_generate($verbose = false)
 
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $host => $gateway) {
+        if (empty($gateway)) {
+            continue;
+        }
         system_host_route($host, $gateway);
     }
 
