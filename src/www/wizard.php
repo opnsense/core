@@ -742,9 +742,6 @@ include("head.inc");
                                             echo "<select class='form-control' id='{$name}' name='{$name}'>\n";
                                             $CHECKED = ' selected="selected"';
                                             for ($x = 1; $x <= 32; $x++) {
-                                                if ($x == 31) {
-                                                    continue;
-                                                }
                                                 if ($value == $x) $CHECKED = " selected=\"selected\"";
                                                 echo "<option value='{$x}'";
                                                 if ($value == $x || $x == 32) {
