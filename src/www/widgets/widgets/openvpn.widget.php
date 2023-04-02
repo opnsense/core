@@ -88,7 +88,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     elseif (!empty($server['timestamp'])):?>
           <tr>
             <td><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-            <td><?=$server['remote_host'];?><br/><?=$server['virtual_address'];?></td>
+            <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?></td>
             <td>
             <span class='fa fa-exchange fa-fw <?=$server['status'] == "CONNECTED" ? "text-success" : "text-danger" ;?>'></span>
             </td>
