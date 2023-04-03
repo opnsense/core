@@ -91,6 +91,8 @@ netflow_setup_interface()
         conf="11"
         echo "setup $interface"
     fi;
+    # avoid dots [.] in interface names to avoid issues with ngctl
+    interface=`echo $interface | sed 's/\./_/g'`
 
     # remove earlier setup (if any)
     /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
