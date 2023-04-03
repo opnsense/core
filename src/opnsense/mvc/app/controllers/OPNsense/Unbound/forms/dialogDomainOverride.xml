@@ -20,7 +20,7 @@
         <type>text</type>
         <help>
             IP address of the authoritative DNS server for this domain,
-            e.g. '192.168.100.100'. To use a nondefault port for communication,
+            e.g. '192.168.100.100'. To use a non-default port for communication,
             append an '@' with the port number.
         </help>
     </field>
@@ -31,7 +31,7 @@
         <advanced>true</advanced>
         <help>
             Upstream queries use TCP only for transport regardless of global flag tcp-upstream.
-            Please note this setting applies to the domain, so when multiple forwarders are defined for the same domaine,
+            Please note this setting applies to the domain, so when multiple forwarders are defined for the same domain,
             all are assumed to use tcp only.
         </help>
     </field>
