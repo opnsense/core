@@ -10,7 +10,7 @@
         </patterns>
     </page-vpn-ipsec-keypairs>
     <page-vpn-ipsec>
-        <name>VPN: IPsec</name>
+        <name>VPN: IPsec: Tunnels Settings [legacy]</name>
         <patterns>
             <pattern>ui/ipsec/tunnels</pattern>
             <pattern>api/ipsec/tunnel/*</pattern>
@@ -18,7 +18,7 @@
         </patterns>
     </page-vpn-ipsec>
     <page-vpn-ipsec-connections>
-        <name>VPN: IPsec connections [new]</name>
+        <name>VPN: IPsec: Connections</name>
         <patterns>
             <pattern>ui/ipsec/connections</pattern>
             <pattern>ui/ipsec/vti</pattern>

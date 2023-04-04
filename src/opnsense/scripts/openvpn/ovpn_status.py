@@ -63,11 +63,15 @@ def ovpn_status(filename):
         return {'status': 'failed'}
 
     header_def = []
+    client_fieldnames = {'read_bytes': 'bytes_received', 'write_bytes': 'bytes_sent'}
     target_struct = None
     for line in buffer.split('\n'):
         if line.startswith('TCP/UDP'):
             line = line.split(',')
-            response[line[0][8:].replace(' ', '_')] = line[1].strip()
+            fieldname = line[0][8:].replace(' ', '_')
+            if fieldname in client_fieldnames:
+                fieldname = client_fieldnames[fieldname]
+            response[fieldname] = line[1].strip()
             continue
         line = line.split('\t')
         if line[0] == 'HEADER':
@@ -99,8 +103,8 @@ def ovpn_state(filename):
         if len(tmp) > 2 and tmp[0].isdigit():
             response['timestamp'] = int(tmp[0])
             response['status'] = tmp[1].lower()
-            response['virtual_addr'] = tmp[3] if len(tmp) > 3 else ""
-            response['remote_host'] = tmp[4] if len(tmp) > 4 else ""
+            response['virtual_address'] = tmp[3] if len(tmp) > 3 else ""
+            response['real_address'] = tmp[4] if len(tmp) > 4 else ""
 
     return response
 

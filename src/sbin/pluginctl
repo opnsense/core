@@ -145,8 +145,7 @@ if (isset($opts['h'])) {
    $cmd = array_shift($args);
    $result = plugins_run($cmd, $args);
    if (!empty($result)) {
-      $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
-      echo $response;
+      echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
    }
 } elseif (isset($opts['g'])) {
    echo get_config_prop($args[0]) . PHP_EOL;

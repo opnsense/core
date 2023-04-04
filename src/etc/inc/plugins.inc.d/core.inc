@@ -119,16 +119,6 @@ function core_services()
         'name' => 'syslog-ng',
     );
 
-    $services[] = array(
-        'pidfile' => '/var/run/lighty-webConfigurator.pid',
-        'description' => gettext('Web GUI'),
-        'php' => array(
-            'restart' => array('webgui_configure_delayed')
-        ),
-        'name' => 'webgui',
-        'locked' => true,
-    );
-
     return $services;
 }
 

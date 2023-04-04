@@ -396,6 +396,8 @@ function dpinger_status()
                     $r['status'] = 'down';
                 } elseif ($r['loss'] > $settings['losshigh']) {
                     $r['status'] = 'down';
+                } elseif ($r['latency_avg'] > $settings['latencylow'] && $r['loss'] > $settings['losslow']) {
+                    $r['status'] = 'delay+loss';
                 } elseif ($r['latency_avg'] > $settings['latencylow']) {
                     $r['status'] = 'delay';
                 } elseif ($r['loss'] > $settings['losslow']) {

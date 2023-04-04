@@ -38,22 +38,16 @@ use OPNsense\Core\Config;
  */
 class ServiceController extends ApiControllerBase
 {
-    private function list_status()
-    {
-        return json_decode((new Backend())->configdRun('service list'), true);
-    }
-
     /**
-     * Search phase 1 session entries
+     * Search service entries
      * @return array
      */
     public function searchAction()
     {
         $this->sessionClose();
 
-        $data = $this->list_status();
+        $data = json_decode((new Backend())->configdRun('service list'), true);
         $records = [];
-        $phase1s = [];
 
         if (!empty($data)) {
             foreach ($data as $service) {
@@ -67,6 +61,7 @@ class ServiceController extends ApiControllerBase
                 $records[] = $record;
             }
         }
+
         return $this->searchRecordsetBase($records);
     }
 

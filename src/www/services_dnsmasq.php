@@ -82,12 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['local_ttl']) && $pconfig['local_ttl'] !== '' && !is_numericint($pconfig['local_ttl'])) {
             $input_errors[] = gettext("You must specify a valid TTL for local DNS");
         }
-        $unbound_mdl = new \OPNsense\Unbound\Unbound();
-        $unbound_enabled = (string)$unbound_mdl->general->enabled;
-        $unbound_port = (string)$unbound_mdl->general->port;
+
         $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
-        if (!empty($pconfig['enable']) && !empty($unbound_enabled) && $dnsmasq_port == $unbound_port) {
-            $input_errors[] = gettext('Unbound is still active on the same port. Disable it before enabling Dnsmasq.');
+        $port_conflict = service_by_filter(['dns_ports' => $dnsmasq_port]);
+        if (!empty($pconfig['enable']) && !empty($port_conflict) && $port_conflict['name'] != 'dnsmasq') {
+            $input_errors[] = sprintf(gettext('%s is currently using this port.'), $port_conflict['description']);
         }
 
         if (count($input_errors) == 0) {

@@ -158,6 +158,7 @@
                   <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
                   <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                   <th data-column-id="reqid" data-type="string">{{ lang._('Reqid') }}</th>
+                  <th data-column-id="connection_child" data-type="string">{{ lang._('Child') }}</th>
                   <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                   <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
                   <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>

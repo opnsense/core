@@ -89,6 +89,7 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
                             break;
                           case 'loss':
                           case 'delay':
+                          case 'delay+loss':
                             status_color = 'warning';
                             break;
                           case 'none':

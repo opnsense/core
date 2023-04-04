@@ -67,7 +67,8 @@ class ServiceLogFormat(NewBaseLogFormat):
 
     @staticmethod
     def match(line):
-        return len(line) > 25 and line[19] == '+' and re.match(r'\d{4}(.\d{2}){2}(\s|T)(\d{2}.){2}\d{2}', line[0:19])
+        return len(line) > 25 and line[19] in ['+', '-'] \
+                and re.match(r'\d{4}(.\d{2}){2}(\s|T)(\d{2}.){2}\d{2}', line[0:19])
 
     @property
     def timestamp(self):

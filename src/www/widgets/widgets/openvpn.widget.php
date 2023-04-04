@@ -45,9 +45,8 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         // link kill buttons
         $(".act_kill_client").click(function(event){
             event.preventDefault();
-            var port = $(this).data("client-port");
-            var ip = $(this).data("client-ip");
-            $.post('/status_openvpn.php', {action: 'kill', port:port, remipp:ip}, function(data) {
+            let params = {server_id:  $(this).data("client-port"), session_id: $(this).data("client-ip")};
+            $.post('/api/openvpn/service/kill_session/', params, function(data, status){
                 location.reload();
             });
         });
@@ -77,7 +76,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
             <td><?=$conn['common_name'] ?? '';?><br/><?=$conn['connected_since'] ?? '';?></td>
             <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?></td>
             <td>
-               <span class="fa fa-times fa-fw act_kill_client" data-client-port="server<?=$server['vpnid'];?>"
+               <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['vpnid'];?>"
                  data-client-ip="<?=$conn['real_address'];?>"
                  style='cursor:pointer;'
                  title='Kill client connection from <?=$conn['real_address']; ?>'>
@@ -89,7 +88,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     elseif (!empty($server['timestamp'])):?>
           <tr>
             <td><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-            <td><?=$server['remote_host'];?><br/><?=$server['virtual_addr'];?></td>
+            <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?></td>
             <td>
             <span class='fa fa-exchange fa-fw <?=$server['status'] == "CONNECTED" ? "text-success" : "text-danger" ;?>'></span>
             </td>
@@ -103,7 +102,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     endforeach; ?>
 
 <?php
-    if (!empty($openvpn_cfg['openvpn-server'])) {?>
+    if (!empty($openvpn_cfg['openvpn-client'])) {?>
     <table class="table table-striped table-condensed">
       <thead>
           <tr>
@@ -121,7 +120,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
 foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
         <tr>
           <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-          <td><?=$client['remote_host'];?><br/><?=$client['virtual_addr'];?></td>
+          <td><?=$client['remote_host'];?><br/><?=$client['virtual_address'];?></td>
           <td>
             <span class='fa fa-exchange fa-fw <?=$client['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
           </td>

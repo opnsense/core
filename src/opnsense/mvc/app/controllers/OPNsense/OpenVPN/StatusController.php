@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Michael Muenz <m.muenz@gmail.com>
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound;
+namespace OPNsense\OpenVPN;
 
-use Phalcon\Messages\Message;
-use OPNsense\Base\BaseModel;
-use OPNsense\Core\Config;
+use OPNsense\Base\IndexController as BaseIndexController;
 
-class Unbound extends BaseModel
+/**
+ * Class StatusController
+ * @package OPNsense\OpenVPN
+ */
+class StatusController extends BaseIndexController
 {
-    public function performValidation($validateFullModel = false)
+    /**
+     * default index page
+     * @throws \Exception
+     */
+    public function indexAction()
     {
-        $messages = parent::performValidation($validateFullModel);
-
-        if ($validateFullModel || $this->general->enabled->isFieldChanged() || $this->general->port->isFieldChanged()) {
-            $config = Config::getInstance()->object();
-
-            $dnsmasq_port = !empty((string)$config->dnsmasq->port) ? (string)$config->dnsmasq->port : '53';
-            $unbound_port = (string)$this->general->port;
-
-            if (!empty((string)$this->general->enabled) && !empty((string)$config->dnsmasq->enable) && $unbound_port == $dnsmasq_port) {
-                $messages->appendMessage(new Message(
-                    gettext('Dnsmasq is currently using this port.'),
-                    'general.' . $this->general->port->getInternalXMLTagName()
-                ));
-            }
-        }
-
-        return $messages;
+        $this->view->pick('OPNsense/OpenVPN/status');
     }
 }

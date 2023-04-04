@@ -28,18 +28,15 @@
     $( document ).ready(function() {
         var data_get_map = {'frm_GeneralSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
-            console.log(data);
             formatTokenizersUI();
             $('.selectpicker').selectpicker({title: 'All (recommended)'}).selectpicker('render');
             $('.selectpicker').selectpicker('refresh');
         });
 
         $("#reconfigureAct").SimpleActionButton({
-            onPreAction: function() {
+            onPreAction: function () {
               const dfObj = new $.Deferred();
-              saveFormToEndpoint("/api/unbound/settings/set", 'frm_GeneralSettings', function(){
-                  dfObj.resolve();
-              });
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_GeneralSettings', function () { dfObj.resolve(); }, false, function () { dfObj.reject(); });
               return dfObj;
             }
         });

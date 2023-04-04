@@ -167,7 +167,7 @@
                 <id>proxy.general.cache.local.l2</id>
                 <label>Number of second-level subdirectories</label>
                 <type>text</type>
-                <help>Enter the number of first-level subdirectories for the local cache (default is 256).</help>
+                <help>Enter the number of second-level subdirectories for the local cache (default is 256).</help>
                 <advanced>true</advanced>
             </field>
             <field>

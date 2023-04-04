@@ -8,11 +8,7 @@
         <id>unbound.general.port</id>
         <label>Listen Port</label>
         <type>text</type>
-        <help>
-            The port used for responding to DNS queries. It should normally be left blank unless
-            another service needs to bind to TCP/UDP port 53.
-        </help>
-        <hint>53</hint>
+        <help>The TCP/UDP port used for responding to DNS queries.</help>
     </field>
     <field>
         <id>unbound.general.active_interface</id>
@@ -86,7 +82,7 @@
         <help>
             <![CDATA[If this option is set, then no A/AAAA records for the configured listen interfaces will be generated.
             If desired, you can manually add them in
-            <a href="/ui/unbound/overrides/">Unbound DNS: Overrides</a>.
+            <a href="/ui/unbound/overrides">Unbound DNS: Overrides</a>.
             Use this to control which interface IP addresses are mapped to the system host/domain name
             as well as to restrict the amount of information exposed in replies to queries for the system host/domain name.]]>
         </help>

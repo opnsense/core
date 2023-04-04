@@ -38,31 +38,34 @@ function unbound_enabled()
 
 function unbound_configure()
 {
-    return array(
-        'bootup' => array('unbound_configure_do'),
-        'dns' => array('unbound_configure_do'),
-        'early' => array('unbound_cache_flush'),
-        'local' => array('unbound_configure_do'),
-        'newwanip' => array('unbound_configure_do:2'),
-        'unbound_start' => array('unbound_configure_do'),
-        'unbound_stop' => array('unbound_service_stop'),
-    );
+    return [
+        'bootup' => ['unbound_configure_do'],
+        'dns' => ['unbound_configure_do'],
+        'early' => ['unbound_cache_flush'],
+        'local' => ['unbound_configure_do'],
+        'newwanip' => ['unbound_configure_do:2'],
+        'unbound_start' => ['unbound_configure_do'],
+        'unbound_stop' => ['unbound_service_stop'],
+    ];
 }
 
 function unbound_services()
 {
-    $services = array();
+    $services = [];
 
     if (!unbound_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $mdl = new \OPNsense\Unbound\Unbound();
+
+    $pconfig = [];
     $pconfig['name'] = 'unbound';
+    $pconfig['dns_ports'] = [(string)$mdl->general->port];
     $pconfig['description'] = gettext('Unbound DNS');
-    $pconfig['php']['restart'] = array('unbound_configure_do');
-    $pconfig['php']['start'] = array('unbound_configure_do');
-    $pconfig['php']['stop'] = array('unbound_service_stop');
+    $pconfig['php']['restart'] = ['unbound_configure_do'];
+    $pconfig['php']['start'] = ['unbound_configure_do'];
+    $pconfig['php']['stop'] = ['unbound_service_stop'];
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 
@@ -71,14 +74,14 @@ function unbound_services()
 
 function unbound_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
-        'description' => gettext('Unbound DNS'),
+    $result[] = [
         'section' => 'unbound,OPNsense.unboundplus',
+        'description' => gettext('Unbound DNS'),
+        'services' => ['unbound'],
         'id' => 'dnsresolver',
-        'services' => ["unbound"],
-    );
+    ];
 
     return $result;
 }
@@ -221,7 +224,7 @@ function unbound_generate_config()
     unbound_add_host_entries($ifconfig_details);
     unbound_acls_config();
 
-    $port = $general['port'] ?? '53';
+    $port = $general['port'];
 
     /* do not touch prefer-ip6 as it is defaulting to 'no' anyway */
     $do_ip6 = isset($config['system']['ipv6allow']) ? 'yes' : 'no';
@@ -385,16 +388,17 @@ function unbound_configure_do($verbose = false, $unused = '')
     service_log("done.\n", $verbose);
 }
 
-function unbound_add_host_entries($ifconfig_details = null)
+function unbound_add_host_entries($ifconfig_details)
 {
     global $config;
+
     $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
     $ptr_records = ['127.0.0.1', '::1'];
 
-    openlog("unbound", LOG_DAEMON, LOG_LOCAL4);
+    openlog('unbound', LOG_DAEMON, LOG_LOCAL4);
 
-    $local_zone_type = $general['local_zone_type'] ?? 'transparent';
+    $local_zone_type = $general['local_zone_type'];
 
     $unbound_entries = "local-zone: \"{$config['system']['domain']}\" {$local_zone_type}\n";
 

@@ -84,6 +84,12 @@
                             }
                             return html.join('&nbsp;');
                         }
+                    },
+                    timestamp: function (column, row) {
+                        if (row[column.id] && row[column.id].includes('.')) {
+                            return row[column.id].split('.')[0].replace('T', ' ');
+                        }
+                        return row[column.id];
                     }
                 }
             }
@@ -269,7 +275,6 @@
          */
         $("#network_content, #authgroup_content").change(function(){
             let target = $(this);
-            console.log(target);
             let $content = $("#alias\\.content");
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
@@ -341,7 +346,6 @@
         $("#alias\\.content").change(function(){
             var items = $(this).val();
             ['#authgroup_content', '#network_content', '.geoip_select'].forEach(function(target){
-                console.log(target);
                 $(target).each(function(){
                     var content_item = $(this);
                     content_item.val([]);
@@ -616,7 +620,7 @@
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
-                            <th data-column-id="last_updated" data-type="string">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="last_updated"  data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>
