@@ -99,6 +99,7 @@ class M1_0_6 extends BaseModelMigration
 
     public function post($model)
     {
-
+        $config = Config::getInstance()->object();
+        unset($config->unbound->acls);
     }
 }
