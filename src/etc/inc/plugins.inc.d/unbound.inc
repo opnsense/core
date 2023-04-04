@@ -222,7 +222,6 @@ function unbound_generate_config()
     }
 
     unbound_add_host_entries($ifconfig_details);
-    unbound_acls_config();
 
     $port = $general['port'];
 
@@ -314,9 +313,6 @@ module-config: "{$module_config}"
 
 # Private domains (DNS Rebinding)
 include: /var/unbound/private_domains.conf
-
-# Access lists
-include: /var/unbound/access_lists.conf
 
 # Static host entries
 include: /var/unbound/host_entries.conf
@@ -572,37 +568,4 @@ function unbound_add_host_entries($ifconfig_details)
 
     closelog();
     reopenlog();
-}
-
-function unbound_acls_config()
-{
-    $subnets = array('0.0.0.0/0', '::/0', '127.0.0.1/8', '::1/64');
-    $aclcfg = '';
-    $mdl = new \OPNsense\Unbound\Unbound();
-
-    $default_action = (string)$mdl->acls->default_action;
-    foreach ($subnets as $subnet) {
-        $aclcfg .= "access-control: {$subnet} {$default_action}\n";
-    }
-
-    $acls = iterator_to_array($mdl->acls->acl->iterateItems());
-
-    // Configure the custom ACLs
-    foreach ($acls as $acl) {
-        if (!empty((string)$acl->enabled)) {
-            $networks = explode(',', (string)$acl->networks);
-            if (empty($networks)) {
-                continue;
-            }
-            $name = (string)$acl->name;
-            $action = (string)$acl->action;
-
-            $aclcfg .= "#{$name}\n";
-            foreach ($networks as $network) {
-                $aclcfg .= "access-control: {$network} {$action}\n";
-            }
-        }
-    }
-
-    file_put_contents('/var/unbound/access_lists.conf', $aclcfg);
 }
