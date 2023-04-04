@@ -32,49 +32,43 @@
 
 require_once("guiconfig.inc");
 
-$ipsec_detail_array = array();
-$ipsec_tunnels = array();
-$ipsec_leases = array();
+$ipsec_detail_array = [];
+$ipsec_tunnels = [];
+$ipsec_leases = [];
 
-if (isset($config['ipsec']['phase1'])) {
-    $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
-    if (!is_array($ipsec_leases) || empty($ipsec_leases['leases'])) {
-        $ipsec_leases = [];
-    } else {
-        $ipsec_leases = $ipsec_leases['leases'];
-    }
-    $ipsec_status = json_decode(configd_run("ipsec list status"), true);
-    if ($ipsec_status == null) {
-        $ipsec_status = [];
-    }
+$ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
+if (!is_array($ipsec_leases) || empty($ipsec_leases['leases'])) {
+    $ipsec_leases = [];
+} else {
+    $ipsec_leases = $ipsec_leases['leases'];
+}
+$ipsec_status = json_decode(configd_run("ipsec list status"), true) ?? [];
 
-    // parse configured tunnels
-    foreach ($ipsec_status as $status_key => $status_value) {
-        if (isset($status_value['children']) && is_array($status_value['children'])) {
-          foreach($status_value['children'] as $child_status_key => $child_status_value) {
-              $ipsec_tunnels[$child_status_key] = array('active' => false,
-                                                        'local-addrs' => $status_value['local-addrs'],
-                                                        'remote-addrs' => $status_value['remote-addrs'],
-                                                      );
-              $ipsec_tunnels[$child_status_key]['local-ts'] = implode(', ', $child_status_value['local-ts']);
-              $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(', ', $child_status_value['remote-ts']);
-          }
-        }
-        foreach ($status_value['sas'] as $sas_key => $sas_value) {
-            foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
-                if (!isset($ipsec_tunnels[$child_sa_key])) {
-                    /* XXX bug on strongSwan 5.5.2 appends -3 and -4 here? */
-                    $child_sa_key = preg_replace('/-[^-]+$/', '', $child_sa_key);
-                }
-                if (isset($ipsec_tunnels[$child_sa_key])) {
-                    $ipsec_tunnels[$child_sa_key]['active'] = true;
-                }
+// parse configured tunnels
+foreach ($ipsec_status as $status_key => $status_value) {
+    if (isset($status_value['children']) && is_array($status_value['children'])) {
+      foreach($status_value['children'] as $child_status_key => $child_status_value) {
+          $ipsec_tunnels[$child_status_key] = array('active' => false,
+                                                    'local-addrs' => $status_value['local-addrs'],
+                                                    'remote-addrs' => $status_value['remote-addrs'],
+                                                  );
+          $ipsec_tunnels[$child_status_key]['local-ts'] = implode(', ', $child_status_value['local-ts']);
+          $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(', ', $child_status_value['remote-ts']);
+      }
+    }
+    foreach ($status_value['sas'] as $sas_key => $sas_value) {
+        foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
+            if (!isset($ipsec_tunnels[$child_sa_key])) {
+                /* XXX bug on strongSwan 5.5.2 appends -3 and -4 here? */
+                $child_sa_key = preg_replace('/-[^-]+$/', '', $child_sa_key);
+            }
+            if (isset($ipsec_tunnels[$child_sa_key])) {
+                $ipsec_tunnels[$child_sa_key]['active'] = true;
             }
         }
     }
 }
 
-if (isset($config['ipsec']['phase2'])) {
 ?>
 <script>
     $(document).ready(function() {
@@ -207,18 +201,3 @@ if (isset($config['ipsec']['phase2'])) {
     </tbody>
   </table>
 </div>
-<?php //end ipsec tunnel
-} //end if tunnels are configured, else show code below
-else {
-?>
-<div style="display:block">
-   <table class="table table-striped" style="width:100%; border:0;">
-    <tr>
-      <td>
-        <?= gettext('Note: There are no configured IPsec Tunnels') ?>
-      </td>
-    </tr>
-  </table>
-</div>
-<?php
-}
