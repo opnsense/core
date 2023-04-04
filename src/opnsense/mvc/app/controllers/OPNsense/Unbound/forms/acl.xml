@@ -1,0 +1,13 @@
+<form>
+    <field>
+        <id>unbound.acls.default_action</id>
+        <label>Default Action</label>
+        <type>dropdown</type>
+        <help>
+            By default, Unbound will allow queries from all networks. Use this setting
+            to change this behaviour. Since the most specific net block is used, the ACLs as
+            defined in the grid below have preference and will therefore override the behaviour of this setting
+            for the specified networks.
+        </help>
+    </field>
+</form>

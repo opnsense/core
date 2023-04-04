@@ -314,5 +314,39 @@ class SettingsController extends ApiMutableModelControllerBase
 
     /* ACLs */
 
+    public function searchAclAction()
+    {
+        return $this->searchBase(
+            'acls.acl',
+            ['enabled', 'name', 'action', 'description'],
+            'acl.action',
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
+        );
+    }
 
+    public function getAclAction($uuid = null)
+    {
+        return $this->getBase('acl', 'acls.acl', $uuid);
+    }
+
+    public function addAclAction()
+    {
+        return $this->addBase('acl', 'acls.acl');
+    }
+
+    public function delAclAction($uuid)
+    {
+        return $this->delBase('acls.acl', $uuid);
+    }
+
+    public function setAclAction($uuid)
+    {
+        return $this->setBase('acl', 'acls.acl', $uuid);
+    }
+
+    public function toggleAclAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('acls.acl', $uuid, $enabled);
+    }
 }

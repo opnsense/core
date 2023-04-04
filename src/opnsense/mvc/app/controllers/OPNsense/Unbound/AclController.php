@@ -34,6 +34,7 @@ class AclController extends IndexController
 {
     public function indexAction()
     {
+        $this->view->aclForm = $this->getForm('acl');
         $this->view->formDialogAcl = $this->getForm('dialogAcl');
         $this->view->pick('OPNsense/Unbound/acl');
     }

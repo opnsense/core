@@ -423,6 +423,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverridesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/StatsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/acl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/advanced.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogAcl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogDomainOverride.xml
@@ -671,6 +672,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_5.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
@@ -1966,7 +1968,6 @@
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
 /usr/local/www/services_router_advertisements.php
-/usr/local/www/services_unbound_acls.php
 /usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_habackup.php

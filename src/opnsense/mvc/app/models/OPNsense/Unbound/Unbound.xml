@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -195,17 +195,23 @@
             </unwantedreplythreshold>
         </advanced>
         <acls>
-            <allowall type="BooleanField">
-                <default>1</default>
-                <Required>N</Required>
-            </allowall>
+            <default_action type="OptionField">
+                <default>allow</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="allow">Allow (Default)</opt1>
+                    <opt2 value="deny">Deny</opt2>
+                    <opt3 value="refuse">Refuse</opt3>
+                </OptionValues>
+            </default_action>
             <acl type="ArrayField">
                 <enabled type="BooleanField">
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
-                    <Required>N</Required>
+                    <Required>Y</Required>
+                    <ValidationMessage>An Access list name is required</ValidationMessage>
                 </name>
                 <action type="OptionField">
                     <default>allow</default>
@@ -231,41 +237,10 @@
                 <description type="TextField">
                     <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
-                    <ValidationMessage></ValidationMessage>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </acl>
         </acls>
-<!--        <acl_networks>-->
-<!--            <networks type="ArrayField">-->
-<!--                <enabled type="BooleanField">-->
-<!--                    <default>1</default>-->
-<!--                    <Required>Y</Required>-->
-<!--                </enabled>-->
-<!--                <acl type="ModelRelationField">-->
-<!--                    <Model>-->
-<!--                        <acl>-->
-<!--                            <source>OPNsense.Unbound.Unbound</source>-->
-<!--                            <items>acls.acl</items>-->
-<!--                            <display>name</display>-->
-<!--                        </acl>-->
-<!--                    </Model>-->
-<!--                </acl>-->
-<!--                <src_nets type="NetworkField">-->
-<!--                    <Multiple>Y</Multiple>-->
-<!--                    <Required>N</Required>-->
-<!--                    <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>-->
-<!--                    <WildcardEnabled>N</WildcardEnabled>-->
-<!--                    <FieldSeparator>,</FieldSeparator>-->
-<!--                    <NetMaskRequired>Y</NetMaskRequired>-->
-<!--                    <asList>Y</asList>-->
-<!--                </src_nets>-->
-<!--                <description type="TextField">-->
-<!--                    <Required>N</Required>-->
-<!--                    <mask>/^(.){1,255}$/u</mask>-->
-<!--                    <ValidationMessage>Description should be a string between 1 and 255 characters.</ValidationMessage>-->
-<!--                </description>-->
-<!--            </networks>-->
-<!--        </acl_networks>-->
         <dnsbl>
             <enabled type="BooleanField">
                 <default>0</default>
