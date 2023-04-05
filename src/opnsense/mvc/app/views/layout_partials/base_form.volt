@@ -82,12 +82,12 @@
             <col class="col-md-4"/>
             <col class="col-md-5"/>
         </colgroup>
-        <thead>
-          <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3"><h2>{{field['label']}}</h2></th>
-          </tr>
-        </thead>
         <tbody>
+          <tr style="display:none;"></tr>
+          <tr><td colspan="3"></td></tr>
+          <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
+            <td colspan="3"><div style="padding-bottom: 8px; padding-top: 8px; font-size: 17px;"><b>{{field['label']}}</b></div></td>
+          </tr>
 {#- endmacro #}
 
             {% else %}
