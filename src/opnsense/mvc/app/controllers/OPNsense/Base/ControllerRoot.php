@@ -32,6 +32,7 @@ use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
 use Phalcon\Translate\InterpolatorFactory;
 use OPNsense\Core\ACL;
 
@@ -111,13 +112,12 @@ class ControllerRoot extends Controller
     protected function getLogger($ident = 'api')
     {
         if ($this->logger == null) {
+            $adapter = new Syslog($ident, ['option' => LOG_PID,'facility' => LOG_LOCAL4]);
+            $adapter->setFormatter(new Line('%message%'));
             $this->logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog($ident, [
-                        'option' => LOG_PID,
-                        'facility' => LOG_LOCAL4,
-                    ])
+                    'main' => $adapter
                 ]
             );
         }
