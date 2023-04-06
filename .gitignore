@@ -4,6 +4,8 @@
 *.pyc
 *.sass-cache
 *.volt.php
+/src/etc/filter_geoip.conf
+/src/etc/filter_tables.conf
 /src/etc/php.ini
 /src/etc/php/**
 /src/etc/pkg.conf
