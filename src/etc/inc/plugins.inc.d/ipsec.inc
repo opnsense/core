@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2023 GottemHams
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
  * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -969,7 +970,14 @@ function ipsec_write_strongswan_conf()
 
     $strongswanTree['charon']['plugins'] = [];
 
-    if (isset($a_client['enable'])) {
+    // The new-style VPN settings will take precedence over legacy ones
+    if ((new \OPNsense\IPsec\Swanctl())->getXAuthRestrictionsEnabled()) {
+        $strongswanTree['charon']['plugins']['xauth-pam'] = [
+            'pam_service' => 'ipsec',
+            'session' => 'no',
+            'trim_email' => 'yes'
+        ];
+    } elseif (isset($a_client['enable'])) {
         $net_list = [];
         if (isset($a_client['net_list'])) {
             foreach ($a_phase1 as $ph1ent) {

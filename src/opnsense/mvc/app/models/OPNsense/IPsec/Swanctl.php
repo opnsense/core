@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2023 GottemHams
  * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
@@ -268,5 +269,13 @@ class Swanctl extends BaseModel
             }
         }
         return $certrefs;
+    }
+
+    /**
+     * @return boolean XAuth restrictions enabled (auth database + group membership)
+     */
+    public function getXAuthRestrictionsEnabled()
+    {
+        return !empty((string)$this->XAuth->enabled);
     }
 }
