@@ -436,7 +436,7 @@ $( document ).ready(function() {
                        class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                         <span class="fa fa-pencil fa-fw"></span>
                     </a>
-<?php if (isset($group['scope']) && $group['scope'] != 'system'): ?>
+<?php if (!isset($group['scope']) || $group['scope'] != 'system'): ?>
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
                         data-groupid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
