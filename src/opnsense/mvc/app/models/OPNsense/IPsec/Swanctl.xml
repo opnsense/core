@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Swanctl</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>OPNsense IPsec Connections</description>
     <items>
         <Connections>
@@ -437,5 +437,19 @@
                 </description>
             </SPD>
         </SPDs>
+        <XAuth>
+            <enabled type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enabled>
+            <database type="AuthenticationServerField">
+                <Required>Y</Required>
+                <Multiple>Y</Multiple>
+            </database>
+            <enforceGroup type="AuthGroupField">
+                <Required>N</Required>
+                <Multiple>Y</Multiple>
+            </enforceGroup>
+        </XAuth>
     </items>
 </model>
