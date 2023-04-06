@@ -2,7 +2,6 @@
 
 /*
  * Copyright (C) 2023 GottemHams
- * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,18 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\IPsec;
+namespace OPNsense\IPsec\Api;
 
-class ConnectionsController extends \OPNsense\Base\IndexController
+use OPNsense\Base\ApiMutableModelControllerBase;
+
+class XAuthController extends ApiMutableModelControllerBase
 {
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/IPsec/connections');
-        $this->view->formDialogConnection = $this->getForm('dialogConnection');
-        $this->view->formDialogLocal = $this->getForm('dialogLocal');
-        $this->view->formDialogRemote = $this->getForm('dialogRemote');
-        $this->view->formDialogChild = $this->getForm('dialogChild');
-        $this->view->formDialogPool = $this->getForm('dialogPool');
-        $this->view->formXauth = $this->getForm('xauth');
-    }
+    protected static $internalModelClass = '\OPNsense\IPsec\Swanctl';
+    protected static $internalModelName = 'swanctl';
 }

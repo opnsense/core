@@ -136,6 +136,7 @@
     <li class="active"><a data-toggle="tab" id="tab_connections" href="#connections">{{ lang._('Connections') }}</a></li>
     <li><a data-toggle="tab" href="#edit_connection" id="ConnectionDialog" style="display: none;"> </a></li>
     <li><a data-toggle="tab" href="#pools" id="tab_pools"> {{ lang._('Pools') }} </a></li>
+    <li><a data-toggle="tab" href="#xauth" id="tab_xauth"> {{ lang._('XAuth Settings') }} </a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="connections" class="tab-pane fade in active">
@@ -327,6 +328,15 @@
           <hr/>
       </div>
     </div>
+    <div id="xauth" class="tab-pane fade in">
+      <div class="content-box" style="padding-bottom: 1.5em;">
+          {{ partial("layout_partials/base_form",['fields':formXauth,'id':'FormXauth','label':lang._('Edit XAuth Settings')])}}
+          <div class="col-md-12">
+              <hr />
+              <button class="btn btn-primary" id="saveAct_xauth" type="button"><b>{{ lang._('Apply') }}</b><i id="saveAct_xauth_progress"></i></button>
+          </div>
+      </div>
+    </div>
 </div>
 
 
@@ -336,3 +346,25 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogChild','label':lang._('Edit Child')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPool,'id':'DialogPool','label':lang._('Edit Pool')])}}
+
+<script>
+$( document ).ready(function() {
+    var data_get_map = {'FormXauth':"/api/ipsec/xauth/get"};
+    mapDataToFormUI(data_get_map).done(function(data) {
+        formatTokenizersUI();
+        $('.selectpicker').selectpicker('refresh');
+    });
+
+    $("#saveAct_xauth").click(function() {
+        saveFormToEndpoint(url="/api/ipsec/xauth/set", formid='FormXauth', callback_ok=function() {
+            $("#saveAct_xauth_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/ipsec/service/reconfigure", sendData={}, callback=function(data, status) {
+                ajaxCall(url="/api/ipsec/service/status", sendData={}, callback=function(data, status) {
+                    updateServiceStatusUI(data['status']);
+                });
+                $("#saveAct_xauth_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
+    });
+});
+</script>
