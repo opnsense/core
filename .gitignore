@@ -11,6 +11,8 @@
 /src/etc/pkg.conf
 /src/etc/pkg/**
 /src/etc/ssh/**
+/src/etc/strongswan.conf
+/src/etc/swanctl/**
 /src/lib/**
 /src/opnsense/changelog
 /src/www/wpad.dat
