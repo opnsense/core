@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2023 GottemHams
  * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
@@ -56,9 +57,12 @@ class IPsec implements IService
      */
     public function supportedAuthenticators()
     {
+        // The new-style VPN settings will take precedence over legacy ones
         $result = array();
         $configObj = Config::getInstance()->object();
-        if (!empty((string)$configObj->ipsec->client->user_source)) {
+        if (!empty((string)$configObj->OPNsense->Swanctl->XAuth->database)) {
+            $result = explode(',', (string)$configObj->OPNsense->Swanctl->XAuth->database);
+        } elseif (!empty((string)$configObj->ipsec->client->user_source)) {
             $result = explode(',', (string)$configObj->ipsec->client->user_source);
         } else {
             $result[] = 'Local Database';
@@ -88,6 +92,17 @@ class IPsec implements IService
     public function checkConstraints()
     {
         $configObj = Config::getInstance()->object();
+        if (!empty((string)$configObj->OPNsense->Swanctl->XAuth->enforceGroup)) {
+            $groups = explode(',', (string)$configObj->OPNsense->Swanctl->XAuth->enforceGroup);
+            $acl = new ACL();
+            foreach ($groups as $local_group) {
+                if ($acl->inGroup($this->getUserName(), $local_group, false)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         if (empty((string)$configObj->ipsec->client->enable)) {
             // IPsec mobile extension is disabled.
             return false;
