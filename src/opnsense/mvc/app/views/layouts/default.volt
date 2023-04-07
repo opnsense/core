@@ -118,6 +118,12 @@
                     let id = collapse.attr('class');
                     if (collapse != undefined && id !== undefined && id === "collapsible") {
                         let icon = $('> tr > th > div > i', event.currentTarget);
+                        if (collapse.is(':hidden')) {
+                            collapse.fadeIn(150);
+                            collapse.css('display', '');
+                            icon.toggleClass("fa-angle-right fa-angle-down");
+                            return;
+                        }
                         icon.toggleClass("fa-angle-down fa-angle-right");
                         $('> tr > td', collapse).fadeToggle(150);
                     }
