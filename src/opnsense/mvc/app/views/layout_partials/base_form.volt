@@ -85,13 +85,13 @@
         </colgroup>
         <thead>
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <td colspan="3">
+            <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
                     <i class="fa fa-angle-down" aria-hidden="true"></i>
                     &nbsp;
                     <b>{{field['label']}}</b>
                 </div>
-            </td>
+            </th>
           </tr>
         </thead>
         <tbody class="collapsible">

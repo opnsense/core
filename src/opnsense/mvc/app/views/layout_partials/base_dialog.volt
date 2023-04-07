@@ -107,10 +107,16 @@
         </colgroup>
         <thead>
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3"><h2>{{field['label']}}</h2></th>
+            <th colspan="3">
+                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    &nbsp;
+                    <b>{{field['label']}}</b>
+                </div>
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="collapsible">
 {#- endmacro #}
 
                             {% else %}
