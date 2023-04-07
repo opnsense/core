@@ -112,6 +112,16 @@
                     });
                 }, 500);
 
+                $('.table').on('click', 'thead', function(event) {
+                    let collapse = $(event.currentTarget).next();
+                    let id = collapse.attr('class');
+                    if (collapse != undefined && id !== undefined && id === "collapsible") {
+                        let icon = $('> tr > td > div > i', event.currentTarget);
+                        icon.toggleClass("fa-angle-down fa-angle-right");
+                        $('> tr > td', collapse).fadeToggle(150);
+                    }
+                });
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',

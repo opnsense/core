@@ -85,10 +85,16 @@
         </colgroup>
         <thead>
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <td colspan="3"><div style="padding-bottom: 8px; padding-top: 8px; font-size: 17px;"><b>{{field['label']}}</b></div></td>
+            <td colspan="3">
+                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                    {% if field['collapsible']|default(false)=='true' %}<i class="fa fa-angle-down" aria-hidden="true"></i>{% else %}<i class="fa fa-angle-right" aria-hidden="true"></i>{% endif %}
+                    &nbsp;
+                    <b>{{field['label']}}</b>
+                </div>
+            </td>
           </tr>
         </thead>
-        <tbody>
+        <tbody {% if field['collapsible']|default(false)=='true' %}class="collapsible"{% endif %}>
 {#- endmacro #}
 
             {% else %}
