@@ -2,7 +2,6 @@
     <field>
         <type>header</type>
         <label>General Settings</label>
-        <collapsible>true</collapsible>
     </field>
     <field>
         <id>unbound.advanced.hideidentity</id>
@@ -133,7 +132,6 @@
     <field>
         <type>header</type>
         <label>Serve Expired Settings</label>
-        <collapsible>true</collapsible>
     </field>
     <field>
         <id>unbound.advanced.serveexpired</id>
@@ -190,7 +188,6 @@
     <field>
         <type>header</type>
         <label>Logging Settings</label>
-        <collapsible>true</collapsible>
     </field>
     <field>
         <id>unbound.advanced.extendedstatistics</id>
@@ -277,7 +274,6 @@
     <field>
         <type>header</type>
         <label>Cache Settings</label>
-        <collapsible>true</collapsible>
     </field>
     <field>
         <id>unbound.advanced.prefetch</id>
