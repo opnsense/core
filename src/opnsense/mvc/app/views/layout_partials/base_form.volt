@@ -73,6 +73,7 @@
 
 {#- macro base_dialog_header(field) #}
       </tbody>
+      <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
     </table>
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
@@ -82,12 +83,12 @@
             <col class="col-md-4"/>
             <col class="col-md-5"/>
         </colgroup>
-        <tbody>
-          <tr style="display:none;"></tr>
-          <tr><td colspan="3"></td></tr>
+        <thead>
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <td colspan="3"><div style="padding-bottom: 8px; padding-top: 8px; font-size: 17px;"><b>{{field['label']}}</b></div></td>
           </tr>
+        </thead>
+        <tbody>
 {#- endmacro #}
 
             {% else %}
@@ -100,6 +101,7 @@
         </tr>
         {% endif %}
         </tbody>
+        <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
     </table>
   </div>
 </form>
