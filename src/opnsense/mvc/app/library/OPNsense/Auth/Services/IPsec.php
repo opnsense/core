@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2019-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,10 +88,7 @@ class IPsec implements IService
     public function checkConstraints()
     {
         $configObj = Config::getInstance()->object();
-        if (empty((string)$configObj->ipsec->client->enable)) {
-            // IPsec mobile extension is disabled.
-            return false;
-        } elseif (!empty((string)$configObj->ipsec->client->local_group)) {
+        if (!empty((string)$configObj->ipsec->client->local_group)) {
             // Enforce group constraint when set
             $local_group = (string)$configObj->ipsec->client->local_group;
             return (new ACL())->inGroup($this->getUserName(), $local_group);
