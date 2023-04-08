@@ -43,15 +43,17 @@ function webgui_services()
     return [[
         'pidfile' => '/var/run/lighty-webConfigurator.pid',
         'description' => gettext('Web GUI'),
-        'php' => ['restart' => ['webgui_configure_delayed']],
+        'php' => ['restart' => ['webgui_configure_defer']],
         'name' => 'webgui',
         'locked' => true,
     ]];
 }
 
-function webgui_configure_delayed()
+function webgui_configure_defer($verbose = false, $sleep = 3)
 {
-    configd_run('webgui restart 3', true);
+    service_log('Starting web GUI...', $verbose);
+    configdp_run('webgui restart', [$sleep]);
+    service_log("deferred.\n", $verbose);
 }
 
 function webgui_configure_do($verbose = false, $interface = '')
@@ -65,7 +67,14 @@ function webgui_configure_do($verbose = false, $interface = '')
         array_unshift($interfaces, 'lo0');
     }
 
-    if (!empty($interface) && !in_array($interface, $interfaces)) {
+    /* 'newwanip' configuration is the only event to take second argument */
+    if (!empty($interface)) {
+        if (in_array($interface, $interfaces)) {
+            /* funnel through configd to avoid race conditions */
+            webgui_configure_defer($verbose, 0);
+        }
+
+        /* nothing else to do */
         return;
     }
 
