@@ -1,8 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2016-2023 Deciso B.V.
  * Copyright (C) 2019 Pascal Mathis <mail@pascalmathis.com>
- * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * Copyright (C) 2008 Ermal Luçi
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -141,7 +141,7 @@ function ipsec_services()
 
     $services = [];
 
-    if (!empty($config['ipsec']['enable']) || !empty($config['ipsec']['client']['enable'])) {
+    if (!empty($config['ipsec']['enable']) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) {
         $pconfig = [];
         $pconfig['name'] = 'strongswan';
         $pconfig['description'] = gettext('IPsec VPN');
@@ -969,6 +969,7 @@ function ipsec_write_strongswan_conf()
 
     $strongswanTree['charon']['plugins'] = [];
 
+    $disable_xauth = false;
     if (isset($a_client['enable'])) {
         $net_list = [];
         if (isset($a_client['net_list'])) {
@@ -1044,7 +1045,6 @@ function ipsec_write_strongswan_conf()
             $strongswanTree['charon']['plugins']['attr']['28679'] = $a_client['pfs_group'];
         }
 
-        $disable_xauth = false;
         foreach ($a_phase1 as $ph1ent) {
             if (!isset($ph1ent['disabled']) && isset($ph1ent['mobile'])) {
                 if ($ph1ent['authentication_method'] == "eap-radius") {
@@ -1079,13 +1079,13 @@ function ipsec_write_strongswan_conf()
                 }
             }
         }
-        if (isset($a_client['enable']) && !$disable_xauth) {
-            $strongswanTree['charon']['plugins']['xauth-pam'] = [
-                'pam_service' => 'ipsec',
-                'session' => 'no',
-                'trim_email' => 'yes'
-            ];
-        }
+    }
+    if ((isset($a_client['enable']) && !$disable_xauth) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) {
+        $strongswanTree['charon']['plugins']['xauth-pam'] = [
+            'pam_service' => 'ipsec',
+            'session' => 'no',
+            'trim_email' => 'yes'
+        ];
     }
 
     $strongswan = generate_strongswan_conf($strongswanTree);

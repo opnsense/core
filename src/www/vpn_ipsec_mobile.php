@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
  *
@@ -200,6 +200,16 @@ $( document ).ready(function() {
   dns_server_change();
   wins_server_change();
   login_banner_change();
+
+  $("#ike_mobile_enable").change(function(){
+      if ($(this).is(':checked')) {
+          $("#ike_extensions").find("tr:not(.ike_heading)").show();
+      } else {
+          $("#ike_extensions").find("tr:not(.ike_heading)").hide();
+      }
+  });
+  $("#ike_mobile_enable").change();
+
 });
 
 function pool_change() {
@@ -313,7 +323,7 @@ if (isset($savemsg)) {
 if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
     print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
 }
-                $ph1found = false;
+$ph1found = false;
 foreach ($config['ipsec']['phase1'] as $ph1ent) {
     if (isset($ph1ent['mobile'])) {
         $ph1found = true;
@@ -341,38 +351,24 @@ EOFnp;
 }
 
 if (!empty($pconfig['enable']) && !$ph1found) {
-    print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), "create", gettext("Create Phase1"));
+    print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("When using (legacy) tunnels, please click Create to define one."), "create", gettext("Create Phase1"));
 }
 if (isset($input_errors) && count($input_errors) > 0) {
     print_input_errors($input_errors);
 }
 ?>
+        <form method="post" name="iform" id="iform">
           <section class="col-xs-12">
            <div class="tab-content content-box col-xs-12">
-               <form method="post" name="iform" id="iform">
                <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
-                    <tr>
-                      <td style="width:22%"><b><?=gettext("IKE Extensions"); ?> </b></td>
-                      <td style="width:78%; text-align:right">
-                        <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
-                      </td>
-                    </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable")?></td>
-                    <td>
-                      <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                      <?=gettext("Enable IPsec Mobile Client Support"); ?>
-                    </td>
-                  </tr>
                     <tr>
                     <td colspan="2"><b><?=gettext("Extended Authentication (Xauth)"); ?></b></td>
                   </tr>
                     <tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
-                    <td>
+                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
+                    <td style="width:78%">
                       <select name="user_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3">
 <?php
                         $authmodes = explode(",", $pconfig['user_source']);
@@ -401,7 +397,33 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       </div>
                     </td>
                   </tr>
-                    <tr>
+                </table>
+              </div>
+          </section>
+          <section class="col-xs-12">
+             <div class="tab-content content-box col-xs-12">
+                <table class="table table-striped opnsense_standard_table_form" id="ike_extensions">
+                  <tr class="ike_heading">
+                      <td style="width:22%"><b><?=gettext("IKE Extensions"); ?> </b></td>
+                      <td style="width:78%; text-align:right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      </td>
+                    </tr>
+                  <tr class="ike_heading">
+                    <td> <a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable")?></td>
+                    <td>
+                      <input name="enable" id="ike_mobile_enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                      <?=gettext("Enable IPsec Mobile Client Support"); ?>
+                      <div class="hidden" data-for="help_for_enable">
+                        <?= gettext(
+                          'Enable mobile settings, '.
+                          'some of the settings below depend on configuration choices in configured tunnels, ' .
+                          'when not dependent on configured networks, they will also be used for configured connections when this option is checked.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                       <td colspan="2"><b><?=gettext("Client Configuration (mode-cfg)"); ?> </b></td>
                     </tr>
                   <tr>
@@ -564,9 +586,9 @@ endforeach;
                   </tr>
                 </table>
                </div>
-               </form>
             </div>
-        </section>
+          </section>
+        </form>
       </div>
   </div>
 </section>
