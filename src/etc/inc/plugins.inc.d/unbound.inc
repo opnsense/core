@@ -52,18 +52,21 @@ function unbound_configure()
 
 function unbound_services()
 {
-    $services = array();
+    global $config;
+
+    $services = [];
 
     if (!unbound_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['name'] = 'unbound';
+    $pconfig['dns_ports'] = [$config['unbound']['port'] ?? '53'];
     $pconfig['description'] = gettext('Unbound DNS');
-    $pconfig['php']['restart'] = array('unbound_configure_do');
-    $pconfig['php']['start'] = array('unbound_configure_do');
-    $pconfig['php']['stop'] = array('unbound_service_stop');
+    $pconfig['php']['restart'] = ['unbound_configure_do'];
+    $pconfig['php']['start'] = ['unbound_configure_do'];
+    $pconfig['php']['stop'] = ['unbound_service_stop'];
     $pconfig['pidfile'] = '/var/run/unbound.pid';
     $services[] = $pconfig;
 

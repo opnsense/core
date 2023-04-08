@@ -72,9 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         // perform validations
         $unbound_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
-        $dnsmasq_port = empty($config['dnsmasq']['port']) ? "53" : $config['dnsmasq']['port'];
-        if (isset($pconfig['enable']) && isset($config['dnsmasq']['enable']) && $unbound_port == $dnsmasq_port) {
-            $input_errors[] = gettext('Dnsmasq is still active on the same port. Disable it before enabling Unbound.');
+        $port_conflict = service_by_filter(['dns_ports' => $unbound_port]);
+        if (isset($pconfig['enable']) && !empty($port_conflict) && $port_conflict['name'] != 'unbound') {
+            $input_errors[] = sprintf(gettext('%s is currently using this port.'), $port_conflict['description']);
         }
         if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
             $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
