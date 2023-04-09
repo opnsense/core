@@ -3149,6 +3149,10 @@ EOD;
         $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
 
+    if (isset($wancfg['dhcpvlanprio'])) {
+        $dhclientconf .= "  vlan-pcp {$wancfg['dhcpvlanprio']};\n";
+    }
+
     $dhclientconf .= "}\n";
 
     // DHCP Config File Advanced
@@ -3254,6 +3258,9 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
     }
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
+    }
+    if (isset($wancfg['dhcpvlanprio'])) {
+        $dhclientconf .= "\tvlan-pcp {$wancfg['dhcpvlanprio']};\n";
     }
     $dhclientconf .= "}\n";
 
