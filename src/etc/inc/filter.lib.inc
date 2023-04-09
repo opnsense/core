@@ -393,19 +393,21 @@ function filter_core_rules_system($fw, $defaults)
                 break;
             case "dhcp":
                 $fw->registerFilterRule(
-                    5,
-                    array('protocol' => 'udp', 'direction' => 'in', 'quick' => false, 'from_port' => 67, 'to_port' => 68,
+                    1,
+                    array('protocol' => 'udp', 'direction' => 'in', 'from_port' => 67, 'to_port' => 68,
                         '#ref' => "interfaces.php?if=" . $intf . "#type",
                         'interface' => $intf, 'descr' => 'allow DHCP client on ' . $intfinfo['descr']),
                     $defaults['pass']
                 );
-                $fw->registerFilterRule(
-                    5,
-                    array('protocol' => 'udp', 'direction' => 'out', 'quick' => false, 'from_port' => 68, 'to_port' => 67,
-                        '#ref' => "interfaces.php?if=" . $intf . "#type",
-                        'interface' => $intf, 'descr' => 'allow DHCP client on ' . $intfinfo['descr']),
-                    $defaults['pass']
-                );
+                $dhcpv4_opts = [
+                    'protocol' => 'udp','direction' => 'out', 'from_port' => 68, 'to_port' => 67,
+                    '#ref' => "interfaces.php?if=" . $intf . "#type",
+                    'interface' => $intf, 'descr' => 'allow DHCP client on ' . $intfinfo['descr'],
+                ];
+                if (isset($intfinfo['dhcpvlanprio'])) {
+                     $dhcpv4_opts['set-prio'] = $intfinfo['dhcpvlanprio'];
+                }
+                $fw->registerFilterRule(1, $dhcpv4_opts, $defaults['pass']);
                 break;
             default:
                 if (isset($config['dhcpd'][$intf]['enable'])) {
