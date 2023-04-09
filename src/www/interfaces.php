@@ -395,6 +395,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
+        'dhcpvlanprio',
         'disablechecksumoffloading',
         'disablelargereceiveoffloading',
         'disablesegmentationoffloading',
@@ -1072,6 +1073,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     /* flipped in GUI on purpose */
                     if (empty($pconfig['dhcpoverridemtu'])) {
                         $new_config['dhcphonourmtu'] = true;
+                    }
+                    if (isset($pconfig['dhcpvlanprio']) && $pconfig['dhcpvlanprio'] !== '') {
+                        $new_config['dhcpvlanprio'] = $pconfig['dhcpvlanprio'];
                     }
                     break;
                 case "ppp":
@@ -2299,6 +2303,22 @@ include("head.inc");
                             <div class="hidden" data-for="help_for_dhcpoverridemtu">
                               <?= gettext('An ISP may incorrectly set an MTU value which can cause intermittent network disruption. By default this ' .
                                 'value will be ignored. Unsetting this option will allow to apply the MTU supplied by the ISP instead.'); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcpvlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
+                          <td>
+                            <select name="dhcpvlanprio">
+                              <option value="" <?= "{$pconfig['dhcpvlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
+<?php
+                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcpvlanprio']}" === "$pcp" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
+<?php
+                              endforeach ?>
+                            </select>
+                            <div class="hidden" data-for="help_for_dhcpvlanprio">
+                              <?= gettext('Certain ISPs may require that DHCPv4 requests are sent with a specific VLAN priority.') ?>
                             </div>
                           </td>
                         </tr>
