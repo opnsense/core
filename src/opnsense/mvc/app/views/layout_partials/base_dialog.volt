@@ -105,7 +105,7 @@
             <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
             <col class="col-md-{{ msgzone_width|default(5) }}"/>
         </colgroup>
-        <thead>
+        <thead style="cursor: pointer;">
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
