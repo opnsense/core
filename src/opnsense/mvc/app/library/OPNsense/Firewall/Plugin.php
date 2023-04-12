@@ -139,14 +139,16 @@ class Plugin
                 foreach ($gwgr as $gw) {
                     if (Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) {
                         $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
-                        $routeto[] = str_repeat("( {$gw['int']} {$gw['gwip']} )", $gwweight);
+                        $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
                         if (strstr($gw['gwip'], ':')) {
                             $proto = 'inet6';
                         }
+                    } elseif (!empty($gw['gateway_interface']) && !empty($gw['int'])) {
+                        $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
                     }
                 }
                 if (count($routeto) > 0) {
-                    $routetologic = "route-to {" . implode(' ', $routeto) . "}";
+                    $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
                     if (!empty($gwgr[0]['poolopts'])) {
                         // Since Gateways->getGroups() returns detail items, we have no other choice than
                         // to copy top level attributes into the details if they matter (poolopts)

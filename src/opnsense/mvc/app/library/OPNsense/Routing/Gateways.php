@@ -541,7 +541,10 @@ class Gateways
                         }
                         // check status for all gateways in this tier
                         foreach ($tier as $gwname) {
-                            if (!empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) {
+                            if ((
+                                !empty($all_gateways[$gwname]['gateway']) && !empty($status_info[$gwname])) ||
+                                !empty($all_gateways[$gwname]['gateway_interface'])
+                            ) {
                                 $gateway = $all_gateways[$gwname];
                                 switch ($status_info[$gwname]['status']) {
                                     case 'down':
@@ -562,10 +565,25 @@ class Gateways
                                 }
                                 $gateway_item = [
                                     'int' => $gateway['if'],
-                                    'gwip' => $gateway['gateway'],
+                                    'gwip' => $gateway['gateway'] ?? '',
                                     'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
                                     'weight' => !empty($gateway['weight']) ? $gateway['weight'] : 1
                                 ];
+                                $ifipprotos = [];
+                                if (!empty($this->ifconfig[$gateway['if']])){
+                                    if (!empty($this->ifconfig[$gateway['if']]['ipv4'])) {
+                                        $ifipprotos[] ='inet';
+                                    }
+                                    if (!empty($this->ifconfig[$gateway['if']]['ipv6'])) {
+                                        $ifipprotos[] ='inet6';
+                                    }
+                                }
+                                if (
+                                    !empty($all_gateways[$gwname]['gateway_interface']) &&
+                                    in_array($gateway['ipprotocol'], $ifipprotos)
+                                ) {
+                                    $gateway_item['gateway_interface'] = '1';
+                                }
                                 $all_tiers[$tieridx][] = $gateway_item;
                                 if ($is_up) {
                                     $result[(string)$gw_group->name][] = $gateway_item;
