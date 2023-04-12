@@ -119,13 +119,13 @@
                     if (collapse != undefined && id !== undefined && id === "collapsible") {
                         let icon = $('> tr > th > div > i', event.currentTarget);
                         if (collapse.is(':hidden')) {
-                            collapse.fadeIn(150);
+                            collapse.toggle(0);
                             collapse.css('display', '');
                             icon.toggleClass("fa-angle-right fa-angle-down");
                             return;
                         }
                         icon.toggleClass("fa-angle-down fa-angle-right");
-                        $('> tr > td', collapse).fadeToggle(150);
+                        $('> tr > td', collapse).toggle(0);
                     }
                 });
 

@@ -109,14 +109,18 @@
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                    {% if field['collapse']|default(false)=='true' %}
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    {% else %}
                     <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    {% endif %}
                     &nbsp;
                     <b>{{field['label']}}</b>
                 </div>
             </th>
           </tr>
         </thead>
-        <tbody class="collapsible">
+        <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
 {#- endmacro #}
 
                             {% else %}
