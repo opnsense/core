@@ -31,7 +31,6 @@ namespace OPNsense\OpenVPN\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseListField;
 use OPNsense\Core\Config;
 
-
 /**
  * @package OPNsense\Base\FieldTypes
  */

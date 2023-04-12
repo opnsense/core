@@ -30,7 +30,6 @@ namespace OPNsense\OpenVPN\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 
-
 /**
  * Class ClientOverwritesController
  * @package OPNsense\OpenVPN\Api

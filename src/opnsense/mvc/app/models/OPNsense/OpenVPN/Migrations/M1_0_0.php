@@ -35,7 +35,6 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\OpenVPN\OpenVPN;
 use OPNsense\Firewall\Util;
 
-
 class M1_0_0 extends BaseModelMigration
 {
     /**
@@ -78,7 +77,7 @@ class M1_0_0 extends BaseModelMigration
                                 $nets[] = trim($item);
                             }
                         }
-                        $record->{$type.'_networks'} = implode(',', $nets);
+                        $record->{$type . '_networks'} = implode(',', $nets);
                     }
                     if (!empty((string)$csc->gwredir)) {
                         $record->redirect_gateway  = 'def1';
@@ -89,9 +88,9 @@ class M1_0_0 extends BaseModelMigration
                     $record->dns_domain_search = (string)$csc->dns_domain_search;
                     foreach (['dns_server', 'ntp_server', 'wins_server'] as $fieldname) {
                         $items = [];
-                        for ($i=1 ; $i <= 4; ++$i) {
+                        for ($i = 1; $i <= 4; ++$i) {
                             $fname = $fieldname . $i;
-                            if (!empty((string)$csc->$fname)){
+                            if (!empty((string)$csc->$fname)) {
                                 $items[] = (string)$csc->$fname;
                             }
                         }

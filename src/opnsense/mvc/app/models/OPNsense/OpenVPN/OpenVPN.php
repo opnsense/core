@@ -60,7 +60,7 @@ class OpenVPN extends BaseModel
             foreach (['local', 'remote'] as $type) {
                 $f1 = $type . '_network';
                 $f2 = $type . '_networkv6';
-                foreach (explode(',', (string)$cso->{$type.'_networks'}) as $item) {
+                foreach (explode(',', (string)$cso->{$type . '_networks'}) as $item) {
                     if (strpos($item, ":") === false) {
                         $target_fieldname = $f1;
                     } else {
@@ -73,10 +73,10 @@ class OpenVPN extends BaseModel
                     }
                 }
             }
-            if (!empty((string)$cso->push_reset)){
+            if (!empty((string)$cso->push_reset)) {
                 $result['push_reset'] = '1';
             }
-            if (!empty((string)$cso->block)){
+            if (!empty((string)$cso->block)) {
                 $result['block'] = '1';
             }
             $result['dns_domain'] = (string)$cso->dns_domain;
@@ -84,7 +84,7 @@ class OpenVPN extends BaseModel
             foreach (['dns_server', 'ntp_server', 'wins_server'] as $fieldname) {
                 if (!empty((string)$cso->$fieldname . 's')) {
                     foreach (explode(',', (string)$cso->{$fieldname . 's'}) as $idx => $item) {
-                        $result[$fieldname. (string)($idx+1)] = $item;
+                        $result[$fieldname . (string)($idx + 1)] = $item;
                     }
                 }
             }
