@@ -38,7 +38,7 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Unbound\Unbound';
     protected static $internalModelName = 'unbound';
 
-    private $type = 'dot';
+    private $type = 'forward';
 
     public function updateBlocklistAction()
     {
@@ -108,17 +108,14 @@ class SettingsController extends ApiMutableModelControllerBase
     /*
      * Catch all Dot API endpoints and redirect them to Forward for
      * backwards compatibility and infer the type from the request.
-     * If no type is provided, default to dot.
+     * If no type is provided, default to forward (__call only triggers on non-existing methods).
      */
     public function __call($method, $args)
     {
         if (substr($method, -6) == 'Action') {
             $fn = preg_replace('/Dot/', 'Forward', $method);
-            if (method_exists(get_class($this), $fn)) {
-                // set the type to forward if the request came from the corresponding gui page or is explicitly set in the API call
-                if (preg_match("/forward/i", $this->request->getHTTPReferer()) || ($this->request->getPost('dot') && $this->request->getPost('dot')['type'] == 'forward')) {
-                    $this->type = "forward";
-                }
+            if (method_exists(get_class($this), $fn) && preg_match("/.*dot/i", $method)) {
+                $this->type = "dot";
                 return $this->$fn(...$args);
             }
         }
