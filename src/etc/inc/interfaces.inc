@@ -1277,7 +1277,7 @@ EOD;
     }
 
     /* appease netgraph by setting the correct node name */
-    shell_exec('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+    shell_safe('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 }
 
 function interfaces_carp_setup()
