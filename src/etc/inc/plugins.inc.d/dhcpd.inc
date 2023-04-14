@@ -1557,9 +1557,9 @@ EOD;
                 if (!empty($sm['hostname'])) {
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
-                    $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
+                    $dhcpdv6conf .= "  option host-name \"{$dhhostname}\";\n";
                     if ($need_ddns_updates) {
-                        $dhcpdv6conf .= "  ddns-hostname {$dhhostname};\n";
+                        $dhcpdv6conf .= "  ddns-hostname \"{$dhhostname}\";\n";
                     }
                 }
                 if (!empty($sm['filename'])) {
