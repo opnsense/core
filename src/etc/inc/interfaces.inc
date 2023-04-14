@@ -1255,6 +1255,9 @@ EOD;
         array("mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client")
     );
 
+    /* appease netgraph by setting the correct node name */
+    shell_safe('/usr/sbin/daemon -f /usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+
     /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
     $i = 0;
     while ($i < 10) {
