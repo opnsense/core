@@ -41,4 +41,5 @@ ngctl list | while read _NAME NAME _TYPE TYPE _ID ID MORE; do
 		continue
 	fi
 	ngctl name "[${ID}]:" "${NG_DEVICE}"
+	break
 done
