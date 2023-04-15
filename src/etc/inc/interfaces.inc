@@ -1275,6 +1275,9 @@ EOD;
         sleep(1);
         $i++;
     }
+
+    /* appease netgraph by setting the correct node name */
+    shell_safe('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 }
 
 function interfaces_carp_setup()
@@ -3149,6 +3152,10 @@ EOD;
         $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
 
+    if (isset($wancfg['dhcpvlanprio'])) {
+        $dhclientconf .= "  vlan-pcp {$wancfg['dhcpvlanprio']};\n";
+    }
+
     $dhclientconf .= "}\n";
 
     // DHCP Config File Advanced
@@ -3254,6 +3261,9 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
     }
     if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
+    }
+    if (isset($wancfg['dhcpvlanprio'])) {
+        $dhclientconf .= "\tvlan-pcp {$wancfg['dhcpvlanprio']};\n";
     }
     $dhclientconf .= "}\n";
 

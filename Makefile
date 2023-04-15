@@ -48,6 +48,7 @@ CORE_NEXT:=	${CORE_NEXT}.1
 .elif ${_CORE_NEXT:[2]} == 10 # business
 CORE_NEXT!=	expr ${_CORE_NEXT:[1]} + 1
 CORE_NEXT:=	${CORE_NEXT}.4
+CORE_SPACER=	no
 .elif ${_CORE_NEXT:[2]} == 1 # community
 CORE_NEXT=	${_CORE_NEXT:[1]}
 CORE_NEXT:=	${CORE_NEXT}.7
@@ -98,6 +99,11 @@ CORE_STABLE?=	stable/${CORE_ABI}
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
 CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}
+.if empty(CORE_SPACER)
+CORE_SERIES_FW=	${CORE_SERIES:S/$/ /1}
+.else
+CORE_SERIES_FW=	${CORE_SERIES}
+.endif
 
 .if "${CORE_REVISION}" != "" && "${CORE_REVISION}" != "0"
 CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}

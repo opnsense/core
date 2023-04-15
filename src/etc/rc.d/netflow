@@ -92,6 +92,9 @@ netflow_setup_interface()
         echo "setup $interface"
     fi;
 
+    # prevent using special netgraph characters in interface names
+    interface=$(echo $interface | sed 's/[.:]/_/g')
+
     # remove earlier setup (if any)
     /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
 

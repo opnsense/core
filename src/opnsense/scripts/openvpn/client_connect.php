@@ -41,11 +41,9 @@ if (isset($config['openvpn']['openvpn-server'])) {
         if ($server['vpnid'] == $vpnid) {
             // XXX: Eventually we should move the responsibility to determine if we do want to write a file
             //      to here instead of the configuration file (always call event, filter relevant).
-            $all_cso = openvpn_fetch_csc_list();
-            if (!empty($all_cso[$vpnid][$common_name])) {
-                $cso = $all_cso[$vpnid][$common_name];
-            } else {
-                $cso = ["common_name" => $common_name];
+            $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($vpnid, $common_name);
+            if (empty($cso)) {
+                $cso = array("common_name" => $common_name);
             }
             if (!empty($config_file)) {
                 $cso_filename = openvpn_csc_conf_write($cso, $server, $config_file);

@@ -211,9 +211,7 @@
             <Clients order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
             </Clients>
-            <CSC order="30" VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
-                <Edit url="/vpn_openvpn_csc.php?*" visibility="hidden"/>
-            </CSC>
+            <CSC order="30" VisibleName="Client Specific Overrides" url="/ui/openvpn/client_overwrites"/>
             <ClientExport order="40" VisibleName="Client Export" url="/ui/openvpn/export">
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>
             </ClientExport>

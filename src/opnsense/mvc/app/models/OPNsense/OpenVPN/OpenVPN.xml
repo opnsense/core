@@ -1,0 +1,97 @@
+<model>
+    <mount>//OPNsense/OpenVPN</mount>
+    <version>1.0.0</version>
+    <description>OpenVPN</description>
+    <items>
+        <Overwrites>
+            <Overwrite type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <servers type=".\OpenVPNServerField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                </servers>
+                <common_name type="TextField">
+                    <Required>Y</Required>
+                </common_name>
+                <block type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </block>
+                <push_reset type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </push_reset>
+                <tunnel_network type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <Required>N</Required>
+                    <AddressFamily>ipv4</AddressFamily>
+                </tunnel_network>
+                <tunnel_networkv6 type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <Required>N</Required>
+                    <AddressFamily>ipv6</AddressFamily>
+                </tunnel_networkv6>
+                <local_networks type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
+                    <asList>Y</asList>
+                </local_networks>
+                <remote_networks type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
+                    <asList>Y</asList>
+                </remote_networks>
+                <redirect_gateway type="OptionField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <local value="local">local</local>
+                        <autolocal value="autolocal">autolocal</autolocal>
+                        <def1>default</def1>
+                        <bypass_dhcp value="bypass-dhcp">bypass dhcp</bypass_dhcp>
+                        <bypass_dns value="bypass-dns">bypass dns</bypass_dns>
+                        <block_local value="block-local">block local</block_local>
+                        <ipv6 value="ipv6">ipv6 (default)</ipv6>
+                        <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
+                    </OptionValues>
+                </redirect_gateway>
+                <register_dns type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </register_dns>
+                <dns_domain type="HostnameField">
+                    <Required>N</Required>
+                </dns_domain>
+                <dns_domain_search type="HostnameField">
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <AsList>Y</AsList>
+                </dns_domain_search>
+                <dns_servers type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </dns_servers>
+                <ntp_servers type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </ntp_servers>
+                <wins_servers type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </wins_servers>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </Overwrite>
+        </Overwrites>
+    </items>
+</model>

@@ -27,6 +27,7 @@
 <script>
 
     $( document ).ready(function() {
+        let this_page = window.location.href.replace(/[/]/g, '').toLowerCase().endsWith('forward') ? 'Forward' : 'Dot';
         $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
         /* Handle retrieval and saving of the single system forwarding checkbox */
         let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
@@ -75,8 +76,8 @@
          */
         function openDialog(uuid) {
             var editDlg = "DialogEdit";
-            var setUrl = "/api/unbound/settings/setDot/";
-            var getUrl = "/api/unbound/settings/getDot/";
+            var setUrl = "/api/unbound/settings/set"+this_page+"/";
+            var getUrl = "/api/unbound/settings/get"+this_page+"/";
             var urlMap = {};
             urlMap['frm_' + editDlg] = getUrl + uuid;
             mapDataToFormUI(urlMap).done(function () {
@@ -110,12 +111,12 @@
          *************************************************************************************************************/
 
         $("#grid-dot").UIBootgrid(
-                {   'search':'/api/unbound/settings/searchDot/',
-                    'get':'/api/unbound/settings/getDot/',
-                    'set':'/api/unbound/settings/setDot/',
-                    'add':'/api/unbound/settings/addDot/',
-                    'del':'/api/unbound/settings/delDot/',
-                    'toggle':'/api/unbound/settings/toggleDot/'
+                {   'search':'/api/unbound/settings/search'+this_page+'/',
+                    'get':'/api/unbound/settings/get'+this_page+'/',
+                    'set':'/api/unbound/settings/set'+this_page+'/',
+                    'add':'/api/unbound/settings/add'+this_page+'/',
+                    'del':'/api/unbound/settings/del'+this_page+'/',
+                    'toggle':'/api/unbound/settings/toggle'+this_page+'/'
                 }
         );
 
