@@ -75,7 +75,6 @@ class ServiceController extends ApiControllerBase
                     $stats['type'] = $role;
                     $stats['id'] = $idx;
                     $stats['description'] =  '';
-                    $stats['connected_since'] = null;
                     if (!empty($stats['timestamp'])) {
                         $stats['connected_since'] = date('Y-m-d H:i:s', $stats['timestamp']);
                     }
@@ -102,9 +101,19 @@ class ServiceController extends ApiControllerBase
                         'service_id' =>  "openvpn/" . $idx,
                         'type' => $role,
                         'description' => (string)$cnf->description ?? '',
-                        'connected_since' => null,
-                        'status' => null
                     ];
+                }
+            }
+        }
+        // make sure all records contain the same amount of keys to prevent sorting issues.
+        $all_keys = [];
+        foreach ($records as $record) {
+            $all_keys = array_unique(array_merge(array_keys($record), $all_keys));
+        }
+        foreach ($records as &$record) {
+            foreach ($all_keys as $key) {
+                if (!isset($record[$key])) {
+                    $record[$key] = null;
                 }
             }
         }

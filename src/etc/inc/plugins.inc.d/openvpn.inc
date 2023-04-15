@@ -1043,38 +1043,6 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     }
 }
 
-/**
- * Construct a single array containing all client specific overrides per server and common name
- * @return array [vpnid][common_name] = settings
- */
-function openvpn_fetch_csc_list()
-{
-    global $config;
-    $result = array();
-    if (!empty($config['openvpn']['openvpn-csc'])) {
-        $all_servers = array_keys(openvpn_get_remote_access_servers());
-        foreach ($config['openvpn']['openvpn-csc'] as $settings) {
-            if (!isset($settings['disable'])) {
-                if (!empty($settings['ovpn_servers'])) {
-                    $ovpn_servers = explode(',', $settings['ovpn_servers']);
-                } else {
-                    $ovpn_servers = $all_servers;
-                }
-                foreach ($ovpn_servers as $vpnid) {
-                    if (in_array($vpnid, $all_servers)) {
-                        $vpnid = filter_var($vpnid, FILTER_SANITIZE_NUMBER_INT);
-                        if (!isset($result[$vpnid])) {
-                            $result[$vpnid] = array();
-                        }
-                        $result[$vpnid][$settings['common_name']] = $settings;
-                    }
-                }
-            }
-        }
-    }
-    return $result;
-}
-
 function openvpn_prepare($device)
 {
     global $config;

@@ -73,6 +73,7 @@
 
 {#- macro base_dialog_header(field) #}
       </tbody>
+      <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
     </table>
   </div>
   <div class="table-responsive {{field['style']|default('')}}">
@@ -82,12 +83,22 @@
             <col class="col-md-4"/>
             <col class="col-md-5"/>
         </colgroup>
-        <thead>
+        <thead style="cursor: pointer;">
           <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3"><h2>{{field['label']}}</h2></th>
+            <th colspan="3">
+                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                    {% if field['collapse']|default(false)=='true' %}
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    {% endif %}
+                    &nbsp;
+                    <b>{{field['label']}}</b>
+                </div>
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
 {#- endmacro #}
 
             {% else %}
@@ -100,6 +111,7 @@
         </tr>
         {% endif %}
         </tbody>
+        <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
     </table>
   </div>
 </form>

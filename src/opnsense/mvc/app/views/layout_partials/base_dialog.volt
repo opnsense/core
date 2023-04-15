@@ -105,12 +105,22 @@
             <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
             <col class="col-md-{{ msgzone_width|default(5) }}"/>
         </colgroup>
-        <thead>
+        <thead style="cursor: pointer;">
           <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3"><h2>{{field['label']}}</h2></th>
+            <th colspan="3">
+                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                    {% if field['collapse']|default(false)=='true' %}
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    {% else %}
+                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    {% endif %}
+                    &nbsp;
+                    <b>{{field['label']}}</b>
+                </div>
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
 {#- endmacro #}
 
                             {% else %}

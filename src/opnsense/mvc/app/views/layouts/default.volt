@@ -112,6 +112,23 @@
                     });
                 }, 500);
 
+                // Register collapsible table headers
+                $('.table').on('click', 'thead', function(event) {
+                    let collapse = $(event.currentTarget).next();
+                    let id = collapse.attr('class');
+                    if (collapse != undefined && id !== undefined && id === "collapsible") {
+                        let icon = $('> tr > th > div > i', event.currentTarget);
+                        if (collapse.is(':hidden')) {
+                            collapse.toggle(0);
+                            collapse.css('display', '');
+                            icon.toggleClass("fa-angle-right fa-angle-down");
+                            return;
+                        }
+                        icon.toggleClass("fa-angle-down fa-angle-right");
+                        $('> tr > td', collapse).toggle(0);
+                    }
+                });
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',

@@ -33,6 +33,12 @@
             options:{
                 selection: false,
                 formatters:{
+                    bytes: function(column, row) {
+                        if (row[column.id]) {
+                            return byteFormat(row[column.id], 2);
+                        }
+                        return '';
+                    },
                     commands: function (column, row) {
                         if (row.is_client) {
                             return '<button type="button" class="btn btn-xs btn-default ovpn-command command-kill" data-toggle="tooltip" title="{{ lang._('Kill') }}" data-common_name="'+row.common_name+'" data-row-id="' + row.id + '"><span class="fa fa-times fa-fw"></span></button>';
@@ -131,8 +137,8 @@
                 <th data-column-id="real_address" data-type="string">{{ lang._('Real Address') }}</th>
                 <th data-column-id="virtual_address" data-type="string">{{ lang._('Virtual Address') }}</th>
                 <th data-column-id="connected_since" data-type="string">{{ lang._('Connected Since') }}</th>
-                <th data-column-id="bytes_sent" data-type="string">{{ lang._('Bytes Sent') }}</th>
-                <th data-column-id="bytes_received" data-type="string">{{ lang._('Bytes Received') }}</th>
+                <th data-column-id="bytes_sent" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes Sent') }}</th>
+                <th data-column-id="bytes_received" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes Received') }}</th>
                 <th data-column-id="status" data-type="string">{{ lang._('Status') }}</th>
                 <th data-column-id="commands" data-width="5em" data-formatter="commands" data-sortable="false"></th>
                 </tr>

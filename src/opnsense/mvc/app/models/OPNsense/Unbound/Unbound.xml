@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -445,6 +445,10 @@
                     <Required>Y</Required>
                     <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
+                <forward_tcp_upstream type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </forward_tcp_upstream>
                 <description type="TextField">
                     <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>

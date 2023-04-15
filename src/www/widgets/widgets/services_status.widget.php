@@ -52,18 +52,23 @@ if (isset($_POST['servicestatusfilter'])) {
         function fetch_services() {
             ajaxGet('/api/core/service/search', {}, function(data, status) {
                 if (data['rows'] !== undefined) {
+                    let $table = $('#service_widget_table');
+                    let items = {};
+                    $table.find('tr[data-service-widget-id]').each(function() {
+                        let $item = $(this);
+                        items[$item.attr('data-service-widget-id')] = $item;
+                    });
                     $.each(data['rows'], function(key, value) {
-                        /* does not like the slash in the element id */
-                        value.key = value.id.split('/').join('__');
-                        let $item = $("#service_widget_id_" + value.key);
-                        if ($item.length == 0) {
-                            $item = $("<tr>").attr('id', "service_widget_id_" + value.key);
+                        let $item = items.hasOwnProperty(value.id) ? items[value.id] : null;
+                        if (!$item) {
+                            $item = $('<tr>').attr('data-service-widget-id', value.id);
                             $item.append($('<td/>'));
                             $item.append($('<td/>'));
-                            $item.append($('<td style="width:3em;;"/>'));
-                            $item.append($('<td style="width:5em; white-space: nowrap;"/>'));
+                            $item.append($('<td style="width: 3em;"/>'));
+                            $item.append($('<td style="width: 5em; white-space: nowrap;"/>'));
                             $item.hide();
-                            $("#service_widget_table").append($item);
+                            $table.append($item);
+                            items[value.id] = $item;
                         }
                         $item.find('td:eq(0)').text(value.name);
                         $item.find('td:eq(1)').text(value.description);
