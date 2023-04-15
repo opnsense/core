@@ -97,12 +97,6 @@ legacy_html_escape_form_data($a_schedules);
                 }]
       });
     });
-
-    // Decode time range descriptions previously encoded via escape()
-    $('.range-description').each(function(i, description) {
-        description = $(description);
-        description.text(decodeURIComponent(description.text()));
-    });
   });
   </script>
 

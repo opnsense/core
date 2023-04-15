@@ -720,12 +720,6 @@ function removeRow() {
 $(function() {
   // XXX Workaround: hook_stacked_form_tables breaks CSS query otherwise
   $('#iform td').css({ 'background-color' : '' });
-
-  // Decode time range descriptions previously encoded via escape()
-  $('.range-description').each(function(i, description) {
-    description = $(description);
-    description.val(decodeURIComponent(description.val()));
-  });
 });
 
 //]]>
