@@ -136,7 +136,7 @@
             <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
             <Ping url="/ui/diagnostics/ping"/>
             <TestPort VisibleName="Port Probe" url="/diag_testport.php"/>
-            <Traceroute VisibleName="Trace Route" url="/diag_traceroute.php"/>
+            <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
         </Diagnostics>
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">

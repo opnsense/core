@@ -197,7 +197,8 @@
     <page-diagnostics-traceroute>
         <name>Diagnostics: Traceroute</name>
         <patterns>
-            <pattern>diag_traceroute.php*</pattern>
+            <pattern>ui/diagnostics/traceroute*</pattern>
+            <pattern>api/diagnostics/traceroute/*</pattern>
         </patterns>
     </page-diagnostics-traceroute>
     <page-firewall-alias-edit>
