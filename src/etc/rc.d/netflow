@@ -69,7 +69,7 @@ netflow_setup_interface()
     # determine (snmp) ifIndex
     ifIndex=0
     found=0
-    for item in $(/sbin/ifconfig -l); do
+    for item in $(/usr/local/sbin/ifinfo | awk '$1 == "Interface" { print $2 }'); do
        let ifIndex = ifIndex + 1  > /dev/null 2>&1
        if [ "$item" = "$interface" ]; then
            found=1
