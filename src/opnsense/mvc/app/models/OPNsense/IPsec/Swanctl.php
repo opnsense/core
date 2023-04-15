@@ -45,6 +45,7 @@ class Swanctl extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
         $vtis = [];
+        $spds = [];
 
         foreach ($this->getFlatNodes() as $key => $node) {
             if ($validateFullModel || $node->isFieldChanged()) {
@@ -54,6 +55,8 @@ class Swanctl extends BaseModel
                 $parentTagName = $parentNode->getInternalXMLTagName();
                 if ($parentTagName === 'VTI') {
                     $vtis[$parentKey] = $parentNode;
+                } elseif ($parentTagName === 'SPD') {
+                    $spds[$parentKey] = $parentNode;
                 }
             }
         }
@@ -68,6 +71,17 @@ class Swanctl extends BaseModel
             }
             if ($vti_inets['tunnel_local'] != $vti_inets['tunnel_remote']) {
                 $messages->appendMessage(new Message(gettext("Protocol families should match"), $key . ".tunnel_local"));
+            }
+        }
+
+        foreach ($spds as $key => $node) {
+            if (
+                ((string)$node->reqid == '' && (string)$node->connection_child == '') ||
+                ((string)$node->reqid != '' && (string)$node->connection_child != '')
+            ) {
+                $messages->appendMessage(
+                    new Message(gettext("Either reqid or child must be set"), $key . ".connection_child")
+                );
             }
         }
 
@@ -174,12 +188,9 @@ class Swanctl extends BaseModel
                         if (!isset($data['connections'][$parent]['children'])) {
                             $data['connections'][$parent]['children'] = [];
                         }
-                        if (!empty($thisnode['reqid'])) {
-                            // trigger updown event handler when a reqid is set.
-                            // currently this only handles manual spd entries, we may extend/refactor the script later
-                            // if needed
-                            $thisnode['updown'] = '/usr/local/opnsense/scripts/ipsec/updown_event.py';
-                        }
+                        $thisnode['updown'] = '/usr/local/opnsense/scripts/ipsec/updown_event.py --connection_child ';
+                        $thisnode['updown'] .= $node_uuid;
+
                         $data['connections'][$parent]['children'][$node_uuid] = $thisnode;
                     } else {
                         $data['connections'][$parent][$key . '-' . $node_uuid] = $thisnode;

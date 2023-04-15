@@ -57,7 +57,7 @@ function dnsmasq_services()
 
     $pconfig = [];
     $pconfig['name'] = 'dnsmasq';
-    $pconfig['ports'] = [$config['dnsmasq']['port'] ?? '53'];
+    $pconfig['dns_ports'] = [$config['dnsmasq']['port'] ?? '53'];
     $pconfig['description'] = gettext('Dnsmasq DNS');
     $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
     $pconfig['php']['start'] = ['dnsmasq_configure_do'];

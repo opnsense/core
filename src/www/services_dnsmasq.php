@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
-        $port_conflict = service_by_filter(['ports' => $dnsmasq_port]);
+        $port_conflict = service_by_filter(['dns_ports' => $dnsmasq_port]);
         if (!empty($pconfig['enable']) && !empty($port_conflict) && $port_conflict['name'] != 'dnsmasq') {
             $input_errors[] = sprintf(gettext('%s is currently using this port.'), $port_conflict['description']);
         }

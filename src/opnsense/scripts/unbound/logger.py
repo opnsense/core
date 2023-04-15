@@ -136,7 +136,7 @@ class DNSReader:
         if r == '':
             return False
 
-        q = tuple(r.strip("\n").split())
+        q = tuple(r.strip("\n").split('|'))
         self.buffer.append(q)
 
         self.update_clients.add(q[2])

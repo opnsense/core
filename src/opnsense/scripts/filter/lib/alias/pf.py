@@ -38,7 +38,10 @@ class PF:
     def list_table(table_name):
         pfctl_cmd = ['/sbin/pfctl', '-t', table_name, '-T', 'show']
         for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
-            yield line.strip()
+            # split('\n') on an empty string will return an empty string, we need to make sure to surpress these
+            tmp = line.strip()
+            if len(tmp) > 0:
+                yield tmp
 
     @staticmethod
     def flush_network(table_name, ifname):
