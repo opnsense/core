@@ -1948,6 +1948,8 @@ include("head.inc");
                               <?= gettext('This field can be used to spoof the MAC address of the interface. Enter a ' .
                                   'MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank if unsure. ' .
                                   'This may only be required e.g. with certain cable connections on a WAN interface.') ?><br />
+                              <?= gettext('When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. ' .
+                                  'Alternatively, the parent interface MAC can be spoofed applying the MAC it to all attached VLAN children automatically.') ?><br />
 <?php
                               $ip = getenv('REMOTE_ADDR');
                               $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
@@ -1957,6 +1959,19 @@ include("head.inc");
                               <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my currently connected MAC address (use with care)"); ?></a><br />
 <?php
                               endif; ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
+                          <td>
+                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_promisc">
+                              <?=gettext(
+                                  "Put interface into permanently promiscuous mode. ".
+                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
+                                  "When unsure, leave this disabled."
+                              ); ?>
                             </div>
                           </td>
                         </tr>
@@ -2006,19 +2021,6 @@ include("head.inc");
                         </tr>
 <?php
                         endif;?>
-                        <tr>
-                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
-                          <td>
-                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
-                            <div class="hidden" data-for="help_for_promisc">
-                              <?=gettext(
-                                  "Put interface into permanently promiscuous mode. ".
-                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
-                                  "When unsure, leave this disabled."
-                              ); ?>
-                            </div>
-                          </td>
-                        </tr>
                         <tr>
                           <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
                           <td>
