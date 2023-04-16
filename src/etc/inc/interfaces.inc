@@ -1268,6 +1268,9 @@ EOD;
     /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
     $i = 0;
     while ($i < 10) {
+        /* appease netgraph by setting the correct node name */
+        shell_safe('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
+
         exec("/sbin/ifconfig " . escapeshellarg($ppp['if']) . " 2>&1", $out, $ret);
         if ($ret == 0) {
             break;
@@ -1275,9 +1278,6 @@ EOD;
         sleep(1);
         $i++;
     }
-
-    /* appease netgraph by setting the correct node name */
-    shell_safe('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 }
 
 function interfaces_carp_setup()
