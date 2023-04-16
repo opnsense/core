@@ -33,13 +33,17 @@ INTERFACE=${1}_link
 NG_DEVICE=$(echo ${2} | sed 's/[.:]/_/g')
 NG_TYPE=${3}
 
-ngctl list | while read _NAME NAME _TYPE TYPE _ID ID MORE; do
-	if [ "${NAME}" != "<unnamed>" -o "${TYPE}" != "${NG_TYPE}" ]; then
-		continue
-	fi
-	if [ "$(ngctl info "[${ID}]:" | grep -c ${INTERFACE})" = "0" ]; then
-		continue
-	fi
-	ngctl name "[${ID}]:" "${NG_DEVICE}"
-	break
+for TRY in 1 1 1 1 1 1 1 1 1 1; do
+	ngctl list | while read _NAME NAME _TYPE TYPE _ID ID MORE; do
+		if [ "${NAME}" != "<unnamed>" -o "${TYPE}" != "${NG_TYPE}" ]; then
+			continue
+		fi
+		if [ "$(ngctl info "[${ID}]:" | grep -c ${INTERFACE})" = "0" ]; then
+			continue
+		fi
+		ngctl name "[${ID}]:" "${NG_DEVICE}"
+		return
+	done
+
+	sleep ${TRY}
 done
