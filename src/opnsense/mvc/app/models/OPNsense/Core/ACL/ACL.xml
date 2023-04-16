@@ -191,7 +191,8 @@
     <page-diagnostics-testport>
         <name>Diagnostics: Test Port</name>
         <patterns>
-            <pattern>diag_testport.php*</pattern>
+            <pattern>ui/diagnostics/portprobe*</pattern>
+            <pattern>api/diagnostics/portprobe/*</pattern>
         </patterns>
     </page-diagnostics-testport>
     <page-diagnostics-traceroute>
