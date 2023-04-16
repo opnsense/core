@@ -572,7 +572,7 @@
 <div id="aliases_stat"  title="{{ lang._('Current Tables Entries/Firewall Maximum Table Entries') }}">
     <div class="col-xs-1"><i class="fa fa-fw fa-info-circle"></i></div>
     <div id="entries_bar" class="progress" style="text-align: center;">
-        <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 23%;z-index: 0;"></div>
+        <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
         <span class="state_text" style="position:absolute;right:0;left:0;">
         <span>{{ lang._('loading data..') }}</span>
         </span>
