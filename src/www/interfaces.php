@@ -1947,7 +1947,8 @@ include("head.inc");
                             <div class="hidden" data-for="help_for_spoofmac">
                               <?= gettext('This field can be used to spoof the MAC address of the interface. Enter a ' .
                                   'MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank if unsure. ' .
-                                  'This may only be required e.g. with certain cable connections on a WAN interface.') ?><br />
+                                  'This may only be required e.g. with certain cable connections on a WAN interface. <br /> ' .
+                                  'If this is VLAN interface, need to enable "Promiscuous mode".') ?><br />
 <?php
                               $ip = getenv('REMOTE_ADDR');
                               $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
