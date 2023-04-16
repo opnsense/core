@@ -8,7 +8,7 @@
         <settings>
             <hostname type="HostnameField">
                <Required>Y</Required>
-               <ValidationMessage>Provide a valid hostname or address to ping</ValidationMessage>
+               <ValidationMessage>Provide a valid hostname or address</ValidationMessage>
             </hostname>
             <ipproto type="OptionField">
                 <Required>Y</Required>
