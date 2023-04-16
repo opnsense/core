@@ -39,7 +39,7 @@ class TracerouteController extends ApiMutableModelControllerBase
     public function setAction()
     {
         $result = parent::setAction();
-        if (empty($result['validations'])) {
+        if ($result['result'] != 'failed') {
             // field validation passed, execute query
             $mdl = $this->getModel();
             $result['result'] = 'ok';
