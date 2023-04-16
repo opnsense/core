@@ -43,7 +43,7 @@ class PingController extends ApiMutableModelControllerBase
     public function setAction()
     {
         $result = parent::setAction();
-        if (empty($result['validations'])) {
+        if ($result['result'] != 'failed') {
             $mdl = $this->getModel();
             $result['result'] = 'ok';
             $result['uuid'] = $mdl->settings->generateUUID();
