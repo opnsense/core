@@ -1,0 +1,36 @@
+<form>
+    <field>
+       <id>portprobe.settings.hostname</id>
+       <label>Hostname or IP</label>
+       <type>text</type>
+       <help>Hostname or address to probe.</help>
+    </field>
+    <field>
+       <id>portprobe.settings.port</id>
+       <label>Destination Port</label>
+       <type>text</type>
+    </field>
+    <field>
+      <id>portprobe.settings.ipproto</id>
+      <label>Address Family</label>
+      <type>dropdown</type>
+    </field>
+    <field>
+       <id>portprobe.settings.source_address</id>
+       <label>Source address</label>
+       <type>text</type>
+       <help>Optional source address.</help>
+    </field>
+    <field>
+       <id>portprobe.settings.source_port</id>
+       <label>Source Port</label>
+       <type>text</type>
+       <help>Source port.</help>
+    </field>
+    <field>
+      <id>portprobe.settings.showtext</id>
+      <label>Show Remote Text</label>
+      <type>checkbox</type>
+      <help>Shows the text given by the server when connecting to the port. Will take 10+ seconds to display if checked.</help>
+    </field>
+</form>
