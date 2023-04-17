@@ -294,6 +294,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/PacketCaptureController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/PingController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/PortprobeController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/TracerouteController.php
@@ -306,6 +307,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/NetworkinsightController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/PacketCaptureController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/PingController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/PortprobeController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/SystemhealthController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/TracerouteController.php
@@ -314,6 +316,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/netflow_capture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/packetcapture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/ping.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/portprobe.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/traceroute.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
@@ -592,6 +595,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/PacketCapture.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Ping.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Ping.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
@@ -708,6 +713,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/networkinsight.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/packetcapture.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/ping.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/portprobe.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/routes.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/traceroute.volt
@@ -914,6 +920,7 @@
 /usr/local/opnsense/scripts/interfaces/macinfo.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
 /usr/local/opnsense/scripts/interfaces/ping.py
+/usr/local/opnsense/scripts/interfaces/portprobe.py
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
@@ -1924,7 +1931,6 @@
 /usr/local/www/diag_confbak.php
 /usr/local/www/diag_defaults.php
 /usr/local/www/diag_logs_settings.php
-/usr/local/www/diag_testport.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_1to1.php
