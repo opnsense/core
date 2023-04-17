@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['passthrough_networks'] = array();
     }
     foreach (array_keys(IPSEC_LOG_SUBSYSTEMS) as $lkey) {
-        if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
+        if (isset($config['ipsec']["ipsec_{$lkey}"])) {
             $pconfig["ipsec_{$lkey}"] = $config['ipsec']["ipsec_{$lkey}"];
         } else {
             $pconfig["ipsec_{$lkey}"] = '1';
