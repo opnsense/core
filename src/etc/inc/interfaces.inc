@@ -3941,13 +3941,12 @@ function get_interfaces_info($include_unlinked = false)
                         }
                     }
                 }
-                $dev = $ppp['ports'];
-                if ($config['interfaces'][$ifdescr]['if'] != $ppp['if'] || empty($dev)) {
+                if ($config['interfaces'][$ifdescr]['if'] != $ppp['if'] || empty($ppp['ports'])) {
                     break;
                 }
-                if (!file_exists($dev)) {
+                if (!file_exists($ppp['ports'])) {
                     $ifinfo['nodevice'] = 1;
-                    $ifinfo['pppinfo'] = $dev . " " . gettext("device not present! Is the modem attached to the system?");
+                    $ifinfo['pppinfo'] = $ppp['ports'] . " " . gettext("device not present! Is the modem attached to the system?");
                 }
 
                 // Calculate cumulative uptime for PPP link. Useful for connections that have per minute/hour contracts so you don't go over!
