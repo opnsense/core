@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,6 @@ import os
 import subprocess
 import socket
 import traceback
-import syslog
 import threading
 import configparser
 import glob
@@ -59,11 +58,9 @@ class Handler(object):
 
     def __init__(self, socket_filename, config_path, config_environment=None, simulation_mode=False):
         """ Constructor
-
         :param socket_filename: filename of unix domain socket to use
         :param config_path: location of configuration files
         :param simulation_mode: emulation mode, do not start actual (script) commands
-        :return: object
         """
         if config_environment is None:
             config_environment = {}
@@ -81,11 +78,7 @@ class Handler(object):
         while True:
             # noinspection PyBroadException
             try:
-                # open action handler
-                act_handler = ActionHandler(config_path=self.config_path,
-                                            config_environment=self.config_environment)
-
-                # remove previous socket ( if exists )
+                act_handler = ActionHandler(config_path=self.config_path, config_environment=self.config_environment)
                 try:
                     os.unlink(self.socket_filename)
                 except OSError:
@@ -100,10 +93,12 @@ class Handler(object):
                     # wait for a connection to arrive
                     connection, client_address = sock.accept()
                     # spawn a client connection
-                    cmd_thread = HandlerClient(connection=connection,
-                                               client_address=client_address,
-                                               action_handler=act_handler,
-                                               simulation_mode=self.simulation_mode)
+                    cmd_thread = HandlerClient(
+                        connection=connection,
+                        client_address=client_address,
+                        action_handler=act_handler,
+                        simulation_mode=self.simulation_mode
+                    )
                     if self.single_threaded:
                         # run single threaded
                         cmd_thread.run()
@@ -167,21 +162,12 @@ class HandlerClient(threading.Thread):
             data_parts = shlex.split(data)
             if len(data_parts) == 0 or len(data_parts[0]) == 0:
                 # no data found
-                self.connection.sendall(('no data\n').encode())
+                self.connection.sendall('no data\n'.encode())
             else:
-                exec_command = data_parts[0]
-                if exec_command[0] == "&":
+                if data_parts[0][0] == "&":
                     # set run in background
                     exec_in_background = True
-                    exec_command = exec_command[1:]
-                if len(data_parts) > 1:
-                    exec_action = data_parts[1]
-                else:
-                    exec_action = None
-                if len(data_parts) > 2:
-                    exec_params = data_parts[2:]
-                else:
-                    exec_params = []
+                    data_parts[0] = data_parts[0][1:]
 
                 # when running in background, return this message uuid and detach socket
                 if exec_in_background:
@@ -192,18 +178,18 @@ class HandlerClient(threading.Thread):
 
                 # execute requested action
                 if self.simulation_mode:
-                    self.action_handler.show_action(exec_command, exec_action, exec_params, self.message_uuid)
+                    self.action_handler.show_action(data_parts, self.message_uuid)
                     result = 'OK'
                 else:
-                    result = self.action_handler.execute(exec_command, exec_action, exec_params, self.message_uuid)
+                    result = self.action_handler.execute(data_parts, self.message_uuid)
 
                 if not exec_in_background:
                     # send response back to client( including trailing enter )
                     self.connection.sendall(('%s\n' % result).encode())
                 else:
                     # log response
-                    syslog_info("message %s [%s.%s] returned %s " % (
-                        self.message_uuid, exec_command, exec_action, result[:100]
+                    syslog_info("message %s [%s] returned %s " % (
+                        self.message_uuid, ' '.join(data_parts), result[:100]
                     ))
 
             # send end of stream characters
@@ -271,108 +257,89 @@ class ActionHandler(object):
                 for act_prop in cnf.items(section):
                     setattr(action_obj, act_prop[0], act_prop[1])
 
-                if section.find('.') > -1:
-                    # at this moment we only support 2 levels of actions ( 3 if you count topic as well )
-                    action_name = section.split('.')[0]
-                    if action_name not in self.action_map[topic_name]:
-                        self.action_map[topic_name][action_name] = {}
-                    if type(self.action_map[topic_name][action_name]) is not dict:
-                        syslog_error('unsupported overlay command [%s.%s.%s]' % (
-                            topic_name, action_name, section.split('.')[1]
-                        ))
+                target = self.action_map[topic_name]
+                sections = section.split('.')
+                while sections:
+                    action_name = sections.pop(0)
+                    if action_name in target:
+                        if type(target[action_name]) is not dict or len(sections) == 0:
+                            syslog_error('unsupported overlay command [%s.%s]' % (topic_name, section))
+                            break
+                    elif len(sections) == 0:
+                        target[action_name] = action_obj
+                        break
                     else:
-                        self.action_map[topic_name][action_name][section.split('.')[1]] = action_obj
-                else:
-                    self.action_map[topic_name][section] = action_obj
+                        target[action_name] = {}
+                    target = target[action_name]
 
-    def list_actions(self, attributes=None):
+    def list_actions(self, attributes=None, result=None, map_ptr=None, path=''):
         """ list all available actions
         :param attributes:
+        :param result: (recursion) result dictionary to return
+        :param map_ptr: (recursion) point to the leaves in the tree
+        :param path: (recursion) path (items)
         :return: dict
         """
         if attributes is None:
             attributes = []
-        result = {}
-        for command in self.action_map:
-            for action in self.action_map[command]:
-                if type(self.action_map[command][action]) == dict:
-                    # parse second level actions
-                    # TODO: nesting actions may be better to solve recursive in here and in load_config part
-                    for subAction in self.action_map[command][action]:
-                        cmd = '%s %s %s' % (command, action, subAction)
-                        result[cmd] = {}
-                        for actAttr in attributes:
-                            if hasattr(self.action_map[command][action][subAction], actAttr):
-                                result[cmd][actAttr] = getattr(self.action_map[command][action][subAction], actAttr)
-                            else:
-                                result[cmd][actAttr] = ''
-                else:
-                    cmd = '%s %s' % (command, action)
-                    result[cmd] = {}
-                    for actAttr in attributes:
-                        if hasattr(self.action_map[command][action], actAttr):
-                            result[cmd][actAttr] = getattr(self.action_map[command][action], actAttr)
-                        else:
-                            result[cmd][actAttr] = ''
+        result = {} if result is None else result
+        map_ptr = self.action_map if map_ptr is None else map_ptr
+
+        for key in map_ptr:
+            this_path = ('%s %s' % (path, key)).strip()
+            if type(map_ptr[key]) is dict:
+                self.list_actions(attributes, result, map_ptr[key], this_path)
+            else:
+                result[this_path] = {}
+                for actAttr in attributes:
+                    if hasattr(map_ptr[key], actAttr):
+                        result[this_path][actAttr] = getattr(map_ptr[key], actAttr)
+                    else:
+                        result[this_path][actAttr] = ''
 
         return result
 
-    def find_action(self, command, action, parameters):
+    def find_action(self, action):
         """ find action object
 
-        :param command: command/topic for example interface
-        :param action: action to run ( for example linkup )
-        :param parameters: the parameters to supply
+        :param action: list of commands and parameters
         :return: action object or None if not found
         """
-        action_obj = None
-        if command in self.action_map:
-            if action in self.action_map[command]:
-                if type(self.action_map[command][action]) == dict:
-                    if parameters is not None and len(parameters) > 0 \
-                            and parameters[0] in self.action_map[command][action]:
-                        # 3 level action (  "interface linkup start" for example )
-                        if isinstance(self.action_map[command][action][parameters[0]], Action):
-                            action_obj = self.action_map[command][action][parameters[0]]
-                            action_obj.set_parameter_start_pos(1)
-                elif isinstance(self.action_map[command][action], Action):
-                    action_obj = self.action_map[command][action]
+        target = self.action_map
+        while type(target) is dict and action[0] in target:
+            tmp = action.pop(0)
+            target = target[tmp]
 
-        return action_obj
+        if isinstance(target, Action):
+            return target, action
 
-    def execute(self, command, action, parameters, message_uuid):
+        return None, []
+
+    def execute(self, action, message_uuid):
         """ execute configuration defined action
-
-        :param command: command/topic for example interface
-        :param action: action to run ( for example linkup )
-        :param parameters: the parameters to supply
+        :param action: list of commands and parameters
         :param message_uuid: message unique id
         :return: OK on success, else error code
         """
-        action_params = []
-        action_obj = self.find_action(command, action, parameters)
+        action_obj, action_params = self.find_action(action)
 
         if action_obj is not None:
-            if len(parameters) > action_obj.get_parameter_start_pos():
-                action_params = parameters[action_obj.get_parameter_start_pos():]
-
             return '%s\n' % action_obj.execute(action_params, message_uuid)
 
         return 'Action not found\n'
 
-    def show_action(self, command, action, parameters, message_uuid):
+    def show_action(self, action, message_uuid):
         """ debug/simulation mode: show action information
-        :param command: command/topic for example interface
-        :param action: action to run ( for example linkup )
-        :param parameters: the parameters to supply
+        :param action: list of commands and parameters
         :param message_uuid: message unique id
         :return: None
         """
-        action_obj = self.find_action(command, action, parameters)
-        print('---------------------------------------------------------------------')
-        print('execute %s.%s with parameters : %s ' % (command, action, parameters))
-        print('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
-        print('---------------------------------------------------------------------')
+        action_obj, parameters = self.find_action(action)
+        if action_obj is not None:
+            print('---------------------------------------------------------------------')
+            print('execute %s ' % ' '.join(action))
+            print('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
+            print('---------------------------------------------------------------------')
 
 
 class Action(object):
@@ -390,21 +357,6 @@ class Action(object):
         self.parameters = None
         self.type = None
         self.message = None
-        self._parameter_start_pos = 0
-
-    def set_parameter_start_pos(self, pos):
-        """
-
-        :param pos: start position of parameter list
-        :return: position
-        """
-        self._parameter_start_pos = pos
-
-    def get_parameter_start_pos(self):
-        """ getter for _parameter_start_pos
-        :return: start position of parameter list ( first argument can be part of action to start )
-        """
-        return self._parameter_start_pos
 
     def execute(self, parameters, message_uuid):
         """ execute an action

@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ class Config(object):
         self._config_data = {}
         self._filename = filename
         self._file_mod = 0
-
         self._load()
 
     def _load(self):
@@ -61,6 +60,8 @@ class Config(object):
             self._config_data['__uuid__'] = self.__uuid_data
             self._config_data['__uuid_tags__'] = self.__uuid_tags
             self._file_mod = mod_time
+
+        return self._config_data
 
     def _traverse(self, xml_node):
         """ traverse xml node and return ordered dictionary structure
@@ -104,6 +105,4 @@ class Config(object):
         :return: dictionary
         """
         # refresh config if source xml is changed
-        self._load()
-
-        return self._config_data
+        return self._load()

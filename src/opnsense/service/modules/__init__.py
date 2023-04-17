@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2014-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -45,14 +45,18 @@ def emit_syslog(priority, message):
     msg = message.replace('\n', ' ')[:4000]
     syslog.syslog(priority, msg)
 
+
 def syslog_debug(message):
     emit_syslog(syslog.LOG_DEBUG, message)
+
 
 def syslog_notice(message):
     emit_syslog(syslog.LOG_NOTICE, message)
 
+
 def syslog_info(message):
     emit_syslog(syslog.LOG_INFO, message)
+
 
 def syslog_error(message):
     emit_syslog(syslog.LOG_ERR, message)
