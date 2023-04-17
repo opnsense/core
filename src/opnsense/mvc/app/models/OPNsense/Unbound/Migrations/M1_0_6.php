@@ -48,6 +48,10 @@ class M1_0_6 extends BaseModelMigration
 
         if (!empty($config->unbound->acls)) {
             foreach ($config->unbound->acls as $acl) {
+                if (!isset($legacy_format[(string)$acl->aclaction])) {
+                    continue;
+                }
+
                 $node = [
                     'enabled' => 1,
                     'name' => !empty($acl->aclname) ? $acl->aclname : 'Unnamed ACL',
