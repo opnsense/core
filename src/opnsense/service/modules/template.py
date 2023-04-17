@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@ import os.path
 import glob
 import re
 import stat
-import syslog
 import shlex
 import collections
 import traceback
@@ -49,13 +48,10 @@ __author__ = 'Ad Schellevis'
 
 class Template(object):
     def __init__(self, target_root_directory="/"):
-        """ constructor
-        :return:
-        """
         # init config (config.xml) data
         self._config = {}
 
-        # set target root
+        # set target root (location to write output files)
         self._target_root_directory = target_root_directory
 
         # setup jinja2 environment
@@ -133,13 +129,8 @@ class Template(object):
     def set_config(self, config_data):
         """ set config data
         :param config_data: config data as dictionary/list structure
-        :return: None
         """
-        if type(config_data) in (dict, collections.OrderedDict):
-            self._config = config_data
-        else:
-            # no data given, reset
-            self._config = {}
+        self._config = config_data if type(config_data) in (dict, collections.OrderedDict) else {}
 
     @staticmethod
     def __find_string_tags(instr):
@@ -212,7 +203,6 @@ class Template(object):
     def _create_directory(filename):
         """ create directory
         :param filename: create path for filename ( if not existing )
-        :return: None
         """
         fparts = []
         for fpart in filename.strip().split('/')[:-1]:

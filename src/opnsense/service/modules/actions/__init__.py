@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -23,40 +23,29 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
-import syslog
+import glob
+import importlib
+import sys
+import os
+from .base import BaseAction
 
 
-def singleton(cls, *args, **kwargs):
-    """ singleton pattern, use ad decorator
-    :param cls:
-    """
-    instances = {}
+class ActionFactory:
+    def __init__(self):
+        self.action_types = {}
+        for filename in glob.glob("%s/*.py" % os.path.dirname(__file__)):
+            importlib.import_module(".%s" % os.path.splitext(os.path.basename(filename))[0], __name__)
 
-    # noinspection PyShadowingNames
-    def getinstance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
+        for module_name in dir(sys.modules[__name__]):
+            for attribute_name in dir(getattr(sys.modules[__name__], module_name)):
+                cls = getattr(getattr(sys.modules[__name__], module_name), attribute_name)
+                if isinstance(cls, type) and issubclass(cls, BaseAction) and cls is not BaseAction:
+                    self.action_types[module_name.lower()] = cls
 
-    return getinstance
+    def get(self, environment: dict, conf: dict):
+        target_act = conf.get('type', 'none')
+        if target_act not in self.action_types:
+            # no valid target action type found, return none type
+            target_act = 'none'
 
-
-def emit_syslog(priority, message):
-    msg = message.replace('\n', ' ')[:4000]
-    syslog.syslog(priority, msg)
-
-
-def syslog_debug(message):
-    emit_syslog(syslog.LOG_DEBUG, message)
-
-
-def syslog_notice(message):
-    emit_syslog(syslog.LOG_NOTICE, message)
-
-
-def syslog_info(message):
-    emit_syslog(syslog.LOG_INFO, message)
-
-
-def syslog_error(message):
-    emit_syslog(syslog.LOG_ERR, message)
+        return self.action_types[target_act](config_environment=environment, action_parameters=conf)

@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2014-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -23,40 +23,32 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
-import syslog
+import traceback
+import subprocess
+from .. import syslog_error
+from .base import BaseAction
 
 
-def singleton(cls, *args, **kwargs):
-    """ singleton pattern, use ad decorator
-    :param cls:
-    """
-    instances = {}
+class Action(BaseAction):
+    def execute(self, parameters, message_uuid):
+        super().execute(parameters, message_uuid)
+        try:
+            script_command = self._cmd_builder(parameters)
+        except TypeError as e:
+            return str(e)
 
-    # noinspection PyShadowingNames
-    def getinstance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return getinstance
-
-
-def emit_syslog(priority, message):
-    msg = message.replace('\n', ' ')[:4000]
-    syslog.syslog(priority, msg)
-
-
-def syslog_debug(message):
-    emit_syslog(syslog.LOG_DEBUG, message)
-
-
-def syslog_notice(message):
-    emit_syslog(syslog.LOG_NOTICE, message)
-
-
-def syslog_info(message):
-    emit_syslog(syslog.LOG_INFO, message)
-
-
-def syslog_error(message):
-    emit_syslog(syslog.LOG_ERR, message)
+        try:
+            exit_status = subprocess.call(script_command, env=self.config_environment, shell=True)
+            # send response
+            if exit_status == 0:
+                return 'OK'
+            else:
+                syslog_error('[%s] returned exit status %d' % (message_uuid, exit_status))
+                return 'Error (%d)' % exit_status
+        except Exception as script_exception:
+            syslog_error('[%s] Script action failed with %s at %s' % (
+                message_uuid,
+                script_exception,
+                traceback.format_exc()
+            ))
+            return 'Execute error'

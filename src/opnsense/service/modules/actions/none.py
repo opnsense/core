@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -22,17 +22,11 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-
-    package : configd
-    function: make standard config parser case sensitive
 """
+from .base import BaseAction
 
-from configparser import ConfigParser
 
-
-class CSConfigParser(ConfigParser):
-    def __init__(self):
-        ConfigParser.__init__(self)
-        self.optionxform = str
+class Action(BaseAction):
+    def execute(self, parameters, message_uuid):
+        super().execute(parameters, message_uuid)
+        return 'Unknown action type'
