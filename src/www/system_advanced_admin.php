@@ -151,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
 
         $restart_webgui = $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
+            $config['system']['webgui']['session_timeout'] != $pconfig['session_timeout'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
