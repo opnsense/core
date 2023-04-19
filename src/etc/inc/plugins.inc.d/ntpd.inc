@@ -172,7 +172,7 @@ function ntpd_configure_do($verbose = false)
 {
     global $config;
 
-    killbyname('ntpd', 'TERM', true);
+    killbyname('ntpd');
 
     if (!ntpd_enabled()) {
         return;
