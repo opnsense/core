@@ -1072,7 +1072,6 @@
 /usr/local/opnsense/service/modules/addons/__init__.py
 /usr/local/opnsense/service/modules/addons/template_helpers.py
 /usr/local/opnsense/service/modules/config.py
-/usr/local/opnsense/service/modules/csconfigparser.py
 /usr/local/opnsense/service/modules/daemonize.py
 /usr/local/opnsense/service/modules/ph_inline_actions.py
 /usr/local/opnsense/service/modules/processhandler.py
