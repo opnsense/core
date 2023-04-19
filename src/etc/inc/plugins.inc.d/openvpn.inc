@@ -917,9 +917,9 @@ function openvpn_restart($mode, $settings, $carp_event = false)
         $interface_details = legacy_interface_details(get_real_interface($interface));
         if (
             !empty($interface_details) && !empty($interface_details['carp'][$vhid]) &&
-            $interface_details['carp'][$vhid]['status'] == 'BACKUP'
+            in_array($interface_details['carp'][$vhid]['status'], ['BACKUP' ,'INIT'])
         ) {
-            /* do not restart a client if we are a CARP backup instance */
+            /* do not restart a client if we are a CARP backup instance or unplugged (init)*/
             return;
         }
     }
