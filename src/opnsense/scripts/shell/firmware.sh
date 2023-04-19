@@ -65,9 +65,9 @@ if [ -n "${RELEASE}" ]; then
 	echo "A major firmware upgrade is available for this installation: ${RELEASE}"
 	echo
 	echo "Make sure you have read the release notes and migration guide before"
-	echo "attempting this upgrade.  Around 500MB will need to be downloaded and"
-	echo "require 1000MB of free space.  Continue with this major upgrade by"
-	echo "typing the major upgrade version number displayed above."
+	echo "attempting this upgrade.  Approx. 1000MB will need to be downloaded and"
+	echo "require 2000MB of free space to unpack.  Continue with this major upgrade"
+	echo "by typing the major upgrade version number displayed above."
 	echo
 	echo "Minor updates may be available, answer 'y' to run them instead."
 	echo
