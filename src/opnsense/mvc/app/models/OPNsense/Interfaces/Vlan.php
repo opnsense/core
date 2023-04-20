@@ -30,6 +30,7 @@ namespace OPNsense\Interfaces;
 
 use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
 
 class Vlan extends BaseModel
 {
@@ -38,6 +39,17 @@ class Vlan extends BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
+        // current uuid / device name mapping
+        $cfg = Config::getInstance()->object();
+        $prev_names = [];
+        if (isset($cfg->vlans->vlan)) {
+            foreach ($cfg->vlans->children() as $vlan) {
+                if (isset($vlan->attributes()->uuid)) {
+                    $tagUUID = (string)$vlan->attributes()['uuid'];
+                    $prev_names[$tagUUID] = (string)$vlan->vlanif;
+                }
+            }
+        }
         $messages = parent::performValidation($validateFullModel);
         $all_nodes = $this->getFlatNodes();
         foreach ($all_nodes as $key => $node) {
@@ -68,6 +80,17 @@ class Vlan extends BaseModel
                                 ),
                                 $key
                             ));
+                        }
+                    /* FALLTHROUGH */
+                    case 'if':
+                        /*
+                         * Detect attempt to assign the device to itself.
+                         * The current name or the one before applying this model are equal to the interface in
+                         * that case.
+                         */
+                        $prev_name = $prev_names[$parent->getAttributes()['uuid']] ?? '';
+                        if ((string)$parent->if == (string)$parent->vlanif || $prev_name == (string)$parent->if) {
+                            $messages->appendMessage(new Message(gettext('VLAN can not be assigned to itself.'), $key));
                         }
                         break;
                 }
