@@ -543,8 +543,8 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     // server specific settings
     if ($mode == 'server') {
-        list($ip, $cidr) = explode('/', $settings['tunnel_network'] ?? '');
-        list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6'] ?? '');
+        list($ip, $cidr) = explode('/', $settings['tunnel_network'] ?? '/');
+        list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6'] ?? '/');
         $mask = gen_subnet_mask($cidr);
 
         // client connect and disconnect handling
