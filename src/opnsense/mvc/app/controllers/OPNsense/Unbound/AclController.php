@@ -38,5 +38,4 @@ class AclController extends IndexController
         $this->view->formDialogAcl = $this->getForm('dialogAcl');
         $this->view->pick('OPNsense/Unbound/acl');
     }
-
 }

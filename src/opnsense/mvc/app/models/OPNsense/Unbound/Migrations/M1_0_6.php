@@ -68,13 +68,16 @@ class M1_0_6 extends BaseModelMigration
                         }
 
                         /* for every network that has a description provided, we create a new ACL */
-                        $network = sprintf("%s/%s",
-                            (string)$row->acl_network, (string)$row->mask);
+                        $network = sprintf(
+                            "%s/%s",
+                            (string)$row->acl_network,
+                            (string)$row->mask
+                        );
 
                         if (!empty($row->description)) {
                             $new = $model->acls->acl->add();
                             $tmp = $node['name'];
-                            $node['name'] .= '-'.(string)$row->description;
+                            $node['name'] .= '-' . (string)$row->description;
                             $node['networks'] = $network;
                             $new->setNodes($node);
                             $node['name'] = $tmp;
