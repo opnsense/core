@@ -38,10 +38,9 @@ import glob
 import time
 import uuid
 import shlex
-import tempfile
-from . import ph_inline_actions, syslog_error, syslog_info, syslog_notice, singleton
-
-__author__ = 'Ad Schellevis'
+from .actions import ActionFactory
+from .actions.base import BaseAction
+from . import syslog_error, syslog_info, syslog_notice, singleton
 
 
 class Handler(object):
@@ -52,7 +51,7 @@ class Handler(object):
         processflow:
             Handler ( waits for client )
                 -> new client is send to HandlerClient
-                    -> execute ActionHandler command using Action objects
+                    -> execute ActionHandler command using BaseAction type objects (delivered via ActionFactory)
                     <- send back result string
     """
 
@@ -236,6 +235,7 @@ class ActionHandler(object):
 
         :return: None
         """
+        action_factory = ActionFactory()
         for config_filename in glob.glob('%s/actions_*.conf' % self.config_path) \
                 + glob.glob('%s/actions.d/actions_*.conf' % self.config_path):
             # this topic's name (service, filter, template, etc)
@@ -253,9 +253,10 @@ class ActionHandler(object):
 
             for section in cnf.sections():
                 # map configuration data on object
-                action_obj = Action(config_environment=self.config_environment)
+                conf = {}
                 for act_prop in cnf.items(section):
-                    setattr(action_obj, act_prop[0], act_prop[1])
+                    conf[act_prop[0]] = act_prop[1]
+                action_obj = action_factory.get(environment=self.config_environment, conf=conf)
 
                 target = self.action_map[topic_name]
                 sections = section.split('.')
@@ -310,7 +311,7 @@ class ActionHandler(object):
             tmp = action.pop(0)
             target = target[tmp]
 
-        if isinstance(target, Action):
+        if isinstance(target, BaseAction):
             return target, action
 
         return None, []
@@ -340,131 +341,3 @@ class ActionHandler(object):
             print('execute %s ' % ' '.join(action))
             print('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
             print('---------------------------------------------------------------------')
-
-
-class Action(object):
-    """ Action class,  handles actual (system) calls.
-    set command, parameters (template) type and log message
-    """
-
-    def __init__(self, config_environment):
-        """ setup default properties
-        :param config_environment: environment to use
-        :return:
-        """
-        self.config_environment = config_environment
-        self.command = None
-        self.parameters = None
-        self.type = None
-        self.message = None
-
-    def execute(self, parameters, message_uuid):
-        """ execute an action
-
-        :param parameters: list of parameters
-        :param message_uuid: unique message id
-        :return:
-        """
-        # send-out syslog message
-        if self.message is not None:
-            log_param = list()
-            # make sure message items match input
-            if self.message.count('%s') > 0 and len(parameters) > 0:
-                log_param = parameters[0:self.message.count('%s')]
-            if len(log_param) < self.message.count('%s'):
-                for i in range(self.message.count('%s') - len(log_param)):
-                    log_param.append('')
-
-            syslog_notice('[%s] %s' % (message_uuid, self.message % tuple(log_param)))
-
-        # validate input
-        if self.type is None:
-            # no action type, nothing to do here
-            return 'No action type'
-        elif self.type.lower() in ('script', 'script_output'):
-            # script type commands, basic script type only uses exit statuses, script_output sends back stdout data.
-            if self.command is None:
-                # no command supplied, exit
-                syslog_error('[%s] returned "No command"' % message_uuid)
-                return 'No command'
-
-            # build script command to execute, shared for both types
-            script_command = self.command
-            if self.parameters is not None and type(self.parameters) == str:
-                script_arguments = self.parameters
-                if script_arguments.find('%s') > -1:
-                    # use command execution parameters in action parameter template
-                    # use quotes on parameters to prevent code injection
-                    if script_arguments.count('%s') > len(parameters):
-                        # script command accepts more parameters than given, fill with empty parameters
-                        for i in range(script_arguments.count('%s') - len(parameters)):
-                            parameters.append("")
-                    elif len(parameters) > script_arguments.count('%s'):
-                        # more parameters than expected, fail execution
-                        return 'Parameter mismatch'
-
-                    # use single quotes to prevent command injection
-                    for i in range(len(parameters)):
-                        parameters[i] = "'" + parameters[i].replace("'", "'\"'\"'") + "'"
-
-                    # safely print the argument list now
-                    script_arguments = script_arguments % tuple(parameters)
-
-                script_command = script_command + " " + script_arguments
-
-            if self.type.lower() == 'script':
-                # execute script type command
-                try:
-                    exit_status = subprocess.call(script_command, env=self.config_environment, shell=True)
-                    # send response
-                    if exit_status == 0:
-                        return 'OK'
-                    else:
-                        syslog_error('[%s] returned exit status %d' % (message_uuid, exit_status))
-                        return 'Error (%d)' % exit_status
-                except Exception as script_exception:
-                    syslog_error('[%s] Script action failed with %s at %s' % (message_uuid,
-                                                                                               script_exception,
-                                                                                               traceback.format_exc()))
-                    return 'Execute error'
-            elif self.type.lower() == 'script_output':
-                try:
-                    with tempfile.NamedTemporaryFile() as error_stream:
-                        with tempfile.NamedTemporaryFile() as output_stream:
-                            subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                                  stdout=output_stream, stderr=error_stream)
-                            output_stream.seek(0)
-                            error_stream.seek(0)
-                            script_output = output_stream.read()
-                            script_error_output = error_stream.read()
-                            if len(script_error_output) > 0:
-                                syslog_error('[%s] Script action stderr returned "%s"' %(
-                                    message_uuid, script_error_output.strip()[:255]
-                                ))
-                            return script_output.decode()
-                except Exception as script_exception:
-                    syslog_error('[%s] Script action failed with %s at %s' % (
-                        message_uuid, script_exception, traceback.format_exc()
-                    ))
-                    return 'Execute error'
-
-            # fallback should never get here
-            return "type error"
-        elif self.type.lower() == 'inline':
-            # Handle inline service actions
-            try:
-                # match parameters, serialize to parameter string defined by action template
-                if len(parameters) > 0:
-                    inline_act_parameters = self.parameters % tuple(parameters)
-                else:
-                    inline_act_parameters = ''
-
-                return ph_inline_actions.execute(self, inline_act_parameters)
-
-            except Exception as inline_exception:
-                syslog_error('[%s] Inline action failed with %s at %s' % (
-                    message_uuid, inline_exception, traceback.format_exc()
-                ))
-                return 'Execute error'
-
-        return 'Unknown action type'
