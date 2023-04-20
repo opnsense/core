@@ -326,25 +326,8 @@ function plugins_run($hook, $args = [])
         if (function_exists($func)) {
             foreach ($func() as $when => $task) {
                 if ($hook == $when) {
-                    /*
-                     * An optional argument count parameter can be
-                     * given by the plugin, which allows to securely
-                     * pull more info from the configure call spot.
-                     */
-                    if (substr_count($task, ':')) {
-                        list($argf, $argc) = explode(':', $task);
-                    } else {
-                        $argf = $task;
-                        $argc = null;
-                    }
-                    if (empty($argc) || !is_numeric($argc)) {
-                        $argc = 1;
-                    }
-                    if ($argc > count($args)) {
-                        $argc = count($args);
-                    }
                     try {
-                        $result = call_user_func_array($argf, array_slice($args, 0, $argc));
+                        $result = call_user_func_array($task, $args);
                         if (!empty($result)) {
                             $ret[$name] = $result;
                         }
