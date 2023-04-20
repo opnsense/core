@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -253,22 +253,22 @@ function _dnsmasq_add_host_entries()
     }
 
     if (isset($dnsmasqcfg['regdhcpstatic'])) {
-        require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
-
         $domain = $config['system']['domain'];
         if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
 
-        foreach (dhcpd_staticmap($domain, legacy_interfaces_details()) as $host) {
-            if (empty($host['hostname'])) {
-                /* cannot register without a hostname */
-                continue;
-            }
-            if (isset($host['ipaddr'])) {
-                $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-            } else {
-                $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+        foreach (plugins_run('static_mapping', [$domain, legacy_interfaces_details()]) as $map) {
+            foreach ($map as $host) {
+                if (empty($host['hostname'])) {
+                    /* cannot register without a hostname */
+                    continue;
+                }
+                if (isset($host['ipaddr'])) {
+                    $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+                } else {
+                    $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+                }
             }
         }
     }

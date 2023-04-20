@@ -38,6 +38,13 @@ function dhcpd_configure()
     ];
 }
 
+function dhcpd_run()
+{
+    return [
+        'static_mapping' => 'dhcpd_staticmap',
+    ];
+}
+
 function dhcpd_radvd_enabled()
 {
     global $config;

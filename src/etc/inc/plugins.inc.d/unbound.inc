@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2018 Fabian Franz
- * Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
  * Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -544,22 +544,22 @@ function unbound_add_host_entries($ifconfig_details)
     }
 
     if (!empty($general['regdhcpstatic'])) {
-        require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
-
-        foreach (dhcpd_staticmap($config['system']['domain'], $ifconfig_details) as $host) {
-            if (empty($host['hostname'])) {
-                /* cannot register without a hostname */
-                continue;
-            }
-            if (isset($host['ipaddr'])) {
-                $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
-                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
-            } else {
-                $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
-                $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
-            }
-            if (!empty($host['descr']) && !empty($general['txtsupport'])) {
-                $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
+        foreach (plugins_run('static_mapping', [$config['system']['domain'], $ifconfig_details]) as $map) {
+            foreach ($map as $host) {
+                if (empty($host['hostname'])) {
+                    /* cannot register without a hostname */
+                    continue;
+                }
+                if (isset($host['ipaddr'])) {
+                    $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
+                    $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
+                } else {
+                    $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
+                    $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
+                }
+                if (!empty($host['descr']) && !empty($general['txtsupport'])) {
+                    $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
+                }
             }
         }
     }
