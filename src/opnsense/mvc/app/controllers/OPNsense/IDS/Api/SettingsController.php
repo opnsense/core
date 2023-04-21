@@ -262,7 +262,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 if ($fileinfo['modified_local'] == null) {
                     $item['modified_local'] = null;
                 } else {
-                    $item['modified_local'] = date('Y/m/d G:i', $fileinfo['modified_local']);
+                    $item['modified_local'] = date('Y/m/d G:i', (int)$fileinfo['modified_local']);
                 }
                 // retrieve status from model
                 $fileNode = $this->getModel()->getFileNode($fileinfo['filename']);
