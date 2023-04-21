@@ -562,6 +562,10 @@ def arg_parse_is_json_file(filename):
         json.load(open(filename))
     except FileNotFoundError:
         raise argparse.ArgumentTypeError("non existing file")
+    except json.JSONDecodeError:
+        # in cases where a file exists, but we're unable to decode it (e.g. the file is empty),
+        # we should assume the blocklist has no entries.
+        pass
     except:
         raise argparse.ArgumentTypeError("No blocklist available")
 
