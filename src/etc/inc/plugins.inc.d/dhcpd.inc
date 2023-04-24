@@ -456,8 +456,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         if ($autotype == 'slaac') {
             /* XXX this may be incorrect and needs an override or revisit */
             $networkv6 = '2000::/64';
-        } elseif (!is_subnetv6($networkv6)) {
-            $networkv6 = '::/64';
         }
 
         if (!empty(service_by_filter(['dns_ports' => '53']))) {
