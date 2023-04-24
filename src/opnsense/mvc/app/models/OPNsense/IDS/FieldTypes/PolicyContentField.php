@@ -52,7 +52,7 @@ class PolicyContentField extends BaseListField
         if (empty(self::$internalStaticOptionList)) {
             self::$internalStaticOptionList = array();
             // XXX: we could add caching here if configd overhead is an issue
-            $response = (new Backend())->configdRun("ids list rulemetadata");
+            $response = (new Backend())->configdRun("ids list rulemetadata") ?? '';
             $data = json_decode($response, true);
             if (!empty($data)) {
                 foreach ($data as $prop => $values) {
