@@ -568,10 +568,11 @@ $.fn.SimpleActionButton = function (params) {
             }
             pre_action().done(function () {
                 ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
+                    let data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || ('status' in data && data['status'].toLowerCase().trim() != 'ok')) && data['status']) {
+                    if ((status != "success" || (data_status.toLowerCase().trim() != 'ok')) && data_status !== '') {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
