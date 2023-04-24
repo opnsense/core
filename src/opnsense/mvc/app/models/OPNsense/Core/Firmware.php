@@ -127,7 +127,7 @@ class Firmware extends BaseModel
             $messages->appendMessage(new Message(gettext('Unable to set invalid firmware release type'), 'type'));
         }
         if (in_array((string)$this->mirror, $validOptions['mirrors_has_subscription'])) {
-            if (!preg_match('/^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/i', (string)$this->subscription)) {
+            if (!preg_match('/^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/i', (string)$this->subscription) && 'FILL-IN-YOUR-LICENSE-HERE' != (string)$this->subscription) {
                 $messages->appendMessage(new Message(gettext('A valid subscription is required for this firmware mirror'), 'subscription'));
             }
             if (!preg_match('/\//', (string)$this->flavour)) {
