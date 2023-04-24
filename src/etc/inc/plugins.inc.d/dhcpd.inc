@@ -523,17 +523,24 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         $radvdconf .= "};\n";
     }
 
-    file_put_contents('/var/etc/radvd.conf', $radvdconf);
+    $radvd_conf_file = '/var/etc/radvd.conf';
+    file_put_contents($radvd_conf_file, $radvdconf);
 
     if (count($radvdifs)) {
-        if (isvalidpid('/var/run/radvd.pid')) {
+        $last_version = @file_get_contents("{$radvd_conf_file}.last");
+        $this_version = shell_safe('/bin/cat %s | sha256', $radvd_conf_file);
+
+        if (isvalidpid('/var/run/radvd.pid') && $last_version == $this_version) {
             killbypid('/var/run/radvd.pid', 'HUP');
         } else {
+            killbypid('/var/run/radvd.pid');
+            file_put_contents("{$radvd_conf_file}.last", $this_version);
             mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
         }
     } else {
         /* stop on invalid configuration for legacy condition above */
         killbypid('/var/run/radvd.pid');
+        @unlink("{$radvd_conf_file}.last");
     }
 
     service_log("done.\n", $verbose);
