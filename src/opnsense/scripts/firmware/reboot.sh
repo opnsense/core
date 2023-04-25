@@ -53,9 +53,10 @@ RQUERY=$(${PKG} rquery %v ${COREPKG} 2> /dev/null)
 # core package is available.  We want to use it to display additional
 # information in the shell menu including the matching changelog.
 
-if [ -n "${LQUERY}" -a -n "${RQUERY}" -a \
-    "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
-	echo ${RQUERY%%_*}
+if [ -n "${LQUERY}" -a -n "${RQUERY}" ]; then
+	if [ "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
+		echo ${RQUERY%%_*}
+	fi
 fi
 
 # success is reboot:
