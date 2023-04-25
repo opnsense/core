@@ -665,7 +665,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                     $conf .= "username-as-common-name\n";
                 }
                 if (!empty($settings['authmode'])) {
-                    $conf .= "auth-user-pass-verify \"/usr/local/opnsense/scripts/openvpn/ovpn_event.py '{$vpnid}'\" via-env\n";
+                    $conf .= "auth-user-pass-verify \"/usr/local/opnsense/scripts/openvpn/ovpn_event.py --defer '{$vpnid}'\" via-env\n";
                     $conf .= "learn-address \"/usr/local/opnsense/scripts/openvpn/ovpn_event.py '{$vpnid}'\"\n";
                 }
                 break;
