@@ -245,6 +245,9 @@ manifest:
 		fi; \
 	done
 	@echo "}"
+	@if [ -f ${WRKSRC}/usr/local/opnsense/version/core ]; then \
+	    echo "annotations $$(cat ${WRKSRC}/usr/local/opnsense/version/core)"; \
+	fi
 
 .if ${.TARGETS:Mupgrade}
 # lighter package format for quick completion
@@ -317,14 +320,14 @@ package: plist-check package-check clean-wrksrc
 .for CORE_DEPEND in ${CORE_DEPENDS}
 	@if ! ${PKG} info ${CORE_DEPEND} > /dev/null; then ${PKG} install -yfA ${CORE_DEPEND}; fi
 .endfor
-	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
-	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
-	@echo " done"
 	@echo -n ">>> Staging files for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@cat ${WRKSRC}/usr/local/opnsense/version/core
+	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
+	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
+	@echo " done"
 	@echo ">>> Packaging files for ${CORE_NAME}-${CORE_PKGVERSION}:"
 	@PORTSDIR=${.CURDIR} ${PKG} create ${PKG_FORMAT} -v -m ${WRKSRC} \
 	    -r ${WRKSRC} -p ${WRKSRC}/plist -o ${PKGDIR}
