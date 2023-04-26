@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -443,6 +443,7 @@
                     '<tr class="plugin_entry">' + '<td>' + bold_on + row['name'] + status_text + bold_off + '</td>' +
                     '<td>' + bold_on + row['version'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['flatsize'] + bold_off + '</td>' +
+                    '<td>' + bold_on + row['tier'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['repository'] + bold_off + '</td>' +
                     '<td>' + bold_on + row['comment'] + bold_off + '</td>' +
                     '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
@@ -931,6 +932,7 @@
                                 <th style="vertical-align:middle"><input type="text" class="input-sm" autocomplete="off" id="plugin_search" placeholder="{{ lang._('Name') }}"></th>
                                 <th style="vertical-align:middle">{{ lang._('Version') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Size') }}</th>
+                                <th style="vertical-align:middle">{{ lang._('Tier') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Repository') }}</th>
                                 <th style="vertical-align:middle">{{ lang._('Comment') }}</th>
                                 <th style="vertical-align:middle"></th>

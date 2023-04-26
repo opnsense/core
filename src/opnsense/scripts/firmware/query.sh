@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,23 +27,38 @@
 LIC="BSD2CLAUSE"
 OS="FreeBSD"
 REPO="OPNsense"
-SEP=${1:-","}
+SEP="|||"
 
-read BN BV BS << EOF
+case "${1}" in
+local)
+	read BN BV BS << EOF
 $(opnsense-version -nvs base)
 EOF
 
-read KN KV KS << EOF
+	read KN KV KS << EOF
 $(opnsense-version -nvs kernel)
 EOF
 
-BL=0
-KL=0
+	BL=0
+	KL=0
 
-opnsense-update -Tb || BL=1
-opnsense-update -Tk || KL=1
+	opnsense-update -Tb || BL=1
+	opnsense-update -Tk || KL=1
 
 cat << EOF
-${BN}${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}0${SEP}${LIC}${SEP}${REPO}${SEP}
-${KN}${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}0${SEP}${LIC}${SEP}${REPO}${SEP}
+${BN}${SEP}${BV}${SEP}${OS} userland set${SEP}${BS}${SEP}${BL}${SEP}0${SEP}${LIC}${SEP}${REPO}${SEP}opnsense/base
+${KN}${SEP}${KV}${SEP}${OS} kernel set${SEP}${KS}${SEP}${KL}${SEP}0${SEP}${LIC}${SEP}${REPO}${SEP}opnsense/kernel
 EOF
+
+	pkg query "%n|||%v|||%c|||%sh|||%k|||%a|||%L|||%R|||%o"
+	;;
+remote)
+	pkg update -q && pkg rquery -U "%n|||%v|||%c|||%sh|||0|||0|||%L|||%R|||%o"
+	;;
+tiers)
+	# fetching annotations is not as easy to query so always ask for annotations from remote end
+	pkg update -q && pkg rquery '%n|||%At|||%Av' | grep '|||product_tier|||'
+	;;
+*)
+	;;
+esac
