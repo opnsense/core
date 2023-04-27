@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2019 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@ fi
 
 /usr/bin/logger -t dpinger "GATEWAY ALARM: ${GATEWAY} (Addr: ${2} Alarm: ${3} RTT: ${4}us RTTd: ${5}us Loss: ${6}%)"
 
-echo -n "Reloading filter: "
-/usr/local/bin/flock -n -E 0 -o /tmp/filter_reload_gateway.lock configctl filter reload skip_alias
+echo -n "Reloading routes/filter: "
+/usr/local/bin/flock -n -E 0 -o /tmp/filter_reload_gateway.lock configctl routes configure
 
 exit 0

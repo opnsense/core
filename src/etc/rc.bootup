@@ -86,11 +86,11 @@ system_hostname_configure(true);
 system_resolver_configure(true);
 system_syslog_start(true);
 
-filter_configure_sync(true, false, false); /* apply default policy before interface setup */
+filter_configure_sync(true, false); /* apply default policy before interface setup */
 interfaces_hardware(true);
 interfaces_configure(true);
 system_resolver_configure(true); /* adapts to runtime interface configuration */
-filter_configure_sync(true, true, false);
+filter_configure_sync(true);
 plugins_configure('early', true);
 system_routing_configure(true, null, false);
 
@@ -99,7 +99,7 @@ plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
 plugins_configure('monitor', true, [null, true]);
-filter_configure_sync(true, true, false);
+filter_configure_sync(true);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 rrd_configure(true, true);

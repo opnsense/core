@@ -92,7 +92,7 @@ $interfaces = array_keys(link_interface_to_track6($interface, true));
 array_unshift($interfaces, $interface);
 
 foreach ($interfaces as $interface) {
-    system_routing_configure(false, $interface);
+    system_routing_configure(false, $interface, true, 'inet6');
 }
 
 filter_configure_sync();

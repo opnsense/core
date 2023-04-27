@@ -587,8 +587,10 @@ function system_default_route($gateway, $interface, $far = false)
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
-function system_routing_configure($verbose = false, $interface = null, $monitor = true)
+function system_routing_configure($verbose = false, $interface = null, $monitor = true, $family = null)
 {
+    global $config;
+
     service_log(sprintf('Setting up route%s...', empty($interface) ? 's' : " {$interface}"), $verbose);
 
     if (!empty($interface)) {
@@ -599,19 +601,30 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifdetails);
+    $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
 
-    foreach (['inet', 'inet6'] as $ipproto) {
-        /* determine default gateway without considering monitor status */
-        $gateway = $gateways->getDefaultGW([], $ipproto);
-        $logproto = $ipproto == 'inet' ? 'IPv4' : 'IPv6';
-        if ($gateway != null) {
-            log_msg("ROUTING: {$logproto} default gateway set to {$gateway['interface']}", LOG_INFO);
-            if ((empty($interface) || $interface == $gateway['interface']) && !empty($gateway['gateway'])) {
-                log_msg("ROUTING: setting {$logproto} default route to {$gateway['gateway']}");
-                system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
-            } else {
-                log_msg("ROUTING: skipping {$logproto} default route");
+    if (!empty($down_gateways)) {
+        log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
+    }
+
+    foreach (['inet' => 'ipv4', 'inet6' => 'ipv6'] as $ipproto => $type) {
+        if ($family !== null && $family !== $ipproto) {
+            continue;
+        }
+
+        $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
+        if ($gateway == null) {
+            continue;
+        }
+
+        if (isset($config['system']['gw_switch_default']) || empty($interface) || $interface == $gateway['interface']) {
+            if (empty($ifdetails[$gateway['if']][$type][0])) {
+                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}", LOG_ERR);
+                continue;
             }
+
+            log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
+            system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
         }
     }
 
@@ -628,10 +641,19 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
                 continue;
             }
 
-            if (!is_subnet($rtent['network'])) {
+            if (is_subnetv4($rtent['network'])) {
+                $ipproto = 'inet';
+            } elseif (is_subnetv6($rtent['network'])) {
+                $ipproto = 'inet6';
+            } else {
                 log_msg(sprintf('Cannot add static route to: %s', $rtent['network']), LOG_ERR);
                 continue;
             }
+
+            if ($family !== null && $family !== $ipproto) {
+                continue;
+            }
+
             $interfacegw = $gateway['if'];
             $gatewayip = $gateway['gateway'];
             $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
@@ -646,19 +668,16 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
                     break;
             }
 
-            $ip = $rtent['network'];
+            $cmd = " -{$ipproto} {$blackhole} " . escapeshellarg($rtent['network']) . " ";
+
             if (!empty($rtent['disabled'])) {
-                $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
                 mwexec("/sbin/route delete {$cmd}", true);
             } else {
-                $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
                 if (is_ipaddr($gatewayip)) {
                     mwexec("/sbin/route delete {$cmd}", true);
                     if ($fargw) {
-                        mwexecf('/sbin/route delete %s %s -interface %s ', [$inet, $gatewayip, $interfacegw], true);
-                        mwexecf('/sbin/route add %s %s -interface %s', [$inet, $gatewayip, $interfacegw], true);
+                        mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
+                        mwexecf('/sbin/route add %s -%s -interface %s', [$ipproto, $gatewayip, $interfacegw], true);
                     } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
                         $gatewayip .= "%{$interfacegw}";
                     }
@@ -678,6 +697,10 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             $reloads = [];
 
             foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
+                if ($family !== null && $family !== $gateway['ipprotocol']) {
+                    continue;
+                }
+
                 if ($interface == $gateway['interface']) {
                     $reloads[] = $name;
                 }

@@ -159,7 +159,7 @@ foreach (array_keys($restartifs) as $ifname) {
  */
 ifgroup_setup();
 
-system_routing_configure(false, $interface);
+system_routing_configure(false, $interface, true, 'inet');
 filter_configure_sync();
 
 if (is_ipaddr($cacheip) && $ip != $cacheip) {
