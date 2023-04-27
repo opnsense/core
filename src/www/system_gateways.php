@@ -111,9 +111,10 @@ function delete_gateway_item($id, $a_gateways)
 }
 
 // fetch gateway list including active default for IPv4/IPv6
+$down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
 $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-$default_gwv4 = $gateways->getDefaultGW(return_down_gateways(), "inet");
-$default_gwv6 = $gateways->getDefaultGW(return_down_gateways(), "inet6");
+$default_gwv4 = $gateways->getDefaultGW($down_gateways, 'inet');
+$default_gwv6 = $gateways->getDefaultGW($down_gateways, 'inet6');
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $gateways_status = return_gateways_status();
 
