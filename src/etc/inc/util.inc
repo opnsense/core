@@ -744,16 +744,17 @@ function is_hostname($hostname)
 }
 
 /* returns true if $domain is a valid domain name */
-function is_domain($domain)
+function is_domain($domain, $allow_root = false)
 {
     if (!is_string($domain)) {
         return false;
-    }
-    if (preg_match('/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i', $domain)) {
+    } elseif (preg_match('/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i', $domain)) {
         return true;
-    } else {
-        return false;
+    } elseif ($allow_root && $domain == '.') {
+        return true;
     }
+
+    return false;
 }
 
 /* returns true if $macaddr is a valid MAC address */
