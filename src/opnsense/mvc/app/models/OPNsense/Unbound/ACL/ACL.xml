@@ -9,7 +9,7 @@
     <page-services-dnsresolver-acls>
         <name>Services: Unbound DNS: Access Lists</name>
         <patterns>
-            <pattern>ui/unbound/acl/*</pattern>
+            <pattern>ui/unbound/acl</pattern>
             <pattern>api/unbound/acl/*</pattern>
         </patterns>
     </page-services-dnsresolver-acls>
