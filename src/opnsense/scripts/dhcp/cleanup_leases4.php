@@ -55,8 +55,8 @@ if (isset($opts['m'])) {
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!empty($dhcpifconf['staticmap']) && !empty($dhcpifconf['enable'])) {
             foreach ($dhcpifconf['staticmap'] as $static) {
-                if (!empty($static['mac'])) {
-                    $addresses[$static['mac']] = !empty($static['ipaddr']) ? $static['ipaddr'] : "";
+                if (!empty($static['mac']) && !empty($static['ipaddr'])) {
+                    $addresses[$static['mac']] = $static['ipaddr'];
                 }
             }
         }
