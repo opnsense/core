@@ -113,8 +113,22 @@ def main(params):
     response = {}
     for filename in glob.glob('/var/etc/openvpn/*.sock'):
         bname = os.path.basename(filename)[:-5]
-        this_id = bname[6:]
-        if bname.startswith('server') and 'server' in params.options:
+        this_id = bname[9:] if bname.startswith('inst') else bname[6:]
+        if bname.startswith('instance-'):
+            this_status = ovpn_status(filename)
+            role = 'client' if 'bytes_received' in this_status else 'server'
+            if role not in response:
+                response[role] = {}
+            if role == 'server' and 'server' in params.options:
+                response['server'][this_id] = this_status
+                if 'status' not in response['server'][this_id]:
+                    # p2p mode, no client_list or routing_table
+                    response['server'][this_id].update(ovpn_state(filename))
+            elif role == 'client' and  'client' in params.options:
+                response['client'][this_id] = ovpn_state(filename)
+                if response['client'][this_id]['status'] != 'failed':
+                    response['client'][this_id].update(this_status)
+        elif bname.startswith('server') and 'server' in params.options:
             if 'server' not in response:
                 response['server'] = {}
             response['server'][this_id] = ovpn_status(filename)

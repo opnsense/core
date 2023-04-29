@@ -93,5 +93,265 @@
                 </description>
             </Overwrite>
         </Overwrites>
+        <Instances>
+            <Instance type=".\InstanceField">
+                <vpnid type=".\VPNIdField">
+                    <Required>Y</Required>
+                </vpnid>
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <dev_type type="OptionField">
+                    <Required>Y</Required>
+                    <default>tun</default>
+                    <OptionValues>
+                        <tun>tun</tun>
+                        <tap>tap</tap>
+                    </OptionValues>
+                </dev_type>
+                <verb type="OptionField">
+                    <Required>Y</Required>
+                    <default>3</default>
+                    <OptionValues>
+                        <o0 value="0">0 (No output except fatal errors.)</o0>
+                        <o1 value="1">1 (Normal)</o1>
+                        <o2 value="2">2 (Normal)</o2>
+                        <o3 value="3">3 (Normal)</o3>
+                        <o4 value="4">4 (Normal)</o4>
+                        <o5 value="5">5 (log packets)</o5>
+                        <o6 value="6">6 (debug)</o6>
+                        <o7 value="7">7 (debug)</o7>
+                        <o8 value="8">8 (debug)</o8>
+                        <o9 value="9">9 (debug)</o9>
+                        <o10 value="10">10 (debug)</o10>
+                        <o11 value="11">11 (debug)</o11>
+                    </OptionValues>
+                </verb>
+                <proto type="OptionField">
+                    <Required>Y</Required>
+                    <default>udp</default>
+                    <OptionValues>
+                        <udp>UDP</udp>
+                        <udp4>UDP (IPv4)</udp4>
+                        <udp6>UDP (IPv6)</udp6>
+                        <tcp>TCP</tcp>
+                        <tcp4>TCP (IPv4)</tcp4>
+                        <tcp6>TCP (IPv6)</tcp6>
+                    </OptionValues>
+                </proto>
+                <port type="PortField">
+                </port>
+                <local type="NetworkField">
+                    <Required>N</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                </local>
+                <topology type="OptionField">
+                    <Required>Y</Required>
+                    <default>subnet</default>
+                    <OptionValues>
+                        <net30>net30</net30>
+                        <p2p>p2p</p2p>
+                        <subnet>subnet</subnet>
+                    </OptionValues>
+                </topology>
+                <remote type=".\RemoteHostField">
+                </remote>
+                <role type="OptionField">
+                    <default>server</default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <client>Client</client>
+                        <server>Server</server>
+                    </OptionValues>
+                </role>
+                <server type="NetworkField">
+                    <Required>N</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </server>
+                <server_ipv6 type="NetworkField">
+                    <Required>N</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </server_ipv6>
+                <route type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </route>
+                <push_route type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </push_route>
+                <cert type="CertificateField">
+                    <Required>N</Required>
+                    <BlankDesc>None</BlankDesc>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </cert>
+                <crl type="CertificateField">
+                    <Required>N</Required>
+                    <type>crl</type>
+                    <BlankDesc>None</BlankDesc>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </crl>
+                <verify_client_cert type="OptionField">
+                    <Required>Y</Required>
+                    <default>require</default>
+                    <OptionValues>
+                        <none>none</none>
+                        <require>required</require>
+                    </OptionValues>
+                </verify_client_cert>
+                <data-ciphers type="OptionField">
+                    <Required>N</Required>
+                    <multiple>Y</multiple>
+                    <OptionValues>
+                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                    </OptionValues>
+                </data-ciphers>
+                <data-ciphers-fallback type="OptionField">
+                    <Required>N</Required>
+                    <OptionValues>
+                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                    </OptionValues>
+                </data-ciphers-fallback>
+                <tls_key type="ModelRelationField">
+                    <Model>
+                        <host>
+                            <source>OPNsense.OpenVPN.OpenVPN</source>
+                            <items>StaticKeys.StaticKey</items>
+                            <display>mode,description</display>
+                            <display_format>[%s] %s</display_format>
+                        </host>
+                    </Model>
+                    <Required>N</Required>
+                </tls_key>
+                <authmode type="AuthenticationServerField">
+                    <Required>N</Required>
+                    <multiple>Y</multiple>
+                    <BlankDesc>None</BlankDesc>
+                    <default>Local Database</default>
+                </authmode>
+                <local_group type="AuthGroupField">
+                    <Required>N</Required>
+                </local_group>
+                <various_flags type="OptionField">
+                    <Required>N</Required>
+                    <multiple>Y</multiple>
+                    <OptionValues>
+                        <client-to-client>client-to-client</client-to-client>
+                        <duplicate-cn>duplicate-cn</duplicate-cn>
+                        <passtos>passtos</passtos>
+                        <persist-remote-ip>persist-remote-ip</persist-remote-ip>
+                        <route-nopull>route-nopull</route-nopull>
+                        <route-noexec>route-noexec</route-noexec>
+                        <remote-random>remote-random</remote-random>
+                    </OptionValues>
+                </various_flags>
+                <username_as_common_name type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </username_as_common_name>
+                <strictusercn type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </strictusercn>
+                <username type="TextField">
+                </username>
+                <password  type="TextField">
+                </password>
+                <maxclients  type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </maxclients>
+                <keepalive_interval type="IntegerField">
+                    <default>10</default>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </keepalive_interval>
+                <keepalive_timeout type="IntegerField">
+                    <default>60</default>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </keepalive_timeout>
+                <reneg-sec type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>N</Required>
+                </reneg-sec>
+                <auth-gen-token type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <Required>N</Required>
+                </auth-gen-token>
+                <redirect_gateway type="OptionField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <local value="local">local</local>
+                        <autolocal value="autolocal">autolocal</autolocal>
+                        <def1>default</def1>
+                        <bypass_dhcp value="bypass-dhcp">bypass dhcp</bypass_dhcp>
+                        <bypass_dns value="bypass-dns">bypass dns</bypass_dns>
+                        <block_local value="block-local">block local</block_local>
+                        <ipv6 value="ipv6">ipv6 (default)</ipv6>
+                        <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
+                    </OptionValues>
+                </redirect_gateway>
+                <register_dns type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </register_dns>
+                <dns_domain type="HostnameField">
+                    <Required>N</Required>
+                </dns_domain>
+                <dns_domain_search type="HostnameField">
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <AsList>Y</AsList>
+                </dns_domain_search>
+                <dns_servers type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </dns_servers>
+                <ntp_servers type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </ntp_servers>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </Instance>
+        </Instances>
+        <StaticKeys>
+            <StaticKey type="ArrayField">
+                <mode type="OptionField">
+                    <Required>Y</Required>
+                    <default>crypt</default>
+                    <OptionValues>
+                        <auth>auth (Authenticate control channel packets)</auth>
+                        <crypt>crypt (Encrypt and authenticate all control channel packets)</crypt>
+                    </OptionValues>
+                </mode>
+                <key type="TextField">
+                    <Required>Y</Required>
+                    <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
+                </key>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
+            </StaticKey>
+        </StaticKeys>
     </items>
 </model>

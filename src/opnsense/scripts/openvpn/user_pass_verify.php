@@ -33,22 +33,6 @@ require_once("util.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-/**
- * @param string $serverid server identifier
- * @return array|null openvpn server properties
- */
-function get_openvpn_server($serverid)
-{
-    global $config;
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $server) {
-            if ($server['vpnid'] == $serverid) {
-                return $server;
-            }
-        }
-    }
-    return null;
-}
 
 /**
  * Parse provisioning properties supplied by the authenticator
@@ -108,7 +92,7 @@ function do_auth($common_name, $serverid, $method, $auth_file)
             }
         }
     }
-    $a_server = $serverid !== null ? get_openvpn_server($serverid) : null;
+    $a_server = $serverid !== null ? (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($serverid, 'server') : null;
     if ($a_server == null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     } elseif (!empty($a_server['strictusercn']) && $username != $common_name) {

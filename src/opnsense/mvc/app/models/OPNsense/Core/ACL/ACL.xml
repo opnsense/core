@@ -747,6 +747,13 @@
             <pattern>api/openvpn/client_overwrites/*</pattern>
         </patterns>
     </page-openvpn-csc>
+    <page-openvpn-instances>
+        <name>VPN: OpenVPN: Instances</name>
+        <patterns>
+            <pattern>ui/openvpn/instances</pattern>
+            <pattern>api/openvpn/instances/*</pattern>
+        </patterns>
+    </page-openvpn-instances>
     <page-openvpn-server>
         <name>VPN: OpenVPN: Server</name>
         <patterns>

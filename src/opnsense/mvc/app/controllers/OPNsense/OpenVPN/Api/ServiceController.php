@@ -31,6 +31,7 @@ namespace OPNsense\OpenVPN\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\OpenVPN\OpenVPN;
 
 /**
  * Class ServiceController
@@ -46,9 +47,18 @@ class ServiceController extends ApiControllerBase
         if (!empty($config->openvpn->$cnf_section)) {
             foreach ($config->openvpn->$cnf_section as $cnf) {
                 if (!empty((string)$cnf->vpnid)) {
-                    $config_payload[(string)$cnf->vpnid] = $cnf;
+                    $config_payload[(string)$cnf->vpnid] = [
+                        'description' => (string)$cnf->description ?? '',
+                        'enabled' => empty((string)$cnf->disable) ? '1' : '0'
+                    ];
                 }
             }
+        }
+        foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node){
+            $config_payload[$node_uuid] = [
+                'enabled' => (string)$node->enabled,
+                'description' => (string)$node->description
+            ];
         }
         return $config_payload;
     }
@@ -79,7 +89,7 @@ class ServiceController extends ApiControllerBase
                         $stats['connected_since'] = date('Y-m-d H:i:s', $stats['timestamp']);
                     }
                     if (!empty($config_payload[$idx])) {
-                        $stats['description'] = (string)$config_payload[$idx]->description ?? '';
+                        $stats['description'] = (string)$config_payload[$idx]['description'];
                     }
                     if (!empty($stats['client_list'])) {
                         foreach ($stats['client_list'] as $client) {
@@ -95,12 +105,12 @@ class ServiceController extends ApiControllerBase
             }
             // add non running enabled servers
             foreach ($config_payload as $idx => $cnf) {
-                if (!in_array($idx, $vpnids) && empty((string)$cnf->disable)) {
+                if (!in_array($idx, $vpnids) && !empty($cnf['enabled'])) {
                     $records[] = [
                         'id' => $idx,
                         'service_id' =>  "openvpn/" . $idx,
                         'type' => $role,
-                        'description' => (string)$cnf->description ?? '',
+                        'description' => $cnf['description'],
                     ];
                 }
             }
@@ -189,7 +199,7 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service start', ['openvpn', $id]);
+        (new Backend())->configdpRun('service start', ['openvpn', $id]);
 
         return ['result' => 'ok'];
     }
@@ -206,7 +216,7 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service stop', ['openvpn', $id]);
+        (new Backend())->configdpRun('service stop', ['openvpn', $id]);
 
         return ['result' => 'ok'];
     }
@@ -223,7 +233,24 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service restart', ['openvpn', $id]);
+        (new Backend())->configdpRun('service restart', ['openvpn', $id]);
+
+        return ['result' => 'ok'];
+    }
+
+    /**
+     * @param int $id server/client id to restart
+     * @return array
+     */
+    public function reconfigureAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+
+        $this->sessionClose();
+
+        (new Backend())->configdpRun('openvpn configure');
 
         return ['result' => 'ok'];
     }
