@@ -348,6 +348,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
+    if (!empty($config['system']['pfdebug'])) {
+        $limitrules .= "set debug {$config['system']['pfdebug']}\n";
+    }
+
+    if (!empty($config['system']['keepcounters'])) {
+        $limitrules .= "set keepcounters\n";
+    }
+
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
