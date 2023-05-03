@@ -371,7 +371,7 @@ function unbound_configure_do($verbose = false, $unused = '')
         }
     }
 
-    if (isset($config['unbound']['stats'])) { /* XXX */
+    if (!empty((string)$mdl->general->stats)) {
         @touch('/var/unbound/data/stats');
     } else {
         @unlink('/var/unbound/data/stats');
