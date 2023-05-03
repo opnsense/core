@@ -61,6 +61,10 @@ class Alias extends BaseModel
         $sources[] = [['filter', 'rule'], ['destination', 'address']];
         $sources[] = [['filter', 'rule'], ['source', 'port']];
         $sources[] = [['filter', 'rule'], ['destination', 'port']];
+        $sources[] = [['filter', 'scrub', 'rule'], ['dst']];
+        $sources[] = [['filter', 'scrub', 'rule'], ['src']];
+        $sources[] = [['filter', 'scrub', 'rule'], ['dstport']];
+        $sources[] = [['filter', 'scrub', 'rule'], ['srcport']];
         $sources[] = [['nat', 'rule'], ['source', 'address']];
         $sources[] = [['nat', 'rule'], ['source', 'port']];
         $sources[] = [['nat', 'rule'], ['destination', 'address']];
