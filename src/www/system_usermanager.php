@@ -499,10 +499,11 @@ $( document ).ready(function() {
                 // only generate a key file if there's data
                 const output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
                 // create link, click and send to client
+                let filename = '<?=html_safe(sprintf('%s.%s_apikey.txt', $config['system']['hostname'], $config['system']['domain']));?>';
                 $('<a></a>')
                         .attr('id','downloadFile')
                         .attr('href','data:text/plain;charset=utf8,' + encodeURIComponent(output_data))
-                        .attr('download','apikey.txt')
+                        .attr('download', filename)
                         .appendTo('body');
 
                 $('#downloadFile').ready(function() {
