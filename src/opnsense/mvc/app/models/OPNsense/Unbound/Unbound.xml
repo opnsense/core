@@ -199,7 +199,7 @@
                 <default>allow</default>
                 <Required>Y</Required>
                 <OptionValues>
-                    <opt1 value="allow">Allow (Default)</opt1>
+                    <opt1 value="allow">Allow</opt1>
                     <opt2 value="deny">Deny</opt2>
                     <opt3 value="refuse">Refuse</opt3>
                 </OptionValues>
