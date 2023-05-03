@@ -108,5 +108,6 @@ class M1_0_6 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
         unset($config->unbound->acls);
+        unset($config->unbound);
     }
 }

@@ -36,12 +36,12 @@ require_once("system.inc");
 require_once("plugins.inc.d/unbound.inc");
 
 $rrdcfg = &config_read_array('rrd');
-$unboundcfg = &config_read_array('unbound');
+$unboundcfg = &config_read_array('OPNsense', 'unboundplus', 'general');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
     $pconfig['rrdenable'] = isset($rrdcfg['enable']);
-    $pconfig['unboundenable'] = isset($unboundcfg['stats']);
+    $pconfig['unboundenable'] = !empty($unboundcfg['stats']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $configure_unbound = false;
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         configd_run('netflow aggregate repair', true);
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "SaveDNS") {
         $configure_unbound = true;
-        $unboundcfg['stats'] = !empty($pconfig['unboundenable']);
+        $unboundcfg['stats'] = !empty($pconfig['unboundenable']) ? '1' : '0';
         $savemsg = get_std_save_message();
         write_config();
     } elseif (!empty($pconfig['action']) && $pconfig['action'] == "ResetDNS") {
