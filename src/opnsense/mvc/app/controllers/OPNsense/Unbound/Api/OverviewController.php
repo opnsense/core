@@ -40,7 +40,7 @@ class OverviewController extends ApiControllerBase
         $this->sessionClose();
         $config = Config::getInstance()->object();
         return [
-            'enabled' => isset($config->unbound->stats) ? 1 : 0
+            'enabled' => (new \OPNsense\Unbound\Unbound())->getNodes()['general']['stats']
         ];
     }
 
