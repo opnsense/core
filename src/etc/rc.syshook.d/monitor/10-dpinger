@@ -35,6 +35,6 @@ fi
 /usr/bin/logger -t dpinger "GATEWAY ALARM: ${GATEWAY} (Addr: ${2} Alarm: ${3} RTT: ${4}us RTTd: ${5}us Loss: ${6}%)"
 
 echo -n "Reloading routes/filter: "
-/usr/local/bin/flock -n -E 0 -o /tmp/filter_reload_gateway.lock configctl routes configure
+/usr/local/bin/flock -n -E 0 -o /tmp/filter_reload_gateway.lock configctl interface routes configure
 
 exit 0
