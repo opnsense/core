@@ -486,6 +486,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     if ($device_only || isset($settings['disable'])) {
         return;
     }
+    mwexecf('/sbin/ifconfig %s down', array($devname));
 
     $proto = strtolower($settings['protocol']);
     if (substr($settings['protocol'], 0, 3) == "TCP") {
