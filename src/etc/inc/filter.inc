@@ -356,7 +356,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set keepcounters\n";
     }
 
-
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
