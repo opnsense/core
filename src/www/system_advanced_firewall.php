@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
     $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
     $pconfig['keepcounters'] = !empty($config['system']['keepcounters']);
-    $pconfig['pfdebug'] = !empty($config['system']['pfdebug']) ?  $config['system']['pfdebug'] : 'misc';
+    $pconfig['pfdebug'] = !empty($config['system']['pfdebug']) ?  $config['system']['pfdebug'] : 'urgent';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
