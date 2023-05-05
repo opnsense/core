@@ -35,6 +35,8 @@ require_once 'filter.inc';
 
 exit_on_bootup();
 
+$want_monitor = empty($argv[1]);
+
 // drop deleted routes
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     $network = trim(file_get_contents($filename));
@@ -43,5 +45,5 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     unlink($filename);
 }
 
-system_routing_configure(true);
+system_routing_configure(true, null, $want_monitor);
 filter_configure_sync(true, false);
