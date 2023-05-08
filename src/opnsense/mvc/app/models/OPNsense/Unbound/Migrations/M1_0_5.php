@@ -42,6 +42,9 @@ class M1_0_5 extends BaseModelMigration
                 if ($key == 'port' && empty($config->unbound->port)) {
                     $model->general->port->applyDefault();
                     continue;
+                } elseif (in_array($key, ['dnssec', 'enable'])) {
+                    $new[$key] = empty($config->unbound->$key) ? 0 : 1;
+                    continue;
                 }
                 $new[$key] = $config->unbound->$key;
             }
