@@ -140,7 +140,14 @@ class VipSettingsController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = [];
-        if ($node != null && explode('/', $_POST['vip']['network'])[0] != (string)$node->subnet) {
+        $post_subnet = '';
+        $post_interface = '';
+        if (isset($_POST['vip'])) {
+            $post_subnet = !empty($_POST['vip']['network']) ? explode('/', $_POST['vip']['network'])[0] : '';
+            $post_interface = !empty($_POST['vip']['interface']) ? $_POST['vip']['interface'] : '';
+        }
+
+        if ($node != null && $post_subnet != (string)$node->subnet) {
             $validations = $this->getModel()->whereUsed((string)$node->subnet);
             if (!empty($validations)) {
                 // XXX a bit unpractical, but we can not validate previous values from the model so
@@ -151,9 +158,10 @@ class VipSettingsController extends ApiMutableModelControllerBase
                         'vip.network' => array_slice($validations, 0, 2)
                     ]
                 ];
-            } elseif (!file_exists("/tmp/delete_vip_{$uuid}.todo")) {
-                file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
             }
+        }
+        if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
         }
 
         return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
@@ -186,8 +194,8 @@ class VipSettingsController extends ApiMutableModelControllerBase
             throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
         }
         $response = $this->delBase("vip", $uuid);
-        if (($response['result'] ?? '') == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+        if (($response['result'] ?? '') == 'deleted') {
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
         }
         return $response;
     }
