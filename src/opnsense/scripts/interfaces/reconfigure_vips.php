@@ -60,12 +60,13 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
 
 // remove deleted vips
 foreach (glob("/tmp/delete_vip_*.todo") as $filename) {
-    $address = trim(file_get_contents($filename));
-    if (isset($addresses[$address])) {
-        legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
-    } else {
-        // not found, likely proxy arp
-        $anyproxyarp = true;
+    foreach (array_unique(explode("\n", trim(file_get_contents($filename)))) as $address) {
+        if (isset($addresses[$address])) {
+            legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
+        } else {
+            // not found, likely proxy arp
+            $anyproxyarp = true;
+        }
     }
     unlink($filename);
 }
