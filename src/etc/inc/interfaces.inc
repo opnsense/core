@@ -2787,12 +2787,10 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $dhcp6cscript = <<<EOF
 #!/bin/sh
-if [ -n "{$dhcp6_debug}" ]; then
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
-fi
+
 case \$REASON in
 INFOREQ|REQUEST)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
@@ -2811,13 +2809,16 @@ INFOREQ|REQUEST)
     /usr/local/sbin/configctl -d interface newipv6 {$wanif} \${FORCE}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
+    if [ -n "{$dhcp6_debug}" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
+    fi
     ;;
 esac
 
