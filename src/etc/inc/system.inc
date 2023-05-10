@@ -619,7 +619,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 
         if (isset($config['system']['gw_switch_default']) || empty($interface) || $interface == $gateway['interface']) {
             if (empty($ifdetails[$gateway['if']][$type][0])) {
-                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}", LOG_ERR);
+                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}({$gateway['if']})", LOG_ERR);
                 continue;
             }
 
