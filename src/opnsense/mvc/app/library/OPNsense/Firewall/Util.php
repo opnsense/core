@@ -340,6 +340,16 @@ class Util
     }
 
     /**
+     * convert ipv4 cidr to netmask e.g. 24 --> 255.255.255.0
+     * @param int $bits ipv4 bits
+     * @return string netmask
+     */
+    public static function CIDRToMask($bits)
+    {
+        return long2ip(0xFFFFFFFF << (32 - $bits));
+    }
+
+    /**
      * Find the smallest possible subnet mask for given IP range
      * @param array ips (start, end)
      * @return int smallest mask
