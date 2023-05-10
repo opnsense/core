@@ -126,6 +126,7 @@ CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2023
 
 CORE_DEPENDS_amd64?=	beep \
+			py${CORE_PYTHON}-duckdb \
 			suricata
 
 CORE_DEPENDS?=		ca_root_nss \
@@ -174,7 +175,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			pkg \
 			py${CORE_PYTHON}-Jinja2 \
 			py${CORE_PYTHON}-dnspython \
-			py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-netaddr \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
