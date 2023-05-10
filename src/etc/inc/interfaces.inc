@@ -2801,7 +2801,11 @@ INFOREQ|REQUEST)
         ARGS="\${ARGS} -a \${DOMAIN}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
-    /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
+    ARGS=
+    for PD in \${PDINFO}; do
+        ARGS="\${ARGS} -a \${PD}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
     FORCE=
     if [ \${REASON} = "REQUEST" ]; then
         FORCE=force
