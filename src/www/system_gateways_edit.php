@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             if (is_ipaddr($pconfig['gateway'])) {
-                if (!empty($gateway['name']) && $pconfig['gateway'] == $gateway['gateway'] && $gateway['attribute'] !== "system") {
+                if (!empty($gateway['gateway']) && $pconfig['gateway'] == $gateway['gateway'] && $gateway['attribute'] !== "system") {
                     $input_errors[] = sprintf(gettext('The gateway IP address "%s" already exists.'), $pconfig['gateway']);
                     break;
                 }
