@@ -283,7 +283,7 @@ include("head.inc");
 <?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
                       <td><?= gettext('IPv6 delegated prefix') ?></td>
-                      <td><?= $ifinfo['prefixv6'] ?></td>
+                      <td><?= implode('<br />', $ifinfo['prefixv6']) ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
@@ -297,10 +297,7 @@ include("head.inc");
                     if (count($dnsall)): ?>
                     <tr>
                       <td><?= gettext("DNS servers") ?></td>
-                      <td>
-<?php
-                          echo implode('<br />', $dnsall); ?>
-                      </td>
+                      <td><?= implode('<br />', $dnsall) ?></td>
                     </tr>
 <?php
                     endif;

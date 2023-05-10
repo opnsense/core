@@ -3908,7 +3908,7 @@ function get_interfaces_info($include_unlinked = false)
 
             $aux = shell_safe('/usr/local/sbin/ifctl -6pi %s', $ifinfo['ifv6']);
             if (!empty($aux)) {
-                $ifinfo['prefixv6'] = $aux;
+                $ifinfo['prefixv6'] = explode("\n", $aux);
             }
         }
 
