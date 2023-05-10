@@ -56,8 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     /* skip system gateways which have been automatically added */
-    if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway']) &&
-        $pconfig['attribute'] !== "system" && $pconfig['gateway'] != "dynamic") {
+    if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway']) && is_numeric($pconfig['attribute']) && $pconfig['gateway'] != 'dynamic') {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
 
@@ -175,23 +174,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 continue;
             }
-            if (!empty($pconfig['name'])) {
-                if (!empty($gateway['name']) && $pconfig['name'] == $gateway['name'] && $gateway['attribute'] !== "system") {
-                    $input_errors[] = sprintf(gettext('The gateway name "%s" already exists.'), $pconfig['name']);
-                    break;
-                }
+            if (!is_numeric($gateway['attribute'])) {
+                /* no checks for automatic gateways */
+                continue;
             }
-            if (is_ipaddr($pconfig['gateway'])) {
-                if (!empty($gateway['gateway']) && $pconfig['gateway'] == $gateway['gateway'] && $gateway['attribute'] !== "system") {
-                    $input_errors[] = sprintf(gettext('The gateway IP address "%s" already exists.'), $pconfig['gateway']);
-                    break;
-                }
+            if (!empty($pconfig['name']) && !empty($gateway['name']) && $pconfig['name'] == $gateway['name']) {
+                $input_errors[] = sprintf(gettext('The gateway name "%s" already exists.'), $pconfig['name']);
+                break;
             }
-            if (is_ipaddr($pconfig['monitor'])) {
-                if (!empty($gateway['monitor']) && $pconfig['monitor'] == $gateway['monitor'] && $gateway['attribute'] !== "system") {
-                    $input_errors[] = sprintf(gettext('The monitor IP address "%s" is already in use. You must choose a different monitor IP.'), $pconfig['monitor']);
-                    break;
-                }
+            if (is_ipaddr($pconfig['gateway']) && !empty($gateway['gateway']) && $pconfig['gateway'] == $gateway['gateway']) {
+                $input_errors[] = sprintf(gettext('The gateway IP address "%s" already exists.'), $pconfig['gateway']);
+                break;
+            }
+            if (is_ipaddr($pconfig['monitor']) && !empty($gateway['monitor']) && $pconfig['monitor'] == $gateway['monitor']) {
+                $input_errors[] = sprintf(gettext('The monitor IP address "%s" is already in use.'), $pconfig['monitor']);
+                break;
             }
         }
     }
@@ -471,11 +468,9 @@ $( document ).ready(function() {
       <section class="col-xs-12">
         <div class="content-box  table-responsive">
             <form method="post" name="iform" id="iform">
-<?php
-            if ($pconfig['attribute'] == "system" || is_numeric($pconfig['attribute'])):?>
-              <input type='hidden' name='attribute' id='attribute' value="<?=$pconfig['attribute'];?>"/>
-<?php
-            endif;?>
+<?php if (is_numeric($pconfig['attribute'])): ?>
+              <input type="hidden" name="attribute" id="attribute" value="<?= html_safe($pconfig['attribute']) ?>"/>
+<?php endif ?>
               <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td style="width:22%"><?=gettext("Edit gateway");?></td>
