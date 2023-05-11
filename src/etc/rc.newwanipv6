@@ -74,7 +74,7 @@ $cacheip_file = "/tmp/{$device}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));
 
 if ($force == 'no' && $ip == $cacheip) {
-    log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
+    log_msg("No IP change detected (current: {$ip}, interface: {$interface_descr}[{$interface}])", LOG_INFO);
     return;
 }
 
