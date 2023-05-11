@@ -2763,7 +2763,6 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
-    $dhcp6_debug = $syscfg['dhcp6_debug'] ?? '';
 
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
@@ -2820,9 +2819,7 @@ EXIT|RELEASE)
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
-    if [ -n "{$dhcp6_debug}" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
-    fi
+    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} (ignored)"
     ;;
 esac
 
