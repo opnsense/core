@@ -2815,7 +2815,7 @@ INFOREQ|REBIND|RENEW|REQUEST)
     if [ \${REASON} = "REQUEST" ]; then
         /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (REASON)"
         FORCE=force
-    elif [ "\${PDOLD}" != "\${PDNEW}" ]; then
+    elif [ \${REASON} != "INFOREQ" -a "\${PDOLD}" != "\${PDNEW}" ]; then
         /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (PDINFO)"
         FORCE=force
     fi
