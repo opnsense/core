@@ -2788,38 +2788,51 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 #!/bin/sh
 
 case \$REASON in
-INFOREQ|REQUEST)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
+INFOREQ|REBIND|RENEW|REQUEST)
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} executing"
+
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+
     ARGS=
     for DOMAIN in \${new_domain_name}; do
         ARGS="\${ARGS} -a \${DOMAIN}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
+
+    PDOLD=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
     ARGS=
     for PD in \${PDINFO}; do
         ARGS="\${ARGS} -a \${PD}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
+    PDNEW=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
+
     FORCE=
     if [ \${REASON} = "REQUEST" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (REASON)"
+        FORCE=force
+    elif [ "\${PDOLD}" != "\${PDNEW}" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (PDINFO)"
         FORCE=force
     fi
+
     /usr/local/sbin/configctl -d interface newipv6 {$wanif} \${FORCE}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} executing"
+
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
+
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} (ignored)"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} ignored"
     ;;
 esac
 
