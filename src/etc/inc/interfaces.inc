@@ -2763,7 +2763,6 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     $wanif = get_real_interface($interface, 'inet6');
     $id = interface_dhcpv6_id($interface);
     $syscfg = config_read_array('system');
-    $dhcp6_debug = $syscfg['dhcp6_debug'] ?? '';
 
     if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
@@ -2787,37 +2786,53 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
 
     $dhcp6cscript = <<<EOF
 #!/bin/sh
-if [ -n "{$dhcp6_debug}" ]; then
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif}"
-fi
+
 case \$REASON in
-INFOREQ|REQUEST)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+INFOREQ|REBIND|RENEW|REQUEST)
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} executing"
+
     ARGS=
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+
     ARGS=
     for DOMAIN in \${new_domain_name}; do
         ARGS="\${ARGS} -a \${DOMAIN}"
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
-    /usr/local/sbin/ifctl -i ${wanif} -6pd \${PDINFO:+"-a \${PDINFO}"}
+
+    PDOLD=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
+    ARGS=
+    for PD in \${PDINFO}; do
+        ARGS="\${ARGS} -a \${PD}"
+    done
+    /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
+    PDNEW=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
+
     FORCE=
     if [ \${REASON} = "REQUEST" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (REASON)"
+        FORCE=force
+    elif [ \${REASON} != "INFOREQ" -a "\${PDOLD}" != "\${PDNEW}" ]; then
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (PDINFO)"
         FORCE=force
     fi
+
     /usr/local/sbin/configctl -d interface newipv6 {$wanif} \${FORCE}
     ;;
 EXIT|RELEASE)
-    /usr/bin/logger -t dhcp6c "dhcp6c \$REASON on {$wanif} - running newipv6"
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} executing"
+
     /usr/local/sbin/ifctl -i ${wanif} -6nd
     /usr/local/sbin/ifctl -i ${wanif} -6sd
     /usr/local/sbin/ifctl -i ${wanif} -6pd
+
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;
 *)
+    /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} ignored"
     ;;
 esac
 
