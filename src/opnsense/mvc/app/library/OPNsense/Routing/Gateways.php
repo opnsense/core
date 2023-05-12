@@ -241,6 +241,9 @@ class Gateways
             if (!empty($this->configHandle->gateways)) {
                 foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
                     if ($tag == "gateway_item" && !empty($gateway)) {
+                        if (in_array((string)$gateway->name, $reservednames)) {
+                            syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gateway->name . '" in config.xml needs manual removal');
+                        }
                         $reservednames[] = (string)$gateway->name;
                         $gw_arr = array();
                         foreach ($gateway as $key => $value) {
