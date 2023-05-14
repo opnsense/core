@@ -112,7 +112,12 @@ $( document ).ready(function() {
                         request['host'] = uuids.length > 0 ? uuids[0] : "__not_found__";
                         let selected = $(".host_selected");
                         uuids.length > 0 ? selected.show() : selected.hide();
-                        return request;
+                        if (request.rowCount === undefined) {
+                            // XXX: We can't easily see if we're being called by GET or POST, assume GET uri when there's no rowcount
+                            return new URLSearchParams(request).toString();
+                        } else {
+                            return request;
+                        }
                     }
                 }
             });
