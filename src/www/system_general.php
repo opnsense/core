@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
-    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'])) {
+    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'], true)) {
         $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
