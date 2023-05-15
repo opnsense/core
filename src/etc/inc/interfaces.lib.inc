@@ -327,7 +327,7 @@ function legacy_interfaces_details($intf = null)
             $tmp = [
                 'deprecated' => false,
                 'ipaddr' => $addr,
-                'link-local' => preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
+                'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
                 'tentative' => false,
                 'tunnel' => false,
             ];
