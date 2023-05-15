@@ -63,12 +63,13 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
-$opts = getopt('cdghirSs', [], $optind);
+$opts = getopt('cDdghirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -d | -g | -h | -i | -r | -S | -s] ...\n\n";
+    echo "Usage: pluginctl [-c | -D | -d | -g | -h | -i | -r | -S | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
+    echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
@@ -77,6 +78,8 @@ if (isset($opts['h'])) {
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n\n";
     echo "Without arguments, a list of plugins of the requested type is shown.\n";
+} elseif (isset($opts['D'])) {
+    echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
     foreach (plugins_devices() as $device) {
         if (empty($device['type'])) {
