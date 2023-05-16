@@ -127,6 +127,7 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
        default:
             if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
                 interface_static6_configure($interface, $config['interfaces'][$interface]);
+                system_routing_configure(false, $interface, 'inet6');
             }
             break;
     }
