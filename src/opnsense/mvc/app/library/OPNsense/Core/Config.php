@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2021 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ namespace OPNsense\Core;
 use Phalcon\Di\FactoryDefault;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
 
 /**
  * Class Config provides access to systems config xml
@@ -316,13 +317,12 @@ class Config extends Singleton
             $this->simplexml = null;
             // there was an issue with loading the config, try to restore the last backup
             $backups = $this->getBackups();
+            $adapter = new Syslog('audit', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
+            $adapter->setFormatter(new Line('%message%'));
             $logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog("config", array(
-                        'option' => LOG_PID,
-                        'facility' => LOG_LOCAL4
-                    ))
+                    'main' => $adapter
                 ]
             );
             if (count($backups) > 0) {
@@ -331,6 +331,7 @@ class Config extends Singleton
                 foreach ($backups as $backup) {
                     try {
                         $this->restoreBackup($backup);
+                        $logger->error("restored " . $backup);
                         return;
                     } catch (ConfigException $e) {
                         $logger->error("failed restoring " . $backup);
@@ -363,23 +364,33 @@ class Config extends Singleton
      */
     private function loadFromStream($fp)
     {
-        fseek($fp, 0);
-        $xml = stream_get_contents($fp);
-        if (trim($xml) == '') {
-            throw new ConfigException('empty file');
+        /**
+         * load data from stream in shared mode unless no valid xml data is returned
+         * (in which case the writer holds a lock and we should wait for it [LOCK_SH])
+         */
+        foreach ([LOCK_SH | LOCK_NB, LOCK_SH] as $idx => $mode) {
+            flock($fp, $mode);
+            fseek($fp, 0);
+            $xml = trim(stream_get_contents($fp));
+            set_error_handler(
+                function () {
+                    // reset simplexml pointer on parse error.
+                    $result = null;
+                }
+            );
+
+            $result = simplexml_load_string($xml);
+            restore_error_handler();
+            flock($fp, LOCK_UN);
+            if ($result != null) {
+                break; // successful load
+            }
         }
 
-        set_error_handler(
-            function () {
-                // reset simplexml pointer on parse error.
-                $result = null;
-            }
-        );
-
-        $result = simplexml_load_string($xml);
-
-        restore_error_handler();
         if ($result == null) {
+            if (empty($xml)) {
+                throw new ConfigException('empty file');
+            }
             throw new ConfigException("invalid config xml");
         } else {
             return $result;
@@ -575,6 +586,21 @@ class Config extends Singleton
     }
 
     /**
+     * Overwrite current config with contents of new file
+     * @param $filename
+     */
+    private function overwrite($filename)
+    {
+        $fhandle = fopen($this->config_file, "r+");
+        if (flock($fhandle, LOCK_EX)) {
+            fseek($fhandle, 0);
+            ftruncate($fhandle, 0);
+            fwrite($fhandle, file_get_contents($filename));
+            fclose($fhandle);
+        }
+    }
+
+    /**
      * restore and load backup config
      * @param $filename
      * @return bool  restored, valid config loaded
@@ -589,7 +615,7 @@ class Config extends Singleton
             $config_file_handle = $this->config_file_handle;
             try {
                 // try to restore config
-                copy($filename, $this->config_file);
+                $this->overwrite($filename);
                 $this->load();
                 return true;
             } catch (ConfigException $e) {
@@ -602,7 +628,7 @@ class Config extends Singleton
             }
         } else {
             // we don't have a valid config loaded, just copy and load the requested one
-            copy($filename, $this->config_file);
+            $this->overwrite($filename);
             $this->load();
             return true;
         }
@@ -681,13 +707,12 @@ class Config extends Singleton
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
                     // Although we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
+                    $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
+                    $adapter->setFormatter(new Line('%message%'));
                     $logger = new Logger(
                         'messages',
                         [
-                            'main' => new Syslog("config", array(
-                                'option' => LOG_PID,
-                                'facility' => LOG_LOCAL5
-                            ))
+                            'main' => $adapter
                         ]
                     );
                     $logger->info("config-event: new_config " . $backup_filename);
