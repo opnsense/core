@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
 use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
@@ -555,10 +556,12 @@ abstract class BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
+        $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
+        $adapter->setFormatter(new Line('%message%'));
         $logger = new Logger(
             'messages',
             [
-                'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                'main' => $adapter
             ]
         );
 
@@ -647,12 +650,15 @@ abstract class BaseModel
         } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
             $migObjects = array();
+            $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
+            $adapter->setFormatter(new Line('%message%'));
             $logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                    'main' => $adapter
                 ]
             );
+
             $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();
