@@ -4362,11 +4362,12 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
     return [ $ifcfgip, $network, $subnetbits ];
 }
 
-function interfaces_primary_address6($interface, $ifconfig_details = null)
+/* XXX rename "primary" to "routed" as that is what it is */
+function interfaces_primary_address6($interface, $ifconfig_details = null, $allow_track = true)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
 
-    if (interfaces_has_prefix_only($interface)) {
+    if (interfaces_has_prefix_only($interface) && $allow_track) {
         /* extend the search scope for a non-NA mode to tracking interfaces */
         $interface = array_merge([$interface], array_keys(link_interface_to_track6($interface)));
     }
@@ -4403,6 +4404,7 @@ function interfaces_scoped_address6($interface, $ifconfig_details = null)
     return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
 }
 
+/* XXX rename "prefix" to "primary" as that is what it is */
 function interfaces_prefix_address6($interface, $ifconfig_details = null)
 {
     $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
@@ -4411,5 +4413,5 @@ function interfaces_prefix_address6($interface, $ifconfig_details = null)
         return interfaces_scoped_address6($interface, $ifconfig_details);
     }
 
-    return interfaces_primary_address6($interface, $ifconfig_details);
+    return interfaces_primary_address6($interface, $ifconfig_details, false);
 }
