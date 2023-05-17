@@ -115,8 +115,8 @@ class TheGreenBow extends BaseExporter implements IExportProvider
         }
 
         $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->Cipher = $this->config['crypto'];
-        preg_match_all('!\d+!', $this->config['crypto'], $matches);
-        if (!empty($matches)) {
+        preg_match_all('!\d+!', $this->config['crypto'] ?? '', $matches);
+        if (!empty($matches) && !empty($matches[0][0])) {
             $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->CipherKeySize = $matches[0][0];
         } else {
             $output->cfg_ssl->cfg_sslconnection->cfg_tunneloptions->CipherKeySize = "auto";
@@ -183,10 +183,8 @@ class TheGreenBow extends BaseExporter implements IExportProvider
             $output->cfg_ssl->cfg_sslconnection->authentication->certificate[0]->private_key =
                 "\n" . $this->config['client_prv'];
             // server CA-chain
-            $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = "\n" . implode(
-                "\n",
-                $this->config['server_ca_chain']
-            );
+            $tmp = $this->config['server_ca_chain'];
+            $output->cfg_ssl->cfg_sslconnection->authentication->certificate[1]->public_key = $tmp;
         }
 
         // export to DOM to reformat+pretty-print output

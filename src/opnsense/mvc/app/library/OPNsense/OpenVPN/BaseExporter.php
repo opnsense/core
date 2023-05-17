@@ -51,7 +51,7 @@ abstract class BaseExporter
      * @param string $crt X.509 certificate
      * @param string $prv PEM formatted private key
      * @param string $pass password
-     * @param array|null $cas list of CA-certificates
+     * @param string|null $cas list of CA-certificates
      * @return string pkcs12
      */
     protected function export_pkcs12($crt, $prv, $pass = '', $cas = null)
@@ -61,8 +61,19 @@ abstract class BaseExporter
         $prv = openssl_get_privatekey($prv);
         $args = [];
         if ($cas !== null) {
+            $p12_cas = null;
+            // split certificate list into separate certs
+            preg_match_all(
+                '/(-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----)/si',
+                $cas,
+                $matches
+            );
+            if (!empty($matches) && !empty($matches[0])) {
+                $p12_cas = $matches[0];
+            }
+
             $args = [
-                'extracerts' => $cas
+                'extracerts' => $p12_cas
             ];
         }
         openssl_pkcs12_export($crt, $p12, $prv, $pass, $args);

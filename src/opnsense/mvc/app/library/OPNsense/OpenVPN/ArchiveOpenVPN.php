@@ -80,8 +80,8 @@ class ArchiveOpenVPN extends PlainOpenVPN
                 $p12 = $this->export_pkcs12(
                     $this->config['client_crt'],
                     $this->config['client_prv'],
-                    !empty($this->config['p12_password']) ? $this->config['p12_password'] : '',
-                    !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : ''
+                    $this->config['p12_password'] ?? '',
+                    $this->config['server_ca_chain'] ?? ''
                 );
 
                 file_put_contents("{$content_dir}/{$base_filename}.p12", $p12);
@@ -91,7 +91,7 @@ class ArchiveOpenVPN extends PlainOpenVPN
             // use internal Windows store, only flush ca (when available)
             if (!empty($this->config['server_ca_chain'])) {
                 $cafilename = "{$base_filename}.crt";
-                file_put_contents("{$content_dir}/$cafilename", implode("\n", $this->config['server_ca_chain']));
+                file_put_contents("{$content_dir}/$cafilename", $this->config['server_ca_chain']);
                 $conf[] = "ca {$cafilename}";
             }
         }

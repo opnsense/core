@@ -32,6 +32,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\Trust\Store;
 use OPNsense\OpenVPN\Export;
 use OPNsense\OpenVPN\ExportFactory;
 
@@ -335,50 +336,29 @@ class ExportController extends ApiControllerBase
                     }
                 }
                 // fetch associated certificate data, add to config
-                $config['server_ca_chain'] = array();
+                $config['server_ca_chain'] = '';
                 $config['server_subject_name'] = null;
                 $config['server_cert_is_srv'] = null;
                 if (!empty($server->certref)) {
-                    if (isset(Config::getInstance()->object()->cert)) {
-                        foreach (Config::getInstance()->object()->cert as $cert) {
-                            if (isset($cert->refid) && (string)$server->certref == $cert->refid) {
-                                // extract ca_chain
-                                $item = $cert;
-                                while (($item = $this->getCA($item->caref)) != null) {
-                                    $config['server_ca_chain'][] = base64_decode((string)$item->crt);
-                                }
-                                // certificate CN
-                                $str_crt = base64_decode((string)$cert->crt);
-                                $inf_crt = openssl_x509_parse($str_crt);
-
-                                $config['server_subject_name'] = !empty($inf_crt['name']) ? $inf_crt['name'] : null;
-                                $config['server_subject'] = !empty($inf_crt['subject']) ? $inf_crt['subject'] : null;
-                                // Is server type cert
-                                $config['server_cert_is_srv'] = (
-                                    isset($inf_crt['extensions']['extendedKeyUsage']) &&
-                                    strstr($inf_crt['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
-                                    isset($inf_crt['extensions']['keyUsage']) &&
-                                    strpos($inf_crt['extensions']['keyUsage'], 'Digital Signature') !== false &&
-                                    (strpos($inf_crt['extensions']['keyUsage'], 'Key Encipherment') !== false ||
-                                        strpos($inf_crt['extensions']['keyUsage'], 'Key Agreement') !== false)
-                                );
-                            }
+                    $cert = (new Store())->getCertificate((string)$server->certref);
+                    if ($cert) {
+                        $config['server_cert_is_srv'] = $cert['is_server'];
+                        $config['server_subject_name'] = $cert['name'] ?? '';
+                        $config['server_subject'] = $cert['subject'] ?? '';
+                        if (!empty($cert['ca'])) {
+                            $config['server_ca_chain'] = $cert['ca']['crt'];
                         }
                     }
                 }
                 if ($certref !== null) {
-                    if (isset(Config::getInstance()->object()->cert)) {
-                        foreach (Config::getInstance()->object()->cert as $cert) {
-                            if (isset($cert->refid) && (string)$certref == $cert->refid) {
-                                // certificate CN
-                                $str_crt = base64_decode((string)$cert->crt);
-                                $inf_crt = openssl_x509_parse($str_crt);
-                                $config['client_cn'] = $inf_crt['subject']['CN'];
-                                $config['client_crt'] = base64_decode((string)$cert->crt);
-                                $config['client_prv'] = base64_decode((string)$cert->prv);
-                                break;
-                            }
+                    $cert = (new Store())->getCertificate((string)$server->certref);
+                    if ($cert) {
+                        if (!empty($cert['subject']) && !empty($cert['subject']['CN'])) {
+                            $config['client_cn'] = $cert['subject']['CN'];
+                            $config['client_crt'] = $cert['crt'];
+                            $config['client_prv'] = $cert['prv'];
                         }
+
                     }
                     if (empty($config['client_cn'])) {
                         throw new UserException("Client certificate not found", gettext("OpenVPN export"));

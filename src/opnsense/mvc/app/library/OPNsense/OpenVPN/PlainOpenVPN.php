@@ -175,9 +175,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         $conf = array();
         if (!empty($this->config['server_ca_chain'])) {
             $conf[] = "<ca>";
-            foreach ($this->config['server_ca_chain'] as $ca) {
-                $conf = array_merge($conf, explode("\n", trim($ca)));
-            }
+            $conf[] = $this->config['server_ca_chain'];
             $conf[] = "</ca>";
         }
 
