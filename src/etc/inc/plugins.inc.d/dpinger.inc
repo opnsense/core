@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -81,7 +81,7 @@ function dpinger_services()
 
 function dpinger_defaults()
 {
-    return array(
+    return [
         'alert_interval' => '1',
         'data_length' => '0',
         'interval' => '1',
@@ -91,7 +91,7 @@ function dpinger_defaults()
         'losshigh' => '20',
         'losslow' => '10',
         'time_period' => '60',
-    );
+    ];
 }
 
 function dpinger_configure()
@@ -183,9 +183,10 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
     $ifconfig_details = legacy_interfaces_details();
     $dpinger_default = dpinger_defaults();
+    $dpinger_instaces = dpinger_instances($ifconfig_details);
     $routes = [];
 
-    foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
+    foreach ($dpinger_instaces as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
         }
@@ -318,12 +319,16 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
-    /* use a separate script to produce the monitor alerts which runs forever */
-    mwexecf(
-        '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
-        ['/var/run/gateway_watcher.pid', 'interface routes alarm'],
-        true
-    );
+    if (count($dpinger_instaces)) {
+        /* use a separate script to produce the monitor alerts which runs forever */
+        mwexecf(
+            '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
+            ['/var/run/gateway_watcher.pid', 'interface routes alarm'],
+            true
+        );
+    } else {
+        killbypid('/var/run/gateway_watcher.pid');
+    }
 
     service_log("done.\n", $verbose);
 }
@@ -379,7 +384,7 @@ function dpinger_status()
 
         fclose($fp);
 
-        $r = array();
+        $r = [];
 
         list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
             explode(' ', preg_replace('/\n/', '', $dinfo));
