@@ -358,7 +358,7 @@ $( document ).ready(function() {
                         <?=$gateway['gateway'];?>
                       </td>
                       <td class="hidden-xs hidden-sm hidden-md">
-                        <?=$gateway['monitor'];?>
+                        <?= $gateway['monitor'] ?? '' ?>
                       </td>
                       <td class="text-nowrap hidden-xs">
                         <?= !empty($gateways_status[$gateway['name']]) ? $gateways_status[$gateway['name']]['delay'] : "~" ?>
@@ -373,7 +373,7 @@ $( document ).ready(function() {
   <?php
                       $online = gettext('Pending');
                       $gateway_label_class = 'default';
-                      if ($gateways_status[$gateway['name']]) {
+                      if (!empty($gateways_status[$gateway['name']])) {
                           $status = $gateways_status[$gateway['name']];
                           if (stristr($status['status'], 'force_down')) {
                               $online = gettext('Offline (forced)');
