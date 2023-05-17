@@ -303,11 +303,15 @@ function legacy_interfaces_details($intf = null)
             // IPv4 information
             unset($mask);
             unset($vhid);
-            for ($i = 0; $i < count($line_parts) - 1; ++$i) {
+            for ($i = 0; $i < count($line_parts); ++$i) {
                 if ($line_parts[$i] == 'netmask') {
+                    /* look-ahead due to keyword match */
                     $mask = substr_count(base_convert(hexdec($line_parts[$i + 1]), 10, 2), '1');
+                    ++$i;
                 } elseif ($line_parts[$i] == 'vhid') {
+                    /* look-ahead due to keyword match */
                     $vhid = $line_parts[$i + 1];
+                    ++$i;
                 }
             }
             if (isset($mask)) {
@@ -325,25 +329,33 @@ function legacy_interfaces_details($intf = null)
             // IPv6 information
             $addr = strtok($line_parts[1], '%');
             $tmp = [
+                'autoconf' => false,
                 'deprecated' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
                 'tentative' => false,
                 'tunnel' => false,
             ];
-            for ($i = 0; $i < count($line_parts) - 1; ++$i) {
+            for ($i = 0; $i < count($line_parts); ++$i) {
                 if ($line_parts[$i] == 'prefixlen') {
+                    /* look-ahead due to keyword match */
                     $tmp['subnetbits'] = intval($line_parts[$i + 1]);
+                    ++$i;
                 } elseif ($line_parts[$i] == 'vhid') {
+                    /* look-ahead due to keyword match */
                     $tmp['vhid'] = $line_parts[$i + 1];
+                    ++$i;
+                } elseif ($line_parts[$i] == '-->') {
+                    /* look-ahead due to keyword match */
+                    $tmp['endpoint'] = $line_parts[$i + 1];
+                    $tmp['tunnel'] = true;
+                    ++$i;
+                } elseif ($line_parts[$i] == 'autoconf') {
+                    $tmp['autoconf'] = true;
                 } elseif ($line_parts[$i] == 'deprecated') {
                     $tmp['deprecated'] = true;
                 } elseif ($line_parts[$i] == 'tentative') {
                     $tmp['tentative'] = true;
-                }
-                if ($line_parts[$i] == '-->') {
-                    $tmp['tunnel'] = true;
-                    $tmp['endpoint'] = $line_parts[$i + 1];
                 }
             }
             if (isset($tmp['subnetbits'])) {
