@@ -368,7 +368,7 @@ class Config extends Singleton
          * load data from stream in shared mode unless no valid xml data is returned
          * (in which case the writer holds a lock and we should wait for it [LOCK_EX])
          */
-        foreach ([LOCK_SH|LOCK_NB, LOCK_EX] as $idx => $mode) {
+        foreach ([LOCK_SH | LOCK_NB, LOCK_EX] as $idx => $mode) {
             flock($fp, $mode);
             fseek($fp, 0);
             $xml = trim(stream_get_contents($fp));
