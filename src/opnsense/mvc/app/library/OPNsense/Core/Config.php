@@ -366,9 +366,9 @@ class Config extends Singleton
     {
         /**
          * load data from stream in shared mode unless no valid xml data is returned
-         * (in which case the writer holds a lock and we should wait for it [LOCK_EX])
+         * (in which case the writer holds a lock and we should wait for it [LOCK_SH])
          */
-        foreach ([LOCK_SH | LOCK_NB, LOCK_EX] as $idx => $mode) {
+        foreach ([LOCK_SH | LOCK_NB, LOCK_SH] as $idx => $mode) {
             flock($fp, $mode);
             fseek($fp, 0);
             $xml = trim(stream_get_contents($fp));
@@ -586,6 +586,21 @@ class Config extends Singleton
     }
 
     /**
+     * Overwrite current config with contents of new file
+     * @param $filename
+     */
+    private function overwrite($filename)
+    {
+        $fhandle = fopen($this->config_file, "r+");
+        if (flock($fhandle, LOCK_EX)) {
+            fseek($fhandle, 0);
+            ftruncate($fhandle, 0);
+            fwrite($fhandle, file_get_contents($filename));
+            fclose($fhandle);
+        }
+    }
+
+    /**
      * restore and load backup config
      * @param $filename
      * @return bool  restored, valid config loaded
@@ -600,7 +615,7 @@ class Config extends Singleton
             $config_file_handle = $this->config_file_handle;
             try {
                 // try to restore config
-                copy($filename, $this->config_file);
+                $this->overwrite($filename);
                 $this->load();
                 return true;
             } catch (ConfigException $e) {
@@ -613,7 +628,7 @@ class Config extends Singleton
             }
         } else {
             // we don't have a valid config loaded, just copy and load the requested one
-            copy($filename, $this->config_file);
+            $this->overwrite($filename);
             $this->load();
             return true;
         }
