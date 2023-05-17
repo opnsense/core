@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2022-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -49,7 +49,11 @@ flush_routes()
 		;;
 	prefix)
 		# flush null route to delegated prefix
-		route delete -${AF} "$(cat ${FILE})"
+		for CONTENT in $(cat ${FILE}); do
+			if [ "${CONTENT##*/}" != "64" ]; then
+				route delete -${AF} "${CONTENT}"
+			fi
+		done
 		;;
 	*)
 		;;
@@ -206,12 +210,12 @@ fi
 for CONTENT in ${DO_CONTENTS}; do
 	echo "${CONTENT}" >> ${FILE}
 	# null route handling for delegated prefix
-	if [ ${MD} = "prefix" ]; then
+	if [ ${MD} = "prefix" -a "${CONTENT##*/}" != "64" ]; then
 		route add -${AF} -blackhole ${CONTENT} ::1
 	fi
 done
 
-if [ -n "${DO_COMMAND}${DO_CONTENT}" ]; then
+if [ -n "${DO_COMMAND}${DO_CONTENTS}" ]; then
 	exit 0
 fi
 
