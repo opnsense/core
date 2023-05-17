@@ -419,7 +419,7 @@ function unbound_add_host_entries($ifconfig_details)
             }
 
             list ($laddr) = interfaces_primary_address($interface, $ifconfig_details);
-            list ($laddr6) = interfaces_primary_address6($interface, $ifconfig_details);
+            list ($laddr6) = interfaces_routed_address6($interface, $ifconfig_details);
 
             foreach (['4' => $laddr, '6' => $laddr6] as $ip_version => $addr) {
                 if (empty($addr)) {

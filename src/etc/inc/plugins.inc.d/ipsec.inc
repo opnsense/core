@@ -570,7 +570,7 @@ function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
                 $mode = $idinfo['mode'];
             }
             if ($mode == 'tunnel6') {
-                list (, $network) = interfaces_primary_address6($idinfo['type']);
+                list (, $network) = interfaces_routed_address6($idinfo['type']);
                 return $network;
             } else {
                 list (, $network) = interfaces_primary_address($idinfo['type']);

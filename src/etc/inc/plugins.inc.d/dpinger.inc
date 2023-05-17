@@ -220,7 +220,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 /* link local monitor needs a link local address for the "src" part */
                 list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
             } else {
-                list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
+                list ($gwifip) = interfaces_routed_address6($gateway['interface'], $ifconfig_details);
             }
 
             if (empty($gwifip) && is_ipaddrv6($gateway['gateway'])) {

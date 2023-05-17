@@ -62,7 +62,7 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 system_resolver_configure();
 
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
-list ($ip) = interfaces_prefix_address6($interface);
+list ($ip) = interfaces_primary_address6($interface);
 
 if (!is_ipaddr($ip)) {
     /* interface is not ready */

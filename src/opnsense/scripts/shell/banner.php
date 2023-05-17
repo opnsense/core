@@ -89,7 +89,7 @@ foreach ($iflist as $ifname => $ifcfg) {
     list ($primary,, $bits) = interfaces_primary_address($ifname, $ifdetails);
     $network = "{$primary}/{$bits}";
 
-    list ($primary6,, $bits6) = interfaces_prefix_address6($ifname, $ifdetails);
+    list ($primary6,, $bits6) = interfaces_primary_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$bits6}";
 
     $tobanner = "{$ifcfg['descr']} ({$realif})";
