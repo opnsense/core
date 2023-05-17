@@ -31,6 +31,8 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
+openlog('dpinger', LOG_DAEMON, LOG_LOCAL4);
+
 $action = !empty($argv[1]) ? $argv[1] : null;
 
 $poll = 1; /* live poll interval */
@@ -46,58 +48,52 @@ while (1) {
     OPNsense\Core\Config::getInstance()->forceReload();
     $config = parse_config();
 
-    $gw_switch_default = isset($config['system']['gw_switch_default']);
     $status = return_gateways_status();
 
+    /* clear known gateways in first step to flush unknown in second step */
+    $cleanup = $mode;
+    foreach ($status as $report) {
+        unset($cleanup[$report['name']]);
+    }
+    foreach (array_keys($cleanup) as $stale) {
+        unset($mode[$stale]);
+    }
+
+    /* run main watcher pass */
     foreach ($status as $report) {
         $ralarm = false;
 
+        if ($report['loss'] == '~') {
+            /* wait for valid data before triggering an alarm */
+            continue;
+        }
+
         if (empty($mode[$report['name']])) {
             /* skip one round for baseline */
+            $mode[$report['name']] = $report['status'];
             continue;
         }
 
-        $gw_group_member = false;
-        foreach (config_read_array('gateways', 'gateway_group') as $group) {
-            foreach ($group['item'] as $item) {
-                $itemsplit = explode('|', $item);
-                if ($itemsplit[0] == $report['name']) {
-                    /* XXX consider trigger conditions later on */
-                    $gw_group_member = true;
-                    break;
-                }
-            }
-        }
-
-        /* wait for valid data before triggering an alarm */
-        if ($report['loss'] == '~') {
-            continue;
-        }
-
-        if ($gw_switch_default) {
+        if (isset($config['system']['gw_switch_default'])) {
             /* only consider down state transition in this case */
             if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status'] && ($mode[$report['name']] == 'down' || $report['status'] == 'down')) {
                 $ralarm = true;
             }
         }
 
-        if ($gw_group_member) {
-            /* consider all state transitions as they depend on individual trigger setting */
-            if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status']) {
-                $ralarm = true;
+        foreach (config_read_array('gateways', 'gateway_group') as $group) {
+            foreach ($group['item'] as $item) {
+                $itemsplit = explode('|', $item);
+                if ($itemsplit[0] == $report['name']) {
+                    /* consider all state transitions as they depend on individual trigger setting */
+                    if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status']) {
+                        /* XXX consider trigger conditions later on */
+                        $ralarm = true;
+                        break;
+                    }
+                }
             }
         }
-
-        /* XXX for testing */
-        echo sprintf(
-            "/usr/local/etc/rc.syshook monitor %s %s %s %s %s %s\n",
-            $report['name'],
-            $report['monitor'],
-            $mode[$report['name']] . ' -> ' . $report['status'],
-            $report['delay'],
-            $report['stddev'],
-            $report['loss']
-        );
 
         if ($ralarm) {
             /* raise an alarm via the rc.syshook monitor facility */
@@ -112,6 +108,22 @@ while (1) {
 
             $alarm = true;
         }
+
+        if ($mode[$report['name']] != $report['status']) {
+            syslog(LOG_NOTICE, sprintf(
+                "%s: %s (Addr: %s Alarm: %s RTT: %s RTTd: %s Loss: %s)",
+                $ralarm ? 'ALERT' : 'MONITOR',
+                $report['name'],
+                $report['monitor'],
+                $mode[$report['name']] . ' -> ' . $report['status'],
+                $report['delay'],
+                $report['stddev'],
+                $report['loss']
+            ));
+
+            /* update cached state now */
+            $mode[$report['name']] = $report['status'];
+        }
     }
 
    /* react to alarm if backend action was given */
@@ -123,9 +135,5 @@ while (1) {
         sleep($wait);
     } else {
         sleep($poll);
-    }
-
-    foreach ($status as $report) {
-        $mode[$report['name']] = $report['status'];
     }
 }
