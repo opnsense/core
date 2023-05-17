@@ -124,7 +124,7 @@ class ViscosityVisz extends PlainOpenVPN
         } else {
             // use internal Windows store, only flush ca (when available)
             if (!empty($this->config['server_ca_chain'])) {
-                file_put_contents("{$content_dir}/ca.crt",  $this->config['server_ca_chain']);
+                file_put_contents("{$content_dir}/ca.crt", $this->config['server_ca_chain']);
                 $conf[] = "ca ca.crt";
             }
         }

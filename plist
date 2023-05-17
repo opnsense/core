@@ -508,6 +508,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CrashReporterStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseValidator.php

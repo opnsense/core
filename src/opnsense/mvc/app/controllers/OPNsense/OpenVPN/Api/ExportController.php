@@ -358,7 +358,6 @@ class ExportController extends ApiControllerBase
                             $config['client_crt'] = $cert['crt'];
                             $config['client_prv'] = $cert['prv'];
                         }
-
                     }
                     if (empty($config['client_cn'])) {
                         throw new UserException("Client certificate not found", gettext("OpenVPN export"));

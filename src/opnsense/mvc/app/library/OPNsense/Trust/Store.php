@@ -125,5 +125,4 @@ class Store
         }
         return implode("\n", $chain);
     }
-
 }
