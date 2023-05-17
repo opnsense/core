@@ -633,7 +633,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         $gateways_arr = $gateways->gatewaysIndexedByName(false, true);
         foreach ($static_routes as $rtent) {
             if (empty($gateways_arr[$rtent['gateway']])) {
-                log_msg(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
+                log_msg(sprintf('ROUTING: gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];
@@ -646,7 +646,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             } elseif (is_subnetv6($rtent['network'])) {
                 $ipproto = 'inet6';
             } else {
-                log_msg(sprintf('Cannot add static route to: %s', $rtent['network']), LOG_ERR);
+                log_msg(sprintf('ROUTING: cannot add static route to "%s"', $rtent['network']), LOG_ERR);
                 continue;
             }
 
