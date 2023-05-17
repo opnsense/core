@@ -73,7 +73,8 @@ function dpinger_services()
         $pconfig['verbose'] = false;
         $pconfig['id'] = ':watcher:';
         $pconfig['locked'] = true;
-        $services[] = $pconfig;
+        /* add as first entry which is used as "global" control */
+        array_unshift($services, $pconfig);
     }
 
     return $services;
@@ -179,6 +180,11 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         killbypid($process['pidfile']);
         @unlink($process['pidfile']);
         @unlink($process['socket']);
+    }
+
+    if (!empty($gwname) && $gwname == ':watcher:') {
+        /* allow the watcher to be restarted as well */
+        killbypid('/var/run/gateway_watcher.pid');
     }
 
     $ifconfig_details = legacy_interfaces_details();
