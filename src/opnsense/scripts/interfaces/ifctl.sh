@@ -211,7 +211,7 @@ for CONTENT in ${DO_CONTENTS}; do
 	fi
 done
 
-if [ -n "${DO_COMMAND}${DO_CONTENT}" ]; then
+if [ -n "${DO_COMMAND}${DO_CONTENTS}" ]; then
 	exit 0
 fi
 
