@@ -223,9 +223,12 @@ function legacy_interface_stats($ifs = null)
 
     $current_interface = '';
     foreach ($out as $line) {
-        if (strpos($line, 'Interface') === 0) {
-            $current_interface = explode('(', explode(' ', $line)[1])[0];
-            $stats[$current_interface] = [];
+        if (preg_match('/^Interface ([a-z]+[0-9]+) \(([a-z]+[0-9]+)\):$/i', $line, $names)) {
+            $stats[$names[1]] = [
+                'device' => $names[1],
+                'driver' => $names[2],
+            ];
+            $current_interface = $names[1];
         } elseif ($current_interface != '') {
             $stat = explode(':', $line);
             $stats[$current_interface][trim($stat[0])] = trim($stat[1]);
