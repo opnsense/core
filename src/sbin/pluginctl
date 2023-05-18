@@ -63,21 +63,22 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
-$opts = getopt('cDdghirSs', [], $optind);
+$opts = getopt('cDdghIirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -D | -d | -g | -h | -i | -r | -S | -s] ...\n\n";
+    echo "Usage: pluginctl [-c | -D | -d | -g | -h | -I | -i | -r | -S | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
+    echo "\t-I information mode, lists registered device statistics\n";
     echo "\t-i invoke dynamic interface registration\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
-    echo "\t-s service mode (e.g. myservice restart)\n\n";
-    echo "Without arguments, a list of plugins of the requested type is shown.\n";
+    echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\nWithout arguments, a list of plugins of the requested type is shown.\n";
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
@@ -103,6 +104,20 @@ if (isset($opts['h'])) {
             }
         }
     }
+} elseif (isset($opts['g'])) {
+   echo get_config_prop($args[0]) . PHP_EOL;
+} elseif (isset($opts['i'])) {
+    if (plugins_interfaces()) {
+        write_config('Updated plugin interface configuration');
+    }
+} elseif (isset($opts['I'])) {
+    echo json_encode(legacy_interface_stats($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+} elseif (isset($opts['r'])) {
+   $cmd = array_shift($args);
+   $result = plugins_run($cmd, $args);
+   if (!empty($result)) {
+      echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+   }
 } elseif (isset($opts['S'])) {
     $services = [];
     foreach (plugins_services() as $service) {
@@ -143,18 +158,6 @@ if (isset($opts['h'])) {
         default:
             echo "Unknown command `$act'\n";
             break;
-    }
-} elseif (isset($opts['r'])) {
-   $cmd = array_shift($args);
-   $result = plugins_run($cmd, $args);
-   if (!empty($result)) {
-      echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
-   }
-} elseif (isset($opts['g'])) {
-   echo get_config_prop($args[0]) . PHP_EOL;
-} elseif (isset($opts['i'])) {
-    if (plugins_interfaces()) {
-        write_config('Updated plugin interface configuration');
     }
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
