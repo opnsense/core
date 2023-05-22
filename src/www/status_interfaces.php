@@ -277,7 +277,7 @@ include("head.inc");
 <?php endif ?>
 <?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
-                      <td><?= gettext('IPv6 delegated prefix') ?></td>
+                      <td><?= gettext('IPv6 prefix') ?></td>
                       <td><?= implode('<br />', $ifinfo['prefixv6']) ?></td>
                     </tr>
 <?php endif ?>
