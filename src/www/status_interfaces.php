@@ -233,12 +233,11 @@ include("head.inc");
 <?php endif ?>
                 <?php if ($ifinfo['status'] != 'down'):
                   if (($ifinfo['dhcplink'] ?? '') != 'down' && ($ifinfo['pppoelink'] ?? '') != 'down' && ($ifinfo['pptplink'] ?? '') != 'down'):
-                    if (!empty($ifinfo['ipaddr'])):?>
+                    if (!empty($ifinfo['ipaddr']) /* set by get_interfaces_info() if active but not directly used */):?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
                       <td>
 <?php foreach($ifinfo['ipv4'] as $ipv4): ?>
-                            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
                             <?=$ipv4['ipaddr'];?>/<?=$ipv4['subnetbits'];?> <?= !empty($ipv4['vhid']) ? 'vhid ' . $ipv4['vhid'] : "" ;?>
                             <br/>
 <?php endforeach ?>
@@ -260,7 +259,8 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ipaddrv6']) && !empty($ifinfo['ipv6'][0]) && !$ifinfo['ipv6'][0]['link-local']): ?>
+                    if (!empty($ifinfo['ipaddrv6']) /* set by get_interfaces_info() if active but not directly used */ &&
+                        !empty($ifinfo['ipv6'][0]) && !$ifinfo['ipv6'][0]['link-local']): ?>
                     <tr>
                       <td><?= gettext("IPv6 address") ?></td>
                       <td>
