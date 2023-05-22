@@ -39,14 +39,6 @@ flush_routes()
 	fi
 
 	case ${MD} in
-	nameserver)
-		# flush host routes here to make sure they are recycled
-		# properly although maybe later we need to avoid this
-		# to not cause an inconsistent routing table state.
-		for CONTENT in $(cat ${FILE}); do
-			route delete -${AF} "${CONTENT}"
-		done
-		;;
 	prefix)
 		# flush null route to delegated prefix
 		for CONTENT in $(cat ${FILE}); do
