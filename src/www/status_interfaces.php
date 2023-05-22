@@ -254,7 +254,7 @@ include("head.inc");
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
                       <td><?= gettext('IPv4 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
+                      <td><?= htmlspecialchars(!empty($config['interfaces'][$ifdescr]['gateway']) ? $config['interfaces'][$ifdescr]['gateway'] : gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -265,7 +265,7 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ipaddrv6'])): ?>
+                    if (!empty($ifinfo['ipaddrv6'][0]) && !$ifinfo['ipaddrv6'][0]['link-local']): ?>
                     <tr>
                       <td><?= gettext("IPv6 address") ?></td>
                       <td>
@@ -289,7 +289,7 @@ include("head.inc");
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext('IPv6 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
+                      <td><?= htmlspecialchars(!empty($config['interfaces'][$ifdescr]['gatewayv6']) ? $config['interfaces'][$ifdescr]['gatewayv6'] : gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
                     endif;
