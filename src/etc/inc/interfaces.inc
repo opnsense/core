@@ -3872,6 +3872,9 @@ function get_interfaces_info($include_unlinked = false)
         $ifinfo['status'] = in_array($ifinfo['if'], $ifup) ? 'up' : 'down';
         $ifinfo['statusv6'] = in_array($ifinfo['ifv6'], $ifup) ? 'up' : 'down';
 
+	/* undesired side effect of legacy_config_get_interfaces() */
+        $ifinfo['ipaddr'] = $ifinfo['ipaddrv6'] = null;
+
         if (!empty($all_intf_details[$ifinfo['if']])) {
             if (
                 isset($all_intf_details[$ifinfo['if']]['status']) &&
@@ -4041,6 +4044,7 @@ function get_interfaces_info($include_unlinked = false)
                 $ifinfo['bridgeint'] = $bridge;
             }
         }
+
         $result[$ifdescr] = $ifinfo;
     }
 
