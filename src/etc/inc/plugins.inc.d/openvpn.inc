@@ -420,7 +420,10 @@ function openvpn_add_dhcpopts(&$settings, &$conf)
         }
     }
 
-    if (!empty($settings['gwredir'])) {
+    if (!empty($settings['redirect_gateway'])) {
+        $redirgw = str_replace(',', ' ', $settings['redirect_gateway']);
+        $conf .= "push \"redirect-gateway {$redirgw}\"\n";
+    } elseif (!empty($settings['gwredir'])) {
         $conf .= "push \"redirect-gateway def1\"\n";
     }
 }
@@ -1021,12 +1024,6 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     }
 
     openvpn_add_dhcpopts($settings, $conf);
-
-    if (!empty($settings['gwredir'])) {
-        $conf .= "push \"redirect-gateway def1\"\n";
-    }
-
-    openvpn_add_custom($settings, $conf);
 
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     if (empty($target_filename)) {

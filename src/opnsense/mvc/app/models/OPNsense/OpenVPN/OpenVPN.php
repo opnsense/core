@@ -54,6 +54,7 @@ class OpenVPN extends BaseModel
             $result['ovpn_servers'] = (string)$cso->servers;
             $result['common_name'] = (string)$cso->common_name;
             $result['description'] = (string)$cso->description;
+            $result['redirect_gateway'] = (string)$cso->redirect_gateway;
 
             $result['tunnel_network'] = (string)$cso->tunnel_network;
             $result['tunnel_networkv6'] = (string)$cso->tunnel_networkv6;
