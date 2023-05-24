@@ -184,8 +184,8 @@ function system_resolvconf_generate($verbose = false)
 
     $syscfg = config_read_array('system');
     $resolvconf = '';
-    $search = [];
     $routes = [];
+    $search = [];
 
     mwexecf(
         '/etc/rc.d/ip6addrctl %s',
@@ -194,24 +194,19 @@ function system_resolvconf_generate($verbose = false)
 
     if (!empty($syscfg['domain'])) {
         $resolvconf = "domain {$syscfg['domain']}\n";
-        $search[] = $syscfg['domain'];
-    }
-
-    if (!empty($syscfg['dnssearchdomain'])) {
-        /* add custom search entries after default domain before potential provider entries */
-        $search[] = $syscfg['dnssearchdomain'];
     }
 
     if (!isset($syscfg['dnslocalhost']) && !empty(service_by_filter(['dns_ports' => '53']))) {
         $resolvconf .= "nameserver 127.0.0.1\n";
     }
 
-    $search = array_merge($search, get_searchdomains());
     $routes = system_resolvconf_host_routes();
 
     foreach (array_keys($routes) as $host) {
         $resolvconf .= "nameserver {$host}\n";
     }
+
+    $search = get_searchdomains();
 
     if (count($search)) {
         $result = $search[0];
@@ -237,10 +232,9 @@ function system_resolvconf_generate($verbose = false)
 
     /* setup static routes for DNS servers as configured */
     foreach ($routes as $host => $gateway) {
-        if (empty($gateway)) {
-            continue;
+        if (!empty($gateway)) {
+            system_host_route($host, $gateway);
         }
-        system_host_route($host, $gateway);
     }
 
     service_log("done.\n", $verbose);
@@ -305,6 +299,20 @@ function get_searchdomains()
     $syscfg = config_read_array('system');
     $master_list = [];
     $search_list = [];
+
+    if (!empty($syscfg['domain'])) {
+        $master_list[] = $syscfg['domain'];
+    }
+
+    if (!empty($syscfg['dnssearchdomain'])) {
+        if ($syscfg['dnssearchdomain'] == '.') {
+            /* pass root only */
+            return [$syscfg['dnssearchdomain']];
+       }
+
+        /* add custom search entries after default domain before potential provider entries */
+        $master_list[] = $syscfg['dnssearchdomain'];
+    }
 
     if (isset($syscfg['dnsallowoverride'])) {
         /* return domains as required by configuration */

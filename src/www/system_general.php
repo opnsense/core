@@ -454,7 +454,7 @@ $( document ).ready(function() {
               <td>
                 <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
                 <div class="hidden" data-for="help_for_dnssearchdomain">
-                  <?= gettext('Enter an additional domain to add to the local list of search domains.') ?>
+                  <?= gettext('Enter an additional domain to add to the local list of search domains. Use "." to disable passing any search domain for resolving.') ?>
                 </div>
               </td>
             </tr>
