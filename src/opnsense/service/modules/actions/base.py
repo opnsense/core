@@ -40,6 +40,7 @@ class BaseAction:
         self.command = action_parameters.get('command', None)
         self.parameters = action_parameters.get('parameters', None)
         self.message = action_parameters.get('message', None)
+        self.description = action_parameters.get('description', '')
 
     def _cmd_builder(self, parameters):
         """ basic (shell) script command builder, uses action command, expected parameter phrase and given parameters
