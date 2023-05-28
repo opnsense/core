@@ -37,12 +37,12 @@
                 formatters:{
                     commands: function (column, row) {
                         if (row['locked']) {
-                            return '<button type="button" class="btn btn-xs btn-default command-restart" data-toggle="tooltip" title="{{ lang._('Restart') }}" data-row-id="' + row.name + '"><span class="fa fa-repeat fa-fw"></span></button>';
+                            return '<button type="button" class="btn btn-xs btn-default command-restart" data-toggle="tooltip" title="{{ lang._('Restart') }}" data-row-id="' + row.id + '"><span class="fa fa-repeat fa-fw"></span></button>';
                         } else if (row['running']) {
-                            return '<button type="button" class="btn btn-xs btn-default command-restart" data-toggle="tooltip" title="{{ lang._('Restart') }}" data-row-id="' + row.name + '"><span class="fa fa-repeat fa-fw"></span></button>' +
-                                '<button type="button" class="btn btn-xs btn-default command-stop" data-toggle="tooltip" title="{{ lang._('Stop') }}" data-row-id="' + row.name + '"><span class="fa fa-stop fa-fw"></span></button>';
+                            return '<button type="button" class="btn btn-xs btn-default command-restart" data-toggle="tooltip" title="{{ lang._('Restart') }}" data-row-id="' + row.id + '"><span class="fa fa-repeat fa-fw"></span></button>' +
+                                '<button type="button" class="btn btn-xs btn-default command-stop" data-toggle="tooltip" title="{{ lang._('Stop') }}" data-row-id="' + row.id + '"><span class="fa fa-stop fa-fw"></span></button>';
                         } else {
-                            return '<button type="button" class="btn btn-xs btn-default command-start" data-toggle="tooltip" title="{{ lang._('Start') }}" data-row-id="' + row.name + '"><span class="fa fa-play fa-fw"></span></button>';
+                            return '<button type="button" class="btn btn-xs btn-default command-start" data-toggle="tooltip" title="{{ lang._('Start') }}" data-row-id="' + row.id + '"><span class="fa fa-play fa-fw"></span></button>';
                         }
                     },
                     status: function (column, row) {

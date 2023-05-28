@@ -79,7 +79,7 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service start', [$name, $id]);
+        (new Backend())->configdpRun('service start', [$name, $id]);
 
         return ['result' => 'ok'];
     }
@@ -98,7 +98,7 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service restart', [$name, $id]);
+        (new Backend())->configdpRun('service restart', [$name, $id]);
 
         return ['result' => 'ok'];
     }
@@ -117,7 +117,7 @@ class ServiceController extends ApiControllerBase
 
         $this->sessionClose();
 
-        (new Backend())-> configdpRun('service stop', [$name, $id]);
+        (new Backend())->configdpRun('service stop', [$name, $id]);
 
         return ['result' => 'ok'];
     }
