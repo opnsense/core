@@ -668,6 +668,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
                     break;
             }
 
+            /* XXX some day we might want to convert to safer mwexecf() */
             $cmd = " -{$ipproto} {$blackhole} " . escapeshellarg($rtent['network']) . " ";
 
             if (!empty($rtent['disabled'])) {
@@ -677,14 +678,14 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
                     mwexec("/sbin/route delete {$cmd}", true);
                     if ($fargw) {
                         mwexecf('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw], true);
-                        mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw], true);
+                        mwexecf('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
                     } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
                         $gatewayip .= "%{$interfacegw}";
                     }
-                    mwexec("/sbin/route add" . $cmd . escapeshellarg($gatewayip), true);
+                    mwexec("/sbin/route add" . $cmd . escapeshellarg($gatewayip));
                 } elseif (!empty($interfacegw)) {
                     mwexec("/sbin/route delete" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
-                    mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw), true);
+                    mwexec("/sbin/route add" . $cmd . "-interface " . escapeshellarg($interfacegw));
                 }
             }
         }
