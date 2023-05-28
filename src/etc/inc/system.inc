@@ -308,7 +308,7 @@ function get_searchdomains()
         if ($syscfg['dnssearchdomain'] == '.') {
             /* pass root only */
             return [$syscfg['dnssearchdomain']];
-       }
+        }
 
         /* add custom search entries after default domain before potential provider entries */
         $master_list[] = $syscfg['dnssearchdomain'];
