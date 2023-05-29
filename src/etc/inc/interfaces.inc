@@ -2809,15 +2809,15 @@ INFOREQ|REBIND|RENEW|REQUEST)
     for PD in \${PDINFO}; do
         ARGS="\${ARGS} -a \${PD}"
     done
-    /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
+    if [ \${REASON} != "RENEW" -a \${REASON} != "REBIND" ]; then
+        # cannot update since PDINFO is incomplete in these cases
+        /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
+    fi
     PDNEW=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
 
     FORCE=
     if [ \${REASON} = "REQUEST" ]; then
         /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (REASON)"
-        FORCE=force
-    elif [ \${REASON} != "INFOREQ" -a "\${PDOLD}" != "\${PDNEW}" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (PDINFO)"
         FORCE=force
     fi
 
