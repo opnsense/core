@@ -351,7 +351,7 @@ class ExportController extends ApiControllerBase
                     }
                 }
                 if ($certref !== null) {
-                    $cert = (new Store())->getCertificate((string)$server->certref);
+                    $cert = (new Store())->getCertificate($certref);
                     if ($cert) {
                         if (!empty($cert['subject']) && !empty($cert['subject']['CN'])) {
                             $config['client_cn'] = $cert['subject']['CN'];
