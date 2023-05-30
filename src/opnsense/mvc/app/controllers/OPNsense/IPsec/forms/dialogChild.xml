@@ -100,7 +100,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.</help>
+        <help>List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.
+              When left empty the address will be replaced by the tunnel outer address or the virtual IP if negotiated ([dynamic]).
+        </help>
     </field>
     <field>
         <id>child.remote_ts</id>
@@ -108,7 +110,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.</help>
+        <help>List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition.
+              When left empty the address will be replaced by the tunnel outer address or the virtual IP if negotiated ([dynamic])
+        </help>
     </field>
     <field>
         <id>child.rekey_time</id>
