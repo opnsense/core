@@ -2804,20 +2804,19 @@ INFOREQ|REBIND|RENEW|REQUEST)
     done
     /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
 
-    PDOLD=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
     ARGS=
     for PD in \${PDINFO}; do
         ARGS="\${ARGS} -a \${PD}"
     done
     if [ \${REASON} != "RENEW" -a \${REASON} != "REBIND" ]; then
-        # cannot update since PDINFO is incomplete in these cases
+        # cannot update since PDINFO may be incomplete in these cases
+        # as each PD is being handled separately via the client side
         /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
     fi
-    PDNEW=$(/usr/local/sbin/ifctl -i ${wanif} -6p)
 
     FORCE=
     if [ \${REASON} = "REQUEST" ]; then
-        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal (REASON)"
+        /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} renewal"
         FORCE=force
     fi
 
@@ -2842,13 +2841,10 @@ EOF;
     @file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript);
     @chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
 
-    $dhcp6ccommand = exec_safe(
-        '/usr/local/sbin/dhcp6c -c %s -p %s',
-        array(
+    $dhcp6ccommand = exec_safe('/usr/local/sbin/dhcp6c -c %s -p %s', [
             '/var/etc/dhcp6c.conf',
             '/var/run/dhcp6c.pid',
-        )
-    );
+    ]);
 
     if (!empty($syscfg['dhcp6_debug'])) {
         $mode = [ '1' => ' -d', '2' => ' -D' ];
@@ -2898,7 +2894,7 @@ if [ -f /var/run/dhcp6c.pid ]; then
     /usr/bin/logger -t dhcp6c "RTSOLD script - Sending SIGHUP to dhcp6c"
     /bin/pkill -HUP -F /var/run/dhcp6c.pid
 else
-    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6 client"
+    /usr/bin/logger -t dhcp6c "RTSOLD script - Starting dhcp6c daemon"
     {$dhcp6ccommand}
 fi
 
