@@ -63,6 +63,31 @@ function get_config_prop($path, $cnf = null)
     }
 }
 
+function get_all_services($name = '', $id = '')
+{
+    $services = [];
+
+    foreach (plugins_services() as $service) {
+        /* fail if name filter does not match */
+        if ($name != '' && $service['name'] != $name) {
+            continue;
+        }
+
+        /* fail if ID lookup is not possible or does not match */
+        if ($id !== '' && (!array_key_exists('id', $service) || $service['id'] != $id)) {
+            continue;
+        }
+
+        /* fetch status so the caller does not have to */
+        $service['status'] = service_message($service);
+
+        /* collect all matches contrary to what service_by_name() is doing */
+        $services[] = $service;
+    }
+
+    return $services;
+}
+
 $opts = getopt('cDdghIirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
@@ -119,45 +144,35 @@ if (isset($opts['h'])) {
       echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
    }
 } elseif (isset($opts['S'])) {
-    $services = [];
-    foreach (plugins_services() as $service) {
-        /* fail if name filter does not match */
-        if (!empty($args[0]) && $service['name'] != $args[0]) {
-            continue;
-        }
-        /* fail if ID lookup is not possible or does not match */
-        if (isset($args[1]) && $args[1] !== '' && (!array_key_exists('id', $service) || $service['id'] != $args[1])) {
-            continue;
-        }
-        /* fetch status so the caller does not have to */
-        $service['status'] = service_message($service);
-        /* collect all matches contrary to what service_by_name() is doing */
-        $services[] = $service;
-    }
+    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '');
     echo json_encode($services, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['s'])) {
-    $name = !empty($args[0]) ? $args[0] : '';
-    $act = !empty($args[1]) ? $args[1] : '';
-    $filter = [];
-    if (isset($args[2]) && $args !== '') {
-        $filter['id'] = $args[2];
-    }
-    switch ($act) {
-        case 'start':
-            echo service_control_start($name, $filter) . PHP_EOL;
-            break;
-        case 'stop':
-            echo service_control_stop($name, $filter) . PHP_EOL;
-            break;
-        case 'restart':
-            echo service_control_restart($name, $filter) . PHP_EOL;
-            break;
-        case 'status':
-            echo service_control_status($name, $filter) . PHP_EOL;
-            break;
-        default:
-            echo "Unknown command `$act'\n";
-            break;
+    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
+    foreach ($services as $service) {
+        $filter = isset($service['id']) ? ['id' => $service['id']] : [];
+        $act = isset($args[1]) ? $args[1] : '';
+        $name = $service['name'];
+
+        switch ($act) {
+            case 'start':
+                echo service_control_start($name, $filter) . PHP_EOL;
+                break;
+            case 'stop':
+                echo service_control_stop($name, $filter) . PHP_EOL;
+                break;
+            case 'restart':
+                echo service_control_restart($name, $filter) . PHP_EOL;
+                break;
+            case 'status':
+                echo htmlspecialchars($service['status']) . PHP_EOL;
+                break;
+            case 'status':
+                echo "Missing command\n";
+                break;
+            default:
+                echo "Unknown command `$act'\n";
+                break;
+        }
     }
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type

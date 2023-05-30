@@ -198,16 +198,6 @@ function service_control_get($name, $extras)
     return $service;
 }
 
-function service_control_status($name, $extras)
-{
-    $service = service_control_get($name, $extras);
-    if (!is_array($service)) {
-        return $service;
-    }
-
-    return htmlspecialchars(service_message($service));
-}
-
 function service_control_start($name, $extras)
 {
     $service = service_control_get($name, $extras);
