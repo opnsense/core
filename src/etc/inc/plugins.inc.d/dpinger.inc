@@ -178,7 +178,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
         killbypid($process['pidfile']);
-        @unlink($process['pidfile']);
         @unlink($process['socket']);
     }
 
