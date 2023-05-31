@@ -119,7 +119,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
 <?php
 foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
         <tr>
-          <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
+          <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $client['timestamp']);?></td>
           <td><?=$client['real_address'];?><br/><?=$client['virtual_address'];?></td>
           <td>
             <span class='fa fa-exchange fa-fw <?=$client['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
