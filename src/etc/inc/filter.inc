@@ -575,12 +575,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 
 function filter_generate_aliases()
 {
-    $aliases = "\n# Lockout tables\n";
-    $aliases .= "table <sshlockout> persist\n";
-    $aliases .= "\n# Other tables\n";
-    $aliases .= "table <virusprot>\n";
-
-    $aliases .= "\n# User Aliases\n";
+    $aliases = "# User Aliases\n";
     $aliasObject = new \OPNsense\Firewall\Alias();
     // list of registered aliases for faster is_alias() lookup
     $all_aliases = [];
