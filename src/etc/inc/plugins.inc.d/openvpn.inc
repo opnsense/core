@@ -213,7 +213,7 @@ function openvpn_create_key()
 function openvpn_vpnid_next()
 {
     $vpnids = (new OPNsense\OpenVPN\OpenVPN())->usedVPNIds();
-    for ($vpnid = 1; true ; $vpnid++) {
+    for ($vpnid = 1; true; $vpnid++) {
         if (!in_array($vpnid, $vpnids)) {
             return $vpnid;
         }

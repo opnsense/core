@@ -60,7 +60,7 @@ class RemoteHostField extends BaseField
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(
                 [
-                    "callback" => function ($value)  {
+                    "callback" => function ($value) {
                         $errors = [];
                         foreach (explode(',', $value) as $this_remote) {
                             $parts = [];
@@ -78,7 +78,9 @@ class RemoteHostField extends BaseField
                                 $errors[] = sprintf(gettext("hostname %s is not a valid hostname."), $parts[0]);
                             } elseif (
                                 isset($parts[1]) &&
-                                filter_var($parts[1], FILTER_VALIDATE_INT,
+                                filter_var(
+                                    $parts[1],
+                                    FILTER_VALIDATE_INT,
                                     ['options' => ['min_range' => 1, 'max_range' => 65535]]
                                 ) === false
                             ) {

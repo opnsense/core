@@ -48,7 +48,7 @@ class InstanceField extends ArrayField
                     'statFilename' => "/var/etc/openvpn/instance-{$uuid}.stat",
                     'csoDirectory' => "/var/etc/openvpn-csc/$node->vpnid",
                     '__devnode' => "{$node->dev_type}{$node->vpnid}",
-                    '__devname' => "ovpn".((string)$node->role)[0]."{$node->vpnid}",
+                    '__devname' => "ovpn" . ((string)$node->role)[0] . "{$node->vpnid}",
                 ];
                 foreach ($files as $name => $payload) {
                     $new_item = new TextField();

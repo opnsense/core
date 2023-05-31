@@ -390,11 +390,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ClientOverwritesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ExportController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/InstancesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/ClientOverwritesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/ExportController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/InstancesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/StatusController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogCSO.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogInstance.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/dialogStaticKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/forms/export_options.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Proxy/Api/SettingsController.php
@@ -661,7 +665,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/InstanceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/OpenVPNServerField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/RemoteHostField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/VPNIdField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
@@ -746,6 +753,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/export.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/instances.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
@@ -968,6 +976,7 @@
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
 /usr/local/opnsense/scripts/openvpn/kill_session.py
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
+/usr/local/opnsense/scripts/openvpn/ovpn_service_control.php
 /usr/local/opnsense/scripts/openvpn/ovpn_status.py
 /usr/local/opnsense/scripts/openvpn/tls_verify.php
 /usr/local/opnsense/scripts/openvpn/user_pass_verify.php

@@ -111,7 +111,7 @@ class ExportController extends ApiControllerBase
                 }
             }
         }
-        foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node){
+        foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (!empty((string)$node->enabled) && $node->role == 'server') {
                 $name = empty($node->description) ? "server" : (string)$node->description;
                 $name .= " " . $node->proto . ":" . $node->port;
@@ -122,7 +122,6 @@ class ExportController extends ApiControllerBase
                 ];
             }
         }
-
     }
 
     /**

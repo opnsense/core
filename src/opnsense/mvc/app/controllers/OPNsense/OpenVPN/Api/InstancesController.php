@@ -31,7 +31,6 @@ namespace OPNsense\OpenVPN\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 
-
 /**
  * Class InstancesController
  * @package OPNsense\OpenVPN\Api

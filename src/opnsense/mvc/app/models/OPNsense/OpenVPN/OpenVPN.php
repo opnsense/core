@@ -34,7 +34,6 @@ use OPNsense\Trust\Store;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-
 /**
  * Class OpenVPN
  * @package OPNsense\OpenVPN
@@ -80,7 +79,8 @@ class OpenVPN extends BaseModel
                     $tmp = Store::getCertificate((string)$instance->cert);
                     if (empty($tmp) || !isset($tmp['ca'])) {
                         $messages->appendMessage(new Message(
-                            gettext("Unable to locate a Certificate Authority for this certificate"), $key . ".cert"
+                            gettext("Unable to locate a Certificate Authority for this certificate"),
+                            $key . ".cert"
                         ));
                     }
                 }
@@ -92,19 +92,22 @@ class OpenVPN extends BaseModel
                 ) {
                     if ((string)$node->verify_client_cert != 'none') {
                         $messages->appendMessage(new Message(
-                            gettext("To validate a certificate, one has to be provided "), $key . ".verify_client_cert"
+                            gettext("To validate a certificate, one has to be provided "),
+                            $key . ".verify_client_cert"
                         ));
                     }
                 }
             }
-            if ((
+            if (
+                (
                 $instance->keepalive_interval->isFieldChanged() ||
                 $instance->keepalive_timeout->isFieldChanged() ||
                 $validateFullModel
                 ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
             ) {
                 $messages->appendMessage(new Message(
-                    gettext("Timeout should be larger than interval"), $key . ".keepalive_timeout"
+                    gettext("Timeout should be larger than interval"),
+                    $key . ".keepalive_timeout"
                 ));
             }
         }
@@ -191,7 +194,7 @@ class OpenVPN extends BaseModel
                 }
             }
         }
-        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node){
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if ((string)$node->vpnid != '') {
                 $result[$node_uuid] = (string)$node->vpnid;
             }
@@ -214,13 +217,12 @@ class OpenVPN extends BaseModel
                 }
             }
         }
-        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node){
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (!empty((string)$node->enabled)) {
                 return true;
             }
         }
         return false;
-
     }
 
     /**
@@ -229,10 +231,10 @@ class OpenVPN extends BaseModel
      * @param string $server_id vpnid (either numerical or uuid)
      * @return array selection of relevant fields for downstream processes
      */
-    public function getInstanceById($server_id, $role=null)
+    public function getInstanceById($server_id, $role = null)
     {
         // travers model first, two key types are valid, the id used in the device (numeric) or the uuid
-        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node){
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (
                 !empty((string)$node->enabled) &&
                 ((string)$node->vpnid == $server_id || $server_id == $node_uuid) &&
@@ -333,22 +335,22 @@ class OpenVPN extends BaseModel
             if ($value === null) {
                 $output .= $key . "\n";
             } elseif (str_starts_with($key, '<')) {
-                $output .= $key ."\n";
-                $output .= trim($value)."\n";
+                $output .= $key . "\n";
+                $output .= trim($value) . "\n";
                 $output .= "</" . substr($key, 1) . "\n";
             } elseif (is_array($value)) {
                 if ($key == 'auth-user-pass') {
                     // user/passwords need to be feed using a file
-                    $output .= $key . " ". $value['filename'] . "\n";
-                    file_put_contents($value['filename'],  $value['content']);
+                    $output .= $key . " " . $value['filename'] . "\n";
+                    file_put_contents($value['filename'], $value['content']);
                     @chmod($value['filename'], 0600);
                 } else {
                     foreach ($value as $item) {
-                        $output .= $key . " " . $item ."\n";
+                        $output .= $key . " " . $item . "\n";
                     }
                 }
             } else {
-                $output .= $key . " " . $value ."\n";
+                $output .= $key . " " . $value . "\n";
             }
         }
         file_put_contents($filename, $output);
@@ -360,9 +362,9 @@ class OpenVPN extends BaseModel
      * Ideally we would like to use our standard template system, but due to the complexity of the output
      * and the need for multiple files and a cleanup, this would add more unwanted complexity.
      */
-    public function generateInstanceConfig($uuid=null)
+    public function generateInstanceConfig($uuid = null)
     {
-        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node){
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (!empty((string)$node->enabled) && ($uuid == null || $node_uuid == $uuid)) {
                 $options = ['push' => [], 'route' => [], 'route-ipv6' => []];
                 // mode specific settings

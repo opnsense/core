@@ -180,4 +180,3 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     }
     closelog();
 }
-

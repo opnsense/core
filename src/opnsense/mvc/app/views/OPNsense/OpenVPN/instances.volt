@@ -168,4 +168,3 @@
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogInstance,'id':'DialogInstance','label':lang._('Edit Instance')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogStaticKey,'id':'DialogStaticKey','label':lang._('Edit Static Key')])}}
-

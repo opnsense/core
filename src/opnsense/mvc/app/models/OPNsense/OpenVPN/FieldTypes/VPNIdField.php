@@ -31,7 +31,6 @@ namespace OPNsense\OpenVPN\FieldTypes;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Base\FieldTypes\IntegerField;
 
-
 /**
  * @package OPNsense\Base\FieldTypes
  */
@@ -56,7 +55,7 @@ class VPNIdField extends IntegerField
     {
         if ($value == '') {
             // enforce default when not set
-            for ($i = 1; true ; $i++) {
+            for ($i = 1; true; $i++) {
                 if (!in_array($i, self::$internalLegacyVPNids)) {
                     $this->internalValue = (string)$i;
                     $this_uuid = $this->getParentNode()->getAttributes()['uuid'];
@@ -81,7 +80,7 @@ class VPNIdField extends IntegerField
 
         $validators[] = new CallbackValidator(
             [
-                "callback" => function ($value) use ($vpnids, $this_uuid)  {
+                "callback" => function ($value) use ($vpnids, $this_uuid) {
                     foreach ($vpnids as $key => $vpnid) {
                         if ($vpnid == $value && $key != $this_uuid) {
                             return [gettext('Value should be unique')];
