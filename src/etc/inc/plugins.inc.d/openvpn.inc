@@ -1,8 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2016-2023 Deciso B.V.
  * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
- * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2006 Fernando Lemos
  * Copyright (C) 2005 Peter Allgeyer <allgeyer@web.de>
@@ -72,32 +72,38 @@ function openvpn_services()
         }
     }
 
+    foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
+        if (!empty((string)$node->enabled)) {
+            $services[] = [
+                'description' => "OpenVPN {$node->role} " . htmlspecialchars($node->description),
+                'pidfile' => "/var/run/ovpn-instance-{$key}.pid",
+                'configd' => [
+                    'start' => ["openvpn start {$key}"],
+                    'restart' => ["openvpn restart {$key}"],
+                    'stop' => ["openvpn stop {$key}"],
+                ],
+                'id' => $key,
+                'name' => "openvpn"
+            ];
+        }
+    }
+
     return $services;
 }
 
 function openvpn_interfaces()
 {
-    global $config;
-
-    $interfaces = array();
-
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
-                if (empty($settings['disable'])) {
-                    $oic = array('enable' => true);
-                    $oic['if'] = 'openvpn';
-                    $oic['descr'] = 'OpenVPN';
-                    $oic['type'] = 'group';
-                    $oic['virtual'] = true;
-                    $oic['networks'] = array();
-                    $interfaces['openvpn'] = $oic;
-                    break 2;
-                }
-            }
-        }
+    $interfaces = [];
+    if ((new OPNsense\OpenVPN\OpenVPN())->isEnabled()) {
+        $interfaces['openvpn'] = [
+            'enable' => true,
+            'if' => 'openvpn',
+            'descr' => 'OpenVPN',
+            'type' => 'group',
+            'virtual' => true,
+            'networks' => []
+        ];
     }
-
     return $interfaces;
 }
 
@@ -119,6 +125,16 @@ function openvpn_devices()
         }
     }
 
+    foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
+        $mode = ((string)$node->role)[0];
+        $name = "ovpn{$mode}{$node->vpnid}";
+        $names[$name] = [
+            'descr' => sprintf('ovpn%s%s (OpenVPN %s %s)', $mode, $node->vpnid, (string)$node->role == 'server' ? gettext('Server') : gettext('Client'), $node->description),
+            'ifdescr' => (string)$node->description,
+            'name' => $name
+        ];
+    }
+
     return [[
         'function' => 'openvpn_prepare', /* XXX not the same as real configuration */
         'configurable' => false,
@@ -135,7 +151,7 @@ function openvpn_xmlrpc_sync()
 
     $result[] = array(
         'description' => gettext('OpenVPN'),
-        'section' => 'openvpn',
+        'section' => 'openvpn,OPNsense.OpenVPN',
         'id' => 'openvpn',
         'services' => ["openvpn"],
     );
@@ -194,36 +210,14 @@ function openvpn_create_key()
     return $rslt;
 }
 
-function openvpn_vpnid_used($vpnid)
-{
-    global $config;
-
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $settings) {
-            if ($vpnid == $settings['vpnid']) {
-                return true;
-            }
-        }
-    }
-
-    if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $settings) {
-            if ($vpnid == $settings['vpnid']) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 function openvpn_vpnid_next()
 {
-    $vpnid = 1;
-    while (openvpn_vpnid_used($vpnid)) {
-        $vpnid++;
+    $vpnids = (new OPNsense\OpenVPN\OpenVPN())->usedVPNIds();
+    for ($vpnid = 1; true ; $vpnid++) {
+        if (!in_array($vpnid, $vpnids)) {
+            return $vpnid;
+        }
     }
-    return $vpnid;
 }
 
 function openvpn_port_used($prot, $interface, $port, $curvpnid = 0)
@@ -1043,16 +1037,12 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
 function openvpn_prepare($device)
 {
-    global $config;
-
-    foreach (['server', 'client'] as $mode) {
-        if (!empty($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as $settings) {
-                if ($device == "ovpn{$mode[0]}{$settings['vpnid']}") {
-                    openvpn_reconfigure($mode, $settings, true);
-                    return;
-                }
-            }
+    if (str_starts_with($device, 'ovpn')) {
+        $vpnid = preg_replace("/[^0-9]/", "", $device);
+        $settings = (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($vpnid);
+        if ($settings) {
+            // XXX: split device creation and legacy configure?
+            openvpn_reconfigure($settings['role'], $settings, true);
         }
     }
 }
@@ -1115,34 +1105,6 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
     }
 
     service_log("done.\n", $verbose);
-}
-
-
-function openvpn_config()
-{
-    global $config;
-    $result = [];
-    foreach (['openvpn-server', 'openvpn-client'] as $section) {
-        $result[$section] = [];
-        if (!empty($config['openvpn'][$section])) {
-            foreach ($config['openvpn'][$section] as $settings) {
-                if (empty($settings) || isset($settings['disable'])) {
-                    continue;
-                }
-                $server = [];
-                $default_port = ($section == 'openvpn-server') ? 1194 : '';
-                $server['port'] = ($settings['local_port']) ? $settings['local_port'] : $default_port;
-                $server['mode'] = $settings['mode'];
-                if (empty($settings['description'])) {
-                    $settings['description'] = ($section == 'openvpn-server') ? 'Server' : 'Client';
-                }
-                $server['name'] = "{$settings['description']} {$settings['protocol']}:{$settings['local_port']}";
-                $server['vpnid'] = $settings['vpnid'];
-                $result[$section][] = $server;
-            }
-        }
-    }
-    return $result;
 }
 
 
@@ -1304,6 +1266,14 @@ function openvpn_refresh_crls()
                     }
                     break;
             }
+        }
+    }
+    foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
+        if (!empty((string)$node->enabled) && !empty((string)$node->crl)) {
+            $fpath = "/var/etc/openvpn/server-{$key}.crl-verify";
+            $crl = lookup_crl((string)$node->crl);
+            file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
+            @chmod($fpath, 0644);
         }
     }
 }

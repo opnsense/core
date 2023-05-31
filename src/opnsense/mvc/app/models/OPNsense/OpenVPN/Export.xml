@@ -5,7 +5,7 @@
     <items>
         <servers>
             <server type="ArrayField">
-                <vpnid type="IntegerField">
+                <vpnid type="TextField">
                     <Required>Y</Required>
                 </vpnid>
                 <hostname type="HostnameField">

@@ -29,6 +29,52 @@
 require_once("guiconfig.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
+
+function openvpn_config()
+{
+    global $config;
+    $result = [];
+    foreach (['openvpn-server', 'openvpn-client'] as $section) {
+        $result[$section] = [];
+        if (!empty($config['openvpn'][$section])) {
+            foreach ($config['openvpn'][$section] as $settings) {
+                if (empty($settings) || isset($settings['disable'])) {
+                    continue;
+                }
+                $server = [];
+                $default_port = ($section == 'openvpn-server') ? 1194 : '';
+                $server['port'] = !empty($settings['local_port']) ? $settings['local_port'] : $default_port;
+                $server['mode'] = $settings['mode'];
+                if (empty($settings['description'])) {
+                    $settings['description'] = ($section == 'openvpn-server') ? 'Server' : 'Client';
+                }
+                $server['name'] = "{$settings['description']} {$settings['protocol']}:{$server['port']}";
+                $server['vpnid'] = $settings['vpnid'];
+                $result[$section][] = $server;
+            }
+        }
+    }
+
+    foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
+        if (!empty((string)$node->enabled)) {
+            $section = "openvpn-{$node->role}";
+            $default_port = ($section == 'openvpn-server') ? 1194 : '';
+            $default_desc = ($section == 'openvpn-server') ? 'Server' : 'Client';
+            $server = [
+                'port' => !empty((string)$node->port) ? (string)$node->port : $default_port,
+                'mode' => (string)$node->role,
+                'description' => !empty((string)$node->description) ? (string)$node->description : $default_desc,
+                'name' => "{$node->description} {$node->proto}:{$node->port}",
+                'vpnid' => $key
+            ];
+            $result[$section][] = $server;
+        }
+    }
+
+    return $result;
+}
+
+
 $openvpn_status = json_decode(configd_run('openvpn connections client,server'), true) ?? [];
 $openvpn_cfg = openvpn_config();
 foreach ($openvpn_cfg as $section => &$ovpncfg) {

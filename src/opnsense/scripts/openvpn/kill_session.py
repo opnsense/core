@@ -59,13 +59,15 @@ def ovpn_cmd(filename, cmd):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('server_id', help='server/client id (where to find socket)', type=int)
+    parser.add_argument('server_id', help='server/client id (where to find socket)', type=str)
     parser.add_argument('session_id', help='session id (address+port) or common name')
     args = parser.parse_args()
     socket_name = None
     for filename in glob.glob("/var/etc/openvpn/*.sock"):
         basename = os.path.basename(filename)
-        if basename in ['client%d.sock'%args.server_id, 'server%d.sock'%args.server_id]:
+        if basename in [
+            'client%s.sock'%args.server_id, 'server%s.sock'%args.server_id, 'instance-%s.sock'%args.server_id
+        ]:
             socket_name = filename
             break
     if socket_name:
