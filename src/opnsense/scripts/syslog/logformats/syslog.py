@@ -87,11 +87,11 @@ class SysLogFormatEpoch(NewBaseLogFormat):
     @staticmethod
     def match(line):
         # looks like an epoch
-        return len(line) > 15 and line[0:10].isdigit() and line[10] == '.' and line[11:13].isdigit()
+        return len(line) > 15 and line[0:10].isdigit() and line[10] == '.' and line[11:14].isdigit()
 
     @property
     def timestamp(self):
-        return datetime.datetime.fromtimestamp(float(self._line[0:13])).isoformat()
+        return datetime.datetime.fromtimestamp(float(self._line[0:14])).isoformat(timespec='milliseconds')
 
     @property
     def line(self):
