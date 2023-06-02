@@ -276,6 +276,7 @@ class OpenVPN extends BaseModel
                     'tlsmode' => $this_mode,
                     'certref' => (string)$node->cert,
                     'caref' => $this_caref,
+                    'cert_depth' => (string)$node->cert_depth,
                     'description' => (string)$node->description
                 ];
             }
@@ -311,6 +312,7 @@ class OpenVPN extends BaseModel
                         'tlsmode' => (string)$item->tlsmode,
                         'certref' => (string)$item->certref,
                         'caref'  => (string)$item->caref,
+                        'cert_depth' => (string)$item->cert_depth,
                         'description' => (string)$item->description,
                         // legacy only (backwards compatibility)
                         'compression' => (string)$item->compression,
@@ -482,8 +484,9 @@ class OpenVPN extends BaseModel
                 $options['verb'] = (string)$node->verb;
                 $options['verify-client-cert'] = (string)$node->verify_client_cert;
 
-                foreach (
-                    ['reneg-sec', 'auth-gen-token', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback'] as $opt
+                foreach ([
+                    'reneg-sec', 'auth-gen-token', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'
+                    ] as $opt
                 ) {
                     if ((string)$node->$opt != '') {
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);

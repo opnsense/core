@@ -102,16 +102,16 @@ class ServiceController extends ApiControllerBase
                         $records[] = $stats;
                     }
                 }
-            }
-            // add non running enabled servers
-            foreach ($config_payload as $idx => $cnf) {
-                if (!in_array($idx, $vpnids) && !empty($cnf['enabled'])) {
-                    $records[] = [
-                        'id' => $idx,
-                        'service_id' =>  "openvpn/" . $idx,
-                        'type' => $role,
-                        'description' => $cnf['description'],
-                    ];
+                // add non running enabled servers
+                foreach ($config_payload as $idx => $cnf) {
+                    if (!in_array($idx, $vpnids) && !empty($cnf['enabled'])) {
+                        $records[] = [
+                            'id' => $idx,
+                            'service_id' =>  "openvpn/" . $idx,
+                            'type' => $role,
+                            'description' => $cnf['description'],
+                        ];
+                    }
                 }
             }
         }

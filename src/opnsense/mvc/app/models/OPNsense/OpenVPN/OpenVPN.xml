@@ -197,6 +197,17 @@
                     <BlankDesc>None</BlankDesc>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
+                <cert_depth type="OptionField">
+                    <Required>N</Required>
+                    <BlankDesc>Do Not Check</BlankDesc>
+                    <OptionValues>
+                        <item1 value="1">One (Client+Server)</item1>
+                        <item2 value="2">Two (Client+Intermediate+Server)</item2>
+                        <item3 value="3">Three (Client+2xIntermediate+Server)</item3>
+                        <item4 value="4">Four (Client+3xIntermediate+Server)</item4>
+                        <item5 value="5">Five (Client+4xIntermediate+Server)</item5>
+                    </OptionValues>
+                </cert_depth>
                 <verify_client_cert type="OptionField">
                     <Required>Y</Required>
                     <default>require</default>
@@ -205,6 +216,33 @@
                         <require>required</require>
                     </OptionValues>
                 </verify_client_cert>
+                <auth type="OptionField">
+                    <Required>N</Required>
+                    <default>SHA1</default>
+                    <OptionValues>
+                        <BLAKE2b512>BLAKE2b512 (512-bit)</BLAKE2b512>
+                        <BLAKE2s256>BLAKE2s256 (256-bit)</BLAKE2s256>
+                        <MD4>MD4 (128-bit)</MD4>
+                        <MD5>MD5 (128-bit)</MD5>
+                        <MD5-SHA1>MD5-SHA1 (288-bit)</MD5-SHA1>
+                        <RIPEMD160>RIPEMD160 (160-bit)</RIPEMD160>
+                        <SHA1>SHA1 (160-bit)</SHA1>
+                        <SHA224>SHA224 (224-bit)</SHA224>
+                        <SHA256>SHA256 (256-bit)</SHA256>
+                        <SHA3-224>SHA3-224 (224-bit)</SHA3-224>
+                        <SHA3-256>SHA3-256 (256-bit)</SHA3-256>
+                        <SHA3-384>SHA3-384 (384-bit)</SHA3-384>
+                        <SHA3-512>SHA3-512 (512-bit)</SHA3-512>
+                        <SHA384>SHA384 (384-bit)</SHA384>
+                        <SHA512>SHA512 (512-bit)</SHA512>
+                        <SHA512-224>SHA512-224 (224-bit)</SHA512-224>
+                        <SHA512-256>SHA512-256 (256-bit)</SHA512-256>
+                        <SHAKE128>SHAKE128 (128-bit)</SHAKE128>
+                        <SHAKE256>SHAKE256 (256-bit)</SHAKE256>
+                        <whirlpool>whirlpool (512-bit)</whirlpool>
+                        <none>None (No Authentication)</none>
+                    </OptionValues>
+                </auth>
                 <data-ciphers type="OptionField">
                     <Required>N</Required>
                     <multiple>Y</multiple>
