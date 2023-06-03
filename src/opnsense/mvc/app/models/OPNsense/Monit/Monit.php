@@ -169,7 +169,7 @@ class Monit extends BaseModel
                             case 'events':
                                 if (!empty((string)$parentNode->noton) && empty((string)$parentNode->events)) {
                                     $messages->appendMessage(new Message(
-                                        gettext("At least one event should be selected when using and inverted selection."),
+                                        gettext("At least one event should be selected when using an inverted selection."),
                                         $key
                                     ));
                                 }
