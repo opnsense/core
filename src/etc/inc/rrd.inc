@@ -553,15 +553,16 @@ function rrd_configure($verbose = false, $bootup = false)
 
 EOD;
 
-        $rrdupdatesh .= "sleep 60\n";
+        $rrdupdatesh .= "\n";
+        $rrdupdatesh .= "     for UNUSED in \$(seq 1 60); do sleep 1; done\n";
         $rrdupdatesh .= "done\n";
 
         /* write the rrd update script */
         $updaterrdscript = '/var/db/rrd/updaterrd.sh';
-        $fd = fopen("$updaterrdscript", "w");
-        fwrite($fd, "$rrdupdatesh");
+        $fd = fopen($updaterrdscript, 'w');
+        fwrite($fd, $rrdupdatesh);
         fclose($fd);
-        chmod($updaterrdscrip, 0755);
+        chmod($updaterrdscript, 0755);
 
         /* start traffic collector */
         mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/updaterrd.pid', $updaterrdscript]);
