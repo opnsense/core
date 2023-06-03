@@ -100,6 +100,9 @@ function rrd_configure($verbose = false, $bootup = false)
     $downstream = 2500000000;
     $upstream = 2500000000;
 
+    /* kill off traffic collectors */
+    killbypid('/var/run/updaterrd.pid');
+
     if (isset($config['rrd']['enable'])) {
         /* create directory if needed */
         if (!is_dir($rrddbpath)) {
@@ -111,8 +114,6 @@ function rrd_configure($verbose = false, $bootup = false)
         $rrdupdatesh = "#!/bin/sh\n";
         $rrdupdatesh .= "\n";
         $rrdupdatesh .= "export TERM=dumb\n";
-        $rrdupdatesh .= "\n";
-        $rrdupdatesh .= 'echo $$ > /var/run/updaterrd.sh.pid';
         $rrdupdatesh .= "\n";
         $rrdupdatesh .= "counter=1\n";
         $rrdupdatesh .= "while [ \"\$counter\" -ne 0 ]\n";
@@ -560,17 +561,10 @@ EOD;
         $fd = fopen("$updaterrdscript", "w");
         fwrite($fd, "$rrdupdatesh");
         fclose($fd);
-
-        unset($rrdupdatesh);
-
-        /* kill off traffic collectors */
-        rrd_stop();
+        chmod($updaterrdscrip, 0755);
 
         /* start traffic collector */
-        mwexec_bg("/bin/sh $updaterrdscript");
-    } else {
-        /* kill off traffic collectors */
-        rrd_stop();
+        mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/updaterrd.pid', $updaterrdscript]);
     }
 
     $databases = glob("{$rrddbpath}/*.rrd");
@@ -607,11 +601,6 @@ function rrd_create_gateway_quality($rrd_file, $unknown = false)
     if ($unknown) {
         mwexec("$rrdtool update $rrd_file N:U:U:U");
     }
-}
-
-function rrd_stop()
-{
-    killbypid('/var/run/updaterrd.sh.pid');
 }
 
 function rrd_export()
