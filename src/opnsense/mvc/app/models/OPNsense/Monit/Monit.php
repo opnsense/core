@@ -163,6 +163,19 @@ class Monit extends BaseModel
                 $parentNode = $node->getParentNode();
                 // perform plugin specific validations
                 switch ($parentNode->getInternalXMLTagName()) {
+                    case 'alert':
+                        switch ($node->getInternalXMLTagName()) {
+                            case 'noton':
+                            case 'events':
+                                if (!empty((string)$parentNode->noton) && empty((string)$parentNode->events)) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("At least one event should be selected when using and inverted selection."),
+                                        $key
+                                    ));
+                                }
+                                break;
+                        }
+                        break;
                     case 'test':
                         // test node validations
                         switch ($node->getInternalXMLTagName()) {
