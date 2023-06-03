@@ -830,9 +830,12 @@ function ipsec_setup_pinghosts()
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
 
-    /* get the automatic ping_hosts.sh ready */
-    @unlink('/var/db/ipsecpinghosts');
-    @touch('/var/db/ipsecpinghosts');
+    $IPsecHostsFile = '/var/db/ipsecpinghosts';
+
+    /* remove previous config */
+    if (file_exists($IPsecHostsFile)) {
+        @unlink($IPsecHostsFile);
+    }
 
     if (!isset($config['ipsec']['enable'])) {
         return;
@@ -904,7 +907,11 @@ function ipsec_setup_pinghosts()
             }
         }
     }
-    @file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
+
+    // Avoid ping hosts processing
+    if ($ipsecpinghosts !== '') {
+        @file_put_contents($IPsecHostsFile, $ipsecpinghosts);
+    }
 }
 
 /**
