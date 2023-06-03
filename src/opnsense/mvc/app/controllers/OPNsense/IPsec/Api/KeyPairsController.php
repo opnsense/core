@@ -116,6 +116,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
     /**
      * Generate keypair
      * @param string $type (rsa, ecdsa)
+     * @param string $size The key size in bytes
      * @return array
      */
     public function genKeyPairAction($type, $size = null)

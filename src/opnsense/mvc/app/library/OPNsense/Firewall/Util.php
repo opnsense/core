@@ -54,7 +54,7 @@ class Util
 
     /**
      * is provided address an ip address.
-     * @param string $network address
+     * @param string $address network address
      * @return boolean
      */
     public static function isIpAddress($address)
@@ -64,7 +64,7 @@ class Util
 
     /**
      * is provided address a mac address.
-     * @param string $network address
+     * @param string $address network address
      * @return boolean
      */
     public static function isMACAddress($address)
@@ -321,7 +321,7 @@ class Util
 
     /**
      * calculate rule hash value
-     * @param array rule
+     * @param array $rule
      * @return string
      */
     public static function calcRuleHash($rule)
@@ -351,7 +351,8 @@ class Util
 
     /**
      * Find the smallest possible subnet mask for given IP range
-     * @param array ips (start, end)
+     * @param array $ips (start, end)
+     * @param string $family inet6 or inet
      * @return int smallest mask
      */
     public static function smallestCIDR($ips, $family = 'inet')

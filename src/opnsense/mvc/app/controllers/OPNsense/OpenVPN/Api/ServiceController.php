@@ -239,7 +239,6 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
-     * @param int $id server/client id to restart
      * @return array
      */
     public function reconfigureAction()

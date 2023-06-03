@@ -50,6 +50,7 @@ class NetworkinsightController extends ApiControllerBase
      * @param string $to_date to timestamp
      * @param string $resolution resolution in seconds
      * @param string $field field name to aggregate
+     * @param null $emulation
      * @return array timeseries
      */
     public function timeserieAction(
