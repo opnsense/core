@@ -332,7 +332,7 @@ class Monit extends BaseModel
 
     /**
      * determine if services have links to this test node
-     * @param uuid of the test node
+     * @param string $testUUID uuid of the test node
      * @return bool
      */
     public function isTestServiceRelated($testUUID = null)
@@ -348,7 +348,7 @@ class Monit extends BaseModel
 
     /**
      * get test type from condition string
-     * @param condition string
+     * @param string $condition condition string
      * @return string
      */
     public function getTestType($condition)

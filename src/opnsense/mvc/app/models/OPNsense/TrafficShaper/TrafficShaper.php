@@ -106,7 +106,6 @@ class TrafficShaper extends BaseModel
     /**
      * Generate a new pipe number
      * The first 10000 id's are automatically reserved for internal usage.
-     * @param null $pipenr new pipe number
      * @return ArrayField
      */
     public function newPipeNumber()
@@ -122,7 +121,6 @@ class TrafficShaper extends BaseModel
     /**
      * Generate a new queue number
      * The first 10000 id's are automatically reserved for internal usage.
-     * @param null $queuenr new queue number
      * @return ArrayField
      */
     public function newQueueNumber()
