@@ -165,35 +165,48 @@ class Alias(object):
         """
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
-                if os.path.isfile(self._filename_alias_content):
+                alias_file_exists = os.path.isfile(self._filename_alias_content)
+                if alias_file_exists:
                     try:
                         undo_content = open(self._filename_alias_content, 'r').read()
                     except UnicodeDecodeError:
                         undo_content = ""
                 else:
                     undo_content = ""
+                address_parser = self.get_parser()
+                if os.path.isfile(self._filename_alias_hash):
+                    try:
+                        hash_contents = open(self._filename_alias_hash, 'r').read()
+                    except UnicodeDecodeError:
+                        hash_contents = ""
+                else:
+                    hash_contents = ""
+                unique_id = self.uniqueid()
                 try:
                     self._resolve_content = self.pre_process()
-                    address_parser = self.get_parser()
                     if address_parser:
                         for item in self.items():
                             for address in address_parser.iter_addresses(item):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
-                    # Always save last recorded content to disk, also when we're not responsible for the alias
-                    # so we can use cached results when reloading a single alias.
-                    with open(self._filename_alias_content, 'w') as f_out:
-                        f_out.write('\n'.join(self._resolve_content))
+                    # Do not overwrite unchanged contents
+                    # Do not overwrite if the hashes are the same
+                    if (undo_content == "" or hash_contents != unique_id) or not alias_file_exists:
+                        # Always save last recorded content to disk, also when we're not responsible for the alias
+                        # so we can use cached results when reloading a single alias.
+                        with open(self._filename_alias_content, 'w') as f_out:
+                            f_out.write('\n'.join(self._resolve_content))
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     # parse issue, keep data as-is, flush previous content to disk
                     with open(self._filename_alias_content, 'w') as f_out:
                         f_out.write(undo_content)
                     self._resolve_content = set(undo_content.split("\n"))
-                if self.get_parser():
-                    # flush md5 hash to disk
-                    open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                if address_parser:
+                    if hash_contents != unique_id:
+                        # flush md5 hash to disk
+                        open(self._filename_alias_hash, 'w').write(unique_id)
             else:
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
         # return the addresses and networks of this alias
