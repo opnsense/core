@@ -15,7 +15,7 @@ released every 6 months using the following scheme:
 XX.1	- January release Community
 XX.7	- July release Community
 XX.4	- April release Business
-XX.10	- Oktober release Business
+XX.10	- October release Business
 
 Where XX equals the year (e.g. 23 for 2023)
 
