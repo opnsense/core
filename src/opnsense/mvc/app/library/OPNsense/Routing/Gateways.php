@@ -100,7 +100,7 @@ class Gateways
     /**
      * return the device name present in the system for the specific configuration
      * @param string $ifname name of the interface
-     * @param array $ifcfg configuration of interface
+     * @param array $definedIntf configuration of interface
      * @param string $ipproto inet/inet6 type
      * @return string $realif target device name
      */
@@ -398,6 +398,7 @@ class Gateways
      * determine default gateway, exclude gateways in skip list
      * @param bool $disabled return disabled gateways
      * @param bool $localhost inet/inet6 type
+     * @param bool $inactive is inactive
      * @return string type name
      */
     public function gatewaysIndexedByName($disabled = false, $localhost = false, $inactive = false)
@@ -483,6 +484,7 @@ class Gateways
      * @param string $interface interface name
      * @param string $ipproto inet/inet6
      * @param boolean $only_configured only return configured in interface or dynamic gateways
+     * @param string $property the gateway property
      * @return string|null gateway address
      */
     public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false, $property = 'gateway')

@@ -211,6 +211,7 @@ class Plugin
      * @param string $type anchor type (fw for filter, other options are nat,rdr,binat)
      * @param string $priority sort order from low to high
      * @param string $placement placement head,tail
+     * @param bool $quick
      * @return null
      */
     public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)

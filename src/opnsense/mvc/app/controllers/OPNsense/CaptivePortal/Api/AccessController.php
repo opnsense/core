@@ -120,7 +120,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logon client to zone, must use post type of request
-     * @param int|string zone id number
+     * @param int|string $zoneid zone id number
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
@@ -229,7 +229,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logoff client
-     * @param int|string zone id number
+     * @param int|string $zoneid zone id number
      * @return array
      * @throws \OPNsense\Base\ModelException
      */
@@ -266,7 +266,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * retrieve session info
-     * @param int|string zone id number
+     * @param int|string $zoneid zone id number
      * @return array
      * @throws \OPNsense\Base\ModelException
      */

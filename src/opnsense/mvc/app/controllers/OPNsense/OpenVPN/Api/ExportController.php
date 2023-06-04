@@ -306,7 +306,6 @@ class ExportController extends ApiControllerBase
      * download configuration
      * @param string $vpnid server handle
      * @param string $certref certificate to export if applicable
-     * @param null $config
      * @return array
      * @throws \OPNsense\Base\ModelException
      * @throws UserException when invalid user input

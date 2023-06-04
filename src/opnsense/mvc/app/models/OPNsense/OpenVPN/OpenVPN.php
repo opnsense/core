@@ -229,6 +229,7 @@ class OpenVPN extends BaseModel
      * Find unique instance properties, either from legacy or mvc model
      * Offers glue between both worlds.
      * @param string $server_id vpnid (either numerical or uuid)
+     * @param string $role the node role
      * @return array selection of relevant fields for downstream processes
      */
     public function getInstanceById($server_id, $role = null)
