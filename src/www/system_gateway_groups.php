@@ -50,9 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (isset($_POST['apply'])) {
-        plugins_configure('monitor');
+        configd_run('interface routes configure');
         configd_run('dyndns reload');
-        configd_run('filter reload');
 
         clear_subsystem_dirty('gwgroups');
 
