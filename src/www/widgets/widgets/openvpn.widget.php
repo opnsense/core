@@ -29,7 +29,6 @@
 require_once("guiconfig.inc");
 require_once("plugins.inc.d/openvpn.inc");
 
-
 function openvpn_config()
 {
     global $config;
@@ -74,7 +73,6 @@ function openvpn_config()
     return $result;
 }
 
-
 $openvpn_status = json_decode(configd_run('openvpn connections client,server'), true) ?? [];
 $openvpn_cfg = openvpn_config();
 foreach ($openvpn_cfg as $section => &$ovpncfg) {
@@ -85,6 +83,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         }
     }
 }
+
 ?>
 <script>
     $("#dashboard_container").on("WidgetsReady", function() {
