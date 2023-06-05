@@ -59,6 +59,7 @@ if [ ! -d ${SYSDIR}/${SYSLEVEL} ]; then
 fi
 
 SYSHOOKS="$(find -s ${SYSDIR}/${SYSLEVEL} -type f})"
+RETURN=0
 
 for _SYSHOOK in ${SYSHOOKS}; do
 	SYSHOOK=${_SYSHOOK##"${SYSDIR}/"}
@@ -68,8 +69,9 @@ for _SYSHOOK in ${SYSHOOKS}; do
 	echo ">>> Invoking ${SYSLEVEL} script '${SYSNAME}'"
 
 	if ! ${_SYSHOOK} "${@}"; then
-		echo ">>> Error in ${SYSLEVEL} script '${SYSNAME}'"
+		echo ">>> Error in ${SYSLEVEL} script '${SYSHOOK}'"
+		RETURN=1
 	fi
 done
 
-exit 0
+exit ${RETURN}
