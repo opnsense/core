@@ -38,11 +38,15 @@ echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
 if opnsense-update -u > ${PIPEFILE} 2>&1; then
-	/usr/local/etc/rc.syshook upgrade
-
-	echo '***REBOOT***' >> ${LOCKFILE}
-	sleep 5
-	/usr/local/etc/rc.reboot
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	if ! /usr/local/etc/rc.syshook upgrade > ${PIPEFILE} 2>&1; then
+		# aboort pending upgrades
+		opnsense-update -e >> ${LOCKFILE} 2>&1
+	else
+		echo '***REBOOT***' >> ${LOCKFILE}
+		sleep 5
+		/usr/local/etc/rc.reboot
+	fi
 fi
 
 echo '***DONE***' >> ${LOCKFILE}
