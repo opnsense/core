@@ -87,7 +87,7 @@ echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # business subscriptions come with additional license metadata
-if [ -n "$(opnsense-update -K)" ]; then
+if [ -n "$(opnsense-update -x)" ]; then
     echo -n "Fetching subscription information, please wait... " >> ${LOCKFILE}
     if fetch -qT 5 -o ${LICENSEFILE} "$(opnsense-update -M)/subscription" >> ${LOCKFILE} 2>&1; then
         echo "done" >> ${LOCKFILE}
