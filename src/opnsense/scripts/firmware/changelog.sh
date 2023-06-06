@@ -53,7 +53,7 @@ changelog_url()
 
 	URLPREFIX="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}"
 
-	if [ -n "$(opnsense-update -K)" ]; then
+	if [ -n "$(opnsense-update -x)" ]; then
 		# changelogs differ for business subscriptions
 		URLPREFIX=$(opnsense-update -M)
 	fi
