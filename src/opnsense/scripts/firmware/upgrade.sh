@@ -37,6 +37,7 @@ echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 ${TEE} ${LOCKFILE} < ${PIPEFILE} &
+# XXX kernel is not rolled back at the moment, might have to add -K
 if opnsense-update -u > ${PIPEFILE} 2>&1; then
 	${TEE} ${LOCKFILE} < ${PIPEFILE} &
 	if /usr/local/etc/rc.syshook upgrade > ${PIPEFILE} 2>&1; then
@@ -47,6 +48,7 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 
 	# aboort pending upgrades
 	opnsense-update -e >> ${LOCKFILE} 2>&1
+
 fi
 
 echo '***DONE***' >> ${LOCKFILE}
