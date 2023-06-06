@@ -50,7 +50,6 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 
 	# aboort pending upgrades
 	opnsense-update -e >> ${LOCKFILE} 2>&1
-
 fi
 
 echo '***DONE***' >> ${LOCKFILE}
