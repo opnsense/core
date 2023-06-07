@@ -827,12 +827,11 @@ function ipsec_configure_spd()
 function ipsec_setup_pinghosts()
 {
     global $config;
+
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : [];
 
-    /* get the automatic ping_hosts.sh ready */
     @unlink('/var/db/ipsecpinghosts');
-    @touch('/var/db/ipsecpinghosts');
 
     if (!isset($config['ipsec']['enable'])) {
         return;
@@ -904,7 +903,11 @@ function ipsec_setup_pinghosts()
             }
         }
     }
-    @file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
+
+    if (!empty($ipsecpinghosts)) {
+        /* get the automatic ping_hosts.sh ready */
+        @file_put_contents('/var/db/ipsecpinghosts', $ipsecpinghosts);
+    }
 }
 
 /**
