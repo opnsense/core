@@ -36,6 +36,8 @@ You can contribute to the project in many ways, e.g. testing
 functionality, sending in bug reports or creating pull requests
 directly via GitHub.  Any help is always very welcome!
 
+You can learn more about contributing on [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 License
 =======
 
@@ -104,8 +106,15 @@ before issuing a pull request on GitHub.
 make style
 ----------
 
-Run the PSR2 and PEP8 style checks on MVC PHP code and Python,
+Run the PSR12 and PEP8 style checks on MVC PHP code and Python,
 respectively.
+For php code you will need to have `phpcs` and `phpcbf` installed.
+
+You can use the package `php-codesniffer` on Debian/Ubuntu.
+Python code will require `pycodestyle`.
+
+For easier development you may want to use an OPNsense VM and run:
+`pkg install os-debug` that will install all the necessary tools.
 
 make sweep
 ----------
