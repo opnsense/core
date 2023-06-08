@@ -143,6 +143,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if ($count || (!empty($desc) && !empty($email))) {
+            $files_to_upload = glob('/var/crash/*');
+            foreach ($files_to_upload as $file_to_upload) {
+                if (filesize($file_to_upload) > 450000) {
+                    @unlink($file_to_upload);
+                }
+            }
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
             if (file_exists('/tmp/PHP_errors.log')) {
                 // limit PHP_errors to send to 1MB
@@ -203,8 +209,12 @@ if ($has_crashed) {
         $crash_reports['dmesg.boot'] = trim($dmesg_boot);
     }
     foreach ($crash_files as $cf) {
-        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
-            $crash_reports[$cf] = trim(file_get_contents($cf));
+        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds') {
+            if (filesize($cf) > 450000) {
+                $crash_reports[$cf] = gettext('File too big to process. It will not be submitted automatically.');
+            } else {
+                $crash_reports[$cf] = trim(file_get_contents($cf));
+            }
         }
     }
 }

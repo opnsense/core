@@ -1,7 +1,12 @@
 #!/bin/sh
 
-sed -e 's/kdb.enter.panic=/kdb.enter.default=/' \
-    /etc/ddb.conf > /tmp/ddb.conf
+sed -e 's/kdb.enter.panic=/kdb.enter.default=/' /etc/ddb.conf > /tmp/ddb.conf
+
+if [ -d /usr/lib/debug/boot/kernel ]; then
+	# if we have a debug kernel create vmcore file instead
+	sed -e 's/kdb.enter.default=.*/kdb.enter.default=bt;dump;reset/' \
+	    -i '' /tmp/ddb.conf
+fi
 
 echo -n "Configuring crash dump device: "
 
@@ -14,6 +19,17 @@ while read DEV MP TYPE MORE; do
 		if savecore -C ${DEV} > /dev/null; then
 			savecore /var/crash ${DEV}
 		fi
+		for VMCORE in $(find /var/crash -type f -name "vmcore.*"); do
+			DST="/var/crash/kernel.${VMCORE##*.}"
+			SRC="/usr/lib/debug/$(sysctl -n kern.bootfile).debug"
+			if [ -e ${SRC} ] && [ ! -e ${DST} ]; then
+				cp ${SRC} ${DST}
+			fi
+			if [ -e ${DST} ]; then
+				ln -sfn "$(basename ${DST})" \
+				    /var/crash/kernel.last
+			fi
+		done
 		exit 0
 	fi
 done < /etc/fstab
