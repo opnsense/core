@@ -1,7 +1,12 @@
 #!/bin/sh
 
-sed -e 's/kdb.enter.panic=/kdb.enter.default=/' \
-    /etc/ddb.conf > /tmp/ddb.conf
+sed -e 's/kdb.enter.panic=/kdb.enter.default=/' /etc/ddb.conf > /tmp/ddb.conf
+
+if [ -d /usr/lib/debug/boot/kernel ]; then
+	# if we have a debug kernel create vmcore file instead
+	sed -e 's/kdb.enter.default=.*/kdb.enter.default=bt;dump;reset/' \
+	    -i '' /tmp/ddb.conf
+fi
 
 echo -n "Configuring crash dump device: "
 
