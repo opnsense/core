@@ -144,10 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         if ($count || (!empty($desc) && !empty($email))) {
             $files_to_upload = glob('/var/crash/*');
-            foreach ($files_to_upload as $key => $file) {
-                if (filesize($file) > 450000) {
-                    unset($files_to_upload[$key]);
-                    @unlink($file);
+            foreach ($files_to_upload as $file_to_upload) {
+                if (filesize($file_to_upload) > 450000) {
+                    @unlink($file_to_upload);
                 }
             }
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
