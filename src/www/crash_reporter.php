@@ -143,6 +143,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if ($count || (!empty($desc) && !empty($email))) {
+            $files_to_upload = glob('/var/crash/*');
+            foreach ($files_to_upload as $key => $file) {
+                if (filesize($file) > 450000) {
+                    unset($files_to_upload[$key]);
+                    @unlink($file);
+                }
+            }
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
             if (file_exists('/tmp/PHP_errors.log')) {
                 // limit PHP_errors to send to 1MB
@@ -152,11 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
             exec('/usr/bin/gzip /var/crash/*');
             $files_to_upload = glob('/var/crash/*');
-            foreach ($files_to_upload as $key => $file) {
-                if (filesize($file) > 450000) {
-                    unset($files_to_upload[$key]);
-                }
-            }
             upload_crash_report($files_to_upload, $user_agent);
             foreach ($files_to_upload as $file_to_upload) {
                 @unlink($file_to_upload);
