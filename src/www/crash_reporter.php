@@ -152,6 +152,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
             exec('/usr/bin/gzip /var/crash/*');
             $files_to_upload = glob('/var/crash/*');
+            foreach ($files_to_upload as $key => $file) {
+                if (filesize($file) > 450000) {
+                    unset($files_to_upload[$key]);
+                }
+            }
             upload_crash_report($files_to_upload, $user_agent);
             foreach ($files_to_upload as $file_to_upload) {
                 @unlink($file_to_upload);
@@ -203,8 +208,12 @@ if ($has_crashed) {
         $crash_reports['dmesg.boot'] = trim($dmesg_boot);
     }
     foreach ($crash_files as $cf) {
-        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
-            $crash_reports[$cf] = trim(file_get_contents($cf));
+        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds') {
+            if (filesize($cf) > 450000) {
+                $crash_reports[$cf] = gettext('File too big to process. It will not be submitted automatically.');
+            } else {
+                $crash_reports[$cf] = trim(file_get_contents($cf));
+            }
         }
     }
 }
