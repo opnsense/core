@@ -20,9 +20,10 @@ while read DEV MP TYPE MORE; do
 			savecore /var/crash ${DEV}
 		fi
 		for VMCORE in $(find /var/crash -type f -name "vmcore.*"); do
-			KERNEL="/var/crash/kernel.${VMCORE##*.}"
-			if [ ! -x ${KERNEL} ]; then
-				cp "$(sysctl -n kern.bootfile)" ${KERNEL}
+			DST="/var/crash/kernel.${VMCORE##*.}"
+			SRC="/usr/lib/debug/$(sysctl -n kern.bootfile).debug"
+			if [ -e ${SRC} && [ ! -e ${DST} ]; then
+				cp ${SRC} ${DST}
 			fi
 		done
 		exit 0
