@@ -25,6 +25,7 @@ while read DEV MP TYPE MORE; do
 			if [ -e ${SRC} ] && [ ! -e ${DST} ]; then
 				cp ${SRC} ${DST}
 			fi
+			ln -sfn "$(basename ${DST})" /var/crash/kernel.last
 		done
 		exit 0
 	fi
