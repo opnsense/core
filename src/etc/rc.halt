@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# shutdown syshook / plugin scripts
 /usr/local/etc/rc.syshook stop
 
 /sbin/shutdown -op now
