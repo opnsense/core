@@ -19,6 +19,12 @@ while read DEV MP TYPE MORE; do
 		if savecore -C ${DEV} > /dev/null; then
 			savecore /var/crash ${DEV}
 		fi
+		for VMCORE in $(find /var/crash -type f -name "vmcore.*"); do
+			KERNEL="/var/crash/kernel.${VMCORE##*.}"
+			if [ ! -x ${KERNEL} ]; then
+				cp "$(sysctl -n kern.bootfile)" ${KERNEL}
+			fi
+		done
 		exit 0
 	fi
 done < /etc/fstab
