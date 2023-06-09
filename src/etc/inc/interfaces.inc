@@ -3868,7 +3868,7 @@ function get_interfaces_info($include_unlinked = false)
         $ifinfo['status'] = in_array($ifinfo['if'], $ifup) ? 'up' : 'down';
         $ifinfo['statusv6'] = in_array($ifinfo['ifv6'], $ifup) ? 'up' : 'down';
 
-	/* undesired side effect of legacy_config_get_interfaces() */
+        /* undesired side effect of legacy_config_get_interfaces() */
         $ifinfo['ipaddr'] = $ifinfo['ipaddrv6'] = null;
 
         if (!empty($all_intf_details[$ifinfo['if']])) {
@@ -4339,6 +4339,7 @@ function interfaces_has_prefix_only($interface)
 
 function interfaces_primary_address($interface, $ifconfig_details = null)
 {
+    /* primary returns preferred local address according to configuration */
     $ifcfgip = $network = $subnetbits = null;
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
