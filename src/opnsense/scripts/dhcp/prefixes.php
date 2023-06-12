@@ -27,9 +27,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'config.inc';
 require_once 'util.inc';
+require_once 'plugins.inc';
 
-$leases_file = "/var/dhcpd/var/db/dhcpd6.leases";
+function parse_duid($duid_string)
+{
+    $parsed_duid = [];
+
+    for ($i = 0; $i < strlen($duid_string); $i++) {
+        $s = substr($duid_string, $i, 1);
+        if ($s == '\\') {
+            $n = substr($duid_string, $i + 1, 1);
+            if ($n == '\\' || $n == '"') {
+                $parsed_duid[] = sprintf('%02x', ord($n));
+                $i += 1;
+            } elseif (is_numeric($n)) {
+                $parsed_duid[] = sprintf('%02x', octdec(substr($duid_string, $i + 1, 3)));
+                $i += 3;
+            }
+        } else {
+            $parsed_duid[] = sprintf('%02x', ord($s));
+        }
+    }
+
+    $iaid = array_slice($parsed_duid, 0, 4);
+    $duid = array_slice($parsed_duid, 4);
+
+    return [$iaid, $duid];
+}
+
+$leases_file = '/var/dhcpd/var/db/dhcpd6.leases';
 if (!file_exists($leases_file)) {
     exit(1);
 }
@@ -54,6 +82,9 @@ foreach (new SplFileObject($leases_file) as $line) {
 
     /* closing bracket */
     if (preg_match("/^}/i ", $line)) {
+        $iaid_duid = parse_duid($duid);
+        $duid = implode(':', $iaid_duid[1]);
+
         switch ($type) {
             case "ia-na":
                 if (!empty($ia_na)) {
@@ -71,6 +102,24 @@ foreach (new SplFileObject($leases_file) as $line) {
         unset($duid);
         unset($ia_na);
         unset($ia_pd);
+    }
+}
+
+/* since a route requires a gateway try to derive it from static mapping as well */
+foreach (plugins_run('static_mapping') as $map) {
+    foreach ($map as $host) {
+        if (empty($host['duid'])) {
+            continue;
+        }
+
+        if (empty($duid_arr[$host['duid']])) {
+            continue;
+        }
+
+        if (!empty($host['ipaddrv6'])) {
+            /* we want static mapping to have a higher priority */
+            $duid_arr[$host['duid']]['ia-na'] = $host['ipaddrv6'];
+        }
     }
 }
 
