@@ -85,6 +85,7 @@ function parse_duid($duid_string)
 }
 
 $interfaces = legacy_config_get_interfaces(array('virtual' => false));
+$order = 'ip';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $leases_content = dhcpd_leases(6);
@@ -103,19 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $pools = array();
-    $leases = array();
-    $prefixes = array();
-    $mappings = array();
+    $pools = [];
+    $leases = [];
+    $prefixes = [];
+    $mappings = [];
     $i = 0;
     $l = 0;
     $p = 0;
 
-    // Put everything together again
     while($i < $leases_count) {
-        $entry = array();
-        /* split the line by space */
-        $duid_split = array();
+        $is_prefix = false;
+        $duid_split = [];
+        $entry = [];
+
         preg_match('/ia-.. "(.*)" { (.*)/ ', $leases_content[$i], $duid_split);
         if (!empty($duid_split[1])) {
             $iaid_duid = parse_duid($duid_split[1]);
@@ -125,10 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $data = explode(' ', $leases_content[$i]);
         }
-        /* walk the fields */
+
         $f = 0;
         $fcount = count($data);
-        /* with less then 12 fields there is nothing useful */
+
+        /* with less than 12 fields there is nothing useful */
         if ($fcount < 12) {
             $i++;
             continue;
@@ -148,9 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     continue 3;
                 case "ia-pd":
                     $is_prefix = true;
+                    /* FALLTHROUGH */
                 case "ia-na":
-                    $entry['iaid'] = $tmp_iaid;
-                    $entry['duid'] = $tmp_duid;
                     if ($data[$f+1][0] == '"') {
                         $duid = "";
                         /* FIXME: This needs a safety belt to prevent an infinite loop */
@@ -256,7 +257,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $l++;
         $i++;
-        $is_prefix = false;
     }
 
     if (count($leases) > 0) {
@@ -311,13 +311,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (isset($_GET['order']) && in_array($_GET['order'], ['int', 'ip', 'iaid', 'duid', 'hostname', 'descr', 'start', 'end', 'online', 'act'])) {
         $order = $_GET['order'];
-    } else {
-        $order = 'ip';
     }
 
     usort($leases,
         function ($a, $b) use ($order) {
-            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order], $b[$order]);
+            $cmp = ($order === 'ip') ? 0 : strnatcasecmp($a[$order] ?? '', $b[$order] ?? '');
             if ($cmp === 0) {
                 $cmp = ipcmp($a['ip'], $b['ip']);
             }
@@ -402,6 +400,7 @@ legacy_html_escape_form_data($leases);
           var all = <?=!empty($_GET['all']) ? 1 : 0;?> ;
           document.location = document.location.origin + window.location.pathname +"?all="+all+"&order="+$(this).data('field');
       });
+      $(".act_sort :first-child").css('cursor', 'pointer');
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -448,16 +447,16 @@ endif;?>
             <table class="table table-striped">
               <thead>
                 <tr>
-                    <th class="act_sort" data-field="int"><?=gettext("Interface"); ?></th>
-                    <th class="act_sort" data-field="ip"><?=gettext("IPv6 address"); ?></th>
-                    <th class="act_sort" data-field="iaid"><?=gettext("IAID"); ?></th>
-                    <th class="act_sort" data-field="duid"><?=gettext("DUID/MAC"); ?></th>
-                    <th class="act_sort" data-field="hostname"><?=gettext("Hostname"); ?></th>
-                    <th class="act_sort" data-field="descr"><?=gettext("Description"); ?></th>
-                    <th class="act_sort" data-field="start"><?=gettext("Start"); ?></th>
-                    <th class="act_sort" data-field="end"><?=gettext("End"); ?></th>
-                    <th class="act_sort" data-field="online"><?=gettext("Online"); ?></th>
-                    <th class="act_sort" data-field="act"><?=gettext("Lease Type"); ?></th>
+                    <th class="act_sort" data-field="int"><span><?=gettext("Interface"); ?></span></th>
+                    <th class="act_sort" data-field="ip"><span><?=gettext("IPv6 address"); ?></span></th>
+                    <th class="act_sort" data-field="iaid"><span><?=gettext("IAID"); ?></span></th>
+                    <th class="act_sort" data-field="duid"><span><?=gettext("DUID/MAC"); ?></span></th>
+                    <th class="act_sort" data-field="hostname"><span><?=gettext("Hostname"); ?></span></th>
+                    <th class="act_sort" data-field="descr"><span><?=gettext("Description"); ?></span></th>
+                    <th class="act_sort" data-field="start"><span><?=gettext("Start"); ?></span></th>
+                    <th class="act_sort" data-field="end"><span><?=gettext("End"); ?></span></th>
+                    <th class="act_sort" data-field="online"><span><?=gettext("Online"); ?></span></th>
+                    <th class="act_sort" data-field="act"><span><?=gettext("Lease Type"); ?></span></th>
                     <th class="text-nowrap"></th>
                 </tr>
               </thead>
@@ -505,7 +504,7 @@ endif;?>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$duid_content;?></td>
                   <td><?= !empty($data['hostname']) ? html_safe($data['hostname']) : '' ?></td>
-                  <td><?= html_safe($data['descr']);?></td>
+                  <td><?= html_safe($data['descr'] ?? '');?></td>
                   <td><?= !empty($data['start']) ? adjust_utc($data['start']) : '' ?></td>
                   <td><?= !empty($data['end']) ? adjust_utc($data['end']) : '' ?></td>
                   <td>
@@ -580,8 +579,8 @@ endif;?>
 
       <section class="col-xs-12">
           <form method="get">
-          <input type="hidden" name="order" value="<?=htmlspecialchars($_GET['order']);?>" />
-          <?php if ($_GET['all']): ?>
+          <input type="hidden" name="order" value="<?= html_safe($order) ?>" />
+          <?php if ($_GET['all'] ?? 0): ?>
           <input type="hidden" name="all" value="0" />
           <input type="submit" class="btn btn-default" value="<?= html_safe(gettext('Show active and static leases only')) ?>" />
           <?php else: ?>
