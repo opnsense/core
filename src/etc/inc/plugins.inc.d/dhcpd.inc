@@ -1947,3 +1947,29 @@ function dhcpd_leases($inet = 4)
 
     return $content;
 }
+
+function dhcpd_parse_duid($duid_string)
+{
+    $parsed_duid = [];
+
+    for ($i = 0; $i < strlen($duid_string); $i++) {
+        $s = substr($duid_string, $i, 1);
+        if ($s == '\\') {
+            $n = substr($duid_string, $i + 1, 1);
+            if ($n == '\\' || $n == '"') {
+                $parsed_duid[] = sprintf('%02x', ord($n));
+                $i += 1;
+            } elseif (is_numeric($n)) {
+                $parsed_duid[] = sprintf('%02x', octdec(substr($duid_string, $i + 1, 3)));
+                $i += 3;
+            }
+        } else {
+            $parsed_duid[] = sprintf('%02x', ord($s));
+        }
+    }
+
+    $iaid = array_slice($parsed_duid, 0, 4);
+    $duid = array_slice($parsed_duid, 4);
+
+    return [$iaid, $duid];
+}

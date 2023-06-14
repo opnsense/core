@@ -31,32 +31,7 @@
 require_once 'config.inc';
 require_once 'interfaces.inc';
 require_once 'util.inc';
-
-function parse_duid($duid_string)
-{
-    $parsed_duid = [];
-
-    for ($i = 0; $i < strlen($duid_string); $i++) {
-        $s = substr($duid_string, $i, 1);
-        if ($s == '\\') {
-            $n = substr($duid_string, $i + 1, 1);
-            if ($n == '\\' || $n == '"') {
-                $parsed_duid[] = sprintf('%02x', ord($n));
-                $i += 1;
-            } elseif (is_numeric($n)) {
-                $parsed_duid[] = sprintf('%02x', octdec(substr($duid_string, $i + 1, 3)));
-                $i += 3;
-            }
-        } else {
-            $parsed_duid[] = sprintf('%02x', ord($s));
-        }
-    }
-
-    $iaid = array_slice($parsed_duid, 0, 4);
-    $duid = array_slice($parsed_duid, 4);
-
-    return [$iaid, $duid];
-}
+require_once 'plugins.inc.d/dhcpd.inc';
 
 $leases_file = '/var/dhcpd/var/db/dhcpd6.leases';
 if (!file_exists($leases_file)) {
@@ -83,7 +58,7 @@ foreach (new SplFileObject($leases_file) as $line) {
 
     /* closing bracket */
     if (preg_match("/^}/i ", $line)) {
-        $iaid_duid = parse_duid($duid);
+        $iaid_duid = dhcpd_parse_duid($duid);
         $duid = implode(':', $iaid_duid[1]);
 
         switch ($type) {
