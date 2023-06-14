@@ -2,6 +2,7 @@
 <?php
 
 /*
+ * Copyright (C) 2022-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2012 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
  *
@@ -86,14 +87,14 @@ foreach (new SplFileObject($leases_file) as $line) {
         $duid = implode(':', $iaid_duid[1]);
 
         switch ($type) {
-            case "ia-na":
+            case 'ia-na':
                 if (!empty($ia_na)) {
-                    $duid_arr[$duid][$type] = $ia_na;
+                    $duid_arr[$duid]['address'] = $ia_na;
                 }
                 break;
-            case "ia-pd":
+            case 'ia-pd':
                 if (!empty($ia_pd)) {
-                    $duid_arr[$duid][$type] = $ia_pd;
+                    $duid_arr[$duid]['prefix'] = $ia_pd;
                 }
                 break;
         }
@@ -105,7 +106,7 @@ foreach (new SplFileObject($leases_file) as $line) {
     }
 }
 
-/* since a route requires a gateway try to derive it from static mapping as well */
+/* since a route requires a gateway address try to derive it from static mapping as well */
 foreach (plugins_run('static_mapping') as $map) {
     foreach ($map as $host) {
         if (empty($host['duid'])) {
@@ -118,40 +119,41 @@ foreach (plugins_run('static_mapping') as $map) {
 
         if (!empty($host['ipaddrv6'])) {
             /* we want static mapping to have a higher priority */
-            $duid_arr[$host['duid']]['ia-na'] = $host['ipaddrv6'];
+            $duid_arr[$host['duid']]['address'] = $host['ipaddrv6'];
         }
     }
 }
 
 $routes = [];
+$expires = [];
 
+/* collect active leases */
 foreach ($duid_arr as $entry) {
-    if (!empty($entry['ia-pd']) && !empty($entry['ia-na'])) {
-        $routes[$entry['ia-na']] = $entry['ia-pd'];
+    if (!empty($entry['address']) && !empty($entry['prefix'])) {
+        $routes[$entry['address']] = $entry['prefix'];
     }
 }
 
+/* collect expired leases */
+$dhcpd_log = shell_safe('opnsense-log -n dhcpd');
+if (!empty($dhcpd_log)) {
+    foreach (new SplFileObject($dhcpd_log) as $line) {
+        if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
+            if (!in_array($expire[1], $routes)) {
+                $expires[$expire[1]] = 1;
+            }
+        }
+    }
+
+}
+
+/* expire unused first */
+foreach (array_keys($expires) as $prefix) {
+    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
+}
+
+/* active route sync */
 foreach ($routes as $address => $prefix) {
     mwexecf('/sbin/route delete -inet6 %s %s', [$prefix, $address], true);
     mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
-}
-
-$dhcpd_log = shell_safe('opnsense-log -n dhcpd');
-$expires = [];
-
-if (empty($dhcpd_log)) {
-    exit(1);
-}
-
-foreach (new SplFileObject($dhcpd_log) as $line) {
-    if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
-        if (in_array($expire[1], $routes)) {
-            continue;
-        }
-        $expires[$expire[1]] = 1;
-    }
-}
-
-foreach (array_keys($expires) as $prefix) {
-    mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
 }
