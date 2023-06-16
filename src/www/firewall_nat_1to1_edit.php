@@ -196,6 +196,7 @@ include("head.inc");
                     } else {
                       $(this).removeClass("hidden");
                     }
+                    $(this).prop("disabled", false);
                   });
               } else {
                   // hide related controls
@@ -205,6 +206,7 @@ include("head.inc");
                     } else {
                       $(this).addClass("hidden");
                     }
+                    $(this).prop("disabled", true);
                   });
               }
             });
