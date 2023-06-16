@@ -459,6 +459,7 @@ $( document ).ready(function() {
                     } else {
                       $(this).removeClass("hidden");
                     }
+                    $(this).prop("disabled", false);
                   });
               } else {
                   // hide related controls
@@ -468,6 +469,7 @@ $( document ).ready(function() {
                     } else {
                       $(this).addClass("hidden");
                     }
+                    $(this).prop("disabled", true);
                   });
               }
             });
