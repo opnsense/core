@@ -166,6 +166,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			php${CORE_PHP}-ldap \
 			php${CORE_PHP}-pdo \
 			php${CORE_PHP}-pecl-radius \
+			php${CORE_PHP}-pear-Crypt_CHAP \
 			php${CORE_PHP}-phalcon \
 			php${CORE_PHP}-phpseclib \
 			php${CORE_PHP}-session \
