@@ -450,7 +450,7 @@ class Radius extends Base implements IAuthConnector
                     break;
                 case 'MSCHAPv2':
                     require_once 'Crypt/CHAP.php';
-                    $crpt = new \Crypt_CHAP_MSv2;
+                    $crpt = new \Crypt_CHAP_MSv2();
                     $crpt->username = $username;
                     $crpt->password = $password;
 
@@ -463,13 +463,23 @@ class Radius extends Base implements IAuthConnector
                         $crpt->challengeResponse()
                     );
 
-                    if (!radius_put_vendor_attr(
-                        $radius, RADIUS_VENDOR_MICROSOFT, RADIUS_MICROSOFT_MS_CHAP_CHALLENGE, $crpt->authChallenge
-                    )) {
+                    if (
+                        !radius_put_vendor_attr(
+                            $radius,
+                            RADIUS_VENDOR_MICROSOFT,
+                            RADIUS_MICROSOFT_MS_CHAP_CHALLENGE,
+                            $crpt->authChallenge
+                        )
+                    ) {
                         $error = radius_strerror($radius);
-                    } elseif (!radius_put_vendor_attr(
-                        $radius, RADIUS_VENDOR_MICROSOFT, RADIUS_MICROSOFT_MS_CHAP2_RESPONSE, $resp
-                    )) {
+                    } elseif (
+                        !radius_put_vendor_attr(
+                            $radius,
+                            RADIUS_VENDOR_MICROSOFT,
+                            RADIUS_MICROSOFT_MS_CHAP2_RESPONSE,
+                            $resp
+                        )
+                    ) {
                         $error = radius_strerror($radius);
                     }
                     break;
