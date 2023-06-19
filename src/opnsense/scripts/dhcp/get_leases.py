@@ -38,10 +38,16 @@ import ujson
 app_params = {'inactive': '0'}
 params.update_params(app_params)
 
+last_leases = dict()
 result = list()
 dhcpdleases = watchers.dhcpd.DHCPDLease()
 for lease in dhcpdleases.watch():
-    if 'ends' not in lease or lease['ends'] is None or lease['ends'] > time.time() or app_params['inactive'] != '0':
-        result.append(lease)
+    # only the last entries for a given IP are relevant
+    last_leases[lease['address']] = lease
+
+if last_leases:
+    for lease in last_leases.values():
+        if ('ends' in lease and lease['ends'] is not None and lease['ends'] > time.time()) or app_params['inactive'] != '0':
+            result.append(lease)
 
 print (ujson.dumps(result))

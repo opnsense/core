@@ -76,6 +76,8 @@ class DHCPDLease(object):
                 field_value = parts[1].split('"')[1]
             elif field_name == 'set' and len(parts) >= 4 and parts[1] == 'hostname-override' and parts[3].find('"') > -1:
                 hostname_override = parts[3].split('"')[1]
+            elif field_name == 'binding' and len(parts) >= 3 and parts[1] == 'state':
+                field_value = parts[2].strip(';')
 
             if field_value is not None:
                 lease[field_name] = field_value

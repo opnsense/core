@@ -340,6 +340,22 @@ class Util
     }
 
     /**
+     * returns whether a given IP is in a CIDR block
+     */
+    public static function isIPInCIDR($ip, $cidr)
+    {
+        list ($subnet, $bits) = explode('/', $cidr);
+        if ($bits === null) {
+            $bits = 32;
+        }
+        $ip = ip2long($ip);
+        $subnet = ip2long($subnet);
+        $mask = -1 << (32 - $bits);
+        $subnet &= $mask;
+        return ($ip & $mask) == $subnet;
+    }
+
+    /**
      * convert ipv4 cidr to netmask e.g. 24 --> 255.255.255.0
      * @param int $bits ipv4 bits
      * @return string netmask

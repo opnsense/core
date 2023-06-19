@@ -1,0 +1,27 @@
+<acl>
+    <page-services-dhcprelay>
+        <name>Services: DHCP Relay</name>
+        <patterns>
+            <pattern>services_dhcp_relay.php*</pattern>
+        </patterns>
+    </page-services-dhcprelay>
+    <page-services-dhcpserver-editstaticmapping>
+        <name>Services: DHCP Server: Edit static mapping</name>
+        <patterns>
+            <pattern>services_dhcp_edit.php*</pattern>
+        </patterns>
+    </page-services-dhcpserver-editstaticmapping>
+    <page-services-dhcpserver>
+        <name>Services: DHCP server</name>
+        <patterns>
+            <pattern>services_dhcp.php*</pattern>
+        </patterns>
+    </page-services-dhcpserver>
+    <page-services-dhcpserver-leases>
+        <name>Services: DHCP Server: Leases</name>
+        <patterns>
+            <pattern>ui/dhcp/leases</pattern>
+            <pattern>api/dhcp/leases/*</pattern>
+        </patterns>
+    </page-services-dhcpserver-leases>
+</acl>
