@@ -160,7 +160,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
                 else:
                     syslog.syslog(
                         syslog.LOG_WARNING,
-                        "dhcpd leases: %s not a valid hostname, ignoring" % cached_leases[address]['client-hostname']
+                        "dhcpd leases: %s not a valid hostname, ignoring" % lease['client-hostname']
                     )
 
         remove_rr = list()
