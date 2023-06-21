@@ -63,11 +63,6 @@ def unbound_control(commands, input=None, output_stream=None):
     if output_stream:
         output_stream.seek(0)
 
-def valid_hostname(hostname):
-    hostname = hostname.rstrip('.')
-    correct = re.compile("(?!-)[A-Z0-9-]{1,63}(?<!-)$", re.IGNORECASE)
-    return all(correct.match(part) for part in hostname.split('.'))
-
 class UnboundLocalData:
     def __init__(self):
         self._map_by_address = dict()
@@ -141,6 +136,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
     dhcpdleases = watchers.dhcpd.DHCPDLease(watch_file)
     cached_leases = dict()
     unbound_local_data = UnboundLocalData()
+    hostname_pattern = re.compile("(?!-)[A-Z0-9-]*(?<!-)$", re.IGNORECASE)
 
     # start watching dhcp leases
     last_cleanup = time.time()
@@ -149,7 +145,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
         for lease in dhcpdleases.watch():
             if 'ends' in lease and lease['ends'] > time.time() \
                     and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
-                if valid_hostname(lease['client-hostname']):
+                if all(hostname_pattern.match(part) for part in lease['client-hostname'].strip().split('.')):
                     address = ipaddress.ip_address(lease['address'])
                     lease['domain'] = default_domain
                     for lease_config in lease_configs:
