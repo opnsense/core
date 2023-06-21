@@ -713,6 +713,9 @@
                     }
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
+                    if (firmwareconfig['flavour'] !== '') {
+                        $("i.fa-toggle-off#show_advanced_firmware").click();
+                    }
 
                     $.each(firmwareoptions.families, function(key, value) {
                         var selected = false;
