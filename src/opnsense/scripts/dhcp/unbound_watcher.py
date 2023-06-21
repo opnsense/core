@@ -145,7 +145,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
         for lease in dhcpdleases.watch():
             if 'ends' in lease and lease['ends'] > time.time() \
                     and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
-                if all(hostname_pattern.match(part) for part in lease['client-hostname'].strip().split('.')):
+                if all(hostname_pattern.match(part) for part in lease['client-hostname'].strip('.').split('.')):
                     address = ipaddress.ip_address(lease['address'])
                     lease['domain'] = default_domain
                     for lease_config in lease_configs:
