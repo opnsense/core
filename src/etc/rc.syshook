@@ -69,7 +69,7 @@ for _SYSHOOK in ${SYSHOOKS}; do
 	echo ">>> Invoking ${SYSLEVEL} script '${SYSNAME}'"
 
 	if ! ${_SYSHOOK} "${@}"; then
-		echo ">>> Error in ${SYSLEVEL} script '${SYSNAME}'"
+		echo ">>> Error in ${SYSLEVEL} script '${SYSHOOK}'"
 		RETURN=1
 	fi
 done
