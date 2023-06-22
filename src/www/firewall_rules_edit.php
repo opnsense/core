@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!is_specialnet($pconfig['dst']) && !is_ipaddroralias($pconfig['dst'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."),$pconfig['dst']);
     }
-    if (!empty($pconfig['dstmask']) && !is_numericint($pconfig['dstcmask'])) {
+    if (!empty($pconfig['dstmask']) && !is_numericint($pconfig['dstmask'])) {
         $input_errors[] = gettext("A valid destination bit count must be specified.");
     }
 
