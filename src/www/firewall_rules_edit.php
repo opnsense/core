@@ -214,14 +214,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields = array("ipprotocol","type","protocol","src","dst");
     $reqdfieldsn = array(gettext("TCP/IP Version"),gettext("Type")
                         ,gettext("Protocol"),gettext("Source"),gettext("Destination"));
-    if (!is_specialnet($pconfig['src'])) {
-      $reqdfields[] = "srcmask";
-      $reqdfieldsn[] = gettext("Source bit count");
-    }
-    if (!is_specialnet($pconfig['dst'])) {
-      $reqdfields[] = "dstmask";
-      $reqdfieldsn[] = gettext("Destination bit count");
-    }
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
@@ -287,21 +279,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ( (is_alias($pconfig['dstbeginport']) || is_alias($pconfig['dstendport']))  && $pconfig['dstbeginport'] != $pconfig['dstendport']) {
         $input_errors[] = gettext('When selecting aliases for destination ports, both from and to fields must be the same');
     }
-    if (!is_specialnet($pconfig['src'])) {
-        if (!is_ipaddroralias($pconfig['src'])) {
-            $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
-        }
-        if (!is_numericint($pconfig['srcmask'])) {
-            $input_errors[] = gettext("A valid source bit count must be specified.");
-        }
+    if (!is_specialnet($pconfig['src']) && !is_ipaddroralias($pconfig['src'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
     }
-    if (!is_specialnet($pconfig['dst'])) {
-        if (!is_ipaddroralias($pconfig['dst'])) {
-            $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."),$pconfig['dst']);
-        }
-        if (!is_numericint($pconfig['dstmask'])) {
-            $input_errors[] = gettext("A valid destination bit count must be specified.");
-        }
+    if (!empty($pconfig['srcmask']) && !is_numericint($pconfig['srcmask'])) {
+        $input_errors[] = gettext("A valid source bit count must be specified.");
+    }
+    if (!is_specialnet($pconfig['dst']) && !is_ipaddroralias($pconfig['dst'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."),$pconfig['dst']);
+    }
+    if (!empty($pconfig['dstmask']) && !is_numericint($pconfig['dstcmask'])) {
+        $input_errors[] = gettext("A valid destination bit count must be specified.");
     }
 
     if (is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst'])) {
