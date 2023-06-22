@@ -58,6 +58,12 @@ class Config extends Singleton
     private $simplexml = null;
 
     /**
+     * status field: file is locked (Exclusive)
+     * @var bool
+     */
+    private $statusIsLocked = false;
+
+    /**
      * status field: valid config loaded
      * @var bool
      */
@@ -310,6 +316,7 @@ class Config extends Singleton
      */
     protected function init()
     {
+        $this->statusIsLocked = false;
         $this->config_file = FactoryDefault::getDefault()->get('config')->globals->config_path . "config.xml";
         try {
             $this->load();
@@ -381,7 +388,9 @@ class Config extends Singleton
 
             $result = simplexml_load_string($xml);
             restore_error_handler();
-            flock($fp, LOCK_UN);
+            if (!$this->statusIsLocked) {
+                flock($fp, LOCK_UN);
+            }
             if ($result != null) {
                 break; // successful load
             }
@@ -746,6 +755,7 @@ class Config extends Singleton
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);
+            $this->statusIsLocked = true;
             if ($reload) {
                 $this->load();
             }
@@ -760,6 +770,7 @@ class Config extends Singleton
     {
         if (is_resource($this->config_file_handle)) {
             flock($this->config_file_handle, LOCK_UN);
+            $this->statusIsLocked = false;
         }
         return $this;
     }
