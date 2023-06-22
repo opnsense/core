@@ -567,9 +567,9 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_monitor_noroute" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Host Route "); ?></td>
+                  <td><a id="help_for_monitor_noroute" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable Host Route') ?></td>
                   <td>
-                    <input name="monitor_noroute" type="checkbox" value="yes" <?=!empty($pconfig['monitor_noroute']) ? "checked=\"checked\"" : "";?>/>
+                    <input name="monitor_noroute" type="checkbox" value="yes" <?=!empty($pconfig['monitor_noroute']) ? 'checked="checked"' : '' ?>/>
                     <div class="hidden" data-for="help_for_monitor_noroute">
                       <?= gettext('Do not create a dedicated host route for this monitor.') ?>
                     </div>
