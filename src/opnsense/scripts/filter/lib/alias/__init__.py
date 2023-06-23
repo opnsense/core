@@ -164,6 +164,7 @@ class Alias(object):
             :return: string
         """
         if not self._resolve_content:
+
             if self.expired() or self.changed() or force:
                 alias_file_exists = os.path.isfile(self._filename_alias_content)
                 if alias_file_exists:
@@ -182,6 +183,7 @@ class Alias(object):
                 else:
                     hash_contents = ""
                 unique_id = self.uniqueid()
+                syslog.syslog(syslog.LOG_ERR, 'add %s (%s, %s, %s/%s)' % (self._name, self.expired(), self.changed(), force, hash_contents, unique_id))
                 try:
                     self._resolve_content = self.pre_process()
                     if address_parser:
@@ -190,8 +192,8 @@ class Alias(object):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
-                    # Do not overwrite unchanged contents
-                    # Do not overwrite if the hashes are the same
+                    # Do not overwrite if the hashes are the same but write if the file is empty
+                    # TODO: handle length 0 and empty contents
                     if (undo_content == "" or hash_contents != unique_id) or not alias_file_exists:
                         # Always save last recorded content to disk, also when we're not responsible for the alias
                         # so we can use cached results when reloading a single alias.
