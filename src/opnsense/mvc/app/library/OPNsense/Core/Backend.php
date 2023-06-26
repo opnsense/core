@@ -169,7 +169,7 @@ class Backend
         }
 
         foreach ($params as $param) {
-            $event .= ' ' . escapeshellarg($param);
+            $event .= ' ' . escapeshellarg($param ?? '');
         }
 
         return $this->configdRun($event, $detach, $timeout, $connect_timeout);
