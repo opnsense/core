@@ -248,7 +248,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         if ($result != null) {
             $logs = array();
             foreach ($result as $log) {
-                $log['modified'] = date('Y/m/d G:i', $log['modified']);
+                $log['modified'] = date('Y/m/d G:i', (int)$log['modified']);
                 $logs[] = $log;
             }
             return $logs;
