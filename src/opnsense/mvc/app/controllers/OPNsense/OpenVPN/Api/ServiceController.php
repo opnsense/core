@@ -55,10 +55,12 @@ class ServiceController extends ApiControllerBase
             }
         }
         foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
-            $config_payload[$node_uuid] = [
-                'enabled' => (string)$node->enabled,
-                'description' => (string)$node->description
-            ];
+            if ((string)$node->role == $role) {
+                $config_payload[$node_uuid] = [
+                    'enabled' => (string)$node->enabled,
+                    'description' => (string)$node->description
+                ];
+            }
         }
         return $config_payload;
     }

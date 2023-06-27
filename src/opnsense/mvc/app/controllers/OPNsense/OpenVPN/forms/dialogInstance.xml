@@ -143,6 +143,7 @@
         <id>instance.crl</id>
         <label>Certificate Revocation List</label>
         <type>dropdown</type>
+        <style>selectpicker role role_server</style>
         <help>Select a certificate revocation list to use for this service.</help>
     </field>
     <field>
@@ -152,12 +153,28 @@
         <help>Specify if the client is required to offer a certificate.</help>
     </field>
     <field>
+        <id>instance.cert_depth</id>
+        <label>Certificate Depth</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>When a certificate-based client logs in, do not accept certificates below this depth. Useful for denying certificates made with intermediate CAs generated from the same CA as the server.</help>
+    </field>
+    <field>
         <id>instance.tls_key</id>
         <label>TLS static key</label>
         <type>dropdown</type>
         <help>
             Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack.
             The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt).
+        </help>
+    </field>
+    <field>
+        <id>instance.auth</id>
+        <label>Auth</label>
+        <advanced>true</advanced>
+        <type>dropdown</type>
+        <help>
+            Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg.
         </help>
     </field>
     <field>

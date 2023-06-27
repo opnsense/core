@@ -133,7 +133,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                     ovpn_start($node, $statHandle);
                     break;
                 case 'configure':
-                    if ($instance_stats['has_changed']) {
+                    if ($instance_stats['has_changed'] || !isvalidpid($node->pidFilename)) {
                         ovpn_stop($node);
                         ovpn_start($node, $statHandle);
                     }

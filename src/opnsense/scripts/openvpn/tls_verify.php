@@ -36,16 +36,7 @@ require_once("config.inc");
  */
 function do_verify($serverid)
 {
-    global $config;
-    $a_server = null;
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $server) {
-            if ($server['vpnid'] == $serverid) {
-                $a_server = $server;
-                break;
-            }
-        }
-    }
+    $a_server = (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($serverid, 'server');
     if ($a_server === null) {
         return "OpenVPN '$serverid' was not found. Denying authentication for user {$username}";
     }
