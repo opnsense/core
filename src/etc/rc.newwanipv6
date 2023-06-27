@@ -82,9 +82,13 @@ log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interfac
 
 interfaces_vips_configure($interface, 6);
 
-if (($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') == 'slaac') {
-    /* require immediate reconfiguration before reconfiguring clients */
-    plugins_configure('dhcp', false, ['inet6']);
+switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+    case 'slaac':
+        /* require immediate reconfiguration before reconfiguring clients */
+        plugins_configure('dhcp', false, ['inet6']);
+        break;
+    default:
+        break;
 }
 
 /* XXX handling reloads for tracked interfaces is difficult, for now reload multiple times */
