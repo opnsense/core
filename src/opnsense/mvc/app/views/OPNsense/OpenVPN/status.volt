@@ -34,7 +34,7 @@
                 selection: false,
                 formatters:{
                     bytes: function(column, row) {
-                        if (row[column.id]) {
+                        if (row[column.id] && row[column.id] > 0) {
                             return byteFormat(row[column.id], 2);
                         }
                         return '';

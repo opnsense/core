@@ -55,10 +55,12 @@ class ServiceController extends ApiControllerBase
             }
         }
         foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
-            $config_payload[$node_uuid] = [
-                'enabled' => (string)$node->enabled,
-                'description' => (string)$node->description
-            ];
+            if ((string)$node->role == $role) {
+                $config_payload[$node_uuid] = [
+                    'enabled' => (string)$node->enabled,
+                    'description' => (string)$node->description
+                ];
+            }
         }
         return $config_payload;
     }
@@ -102,16 +104,16 @@ class ServiceController extends ApiControllerBase
                         $records[] = $stats;
                     }
                 }
-                // add non running enabled servers
-                foreach ($config_payload as $idx => $cnf) {
-                    if (!in_array($idx, $vpnids) && !empty($cnf['enabled'])) {
-                        $records[] = [
-                            'id' => $idx,
-                            'service_id' =>  "openvpn/" . $idx,
-                            'type' => $role,
-                            'description' => $cnf['description'],
-                        ];
-                    }
+            }
+            // add non running enabled servers
+            foreach ($config_payload as $idx => $cnf) {
+                if (!in_array($idx, $vpnids) && !empty($cnf['enabled'])) {
+                    $records[] = [
+                        'id' => $idx,
+                        'service_id' =>  "openvpn/" . $idx,
+                        'type' => $role,
+                        'description' => $cnf['description'],
+                    ];
                 }
             }
         }
