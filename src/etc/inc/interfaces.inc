@@ -3630,6 +3630,8 @@ function link_interface_to_track6($wanif, $update = false)
         }
 
         if (count($list)) {
+            $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
+            sleep($dad_delay + 1);
             plugins_configure('dhcp', false, ['inet6']);
         }
     }
