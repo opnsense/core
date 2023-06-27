@@ -61,22 +61,26 @@ class ApiControllerBase extends ControllerRoot
         $entry_keys = array_keys($records);
         $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
 
+        $sortOrder = SORT_ASC;
+        $sortKey = $defaultSort;
         if (
             $this->request->hasPost('sort') &&
             is_array($this->request->getPost('sort')) &&
             !empty($this->request->getPost('sort'))
         ) {
             $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($records, $keys[0]);
-            if (!empty($keys)) {
-                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $records);
+            $sortOrder = $this->request->getPost('sort')[$keys[0]] == 'asc' ? SORT_ASC : SORT_DESC;
+            $sortKey = $keys[0];
+        }
+        if (!empty($sortKey) && !empty($records)) {
+            // make sure the sort key exists in the recordset to prevent "sizes are inconsistent"
+            foreach ($records as &$record) {
+                if (!isset($record[$sortKey])) {
+                    $record[$sortKey] = null;
+                }
             }
-        } elseif (!empty($defaultSort)) {
-            $keys = array_column($records, $defaultSort);
-            if (!empty($keys)) {
-                array_multisort($keys, SORT_ASC, $sort_flags, $records);
-            }
+            $keys = array_column($records, $sortKey);
+            array_multisort($keys, $sortOrder, $sort_flags, $records);
         }
 
         $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
