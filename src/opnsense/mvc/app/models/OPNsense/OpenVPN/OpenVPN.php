@@ -484,7 +484,8 @@ class OpenVPN extends BaseModel
                 $options['verb'] = (string)$node->verb;
                 $options['verify-client-cert'] = (string)$node->verify_client_cert;
 
-                foreach ([
+                foreach (
+                    [
                     'reneg-sec', 'auth-gen-token', 'port', 'local', 'data-ciphers', 'data-ciphers-fallback', 'auth'
                     ] as $opt
                 ) {
