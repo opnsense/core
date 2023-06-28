@@ -186,6 +186,8 @@
             </jostletimeout>
             <cachemaxttl type="NumericField">
             </cachemaxttl>
+            <cachemaxnegativettl type="NumericField">
+            </cachemaxnegativettl>
             <cacheminttl type="NumericField">
             </cacheminttl>
             <infrahostttl type="NumericField">

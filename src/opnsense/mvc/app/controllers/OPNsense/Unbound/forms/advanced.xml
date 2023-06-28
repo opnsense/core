@@ -326,6 +326,17 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.cachemaxnegativettl</id>
+        <label>Maximum Negative TTL for RRsets and messages</label>
+        <type>text</type>
+        <help>
+            Configure a maximum Negative Time to live in seconds for RRsets and messages in the cache.
+            When the internal TTL expires the negative response cache item is expired.
+            This can be configured to force the resolver to query for data more often in case you wont
+            get a valid answer.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.cacheminttl</id>
         <label>Minimum TTL for RRsets and messages</label>
         <type>text</type>
