@@ -7,10 +7,10 @@
     </field>
     <field>
         <id>unbound.dnsbl.safesearch</id>
-        <label>Enable SafeSearch</label>
+        <label>Force SafeSearch</label>
         <type>checkbox</type>
         <style>safesearch</style>
-        <help>Enable the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
+        <help>Force the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
     </field>
     <field>
         <id>unbound.dnsbl.type</id>
