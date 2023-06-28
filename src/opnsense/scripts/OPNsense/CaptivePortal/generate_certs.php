@@ -44,13 +44,15 @@ if (isset($configObj->OPNsense->captiveportal->zones)) {
         // if the zone has a certificate attached, search for its contents
         if ($cert && !empty($cert['prv'])) {
             $output_pem_filename = "/var/etc/cert-cp-zone{$zone->zoneid}.pem";
-            file_put_contents($output_pem_filename, $cert['crt'] . $cert['prv']);
+            touch($output_pem_filename);
             chmod($output_pem_filename, 0600);
+            file_put_contents($output_pem_filename, $cert['crt'] . $cert['prv']);
             echo "certificate generated " . $output_pem_filename . "\n";
             if (!empty($cert['ca'])) {
                 $output_pem_filename = "/var/etc/ca-cp-zone{$zone->zoneid}.pem";
-                file_put_contents($output_pem_filename, $cert['ca']['crt']);
+                touch($output_pem_filename);
                 chmod($output_pem_filename, 0600);
+                file_put_contents($output_pem_filename, $cert['ca']['crt']);
                 echo "certificate generated " . $output_pem_filename  . "\n";
             }
         }

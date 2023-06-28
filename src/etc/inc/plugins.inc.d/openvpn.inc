@@ -441,8 +441,9 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
     $fpath = "/var/etc/openvpn/{$mode_id}.{$directive}";
     openvpn_create_dirs();
     $data = !empty($data) ? str_replace("\r", "", base64_decode($data)) : '';
-    file_put_contents($fpath, str_replace("\n\n", "\n", $data));
+    @touch($fpath);
     @chmod($fpath, 0600);
+    file_put_contents($fpath, str_replace("\n\n", "\n", $data));
 
     $conf .= "{$directive} {$fpath} {$opt}\n";
 }
@@ -884,12 +885,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 
     openvpn_add_custom($settings, $conf);
 
+    @touch("/var/etc/openvpn/{$mode_id}.conf");
+    @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
     file_put_contents("/var/etc/openvpn/{$mode_id}.conf", $conf);
-
-    @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
-    @chmod("/var/etc/openvpn/{$mode_id}.key", 0600);
-    @chmod("/var/etc/openvpn/{$mode_id}.tls-auth", 0600);
-    @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
 function openvpn_restart($mode, $settings, $carp_event = false)

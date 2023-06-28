@@ -345,8 +345,9 @@ class OpenVPN extends BaseModel
                 if ($key == 'auth-user-pass') {
                     // user/passwords need to be feed using a file
                     $output .= $key . " " . $value['filename'] . "\n";
-                    file_put_contents($value['filename'], $value['content']);
+                    @touch($value['filename']);
                     @chmod($value['filename'], 0600);
+                    file_put_contents($value['filename'], $value['content']);
                 } else {
                     foreach ($value as $item) {
                         $output .= $key . " " . $item . "\n";
@@ -356,8 +357,9 @@ class OpenVPN extends BaseModel
                 $output .= $key . " " . $value . "\n";
             }
         }
-        file_put_contents($filename, $output);
+        @touch($filename);
         @chmod($filename, 0600);
+        file_put_contents($filename, $output);
     }
 
     /**

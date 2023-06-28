@@ -1130,18 +1130,22 @@ function ipsec_write_certs()
     global $config;
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : [];
 
-    $filenames = [];
     foreach ((new \OPNsense\IPsec\Swanctl())->getUsedCertrefs() as $certref) {
         $cert = lookup_cert($certref);
         if (empty($cert)) {
             log_msg(sprintf('Error: Invalid certificate reference for %s', $ph1ent['name']), LOG_ERR);
             continue;
         }
+
         $ph1keyfile = "/usr/local/etc/swanctl/private/{$certref}.key";
+        @touch($ph1keyfile);
+        @chmod($ph1keyfile, 0600);
         file_put_contents($ph1keyfile, base64_decode($cert['prv']));
+
         $ph1certfile = "/usr/local/etc/swanctl/x509/{$certref}.crt";
+        @touch($ph1certfile);
+        @chmod($ph1certfile, 0600);
         file_put_contents($ph1certfile, base64_decode($cert['crt']));
-        $filenames = array_merge($filenames, [$ph1keyfile, $ph1certfile]);
     }
     foreach ($a_phase1 as $ph1ent) {
         if (isset($ph1ent['disabled'])) {
@@ -1156,14 +1160,15 @@ function ipsec_write_certs()
             }
 
             $ph1keyfile = "/usr/local/etc/swanctl/private/cert-{$ph1ent['ikeid']}.key";
+            @touch($ph1keyfile);
+            @chmod($ph1keyfile, 0600);
             file_put_contents($ph1keyfile, base64_decode($cert['prv']));
+
             $ph1certfile = "/usr/local/etc/swanctl/x509/cert-{$ph1ent['ikeid']}.crt";
+            @touch($ph1certfile);
+            @chmod($ph1certfile, 0600);
             file_put_contents($ph1certfile, base64_decode($cert['crt']));
-            $filenames = array_merge($filenames, [$ph1keyfile, $ph1certfile]);
         }
-    }
-    foreach ($filenames as $filename) {
-        @chmod($filename, 0600);
     }
 }
 
@@ -1181,8 +1186,9 @@ function ipsec_write_keypairs()
         foreach ($paths as $key => $path) {
             if (!empty((string)$keyPair->$key)) {
                 $filename = "${path}/{$uuid}.pem";
-                file_put_contents($filename, (string)$keyPair->$key);
+                @touch($filename);
                 @chmod($filename, 0600);
+                file_put_contents($filename, (string)$keyPair->$key);
                 $filenames[] = $filename;
             }
         }

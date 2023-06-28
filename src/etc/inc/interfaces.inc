@@ -1832,8 +1832,9 @@ function interface_wireless_configure($if, &$wancfg)
                                 }
                             }
                             foreach ($all_certs as $filename => $content) {
+                                @touch($filename);
+                                @chmod($filename, 0600);
                                 @file_put_contents($filename, $content);
-                                @chmod($filename, "0600");
                             }
                             break;
                     }
