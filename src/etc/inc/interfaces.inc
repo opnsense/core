@@ -164,10 +164,6 @@ function interfaces_vlan_configure($verbose = false)
         $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
         _interfaces_vlan_configure($vlan);
     }
-    foreach (array_keys($all_parents) as $parent) {
-        /* XXX workaround for igc(4) */
-        interfaces_bring_up($parent);
-    }
 
     service_log("done.\n", $verbose);
 }
