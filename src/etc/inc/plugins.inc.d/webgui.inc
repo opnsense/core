@@ -203,6 +203,7 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
     $key_location = '/var/etc/key.pem';
 
     @mkdir('/tmp/lighttpdcompress');
+    shell_safe('rm -r /tmp/lighttpdcompress/*');
 
     $http_rewrite_rules = <<<EOD
 # Phalcon ui and api routing
@@ -384,8 +385,9 @@ EOD;
         }
 
         file_put_contents($cert_location, $chain);
-        file_put_contents($key_location, $key);
+        touch($key_location);
         chmod($key_location, 0600);
+        file_put_contents($key_location, $key);
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
