@@ -457,9 +457,10 @@ debug.log-response-header  = "disable"
 debug.log-request-handling = "disable"
 debug.log-file-not-found   = "disable"
 
-# gzip compression
+# compression
+deflate.mimetypes = ("text/plain", "text/css", "text/javascript", "text/xml")
+deflate.allowed-encodings = ( "br", "gzip", "deflate" )
 deflate.cache-dir = "/tmp/lighttpdcompress/"
-deflate.mimetypes = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$server_upload_dirs}
 
