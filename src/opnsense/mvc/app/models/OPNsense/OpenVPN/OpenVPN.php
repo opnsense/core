@@ -90,7 +90,7 @@ class OpenVPN extends BaseModel
                     $instance->verify_client_cert->isFieldChanged() ||
                     $validateFullModel
                 ) {
-                    if ((string)$node->verify_client_cert != 'none') {
+                    if ((string)$instance->verify_client_cert != 'none') {
                         $messages->appendMessage(new Message(
                             gettext("To validate a certificate, one has to be provided "),
                             $key . ".verify_client_cert"

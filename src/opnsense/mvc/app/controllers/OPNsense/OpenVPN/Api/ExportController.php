@@ -98,7 +98,7 @@ class ExportController extends ApiControllerBase
         $cfg = Config::getInstance()->object();
         if (isset($cfg->openvpn)) {
             foreach ($cfg->openvpn->children() as $key => $server) {
-                if ($key == 'openvpn-server') {
+                if ($key == 'openvpn-server' && !empty($server)) {
                     if (empty($server->disable) || !$active) {
                         $name = empty($server->description) ? "server" : (string)$server->description;
                         $name .= " " . $server->protocol . ":" . $server->local_port;
