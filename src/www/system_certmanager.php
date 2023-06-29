@@ -812,6 +812,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_ca);
 legacy_html_escape_form_data($a_cert);
+$act = htmlspecialchars($act,  ENT_QUOTES | ENT_HTML401);
 
 include("head.inc");
 
