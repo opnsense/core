@@ -377,14 +377,14 @@ function filter_core_rules_system($fw, $defaults)
         switch (empty($intfinfo['ipaddr']) ? "" : $intfinfo['ipaddr']) {
             case "pptp":
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => 'tcp','to_port' => 1723, 'direction' => 'in', 'statetype' => 'modulate', 'quick' => false,
                         '#ref' => "interfaces.php?if=" . $intf . "#type",
                         'interface' => $intf, 'flags' => 'S/SA', 'descr' => 'allow PPTP client on ' . $intfinfo['descr']),
                     $defaults['pass']
                 );
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => 'gre', 'direction' => 'in', 'statetype' => 'keep', 'quick' => false,
                         '#ref' => "interfaces.php?if=" . $intf . "#type",
                         'interface' => $intf, 'descr' => 'allow PPTP client on ' . $intfinfo['descr']),
@@ -412,21 +412,21 @@ function filter_core_rules_system($fw, $defaults)
             default:
                 if (isset($config['dhcpd'][$intf]['enable'])) {
                     $fw->registerFilterRule(
-                        5,
+                        1,
                         array('protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '255.255.255.255',
                             '#ref' => "services_dhcp.php?if=" . $intf . "#enable",
                             'to_port' => 67, 'interface' => $intf, 'descr' => 'allow access to DHCP server'),
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
-                        5,
+                        1,
                         array('protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '(self)',
                             '#ref' => "services_dhcp.php?if=" . $intf . "#enable",
                             'to_port' => 67, 'interface' => $intf, 'descr' => 'allow access to DHCP server'),
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
-                        5,
+                        1,
                         array('protocol' => 'udp', 'direction' => 'out', 'from_port' => 67, 'from' => '(self)',
                             '#ref' => "services_dhcp.php?if=" . $intf . "#enable",
                             'to_port' => 68, 'interface' => $intf, 'descr' => 'allow access to DHCP server'),
@@ -434,7 +434,7 @@ function filter_core_rules_system($fw, $defaults)
                     );
                     if (!empty($config['dhcpd'][$intf]['failover_peerip'])) {
                         $fw->registerFilterRule(
-                            5,
+                            1,
                             array('protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => '519,520',
                                 '#ref' => "services_dhcp.php?if=" . $intf . "#failover_peerip",
                                 'from' => $config['dhcpd'][$intf]['failover_peerip'],
@@ -449,14 +449,14 @@ function filter_core_rules_system($fw, $defaults)
         switch (isset($intfinfo['ipaddrv6']) ? $intfinfo['ipaddrv6'] : null) {
             case "6rd":
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => '41', 'direction' => 'in', 'from' => $config['interfaces'][$intf]['gateway-6rd'],
                         '#ref' => "interfaces.php?if=" . $intf . "#type6",
                         'quick' => false, 'interface' => $intf, 'descr' => 'Allow 6in4 traffic in for 6rd on ' . $intfinfo['descr']),
                     $defaults['pass']
                 );
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => '41', 'direction' => 'out', 'to' => $config['interfaces'][$intf]['gateway-6rd'],
                         '#ref' => "interfaces.php?if=" . $intf . "#type6",
                         'quick' => false, 'interface' => $intf, 'descr' => 'Allow 6in4 traffic out for 6rd on ' . $intfinfo['descr']),
@@ -465,14 +465,14 @@ function filter_core_rules_system($fw, $defaults)
                 break;
             case "6to4":
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => '41', 'direction' => 'in', 'to' => '(self)','interface' => $intf,
                         '#ref' => "interfaces.php?if=" . $intf . "#type6",
                         'quick' => false, 'descr' => 'Allow 6in4 traffic in for 6to4 on ' . $intfinfo['descr']),
                     $defaults['pass']
                 );
                 $fw->registerFilterRule(
-                    5,
+                    1,
                     array('protocol' => '41', 'direction' => 'out', 'from' => '(self)','interface' => $intf,
                         '#ref' => "interfaces.php?if=" . $intf . "#type6",
                         'quick' => false, 'descr' => 'Allow 6in4 traffic out for 6to4 on ' . $intfinfo['descr']),
