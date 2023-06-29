@@ -71,41 +71,6 @@
         }
 
 
-        /**
-         * inline open dialog, go back to previous page on exit
-         */
-        function openDialog(uuid) {
-            var editDlg = "DialogEdit";
-            var setUrl = "/api/unbound/settings/set"+this_page+"/";
-            var getUrl = "/api/unbound/settings/get"+this_page+"/";
-            var urlMap = {};
-            urlMap['frm_' + editDlg] = getUrl + uuid;
-            mapDataToFormUI(urlMap).done(function () {
-                // update selectors
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_' + editDlg);
-                // show
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-                $('#'+editDlg).on('hidden.bs.modal', function () {
-                    // go back to previous page on exit
-                    parent.history.back();
-                });
-            });
-
-
-            // define save action
-            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(setUrl+uuid, 'frm_' + editDlg, function(){
-                    // do reconfigure of unbound after save (because we're leaving back to the sender)
-                    ajaxCall("/api/unbound/service/reconfigure", {}, function(data,status) {
-                        $("#"+editDlg).modal('hide');
-                    });
-                }, true);
-            });
-
-        }
-
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -128,10 +93,6 @@
         } else {
             $('tr[id="row_dot.verify"]').removeClass('hidden');
         }
-
-        {% if (selected_uuid|default("") != "") %}
-            openDialog('{{selected_uuid}}');
-        {% endif %}
 
         /*************************************************************************************************************
          * Commands
