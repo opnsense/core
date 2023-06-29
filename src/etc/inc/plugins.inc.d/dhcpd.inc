@@ -272,7 +272,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
+            if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet']) || $vip['subnet_bits'] == '128') {
                 continue;
             }
 
@@ -497,7 +497,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         }
 
         foreach (config_read_array('virtualip', 'vip') as $vip) {
-            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet'])) {
+            if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet']) || $vip['subnet_bits'] == '128') {
                 continue;
             }
 
@@ -505,8 +505,9 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 continue;
             }
 
-            $subnetv6 = gen_subnetv6($vip['subnet'], $vip['subnet_bits']);
-            $vipnetv6 = "{$subnetv6}/{$vip['subnet_bits']}";
+            /* force subnet to 64 as per radvd complaint "prefix length should be 64 for xzy" */
+            $subnetv6 = gen_subnetv6($vip['subnet'], 64);
+            $vipnetv6 = "{$subnetv6}/64";
 
             if ($vipnetv6 == $networkv6) {
                 continue;
