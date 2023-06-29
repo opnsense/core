@@ -254,6 +254,7 @@
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <Required>N</Required>
+                    <multiple>Y</multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>

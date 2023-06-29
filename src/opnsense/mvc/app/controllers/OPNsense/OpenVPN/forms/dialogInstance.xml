@@ -188,7 +188,7 @@
     <field>
         <id>instance.data-ciphers-fallback</id>
         <label>Data Ciphers Fallback</label>
-        <type>dropdown</type>
+        <type>select_multiple</type>
         <advanced>true</advanced>
         <style>selectpicker role role_server</style>
         <help>
