@@ -203,7 +203,7 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
     $key_location = '/var/etc/key.pem';
 
     @mkdir('/tmp/lighttpdcompress');
-    shell_safe('rm -r /tmp/lighttpdcompress/*');
+    shell_safe('rm -rf /tmp/lighttpdcompress/*');
 
     $http_rewrite_rules = <<<EOD
 # Phalcon ui and api routing
