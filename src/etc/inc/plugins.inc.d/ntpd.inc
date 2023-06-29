@@ -335,9 +335,9 @@ function ntpd_configure_do($verbose = false)
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
         /* Determine if Network Time Server is from the NTP Pool or not */
         if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
-        $ntpcfg .= "pool {$ts}";
+            $ntpcfg .= "pool {$ts}";
         } else {
-        $ntpcfg .= "server {$ts}";
+            $ntpcfg .= "server {$ts}";
         }
         if (in_array($ts, $iburst)) {
             $ntpcfg .= ' iburst';
