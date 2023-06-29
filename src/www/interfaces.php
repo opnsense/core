@@ -1949,7 +1949,7 @@ include("head.inc");
                                   'MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank if unsure. ' .
                                   'This may only be required e.g. with certain cable connections on a WAN interface.') ?><br />
                               <?= gettext('When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. ' .
-                                  'Alternatively, the parent interface MAC can be spoofed applying the MAC it to all attached VLAN children automatically.') ?><br />
+                                  'Alternatively, the parent interface MAC can be spoofed applying the MAC address to all attached VLAN children automatically.') ?><br />
 <?php
                               $ip = getenv('REMOTE_ADDR');
                               $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
