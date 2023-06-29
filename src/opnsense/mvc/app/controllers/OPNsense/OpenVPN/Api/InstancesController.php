@@ -49,7 +49,14 @@ class InstancesController extends ApiMutableModelControllerBase
     }
     public function getAction($uuid = null)
     {
-        return $this->getBase('instance', 'Instances.Instance', $uuid);
+        $result = $this->getBase('instance', 'Instances.Instance', $uuid);
+        if (!empty($result['instance'])) {
+            $fetchmode = $this->request->has("fetchmode") ? $this->request->get("fetchmode") : null;
+            if ($fetchmode == 'copy') {
+                $result['instance']['vpnid'] = null;
+            }
+        }
+        return $result;
     }
     public function addAction()
     {
