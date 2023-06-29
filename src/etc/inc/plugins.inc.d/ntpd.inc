@@ -200,7 +200,6 @@ function ntpd_configure_do($verbose = false)
         $ntpcfg .= '12';
     }
     $ntpcfg .= "\n";
-    
     /* Add Max Clock Count */
     $ntpcfg .= "# Max number of associations\n";
     $ntpcfg .= 'tos maxclock ';
