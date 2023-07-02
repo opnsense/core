@@ -248,7 +248,7 @@ class DB(object):
                         where   cc.zoneid = :zoneid
                         and     cc.deleted = 0
                         and     cc.username is not null
-                        and     cc.username <> ""
+                        and     cc.username <> ''
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
                         """, {'zoneid': zoneid})
