@@ -36,99 +36,35 @@ use OPNsense\Core\Backend;
 
 class VTIField extends ArrayField
 {
-    private static $legacyItems = [];
-
-    public function __construct($ref = null, $tagname = null)
-    {
-        if (empty(self::$legacyItems)) {
-            // query legacy VTI devices, valid for the duration of this script execution
-            $legacy_vtis = json_decode((new Backend())->configdRun('ipsec list legacy_vti'), true);
-            if (!empty($legacy_vtis)) {
-                foreach ($legacy_vtis as $vti) {
-                    $vti['enabled'] = '1';
-                    self::$legacyItems['ipsec' . $vti['reqid']] = $vti;
-                }
-            }
-        }
-        parent::__construct($ref, $tagname);
-    }
+    protected static $internalStaticChildren = [];
 
     /**
-     * create virtual VTI nodes
+     * {@inheritdoc}
      */
-    private function createReservedNodes()
+    protected static function getStaticChildren()
     {
         $result = [];
-        foreach (self::$legacyItems as $vtiName => $vtiContent) {
-            $container_node = $this->newContainerField($this->__reference . "." . $vtiName, $this->internalXMLTagName);
-            $container_node->setAttributeValue("uuid", $vtiName);
-            $container_node->setInternalIsVirtual();
-            foreach ($this->getTemplateNode()->iterateItems() as $key => $value) {
-                $node = clone $value;
-                $node->setInternalReference($container_node->__reference . "." . $key);
-                if (isset($vtiContent[$key])) {
-                    $node->setValue($vtiContent[$key]);
-                }
-                $node->markUnchanged();
-                $container_node->addChildNode($key, $node);
+        $legacy_vtis = json_decode((new Backend())->configdRun('ipsec list legacy_vti'), true);
+        if (!empty($legacy_vtis)) {
+            foreach ($legacy_vtis as $vti) {
+                $vti['enabled'] = '1';
+                $result['ipsec' . $vti['reqid']] = $vti;
             }
-            $type_node = new TextField();
-            $type_node->setInternalIsVirtual();
-            $type_node->setValue('legacy');
-            $container_node->addChildNode('origin', $type_node);
-            $result[$vtiName] = $container_node;
         }
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function actionPostLoadingEvent()
     {
-        foreach ($this->internalChildnodes as $node) {
-            if (!$node->getInternalIsVirtual()) {
-                $type_node = new TextField();
-                $type_node->setInternalIsVirtual();
-                $type_node->setValue('vti');
-                $node->addChildNode('origin', $type_node);
-            }
-        }
-        return parent::actionPostLoadingEvent();
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function hasChild($name)
-    {
-        if (isset(self::$reservedItems[$name])) {
-            return true;
-        } else {
-            return parent::hasChild($name);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getChild($name)
-    {
-        if (isset(self::$reservedItems[$name])) {
-            return $this->createReservedNodes()[$name];
-        } else {
-            return parent::getChild($name);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function iterateItems()
-    {
-        foreach (parent::iterateItems() as $key => $value) {
-            yield $key => $value;
-        }
-        foreach ($this->createReservedNodes() as $key => $node) {
-            yield $key => $node;
+        parent::actionPostLoadingEvent();
+        foreach ($this->iterateItems() as $key => $node) {
+            $type_node = new TextField();
+            $type_node->setInternalIsVirtual();
+            $type_node->setValue(strpos($key, 'ipsec') === 0 ? 'legacy' : 'vti' );
+            $node->addChildNode('origin', $type_node);
         }
     }
 }
