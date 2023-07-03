@@ -42,20 +42,22 @@ class SystemController extends ApiControllerBase
 {
     public function haltAction()
     {
-        $backend = new Backend();
-        $backend->configdRun('system halt', true);
-        return [
-            'status' => 'ok'
-        ];
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun('system halt', true);
+            return ['status' => 'ok'];
+        } else {
+            return ['status' => 'failed'];
+        }
     }
 
     public function rebootAction()
     {
-        $backend = new Backend();
-        $backend->configdRun('system reboot', true);
-        return [
-            'status' => 'ok'
-        ];
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun('system reboot', true);
+            return ['status' => 'ok'];
+        } else {
+            return ['status' => 'failed'];
+        }
     }
 
     public function statusAction()
