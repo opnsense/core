@@ -36,7 +36,7 @@ use OPNsense\Base\FieldTypes\TextField;
 
 class GroupField extends ArrayField
 {
-    private static $reservedItems = [];
+    protected static $internalStaticChildren = [];
 
     /**
      * {@inheritdoc}
