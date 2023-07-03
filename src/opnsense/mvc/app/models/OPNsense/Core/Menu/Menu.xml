@@ -144,9 +144,7 @@
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
         <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
-        <Groups url="/interfaces_groups.php" cssClass="fa fa-sitemap fa-fw">
-            <Edit url="/interfaces_groups_edit.php*" visibility="hidden"/>
-        </Groups>
+        <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
         <NAT cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>

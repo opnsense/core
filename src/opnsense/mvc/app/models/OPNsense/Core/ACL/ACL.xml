@@ -382,16 +382,11 @@
             <pattern>interfaces_gre_edit.php*</pattern>
         </patterns>
     </page-interfaces-gre-edit>
-    <page-interfaces-groups>
-        <name>Interfaces: Groups</name>
-        <patterns>
-            <pattern>interfaces_groups.php*</pattern>
-        </patterns>
-    </page-interfaces-groups>
     <page-interfaces-groups-edit>
         <name>Interfaces: Groups: Edit</name>
         <patterns>
-            <pattern>interfaces_groups_edit.php*</pattern>
+            <pattern>ui/firewall/group</pattern>
+            <pattern>api/firewall/group/*</pattern>
         </patterns>
     </page-interfaces-groups-edit>
     <page-interfaces-lagg-edit>

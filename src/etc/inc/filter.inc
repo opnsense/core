@@ -120,7 +120,7 @@ function ifgroup_setup()
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
             $all_ifgroups[$group['ifname']] = array();
-            foreach (explode(" ", $group['members']) as $member) {
+            foreach (preg_split('/( |,)/', $group['members']) as $member) {
                 if (!empty($config['interfaces'][$member])) {
                     $if = $config['interfaces'][$member]['if'];
                     if (!isset($all_ifs[$if])) {

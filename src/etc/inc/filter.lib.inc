@@ -608,11 +608,8 @@ function filter_core_rules_user($fw)
 
     $sched_kill_states = [];
 
-    $ifgroups = ["l2tp", "pptp", "pppoe", "enc0", "openvpn"];
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $groupentry) {
-            $ifgroups[] = $groupentry['ifname'];
-        }
+    foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $node) {
+        $ifgroups[(string)$node->ifname] = !empty((string)$node->sequence) ? (string)$node->sequence : 0;
     }
 
     if (isset($config['filter']['rule'])) {
@@ -635,8 +632,8 @@ function filter_core_rules_user($fw)
 
             if (isset($rule['floating'])) {
                 $prio = 200000;
-            } elseif (in_array($rule['interface'], $ifgroups)) {
-                $prio = 300000;
+            } elseif (isset($ifgroups[$rule['interface']])) {
+                $prio = 300000 + $ifgroups[$rule['interface']];
             } else {
                 $prio = 400000;
             }
