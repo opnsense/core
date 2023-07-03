@@ -10,9 +10,9 @@ PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 {%  for job in helpers.toList('OPNsense.cron.jobs.job') %}
 {%   if job.enabled|default('0') == '1' %}
 # Origin/Description: {{job.origin}}/{{job.description}}
-{{job.minutes}}	{{job.hours}}	{{job.days}}	{{job.months}}	{{job.weekdays}}	/usr/local/sbin/configctl -d {{job.command}}{%
+{{job.minutes}}	{{job.hours}}	{{job.days}}	{{job.months}}	{{job.weekdays}}	/usr/local/sbin/configctl -d {{job.command|replace("\n", "")|shlex_quote}}{%
    if job.parameters %}{%
-      for param in job.parameters|shlex_split %} {{param|shlex_quote}}{%
+      for param in job.parameters|shlex_split %} {{param|replace("\n", "")|shlex_quote}}{%
       endfor %}{% endif %}
 
 {%   endif %}
