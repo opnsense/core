@@ -42,7 +42,7 @@ class ArrayField extends BaseField
     /**
      * @var list statically defined children, key value store for static defined model entries
      */
-    private static $internalStaticChildren = [];
+    protected static $internalStaticChildren = [];
 
     /**
      * @return key value store of static model items, overwrite when needed
@@ -83,7 +83,7 @@ class ArrayField extends BaseField
                 $node->markUnchanged();
                 $container_node->addChildNode($key, $node);
             }
-            self::$internalStaticChildren[$skey] = $container_node;
+            static::$internalStaticChildren[$skey] = $container_node;
         }
     }
 
@@ -216,7 +216,7 @@ class ArrayField extends BaseField
      */
     public function hasChild($name)
     {
-        if (isset(self::$internalStaticChildren[$name])) {
+        if (isset(static::$internalStaticChildren[$name])) {
             return true;
         } else {
             return parent::hasChild($name);
@@ -228,8 +228,8 @@ class ArrayField extends BaseField
      */
     public function getChild($name)
     {
-        if (isset(self::$internalStaticChildren[$name])) {
-            return self::$internalStaticChildren[$name];
+        if (isset(static::$internalStaticChildren[$name])) {
+            return static::$internalStaticChildren[$name];
         } else {
             return parent::getChild($name);
         }
@@ -243,7 +243,7 @@ class ArrayField extends BaseField
         foreach (parent::iterateItems() as $key => $value) {
             yield $key => $value;
         }
-        foreach (self::$internalStaticChildren as $key => $node) {
+        foreach (static::$internalStaticChildren as $key => $node) {
             yield $key => $node;
         }
     }
