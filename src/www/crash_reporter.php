@@ -275,7 +275,7 @@ legacy_html_escape_form_data($pconfig);
               foreach ($crash_reports as $report => $content):?>
                   <p>
                     <?=$report;?>:<br/>
-                    <pre><?=$content;?></pre>
+                    <pre><?=html_safe($content);?></pre>
                   </p>
 <?php
               endforeach;
