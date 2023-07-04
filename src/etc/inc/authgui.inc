@@ -188,7 +188,12 @@ function session_auth()
             if (!empty($_GET['url'])) {
                 $tmp_url_parts = parse_url($_GET['url']);
                 if ($tmp_url_parts !== false) {
-                    $redir_uri = $tmp_url_parts['path'];
+                    $redir_uri = sprintf(
+                        '%s://%s/%s',
+                        isset($_SERVER['HTTPS']) ? 'https' : 'http',
+                        $_SERVER['HTTP_HOST'],
+                        ltrim($tmp_url_parts['path'], '/')
+                    );
                     $redir_uri .= !empty($tmp_url_parts['query']) ? "?" . $tmp_url_parts['query'] : "";
                     $redir_uri .= !empty($tmp_url_parts['fragment']) ? "#" . $tmp_url_parts['fragment'] : "";
                     header(url_safe("Location: {$redir_uri}"));
