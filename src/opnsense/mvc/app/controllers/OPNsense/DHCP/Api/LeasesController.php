@@ -42,29 +42,16 @@ class LeasesController extends ApiControllerBase
         $selected_interfaces = $this->request->get('selected_interfaces');
         $backend = new Backend();
         $config = Config::getInstance()->object();
-        $arp_macs = [];
-        $arp_ips = [];
+        $online = [];
 
         /* get ARP data to match on */
         $arp_data = json_decode($backend->configdRun('interface list arp json'), true);
 
         foreach ($arp_data as $arp_entry) {
-            if ($arp_entry['expired'] == false) {
-                $arp_macs[] = strtolower($arp_entry['mac']);
-                $arp_ips[] = $arp_entry['ip'];
+            if (!$arp_entry['expired']) {
+                array_push($online, $arp_entry['mac'], $arp_entry['ip']);
             }
         }
-
-        $onlineStatus = function($val, $use_mac=false) use ($arp_macs, $arp_ips) {
-            $online = false;
-            if ($use_mac) {
-                $online = in_array(strtolower($val), $arp_macs);
-            } else {
-                $online = in_array($val, $arp_ips);
-            }
-
-            return $online ? 'online' : 'offline';
-        };
 
         /* get configured static leases */
         $sleases = json_decode($backend->configdRun('dhcpd list static'), true);
@@ -80,23 +67,12 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['starts'] = '';
             $leases[$idx]['ends'] = '';
             $leases[$idx]['hostname'] = '';
-
-            switch ($lease['binding']) {
-                case 'active':
-                    $leases[$idx]['state'] = 'active';
-                    break;
-                case 'free':
-                    $leases[$idx]['state'] = 'expired';
-                    break;
-                case 'backup':
-                    $leases[$idx]['state'] = 'backup';
-                    break;
-            }
+            $leases[$idx]['state'] = $lease['binding'] == 'free' ? 'expired' : $lease['binding'];
 
             if (array_key_exists('hardware', $lease)) {
                 $mac = $lease['hardware']['mac-address'];
                 $leases[$idx]['mac'] = $mac;
-                $leases[$idx]['status'] = $onlineStatus($lease['address']);
+                $leases[$idx]['status'] = in_array(strtolower($lease['address']), $online) ? 'online' : 'offline';
                 unset($leases[$idx]['hardware']);
             }
 
@@ -113,17 +89,8 @@ class LeasesController extends ApiControllerBase
             }
         }
 
-        $macs = [];
-        foreach ($leases as $idx => $lease) {
-            if (!empty($lease['mac'])) {
-                if (!isset($macs[$lease['mac']])) {
-                    $macs[$lease['mac']] = [];
-                }
-                $macs[$lease['mac']][] = $idx;
-            }
-        }
-
         /* handle static leases */
+        $statics = [];
         foreach ($sleases as $slease) {
             $static = [];
             $static['address'] = $slease['ipaddr'];
@@ -134,20 +101,11 @@ class LeasesController extends ApiControllerBase
             $static['hostname'] = $slease['hostname'];
             $static['descr'] = $slease['descr'];
             $static['state'] = 'active';
-            $static['status'] = $onlineStatus($static['mac'], true);
-
-            if (isset($macs[$static['mac']])) {
-                foreach ($slease as $key => $value) {
-                    if (!empty($value)) {
-                        foreach ($macs[$slease['mac']] as $idx) {
-                            $leases[$idx][$key] = $value;
-                        }
-                    }
-                }
-            } else {
-                $leases[] = $static;
-            }
+            $static['status'] = in_array(strtolower($static['mac']), $online) ? 'online' : 'offline';
+            $statics[] = $static;
         }
+
+        $leases = array_merge($leases, $statics);
 
         $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
         $interfaces = [];
@@ -155,20 +113,19 @@ class LeasesController extends ApiControllerBase
             /* include manufacturer info */
             $leases[$idx]['man'] = '';
             if ($lease['mac'] != '') {
-                $mac_hi = strtoupper($lease['mac'][0] . $lease['mac'][1] . $lease['mac'][3] .
-                    $lease['mac'][4] . $lease['mac'][6] . $lease['mac'][7]);
+                $mac_hi = strtoupper(substr(str_replace(':', '', $lease['mac']),0, 6));
                 $leases[$idx]['man'] = $mac_man[$mac_hi];
             }
 
             /* include interface */
-            $leases[$idx]['int'] = '';
+            $leases[$idx]['if_descr'] = '';
             $leases[$idx]['if'] = '';
             foreach ($config->dhcpd->children() as $dhcpif => $dhcpifconf) {
                 $if = $config->interfaces->$dhcpif;
                 if (!empty((string)$if->ipaddr) && Util::isIpAddress((string)$if->ipaddr)) {
                     if (Util::isIPInCIDR($lease['address'], (string)$if->ipaddr . '/' . (string)$if->subnet)) {
                         $intf = (string)$if->descr;
-                        $leases[$idx]['interface'] = $intf;
+                        $leases[$idx]['if_descr'] = $intf;
                         $leases[$idx]['if'] = $dhcpif;
 
                         if (!array_key_exists($dhcpif, $interfaces)) {
@@ -180,11 +137,7 @@ class LeasesController extends ApiControllerBase
         }
 
         $response = $this->searchRecordsetBase($leases, null, 'address', function ($key) use ($selected_interfaces) {
-            if (empty($selected_interfaces)) {
-                return true;
-            }
-
-            if (in_array($key['if'], $selected_interfaces)) {
+            if (empty($selected_interfaces) || in_array($key['if'], $selected_interfaces)) {
                 return true;
             }
 

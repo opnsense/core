@@ -144,10 +144,10 @@
             <tr>
             <thead>
             <tr>
-                <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
+                <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="address" data-identifier="true" data-type="string">{{ lang._('IP Address') }}</th>
                 <th data-column-id="mac" data-type="string" data-formatter="macformatter">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="client-hostname" data-type="string">{{ lang._('Hostname') }}</th>
+                <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
                 <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="starts" data-type="string">{{ lang._('Start') }}</th>
                 <th data-column-id="ends" data-type="string">{{ lang._('End') }}</th>
