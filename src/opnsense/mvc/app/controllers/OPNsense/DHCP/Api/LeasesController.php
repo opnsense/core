@@ -54,7 +54,7 @@ class LeasesController extends ApiControllerBase
         }
 
         /* get configured static leases */
-        $sleases = json_decode($backend->configdRun('dhcpd list static'), true);
+        $sleases = json_decode($backend->configdRun('dhcpd list static 4'), true);
 
         /* include inactive leases if requested */
         $leases = json_decode($backend->configdpRun('dhcpd list leases', [$inactive]), true);
