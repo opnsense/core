@@ -45,9 +45,8 @@ for lease in dhcpdleases.watch():
     # only the last entries for a given IP are relevant
     last_leases[lease['address']] = lease
 
-if last_leases:
-    for lease in last_leases.values():
-        if ('ends' in lease and lease['ends'] is not None and lease['ends'] > time.time()) or app_params['inactive'] != '0':
-            result.append(lease)
+for lease in last_leases.values():
+    if ('ends' in lease and lease['ends'] is not None and lease['ends'] > time.time()) or app_params['inactive'] != '0':
+        result.append(lease)
 
 print (ujson.dumps(result))
