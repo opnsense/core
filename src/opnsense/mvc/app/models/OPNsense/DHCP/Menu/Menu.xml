@@ -1,9 +1,0 @@
-<menu>
-    <Services>
-        <DHCPv4 cssClass="fa fa-bullseye fa-fw">
-            <Relay order="200" url="/services_dhcp_relay.php"/>
-            <Leases order="300" url="/ui/dhcp/leases"/>
-            <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
-        </DHCPv4>
-    </Services>
-</menu>

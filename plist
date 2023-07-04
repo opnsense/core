@@ -590,11 +590,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_4.php
-/usr/local/opnsense/mvc/app/models/OPNsense/DHCP/ACL/ACL.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/DHCP/DHCP.php
-/usr/local/opnsense/mvc/app/models/OPNsense/DHCP/DHCP.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/DHCP/Menu/Menu.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/DHCP/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.xml

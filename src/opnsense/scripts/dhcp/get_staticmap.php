@@ -31,4 +31,6 @@ require_once 'config.inc';
 require_once 'interfaces.inc';
 require_once 'plugins.inc.d/dhcpd.inc';
 
-echo json_encode(dhcpd_staticmap("not.found", legacy_interfaces_details(), false, 4), JSON_PRETTY_PRINT) . PHP_EOL;
+$inet = (!empty($argv[1]) && $argv[1] == '6') ? 6 : 4;
+
+echo json_encode(dhcpd_staticmap("not.found", legacy_interfaces_details(), false, $inet), JSON_PRETTY_PRINT) . PHP_EOL;

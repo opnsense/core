@@ -1,6 +1,0 @@
-<model>
-    <mount>//OPNsense/DHCP</mount>
-    <description>DHCP configuration</description>
-    <version>1.0.1</version>
-    <items></items>
-</model>
