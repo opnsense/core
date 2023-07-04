@@ -339,10 +339,7 @@ class Util
         return md5(json_encode($rule));
     }
 
-    /**
-     * returns whether a given IP is in a CIDR block
-     */
-    public static function isIPInCIDR($ip, $cidr)
+    private static function isIPv4InCIDR($ip, $cidr)
     {
         list ($subnet, $bits) = explode('/', $cidr);
         if ($bits === null) {
@@ -353,6 +350,46 @@ class Util
         $mask = -1 << (32 - $bits);
         $subnet &= $mask;
         return ($ip & $mask) == $subnet;
+    }
+
+    private static function isIPv6InCIDR($ip, $cidr)
+    {
+        $inet_to_bits = function($ip) {
+            $split = str_split($ip);
+            $bin_ip = '';
+            foreach ($split as $char) {
+                $bin_ip .= str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT);
+            }
+            return $bin_ip;
+        };
+
+        $in_addr = inet_pton($ip);
+        $bin_ip = $inet_to_bits($in_addr);
+
+        list ($net, $maskbits) = explode('/', $cidr);
+        $net = inet_pton($net);
+        $bin_net = $inet_to_bits($net);
+
+        $ip_net_bits = substr($bin_ip, 0, $maskbits);
+        $net_bits = substr($bin_net, 0, $maskbits);
+
+        return $ip_net_bits === $net_bits;
+    }
+
+    /**
+     * returns whether a given IP (v4 or v6) is in a CIDR block
+     */
+    public static function isIPInCIDR($ip, $cidr)
+    {
+        if (!self::isIpAddress($ip)) {
+            return false;
+        }
+
+        if (str_contains($ip, ':')) {
+            return self::isIPv6InCIDR($ip, $cidr);
+        }
+
+        return self::isIPv4InCIDR($ip, $cidr);
     }
 
     /**
