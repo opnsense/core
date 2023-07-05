@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    foreach (dhcpd_staticmap("not.found", legacy_interfaces_details(), false, 6) as $static) {
+    foreach (dhcpd_staticmap(6, "not.found", legacy_interfaces_details(), false) as $static) {
         $slease = [];
         $slease['ip'] = $static['ipaddrv6'];
         $slease['if'] = $static['interface'];

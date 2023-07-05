@@ -544,7 +544,7 @@ function unbound_add_host_entries($ifconfig_details)
     }
 
     if (!empty($general['regdhcpstatic'])) {
-        foreach (plugins_run('static_mapping', [$config['system']['domain'], $ifconfig_details]) as $map) {
+        foreach (plugins_run('static_mapping', [null, $config['system']['domain'], $ifconfig_details]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
                     /* cannot register without a hostname */

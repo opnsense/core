@@ -281,6 +281,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/ItemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Api/Leases4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Leases4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
@@ -711,6 +714,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/service.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/DHCP/leases4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt
@@ -2007,7 +2011,6 @@
 /usr/local/www/services_ntpd_pps.php
 /usr/local/www/services_opendns.php
 /usr/local/www/services_router_advertisements.php
-/usr/local/www/status_dhcp_leases.php
 /usr/local/www/status_dhcpv6_leases.php
 /usr/local/www/status_habackup.php
 /usr/local/www/status_interfaces.php

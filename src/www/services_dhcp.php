@@ -55,7 +55,7 @@ function reconfigure_dhcpd()
     clear_subsystem_dirty('staticmaps');
 }
 
-$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'dhcpleaseinlocaltime','descr',
+$config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'failover_split', 'descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown','ignoreuids', 'ddnsdomain',
   'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsdomainalgorithm', 'ddnsupdate', 'mac_allow',
   'mac_deny', 'tftp', 'bootfilename', 'ldap', 'netboot', 'nextserver', 'filename', 'filename32', 'filename64',
@@ -866,19 +866,6 @@ include("head.inc");
                         <strong><?=gettext("Enable Static ARP entries");?></strong>
                         <div class="hidden" data-for="help_for_failover_staticarp">
                           <?=gettext("Warning: This option persists even if DHCP server is disabled. Only the machines listed below will be able to communicate with the firewall on this NIC.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_failover_dhcpleaseinlocaltime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time format change"); ?></td>
-                      <td>
-                        <input name="dhcpleaseinlocaltime" type="checkbox" id="dhcpleaseinlocaltime" value="yes" <?= !empty($pconfig['dhcpleaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?=gettext("Change DHCP display lease time from UTC to local time."); ?></strong>
-
-                        <div class="hidden" data-for="help_for_failover_dhcpleaseinlocaltime">
-                          <?=gettext("Warning: By default DHCP leases are displayed in UTC time. By checking this " .
-                          "box DHCP lease time will be displayed in local time and set to time zone selected. This " .
-                          "will be used for all DHCP interfaces lease time."); ?>
                         </div>
                       </td>
                     </tr>
