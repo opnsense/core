@@ -36,7 +36,7 @@ config_read_array('ipsec', 'client');
 config_read_array('ipsec', 'phase1');
 
 // define formfields
-$form_fields = "user_source,local_group,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,net_list
+$form_fields = "user_source,local_group,radius_source,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,net_list
 ,save_passwd,dns_domain,dns_split,dns_server1,dns_server2,dns_server3
 ,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
 
@@ -91,6 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['user_source'])) {
             $pconfig['user_source'] = implode(",", $pconfig['user_source']);
         }
+        if (!empty($pconfig['radius_source'])) {
+            $pconfig['radius_source'] = implode(",", $pconfig['radius_source']);
+        }
 
         /* input validation */
         $reqdfields = explode(" ", "user_source");
@@ -141,11 +144,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             $client = array();
-            $copy_fields = "user_source,local_group,pool_address,pool_netbits,pool_address_v6,pool_netbits_v6,dns_domain,dns_server1
-            ,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
+            $copy_fields = "user_source,local_group,radius_source,pool_address,pool_netbits,pool_address_v6,
+            pool_netbits_v6,dns_domain,dns_server1,dns_server2,dns_server3,dns_server4,wins_server1,wins_server2
             ,dns_split,pfs_group,login_banner";
             foreach (explode(",", $copy_fields) as $fieldname) {
-                            $fieldname = trim($fieldname);
+                $fieldname = trim($fieldname);
                 if (!empty($pconfig[$fieldname])) {
                     $client[$fieldname] = $pconfig[$fieldname];
                 }
@@ -324,9 +327,13 @@ if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
     print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
 }
 $ph1found = false;
+$legacy_radius_configured = false;
 foreach ($config['ipsec']['phase1'] as $ph1ent) {
     if (isset($ph1ent['mobile'])) {
         $ph1found = true;
+        if (($ph1ent['authentication_method'] ?? '') == 'eap-radius') {
+            $legacy_radius_configured = true;
+        }
     }
 }
 
@@ -362,10 +369,9 @@ if (isset($input_errors) && count($input_errors) > 0) {
            <div class="tab-content content-box col-xs-12">
                <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
-                    <tr>
+                  <tr>
                     <td colspan="2"><b><?=gettext("Extended Authentication (Xauth)"); ?></b></td>
                   </tr>
-                    <tr>
                   <tr>
                     <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
                     <td style="width:78%">
@@ -397,6 +403,30 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       </div>
                     </td>
                   </tr>
+                  <?php if (!$legacy_radius_configured):?>
+                  <tr>
+                    <td colspan="2"><b><?=gettext("Radius (eap-radius)"); ?></b></td>
+                  </tr>
+                  <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
+                  <td>
+                      <select name="radius_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3">
+<?php
+                        $authmodes = explode(",", $pconfig['radius_source']);
+                        foreach (auth_get_authserver_list() as $auth_key => $auth_server):
+                           if ($auth_server['type'] == 'radius'):?>
+                              <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=htmlspecialchars($auth_server['name'])?></option>
+<?php
+                          endif;
+                        endforeach; ?>
+                      </select>
+                    </td>
+
+                  </tr>
+
+<?php endif;?>
+
+
                 </table>
               </div>
           </section>
