@@ -91,7 +91,7 @@ class LeasesController extends ApiControllerBase
 
         /* handle static leases */
         $statics = [];
-        foreach ($sleases as $slease) {
+        foreach ($sleases["dhcpd"] as $slease) {
             $static = [];
             $static['address'] = $slease['ipaddr'];
             $static['type'] = 'static';
