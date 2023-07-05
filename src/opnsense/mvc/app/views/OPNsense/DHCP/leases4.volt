@@ -133,7 +133,7 @@
         <div id="inactive-selection-wrapper" style="float: left;">
             <label>
                 <input id="show-inactive" type="checkbox"/>
-                Show inactive
+                {{ lang._('Show inactive') }}
             </label>
         </div>
         <div class="btn-group" id="interface-selection-wrapper">
