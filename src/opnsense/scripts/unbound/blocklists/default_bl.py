@@ -35,7 +35,7 @@ from . import BaseBlocklistHandler
 
 class DefaultBlocklistHandler(BaseBlocklistHandler):
     def __init__(self):
-        super().__init__('/tmp/unbound-blocklists.conf')
+        super().__init__('/usr/local/etc/unbound/unbound-blocklists.conf')
         self.priority = 100
         self._whitelist_pattern = self._get_excludes()
 
