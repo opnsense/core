@@ -1856,7 +1856,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true, $proto = null)
+function dhcpd_staticmap($proto = null, $domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
