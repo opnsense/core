@@ -30,10 +30,10 @@ namespace OPNsense\DHCP;
 
 use OPNsense\Base\IndexController;
 
-class LeasesController extends IndexController
+class Leases4Controller extends IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/DHCP/leases');
+        $this->view->pick('OPNsense/DHCP/leases4');
     }
 }

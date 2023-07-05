@@ -33,7 +33,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-class LeasesController extends ApiControllerBase
+class Leases4Controller extends ApiControllerBase
 {
     public function searchLeaseAction()
     {

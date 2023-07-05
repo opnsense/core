@@ -51,8 +51,8 @@
         })
 
         $("#grid-leases").UIBootgrid({
-            search:'/api/dhcp/leases/searchLease/',
-            del:'/api/dhcp/leases/delLease/',
+            search:'/api/dhcp/leases4/searchLease/',
+            del:'/api/dhcp/leases4/delLease/',
             options: {
                 multiSelect: true,
                 useRequestHandlerOnGet: true,

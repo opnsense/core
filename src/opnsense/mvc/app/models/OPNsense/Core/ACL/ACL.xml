@@ -463,8 +463,8 @@
     <page-services-dhcpserver-leases>
         <name>Services: DHCP Server: Leases</name>
         <patterns>
-            <pattern>ui/dhcp/leases</pattern>
-            <pattern>api/dhcp/leases/*</pattern>
+            <pattern>ui/dhcp/leases4</pattern>
+            <pattern>api/dhcp/leases4/*</pattern>
         </patterns>
     </page-services-dhcpserver-leases>
     <page-services-dhcpv6relay>
