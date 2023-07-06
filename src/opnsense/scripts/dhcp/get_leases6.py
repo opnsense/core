@@ -46,7 +46,7 @@ def parse_date(ymd, hms):
 
     return result
 
-def parse_iaddr_iaprefix(input):
+def parse_iaaddr_iaprefix(input):
     """
     parse either an iaddr or iaprefix segment. return a tuple
     containing the type parsed and the corresponding segment
@@ -123,7 +123,7 @@ def parse_lease(lines):
             cur_segment.append(line)
         elif len(line) > 3 and line[2] == '}' and len(cur_segment) > 0:
             cur_segment.append(line)
-            (segment_type, segment) = parse_iaddr_iaprefix(cur_segment)
+            (segment_type, segment) = parse_iaaddr_iaprefix(cur_segment)
             if segment_type == 'iaaddr':
                 addresses.append(segment)
             if segment_type == 'iaprefix':
@@ -173,8 +173,7 @@ if __name__ == '__main__':
         if app_params['inactive'] == '1':
             result.append(lease)
         else:
-            keys = ('addresses', 'prefixes')
-            for key in keys:
+            for key in ('addresses', 'prefixes'):
                 if key in lease:
                     for i in range(len(lease[key])):
                         segment = lease[key][i]
