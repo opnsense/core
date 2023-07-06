@@ -326,9 +326,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
@@ -618,6 +621,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/GroupNameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
@@ -738,6 +746,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt
@@ -1984,8 +1993,6 @@
 /usr/local/www/interfaces_gif_edit.php
 /usr/local/www/interfaces_gre.php
 /usr/local/www/interfaces_gre_edit.php
-/usr/local/www/interfaces_groups.php
-/usr/local/www/interfaces_groups_edit.php
 /usr/local/www/interfaces_lagg.php
 /usr/local/www/interfaces_lagg_edit.php
 /usr/local/www/interfaces_ppps.php
