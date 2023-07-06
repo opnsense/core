@@ -229,6 +229,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+        /* prevent save when interface doesn't exist in case the user was pointed here after a config import */
+        foreach ($_POST as $ifname => $ifport) {
+            if ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt') {
+                if (!empty($ifport) && !isset($interfaces[$ifport])) {
+                    $input_errors[] = sprintf(gettext("Interface %s does not exist."), $ifport);
+                }
+            }
+        }
+
 
         if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
@@ -339,6 +348,16 @@ foreach ($intfkeys as $portname) {
     }
 }
 
+/* add missing interfaces so people know what to change */
+foreach (legacy_config_get_interfaces(array("virtual" => false)) as $iface) {
+    if (!empty($iface['if']) && !isset($interfaces[$iface['if']])) {
+        $interfaces[$iface['if']] = [
+            'descr' => sprintf('%s (%s)', $iface['if'], 'missing'),
+            'status' => 'missing'
+        ];
+    }
+}
+
 include("head.inc");
 ?>
 
@@ -420,7 +439,7 @@ include("head.inc");
                           <select name="<?=$ifname;?>" id="<?=$ifname;?>"  class="selectpicker" data-size="10">
 <?php
                           foreach ($interfaces as $portname => $portinfo):?>
-                            <option data-icon="fa fa-plug <?=$portinfo['status'] == 'no carrier' ? "text-danger": "text-success";?>"
+                            <option data-icon="fa fa-plug <?=in_array($portinfo['status'], ['no carrier', 'missing']) ? "text-danger": "text-success";?>"
                                     value="<?=$portname;?>"  <?= $portname == $iface['if'] ? " selected=\"selected\"" : "";?>>
                               <?=$portinfo['descr'];?>
                             </option>

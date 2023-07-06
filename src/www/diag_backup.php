@@ -32,6 +32,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("console.inc");
 require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
@@ -224,6 +225,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             } else {
                 /* restore the entire configuration */
+                $cfieldnames = [
+                    'usevirtualterminal',
+                    'primaryconsole',
+                    'secondaryconsole',
+                    'serialspeed',
+                    'serialusb',
+                    'disableconsolemenu'
+                ];
+                $csettings = [];
+                foreach ($cfieldnames as $fieldname) {
+                    $csettings[$fieldname] = $config['system'][$fieldname] ?? null;
+                }
                 $filename = $_FILES['conffile']['tmp_name'];
                 file_put_contents($filename, $data);
                 $cnf = OPNsense\Core\Config::getInstance();
@@ -232,11 +245,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $do_reboot = true;
                     }
                     $config = parse_config();
+                    if (!empty($pconfig['keepconsole'])) {
+                        // restore existing console settings
+                        foreach ($csettings as $fieldname => $fieldcontent) {
+                            if ($fieldcontent === null && isset($config[$fieldname])) {
+                                unset($config[$fieldname]);
+                            } else {
+                                $config['system'][$fieldname] = $fieldcontent;
+                            }
+                        }
+                    }
                     /* extract out rrd items, unset from $config when done */
-                    if($config['rrddata']) {
+                    if (!empty($config['rrddata'])) {
                         /* XXX we should point to the data... */
                         rrd_import();
                         unset($config['rrddata']);
+                    }
+                    if (!empty($config['rrddata']) || !empty($pconfig['keepconsole'])){
                         write_config();
                         convert_config();
                     }
@@ -247,7 +272,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if ($do_reboot) {
-                $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
+                if (is_interface_mismatch()) {
+                    $do_reboot = false;
+                    $savemsg .= ' ' . sprintf(
+                        gettext(
+                            "Postponing reboot as interfaces do not seem to match, please check %s assignments %s first and reboot manually."
+                        ),
+                        '<a href="/interfaces_assign.php">',
+                        '</a>'
+                    );
+                } else {
+                    $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
+                }
             }
         }
     } elseif (!empty($mode)){
@@ -398,6 +434,8 @@ $( document ).ready(function() {
                     <input name="conffile" type="file" id="conffile" /><br/>
                     <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
                     <?=gettext("Reboot after a successful restore."); ?><br/>
+                    <input name="keepconsole" type="checkbox" id="keepconsole" checked="checked" />
+                    <?=gettext("Exclude console settings from import."); ?><br/>
                     <input name="decrypt" type="checkbox" id="decryptconf"/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
