@@ -55,7 +55,7 @@ class SessionController extends ApiControllerBase
                 "captiveportal list_clients",
                 array($cpZone->zoneid, 'json')
             );
-            $allClients = json_decode($allClientsRaw, true);
+            $allClients = json_decode($allClientsRaw ?? '', true);
 
             return $allClients;
         } else {
