@@ -28,23 +28,18 @@
     --------------------------------------------------------------------------------------
     list dhcpv6 leases
 """
-import sys
-sys.path.insert(0, "/usr/local/opnsense/site-python")
 import ujson
 import calendar
 import datetime
-import params
 import time
+import argparse
 
 def parse_date(ymd, hms):
-    result = None
     dt = '%s %s' % (ymd, hms)
     try:
-        result = calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
+        return calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
     except ValueError:
-        result = None
-
-    return result
+        return None
 
 def parse_iaaddr_iaprefix(input):
     """
@@ -56,7 +51,7 @@ def parse_iaaddr_iaprefix(input):
     segment[seg_type] = input[0].split()[1]
     for line in input[1:]:
         parts = line.split()
-        field_name = parts[0]
+        field_name = parts[0] if len(parts) > 0 else ''
         field_value = None
         if field_name == 'binding':
             segment[field_name] = parts[2].strip(';')
@@ -75,7 +70,7 @@ def parse_iaid_duid(input):
     parse the combined IAID_DUID value. This is provided in the form
     of ascii characters. Non-printable characters are provided as octal escapes.
     We return the hex representation of the raw IAID_DUID value, the IAID integer,
-    as well as the separated DUID value in a three-tuple. The IAID_DUID value is
+    as well as the separated DUID value in a dict. The IAID_DUID value is
     used to uniquely identify a lease, so this value should be used to determine the last
     relevant entry in the leases file.
     """
@@ -97,10 +92,11 @@ def parse_iaid_duid(input):
             parsed.append("%02x" % ord(c))
         i += 1
 
-    iaid = int(''.join(reversed(parsed[0:4])))
-    duid = ":".join([str(a) for a in parsed[4:]])
-    iaid_duid = ":".join([str(a) for a in parsed])
-    return (iaid_duid, iaid, duid)
+    return {
+        'iaid': int(''.join(reversed(parsed[0:4]))),
+        'duid': ":".join([str(a) for a in parsed[4:]]),
+        'iaid_duid': ":".join([str(a) for a in parsed])
+    }
 
 def parse_lease(lines):
     """
@@ -111,19 +107,15 @@ def parse_lease(lines):
     cur_segment = []
     addresses = []
     prefixes = []
-    (iaid_duid, iaid, duid) = parse_iaid_duid(lines[0].split()[1])
+    iaid_duid = parse_iaid_duid(lines[0].split()[1])
     lease['lease_type'] = lines[0].split()[0]
-    lease['iaid_duid'] = iaid_duid
-    lease['iaid'] = iaid
-    lease['duid'] = duid
+    lease.update(iaid_duid)
 
     for line in lines:
         parts = line.split()
 
-        cltt = None
         if parts[0] == 'cltt' and len(parts) >= 3:
             cltt = parse_date(parts[2], parts[3])
-        if cltt is not None:
             lease['cltt'] = cltt
 
         if parts[0] == 'iaaddr' or parts[0] == 'iaprefix':
@@ -145,11 +137,12 @@ def parse_lease(lines):
     if prefixes:
         lease['prefixes'] = prefixes
 
-    return (iaid_duid, lease)
+    return (iaid_duid['iaid_duid'], lease)
 
 if __name__ == '__main__':
-    app_params = {'inactive': '0'}
-    params.update_params(app_params)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--inactive', help='include inactive leases', default='0', type=str)
+    args = parser.parse_args()
     leasefile = '/var/dhcpd/var/db/dhcpd6.leases'
     result = []
     cur_lease = []
@@ -171,7 +164,7 @@ if __name__ == '__main__':
         pass
 
     for lease in last_leases.values():
-        if app_params['inactive'] == '1':
+        if args.inactive == '1':
             result.append(lease)
         else:
             for key in ('addresses', 'prefixes'):
