@@ -48,7 +48,7 @@ def parse_date(ymd, hms):
 
 def parse_iaaddr_iaprefix(input):
     """
-    parse either an iaddr or iaprefix segment. return a tuple
+    parse either an iaaddr or iaprefix segment. return a tuple
     containing the type parsed and the corresponding segment
     """
     seg_type = input[0].split()[0]
@@ -105,7 +105,7 @@ def parse_iaid_duid(input):
 def parse_lease(lines):
     """
     Parse a DHCPv6 lease. We return a two-tuple containing the combined iaid_duid
-    and the lease. a single iaid_duid may contain multiple addresses/prefixes.
+    and the lease. a single lease may contain multiple addresses/prefixes.
     """
     lease = dict()
     cur_segment = []
@@ -119,6 +119,13 @@ def parse_lease(lines):
 
     for line in lines:
         parts = line.split()
+
+        cltt = None
+        if parts[0] == 'cltt' and len(parts) >= 3:
+            cltt = parse_date(parts[2], parts[3])
+        if cltt is not None:
+            lease['cltt'] = cltt
+
         if parts[0] == 'iaaddr' or parts[0] == 'iaprefix':
             cur_segment.append(line)
         elif len(line) > 3 and line[2] == '}' and len(cur_segment) > 0:
@@ -131,12 +138,6 @@ def parse_lease(lines):
             cur_segment = []
         elif len(cur_segment) > 0:
             cur_segment.append(line)
-
-        cltt = None
-        if parts[0] == 'cltt' and len(parts) >= 3:
-            cltt = parse_date(parts[2], parts[3])
-        if cltt is not None:
-            lease['cltt'] = cltt
 
     # ia_ta/ia_na (addresses) and ia_pd (prefixes) are mutually exclusive.
     if addresses:
