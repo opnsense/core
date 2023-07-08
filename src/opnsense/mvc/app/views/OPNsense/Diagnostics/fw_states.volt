@@ -77,7 +77,7 @@
         );
         grid_states.on('loaded.rs.jquery.bootgrid', function() {
             $('[data-toggle="tooltip"]').tooltip();
-            if ($(".search-field").val() !== "") {
+            if ($(".search-field").val() !== "" || $("#ruleid").val() !== "") {
                 $("#actKillStates").show();
             } else {
                 $("#actKillStates").hide();
@@ -95,6 +95,7 @@
                 $("#ruleid").change(function(){
                     $("#grid-states").bootgrid("reload");
                 });
+                $("#ruleid").selectpicker();
                 let init_state = window.location.hash.substr(1);
                 if (init_state) {
                     $("#ruleid").val(init_state);
@@ -204,7 +205,7 @@
   </div>
 </div>
 
-<select id="ruleid" style="display:none">
+<select id="ruleid" style="display:none" data-size="5" data-live-search="true">
   <option value="">{{ lang._("Select rule") }}</option>
 </select>
 
