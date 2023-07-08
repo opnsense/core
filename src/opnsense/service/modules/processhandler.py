@@ -307,7 +307,7 @@ class ActionHandler(object):
         :return: action object or None if not found
         """
         target = self.action_map
-        while type(target) is dict and action[0] in target:
+        while type(target) is dict and len(action) > 0 and action[0] in target:
             tmp = action.pop(0)
             target = target[tmp]
 
