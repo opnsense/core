@@ -83,21 +83,26 @@ class ApiControllerBase extends ControllerRoot
             array_multisort($keys, $sortOrder, $sort_flags, $records);
         }
 
-        $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
+        $search_clauses = preg_split('/\s+/', $searchPhrase);
+        $entry_keys = array_filter($entry_keys, function ($key) use ($search_clauses, $filter_funct, $fields, $records) {
             if (is_callable($filter_funct) && !$filter_funct($records[$key])) {
                 // not applicable according to $filter_funct()
                 return false;
-            } elseif (!empty($searchPhrase)) {
-                foreach ($records[$key] as $itemkey => $itemval) {
-                    if (
-                        !is_array($itemval) &&
-                        stripos((string)$itemval, $searchPhrase) !== false &&
-                        (empty($fields) || in_array($itemkey, $fields))
-                    ) {
-                        return true;
+            } elseif (!empty($search_clauses)) {
+                foreach ($search_clauses as $clause) {
+                    $matches = false;
+                    foreach ($records[$key] as $itemkey => $itemval) {
+                        if (!empty($fields) && !in_array($itemkey, $fields)) {
+                            continue;
+                        } if (!is_array($itemval) && stripos((string)$itemval, $clause) !== false) {
+                            $matches = true;
+                        }
+                    }
+                    if (!$matches) {
+                        return $matches;
                     }
                 }
-                return false;
+                return true;
             } else {
                 return true;
             }
