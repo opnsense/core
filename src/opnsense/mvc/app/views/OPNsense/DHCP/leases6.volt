@@ -55,7 +55,8 @@
             search:'/api/dhcp/leases6/searchLease/',
             del:'/api/dhcp/leases6/delLease/',
             options: {
-                multiSelect: true,
+                selection: false,
+                multiSelect: false,
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['inactive'] = show_inactive;
@@ -97,15 +98,15 @@
                     "commands": function (column, row) {
                         /* we override the default commands data formatter in order to utilize
                          * two different types of data keys for two different actions. The mapping
-                         * action needs a MAC address, while the delete action requires an IP address.
+                         * action needs a DUID, while the delete action requires an IPv6 address.
                          */
                         if (row.type == 'static') {
                             return '';
                         }
 
                         let static_map = '<a class="btn btn-default btn-xs" href="/services_dhcpv6_edit.php?if=' + row.if +
-                                '&amp;duid=' + row.duid + '&amp;hostname=' + row["hostname"] + '">' +
-                                '<i class="fa fa-plus fa-fw act-map" data-value="' + row.mac + '" data-toggle="tooltip" ' +
+                                '&amp;duid=' + row.duid + '">' +
+                                '<i class="fa fa-plus fa-fw act-map" data-value="' + row.duid + '" data-toggle="tooltip" ' +
                                 'title="{{lang._("Add a static mapping for this MAC address")}}"></i>' +
                                 '</a>';
 
@@ -175,12 +176,6 @@
             <tbody>
             </tbody>
             <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
             </tfoot>
             </tr>
         </table>
