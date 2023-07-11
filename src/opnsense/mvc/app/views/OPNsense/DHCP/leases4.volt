@@ -54,7 +54,8 @@
             search:'/api/dhcp/leases4/searchLease/',
             del:'/api/dhcp/leases4/delLease/',
             options: {
-                multiSelect: true,
+                selection: false,
+                multiSelect: false,
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['inactive'] = show_inactive;
@@ -102,11 +103,14 @@
                             return '';
                         }
 
-                        let static_map = '<a class="btn btn-default btn-xs" href="/services_dhcp_edit.php?if=' + row.if +
+                        let static_map = '';
+                        if (row.if != '') {
+                            static_map = '<a class="btn btn-default btn-xs" href="/services_dhcp_edit.php?if=' + row.if +
                                 '&amp;mac=' + row.mac + '&amp;hostname=' + row["hostname"] + '">' +
                                 '<i class="fa fa-plus fa-fw act-map" data-value="' + row.mac + '" data-toggle="tooltip" ' +
                                 'title="{{lang._("Add a static mapping for this MAC address")}}"></i>' +
                                 '</a>';
+                        }
 
                         /* The delete action can be hooked up to the default bootgrid behaviour */
                         let deleteip = '<button type="button" class="btn btn-xs btn-default bootgrid-tooltip command-delete"' +
@@ -129,45 +133,37 @@
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
 <div class="tab-content content-box col-xs-12 __mb">
-    <div id="dot" class="tab-pane fade in active">
-        <div id="inactive-selection-wrapper" style="float: left;">
-            <label>
-                <input id="show-inactive" type="checkbox"/>
-                {{ lang._('Show inactive') }}
-            </label>
-        </div>
-        <div class="btn-group" id="interface-selection-wrapper">
-            <select class="selectpicker" multiple="multiple" data-live-search="true" id="interface-selection" data-width="auto" title="All Interfaces">
-            </select>
-        </div>
-        <table id="grid-leases" class="table table-condensed table-hover table-striped table-responsive">
-            <tr>
-            <thead>
-            <tr>
-                <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
-                <th data-column-id="address" data-identifier="true" data-type="string">{{ lang._('IP Address') }}</th>
-                <th data-column-id="mac" data-type="string" data-formatter="macformatter">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
-                <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="starts" data-type="string">{{ lang._('Start') }}</th>
-                <th data-column-id="ends" data-type="string">{{ lang._('End') }}</th>
-                <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
-                <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
-                <th data-column-id="type" data-type="string">{{ lang._('Lease Type') }}</th>
-                <th data-column-id="commands" data-formatter="commands", data-sortable="false"></th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>
-                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                </td>
-            </tr>
-            </tfoot>
-            </tr>
-        </table>
+    <div id="inactive-selection-wrapper" style="float: left;">
+        <label>
+            <input id="show-inactive" type="checkbox"/>
+            {{ lang._('Show inactive') }}
+        </label>
     </div>
+    <div class="btn-group" id="interface-selection-wrapper">
+        <select class="selectpicker" multiple="multiple" data-live-search="true" id="interface-selection" data-width="auto" title="All Interfaces">
+        </select>
+    </div>
+    <table id="grid-leases" class="table table-condensed table-hover table-striped table-responsive">
+        <tr>
+        <thead>
+        <tr>
+            <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
+            <th data-column-id="address" data-identifier="true" data-type="string">{{ lang._('IP Address') }}</th>
+            <th data-column-id="mac" data-type="string" data-formatter="macformatter">{{ lang._('MAC Address') }}</th>
+            <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
+            <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
+            <th data-column-id="starts" data-type="string">{{ lang._('Start') }}</th>
+            <th data-column-id="ends" data-type="string">{{ lang._('End') }}</th>
+            <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
+            <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
+            <th data-column-id="type" data-type="string">{{ lang._('Lease Type') }}</th>
+            <th data-column-id="commands" data-formatter="commands", data-sortable="false"></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+        </tr>
+    </table>
 </div>
