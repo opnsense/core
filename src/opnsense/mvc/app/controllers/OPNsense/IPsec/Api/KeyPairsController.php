@@ -129,7 +129,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
                 return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
             }
             $attrs['private_key_type'] = OPENSSL_KEYTYPE_RSA;
-            $attrs['private_key_bits'] = !empty($size) ? $size : 2048;
+            $attrs['private_key_bits'] = !empty($size) ? intval($size) : 2048;
         } elseif ($type == 'ecdsa') {
             if (!empty($size) && !in_array($size, ['256', '384', '521'])) {
                 return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
