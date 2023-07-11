@@ -104,11 +104,15 @@
                             return '';
                         }
 
-                        let static_map = '<a class="btn btn-default btn-xs" href="/services_dhcpv6_edit.php?if=' + row.if +
+                        let static_map = '';
+
+                        if (row.if != '') {
+                            static_map = '<a class="btn btn-default btn-xs" href="/services_dhcpv6_edit.php?if=' + row.if +
                                 '&amp;duid=' + row.duid + '">' +
                                 '<i class="fa fa-plus fa-fw act-map" data-value="' + row.duid + '" data-toggle="tooltip" ' +
                                 'title="{{lang._("Add a static mapping for this MAC address")}}"></i>' +
                                 '</a>';
+                        }
 
                         /* The delete action can be hooked up to the default bootgrid behaviour */
                         let deleteip = '<button type="button" class="btn btn-xs btn-default bootgrid-tooltip command-delete"' +
@@ -186,8 +190,8 @@
             <thead>
             <tr>
                 <th data-column-id="prefix" data-type="string">{{ lang._('IPv6 Prefix') }}</th>
-                <th data-column-id="iaid" data-type="number">{{ lang._('IAID') }}</th>
-                <th data-column-id="duid" data-type="string" data-width="15em">{{ lang._('DUID') }}</th>
+                <th data-column-id="iaid" data-type="number" data-width="5em">{{ lang._('IAID') }}</th>
+                <th data-column-id="duid" data-type="string">{{ lang._('DUID') }}</th>
                 <th data-column-id="cltt" data-type="string">{{ lang._('Last Transaction Time') }}</th>
                 <th data-column-id="ends" data-type="string">{{ lang._('End') }}</th>
                 <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
