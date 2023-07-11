@@ -135,13 +135,11 @@ class Leases6Controller extends ApiControllerBase
 
             if (!empty($lease['duid'])) {
                 $mac = '';
-                $duid_llt = "00:01";
-                $duid_ll = "00:03";
-                $hw_type_ether = "00:01";
                 $duid_type = substr($lease['duid'], 0, 5);
-                if ($duid_type === $duid_llt || $duid_type === $duid_ll) {
+                if ($duid_type === "00:01" || $duid_type === "00:03") {
+                    /* DUID generated based on LL addr with or without timestamp */
                     $hw_type = substr($lease['duid'], 6, 5);
-                    if ($hw_type == $hw_type_ether) {
+                    if ($hw_type == "00:01") { /* HW type ethernet */
                         $mac = substr($lease['duid'], -17, 17);
                     }
                 }
@@ -159,12 +157,14 @@ class Leases6Controller extends ApiControllerBase
             $lease['if_descr'] = '';
             if (!empty($lease['if'])) {
                 $if = $config->interfaces->{$lease['if']};
-                $intf = (string)$if->descr;
-                $leases[$idx]['if_descr'] = $intf;
-                $leases[$idx]['if'] = $lease['if'];
+                if (!empty((string)$if->ipaddrv6) && Util::isIpAddress((string)$if->ipaddrv6)) {
+                    $intf = (string)$if->descr;
+                    $leases[$idx]['if_descr'] = $intf;
+                    $leases[$idx]['if'] = $lease['if'];
 
-                if (!array_key_exists($lease['if'], $interfaces)) {
-                    $interfaces[$lease['if']] = $intf;
+                    if (!array_key_exists($lease['if'], $interfaces)) {
+                        $interfaces[$lease['if']] = $intf;
+                    }
                 }
             } else {
                 foreach ($config->dhcpdv6->children() as $dhcpif => $dhcpifconf) {
@@ -239,7 +239,6 @@ class Leases6Controller extends ApiControllerBase
                 $result["result"] = "deleted";
             }
         }
-
 
         return $result;
     }
