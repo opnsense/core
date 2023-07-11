@@ -230,7 +230,17 @@ class Leases6Controller extends ApiControllerBase
 
     public function delLeaseAction($ip)
     {
-        /* XXX: implement backend call */
-        return ['result' => 'OK'];
+        $result = ["result" => "failed"];
+
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            $response = json_decode((new Backend())->configdpRun("dhcpd remove lease6", [$ip]), true);
+            if ($response["removed_leases"] != "0") {
+                $result["result"] = "deleted";
+            }
+        }
+
+
+        return $result;
     }
 }
