@@ -26,14 +26,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\DHCP;
+namespace OPNsense\DHCPv6;
 
 use OPNsense\Base\IndexController;
 
-class Leases6Controller extends IndexController
+class LeasesController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/DHCP/leases6');
+        $this->view->pick('OPNsense/DHCPv6/leases');
     }
 }

@@ -52,8 +52,8 @@
         })
 
         $("#grid-leases").UIBootgrid({
-            search:'/api/dhcp/leases6/searchLease/',
-            del:'/api/dhcp/leases6/delLease/',
+            search:'/api/dhcpv6/leases/searchLease/',
+            del:'/api/dhcpv6/leases/delLease/',
             options: {
                 selection: false,
                 multiSelect: false,
@@ -127,19 +127,19 @@
         });
 
         $("#grid-prefixes").UIBootgrid({
-            search:'/api/dhcp/leases6/searchPrefix/'
+            search:'/api/dhcpv6/leases/searchPrefix/'
         });
 
         $("#inactive-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar');
         $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
 
         if (window.location.hash != "") {
-        $('a[href="' + window.location.hash + '"]').click();
+            $('a[href="' + window.location.hash + '"]').click();
         } else {
             $('a[href="#leases"]').click();
         }
 
-        updateServiceControlUI('dhcp');
+        updateServiceControlUI('dhcpv6');
     });
 </script>
 
