@@ -127,7 +127,7 @@
         $("#inactive-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar');
         $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
 
-        updateServiceControlUI('dhcp');
+        updateServiceControlUI('dhcpv4');
     });
 </script>
 

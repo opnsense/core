@@ -51,7 +51,7 @@ class LeasesController extends ApiControllerBase
             array_push($online, $ndp_entry['mac'], $ndp_entry['ip']);
         }
 
-        $raw_leases = json_decode($backend->configdpRun('dhcpd list leases6', [$inactive]), true);
+        $raw_leases = json_decode($backend->configdpRun('dhcpd6 list leases', [$inactive]), true);
         foreach ($raw_leases as $raw_lease) {
             if (!array_key_exists('addresses', $raw_lease)) {
                 continue;
@@ -89,7 +89,7 @@ class LeasesController extends ApiControllerBase
             $leases[] = $lease;
         }
 
-        $sleases = json_decode($backend->configdRun('dhcpd list static 6 0'), true);
+        $sleases = json_decode($backend->configdRun('dhcpd6 list static 0'), true);
         $statics = [];
         foreach ($sleases['dhcpd'] as $slease) {
             $static = [
@@ -207,7 +207,7 @@ class LeasesController extends ApiControllerBase
         $backend = new Backend();
         $prefixes = [];
 
-        $raw_leases = json_decode($backend->configdpRun('dhcpd list leases6 1'), true);
+        $raw_leases = json_decode($backend->configdpRun('dhcpd6 list leases 1'), true);
         foreach ($raw_leases as $raw_lease) {
             if ($raw_lease['lease_type'] === 'ia-pd' && array_key_exists('prefixes', $raw_lease)) {
                 $prefix = [];
@@ -237,7 +237,7 @@ class LeasesController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             $this->sessionClose();
-            $response = json_decode((new Backend())->configdpRun("dhcpd remove lease6", [$ip]), true);
+            $response = json_decode((new Backend())->configdpRun("dhcpd6 remove lease", [$ip]), true);
             if ($response["removed_leases"] != "0") {
                 $result["result"] = "deleted";
             }
