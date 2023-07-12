@@ -112,6 +112,16 @@ class LeasesController extends ApiControllerBase
 
         $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
         $interfaces = [];
+
+        /* fetch interfaces ranges so we can match leases to interfaces */
+        $if_ranges = [];
+        foreach ($config->dhcpdv6->children() as $dhcpif => $dhcpifconf) {
+            $if = $config->interfaces->$dhcpif;
+            if (!empty((string)$if->ipaddrv6) && !empty((string)$if->subnetv6)) {
+                $if_ranges[$dhcpif] = (string)$if->ipaddrv6.'/'.(string)$if->subnetv6;
+            }
+        }
+
         foreach ($leases as $idx => $lease) {
             $leases[$idx]['man'] = '';
             $leases[$idx]['mac'] = '';
@@ -154,33 +164,28 @@ class LeasesController extends ApiControllerBase
             }
 
             /* include interface */
-            $lease['if_descr'] = '';
+            $intf = '';
+            $intf_descr = '';
             if (!empty($lease['if'])) {
                 $if = $config->interfaces->{$lease['if']};
                 if (!empty((string)$if->ipaddrv6) && Util::isIpAddress((string)$if->ipaddrv6)) {
-                    $intf = (string)$if->descr;
-                    $leases[$idx]['if_descr'] = $intf;
-                    $leases[$idx]['if'] = $lease['if'];
-
-                    if (!array_key_exists($lease['if'], $interfaces)) {
-                        $interfaces[$lease['if']] = $intf;
-                    }
+                    $intf = $lease['if'];
+                    $intf_descr = (string)$if->descr;
                 }
             } else {
-                foreach ($config->dhcpdv6->children() as $dhcpif => $dhcpifconf) {
-                    $if = $config->interfaces->$dhcpif;
-                    if (!empty((string)$if->ipaddrv6) && Util::isIpAddress((string)$if->ipaddrv6)) {
-                        if (Util::isIPInCIDR($lease['address'], (string)$if->ipaddrv6 . '/' . (string)$if->subnetv6)) {
-                            $intf = (string)$if->descr;
-                            $leases[$idx]['if_descr'] = $intf;
-                            $leases[$idx]['if'] = $dhcpif;
-
-                            if (!array_key_exists($dhcpif, $interfaces)) {
-                                $interfaces[$dhcpif] = $intf;
-                            }
-                        }
+                foreach ($if_ranges as $if_name => $if_range) {
+                    if (Util::isIPInCIDR($lease['address'], $if_range)) {
+                        $intf = $if_name;
+                        $intf_descr = $config->interfaces->$if_name->descr;
                     }
                 }
+            }
+
+            $leases[$idx]['if'] = $intf;
+            $leases[$idx]['if_descr'] = $intf_descr;
+
+            if (!empty($if_name) && !array_key_exists($if_name, $interfaces)) {
+                $interfaces[$intf] = $intf_descr;
             }
         }
 
@@ -223,9 +228,7 @@ class LeasesController extends ApiControllerBase
             }
         }
 
-        $response = $this->searchRecordsetBase($prefixes, null, 'prefix', null, SORT_REGULAR);
-
-        return $response;
+        return $this->searchRecordsetBase($prefixes, null, 'prefix', null, SORT_REGULAR);
     }
 
     public function delLeaseAction($ip)
