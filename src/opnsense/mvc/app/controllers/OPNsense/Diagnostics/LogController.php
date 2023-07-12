@@ -62,6 +62,9 @@ class LogController extends IndexController
             case 'squid':
                 $this->view->service = 'proxy';
                 break;
+            case 'dhcpd':
+                $this->view->service = 'dhcpv4';
+                break;
             case 'system':
                 $this->view->default_log_severity = 'Notice';
                 break;
