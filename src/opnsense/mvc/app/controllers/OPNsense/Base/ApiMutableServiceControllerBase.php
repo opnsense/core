@@ -72,17 +72,8 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function initialize()
     {
         parent::initialize();
-        if (empty(static::$internalServiceClass)) {
-            throw new \Exception('cannot instantiate without internalServiceClass defined.');
-        }
         if (empty(static::$internalServiceName)) {
             throw new \Exception('cannot instantiate without internalServiceName defined.');
-        }
-        if (empty(static::$internalServiceTemplate)) {
-            throw new \Exception('cannot instantiate without internalServiceTemplate defined.');
-        }
-        if (empty(static::$internalServiceEnabled)) {
-            throw new \Exception('cannot instantiate without internalServiceEnabled defined.');
         }
     }
 
@@ -93,6 +84,9 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     protected function getModel()
     {
         if ($this->modelHandle == null) {
+            if (empty(static::$internalServiceClass)) {
+                throw new \Exception('cannot get model without internalServiceClass defined.');
+            }
             $this->modelHandle = (new \ReflectionClass(static::$internalServiceClass))->newInstance();
         }
 
@@ -167,6 +161,18 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     }
 
     /**
+     * check if service is enabled according to model
+     */
+    protected function serviceEnabled()
+    {
+        if (empty(static::$internalServiceEnabled)) {
+            throw new \Exception('cannot check if service is enabled without internalServiceEnabled defined.');
+        }
+
+        return (string)($this->getModel())->getNodeByReference(static::$internalServiceEnabled) == '1';
+    }
+
+    /**
      * reconfigure with optional stop, generate config and start / reload
      * @return array response message
      * @throws \Exception when configd action fails
@@ -177,13 +183,9 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
 
-            $model = $this->getModel();
             $backend = new Backend();
 
-            if (
-                (string)$model->getNodeByReference(static::$internalServiceEnabled) != '1' ||
-                $this->reconfigureForceRestart()
-            ) {
+            if (!$this->serviceEnabled() || $this->reconfigureForceRestart()) {
                 $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' stop');
             }
 
@@ -191,9 +193,11 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
                 $backend->configdRun('interface invoke registration');
             }
 
-            $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
+            if (!empty(static::$internalServiceTemplate)) {
+                $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
+            }
 
-            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
+            if ($this->serviceEnabled()) {
                 $runStatus = $this->statusAction();
                 if ($runStatus['status'] != 'running') {
                     $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' start');
@@ -216,18 +220,17 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
     public function statusAction()
     {
         $backend = new Backend();
-        $model = $this->getModel();
         $response = $backend->configdRun(escapeshellarg(static::$internalServiceName) . ' status');
 
         if (strpos($response, 'not running') > 0) {
-            if ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '1') {
+            if ($this->serviceEnabled()) {
                 $status = 'stopped';
             } else {
                 $status = 'disabled';
             }
         } elseif (strpos($response, 'is running') > 0) {
             $status = 'running';
-        } elseif ((string)$model->getNodeByReference(static::$internalServiceEnabled) == '0') {
+        } elseif (!$this->serviceEnabled()) {
             $status = 'disabled';
         } else {
             $status = 'unknown';

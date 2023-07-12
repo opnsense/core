@@ -28,74 +28,23 @@
 
 namespace OPNsense\DHCPv4\Api;
 
-use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Config;
 
-class ServiceController extends ApiControllerBase
+class ServiceController extends ApiMutableServiceControllerBase
 {
-    /**
-     * XXX most of this logic can be replaced when appropriate start/stop/restart/status
-     * hooks are provided to fit into an ApiMutableServiceControllerBase class. dhcpd being
-     * 'enabled' isn't as straight-forward however with current legacy config format.
-     */
-    public function statusAction()
-    {
-        $response = trim((new Backend())->configdRun('service status dhcpd'));
+    protected static $internalServiceName = 'dhcpd';
 
-        if (strpos($response, 'is running') > 0) {
-            $status = 'running';
-        } elseif (strpos($response, 'not running') > 0) {
-            $status = 'stopped';
-        } else {
-            $status = 'disabled';
+    protected function serviceEnabled()
+    {
+        $config = Config::getInstance()->object();
+
+        foreach ($config->dhcpd->children() as $dhcpifconf) {
+            if (!empty((string)$dhcpifconf->enable) && (string)$dhcpifconf->enable == '1') {
+                return true;
+            }
         }
 
-        return [
-            'status' => $status,
-            'widget' => [
-                'caption_stop' => gettext("stop service"),
-                'caption_start' => gettext("start service"),
-                'caption_restart' => gettext("restart service")
-            ]
-        ];
-    }
-
-    public function startAction()
-    {
-        $result = ['status' => 'failed'];
-
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            $response = trim((new Backend())->configdRun('service start dhcpd'));
-            return ['status' => $response];
-        }
-
-        return $result;
-    }
-
-    public function stopAction()
-    {
-        $result = ['status' => 'failed'];
-
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            $response = trim((new Backend())->configdRun('service stop dhcpd'));
-            return ['status' => $response];
-        }
-
-        return $result;
-    }
-
-    public function restartAction()
-    {
-        $result = ['status' => 'failed'];
-
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            $response = trim((new Backend())->configdRun('service restart dhcpd'));
-            return ['status' => $response];
-        }
-
-        return $result;
+        return false;
     }
 }
