@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\DHCP\Api;
+namespace OPNsense\DHCPv4\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;

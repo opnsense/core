@@ -455,13 +455,6 @@
             <pattern>services_dhcp.php*</pattern>
         </patterns>
     </page-services-dhcpserver>
-    <page-services-dhcpserver-leases>
-        <name>Services: DHCP Server: Leases</name>
-        <patterns>
-            <pattern>ui/dhcp/leases4</pattern>
-            <pattern>api/dhcp/leases4/*</pattern>
-        </patterns>
-    </page-services-dhcpserver-leases>
     <page-services-dhcpv6relay>
         <name>Services: DHCPv6 Relay</name>
         <patterns>
@@ -501,7 +494,8 @@
     <page-status-dhcpleases>
         <name>Status: DHCP leases</name>
         <patterns>
-            <pattern>status_dhcp_leases.php*</pattern>
+            <pattern>ui/dhcpv4/leases</pattern>
+            <pattern>api/dhcpv4/leases/*</pattern>
         </patterns>
     </page-status-dhcpleases>
     <page-status-dhcpv6leases>

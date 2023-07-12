@@ -281,9 +281,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/ItemController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/forms/dialogEdit.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Api/Leases4Controller.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Api/ServiceController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCP/Leases4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/LeasesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv4/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/LeasesController.php
@@ -725,7 +725,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/service.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/DHCP/leases4.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt

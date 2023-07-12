@@ -26,14 +26,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\DHCP\Api;
+namespace OPNsense\DHCPv4\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-class Leases4Controller extends ApiControllerBase
+class LeasesController extends ApiControllerBase
 {
     public function searchLeaseAction()
     {
