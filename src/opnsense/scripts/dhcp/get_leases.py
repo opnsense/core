@@ -31,12 +31,13 @@
 import sys
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 import watchers.dhcpd
-import params
 import time
+import argparse
 import ujson
 
-app_params = {'inactive': '0'}
-params.update_params(app_params)
+parser = argparse.ArgumentParser()
+parser.add_argument('--inactive', help='include inactive leases', default='0', type=str)
+args = parser.parse_args()
 
 last_leases = dict()
 result = list()
@@ -46,7 +47,7 @@ for lease in dhcpdleases.watch():
     last_leases[lease['address']] = lease
 
 for lease in last_leases.values():
-    if ('ends' in lease and lease['ends'] is not None and lease['ends'] > time.time()) or app_params['inactive'] != '0':
+    if ('ends' in lease and lease['ends'] is not None and lease['ends'] > time.time()) or args.inactive == '1':
         result.append(lease)
 
 print (ujson.dumps(result))
