@@ -1856,7 +1856,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($proto = null, $domain_fallback = 'not.found', $ifconfig_details = null, $valid_addresses = true)
+function dhcpd_staticmap($proto = null, $valid_addresses = true, $domain_fallback = 'not.found', $ifconfig_details = null)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
@@ -1924,29 +1924,6 @@ function dhcpd_staticmap($proto = null, $domain_fallback = 'not.found', $ifconfi
     }
 
     return $staticmap;
-}
-
-function dhcpd_leases($inet = 4)
-{
-    $file = $inet == 6 ? '/var/dhcpd/var/db/dhcpd6.leases' : '/var/dhcpd/var/db/dhcpd.leases';
-    $token = $inet == 6 ? 'ia-' : 'lease';
-    $content = [];
-    $section = [];
-
-    $fin = @fopen($file, 'r');
-    if ($fin) {
-        while (($line = fgets($fin, 4096)) !== false) {
-            if (strpos($line, $token) === 0) {
-                $section = [];
-            } elseif (strpos($line, '}') === 0 && count($section) > 0) {
-                $content[] = implode('', $section);
-            }
-            $section[] = rtrim($line, "\n;");
-        }
-        fclose($fin);
-    }
-
-    return $content;
 }
 
 function dhcpd_parse_duid($duid_string)

@@ -507,7 +507,8 @@
     <page-status-dhcpv6leases>
         <name>Status: DHCPv6 leases</name>
         <patterns>
-            <pattern>status_dhcpv6_leases.php*</pattern>
+            <pattern>ui/dhcpv6/leases</pattern>
+            <pattern>api/dhcpv6/leases/*</pattern>
         </patterns>
     </page-status-dhcpv6leases>
     <page-status-interfaces>
