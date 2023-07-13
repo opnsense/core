@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dstbeginport'] = 80 ;
     $pconfig['dstendport'] = 80 ;
     $pconfig['local-port'] = 80;
-    $pconfig['filter-rule-association'] = "add-associated";
+    $pconfig['associated-rule-id'] = "add-associated";
     if (isset($configId)) {
         // copy 1-on-1
         foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync','log',
@@ -223,9 +223,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($natent['nordr'])) {
             $natent['associated-rule-id'] = '';
-        } elseif (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] == "pass") {
+        } elseif (!empty($pconfig['associated-rule-id']) && $pconfig['associated-rule-id'] == "pass") {
             $natent['associated-rule-id'] = "pass";
-        } elseif (!empty($pconfig['associated-rule-id'])) {
+        } elseif (!empty($pconfig['associated-rule-id']) && !in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
         } else {
             $natent['associated-rule-id'] = null;
@@ -266,23 +266,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // Updating a rule with a filter rule associated
-        if (!empty($natent['associated-rule-id']) || !empty($pconfig['filter-rule-association'])) {
+        if (!empty($natent['associated-rule-id']) || in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             /* auto-generate a matching firewall rule */
-            $filterent = array();
-            // If a rule already exists, load it
-            if (!empty($natent['associated-rule-id'])) {
-                // search rule by associated-rule-id
-                $filterentid = false;
-                foreach ($config['filter']['rule'] as $key => $item){
+            $filterent = [];
+            if (in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
+                $filterent['associated-rule-id'] = $natent['associated-rule-id'];
+            } else {
+                $filterent['associated-rule-id'] = $natent['associated-rule-id'];
+                foreach ($config['filter']['rule'] as $key => &$item){
                     if (isset($item['associated-rule-id']) && $item['associated-rule-id']==$natent['associated-rule-id']) {
-                        $filterentid = $key;
-                        break;
+                          $filterent = &config_read_array('filter', 'rule', $key);
+                          break;
                     }
-                }
-                if ($filterentid === false) {
-                    $filterent['associated-rule-id'] = $natent['associated-rule-id'];
-                } else {
-                    $filterent = &config_read_array('filter', 'rule', $filterentid);
                 }
             }
             pconfig_to_address($filterent['source'], $pconfig['src'],
@@ -339,8 +334,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent['category'] = $natent['category'];
 
             // If this is a new rule, create an ID and add the rule
-            if (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass') {
-                if ($pconfig['filter-rule-association'] == 'add-associated') {
+            if (
+              !empty($pconfig['associated-rule-id']) &&
+              in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])
+            ) {
+                if ($pconfig['associated-rule-id'] == 'add-associated') {
                     $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
                 }
                 $filterent['created'] = make_config_revision_entry();
@@ -1051,52 +1049,43 @@ $( document ).ready(function() {
                     </select>
                   </td>
                 </tr>
-<?php            if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
-                <tr class="act_no_rdr">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Filter rule association"); ?></td>
-                  <td>
-                    <select name="associated-rule-id" class="selectpicker" >
-                      <option value=""><?=gettext("None"); ?></option>
-                      <!-- maybe we should remove this in the future, multi purpose id field might not be the best thing in the world -->
-                      <option value="pass" <?= $pconfig['associated-rule-id'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
-                      <?php
-                      $linkedrule = "";
-                      if (isset($config['filter']['rule'])):
-                        filter_rules_sort();
-                        foreach ($config['filter']['rule'] as $filter_id => $filter_rule):
-                          if (isset($filter_rule['associated-rule-id'])):
-                            $is_selected = $filter_rule['associated-rule-id']==$pconfig['associated-rule-id'];
-                            if ($is_selected) $linkedrule = $filter_id;
-?>
-                            <option value="<?=$filter_rule['associated-rule-id']?>" <?= $is_selected ?  " selected=\"selected\"" : "";?> >
-                                <?=htmlspecialchars('Rule ' . $filter_rule['descr']);?>
-                            </option>
-
 <?php
-                          endif;
-                        endforeach;
-                      endif;
+                // check if a filter rule is associated and return it.
+                $linkedrule = "";
+                $linkedrule_descr = "";
+                if (!empty($pconfig['associated-rule-id'])) {
+                    filter_rules_sort(); // XXX: needed?
+                    foreach ($config['filter']['rule'] as $filter_id => $filter_rule) {
+                        if (
+                            isset($filter_rule['associated-rule-id']) &&
+                            $filter_rule['associated-rule-id'] == $pconfig['associated-rule-id']
+                        ) {
+                            $linkedrule = $filter_rule['associated-rule-id'];
+                            $linkedrule_descr = htmlspecialchars('Rule ' . $filter_rule['descr']);
+                        }
+                    }
+                }
 ?>
-                    </select>
-                  </td>
-                </tr>
-<?php         elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
-?>
+
                 <tr class="act_no_rdr">
                   <td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
                   <td>
-                    <select name="filter-rule-association">
-                      <option value="" <?= empty($pconfig['filter-rule-association']) ? " selected=\"selected\"" : ""; ?>><?=gettext("None"); ?></option>
-                      <option value="add-associated" <?= $pconfig['filter-rule-association'] == "add-associated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add associated filter rule"); ?></option>
-                      <option value="add-unassociated" <?= $pconfig['filter-rule-association'] == "add-unassociated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add unassociated filter rule"); ?></option>
-                      <option value="pass" <?= $pconfig['filter-rule-association'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
+                    <select name="associated-rule-id">
+                      <option value="" <?= empty($pconfig['associated-rule-id']) ? " selected=\"selected\"" : ""; ?>><?=gettext("None"); ?></option>
+<?php              if ($linkedrule !== ""):?>
+                      <option value="<?=$linkedrule;?>" selected="selected"><?=$linkedrule_descr;?></option>
+<?php              else:?>
+                      <option value="add-associated" <?= $pconfig['associated-rule-id'] == "add-associated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add associated filter rule"); ?></option>
+                      <option value="add-unassociated" <?= $pconfig['associated-rule-id'] == "add-unassociated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add unassociated filter rule"); ?></option>
+<?php              endif;?>
+                      <option value="pass" <?= $pconfig['associated-rule-id'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
                     </select>
                     <div class="hidden" data-for="help_for_fra">
                       <?=gettext("NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway.")?>
                     </div>
                   </td>
                 </tr>
-<?php          endif;
+<?php
 
                 $has_created_time = (isset($pconfig['created']) && is_array($pconfig['created']));
                 $has_updated_time = (isset($pconfig['updated']) && is_array($pconfig['updated']));
