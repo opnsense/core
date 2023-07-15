@@ -37,7 +37,6 @@ use OPNsense\Core\Config;
 
 class SPDField extends ArrayField
 {
-
     protected static $internalStaticChildren = [];
 
     /**

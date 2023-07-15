@@ -113,7 +113,7 @@ class LeasesController extends ApiControllerBase
             /* include manufacturer info */
             $leases[$idx]['man'] = '';
             if ($lease['mac'] != '') {
-                $mac_hi = strtoupper(substr(str_replace(':', '', $lease['mac']),0, 6));
+                $mac_hi = strtoupper(substr(str_replace(':', '', $lease['mac']), 0, 6));
                 $leases[$idx]['man'] = $mac_man[$mac_hi];
             }
 

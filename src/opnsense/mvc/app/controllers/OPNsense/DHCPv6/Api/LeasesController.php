@@ -118,7 +118,7 @@ class LeasesController extends ApiControllerBase
         foreach ($config->dhcpdv6->children() as $dhcpif => $dhcpifconf) {
             $if = $config->interfaces->$dhcpif;
             if (!empty((string)$if->ipaddrv6) && !empty((string)$if->subnetv6)) {
-                $if_ranges[$dhcpif] = (string)$if->ipaddrv6.'/'.(string)$if->subnetv6;
+                $if_ranges[$dhcpif] = (string)$if->ipaddrv6 . '/' . (string)$if->subnetv6;
             }
         }
 

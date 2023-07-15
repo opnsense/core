@@ -354,7 +354,7 @@ class Util
 
     private static function isIPv6InCIDR($ip, $cidr)
     {
-        $inet_to_bits = function($ip) {
+        $inet_to_bits = function ($ip) {
             $split = str_split($ip);
             $bin_ip = '';
             foreach ($split as $char) {

@@ -61,7 +61,7 @@ if (isset($opts['s'])) {
 
 $removed_leases = 0;
 $fin = @fopen($dhcp_lease_file, "r+");
-$fout = @fopen($dhcp_lease_file.".new", "w");
+$fout = @fopen($dhcp_lease_file . ".new", "w");
 if ($fin && flock($fin, LOCK_EX)) {
     $iaaddr = "";
     $content_to_flush = array();

@@ -247,5 +247,4 @@ class ArrayField extends BaseField
             yield $key => $node;
         }
     }
-
 }

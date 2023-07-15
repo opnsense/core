@@ -33,7 +33,6 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 
-
 class GroupField extends ArrayField
 {
     protected static $internalStaticChildren = [];
