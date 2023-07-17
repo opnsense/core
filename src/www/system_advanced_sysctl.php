@@ -259,7 +259,7 @@ $( document ).ready(function() {
                 </td>
                 <td>
 <?php if (empty($tunable['type']) && strpos($tunable['tunable'], '.') !== false): ?>
-                  <span class="text-danger"><?= gettext('unsupported') ?></span>
+                  <span class="text-warning"><?= gettext('environment') ?></span>
 <?php elseif ($tunable['type'] === 'w'): ?>
                   <?= gettext('runtime') ?>
 <?php elseif ($tunable['type'] === 't'): ?>
