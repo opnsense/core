@@ -235,9 +235,11 @@ def handle_details(args):
                     LIMIT ?
                 """, [args.limit]).fetchdf().astype({'uuid': str})
 
+
     if not details.empty:
         # use a resolved hostname if possible
         details['client'] = np.where(details['hostname'].isnull(), details['client'], details['hostname'])
+        details['blocklist'].replace(np.nan, None, inplace=True)
         details = details.drop(['hostname', 'ipaddr'], axis=1)
         # map the integer types to a sensible description
         details['action'] = details['action'].map({0: 'Pass', 1: 'Block', 2: 'Drop'})

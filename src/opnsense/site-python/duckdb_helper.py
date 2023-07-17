@@ -30,6 +30,11 @@ import os
 import duckdb
 import fcntl
 
+
+class StorageVersionException(Exception):
+    pass
+
+
 class DbConnection:
     """
     ContextManager wrapper for a DuckDb connection. Use this to synchronize
@@ -61,7 +66,12 @@ class DbConnection:
                 # in a timestamp adjusted for the current time zone. Since we want to store and query
                 # UTC at all times also set the database time zone to UTC. This is scoped within the connection.
                 self.connection.execute("SET TimeZone='UTC'")
-            except duckdb.IOException:
+            except duckdb.IOException as e:
+                if str(e).find('database file with version number') > -1:
+                    # XXX: this is extremely wacky, apparently we are not able to read the current storage version
+                    #      via python so we can only watch for an exception... which is the same one for all types
+                    raise StorageVersionException(str(e))
+
                 # write-only, but no truncating, so use os-level open
                 self._fd = os.open(self._path, os.O_WRONLY)
                 # Try to obtain an exclusive lock and block when unable to.
@@ -97,3 +107,29 @@ class DbConnection:
             return False
 
         return True
+
+
+
+def restore_database(path, target):
+    """
+    :param path: backup source
+    :param target: duckdb target database
+    :return: bool success (false when locked)
+    """
+    lock_fn = "%s/schema.sql" % path.rstrip('/')
+    if os.path.isfile(lock_fn):
+        with open(lock_fn, 'a+') as lockh:
+            try:
+                fcntl.flock(lockh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except IOError:
+                # locked
+                return False
+            if os.path.isfile(target):
+                os.remove(target)
+            with DbConnection(target, read_only=False) as db:
+                db.connection.execute("IMPORT DATABASE '%s';" % path)
+    else:
+        # import schema not found, raise exception to inform the caller there is no backup
+        raise FileNotFoundError(lock_fn)
+
+    return True
