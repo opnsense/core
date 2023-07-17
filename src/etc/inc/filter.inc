@@ -805,11 +805,13 @@ function default_state_size()
 function get_current_hostid()
 {
     exec('/sbin/pfctl -si -v 2>/dev/null', $output);
+
     foreach ($output as $line) {
         if (strpos($line, 'Hostid:') !== false) {
-            return preg_split("/(\s+)/", $line)[1];
+            return preg_split('/\s+/', $line)[1];
         }
     }
+
     return null;
 }
 
