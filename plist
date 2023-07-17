@@ -378,14 +378,17 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogRemote.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
@@ -657,9 +660,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipNetworkField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VlanInterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Lagg.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Lagg.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
@@ -764,6 +770,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
@@ -959,6 +966,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
+/usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
@@ -2002,8 +2010,6 @@
 /usr/local/www/interfaces_gif_edit.php
 /usr/local/www/interfaces_gre.php
 /usr/local/www/interfaces_gre_edit.php
-/usr/local/www/interfaces_lagg.php
-/usr/local/www/interfaces_lagg_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
 /usr/local/www/interfaces_wireless.php

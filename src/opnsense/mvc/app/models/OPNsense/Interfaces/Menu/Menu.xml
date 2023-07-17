@@ -8,6 +8,7 @@
             <VXLAN url="/ui/interfaces/vxlan"/>
             <Loopback url="/ui/interfaces/loopback"/>
             <VLAN url="/ui/interfaces/vlan"/>
+            <LAGG url="/ui/interfaces/lagg"/>
         </Types>
     </Interfaces>
 </menu>

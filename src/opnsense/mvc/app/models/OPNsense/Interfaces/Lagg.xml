@@ -1,0 +1,71 @@
+<model>
+    <mount>/laggs</mount>
+    <version>1.0.0</version>
+    <description>Lagg interfaces</description>
+    <items>
+        <lagg type="ArrayField">
+            <laggif type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Lagg already exists!</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+                <Mask>/^lagg(\d)*$/</Mask>
+            </laggif>
+            <members type=".\LaggInterfaceField">
+                <Required>Y</Required>
+                <Multiple>Y</Multiple>
+                <ValidationMessage>At least one valid member is required</ValidationMessage>
+            </members>
+            <proto type="OptionField">
+              <Required>Y</Required>
+              <default>lacp</default>
+              <OptionValues>
+                  <none>None</none>
+                  <lacp>lacp</lacp>
+                  <failover>failover</failover>
+                  <fec>fec</fec>
+                  <loadbalance>loadbalance</loadbalance>
+                  <roundrobin>roundrobin</roundrobin>
+              </OptionValues>
+            </proto>
+            <lacp_fast_timeout type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </lacp_fast_timeout>
+            <use_flowid type="OptionField">
+              <OptionValues>
+                  <default value="">Default</default>
+                  <yes value="1">Yes</yes>
+                  <no value="0">No</no>
+              </OptionValues>
+            </use_flowid>
+            <lagghash type="OptionField">
+                <Multiple>Y</Multiple>
+                <OptionValues>
+                    <l2>L2: src/dst MAC address and optional VLAN number.</l2>
+                    <l3>L3: src/dst address for IPv4 or IPv6.</l3>
+                    <l4>L4: src/dst port for TCP/UDP/SCTP.</l4>
+                </OptionValues>
+            </lagghash>
+            <lacp_strict type="OptionField">
+                <OptionValues>
+                    <default value="">Default</default>
+                    <yes value="1">Yes</yes>
+                    <no value="0">No</no>
+                </OptionValues>
+            </lacp_strict>
+            <mtu type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>576</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+            </mtu>
+            <descr type="TextField">
+                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+            </descr>
+        </lagg>
+    </items>
+</model>
