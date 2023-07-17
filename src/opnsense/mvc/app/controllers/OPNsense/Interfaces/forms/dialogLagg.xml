@@ -1,0 +1,60 @@
+<form>
+    <field>
+        <id>lagg.laggif</id>
+        <label>Device</label>
+        <type>info</type>
+        <help></help>
+    </field>
+    <field>
+        <id>lagg.members</id>
+        <label>Parent</label>
+        <type>select_multiple</type>
+        <help>Choose the members that will be used for the link aggregation</help>
+    </field>
+    <field>
+        <id>lagg.proto</id>
+        <label>Proto</label>
+        <type>dropdown</type>
+        <help>The protocol to use, please refer to the documentation for a detailed explanation of the various types available</help>
+    </field>
+    <field>
+        <id>lagg.lacp_fast_timeout</id>
+        <label>Fast timeout</label>
+        <type>checkbox</type>
+        <style>proto proto_lacp</style>
+        <help>Enable lacp fast-timeout on the interface.</help>
+    </field>
+    <field>
+        <id>lagg.use_flowid</id>
+        <label>Use flowid</label>
+        <type>dropdown</type>
+        <style>selectpicker proto proto_lacp proto_loadbalance</style>
+        <help>Use the RSS hash from the network card if available, otherwise a hash is locally calculated. The default depends on the system tunable in net.link.lagg.default_use_flowid.</help>
+    </field>
+    <field>
+        <id>lagg.lagghash</id>
+        <label>Hash Layers</label>
+        <type>select_multiple</type>
+        <style>selectpicker proto proto_lacp proto_loadbalance</style>
+        <help>Set the packet layers to hash for aggregation protocols which load balance.</help>
+    </field>
+    <field>
+        <id>lagg.lacp_strict</id>
+        <label>Use strict</label>
+        <type>dropdown</type>
+        <style>selectpicker proto proto_lacp</style>
+        <help>Enable lacp strict compliance on the interface. The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode.</help>
+    </field>
+    <field>
+        <id>lagg.mtu</id>
+        <label>MTU</label>
+        <type>text</type>
+        <help>If you leave this field blank, the smallest mtu of this laggs children will be used.</help>
+    </field>
+    <field>
+        <id>lagg.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+</form>

@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,44 +26,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.inc");
-require_once("interfaces.lib.inc");
+namespace OPNsense\Interfaces\FieldTypes;
 
-$vfaces = [
-    '_stf',
-    '_vlan',
-    '_wlan',
-    'bridge',
-    'carp',
-    'enc',
-    'gif',
-    'gre',
-    'ipfw', /* ipfw logging device, not enabled by default */
-    'ipsec',
-    'l2tp',
-    'lagg',
-    'lo',
-    'ng',
-    'ovpnc',
-    'ovpns',
-    'pflog',
-    'pfsync',
-    'plip',
-    'ppp',
-    'pppoe',
-    'pptp',
-    'qinq',
-    'tap',
-    'tun',
-    'vlan',
-    'vxlan',
-];
+use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 
-$response = legacy_interfaces_details();
 
-foreach ($response as $ifname => &$intf) {
-    $tmp_ifnames = preg_split('/\d+/', $ifname);
-    $intf['is_physical'] = !count(array_intersect($tmp_ifnames, $vfaces));
+class LaggInterfaceField extends BaseListField
+{
+    private static $parent_interfaces = null;
+
+    protected function actionPostLoadingEvent()
+    {
+        if (self::$parent_interfaces === null) {
+            self::$parent_interfaces = [];
+            $skip = [];
+            foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $node) {
+                if (!empty((string)$node->if)) {
+                    $skip[] = (string)$node->if;
+                }
+            }
+            $itfs = json_decode((new Backend())->configdRun("interface list ifconfig") ?? '', true) ?? [];
+            foreach ($itfs as $ifname => $ifinfo) {
+                if (in_array($ifname, $skip) || !$ifinfo['is_physical']) {
+                    continue;
+                }
+                self::$parent_interfaces[$ifname] = sprintf("%s (%s)", $ifname, $ifinfo['macaddr'] ?? '');
+            }
+        }
+        $this->internalOptionList = self::$parent_interfaces;
+        return parent::actionPostLoadingEvent();
+    }
 }
-
-echo json_encode($response);

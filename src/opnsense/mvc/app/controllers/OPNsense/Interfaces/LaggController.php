@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,44 +26,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.inc");
-require_once("interfaces.lib.inc");
+namespace OPNsense\Interfaces;
 
-$vfaces = [
-    '_stf',
-    '_vlan',
-    '_wlan',
-    'bridge',
-    'carp',
-    'enc',
-    'gif',
-    'gre',
-    'ipfw', /* ipfw logging device, not enabled by default */
-    'ipsec',
-    'l2tp',
-    'lagg',
-    'lo',
-    'ng',
-    'ovpnc',
-    'ovpns',
-    'pflog',
-    'pfsync',
-    'plip',
-    'ppp',
-    'pppoe',
-    'pptp',
-    'qinq',
-    'tap',
-    'tun',
-    'vlan',
-    'vxlan',
-];
+use OPNsense\Base\IndexController;
 
-$response = legacy_interfaces_details();
-
-foreach ($response as $ifname => &$intf) {
-    $tmp_ifnames = preg_split('/\d+/', $ifname);
-    $intf['is_physical'] = !count(array_intersect($tmp_ifnames, $vfaces));
+/**
+ * @package OPNsense\Interfaces
+ */
+class LaggController extends IndexController
+{
+    public function indexAction($selected = null)
+    {
+        $this->view->formDialogEdit = $this->getForm("dialogLagg");
+        $this->view->pick('OPNsense/Interface/lagg');
+    }
 }
-
-echo json_encode($response);

@@ -389,18 +389,6 @@
             <pattern>api/firewall/group/*</pattern>
         </patterns>
     </page-interfaces-groups-edit>
-    <page-interfaces-lagg-edit>
-        <name>Interfaces: LAGG: Edit</name>
-        <patterns>
-            <pattern>interfaces_lagg_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-lagg-edit>
-    <page-interfaces-lagg>
-        <name>Interfaces: LAGG</name>
-        <patterns>
-            <pattern>interfaces_lagg.php*</pattern>
-        </patterns>
-    </page-interfaces-lagg>
     <page-interfaces-ppps>
         <name>Interfaces: PPPs</name>
         <patterns>

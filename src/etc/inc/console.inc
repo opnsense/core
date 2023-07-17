@@ -538,6 +538,7 @@ EOD;
 
     while (1) {
         $lagg = [];
+        $lagg['@attributes'] = ['uuid' => generate_uuid()];
 
         echo "\nLAGG-capable interfaces:\n\n";
 

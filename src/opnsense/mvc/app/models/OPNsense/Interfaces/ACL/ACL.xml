@@ -36,4 +36,11 @@
           <pattern>api/interfaces/vlan_settings/*</pattern>
         </patterns>
     </page-interfaces-vlan-edit>
+    <page-interfaces-lagg-edit>
+        <name>Interfaces: LAGG: Edit</name>
+        <patterns>
+            <pattern>ui/interfaces/lagg</pattern>
+            <pattern>api/interfaces/lagg_settings/*</pattern>
+        </patterns>
+    </page-interfaces-lagg-edit>
 </acl>
