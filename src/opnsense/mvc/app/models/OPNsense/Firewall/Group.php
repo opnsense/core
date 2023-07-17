@@ -37,7 +37,7 @@ use OPNsense\Core\Config;
  * Class Group
  * @package OPNsense\Firewall
  */
-class group extends BaseModel
+class Group extends BaseModel
 {
     private function ruleIterator()
     {
