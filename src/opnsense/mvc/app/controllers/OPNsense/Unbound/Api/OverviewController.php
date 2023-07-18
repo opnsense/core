@@ -103,7 +103,6 @@ class OverviewController extends ApiControllerBase
 
         $parsed = json_decode($response, true) ?? [];
 
-
         /* Map the blocklist type keys to their corresponding description */
         $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
         $types = $nodes['dnsbl']['type'];
