@@ -39,6 +39,6 @@ with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
         db.connection.execute("EXPORT DATABASE '/var/cache/unbound.duckdb';")
         for filename in glob.glob('/var/cache/unbound.duckdb/*'):
             shutil.chown(filename, 'unbound', 'unbound')
-        print('database exported.')
+        print('Unbound DNS database exported successfully.')
     else:
-        print('skip: no database found')
+        print('Unbound DNS database export not required.')
