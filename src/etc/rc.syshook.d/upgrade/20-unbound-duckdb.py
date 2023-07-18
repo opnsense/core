@@ -25,10 +25,20 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 import sys
+import os
+import shutil
+import glob
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from duckdb_helper import DbConnection
 
 # export database in case the new storage version doesn't match
 with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
     if db.connection is not None:
+        os.makedirs('/var/cache/unbound.duckdb', mode=0o750, exist_ok=True)
+        shutil.chown('/var/cache/unbound.duckdb', 'unbound', 'unbound')
         db.connection.execute("EXPORT DATABASE '/var/cache/unbound.duckdb';")
+        for filename in glob.glob('/var/cache/unbound.duckdb/*'):
+            shutil.chown(filename, 'unbound', 'unbound')
+        print('Unbound DNS database exported successfully.')
+    else:
+        print('Unbound DNS database export not required.')
