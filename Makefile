@@ -28,11 +28,11 @@ all:
 
 .include "Mk/defaults.mk"
 
-CORE_ABI?=	23.1
-CORE_MESSAGE?=	Carry on my wayward son
-CORE_NAME?=	opnsense-devel
+CORE_ABI?=	23.7
+CORE_MESSAGE?=	TBA
+CORE_NAME?=	opnsense
 CORE_NICKNAME?=	Not Yet
-CORE_TYPE?=	development
+CORE_TYPE?=	community
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
@@ -129,7 +129,7 @@ CORE_DEPENDS_amd64?=	beep \
 			py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
-			suricata-devel
+			suricata
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
