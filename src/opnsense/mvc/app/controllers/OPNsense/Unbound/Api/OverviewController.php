@@ -101,7 +101,8 @@ class OverviewController extends ApiControllerBase
             $response = (new Backend())->configdpRun('unbound qstats details', [1000]);
         }
 
-        $parsed = json_decode($response, true);
+        $parsed = json_decode($response, true) ?? [];
+
 
         /* Map the blocklist type keys to their corresponding description */
         $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
