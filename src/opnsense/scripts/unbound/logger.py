@@ -32,16 +32,18 @@ import argparse
 import syslog
 import time
 import datetime
+import os
 import pandas
 import signal
 import socket
 import duckdb
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from duckdb_helper import DbConnection
+from duckdb_helper import DbConnection, StorageVersionException, restore_database
 
 class DNSReader:
-    def __init__(self, target_pipe, flush_interval):
-        self.target_pipe = target_pipe
+    def __init__(self, source_pipe, target_db, flush_interval):
+        self.source_pipe = source_pipe
+        self.target_db = target_db
         self.timer = 0
         self.cleanup_timer = 0
         self.flush_interval = flush_interval
@@ -67,7 +69,7 @@ class DNSReader:
         return host
 
     def _setup_db(self):
-        with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
+        with DbConnection(self.target_db, read_only=False) as db:
             db.connection.execute("""
                 CREATE TABLE IF NOT EXISTS query (
                     uuid UUID,
@@ -152,7 +154,7 @@ class DNSReader:
             # read() callback cannot run to empty it. The dnsbl module side catches this with
             # a BlockingIOError, forcing it to re-buffer the query, making the process
             # "eventually consistent". Realistically this condition should never occur.
-            with DbConnection('/var/unbound/data/unbound.duckdb', read_only=False) as db:
+            with DbConnection(self.target_db, read_only=False) as db:
                 self.timer = now
                 if (now - self.cleanup_timer) > 3600:
                     self.cleanup_timer = now
@@ -191,7 +193,7 @@ class DNSReader:
         while not pipe_ready:
             try:
                 # open() will block until a query has been pushed down the fifo
-                self.fd = open(self.target_pipe, 'r')
+                self.fd = open(self.source_pipe, 'r')
                 pipe_ready = True
             except InterruptedError:
                 self.close_logger()
@@ -217,8 +219,8 @@ class DNSReader:
                     # unbound closed pipe
                     self.close_logger()
 
-def run(pipe, flush_interval):
-    r = DNSReader(pipe, flush_interval)
+def run(pipe, target_db, flush_interval):
+    r = DNSReader(pipe, target_db, flush_interval)
     try:
         r.run_logger()
     except InterruptedError:
@@ -227,13 +229,37 @@ def run(pipe, flush_interval):
         raise
 
 if __name__ == '__main__':
+    syslog.openlog('unbound', facility=syslog.LOG_LOCAL4)
     parser = argparse.ArgumentParser()
     parser.add_argument('--pipe', help='named pipe file location', default='/var/unbound/data/dns_logger')
+    parser.add_argument('--targetdb', help='duckdb filename', default='/var/unbound/data/unbound.duckdb')
+    parser.add_argument('--backup_dir', help='backup directory', default='/var/cache/unbound.duckdb')
     parser.add_argument('--flush_interval', help='interval to flush to db', default=10)
 
     inputargs = parser.parse_args()
+    try:
+        with DbConnection(inputargs.targetdb, read_only=False) as db:
+            pass
+    except StorageVersionException:
+        try:
+            if restore_database(inputargs.backup_dir, inputargs.targetdb):
+                syslog.syslog(
+                    syslog.LOG_NOTICE,
+                    'Database restored from %s due to version mismatch' % inputargs.backup_dir
+                )
+                # XXX: remove contents of backup_dir?
+            else:
+                syslog.syslog(syslog.LOG_ERR, 'Restore needed, but backup locked, exit...')
+                sys.exit(-1)
+        except FileNotFoundError:
+            # no backup to recover, remove database and proceed normal startup
+            if os.path.isfile(inputargs.targetdb):
+                syslog.syslog(
+                    syslog.LOG_NOTICE,
+                    'Missing restore data, removing %s to proceed startup' % inputargs.targetdb
+                )
+                os.remove(inputargs.targetdb)
 
-    syslog.openlog('unbound', facility=syslog.LOG_LOCAL4)
 
     syslog.syslog(syslog.LOG_NOTICE, 'Backgrounding unbound logging backend.')
-    run(inputargs.pipe, inputargs.flush_interval)
+    run(inputargs.pipe, inputargs.targetdb, inputargs.flush_interval)
