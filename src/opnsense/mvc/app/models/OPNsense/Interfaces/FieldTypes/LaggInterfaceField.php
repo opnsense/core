@@ -32,7 +32,6 @@ use OPNsense\Base\FieldTypes\BaseListField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 
-
 class LaggInterfaceField extends BaseListField
 {
     private static $parent_interfaces = null;

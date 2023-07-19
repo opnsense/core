@@ -33,7 +33,6 @@ namespace OPNsense\Interfaces;
 use OPNsense\Base\BaseModel;
 use Phalcon\Messages\Message;
 
-
 /**
  * Class Lagg
  * @package OPNsense\Interfaces

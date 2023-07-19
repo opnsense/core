@@ -95,7 +95,7 @@ class LaggSettingsController extends ApiMutableModelControllerBase
         foreach ($this->getModel()->lagg->iterateItems() as $node) {
             $ifnames[] = (string)$node->laggif;
         }
-        for ($i=0; true ; ++$i) {
+        for ($i = 0; true; ++$i) {
             $laggif = sprintf('lagg%d', $i);
             if (!in_array($laggif, $ifnames)) {
                 $overlay['laggif'] = $laggif;
@@ -133,7 +133,7 @@ class LaggSettingsController extends ApiMutableModelControllerBase
         $cfg = Config::getInstance()->object();
         foreach ($cfg->interfaces->children() as $key => $value) {
             if ((string)$value->if == $laggif) {
-                $uses['interfaces.'.$key] = !empty($value->descr) ? (string)$value->descr : $key;
+                $uses['interfaces.' . $key] = !empty($value->descr) ? (string)$value->descr : $key;
             }
         }
         if (isset($cfg->vlans) && isset($cfg->vlans->vlan)) {
