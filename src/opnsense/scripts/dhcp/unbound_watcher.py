@@ -136,7 +136,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
     dhcpdleases = watchers.dhcpd.DHCPDLease(watch_file)
     cached_leases = dict()
     unbound_local_data = UnboundLocalData()
-    hostname_pattern = re.compile("(?!-)[A-Z0-9-]*(?<!-)$", re.IGNORECASE)
+    hostname_pattern = re.compile("(?!-)[A-Z0-9-_]*(?<!-)$", re.IGNORECASE)
 
     # start watching dhcp leases
     last_cleanup = time.time()

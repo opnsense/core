@@ -49,7 +49,7 @@ def run_watcher(target_filename, default_domain, watch_file, service_pid):
     # initiate lease watcher and setup cache
     dhcpdleases = watchers.dhcpd.DHCPDLease(watch_file)
     cached_leases = dict()
-    hostname_pattern = re.compile("(?!-)[A-Z0-9-]*(?<!-)$", re.IGNORECASE)
+    hostname_pattern = re.compile("(?!-)[A-Z0-9-_]*(?<!-)$", re.IGNORECASE)
 
     # start watching dhcp leases
     last_cleanup = time.time()
