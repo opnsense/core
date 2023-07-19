@@ -51,22 +51,23 @@ class OverviewController extends ApiControllerBase
         ];
     }
 
-    public function RollingAction($timeperiod, $clients = false)
+    public function RollingAction($timeperiod, $clients = '0')
     {
         $this->sessionClose();
-        // Sanitize input
-        $interval = preg_replace("/^(?:(?!1|12|24).)*$/", "24", $timeperiod) == 1 ? 60 : 600;
-        $type = $clients ? 'clients' : 'rolling';
+        $interval = filter_var($timeperiod, FILTER_SANITIZE_NUMBER_INT) == 1 ? 60 : 600;
+        $type = !empty($clients) ? 'clients' : 'rolling';
         $response = (new Backend())->configdpRun('unbound qstats ' . $type, [$interval, $timeperiod]);
-        return json_decode($response, true);
+        return json_decode($response, true) ?? [];
     }
 
     public function totalsAction($maximum)
     {
         $this->sessionClose();
-        $max = preg_replace("/^(?:(?![0-9]).)*$/", "10", $maximum);
-        $response = (new Backend())->configdpRun('unbound qstats totals', [$max]);
+        $response = (new Backend())->configdpRun('unbound qstats totals', [$maximum]);
         $parsed = json_decode($response, true);
+        if (!is_array($parsed)) {
+            return [];
+        }
 
         $nodes = (new \OPNsense\Unbound\Unbound())->getNodes();
         /* Map the blocklist type keys to their corresponding description */
