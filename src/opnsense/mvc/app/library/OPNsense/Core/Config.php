@@ -155,10 +155,10 @@ class Config extends Singleton
                     }
                     // copy attributes to xzy@attribute key item
                     foreach ($xmlNode->attributes() as $AttrKey => $AttrValue) {
-                        if (!isset($result["${xmlNodeName}@attributes"])) {
-                            $result["${xmlNodeName}@attributes"] = [];
+                        if (!isset($result["{$xmlNodeName}@attributes"])) {
+                            $result["{$xmlNodeName}@attributes"] = [];
                         }
-                        $result["${xmlNodeName}@attributes"][$AttrKey] = (string)$AttrValue;
+                        $result["{$xmlNodeName}@attributes"][$AttrKey] = (string)$AttrValue;
                     }
                 }
             }

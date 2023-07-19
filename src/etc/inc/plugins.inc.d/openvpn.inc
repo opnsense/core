@@ -1216,7 +1216,7 @@ function openvpn_gen_route_ipv6($network, $iroute = false)
     if (empty($prefix)) {
         $prefix = "128";
     }
-    return "{$i}route-ipv6 ${ipv6}/${prefix}";
+    return "{$i}route-ipv6 {$ipv6}/{$prefix}";
 }
 
 /**

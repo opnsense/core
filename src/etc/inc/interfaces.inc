@@ -307,7 +307,7 @@ function _interfaces_bridge_configure($bridge)
             }
             foreach ($ifpriority as $key => $value) {
                 $realif = get_real_interface($key);
-                mwexec("/sbin/ifconfig ${bridgeif} ifpriority {$realif} " . escapeshellarg($value));
+                mwexec("/sbin/ifconfig {$bridgeif} ifpriority {$realif} " . escapeshellarg($value));
             }
         }
         if (!empty($bridge['ifpathcost'])) {
@@ -321,7 +321,7 @@ function _interfaces_bridge_configure($bridge)
             }
             foreach ($ifpathcost as $key => $value) {
                 $realif = get_real_interface($key);
-                mwexec("/sbin/ifconfig ${bridgeif} ifpathcost {$realif} " . escapeshellarg($value));
+                mwexec("/sbin/ifconfig {$bridgeif} ifpathcost {$realif} " . escapeshellarg($value));
             }
         }
     }
@@ -2797,13 +2797,13 @@ INFOREQ|REBIND|RENEW|REQUEST)
     for NAMESERVER in \${new_domain_name_servers}; do
         ARGS="\${ARGS} -a \${NAMESERVER}"
     done
-    /usr/local/sbin/ifctl -i ${wanif} -6nd \${ARGS}
+    /usr/local/sbin/ifctl -i {$wanif} -6nd \${ARGS}
 
     ARGS=
     for DOMAIN in \${new_domain_name}; do
         ARGS="\${ARGS} -a \${DOMAIN}"
     done
-    /usr/local/sbin/ifctl -i ${wanif} -6sd \${ARGS}
+    /usr/local/sbin/ifctl -i {$wanif} -6sd \${ARGS}
 
     ARGS=
     for PD in \${PDINFO}; do
@@ -2812,7 +2812,7 @@ INFOREQ|REBIND|RENEW|REQUEST)
     if [ \${REASON} != "RENEW" -a \${REASON} != "REBIND" ]; then
         # cannot update since PDINFO may be incomplete in these cases
         # as each PD is being handled separately via the client side
-        /usr/local/sbin/ifctl -i ${wanif} -6pd \${ARGS}
+        /usr/local/sbin/ifctl -i {$wanif} -6pd \${ARGS}
     fi
 
     FORCE=
@@ -2826,9 +2826,9 @@ INFOREQ|REBIND|RENEW|REQUEST)
 EXIT|RELEASE)
     /usr/bin/logger -t dhcp6c "dhcp6c_script: \$REASON on {$wanif} executing"
 
-    /usr/local/sbin/ifctl -i ${wanif} -6nd
-    /usr/local/sbin/ifctl -i ${wanif} -6sd
-    /usr/local/sbin/ifctl -i ${wanif} -6pd
+    /usr/local/sbin/ifctl -i {$wanif} -6nd
+    /usr/local/sbin/ifctl -i {$wanif} -6sd
+    /usr/local/sbin/ifctl -i {$wanif} -6pd
 
     /usr/local/sbin/configctl -d interface newipv6 {$wanif}
     ;;

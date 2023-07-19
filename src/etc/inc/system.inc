@@ -565,7 +565,7 @@ function system_default_route($gateway, $interface, $far = false)
     }
 
     if ($family == 'inet') {
-        $dynamicgw = trim(@file_get_contents("/tmp/${realif}_router") ?? '');
+        $dynamicgw = trim(@file_get_contents("/tmp/{$realif}_router") ?? '');
         if (!empty($dynamicgw) && $gateway === $dynamicgw) {
             /* special case tries to turn on far gateway when required for dynamic gateway */
             list (, $network) = interfaces_primary_address($interface);
@@ -604,7 +604,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     service_log(sprintf('Setting up route%s...', empty($interface) ? 's' : " {$interface}"), $verbose);
 
     if (!empty($interface)) {
-        log_msg("ROUTING: entering configure using '${interface}'", LOG_DEBUG);
+        log_msg("ROUTING: entering configure using '{$interface}'", LOG_DEBUG);
     } else {
         log_msg("ROUTING: entering configure using defaults", LOG_DEBUG);
     }
@@ -1139,7 +1139,7 @@ function system_login_configure($verbose = false)
         if (!empty($value)) {
             $new_loader_conf .= "{$param}={$value}\n";
         } else {
-            $new_loader_conf .= "#${param}\n";
+            $new_loader_conf .= "#{$param}\n";
         }
     }
     $new_loader_conf .= "\n";
@@ -1170,7 +1170,7 @@ function system_login_configure($verbose = false)
         /* virtual terminals */
         foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
-                fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+                fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
                 continue 2;
             }
         }
@@ -1190,7 +1190,7 @@ function system_login_configure($verbose = false)
     }
 
     if (file_exists('/dev/xc0')) {
-        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t${on_off_secure_v}\n");
+        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
     }
 
     fclose($fd);
