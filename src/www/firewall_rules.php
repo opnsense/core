@@ -213,10 +213,10 @@ function filter_rule_item_alias_tooltip($alias_name)
 {
     $alias_descr = htmlspecialchars(get_alias_description($alias_name));
     $alias_name = htmlspecialchars($alias_name);
-    $result = "<span title=\"${alias_descr}\" data-toggle=\"tooltip\"  data-html=\"true\">";
+    $result = "<span title=\"{$alias_descr}\" data-toggle=\"tooltip\"  data-html=\"true\">";
     $result .= $alias_name . "&nbsp;";
     $result .= "</span>";
-    $result .= "<a href=\"/ui/firewall/alias/index/${alias_name}\"";
+    $result .= "<a href=\"/ui/firewall/alias/index/{$alias_name}\"";
     $result .= "  title=\"". gettext("edit alias") ."\" data-toggle=\"tooltip\">";
     $result .= "<i class=\"fa fa-list\"></i>";
     $result .= "</a>";

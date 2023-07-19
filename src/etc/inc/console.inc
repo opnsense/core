@@ -125,7 +125,7 @@ function _set_networking_interfaces_ports($probe = false)
 
     if (!empty($iflist)) {
         echo <<<EOD
-Do you want to configure LAGGs now? ${yes_no_prompt}
+Do you want to configure LAGGs now? {$yes_no_prompt}
 EOD;
         if ($interactive) {
             $key = chop(fgets($fp));
@@ -149,7 +149,7 @@ EOD;
         }
 
         echo <<<EOD
-Do you want to configure VLANs now? ${yes_no_prompt}
+Do you want to configure VLANs now? {$yes_no_prompt}
 EOD;
         if ($interactive) {
             $key = chop(fgets($fp));
@@ -356,7 +356,7 @@ EOD;
 
     echo <<<EOD
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
     if ($interactive) {
         $key = chop(fgets($fp));
@@ -520,7 +520,7 @@ function lagg_setup($iflist, $fp)
 
 WARNING: all existing LAGGs will be cleared if you proceed!
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
 
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {
@@ -578,7 +578,7 @@ EOD;
         }
 
         if ($lagg['proto'] == "lacp") {
-            echo "Do you want to enable LACP fast timeout? ${yes_no_prompt}";
+            echo "Do you want to enable LACP fast timeout? {$yes_no_prompt}";
 
             if (strcasecmp(chop(fgets($fp)), "y") == 0) {
                 $lagg['lacp_fast_timeout'] = true;
@@ -608,7 +608,7 @@ function vlan_setup($iflist, $fp)
 
 WARNING: all existing VLANs will be cleared if you proceed!
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
 
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {

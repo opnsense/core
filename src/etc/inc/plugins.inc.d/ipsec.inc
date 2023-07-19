@@ -1193,7 +1193,7 @@ function ipsec_write_keypairs()
     foreach ((new \OPNsense\IPsec\IPsec())->keyPairs->keyPair->iterateItems() as $uuid => $keyPair) {
         foreach ($paths as $key => $path) {
             if (!empty((string)$keyPair->$key)) {
-                $filename = "${path}/{$uuid}.pem";
+                $filename = "{$path}/{$uuid}.pem";
                 @touch($filename);
                 @chmod($filename, 0600);
                 file_put_contents($filename, (string)$keyPair->$key);
