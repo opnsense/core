@@ -1319,22 +1319,21 @@ function ipsec_configure_do($verbose = false, $interface = '')
     $swanctl = (new \OPNsense\IPsec\Swanctl())->getConfig();
     $swanctl['secrets'] = ipsec_write_secrets();
 
+    if (!empty($config['ipsec']['passthrough_networks'])) {
+        $swanctl['connections']['pass'] = [
+            'remote_addrs' => '127.0.0.1',
+            'unique' => 'replace',
+            'children' => [
+                'pass' => [
+                        'local_ts' => $config['ipsec']['passthrough_networks'],
+                        'remote_ts' => $config['ipsec']['passthrough_networks'],
+                        'mode' => 'pass',
+                        'start_action' => 'route'
+                    ]
+            ]
+        ];
+    }
     if (count($a_phase1)) {
-        if (!empty($config['ipsec']['passthrough_networks'])) {
-            $swanctl['connections']['pass'] = [
-                'remote_addrs' => '127.0.0.1',
-                'unique' => 'replace',
-                'children' => [
-                    'pass' => [
-                          'local_ts' => $config['ipsec']['passthrough_networks'],
-                          'remote_ts' => $config['ipsec']['passthrough_networks'],
-                          'mode' => 'pass',
-                          'start_action' => 'route'
-                      ]
-                ]
-            ];
-        }
-
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
                 continue;
