@@ -68,7 +68,7 @@ class DbConnection:
                 self.connection.execute("SET TimeZone='UTC'")
             except duckdb.IOException as e:
                 if str(e).find('database file with version number') > -1:
-                    # XXX: this is extremely wacky, apparantly we are not able to read the current storage version
+                    # XXX: this is extremely wacky, apparently we are not able to read the current storage version
                     #      via python so we can only watch for an exception... which is the same one for all types
                     raise StorageVersionException(str(e))
 
