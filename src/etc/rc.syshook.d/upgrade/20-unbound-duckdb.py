@@ -33,7 +33,7 @@ from duckdb_helper import DbConnection
 
 # export database in case the new storage version doesn't match
 with DbConnection('/var/unbound/data/unbound.duckdb', read_only=True) as db:
-    if db.connection is not None:
+    if db is not None:
         os.makedirs('/var/cache/unbound.duckdb', mode=0o750, exist_ok=True)
         shutil.chown('/var/cache/unbound.duckdb', 'unbound', 'unbound')
         db.connection.execute("EXPORT DATABASE '/var/cache/unbound.duckdb';")
