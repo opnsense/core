@@ -1103,9 +1103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     $new_ppp_config['username'] = $pconfig['pppoe_username'];
                     $new_ppp_config['password'] = base64_encode($pconfig['pppoe_password']);
-                    if (!empty($pconfig['provider'])) {
-                        $new_ppp_config['provider'] = $pconfig['provider'];
-                    }
+                    $new_ppp_config['provider'] = $pconfig['provider'];
                     if (!empty($pconfig['pppoe_hostuniq'])) {
                         $new_ppp_config['hostuniq'] = $pconfig['pppoe_hostuniq'];
                     }
