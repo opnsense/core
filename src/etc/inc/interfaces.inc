@@ -1215,7 +1215,7 @@ EOD;
                 }
             }
         } elseif ($ppp['type'] == "pppoe") {
-            $provider = isset($ppp['provider']) ? $ppp['provider'] : "";
+            $provider = $ppp['provider'] ?? '';
             $hostuniq = '';
             if (!empty($ppp['hostuniq'])) {
                 $hostuniq = '0x' . strtolower(array_shift(unpack('H*', $ppp['hostuniq']))) . '|';

@@ -106,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // special cases
     $pconfig['password'] = isset($a_ppps[$id]['password']) ? base64_decode($a_ppps[$id]['password']) : null;
     $pconfig['initstr'] = isset($a_ppps[$id]['initstr']) ? base64_decode($a_ppps[$id]['initstr']) : null;
-    $pconfig['null_service'] = (isset($a_ppps[$id]['provider']) && empty($a_ppps[$id]['provider']));
 
     if ($pconfig['ptpid'] == null) {
         $pconfig['ptpid'] = interfaces_ptpid_next();
@@ -161,9 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['provider']) && !is_domain($pconfig['provider'])) {
         $input_errors[] = gettext("The Service name contains invalid characters.");
-    }
-    if (!empty($pconfig['provider']) && !empty($pconfig['null_service'])) {
-        $input_errors[] = gettext("Do not specify both a Service name and a NULL Service name.");
     }
     if (($pconfig['idletimeout'] != "") && !is_numericint($pconfig['idletimeout'])) {
         $input_errors[] = gettext("The idle timeout value must be an integer.");
@@ -239,11 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 break;
             case "pppoe":
-                if (!empty($pconfig['provider'])) {
-                    $ppp['provider'] = $pconfig['provider'];
-                } else {
-                    $ppp['provider'] = !empty($pconfig['null_service']);
-                }
+                $ppp['provider'] = $pconfig['provider'];
                 if (!empty($pconfig['hostuniq'])) {
                     $ppp['hostuniq'] = $pconfig['hostuniq'];
                 }
@@ -573,10 +565,9 @@ include("head.inc");
                       <tr style="display:none" id="pppoe">
                         <td><a id="help_for_provider" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Service name"); ?></td>
                         <td>
-                          <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />&nbsp;&nbsp;
-                          <input type="checkbox" value="on" id="null_service" name="null_service" <?=!empty($pconfig['null_service']) ? "checked=\"checked\"" : ""; ?> /> <?= gettext("Configure a NULL Service name"); ?>
+                          <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />
                           <div class="hidden" data-for="help_for_provider">
-                            <?= gettext("Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank Service name."); ?>
+                            <?= gettext('This field can usually be left empty unless specified by the provider.') ?>
                           </div>
                         </td>
                       </tr>
