@@ -74,7 +74,9 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
         legacy_interface_destroy($ifname);
     } else {
         $vlan = $all_vlans[$ifname];
-        $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
+        if (empty($vlan['proto'])) {
+            $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
+        }
         $cvlan = $ifdetails['vlan'];
         if ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
             /* option 2: changed vlan, unlink and relink */

@@ -161,7 +161,9 @@ function interfaces_vlan_configure($verbose = false)
         }
     }
     foreach ($config['vlans']['vlan'] as $vlan) {
-        $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
+        if (empty($vlan['proto'])) {
+            $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
+        }
         _interfaces_vlan_configure($vlan);
     }
 

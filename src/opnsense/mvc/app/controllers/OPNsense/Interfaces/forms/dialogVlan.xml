@@ -28,6 +28,15 @@
         <help>802.1Q VLAN PCP (priority code point)</help>
     </field>
     <field>
+        <id>vlan.proto</id>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+            Enforce protocol selection, 802.1Qis the default for vlan interfaces,
+            802.1ad is used when the parent is a vlan (QinQ)
+        </help>
+    </field>
+    <field>
         <id>vlan.descr</id>
         <label>Description</label>
         <type>text</type>
