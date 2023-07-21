@@ -1334,7 +1334,6 @@ function ipsec_configure_do($verbose = false, $interface = '')
         ];
     }
     if (count($a_phase1)) {
-
         foreach ($a_phase1 as $ph1ent) {
             if (isset($ph1ent['disabled'])) {
                 continue;
