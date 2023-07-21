@@ -42,6 +42,14 @@
                     <pcp7 value="7">Network Control (7, highest)</pcp7>
                 </OptionValues>
             </pcp>
+            <proto type="OptionField">
+                <Required>N</Required>
+                <BlankDesc>Auto</BlankDesc>
+                <OptionValues>
+                    <opt1 value="802.1q">802.1Q</opt1>
+                    <opt2 value="802.1ad">802.1ad</opt2>
+                </OptionValues>
+            </proto>
             <descr type="TextField">
               <Required>N</Required>
             </descr>
