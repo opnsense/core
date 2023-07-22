@@ -327,6 +327,28 @@ function get_wireless_channel_info($interface)
     return $wireless_channels;
 }
 
+/**
+ * @return true if $value is a comma separated list of valid dotted IPv4
+ * addresses, or false otherwise.
+ *
+ * Spaces around the IPv4 addresses are allowed.
+ */
+function is_ipaddrlistv4($value)
+{
+    if (!is_string($value)) {
+        return false;
+    }
+
+    $list = explode(',', $value);
+    foreach ($list as $item) {
+        $trimmed_item = trim($item);
+        if (!is_ipaddrv4($trimmed_item)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 $ifdescrs = legacy_config_get_interfaces(['virtual' => false]);
 $hwifs = array_keys(get_interface_list());
 
@@ -845,8 +867,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['alias-subnet']) && !is_numeric($pconfig['alias-subnet'])) {
             $input_errors[] = gettext("A valid alias subnet bit count must be specified.");
         }
-        if (!empty($pconfig['dhcprejectfrom']) && !is_ipaddrv4($pconfig['dhcprejectfrom'])) {
-            $input_errors[] = gettext("A valid alias IP address must be specified to reject DHCP Leases from.");
+        if (!empty($pconfig['dhcprejectfrom']) && !is_ipaddrlistv4($pconfig['dhcprejectfrom'])) {
+            $input_errors[] = gettext("A valid IP address or comma separated IP address list must be specified to reject DHCP Leases from.");
         }
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
@@ -2289,7 +2311,7 @@ include("head.inc");
                           <td>
                             <input name="dhcprejectfrom" type="text" id="dhcprejectfrom" value="<?=htmlspecialchars($pconfig['dhcprejectfrom']);?>" />
                             <div class="hidden" data-for="help_for_dhcprejectfrom">
-                              <?=gettext("If there is a certain upstream DHCP server that should be ignored, place the IP address or subnet of the DHCP server to be ignored here."); ?>
+                              <?=gettext("If there are certain upstream DHCP servers that should be ignored, place the comma separated list of IP addresses of the DHCP servers to be ignored here."); ?>
                               <?=gettext("This is useful for rejecting leases from cable modems that offer private IPs when they lose upstream sync."); ?>
                             </div>
                           </td>

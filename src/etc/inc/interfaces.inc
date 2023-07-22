@@ -3180,7 +3180,7 @@ EOD;
         $dhclientconf .= "  supersede interface-mtu 0;\n";
     }
 
-    if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
+    if (isset($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
 
@@ -3291,7 +3291,7 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
     if (empty($wancfg['dhcphonourmtu'])) {
         $dhclientconf .= "\tsupersede interface-mtu 0;\n";
     }
-    if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
+    if (isset($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
     }
     if (isset($wancfg['dhcpvlanprio'])) {
