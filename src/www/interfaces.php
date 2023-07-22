@@ -845,8 +845,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['alias-subnet']) && !is_numeric($pconfig['alias-subnet'])) {
             $input_errors[] = gettext("A valid alias subnet bit count must be specified.");
         }
-        if (!empty($pconfig['dhcprejectfrom']) && !is_ipaddrv4($pconfig['dhcprejectfrom'])) {
-            $input_errors[] = gettext("A valid alias IP address must be specified to reject DHCP Leases from.");
+
+        if (!empty($pconfig['dhcprejectfrom'])) {
+            foreach (explode(',', $pconfig['dhcprejectfrom']) as $addr) {
+                if (!is_ipaddrv4($addr)) {
+                    $input_errors[] = gettext('A valid alias IP address list must be specified to reject DHCP leases from.');
+                    break;
+                }
+            }
         }
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
@@ -2289,7 +2295,7 @@ include("head.inc");
                           <td>
                             <input name="dhcprejectfrom" type="text" id="dhcprejectfrom" value="<?=htmlspecialchars($pconfig['dhcprejectfrom']);?>" />
                             <div class="hidden" data-for="help_for_dhcprejectfrom">
-                              <?=gettext("If there is a certain upstream DHCP server that should be ignored, place the IP address or subnet of the DHCP server to be ignored here."); ?>
+                              <?=gettext("If there are certain upstream DHCP servers that should be ignored, place the comma separated list of IP addresses of the DHCP servers to be ignored here."); ?>
                               <?=gettext("This is useful for rejecting leases from cable modems that offer private IPs when they lose upstream sync."); ?>
                             </div>
                           </td>
