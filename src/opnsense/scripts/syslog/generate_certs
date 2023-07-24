@@ -27,10 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* XXX use legacy code to generate certs and CAs */
+
 require_once("config.inc");
 require_once("certs.inc");
-require_once("legacy_bindings.inc");
-
 
 $store = new OPNsense\Trust\Store();
 $instances = [];
