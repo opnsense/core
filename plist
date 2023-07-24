@@ -1957,6 +1957,7 @@
 /usr/local/sbin/configctl
 /usr/local/sbin/ifctl
 /usr/local/sbin/opnsense-beep
+/usr/local/sbin/opnsense-crypt
 /usr/local/sbin/opnsense-importer
 /usr/local/sbin/opnsense-installer
 /usr/local/sbin/opnsense-log
@@ -1967,6 +1968,7 @@
 /usr/local/share/man/man8/configctl.8.gz
 /usr/local/share/man/man8/ifctl.8.gz
 /usr/local/share/man/man8/opnsense-beep.8.gz
+/usr/local/share/man/man8/opnsense-crypt.8.gz
 /usr/local/share/man/man8/opnsense-importer.8.gz
 /usr/local/share/man/man8/opnsense-installer.8.gz
 /usr/local/share/man/man8/opnsense-log.8.gz
