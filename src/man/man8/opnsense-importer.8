@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2018-2022 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2018-2023 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -46,6 +46,17 @@ is expected with at least
 present.
 If successful, the old configuration will be replaced.
 .Pp
+Encrypted
+.Pa /conf/config.xml
+files are supported via
+.Xr opnsense-crypt 8
+when the required file
+.Pa /conf/config.secret
+containing the correct password is also present.
+Keep in mind that preparing an encrypted import is a manual process
+even though the actual import run is designed to work without user
+interaction.
+.Pp
 The
 .Ar disk
 selection allows the user to escape to a shell by issuing
@@ -82,6 +93,7 @@ property in this order.
 .Sh EXIT STATUS
 .Ex -std
 .Sh SEE ALSO
+.Xr opnsense-crypt 8 ,
 .Xr opnsense-installer 8
 .Sh HISTORY
 The

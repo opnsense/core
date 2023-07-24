@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2023 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -335,13 +335,15 @@ while : ; do
 		fi
 	elif [ -f "${MNT}/conf/config.xml" ]; then
 		if [ "$(grep -cx -- '---- BEGIN config.xml ----' ${MNT}/conf/config.xml)" != "0" ]; then
-			echo "The file /conf/config.xml is encrypted."
+			if ! opnsense-crypt ${MNT}/conf/config.xml; then
+				echo "The file /conf/config.xml could not be decrypted."
 
-			if [ -n "${DO_DEV}" ]; then
-				bootstrap_and_exit 1
+				if [ -n "${DO_DEV}" ]; then
+					bootstrap_and_exit 1
+				fi
+
+				continue
 			fi
-
-			continue
 		fi
 
 		rm -rf /conf/*
