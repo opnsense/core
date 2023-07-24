@@ -2532,7 +2532,7 @@ include("head.inc");
                           <td>
                             <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />
                             <div class="hidden" data-for="help_for_provider">
-                              <?=gettext("Hint: this field can usually be left empty"); ?>
+                              <?= gettext('This field can usually be left empty unless specified by the provider.') ?>
                             </div>
                           </td>
                         </tr>
