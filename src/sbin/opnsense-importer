@@ -336,7 +336,7 @@ while : ; do
 	elif [ -f "${MNT}/conf/config.xml" ]; then
 		if [ "$(grep -cx -- '---- BEGIN config.xml ----' ${MNT}/conf/config.xml)" != "0" ]; then
 			if ! opnsense-crypt ${MNT}/conf/config.xml; then
-				echo "The file /conf/config.xml could not be encrypted."
+				echo "The file /conf/config.xml could not be decrypted."
 
 				if [ -n "${DO_DEV}" ]; then
 					bootstrap_and_exit 1
