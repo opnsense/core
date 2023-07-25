@@ -364,7 +364,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 if (is_ipaddrv6($ifcfgipv6)) {
                     $dnslist_tmp[] = $ifcfgipv6;
                 } else {
-                    log_msg("dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$realif}", LOG_WARNING);
+                    log_msg("dhcpd_radvd_configure(manual) found no suitable IPv6 address on {$dhcpv6if}({$realif})", LOG_WARNING);
                 }
             } elseif (!empty($config['system']['dnsserver'][0])) {
                 $dnslist_tmp = $config['system']['dnsserver'];
@@ -462,7 +462,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             if (is_ipaddrv6($ifcfgipv6)) {
                 $dnslist[] = $ifcfgipv6;
             } else {
-                log_msg("dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$realif}", LOG_WARNING);
+                log_msg("dhcpd_radvd_configure(auto) found no suitable IPv6 address on {$if}({$realif})", LOG_WARNING);
             }
         } elseif (!empty($config['system']['dnsserver'])) {
             foreach ($config['system']['dnsserver'] as $server) {
@@ -715,10 +715,9 @@ EOPP;
             continue;
         }
 
-        list ($ifcfgip, $ifcfgnet, $ifcfgsn) = interfaces_primary_address($dhcpif, $ifconfig_details);
-
+        list ($ifcfgip, $ifcfgnet, $ifcfgsn, $ifcfgdev) = interfaces_primary_address($dhcpif, $ifconfig_details);
         if (!is_ipaddrv4($ifcfgip) || !is_subnetv4($ifcfgnet)) {
-            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}", LOG_WARNING);
+            log_msg("dhcpd_dhcp4_configure() found no suitable IPv4 address on {$dhcpif}(${ifcfgdev})", LOG_WARNING);
             continue;
         }
 
@@ -1441,9 +1440,9 @@ EOD;
             continue;
         }
 
-        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
+        list ($ifcfgipv6, $networkv6, $unused, $ifcfgdevv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}", LOG_WARNING);
+            log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$ifcfgdevv6})", LOG_WARNING);
             continue;
         }
 
