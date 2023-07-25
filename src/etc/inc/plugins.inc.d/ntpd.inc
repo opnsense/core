@@ -39,17 +39,17 @@ function ntpd_services()
 {
     global $config;
 
-    $services = array();
+    $services = [];
 
     if (!ntpd_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['name'] = 'ntpd';
     $pconfig['description'] = gettext('Network Time Daemon');
-    $pconfig['php']['restart'] = array('ntpd_configure_do');
-    $pconfig['php']['start'] = array('ntpd_configure_do');
+    $pconfig['php']['restart'] = ['ntpd_configure_do'];
+    $pconfig['php']['start'] = ['ntpd_configure_do'];
     /* the pidfile for ntpd is unreliable - DO NOT USE IT */
 
     if (!empty($config['ntpd']['clientmode'])) {
@@ -63,9 +63,9 @@ function ntpd_services()
 
 function ntpd_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['ntpd'] = array('facility' => array('ntp', 'ntpd', 'ntpdate'));
+    $logfacilities['ntpd'] = ['facility' => ['ntp', 'ntpd', 'ntpdate']];
 
     return $logfacilities;
 }
@@ -74,7 +74,7 @@ function ntpd_cron()
 {
     global $config;
 
-    $jobs = array();
+    $jobs = [];
 
     if (ntpd_enabled() && !empty($config['ntpd']['clientmode'])) {
         $jobs[]['autocron'] = ['/usr/local/sbin/pluginctl -s ntpd restart', '0', '2'];
@@ -84,11 +84,11 @@ function ntpd_cron()
 }
 function ntpd_configure()
 {
-    return array(
-        'bootup' => array('ntpd_configure_do'),
-        'local' => array('ntpd_configure_do'),
-        'newwanip' => array('ntpd_configure_do'),
-    );
+    return [
+        'bootup' => ['ntpd_configure_do'],
+        'local' => ['ntpd_configure_do'],
+        'newwanip' => ['ntpd_configure_do'],
+    ];
 }
 
 function ntpd_configure_gps($serialport)
@@ -317,9 +317,9 @@ function ntpd_configure_do($verbose = false)
     }
     /* End GPS configuration */
 
-    $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : array();
-    $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : array();
-    $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : array();
+    $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
+    $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
+    $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
@@ -425,7 +425,7 @@ function ntpd_configure_do($verbose = false)
     }
 
 
-    $interfaces = array();
+    $interfaces = [];
     if (isset($config['ntpd']['interface'])) {
         $interfaces = explode(',', $config['ntpd']['interface']);
     }
