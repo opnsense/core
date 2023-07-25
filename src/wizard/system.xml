@@ -146,10 +146,10 @@ if (empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
 if (empty($_POST['domain']) || !is_domain($_POST['domain'])) {
     $input_errors[] = gettext('Domain is invalid.');
 }
-if (!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])) {
+if (!empty($_POST['primarydnsserver']) && !is_ipaddrv4($_POST['primarydnsserver'])) {
     $input_errors[] = gettext('Primary DNS server is invalid.');
 }
-if (!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
+if (!empty($_POST['secondarydnsserver']) && !is_ipaddrv4($_POST['secondarydnsserver'])) {
     $input_errors[] = gettext('Second DNS server is invalid.');
 }
 if (!empty($input_errors)) {
@@ -436,7 +436,7 @@ if (!empty($_POST['macaddress']) && !is_macaddr($_POST['macaddress'])) {
     $input_errors[] = gettext('Invalid MAC address.');
 }
 if (!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
-    if (!is_ipaddr($_POST['ipaddress'])) {
+    if (!is_ipaddrv4($_POST['ipaddress'])) {
         $input_errors[] = gettext('Invalid WAN IP address.');
     }
     if ($_POST['subnetmask'] < 31 &&
@@ -448,10 +448,10 @@ if (!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
 if (!empty($_POST['dhcphostname']) && !is_hostname($_POST['dhcphostname'])) {
     $input_errors[] = gettext('Invalid DHCP hostname.');
 }
-if (!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddress'])) {
+if (!empty($_POST['pptplocalipaddress']) && !is_ipaddrv4($_POST['pptplocalipaddress'])) {
     $input_errors[] = gettext('Invalid PPTP Local IP address.');
 }
-if (!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
+if (!empty($_POST['pptpremoteipaddress']) && !is_ipaddrv4($_POST['pptpremoteipaddress'])) {
     $input_errors[] = gettext('Invalid PPTP Remote IP address.');
 }
 if (!empty($input_errors)) {
@@ -529,7 +529,7 @@ if ($_POST['selectedtype'] != "Static") {
         </fields>
         <stepsubmitphpaction><![CDATA[
 if (!empty(trim($_POST['lanipaddress']))) {
-    if (!is_ipaddr($_POST['lanipaddress'])) {
+    if (!is_ipaddrv4($_POST['lanipaddress'])) {
         $input_errors[] = gettext('Invalid LAN IP address.');
     }
 
