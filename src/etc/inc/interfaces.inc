@@ -4255,7 +4255,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     }
 
     foreach ($realifs as $realif) {
-        foreach (array('ipv4', 'ipv6') as $proto) {
+        foreach (['ipv4', 'ipv6'] as $proto) {
             if (empty($intf_details[$realif][$proto])) {
                 continue;
             }
@@ -4344,7 +4344,7 @@ function interfaces_has_prefix_only($interface)
 function interfaces_primary_address($interface, $ifconfig_details = null)
 {
     /* primary returns preferred local address according to configuration */
-    $ifcfgip = $network = $subnetbits = null;
+    $ifcfgip = $network = $subnetbits = $device = null;
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
         if ($addr['family'] != 'inet') {
@@ -4361,15 +4361,16 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
         $network = gen_subnet($addr['address'], $addr['bits']) . "/{$addr['bits']}";
         $subnetbits = $addr['bits'];
         $ifcfgip = $addr['address'];
+        $device = $addr['name'];
         break; /* all done */
     }
 
-    return [ $ifcfgip, $network, $subnetbits ];
+    return [ $ifcfgip, $network, $subnetbits, $device ];
 }
 
 function _interfaces_primary_address6($interface, $ifconfig_details = null, $allow_track = true, $link_local = false)
 {
-    $ifcfgipv6 = $networkv6 = $subnetbitsv6 = null;
+    $ifcfgipv6 = $networkv6 = $subnetbitsv6 = $devicev6 = null;
 
     if ($allow_track && !$link_local && interfaces_has_prefix_only($interface)) {
         /* extend the search scope for a non-NA mode to tracking interfaces */
@@ -4393,10 +4394,11 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
         if ($link_local) {
             $ifcfgipv6 .= "%{$addr['name']}";
         }
+        $devicev6 = $addr['name'];
         break; /* all done */
     }
 
-    return [ $ifcfgipv6, $networkv6, $subnetbitsv6 ];
+    return [ $ifcfgipv6, $networkv6, $subnetbitsv6, $devicev6 ];
 }
 
 function interfaces_routed_address6($interface, $ifconfig_details = null)
