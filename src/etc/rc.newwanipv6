@@ -61,7 +61,7 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 
 /* make sure only one script runs at a time beyond this point */
-$fp = fopen('/tmp/newwanipv6_' . $argument, 'a+');
+$fp = fopen('/tmp/newwanipv6_' . $argument, 'a+e');
 if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
     /* let go if not a forceful reload, otherwise block and wait */
     if ($force != 'yes' || !$fp || !flock($fp, LOCK_EX)) {
