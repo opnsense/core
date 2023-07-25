@@ -64,7 +64,7 @@ $interface_descr = convert_friendly_interface_to_friendly_descr($interface);
 $fp = fopen('/tmp/newwanipv6_' . $argument, 'a+');
 if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
     /* let go if not a forceful reload, otherwise block and wait */
-    if ($force != 'yes' || (!$fp && !flock($fp, LOCK_EX))) {
+    if ($force != 'yes' || !$fp || !flock($fp, LOCK_EX)) {
         fclose($fp);
         return;
     }
