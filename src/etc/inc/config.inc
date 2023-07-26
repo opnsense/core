@@ -49,13 +49,16 @@ final class product
 
         /* boot detection */
         $bootflag = '/var/run/booting';
-
         if (!file_exists($bootflag)) {
             @touch($bootflag);
         }
-
         $fp = fopen($bootflag, 'r');
-        self::$data['product_booting'] = $fp && !flock($fp, LOCK_SH | LOCK_NB);
+        if ($fp) {
+            self::$data['product_booting'] = !flock($fp, LOCK_SH | LOCK_NB);
+            fclose($fp);
+        } else {
+            self::$data['product_booting'] = false;
+        }
     }
 
     private function __clone()
