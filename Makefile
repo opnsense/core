@@ -125,11 +125,13 @@ CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
 CORE_COPYRIGHT_YEARS?=	2014-2023
 
-CORE_DEPENDS_amd64?=	beep \
-			py${CORE_PYTHON}-duckdb \
+CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
 			suricata
+
+CORE_DEPENDS_amd64?=	beep \
+			${CORE_DEPENDS_aarch64}
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
