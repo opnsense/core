@@ -1443,7 +1443,7 @@ EOD;
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
         if (!is_ipaddrv6($ifcfgipv6) || !is_subnetv6($networkv6)) {
-            $realif = get_real_interface($dhcpv6if);
+            $realif = get_real_interface($dhcpv6if, 'inet6');
             log_msg("dhcpd_dhcp6_configure() found no suitable IPv6 address on {$dhcpv6if}({$realif})", LOG_WARNING);
             continue;
         }
