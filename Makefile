@@ -131,6 +131,11 @@ CORE_DEPENDS_amd64?=	beep \
 			py${CORE_PYTHON}-pandas \
 			suricata-devel
 
+CORE_DEPENDS_aarch64?=  py${CORE_PYTHON}-duckdb \
+                        py${CORE_PYTHON}-numpy \
+                        py${CORE_PYTHON}-pandas \
+                        suricata-devel
+
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
