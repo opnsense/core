@@ -318,7 +318,7 @@ function lock($lock, $op = LOCK_SH)
         @chmod("/tmp/{$lock}.lock", 0666);
     }
 
-    if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
+    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
         if (flock($fp, $op)) {
             return $fp;
         } else {
@@ -328,12 +328,10 @@ function lock($lock, $op = LOCK_SH)
 }
 
 /* unlock configuration file */
-function unlock($cfglckkey = null)
+function unlock($fp)
 {
-    if ($cfglckkey) {
-        flock($cfglckkey, LOCK_UN);
-        fclose($cfglckkey);
-    }
+    flock($fp, LOCK_UN);
+    fclose($fp);
 }
 
 function exit_on_bootup($callback = null, $arguments = [])
