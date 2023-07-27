@@ -36,7 +36,7 @@ require_once 'IPv6.inc';
 function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
     /* pgrep -n only kills the newest matching process */
-    _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit);
+    _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit, "name:$procname");
 }
 
 function killbypid($pid_or_file, $sig = 'TERM', $waitforit = true)
@@ -47,16 +47,16 @@ function killbypid($pid_or_file, $sig = 'TERM', $waitforit = true)
         $pid = trim(@file_get_contents($pid_or_file) ?? '');
     }
 
-    _killbypid($pid, $sig, $waitforit);
+    _killbypid($pid, $sig, $waitforit, "pid:$pid_or_file");
 }
 
-function _killbypid($pid, $sig, $waitforit)
+function _killbypid($pid, $sig, $waitforit, $caller)
 {
     if (!is_numeric($pid) || $pid <= 1) {
         return;
     }
 
-    mwexecf('/bin/kill -%s %s', [$sig, $pid]);
+    mwexecf('/bin/kill -%s %s', [$sig, $pid], $caller);
 
     if (!$waitforit || $sig == 'HUP') {
         return;
@@ -938,9 +938,9 @@ function mwexec($command, $mute = false)
     $garbage = exec("{$command} 2>&1", $oarr, $retval);
     unset($garbage);
 
-    if ($retval != 0 && $mute == false) {
+    if ($retval != 0 && $mute !== true) {
         $output = implode(' ', $oarr);
-        log_msg(sprintf("The command '%s' returned exit code '%d', the output was '%s'", $command, $retval, $output), LOG_ERR);
+        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
         unset($output);
     }
 
