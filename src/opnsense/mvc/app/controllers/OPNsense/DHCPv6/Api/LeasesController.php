@@ -174,9 +174,10 @@ class LeasesController extends ApiControllerBase
                 }
             } else {
                 foreach ($if_ranges as $if_name => $if_range) {
-                    if (Util::isIPInCIDR($lease['address'], $if_range)) {
+                    if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
                         $intf = $if_name;
-                        $intf_descr = $config->interfaces->$if_name->descr;
+                        $intf_descr = (string)$config->interfaces->$if_name->descr;
+                        break;
                     }
                 }
             }
@@ -184,7 +185,7 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['if'] = $intf;
             $leases[$idx]['if_descr'] = $intf_descr;
 
-            if (!empty($if_name) && !array_key_exists($if_name, $interfaces)) {
+            if (!empty($intf) && !array_key_exists($intf, $interfaces)) {
                 $interfaces[$intf] = $intf_descr;
             }
         }

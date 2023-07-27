@@ -100,6 +100,8 @@ class LeasesController extends ApiControllerBase
             $static['ends'] = '';
             $static['hostname'] = $slease['hostname'];
             $static['descr'] = $slease['descr'];
+            $static['if_descr'] = '';
+            $static['if'] = $slease['interface'];
             $static['state'] = 'active';
             $static['status'] = in_array(strtolower($static['mac']), $online) ? 'online' : 'offline';
             $statics[] = $static;
@@ -109,6 +111,16 @@ class LeasesController extends ApiControllerBase
 
         $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
         $interfaces = [];
+
+        /* fetch interfaces ranges so we can match leases to interfaces */
+        $if_ranges = [];
+        foreach ($config->dhcpd->children() as $dhcpif => $dhcpifconf) {
+            $if = $config->interfaces->$dhcpif;
+            if (!empty((string)$if->ipaddr) && !empty((string)$if->subnet)) {
+                $if_ranges[$dhcpif] = (string)$if->ipaddr . '/' . (string)$if->subnet;
+            }
+        }
+
         foreach ($leases as $idx => $lease) {
             /* include manufacturer info */
             $leases[$idx]['man'] = '';
@@ -118,21 +130,31 @@ class LeasesController extends ApiControllerBase
             }
 
             /* include interface */
-            $leases[$idx]['if_descr'] = '';
-            $leases[$idx]['if'] = '';
-            foreach ($config->dhcpd->children() as $dhcpif => $dhcpifconf) {
-                $if = $config->interfaces->$dhcpif;
-                if (!empty((string)$if->ipaddr) && Util::isIpAddress((string)$if->ipaddr)) {
-                    if (Util::isIPInCIDR($lease['address'], (string)$if->ipaddr . '/' . (string)$if->subnet)) {
-                        $intf = (string)$if->descr;
-                        $leases[$idx]['if_descr'] = $intf;
-                        $leases[$idx]['if'] = $dhcpif;
-
-                        if (!array_key_exists($dhcpif, $interfaces)) {
-                            $interfaces[$dhcpif] = $intf;
-                        }
+            $intf = '';
+            $intf_descr = '';
+            if (!empty($lease['if'])) {
+                /* interface already included */
+                $if = $config->interfaces->{$lease['if']};
+                if (!empty((string)$if->ipaddr)) {
+                    $intf = $lease['if'];
+                    $intf_descr = (string)$if->descr;
+                }
+            } else {
+                /* interface not known, check range */
+                foreach ($if_ranges as $if_name => $if_range) {
+                    if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
+                        $intf = $if_name;
+                        $intf_descr = (string)$config->interfaces->$if_name->descr;
+                        break;
                     }
                 }
+            }
+
+            $leases[$idx]['if'] = $intf;
+            $leases[$idx]['if_descr'] = $intf_descr;
+
+            if (!empty($intf) && !array_key_exists($intf, $interfaces)) {
+                $interfaces[$intf] = $intf_descr;
             }
         }
 
