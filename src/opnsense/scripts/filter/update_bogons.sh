@@ -10,7 +10,8 @@ COMMAND=${1}
 CORE_ABI=$(opnsense-version -a)
 SYS_ABI=$(opnsense-verify -a)
 
-URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/bogons.txz"
+# force amd64 here since bogons are not published elsewhere
+URL="https://pkg.opnsense.org/${SYS_ABI%:*}:amd64/${CORE_ABI}/sets/bogons.txz"
 
 echo "bogons update starting" | logger
 
