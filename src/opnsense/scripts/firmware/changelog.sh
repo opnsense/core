@@ -51,7 +51,7 @@ changelog_url()
 	CORE_ABI=$(opnsense-version -x)
 	SYS_ABI=$(opnsense-verify -a)
 
-	force amd64 here since changelogs are not published elsewhere
+	# force amd64 here since changelogs are not published elsewhere
 	URLPREFIX="https://pkg.opnsense.org/${SYS_ABI%:*}:amd64/${CORE_ABI}"
 
 	if [ -n "$(opnsense-update -x)" ]; then
