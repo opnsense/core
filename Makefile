@@ -31,6 +31,7 @@ all:
 CORE_ABI?=	23.1
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
+# adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
 CORE_NICKNAME?=	Not Yet
 CORE_TYPE?=	development
 
