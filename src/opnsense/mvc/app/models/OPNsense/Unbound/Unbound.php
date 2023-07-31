@@ -44,7 +44,7 @@ class Unbound extends BaseModel
             !empty((string)$this->general->enabled)
         ) {
             foreach (json_decode((new Backend())->configdpRun('service list'), true) as $service) {
-                if (empty($service['dns_ports'])) {
+                if (empty($service['dns_ports']) || !is_array($service['dns_ports'])) {
                     continue;
                 }
                 if ($service['name'] != 'unbound' && in_array((string)$this->general->port, $service['dns_ports'])) {
