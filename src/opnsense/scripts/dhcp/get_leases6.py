@@ -33,6 +33,7 @@ import calendar
 import datetime
 import time
 import argparse
+import re
 
 def parse_date(ymd, hms):
     dt = '%s %s' % (ymd, hms)
@@ -67,8 +68,8 @@ def parse_iaaddr_iaprefix(input):
 
 def parse_iaid_duid(input):
     """
-    parse the combined IAID_DUID value. This is provided in the form
-    of ascii characters. Non-printable characters are provided as octal escapes.
+    parse the combined IAID_DUID value. This is provided in octal or hex format.
+    In case of octal, non-printable characters are provided as octal escapes.
     We return the hex representation of the raw IAID_DUID value, the IAID integer,
     as well as the separated DUID value in a dict. The IAID_DUID value is
     used to uniquely identify a lease, so this value should be used to determine the last
@@ -76,21 +77,26 @@ def parse_iaid_duid(input):
     """
     input = input[1:-1] # strip double quotes
     parsed = []
-    i = 0
-    while i < len(input):
-        c = input[i]
-        if c == '\\':
-            next_c = input[i + 1]
-            if next_c == '\\' or next == '"':
-                parsed.append("%02x" % ord(next_c))
-                i += 1
-            elif next_c.isnumeric():
-                octal_to_decimal = int(input[i+1:i+4], 8)
-                parsed.append("%02x" % octal_to_decimal)
-                i += 3
-        else:
-            parsed.append("%02x" % ord(c))
-        i += 1
+
+    hex_pattern = re.compile(r'^([0-9a-fA-F]{2}:){0,}[0-9a-fA-F]{2}$')
+    if hex_pattern.match(input):
+        parsed = input.split(':')
+    else:
+        i = 0
+        while i < len(input):
+            c = input[i]
+            if c == '\\':
+                next_c = input[i + 1]
+                if next_c == '\\' or next == '"':
+                    parsed.append("%02x" % ord(next_c))
+                    i += 1
+                elif next_c.isnumeric():
+                    octal_to_decimal = int(input[i+1:i+4], 8)
+                    parsed.append("%02x" % octal_to_decimal)
+                    i += 3
+            else:
+                parsed.append("%02x" % ord(c))
+            i += 1
 
     return {
         'iaid': int(''.join(reversed(parsed[0:4]))),
