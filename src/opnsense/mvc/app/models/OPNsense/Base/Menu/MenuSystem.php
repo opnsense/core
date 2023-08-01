@@ -209,7 +209,7 @@ class MenuSystem
                     /* we need both if and gr reference */
                     $iftargets['if'][(string)$node->ifname] = (string)$node->ifname;
                     $iftargets['gr'][(string)$node->ifname] = (string)$node->ifname;
-                    foreach (explode(' ', (string)$node->members) as $member) {
+                    foreach (preg_split('/[ |,]+/', (string)$node->members) as $member) {
                         if (!array_key_exists($member, $ifgroups)) {
                             $ifgroups[$member] = [];
                         }
