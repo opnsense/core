@@ -67,8 +67,8 @@ def parse_iaaddr_iaprefix(input):
 
 def parse_iaid_duid(input):
     """
-    parse the combined IAID_DUID value. This is provided in the form
-    of ascii characters. Non-printable characters are provided as octal escapes.
+    parse the combined IAID_DUID value. This is provided in octal format.
+    non-printable characters are provided as octal escapes.
     We return the hex representation of the raw IAID_DUID value, the IAID integer,
     as well as the separated DUID value in a dict. The IAID_DUID value is
     used to uniquely identify a lease, so this value should be used to determine the last
@@ -93,7 +93,7 @@ def parse_iaid_duid(input):
         i += 1
 
     return {
-        'iaid': int(''.join(reversed(parsed[0:4]))),
+        'iaid': int(''.join(reversed(parsed[0:4])), 16),
         'duid': ":".join([str(a) for a in parsed[4:]]),
         'iaid_duid': ":".join([str(a) for a in parsed])
     }
