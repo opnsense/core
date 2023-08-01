@@ -736,7 +736,7 @@ $( document ).ready(function() {
 <?php
                 $ifgroups = [];
                 foreach (config_read_array('ifgroups', 'ifgroupentry') as $ifgroup) {
-                    if (!empty($ifgroup['members']) && in_array($selected_if, explode(' ', $ifgroup['members']))) {
+                    if (!empty($ifgroup['members']) && in_array($selected_if, preg_split('/[ |,]+/', $ifgroup['members']))) {
                         $ifgroups[] = $ifgroup['ifname'];
                     }
                 }

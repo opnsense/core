@@ -42,7 +42,7 @@ function link_interface_to_group($int)
 
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            if (in_array($int, explode(" ", $group['members']))) {
+            if (in_array($int, preg_split('/[ |,]+/', $group['members']))) {
                 $result[$group['ifname']] = $int;
             }
         }
