@@ -107,7 +107,7 @@ abstract class BaseListField extends BaseField
         $result = array();
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty($this->internalValue));
+            $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty((string)$this->internalValue) ? 1 : 0);
         }
 
         // explode options
