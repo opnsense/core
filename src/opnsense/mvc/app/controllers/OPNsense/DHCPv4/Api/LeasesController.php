@@ -126,7 +126,9 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['man'] = '';
             if ($lease['mac'] != '') {
                 $mac_hi = strtoupper(substr(str_replace(':', '', $lease['mac']), 0, 6));
-                $leases[$idx]['man'] = $mac_man[$mac_hi];
+                if (array_key_exists($mac_hi, $mac_man)) {
+                    $leases[$idx]['man'] = $mac_man[$mac_hi];
+                }
             }
 
             /* include interface */
