@@ -46,7 +46,7 @@ class M1_0_5 extends BaseModelMigration
                     $new[$key] = empty($config->unbound->$key) ? 0 : 1;
                     continue;
                 }
-                $new[$key] = $config->unbound->$key;
+                $new[$key] = (string)$config->unbound->$key;
             }
         }
 
