@@ -28,7 +28,6 @@
  */
 
 require_once("interfaces.inc");
-require_once("interfaces.lib.inc");
 
 $vfaces = [
     '_stf',
