@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.lib.inc");
+require_once("interfaces.inc");
 
 if (!empty($argv[1])) {
     $result = legacy_interface_details($argv[1]);
