@@ -264,20 +264,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("%s is only valid if the gateway is set to 'default'."),$pconfig['statetype']);
         }
     }
-    if (!empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any')
+    if (!empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any') {
         $input_errors[] = sprintf(gettext("%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcbeginport']);
-    if (!empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any')
-        $input_errors[] = sprintf(gettext("%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcendport']);
-    if (!empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any')
-        $input_errors[] = sprintf(gettext("%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstbeginport']);
-    if (!empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any')
-        $input_errors[] = sprintf(gettext("%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstendport']);
-
-    if ( (is_alias($pconfig['srcbeginport']) || is_alias($pconfig['srcendport']))  && $pconfig['srcbeginport'] != $pconfig['srcendport']) {
-        $input_errors[] = gettext('When selecting aliases for source ports, both from and to fields must be the same');
     }
-    if ( (is_alias($pconfig['dstbeginport']) || is_alias($pconfig['dstendport']))  && $pconfig['dstbeginport'] != $pconfig['dstendport']) {
-        $input_errors[] = gettext('When selecting aliases for destination ports, both from and to fields must be the same');
+    if (!empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any') {
+        $input_errors[] = sprintf(gettext("%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcendport']);
+    }
+    if (!empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any') {
+        $input_errors[] = sprintf(gettext("%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstbeginport']);
+    }
+    if (!empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any') {
+        $input_errors[] = sprintf(gettext("%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstendport']);
+    }
+    if (!empty($pconfig['srcbeginport']) && !empty($pconfig['srcendport'])) {
+        if ((is_alias($pconfig['srcbeginport']) || is_alias($pconfig['srcendport'])) && $pconfig['srcbeginport'] != $pconfig['srcendport']) {
+            $input_errors[] = gettext('When selecting aliases for source ports, both from and to fields must be the same');
+        }
+    }
+    if (!empty($pconfig['dstbeginport']) && !empty($pconfig['dstendport'])) {
+        if ((is_alias($pconfig['dstbeginport']) || is_alias($pconfig['dstendport'])) && $pconfig['dstbeginport'] != $pconfig['dstendport']) {
+            $input_errors[] = gettext('When selecting aliases for destination ports, both from and to fields must be the same');
+        }
     }
     if (!is_specialnet($pconfig['src']) && !is_ipaddroralias($pconfig['src'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
@@ -565,13 +572,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         pconfig_to_address($filterent['source'], $pconfig['src'],
-          $pconfig['srcmask'], !empty($pconfig['srcnot']),
+          $pconfig['srcmask'] ?? '', !empty($pconfig['srcnot']),
           $pconfig['srcbeginport'], $pconfig['srcendport']);
-
         pconfig_to_address($filterent['destination'], $pconfig['dst'],
-          $pconfig['dstmask'], !empty($pconfig['dstnot']),
+          $pconfig['dstmask'] ?? '', !empty($pconfig['dstnot']),
           $pconfig['dstbeginport'], $pconfig['dstendport']);
-
 
         $filterent['updated'] = make_config_revision_entry();
 
