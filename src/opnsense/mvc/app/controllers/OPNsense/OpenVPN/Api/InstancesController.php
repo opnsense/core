@@ -96,7 +96,7 @@ class InstancesController extends ApiMutableModelControllerBase
     }
     public function delStaticKeyAction($uuid)
     {
-        return $this->delStaticKeyBase('StaticKeys.StaticKey', $uuid);
+        return $this->delBase('StaticKeys.StaticKey', $uuid);
     }
 
     public function genKeyAction()
