@@ -29,7 +29,7 @@
         var data_get_map = {'frm_GeneralSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
             formatTokenizersUI();
-            $('.selectpicker').selectpicker({title: 'All (recommended)'}).selectpicker('render');
+            $('.selectpicker').selectpicker({title: '{{ lang._('All (recommended)') }}'}).selectpicker('render');
             $('.selectpicker').selectpicker('refresh');
         });
 
