@@ -115,20 +115,22 @@ function firewall_rule_item_proto($filterent)
       "mtraceresp" => gettext("mtrace response"),
       "mtrace" => gettext("mtrace messages")
     );
-    if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])) {
+    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp' && !empty($filterent['icmptype'])) {
         $result = $record_ipprotocol;
+        $icmplabel = $icmptypes[$filterent['icmptype']] ?? $filterent['icmptype'];
         $result .= sprintf(
-          "<span data-toggle=\"tooltip\" title=\"ICMP type: %s \"> %s </span>",
-          html_safe($icmptypes[$filterent['icmptype']]),
-          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+          '<span data-toggle="tooltip" title="ICMP type: %s">%s</span>',
+          html_safe($icmplabel),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
     } elseif (isset($filterent['protocol']) && !empty($filterent['icmp6-type'])) {
         $result = $record_ipprotocol;
+        $icmplabel = $icmp6types[$filterent['icmp6-type']] ?? $filterent['icmp6-type'];
         $result .= sprintf(
-          "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
-          html_safe($icmp6types[$filterent['icmp6-type']]),
-          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+          '<span data-toggle="tooltip" title="ICMP6 type: %s">%s</span>',
+          html_safe($icmplabel),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
     } else {
@@ -980,7 +982,7 @@ $( document ).ready(function() {
                     <td class="view-stats" id="<?=$rule_hash;?>_packets"><?= gettext('N/A') ?></td>
                     <td class="view-stats" id="<?=$rule_hash;?>_bytes"><?= gettext('N/A') ?></td>
                     <td  class="rule-description">
-                      <?=$filterent['descr'];?>
+                      <?= $filterent['descr'] ?? '' ?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$rule_hash;?></small>
                       </div>
