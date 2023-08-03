@@ -58,10 +58,6 @@ function is_bogonsv6_used()
 /* lock configuration file */
 function filter_lock($lock = 'filter', $op = LOCK_EX)
 {
-    if (!$lock) {
-        die(gettext("WARNING: You must give a name as parameter to lock() function."));
-    }
-
     if (!file_exists("{/tmp/{$lock}.lock")) {
         @touch("/tmp/{$lock}.lock");
         @chmod("/tmp/{$lock}.lock", 0666);
