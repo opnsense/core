@@ -62,7 +62,7 @@
 </ul>
 <div class="tab-content content-box">
     <div id="cso" class="tab-pane fade in active">
-        <table id="grid-cso" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCSO" data-editAlert="CSOChangeMessage">
+        <table id="grid-cso" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCSO">
             <thead>
                 <tr>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -85,13 +85,6 @@
                 </tr>
             </tfoot>
           </table>
-        <div class="col-md-12">
-            <div id="CSOChangeMessage" class="alert alert-info" style="display: none" role="alert">
-                {{ lang._('After changing settings, please remember to apply them') }}
-            </div>
-            <hr/>
-        </div>
-      </div>
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogCSO,'id':'DialogCSO','label':lang._('Edit CSO')])}}
