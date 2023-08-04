@@ -277,6 +277,7 @@ class OpenVPN extends BaseModel
                     'certref' => (string)$node->cert,
                     'caref' => $this_caref,
                     'cert_depth' => (string)$node->cert_depth,
+                    'digest' => (string)$node->auth,
                     'description' => (string)$node->description
                 ];
             }
