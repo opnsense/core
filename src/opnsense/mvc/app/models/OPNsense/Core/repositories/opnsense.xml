@@ -45,20 +45,20 @@
             <description>ServerBase AG (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.ams1.nl.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (HTTP, Amsterdam, NL)</description>
+            <url>https://mirror.ams1.nl.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (HTTPS, Amsterdam, NL)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.fra10.de.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (HTTP, Frankfurt, DE)</description>
+            <url>https://mirror.fra10.de.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (HTTPS, Frankfurt, DE)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.sfo12.us.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (HTTP, San Francisco, US)</description>
+            <url>https://mirror.sfo12.us.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (HTTPS, San Francisco, US)</description>
         </mirror>
         <mirror>
-            <url>http://mirror.wdc1.us.leaseweb.net/opnsense</url>
-            <description>LeaseWeb (HTTP, Washington, D.C., US)</description>
+            <url>https://mirror.wdc1.us.leaseweb.net/opnsense</url>
+            <description>LeaseWeb (HTTPS, Washington, D.C., US)</description>
         </mirror>
         <mirror>
            <url>http://quantum-mirror.hu/mirrors/pub/opnsense</url>
