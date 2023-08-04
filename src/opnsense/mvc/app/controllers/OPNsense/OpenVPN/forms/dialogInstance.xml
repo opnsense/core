@@ -140,6 +140,12 @@
         <help>Select a certificate to use for this service.</help>
     </field>
     <field>
+        <id>instance.client_ca</id>
+        <label>CA Client Authentication</label>
+        <type>dropdown</type>
+        <help>Select a ca certificate for client validation</help>
+    </field>
+    <field>
         <id>instance.crl</id>
         <label>Certificate Revocation List</label>
         <type>dropdown</type>

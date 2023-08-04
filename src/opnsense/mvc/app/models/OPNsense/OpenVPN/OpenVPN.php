@@ -74,6 +74,7 @@ class OpenVPN extends BaseModel
                     );
                 }
             }
+
             if (!empty((string)$instance->cert)) {
                 if ($instance->cert->isFieldChanged() || $validateFullModel) {
                     $tmp = Store::getCertificate((string)$instance->cert);
@@ -84,18 +85,18 @@ class OpenVPN extends BaseModel
                         ));
                     }
                 }
-            } else {
-                if (
-                    $instance->cert->isFieldChanged() ||
-                    $instance->verify_client_cert->isFieldChanged() ||
-                    $validateFullModel
-                ) {
-                    if ((string)$instance->verify_client_cert != 'none') {
-                        $messages->appendMessage(new Message(
-                            gettext("To validate a certificate, one has to be provided "),
-                            $key . ".verify_client_cert"
-                        ));
-                    }
+            }
+            if (
+                $instance->cert->isFieldChanged() ||
+                $instance->client_ca->isFieldChanged() ||
+                $instance->verify_client_cert->isFieldChanged() ||
+                $validateFullModel
+            ) {
+                if ((string)$instance->verify_client_cert != 'none' && empty($instance->cert) && empty($instance->client_ca)) {
+                     $messages->appendMessage(new Message(
+                        gettext("To validate a certificate, provide a CA for the server certificate or user CA "),
+                        $key . ".verify_client_cert"
+                    ));
                 }
             }
             if (
@@ -253,13 +254,21 @@ class OpenVPN extends BaseModel
                 }
                 // find caref
                 $this_caref = null;
+		$this_extraca = null;
                 if (isset(Config::getInstance()->object()->cert)) {
                     foreach (Config::getInstance()->object()->cert as $cert) {
                         if (isset($cert->refid) && (string)$node->cert == $cert->refid) {
-                            $this_caref = (string)$cert->caref;
+                            $this_extraca = (string)$cert->caref;
                         }
                     }
                 }
+
+                if (isset(Config::getInstance()->object()->client_ca)) {
+                    $this_caref=Config::getInstance()->object()->client_ca;
+                } else if ($this_extraca != null) {
+                    //fallback: if no CA is for client authentication use the same as the server CA
+                    $this_caref=$this_extraca;
+		}
                 return [
                     'role' => (string)$node->role,
                     'vpnid' => $server_id,
@@ -275,6 +284,7 @@ class OpenVPN extends BaseModel
                     'tls' => $this_tls,
                     'tlsmode' => $this_mode,
                     'certref' => (string)$node->cert,
+                    'extra_ca' => $this_extraca,
                     'caref' => $this_caref,
                     'cert_depth' => (string)$node->cert_depth,
                     'description' => (string)$node->description
@@ -311,6 +321,7 @@ class OpenVPN extends BaseModel
                         'tls' => (string)$item->tls,
                         'tlsmode' => (string)$item->tlsmode,
                         'certref' => (string)$item->certref,
+                        'extra_ca' => (string)$item->extra_ca,
                         'caref'  => (string)$item->caref,
                         'cert_depth' => (string)$item->cert_depth,
                         'description' => (string)$item->description,
@@ -407,7 +418,7 @@ class OpenVPN extends BaseModel
                     $options['ping-timer-rem'] = null;
                     $options['topology'] = (string)$node->topology;
                     $options['dh'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919';
-                    if (!empty((string)$node->crl) && !empty((string)$node->cert)) {
+                    if (!empty((string)$node->crl) && !empty((string)$node->client_ca)) {
                         // updated via plugins_configure('crl');
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
@@ -537,10 +548,20 @@ class OpenVPN extends BaseModel
                         $options['<key>'] = $tmp['prv'];
                         $options['<cert>'] = $tmp['crt'];
                         if (isset($tmp['ca'])) {
-                            $options['<ca>'] = $tmp['ca']['crt'];
+                            $options['<extra-certs>'] = $tmp['ca']['crt'];
                         }
                     }
                 }
+                if (!empty((string)$node->client_ca)) {
+                    $tmp = Store::getCaChain((string)$node->client_ca);
+                    if (isset($tmp)) {
+                        $options['<ca>'] = $tmp;
+                    }
+                } elseif(isset($options['<extra-certs>'])) {
+                    //fallback to use CA of server certificate
+                    $options['<ca>'] = $options['<extra-certs>']; 
+                }
+
                 // dump to file
                 $this->writeConfig($node->cnfFilename, $options);
             }

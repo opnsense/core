@@ -190,6 +190,12 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cert>
+                <client_ca type="CertificateField">
+                    <Required>N</Required>
+                    <type>ca</type>
+                    <BlankDesc>None</BlankDesc>
+                    <ValidationMessage>Please select a valid ca from the list</ValidationMessage>
+                </client_ca>
                 <crl type="CertificateField">
                     <Required>N</Required>
                     <type>crl</type>
