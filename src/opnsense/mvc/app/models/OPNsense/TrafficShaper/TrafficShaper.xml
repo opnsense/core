@@ -269,6 +269,7 @@
                         <tcp_ack>tcp (ACK packets only)</tcp_ack>
                         <tcp_ack_not>tcp (non-ACK packets)</tcp_ack_not>
                         <icmp>icmp</icmp>
+                        <ipv6_icmp value="ipv6-icmp">ipv6-icmp</ipv6_icmp>
                         <igmp>igmp</igmp>
                         <esp>esp</esp>
                         <ah>ah</ah>
