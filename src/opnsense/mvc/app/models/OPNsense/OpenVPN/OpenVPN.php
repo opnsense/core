@@ -307,7 +307,7 @@ class OpenVPN extends BaseModel
                         'topology_subnet' => (string)$item->topology_subnet,
                         'local_port' =>  (string)$item->local_port,
                         'protocol' => (string)$item->protocol,
-                        'mode' => (string)$item->local_port,
+                        'mode' => (string)$item->mode,
                         'reneg-sec' => (string)$item->{'reneg-sec'},
                         'tls' => (string)$item->tls,
                         'tlsmode' => (string)$item->tlsmode,
