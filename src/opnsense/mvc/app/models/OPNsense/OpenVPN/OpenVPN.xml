@@ -307,26 +307,21 @@
                 </password>
                 <maxclients  type="IntegerField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
                 </maxclients>
                 <keepalive_interval type="IntegerField">
                     <default>10</default>
                     <MinimumValue>0</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
                 </keepalive_interval>
                 <keepalive_timeout type="IntegerField">
                     <default>60</default>
                     <MinimumValue>0</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
                 </keepalive_timeout>
                 <reneg-sec type="IntegerField">
                     <MinimumValue>0</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
                     <Required>N</Required>
                 </reneg-sec>
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
                     <Required>N</Required>
                 </auth-gen-token>
                 <redirect_gateway type="OptionField">
