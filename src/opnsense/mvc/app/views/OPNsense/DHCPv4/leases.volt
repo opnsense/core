@@ -85,13 +85,17 @@
                 },
                 formatters: {
                     "macformatter": function (column, row) {
+                        let mac = '<span class="overflow">' + row.mac + '</span>';
                         if (row.man != '') {
-                            return row.mac + '<br/>' + '<small><i>' + row.man + '</i></small>';
+                            mac = mac + '<br/>' + '<small class="overflow"><i>' + row.man + '</i></small>';
                         }
-                        return row.mac;
+                        return mac;
+                    },
+                    "tooltipformatter": function (column, row) {
+                        return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
                     "statusformatter": function (column, row) {
-                        let connected = row.status == 'offline' ? 'text-danger' : 'text-success';
+                        let connected = row.status == 'online' ? 'text-success' : 'text-danger';
                         return '<i class="fa fa-plug ' + connected +'" title="' + row.status + '" data-toggle="tooltip"></i>'
                     },
                     "commands": function (column, row) {
@@ -131,6 +135,14 @@
     });
 </script>
 
+<style>
+.overflow {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+}
+</style>
+
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
 <div class="tab-content content-box col-xs-12 __mb">
     <div id="inactive-selection-wrapper" style="float: left;">
@@ -148,12 +160,12 @@
         <thead>
         <tr>
             <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
-            <th data-column-id="address" data-identifier="true" data-type="string">{{ lang._('IP Address') }}</th>
-            <th data-column-id="mac" data-type="string" data-formatter="macformatter">{{ lang._('MAC Address') }}</th>
-            <th data-column-id="hostname" data-type="string">{{ lang._('Hostname') }}</th>
-            <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-            <th data-column-id="starts" data-type="string">{{ lang._('Start') }}</th>
-            <th data-column-id="ends" data-type="string">{{ lang._('End') }}</th>
+            <th data-column-id="address" data-identifier="true" data-type="string" data-width="8em">{{ lang._('IP Address') }}</th>
+            <th data-column-id="mac" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
+            <th data-column-id="hostname" data-type="string" data-formatter="tooltipformatter">{{ lang._('Hostname') }}</th>
+            <th data-column-id="descr" data-type="string" data-formatter="tooltipformatter">{{ lang._('Description') }}</th>
+            <th data-column-id="starts" data-type="string" data-formatter="tooltipformatter">{{ lang._('Start') }}</th>
+            <th data-column-id="ends" data-type="string" data-formatter="tooltipformatter">{{ lang._('End') }}</th>
             <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
             <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
             <th data-column-id="type" data-type="string">{{ lang._('Lease Type') }}</th>
