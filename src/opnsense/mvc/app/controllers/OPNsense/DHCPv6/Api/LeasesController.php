@@ -60,7 +60,6 @@ class LeasesController extends ApiControllerBase
             /* set defaults */
             $lease = [];
             $lease['type'] = 'dynamic';
-            $lease['status'] = 'offline';
             $lease['lease_type'] = $raw_lease['lease_type'];
             $lease['iaid'] = $raw_lease['iaid'];
             $lease['duid'] = $raw_lease['duid'];
@@ -84,8 +83,7 @@ class LeasesController extends ApiControllerBase
             }
 
             $lease['address'] = $seg['iaaddr'];
-            $lease['online'] = in_array(strtolower($seg['iaaddr']), $online) ? 'online' : 'offline';
-
+            $lease['status'] = in_array(strtolower($lease['address']), $online) ? 'online' : 'offline';
             $leases[] = $lease;
         }
 
@@ -111,7 +109,7 @@ class LeasesController extends ApiControllerBase
         $leases = array_merge($leases, $statics);
 
         $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
-        $interfaces = [];
+        $lease_interfaces = [];
 
         /* fetch interfaces ranges so we can match leases to interfaces */
         $if_ranges = [];
@@ -122,9 +120,15 @@ class LeasesController extends ApiControllerBase
             }
         }
 
+        $raw_intfs = [];
+        foreach ($config->interfaces->children() as $if => $if_props) {
+            $raw_intfs[(string)$if_props->if] = (string)$if_props->descr ?: strtoupper($if);
+        }
+
         foreach ($leases as $idx => $lease) {
             $leases[$idx]['man'] = '';
             $leases[$idx]['mac'] = '';
+            $done = false;
             /* We infer the MAC from NDP data if available, otherwise we extract it out
              * of the DUID. However, RFC8415 section 11 states that an attempt to parse
              * a DUID to obtain a client's link-layer addresss is unreliable, as there is no
@@ -138,11 +142,21 @@ class LeasesController extends ApiControllerBase
                     if ($ndp['ip'] == $lease['address']) {
                         $leases[$idx]['mac'] = $ndp['mac'];
                         $leases[$idx]['man'] = empty($ndp['manufacturer']) ? '' : $ndp['manufacturer'];
+                        $leases[$idx]['if'] = $ndp['intf'];
+                        $leases[$idx]['if_descr'] = $raw_intfs[$ndp['intf']];
+                        if (!empty($leases[$idx]['if_descr'])) {
+                            $lease_interfaces[$leases[$idx]['if']] = $leases[$idx]['if_descr'];
+                        }
+                        $done = true;
                         break;
                     }
                 }
+                if ($done) {
+                    continue;
+                }
             }
 
+            /* include MAC */
             if (!empty($lease['duid'])) {
                 $mac = '';
                 $duid_type = substr($lease['duid'], 0, 5);
@@ -164,19 +178,14 @@ class LeasesController extends ApiControllerBase
             }
 
             /* include interface */
-            $intf = '';
-            $intf_descr = '';
             if (!empty($lease['if'])) {
-                $if = $config->interfaces->{$lease['if']};
-                if (!empty((string)$if->ipaddrv6) && Util::isIpAddress((string)$if->ipaddrv6)) {
-                    $intf = $lease['if'];
-                    $intf_descr = (string)$if->descr ?: strtoupper($intf);
-                }
+                $intf = $lease['if'];
+                $intf_descr = $raw_intfs[$lease['if']];
             } else {
                 foreach ($if_ranges as $if_name => $if_range) {
                     if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
                         $intf = $if_name;
-                        $intf_descr = (string)$config->interfaces->$if_name->descr ?: strtoupper($if_name);
+                        $intf_descr = $raw_intfs[$if_name];
                         break;
                     }
                 }
@@ -185,8 +194,8 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['if'] = $intf;
             $leases[$idx]['if_descr'] = $intf_descr;
 
-            if (!empty($intf_descr) && !array_key_exists($intf, $interfaces)) {
-                $interfaces[$intf] = $intf_descr;
+            if (!empty($intf_descr) && !array_key_exists($intf, $lease_interfaces)) {
+                $lease_interfaces[$intf] = $intf_descr;
             }
         }
 
@@ -198,7 +207,7 @@ class LeasesController extends ApiControllerBase
             return false;
         }, SORT_REGULAR);
 
-        $response['interfaces'] = $interfaces;
+        $response['interfaces'] = $lease_interfaces;
         return $response;
     }
 

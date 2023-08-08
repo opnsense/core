@@ -91,7 +91,7 @@
                         return row.mac;
                     },
                     "statusformatter": function (column, row) {
-                        let connected = row.status == 'offline' ? 'text-danger' : 'text-success';
+                        let connected = row.status == 'online' ? 'text-success' : 'text-danger';
                         return '<i class="fa fa-plug ' + connected +'" title="' + row.status + '" data-toggle="tooltip"></i>'
                     },
                     "commands": function (column, row) {
