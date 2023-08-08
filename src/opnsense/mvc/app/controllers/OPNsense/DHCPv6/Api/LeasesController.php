@@ -91,15 +91,15 @@ class LeasesController extends ApiControllerBase
         $statics = [];
         foreach ($sleases['dhcpd'] as $slease) {
             $static = [
-                'address' => $slease['ipaddrv6'],
+                'address' => $slease['ipaddrv6'] ?? '',
                 'type' => 'static',
                 'cltt' => '',
                 'ends' => '',
-                'descr' => $slease['descr'],
+                'descr' => $slease['descr'] ?? '',
                 'iaid' => '',
-                'duid' => $slease['duid'],
+                'duid' => $slease['duid'] ?? '',
                 'if_descr' => '',
-                'if' => $slease['interface'],
+                'if' => $slease['interface'] ?? '',
                 'state' => 'active',
                 'status' => in_array(strtolower($slease['ipaddrv6']), $online) ? 'online' : 'offline'
             ];
