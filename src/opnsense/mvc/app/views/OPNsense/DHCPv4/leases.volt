@@ -52,7 +52,7 @@
 
         $("#grid-leases").UIBootgrid({
             search:'/api/dhcpv4/leases/searchLease/',
-            del:'/api/dhcp/leases/delLease/',
+            del:'/api/dhcpv4/leases/delLease/',
             options: {
                 selection: false,
                 multiSelect: false,
