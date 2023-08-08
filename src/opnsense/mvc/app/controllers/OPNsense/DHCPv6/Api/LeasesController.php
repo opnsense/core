@@ -89,21 +89,23 @@ class LeasesController extends ApiControllerBase
 
         $sleases = json_decode($backend->configdRun('dhcpd6 list static 0'), true);
         $statics = [];
-        foreach ($sleases['dhcpd'] as $slease) {
-            $static = [
-                'address' => $slease['ipaddrv6'] ?? '',
-                'type' => 'static',
-                'cltt' => '',
-                'ends' => '',
-                'descr' => $slease['descr'] ?? '',
-                'iaid' => '',
-                'duid' => $slease['duid'] ?? '',
-                'if_descr' => '',
-                'if' => $slease['interface'] ?? '',
-                'state' => 'active',
-                'status' => in_array(strtolower($slease['ipaddrv6']), $online) ? 'online' : 'offline'
-            ];
-            $statics[] = $static;
+        if ($sleases) {
+            foreach ($sleases['dhcpd'] as $slease) {
+                $static = [
+                    'address' => $slease['ipaddrv6'] ?? '',
+                    'type' => 'static',
+                    'cltt' => '',
+                    'ends' => '',
+                    'descr' => $slease['descr'] ?? '',
+                    'iaid' => '',
+                    'duid' => $slease['duid'] ?? '',
+                    'if_descr' => '',
+                    'if' => $slease['interface'] ?? '',
+                    'state' => 'active',
+                    'status' => in_array(strtolower($slease['ipaddrv6']), $online) ? 'online' : 'offline'
+                ];
+                $statics[] = $static;
+            }
         }
 
         $leases = array_merge($leases, $statics);
@@ -178,14 +180,16 @@ class LeasesController extends ApiControllerBase
             }
 
             /* include interface */
+            $intf = '';
+            $intf_descr = '';
             if (!empty($lease['if'])) {
                 $intf = $lease['if'];
-                $intf_descr = $raw_intfs[$lease['if']];
+                $intf_descr = $config->interfaces->{$lease['if']}->descr ?: strtoupper($intf);
             } else {
                 foreach ($if_ranges as $if_name => $if_range) {
                     if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
                         $intf = $if_name;
-                        $intf_descr = $raw_intfs[$if_name];
+                        $intf_descr = (string)$config->interfaces->$if_name->descr ?: strtoupper($if_name);
                         break;
                     }
                 }

@@ -91,20 +91,22 @@ class LeasesController extends ApiControllerBase
 
         /* handle static leases */
         $statics = [];
-        foreach ($sleases["dhcpd"] as $slease) {
-            $static = [];
-            $static['address'] = $slease['ipaddr'] ?? '';
-            $static['type'] = 'static';
-            $static['mac'] = $slease['mac'] ?? '';
-            $static['starts'] = '';
-            $static['ends'] = '';
-            $static['hostname'] = $slease['hostname'] ?? '';
-            $static['descr'] = $slease['descr'] ?? '';
-            $static['if_descr'] = '';
-            $static['if'] = $slease['interface'] ?? '';
-            $static['state'] = 'active';
-            $static['status'] = in_array(strtolower($static['mac']), $online) ? 'online' : 'offline';
-            $statics[] = $static;
+        if ($sleases) {
+            foreach ($sleases["dhcpd"] as $slease) {
+                $static = [];
+                $static['address'] = $slease['ipaddr'] ?? '';
+                $static['type'] = 'static';
+                $static['mac'] = $slease['mac'] ?? '';
+                $static['starts'] = '';
+                $static['ends'] = '';
+                $static['hostname'] = $slease['hostname'] ?? '';
+                $static['descr'] = $slease['descr'] ?? '';
+                $static['if_descr'] = '';
+                $static['if'] = $slease['interface'] ?? '';
+                $static['state'] = 'active';
+                $static['status'] = in_array(strtolower($static['mac']), $online) ? 'online' : 'offline';
+                $statics[] = $static;
+            }
         }
 
         $leases = array_merge($leases, $statics);
