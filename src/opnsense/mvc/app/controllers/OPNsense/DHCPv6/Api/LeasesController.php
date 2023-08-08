@@ -184,7 +184,7 @@ class LeasesController extends ApiControllerBase
             $intf_descr = '';
             if (!empty($lease['if'])) {
                 $intf = $lease['if'];
-                $intf_descr = $config->interfaces->{$lease['if']}->descr ?: strtoupper($intf);
+                $intf_descr = (string)$config->interfaces->$intf->descr ?: strtoupper($intf);
             } else {
                 foreach ($if_ranges as $if_name => $if_range) {
                     if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
