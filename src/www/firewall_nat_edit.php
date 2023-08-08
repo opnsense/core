@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['associated-rule-id'] = "add-associated";
     if (isset($configId)) {
         // copy 1-on-1
-        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync','log',
+        foreach (array('protocol','target','local-port','descr','interface','nosync','log',
                       'natreflection','created','updated','ipprotocol','tag','tagged','poolopts', 'category') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
@@ -67,6 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // fields with some kind of logic.
+        if (!isset($_GET['dup']) && isset($a_nat[$configId]['associated-rule-id'])) {
+            $pconfig['associated-rule-id'] = $a_nat[$configId]['associated-rule-id'];
+        }
         $pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
         $pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
         $pconfig['interface'] = explode(",", $pconfig['interface']);
