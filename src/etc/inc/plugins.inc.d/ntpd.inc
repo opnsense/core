@@ -399,18 +399,18 @@ function ntpd_configure_do($verbose = false)
     if (!empty($config['ntpd']['noquery'])) {
         $ntpaccess .= ' noquery';
     }
-    if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
-        $ntpaccess .= ' nopeer';
-    }
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
         $ntpaccess .= ' notrap';
     }
     if (!empty($config['ntpd']['noserve'])) {
         $ntpaccess .= ' noserve';
     }
+    $ntpcfg .= "\nrestrict source {$ntpaccess}";
+    if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
+        $ntpaccess .= ' nopeer';
+    }
     $ntpcfg .= "\nrestrict default {$ntpaccess}";
     $ntpcfg .= "\nrestrict -6 default {$ntpaccess}";
-    $ntpcfg .= "\nrestrict source {$ntpaccess}";
     $ntpcfg .= "\n";
 
     /* A leapseconds file is really only useful if this clock is stratum 1 */
