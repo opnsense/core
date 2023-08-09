@@ -138,7 +138,7 @@ class OpenVPN extends BaseModel
             $result['ovpn_servers'] = (string)$cso->servers;
             $result['common_name'] = (string)$cso->common_name;
             $result['description'] = (string)$cso->description;
-            $result['redirect_gateway'] = (string)$cso->redirect_gateway;
+            $result['redirect_gateway'] = str_replace(',', ' ', (string)$cso->redirect_gateway);
 
             $result['tunnel_network'] = (string)$cso->tunnel_network;
             $result['tunnel_networkv6'] = (string)$cso->tunnel_networkv6;
@@ -447,7 +447,8 @@ class OpenVPN extends BaseModel
 
                     // push options
                     if (!empty((string)$node->redirect_gateway)) {
-                        $options['push'][] = "\"redirect-gateway {$node->redirect_gateway}\"";
+                        $redirect_gateway = str_replace(',', ' ', (string)$node->redirect_gateway);
+                        $options['push'][] = "\"redirect-gateway {$redirect_gateway}\"";
                     }
                     if (!empty((string)$node->register_dns)) {
                         $options['push'][] = "\"register-dns\"";
