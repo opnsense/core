@@ -152,6 +152,7 @@ elif [ "${DO_COMMAND}" = "-l" ]; then
 		FILE=${MATCH##*/}
 		IF=${FILE%_*}
 		IF=${IF%%:*}
+		IF=$(echo ${IF} | sed -e 's/[.:]/__/g')
 		MD=${FILE##*_}
 
 		# suffix :slaac matched before plain interface
@@ -180,10 +181,11 @@ if [ -z "${IF}" ]; then
 		FOUND=${FOUND#/tmp/}
 		FOUND=${FOUND%_*}
 		FOUND=${FOUND%:*}
-		if [ -z "$(eval echo \${${FOUND}_found})" ]; then
-			RESULTS="${RESULTS} ${FOUND}_found"
+		IF=$(echo ${FOUND} | sed -e 's/[.:]/__/g')
+		if [ -z "$(eval echo \${${IF}_found})" ]; then
+			RESULTS="${RESULTS} ${IF}_found"
 		fi
-		eval export ${FOUND}_found='${FOUND}'
+		eval export ${IF}_found='${FOUND}'
 	done
 
 	# only list possible interfaces for user to choose from
