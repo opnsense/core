@@ -174,7 +174,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
         killbypid($process['pidfile']);
-        @unlink($process['socket']);
     }
 
     if (!empty($gwname) && $gwname == ':watcher:') {
