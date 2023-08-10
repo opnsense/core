@@ -92,7 +92,7 @@
                         }
                         return mac;
                     },
-                    "tooltipformatter": function (column, row) {
+                    "overflow": function (column, row) {
                         return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
                     "statusformatter": function (column, row) {
@@ -177,14 +177,14 @@
             <tr>
             <thead>
             <tr>
-                <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
-                <th data-column-id="address" data-identifier="true" data-width="12em">{{ lang._('IP Address') }}</th>
-                <th data-column-id="iaid" data-type="number" data-formatter="tooltipformatter">{{ lang._('IAID') }}</th>
-                <th data-column-id="duid" data-type="string" data-formatter="tooltipformatter">{{ lang._('DUID') }}</th>
+                <th data-column-id="if_descr" data-type="string" data-formatter="overflow">{{ lang._('Interface') }}</th>
+                <th data-column-id="address" data-identifier="true" data-width="12em" data-formatter="overflow">{{ lang._('IP Address') }}</th>
+                <th data-column-id="iaid" data-type="number" data-formatter="overflow">{{ lang._('IAID') }}</th>
+                <th data-column-id="duid" data-type="string" data-formatter="overflow">{{ lang._('DUID') }}</th>
                 <th data-column-id="mac" data-type="string" data-width="9em" data-formatter="macformatter">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="descr" data-type="string" data-formatter="tooltipformatter">{{ lang._('Description') }}</th>
-                <th data-column-id="cltt" data-type="string" data-formatter="tooltipformatter">{{ lang._('Last Transaction Time') }}</th>
-                <th data-column-id="ends" data-type="string" data-formatter="tooltipformatter">{{ lang._('End') }}</th>
+                <th data-column-id="descr" data-type="string" data-formatter="overflow">{{ lang._('Description') }}</th>
+                <th data-column-id="cltt" data-type="string" data-formatter="overflow">{{ lang._('Last Transaction Time') }}</th>
+                <th data-column-id="ends" data-type="string" data-formatter="overflow">{{ lang._('End') }}</th>
                 <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
                 <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
                 <th data-column-id="type" data-type="string">{{ lang._('Lease Type') }}</th>
