@@ -37,11 +37,7 @@ function dpinger_services()
 
     $services = [];
 
-    if (!isset($config['gateways']['gateway_item'])) {
-        return $services;
-    }
-
-    foreach ($config['gateways']['gateway_item'] as $gateway) {
+    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
         if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
             continue;
         }
@@ -350,7 +346,7 @@ function dpinger_status()
     $instances = dpinger_instances();
     $status = [];
 
-    foreach ($instances as $gwitem) {
+    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
         if (isset($gwitem['disabled'])) {
             continue;
         }
@@ -362,7 +358,7 @@ function dpinger_status()
         }
 
         $status[$gwitem['name']] = [
-            'monitor' => $gwitem['monitor'],
+            'monitor' => $instances[$gwitem['name']]['monitor'] ?? ($gwitem['monitor'] ?? '~'),
             'name' => $gwitem['name'],
             'status' => $gwstatus,
             'stddev' => '~',
@@ -393,17 +389,7 @@ function dpinger_status()
         list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
             explode(' ', preg_replace('/\n/', '', $dinfo));
 
-        if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
-            /* not yet ready, act like nothing was returned, but don't consider the gateway to be down */
-            $status[$gwname] = [
-                'monitor' => $instances[$gwname]['monitor'],
-                'name' => $gwname,
-                'status' => 'none',
-                'stddev' => '~',
-                'delay' => '~',
-                'loss' => '~',
-            ];
-        } else {
+        if ($r['latency_stddev'] != '0' || $r['loss'] != '0') {
             $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
             $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
             $r['status'] = $status[$gwname]['status'];
@@ -435,15 +421,10 @@ function dpinger_status()
                 }
             }
 
-            $status[$gwname] = [
-                'delay' => sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1)),
-                'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
-                'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
-                'monitor' => $instances[$gwname]['monitor'],
-                'details' => array_merge($r, $settings),
-                'status' => $r['status'],
-                'name' => $gwname,
-            ];
+            $status[$gwname]['delay'] = sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1));
+            $status[$gwname]['stddev'] = sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1));
+            $status[$gwname]['loss'] = sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1));
+            $status[$gwname]['status'] = $r['status'];
         }
     }
 
