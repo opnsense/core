@@ -133,18 +133,21 @@ function dpinger_host_routes()
     return $routes;
 }
 
-function dpinger_instances($ifconfig_details = null)
+function dpinger_instances($ifconfig_details = null, $is_configured = false)
 {
     $instances = [];
 
     $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
 
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-        if (empty($gateway['monitor'])) {
-            /* skip monitors not currently attached */
-            continue;
-        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+        if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
             /* do not monitor if such was requested */
+            continue;
+        } elseif ($is_configured) {
+            /* runs the watcher even when all instances are currently unplugged */
+            return true;
+        } elseif (empty($gateway['monitor'])) {
+            /* skip monitors not currently attached */
             continue;
         }
 
@@ -188,10 +191,10 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
     $ifconfig_details = legacy_interfaces_details();
     $dpinger_default = dpinger_defaults();
-    $dpinger_instaces = dpinger_instances($ifconfig_details);
+    $dpinger_instances = dpinger_instances($ifconfig_details);
     $routes = [];
 
-    foreach ($dpinger_instaces as $name => $gateway) {
+    foreach ($dpinger_instances as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
         }
@@ -324,7 +327,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
-    if (count($dpinger_instaces)) {
+    if (dpinger_instances($ifconfig_details, true)) {
         /* use a separate script to produce the monitor alerts which runs forever */
         mwexecf(
             '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
