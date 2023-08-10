@@ -133,7 +133,7 @@ function dpinger_host_routes()
     return $routes;
 }
 
-function dpinger_instances($ifconfig_details = null, $is_configured = false)
+function dpinger_instances($ifconfig_details = null)
 {
     $instances = [];
 
@@ -143,9 +143,6 @@ function dpinger_instances($ifconfig_details = null, $is_configured = false)
         if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
             /* do not monitor if such was requested */
             continue;
-        } elseif ($is_configured) {
-            /* runs the watcher even when all instances are currently unplugged */
-            return true;
         } elseif (empty($gateway['monitor'])) {
             /* skip monitors not currently attached */
             continue;
@@ -327,7 +324,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
-    if (dpinger_instances($ifconfig_details, true)) {
+    if (count(dpinger_services()) {
         /* use a separate script to produce the monitor alerts which runs forever */
         mwexecf(
             '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
