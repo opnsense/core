@@ -260,11 +260,16 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
+                // legacy uses group names, convert key (gid) to current name
+                $local_group = null;
+                if (!empty((string)$node->local_group)) {
+                    $local_group = $node->local_group->getNodeData()[(string)$node->local_group]['value'];
+                }
                 return [
                     'role' => (string)$node->role,
                     'vpnid' => $server_id,
                     'authmode' => (string)$node->authmode,
-                    'local_group' => (string)$node->local_group,
+                    'local_group' => $local_group,
                     'strictusercn' => (string)$node->strictusercn,
                     'dev_mode' => (string)$node->dev_type,
                     'topology_subnet' => $node->topology == 'subnet' ? '1' : '0',
