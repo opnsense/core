@@ -324,7 +324,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
     }
 
-    if (count(dpinger_services()) {
+    if (count(dpinger_services())) {
         /* use a separate script to produce the monitor alerts which runs forever */
         mwexecf(
             '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
