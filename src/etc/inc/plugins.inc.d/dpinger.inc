@@ -346,8 +346,11 @@ function dpinger_status()
     $instances = dpinger_instances();
     $status = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
-        if (isset($gwitem['disabled'])) {
+    /* since we do not know which getways are marked disabled by getGateway() prepopulate with configuration */
+    foreach (array_merge(config_read_array('gateways', 'gateway_item'), $instances) as $gwitem) {
+        if (isset($status[$gwitem['name']])) {
+            continue;
+        } elseif (isset($gwitem['disabled'])) {
             continue;
         }
 
@@ -358,6 +361,7 @@ function dpinger_status()
         }
 
         $status[$gwitem['name']] = [
+            /* grab the runtime monitor from the instance if available */
             'monitor' => $instances[$gwitem['name']]['monitor'] ?? ($gwitem['monitor'] ?? '~'),
             'name' => $gwitem['name'],
             'status' => $gwstatus,
