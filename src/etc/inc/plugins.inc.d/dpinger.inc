@@ -140,11 +140,11 @@ function dpinger_instances($ifconfig_details = null)
     $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
 
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-        if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
-            /* do not monitor if such was requested */
-            continue;
-        } elseif (empty($gateway['monitor'])) {
+        if (empty($gateway['monitor'])) {
             /* skip monitors not currently attached */
+            continue;
+        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+            /* do not monitor if such was requested */
             continue;
         }
 
