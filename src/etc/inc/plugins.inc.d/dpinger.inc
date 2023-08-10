@@ -188,10 +188,9 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 
     $ifconfig_details = legacy_interfaces_details();
     $dpinger_default = dpinger_defaults();
-    $dpinger_instances = dpinger_instances($ifconfig_details);
     $routes = [];
 
-    foreach ($dpinger_instances as $name => $gateway) {
+    foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
         }
