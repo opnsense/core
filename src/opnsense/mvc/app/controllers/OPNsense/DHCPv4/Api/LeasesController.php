@@ -45,7 +45,7 @@ class LeasesController extends ApiControllerBase
         $online = [];
 
         /* get ARP data to match on */
-        $arp_data = json_decode($backend->configdRun('interface list arp json'), true);
+        $arp_data = json_decode($backend->configdRun('interface list arp -r json'), true);
 
         foreach ($arp_data as $arp_entry) {
             if (!$arp_entry['expired']) {
