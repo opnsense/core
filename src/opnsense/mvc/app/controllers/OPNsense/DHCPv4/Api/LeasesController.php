@@ -57,7 +57,6 @@ class LeasesController extends ApiControllerBase
         $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
         /* get ifconfig info to match IPs to interfaces */
         $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
-        error_log(print_r($ifconfig, TRUE));
 
         /* get all device names and their associated interface names */
         foreach ($config->interfaces->children() as $if => $if_props) {
