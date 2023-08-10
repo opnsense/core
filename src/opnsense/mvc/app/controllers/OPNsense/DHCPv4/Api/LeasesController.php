@@ -152,7 +152,7 @@ class LeasesController extends ApiControllerBase
             if (!empty($lease['if'])) {
                 /* interface already included */
                 $intf = $lease['if'];
-                $intf_descr = $if_map[$intf];
+                $intf_descr = $if_map[strtoupper($intf)];
             } else {
                 /* interface not known, check range */
                 foreach ($ip_ranges as $cidr => $if_dev) {
