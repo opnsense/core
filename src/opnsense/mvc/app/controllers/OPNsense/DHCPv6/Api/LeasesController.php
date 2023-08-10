@@ -43,15 +43,43 @@ class LeasesController extends ApiControllerBase
         $backend = new Backend();
         $config = Config::getInstance()->object();
         $online = [];
+        $if_map = [];
+        $ip_ranges = [];
         $leases = [];
+        $interfaces = [];
 
+        /* get NDP data to match online clients */
         $ndp_data = json_decode($backend->configdRun('interface list ndp json'), true);
+        /* get static leases */
+        $sleases = json_decode($backend->configdRun('dhcpd6 list static 0'), true);
+        /* get dynamic leases, inactive leases if requested */
+        $raw_leases = json_decode($backend->configdpRun('dhcpd6 list leases', [$inactive]), true);
+        /* get manufacturer info */
+        $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
+        /* get ifconfig info to match IPs to interfaces */
+        $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
 
+        /* get all device names and their associated interface names */
+        foreach ($config->interfaces->children() as $if => $if_props) {
+            $if_map[(string)$if_props->if] = (string)$if_props->descr ?: strtoupper($if);
+        }
+
+        /* list online IPs and MACs */
         foreach ($ndp_data as $ndp_entry) {
             array_push($online, $ndp_entry['mac'], $ndp_entry['ip']);
         }
 
-        $raw_leases = json_decode($backend->configdpRun('dhcpd6 list leases', [$inactive]), true);
+        /* gather ip ranges from ifconfig */
+        foreach ($ifconfig as $if => $data) {
+            if (!empty($data['ipv6'])) {
+                foreach ($data['ipv6'] as $ip) {
+                    if (!empty($ip['ipaddr']) && !empty($ip['subnetbits'])) {
+                        $ip_ranges[$ip['ipaddr'] . '/' . $ip['subnetbits']] = $if;
+                    }
+                }
+            }
+        }
+
         foreach ($raw_leases as $raw_lease) {
             if (!array_key_exists('addresses', $raw_lease)) {
                 continue;
@@ -87,7 +115,6 @@ class LeasesController extends ApiControllerBase
             $leases[] = $lease;
         }
 
-        $sleases = json_decode($backend->configdRun('dhcpd6 list static 0'), true);
         $statics = [];
         if ($sleases) {
             foreach ($sleases['dhcpd'] as $slease) {
@@ -108,24 +135,8 @@ class LeasesController extends ApiControllerBase
             }
         }
 
+        /* merge dynamic and static leases */
         $leases = array_merge($leases, $statics);
-
-        $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
-        $lease_interfaces = [];
-
-        /* fetch interfaces ranges so we can match leases to interfaces */
-        $if_ranges = [];
-        foreach ($config->dhcpdv6->children() as $dhcpif => $dhcpifconf) {
-            $if = $config->interfaces->$dhcpif;
-            if (!empty((string)$if->ipaddrv6) && !empty((string)$if->subnetv6)) {
-                $if_ranges[$dhcpif] = (string)$if->ipaddrv6 . '/' . (string)$if->subnetv6;
-            }
-        }
-
-        $raw_intfs = [];
-        foreach ($config->interfaces->children() as $if => $if_props) {
-            $raw_intfs[(string)$if_props->if] = (string)$if_props->descr ?: strtoupper($if);
-        }
 
         foreach ($leases as $idx => $lease) {
             $leases[$idx]['man'] = '';
@@ -145,9 +156,9 @@ class LeasesController extends ApiControllerBase
                         $leases[$idx]['mac'] = $ndp['mac'];
                         $leases[$idx]['man'] = empty($ndp['manufacturer']) ? '' : $ndp['manufacturer'];
                         $leases[$idx]['if'] = $ndp['intf'];
-                        $leases[$idx]['if_descr'] = $raw_intfs[$ndp['intf']];
+                        $leases[$idx]['if_descr'] = $if_map[$ndp['intf']];
                         if (!empty($leases[$idx]['if_descr'])) {
-                            $lease_interfaces[$leases[$idx]['if']] = $leases[$idx]['if_descr'];
+                            $interfaces[$leases[$idx]['if']] = $leases[$idx]['if_descr'];
                         }
                         $done = true;
                         break;
@@ -184,12 +195,12 @@ class LeasesController extends ApiControllerBase
             $intf_descr = '';
             if (!empty($lease['if'])) {
                 $intf = $lease['if'];
-                $intf_descr = (string)$config->interfaces->$intf->descr ?: strtoupper($intf);
+                $intf_descr = $if_map[$intf];
             } else {
-                foreach ($if_ranges as $if_name => $if_range) {
-                    if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $if_range)) {
-                        $intf = $if_name;
-                        $intf_descr = (string)$config->interfaces->$if_name->descr ?: strtoupper($if_name);
+                foreach ($ip_ranges as $cidr => $if) {
+                    if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $cidr)) {
+                        $intf = $if;
+                        $intf_descr = $if_map[$intf];
                         break;
                     }
                 }
@@ -198,8 +209,8 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['if'] = $intf;
             $leases[$idx]['if_descr'] = $intf_descr;
 
-            if (!empty($intf_descr) && !array_key_exists($intf, $lease_interfaces)) {
-                $lease_interfaces[$intf] = $intf_descr;
+            if (!empty($intf_descr) && !array_key_exists($intf, $interfaces)) {
+                $interfaces[$intf] = $intf_descr;
             }
         }
 
@@ -211,7 +222,7 @@ class LeasesController extends ApiControllerBase
             return false;
         }, SORT_REGULAR);
 
-        $response['interfaces'] = $lease_interfaces;
+        $response['interfaces'] = $interfaces;
         return $response;
     }
 
