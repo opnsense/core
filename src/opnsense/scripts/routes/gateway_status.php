@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Deciso B.V.
+ * Copyright (C) 2016-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ require_once 'interfaces.inc';
 $result = [];
 $gateways_status = return_gateways_status();
 
-foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName() as $gname => $gw) {
+foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName(true) as $gname => $gw) {
     $gatewayItem = ['name' => $gname];
     $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : '~';
     if (!empty($gateways_status[$gname])) {
@@ -65,6 +65,9 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
                 $gatewayItem['status_translated'] = gettext('Pending');
                 break;
         }
+    } elseif (isset($gw['disabled'])) {
+        /* avoid disappearing an actively monitored instance when down */
+	continue;
     } else {
         $gatewayItem['status'] = 'none';
         $gatewayItem['status_translated'] = gettext('Online');
