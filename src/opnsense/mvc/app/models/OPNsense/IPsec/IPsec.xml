@@ -37,7 +37,7 @@
             <preSharedKey type="ArrayField">
                 <ident type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([a-zA-Z0-9@\.\-]*)/u</mask>
+                    <mask>/^([a-zA-Z0-9@\.\:\-]*)/u</mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <check001>
@@ -51,7 +51,7 @@
                 </ident>
                 <remote_ident type="TextField">
                     <Required>N</Required>
-                    <mask>/^([a-zA-Z0-9@\.\-]*)/u</mask>
+                    <mask>/^([a-zA-Z0-9@\.\:\-]*)/u</mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <reference>ident.check001</reference>
