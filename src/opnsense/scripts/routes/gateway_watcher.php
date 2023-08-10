@@ -69,8 +69,8 @@ while (1) {
         }
 
         if (empty($mode[$report['name']])) {
-            /* skip one round for baseline */
-            $mode[$report['name']] = $report['status'];
+            /* skip one round and assume gateway is down */
+            $mode[$report['name']] = 'down';
             continue;
         }
 
