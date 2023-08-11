@@ -35,17 +35,15 @@ use OPNsense\Firewall\Util;
 
 class LeasesController extends ApiControllerBase
 {
-    public function searchLeaseAction()
+    private $active_interfaces = [];
+
+    private function fetchLeases($inactive)
     {
-        $this->sessionClose();
-        $inactive = $this->request->get('inactive');
-        $selected_interfaces = $this->request->get('selected_interfaces');
         $backend = new Backend();
         $config = Config::getInstance()->object();
         $online = [];
         $if_map = [];
         $ip_ranges = [];
-        $interfaces = [];
 
         /* get ARP data to match online clients */
         $arp_data = json_decode($backend->configdRun('interface list arp -r json'), true);
@@ -167,21 +165,34 @@ class LeasesController extends ApiControllerBase
             $leases[$idx]['if'] = $intf;
             $leases[$idx]['if_descr'] = $intf_descr;
 
-            if (!empty($intf_descr) && !array_key_exists($intf, $interfaces)) {
-                $interfaces[$intf] = $intf_descr;
+            if (!empty($intf_descr) && !array_key_exists($intf, $this->active_interfaces)) {
+                $this->active_interfaces[$intf] = $intf_descr;
             }
         }
 
-        $response = $this->searchRecordsetBase($leases, null, 'address', function ($key) use ($selected_interfaces) {
+        return $leases;
+    }
+
+    public function searchLeaseAction()
+    {
+        $this->sessionClose();
+        $inactive = $this->request->get('inactive');
+        $selected_interfaces = $this->request->get('selected_interfaces');
+
+        $record_filter = function ($key) use ($selected_interfaces) {
+            error_log(print_r($selected_interfaces, TRUE));
             if (empty($selected_interfaces) || in_array($key['if'], $selected_interfaces)) {
                 return true;
             }
 
             return false;
-        });
+        };
+
+        $response = $this->searchRecordSetCached($this->fetchLeases(...), 'leases4', 10, null, 'address', $record_filter, null, $inactive);
 
         /* present relevant interfaces to the view so they can be filtered on */
-        $response['interfaces'] = $interfaces;
+        $response['interfaces'] = $this->active_interfaces;
+
         return $response;
     }
 

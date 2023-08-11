@@ -39,7 +39,7 @@ class ApiControllerBase extends ControllerRoot
 {
     /***
      * Recordset (array in array) search wrapper
-     * @param string $path path to search, relative to this model
+     * @param string $records records to search
      * @param array $fields fieldnames to search through in result
      * @param string|null $defaultSort default sort field name
      * @param null|function $filter_funct additional filter callable
@@ -121,6 +121,73 @@ class ApiControllerBase extends ControllerRoot
            'current' => $currentPage,
            'rows' => $formatted,
         ];
+    }
+
+    /***
+     * Cached wrapper for searchRecordSetBase
+     * @param function $callback record source
+     * @param string $cache_id unique id to map cache file to
+     * @param int $cache_tll TTL in seconds until cache invalidation
+     * @param array $fields fieldnames to search through in result
+     * @param string|null $defaultSort default sort field name
+     * @param null|function $filter_funct additional filter callable
+     * @param int $sort_flags sorting behavior
+     * @return array
+     */
+    protected function searchRecordSetCached(
+        $callback,
+        $cache_id,
+        $cache_ttl,
+        $fields = null,
+        $defaultSort = null,
+        $filter_funct = null,
+        $sort_flags = null,
+        ...$cb_params
+    ) {
+        $records = [];
+
+        if (is_callable($callback)) {
+            if (empty($cache_id) || empty($cache_ttl)) {
+                throw new \BadFunctionCallException('cache_id or cache_ttl arguments must be set');
+            }
+
+            $cache = glob('/tmp/recordset.*');
+            $obj_file = '/tmp/recordset.'. $cache_id . '.cache';
+            $cache_file = null;
+            foreach ($cache as $f) {
+                $id = explode('.', basename($f))[1];
+                if ($id == $cache_id) {
+                    $cache_file = $f;
+                    break;
+                }
+            }
+
+            $from_cache = false;
+            if (file_exists($cache_file)) {
+                $info = stat($cache_file);
+                if (!empty($info['mtime'])) {
+                    if ((time() - $info['mtime']) <= $cache_ttl) {
+                        $records = unserialize(file_get_contents($cache_file));
+                        $from_cache = true;
+                    }
+                }
+            }
+
+            if (!$from_cache) {
+                $records = $callback(...$cb_params);
+                file_put_contents($obj_file, serialize($records));
+            }
+
+            if (empty($records)) {
+                $records = [];
+            }
+        }
+
+        if (is_null($sort_flags)) {
+            $sort_flags = SORT_NATURAL | SORT_FLAG_CASE;
+        }
+
+        return $this->searchRecordsetBase($records, $fields, $defaultSort, $filter_funct, $sort_flags);
     }
 
     /**
