@@ -147,10 +147,6 @@ class ApiControllerBase extends ControllerRoot
         $records = [];
 
         if (is_callable($callback)) {
-            if (empty($cache_id) || empty($cache_ttl)) {
-                throw new \BadFunctionCallException('cache_id or cache_ttl arguments must be set');
-            }
-
             $cache = glob('/tmp/recordset.*');
             $obj_file = '/tmp/recordset.'. $cache_id . '.cache';
             $cache_file = null;
