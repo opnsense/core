@@ -67,7 +67,7 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
         }
     } elseif (isset($gw['disabled'])) {
         /* avoid disappearing an actively monitored instance when down */
-	continue;
+        continue;
     } else {
         $gatewayItem['status'] = 'none';
         $gatewayItem['status_translated'] = gettext('Online');
