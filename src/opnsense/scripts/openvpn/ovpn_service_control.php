@@ -112,7 +112,6 @@ function get_vhid_status()
     return $vhids;
 }
 
-
 $opts = getopt('ah', [], $optind);
 $args = array_slice($argv, $optind);
 
@@ -130,8 +129,10 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     if ($action != 'stop') {
         $mdl->generateInstanceConfig($instance_id);
     }
+
     $vhids = $action == 'configure' ? get_vhid_status() : [];
     $instance_ids = [];
+
     foreach ($mdl->Instances->Instance->iterateItems() as $key => $node) {
         if (empty((string)$node->enabled)) {
             continue;
@@ -177,6 +178,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         }
         fclose($statHandle);
     }
+
     /**
      * When -a is specified, cleaup up old or disabled instances
      */
@@ -208,5 +210,6 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             }
         }
     }
+
     closelog();
 }

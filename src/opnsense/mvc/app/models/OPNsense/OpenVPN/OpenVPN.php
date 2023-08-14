@@ -134,14 +134,22 @@ class OpenVPN extends BaseModel
             if ((string)$cso->common_name != $common_name) {
                 continue;
             }
+
             // translate content to legacy format so this may easily inject into the existing codebase
-            $result['ovpn_servers'] = (string)$cso->servers;
-            $result['common_name'] = (string)$cso->common_name;
-            $result['description'] = (string)$cso->description;
             $result['redirect_gateway'] = str_replace(',', ' ', (string)$cso->redirect_gateway);
 
-            $result['tunnel_network'] = (string)$cso->tunnel_network;
-            $result['tunnel_networkv6'] = (string)$cso->tunnel_networkv6;
+            $opts = [
+                'common_name',
+                'description',
+                'dns_domain',
+                'dns_domain_search',
+                'tunnel_network',
+                'tunnel_networkv6',
+            ];
+            foreach ($opts as $fieldname) {
+                $result[$fieldname] = (string)$cso->$fieldname;
+            }
+
             foreach (['local', 'remote'] as $type) {
                 $f1 = $type . '_network';
                 $f2 = $type . '_networkv6';
@@ -164,8 +172,6 @@ class OpenVPN extends BaseModel
             if (!empty((string)$cso->block)) {
                 $result['block'] = '1';
             }
-            $result['dns_domain'] = (string)$cso->dns_domain;
-            $result['dns_domain_search'] = (string)$cso->dns_domain_search;
             foreach (['dns_server', 'ntp_server', 'wins_server'] as $fieldname) {
                 if (!empty((string)$cso->$fieldname . 's')) {
                     foreach (explode(',', (string)$cso->{$fieldname . 's'}) as $idx => $item) {
@@ -174,6 +180,7 @@ class OpenVPN extends BaseModel
                 }
             }
         }
+
         return $result;
     }
 
@@ -504,10 +511,23 @@ class OpenVPN extends BaseModel
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                     }
                 }
+
                 if (!empty((string)$node->various_flags)) {
                     foreach (explode(',', (string)$node->various_flags) as $opt) {
                         $options[$opt] = null;
                     }
+                }
+
+                if (!empty((string)$node->tun_mtu)) {
+                    $options['tun-mtu'] = (string)$node->tun_mtu;
+                }
+
+                if ($node->fragment != null && (string)$node->fragment != '') {
+                    $options['fragment'] = (string)$node->fragment;
+                }
+
+                if (!empty((string)$node->mssfix)) {
+                    $options['mssfix'] = null;
                 }
 
                 // routes (ipv4, ipv6 local or push)
@@ -552,6 +572,7 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
+
                 // dump to file
                 $this->writeConfig($node->cnfFilename, $options);
             }
