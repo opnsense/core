@@ -135,6 +135,7 @@ class GroupController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun("filter reload skip_alias");
+            (new Backend())->configdRun('interface invoke registration');
             return array("status" => "ok");
         } else {
             return array("status" => "failed");
