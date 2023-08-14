@@ -249,7 +249,9 @@ class InterfaceController extends ApiControllerBase
         $addresses = [];
         foreach ((new Vip())->vip->iterateItems() as $vip) {
             if (!empty((string)$vip->vhid)) {
-                $addresses[(string)$vip->subnet] = (string)$vip->mode;
+                /* index by hex presentation to avoid mismatches on IPv6 compressed format */
+                $addrkey = bin2hex(inet_pton((string)$vip->subnet));
+                $addresses[$addrkey] = (string)$vip->mode;
             }
         }
         $vhids = [];
@@ -275,8 +277,9 @@ class InterfaceController extends ApiControllerBase
                                     'status' => $tmpcarp[$subnet['vhid']]['status'],
                                     'mode' => 'ipalias'
                                 ];
-                                if (!empty($addresses[$subnet['ipaddr']])) {
-                                    $record['mode'] = $addresses[$subnet['ipaddr']];
+                                $addrkey = bin2hex(inet_pton($subnet['ipaddr']));
+                                if (!empty($addresses[$addrkey])) {
+                                    $record['mode'] = $addresses[$addrkey];
                                 }
                                 $records[] = $record;
                             }
