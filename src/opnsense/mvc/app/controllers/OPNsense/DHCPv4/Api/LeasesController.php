@@ -48,7 +48,7 @@ class LeasesController extends ApiControllerBase
         $interfaces = [];
 
         /* get ARP data to match online clients */
-        $arp_data = json_decode($backend->configdRun('interface list arp -r json'), true);
+        $arp_data = json_decode($backend->configdRun('dhcpd list arp'), true);
         /* get static leases */
         $sleases = json_decode($backend->configdRun('dhcpd list static 0'), true);
         /* get dynamic leases, include inactive leases if requested */
@@ -64,9 +64,11 @@ class LeasesController extends ApiControllerBase
         }
 
         /* list online IPs and MACs */
-        foreach ($arp_data as $arp_entry) {
-            if (!$arp_entry['expired']) {
-                array_push($online, $arp_entry['mac'], $arp_entry['ip']);
+        if (is_array($arp_data) && isset($arp_data['arp']) && !empty($arp_data['arp']['arp-cache'])) {
+            foreach ($arp_data['arp']['arp-cache'] as $arp_entry) {
+                if (!isset($arp_entry['expired'])) {
+                    array_push($online, $arp_entry['mac-address'], $arp_entry['ip-address']);
+                }
             }
         }
 
