@@ -30,7 +30,6 @@ namespace OPNsense\OpenVPN\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseListField;
 use OPNsense\Core\Config;
-use OPNsense\OpenVPN\OpenVPN;
 
 /**
  * @package OPNsense\Base\FieldTypes
@@ -53,7 +52,7 @@ class OpenVPNServerField extends BaseListField
                     self::$internalCacheOptionList[(string)$server->vpnid] = $label;
                 }
             }
-            foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
+            foreach ($this->getParentModel()->Instances->Instance->iterateItems() as $node_uuid => $node) {
                 if ((string)$node->role == 'server') {
                     self::$internalCacheOptionList[$node_uuid] = (string)$node->description . ' (' . (!empty((string)$node->port) ? (string)$node->port : '1194') . ' / ' . strtoupper((string)$node->proto) . ')';
                 }
