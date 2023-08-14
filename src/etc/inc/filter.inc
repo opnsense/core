@@ -58,25 +58,13 @@ function is_bogonsv6_used()
 /* lock configuration file */
 function filter_lock($lock = 'filter', $op = LOCK_EX)
 {
-    if (!file_exists("{/tmp/{$lock}.lock")) {
-        @touch("/tmp/{$lock}.lock");
-        @chmod("/tmp/{$lock}.lock", 0666);
-    }
-
-    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
-        if (flock($fp, $op)) {
-            return $fp;
-        } else {
-            fclose($fp);
-        }
-    }
+    return lock($lock, $op);
 }
 
 /* unlock configuration file */
 function filter_unlock($fp)
 {
-    flock($fp, LOCK_UN);
-    fclose($fp);
+    unlock($fp);
 }
 
 /* sort by interface only, retain the original order of rules that apply to

@@ -306,6 +306,30 @@ function clear_subsystem_dirty($subsystem = '')
     @unlink("/tmp/{$subsystem}.dirty");
 }
 
+/* XXX lock configuration file */
+function lock($lock, $op = LOCK_SH)
+{
+    if (!file_exists("{/tmp/{$lock}.lock")) {
+        @touch("/tmp/{$lock}.lock");
+        @chmod("/tmp/{$lock}.lock", 0666);
+    }
+
+    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
+        if (flock($fp, $op)) {
+            return $fp;
+        } else {
+            fclose($fp);
+        }
+    }
+}
+
+/* XXX unlock configuration file */
+function unlock($fp)
+{
+    flock($fp, LOCK_UN);
+    fclose($fp);
+}
+
 function exit_on_bootup($callback = null, $arguments = [])
 {
     if (product::getInstance()->booting()) {
