@@ -2714,10 +2714,9 @@ function interface_dhcpv6_configure($interface, $wancfg)
     killbypid('/var/run/rtsold.pid');
 
     $rtsoldcommand = exec_safe(
-        '/usr/sbin/rtsold -p %s -M %s -O %s -R %s -a -u',
+        '/usr/sbin/rtsold -p %s -A %s -R %s -a -u',
         array(
             '/var/run/rtsold.pid',
-            '/var/etc/rtsold_script.sh',
             '/var/etc/rtsold_script.sh',
             '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
         )
