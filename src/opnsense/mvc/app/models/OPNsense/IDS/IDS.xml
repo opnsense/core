@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <description>
         OPNsense IDS
     </description>
@@ -113,6 +113,10 @@
                         <pass>Pass</pass>
                     </OptionValues>
                 </action>
+                <bypass type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </bypass>
             </rule>
         </userDefinedRules>
         <files>

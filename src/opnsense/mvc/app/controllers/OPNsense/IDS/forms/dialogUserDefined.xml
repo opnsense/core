@@ -30,6 +30,12 @@
         <help>Set action to perform here, only used when in IPS mode.</help>
     </field>
     <field>
+        <id>rule.bypass</id>
+        <label>Bypass</label>
+        <type>checkbox</type>
+        <help>Set bypass keyword. Increases traffic throughput. Suricata reads a packet, decodes it, checks it in the flow table. If the corresponding flow is local bypassed then it simply skips all streaming, detection and output and the packet goes directly out in IDS mode and to verdict in IPS mode.</help>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
