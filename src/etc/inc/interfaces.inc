@@ -1165,7 +1165,7 @@ EOD;
         } else {
             $mpdconf_arr[] = "set link mtu " . ($mtus[$pid] - 8);
         }
-        $mrus = !empty($ppp['mtu']) ? explode(',', $ppp['mru']) : null;
+        $mrus = !empty($ppp['mru']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
             $mpdconf_arr[] = "set link mru {$mrus[$pid]}";
         }
