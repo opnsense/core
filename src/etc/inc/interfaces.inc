@@ -2168,15 +2168,19 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
     if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
         $parent_device = interface_parent_devices($device)[0];
-        $parent_mtu = $mtu;
+        $parent_mtu = $mtu + 4;
+        $force = false;
 
         $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)] ?? [];
         if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
             $parent_mtu = $parent_cfg['mtu'];
+            $force = true;
         }
 
-        /* configure parent MTU now to avoid silent fail for current device MTU change */
-        interface_configure_mtu($parent_device, $parent_mtu, $ifconfig_details);
+        if ($force || $mtu > $ifconfig_details[$parent_device]['mtu']) {
+            /* configure parent MTU recursively to avoid a fail for current device MTU requirement */
+            interface_configure_mtu($parent_device, $parent_mtu, $ifconfig_details);
+        }
     }
 
     if ($mtu != $ifconfig_details[$device]['mtu']) {
