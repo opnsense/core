@@ -1157,13 +1157,13 @@ EOD;
 
         $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
-            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : 1500;
+            /* substract default header when deriving from interface config (as shown there) */
+            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
         }
-        if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500) {
-            // use pppoe max-payload if mtu we're about to set > 1492
-            $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid] - 8);
+        if ($ppp['type'] == 'pppoe' && $mtus[$pid] > 1492) {
+            $mpdconf_arr[] = "set pppoe max-payload " . $mtus[$pid];
         } else {
-            $mpdconf_arr[] = "set link mtu " . ($mtus[$pid] - 8);
+            $mpdconf_arr[] = "set link mtu " . $mtus[$pid];
         }
         $mrus = !empty($ppp['mru']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
@@ -2336,11 +2336,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
     }
 
-    if (!empty($wancfg['mtu'])) {
+    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
         $intf_details = $ifconfig_details[$realhwif];
         $mtu = $wancfg['mtu'];
 
-        if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
+        /* XXX the parent lookup works for 'vlan' but misses final parent for 'qinq' */
+        if (strstr($realhwif, 'vlan') || strstr($realhwif, 'qinq')) {
             $parent_realif = interface_parent_devices($interface)[0];
             $parent_details = $ifconfig_details[$parent_realif];
 
@@ -2354,7 +2355,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         }
 
         if ($mtu != $intf_details['mtu']) {
-            legacy_interface_mtu($realif, $mtu);
+            legacy_interface_mtu($realhwif, $mtu);
         }
     }
 
@@ -3437,6 +3438,10 @@ function interface_parent_devices($interface)
     $parents = [];
 
     $realif = get_real_interface($interface);
+    if (strstr($realif, 'pppoe')) {
+        /* handle lookup mismatch */
+        $realif = get_ppp_parent($realif);
+    }
 
     if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
         /* XXX maybe if we have a qinq type return both parents? */
