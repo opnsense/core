@@ -1156,7 +1156,7 @@ EOD;
 
         $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
-            /* substract default header when deriving from interface config (as shown there) */
+            /* subtract default header when deriving from interface config (as shown there) */
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
         }
         if ($ppp['type'] == 'pppoe' && $mtus[$pid] > 1492) {
