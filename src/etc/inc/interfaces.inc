@@ -2180,7 +2180,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
     }
 
     if ($mtu != $ifconfig_details[$device]['mtu']) {
-        legacy_interface_mtu($realhwif, $mtu);
+        legacy_interface_mtu($device, $mtu);
     }
 }
 
