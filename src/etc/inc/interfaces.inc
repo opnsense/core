@@ -2164,6 +2164,26 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
+function interface_configure_mtu($device, $mtu, $ifconfig_details)
+{
+    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+        $parent_device = interface_parent_devices($device)[0];
+        $parent_mtu = $mtu;
+
+        $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)] ?? [];
+        if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
+            $parent_mtu = $parent_cfg['mtu'];
+        }
+
+        /* configure parent MTU now to avoid silent fail for current device MTU change */
+        interface_configure_mtu($parent_device, $parent_mtu, $ifconfig_details);
+    }
+
+    if ($mtu != $ifconfig_details[$device]['mtu']) {
+        legacy_interface_mtu($realhwif, $mtu);
+    }
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false)
 {
     global $config;
@@ -2336,29 +2356,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
-        $intf_details = $ifconfig_details[$realhwif];
-        $mtu = $wancfg['mtu'];
-
-        /* XXX the parent lookup works for 'vlan' but misses final parent for 'qinq' */
-        if (strstr($realhwif, 'vlan') || strstr($realhwif, 'qinq')) {
-            $parent_realif = interface_parent_devices($realhwif)[0];
-            $parent_details = $ifconfig_details[$parent_realif];
-            $parent_mtu = $mtu;
-
-            $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)] ?? [];
-            if (isset($parentcfg['enable']) && !empty($parentcfg['mtu'])) {
-                $parent_mtu = $parentcfg['mtu'];
-            }
-
-            if ($parent_mtu != $parent_details['mtu']) {
-                /* configure parent MTU now to avoid silent fail for current interface MTU change */
-                legacy_interface_mtu($parent_realif, $parent_mtu);
-            }
-        }
-
-        if ($mtu != $intf_details['mtu']) {
-            legacy_interface_mtu($realhwif, $mtu);
-        }
+        interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
     interfaces_vips_configure($interface);
