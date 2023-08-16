@@ -47,7 +47,6 @@ function explode_assoc($delimiter, $string)
     return $result;
 }
 
-
 function return_hex_ipv4($ipv4)
 {
     if (!is_ipaddrv4($ipv4)) {
