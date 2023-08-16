@@ -1156,13 +1156,13 @@ EOD;
 
         $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
-            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : 1500;
+            /* subtract default header when deriving from interface config (as shown there) */
+            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
         }
-        if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500) {
-            // use pppoe max-payload if mtu we're about to set > 1492
-            $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid] - 8);
+        if ($ppp['type'] == 'pppoe' && $mtus[$pid] > 1492) {
+            $mpdconf_arr[] = "set pppoe max-payload " . $mtus[$pid];
         } else {
-            $mpdconf_arr[] = "set link mtu " . ($mtus[$pid] - 8);
+            $mpdconf_arr[] = "set link mtu " . $mtus[$pid];
         }
         $mrus = !empty($ppp['mru']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
