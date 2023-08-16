@@ -58,8 +58,6 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
-$interface_descr = convert_friendly_interface_to_friendly_descr($interface);
-
 /* make sure only one script runs at a time beyond this point */
 $fp = fopen('/tmp/newwanipv6_' . $argument, 'a+e');
 if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
@@ -79,8 +77,7 @@ system_resolver_configure();
 
 list ($ip) = interfaces_primary_address6($interface);
 if (!is_ipaddr($ip)) {
-    /* interface is not ready */
-    log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_INFO);
+    log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
     return;
 }
 
@@ -88,11 +85,11 @@ $cacheip_file = "/tmp/{$device}_oldipv6";
 $cacheip = trim(@file_get_contents($cacheip_file));
 
 if ($force == 'no' && $ip == $cacheip) {
-    log_msg("No IP change detected (current: {$ip}, interface: {$interface_descr}[{$interface}])", LOG_INFO);
+    log_msg("No IP change detected (current: {$ip}, interface: {$interface})", LOG_INFO);
     return;
 }
 
-log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface_descr}[{$interface}], device: {$device}, force: {$force})");
+log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface}, device: {$device}, force: {$force})");
 
 interfaces_vips_configure($interface, 6);
 
