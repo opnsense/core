@@ -2343,13 +2343,16 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         if (strstr($realhwif, 'vlan') || strstr($realhwif, 'qinq')) {
             $parent_realif = interface_parent_devices($interface)[0];
             $parent_details = $ifconfig_details[$parent_realif];
+            $parent_mtu = $mtu;
 
-            /* configure parent MTU now to avoid silent fail for current interface MTU change */
-            $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)];
+            $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)] ?? [];
             if (isset($parentcfg['enable']) && !empty($parentcfg['mtu'])) {
-                if ($parentcfg['mtu'] != $parent_details['mtu']) {
-                    legacy_interface_mtu($parent_realif, $parentcfg['mtu']);
-                }
+                $parent_mtu = $parentcfg['mtu'];
+            }
+
+            if ($parent_mtu != $parent_details['mtu']) {
+                /* configure parent MTU now to avoid silent fail for current interface MTU change */
+                legacy_interface_mtu($parent_realif, $parent_mtu);
             }
         }
 
