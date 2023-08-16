@@ -9,7 +9,7 @@
 {%      for rule in helpers.toList('OPNsense.IDS.userDefinedRules.rule') %}
 {%          if rule.enabled|default('0') == '1' %}
 {{rule.action}}{% if rule.fingerprint|default('') != ""
-      %} tls {% else %} ip {% endif %} {% if rule.source|default('') != "" %} {{ rule.source }} {% else %} any {% endif %} any -> {% if rule.destination|default('') != "" %} {{ rule.destination }} {% else %} any {% endif %} any (msg:"{{rule.description.replace('"','\"')}}"; {%
+      %} tls {% else %} ip {% endif %} {% if rule.source|default('') != "" %} {{ rule.source }} {% else %} any {% endif %} any -> {% if rule.destination|default('') != "" %} {{ rule.destination }} {% else %} any {% endif %} any (msg:"{{rule.description.replace('"','\"')}}"; {% if rule.bypass|default('0') == '1' %}bypass;{% endif %}{%
       if rule.fingerprint|default('') != "" %} tls.fingerprint:"{{rule.fingerprint.lower()}}";{% endif
       %} sid:{{
       4294967295 - loop.index
