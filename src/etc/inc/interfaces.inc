@@ -2341,7 +2341,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
         /* XXX the parent lookup works for 'vlan' but misses final parent for 'qinq' */
         if (strstr($realhwif, 'vlan') || strstr($realhwif, 'qinq')) {
-            $parent_realif = interface_parent_devices($interface)[0];
+            $parent_realif = interface_parent_devices($realhwif)[0];
             $parent_details = $ifconfig_details[$parent_realif];
             $parent_mtu = $mtu;
 
@@ -3435,27 +3435,21 @@ function get_ppp_parent($ifcfg_if)
 }
 
 /* collect hardware device parents for VLAN, LAGG and bridges */
-function interface_parent_devices($interface)
+function interface_parent_devices($device)
 {
     $parents = [];
 
-    $realif = get_real_interface($interface);
-    if (strstr($realif, 'pppoe')) {
-        /* handle lookup mismatch */
-        $realif = get_ppp_parent($realif);
-    }
-
-    if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
+    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
         /* XXX maybe if we have a qinq type return both parents? */
         foreach (config_read_array('vlans', 'vlan') as $vlan) {
-            if ($realif == $vlan['vlanif']) {
+            if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
                 break;
             }
         }
-    } elseif (strstr($realif, 'bridge')) {
+    } elseif (strstr($device, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged') as $bridge) {
-            if ($realif == $bridge['bridgeif']) {
+            if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members']) as $member) {
                     /* bridge stores members as configured interfaces */
                     $parents[] = get_real_interface($member);
@@ -3463,9 +3457,9 @@ function interface_parent_devices($interface)
                 break;
             }
         }
-    } elseif (strstr($realif, 'lagg')) {
+    } elseif (strstr($device, 'lagg')) {
         foreach (config_read_array('laggs', 'lagg') as $lagg) {
-            if ($realif == $lagg['laggif']) {
+            if ($device == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
                     $parents[] = $member;
                 }

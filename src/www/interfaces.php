@@ -897,7 +897,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (strstr($a_interfaces[$if]['if'], 'vlan') || strstr($a_interfaces[$if]['if'], 'qinq')) {
-                list ($parentif) = interface_parent_devices($if);
+                list ($parentif) = interface_parent_devices($a_interfaces[$if]['if']);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a VLAN should not be bigger than parent interface.");
@@ -908,7 +908,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         continue;
                     }
 
-                    list ($parentif) = interface_parent_devices($idx);
+                    list ($parentif) = interface_parent_devices($ifdata['if']);
                     if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
