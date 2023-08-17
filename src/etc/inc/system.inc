@@ -599,7 +599,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
 {
     global $config;
 
-    service_log(sprintf('Setting up route%s...', empty($interface) ? 's' : " {$interface}"), $verbose);
+    service_log(sprintf('Setting up routes%s...', empty($interface) ? '' : " for {$interface}"), $verbose);
 
     if (!empty($interface)) {
         log_msg("ROUTING: entering configure using '{$interface}'", LOG_DEBUG);
