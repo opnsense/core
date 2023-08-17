@@ -2294,6 +2294,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif, $ifconfig_details);
 
+    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
+        interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
+    }
+
     switch ($wancfg['ipaddr'] ?? '') {
         case 'dhcp':
             interface_dhcp_configure($interface);
@@ -2357,10 +2361,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      */
     if ($realif != $realifv6) {
         mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
-    }
-
-    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
-        interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
     interfaces_vips_configure($interface);
