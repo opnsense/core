@@ -470,6 +470,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $new_phase2['disabled'] = true;
                         $new_phase2['uniqid'] = uniqid();
                         $new_phase2['ikeid'] = $ph1ent['ikeid'];
+                        unset($new_phase2['reqid']);
                         $config['ipsec']['phase2'][] = $new_phase2;
                     }
                 }
