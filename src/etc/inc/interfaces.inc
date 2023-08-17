@@ -2177,12 +2177,14 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
 
 function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
+    global $config;
+
     if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
         $parent_device = interface_parent_devices($device)[0];
         $parent_mtu = $mtu + 4;
         $force = false;
 
-        $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)] ?? [];
+        $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_device)] ?? [];
         if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
             $parent_mtu = $parent_cfg['mtu'];
             $force = true;
