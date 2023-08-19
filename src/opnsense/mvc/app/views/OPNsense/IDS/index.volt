@@ -424,10 +424,10 @@ POSSIBILITY OF SUCH DAMAGE.
                                 interface: {
                                     from: function (value) { return value; },
                                     to: function (value) {
-                                      if (value == null || value == undefined) {
+                                      if (value == null || typeof value !== 'string') {
                                           return "";
                                       }
-                                      return interface_descriptions[value.replace(/\+$/, '')];
+                                      return interface_descriptions[value.trim().replace('^' ,'')];
                                     }
                                 }
                             }
@@ -491,9 +491,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
                                                 if (data_ptr != undefined) {
                                                     var row = $("<tr/>");
+                                                    var intf = fieldname == 'in_iface' && typeof data_ptr === 'string' ? data_ptr.trim().replace('^' ,'') : '';
                                                     row.append($("<td/>").text(fielddesc));
-                                                    if (fieldname == 'in_iface' && interface_descriptions[data_ptr.replace(/\+$/, '')] != undefined) {
-                                                        row.append($("<td/>").text(interface_descriptions[data_ptr.replace(/\+$/, '')]));
+                                                    if (fieldname == 'in_iface' && interface_descriptions[intf] != undefined) {
+                                                        row.append($("<td/>").text(interface_descriptions[intf]));
                                                     } else {
                                                         row.append($("<td/>").text(data_ptr));
                                                     }
