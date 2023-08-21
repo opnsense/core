@@ -3,7 +3,7 @@
         <id>vlan.vlanif</id>
         <label>Device</label>
         <type>text</type>
-        <help>VLAN interface name is assigned automatically if not specified.</help>
+        <help>VLAN interface is assigned automatically if not specified.</help>
         <help>
           Leave empty to generate a device name. Custom names are possible, but only if the
           start of the name matches the required prefix and contains numeric characters or

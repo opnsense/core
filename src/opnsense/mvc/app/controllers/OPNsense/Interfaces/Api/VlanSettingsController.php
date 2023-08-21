@@ -56,6 +56,8 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             return (string)$current->vlanif;
         } else {
             /* auto-number new device */
+            $ifid = 0;
+
             $vlanNumbers = [];
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
                 if (preg_match("/^{$prefix}(\d+)$/", (string) $node->vlanif, $matches)) {
@@ -64,13 +66,15 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             }
             sort($vlanNumbers);
 
+            /* looking for the first free number in the sequence */
             for ($i = 1; $i <= count($vlanNumbers); ++$i) {
                 if ($vlanNumbers[$i - 1] != $i) {
+                    $ifid = $i;
                     break;
                 }
             }
 
-            return sprintf('%s%d', $prefix, $i);
+            return sprintf('%s%d', $prefix, $ifid);
         }
     }
 

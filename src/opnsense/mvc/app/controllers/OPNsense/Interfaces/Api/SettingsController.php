@@ -149,8 +149,6 @@ class SettingsController extends ApiMutableModelControllerBase
             $toapplylist = [];
         }
 
-        $if = ArrayField::decodeUUID($uuid);
-
         $node = $this->getModel()->getNodeByReference('interface.'.$uuid);
         $iface = $node->getNodes();
         unset($iface['if']);
@@ -160,6 +158,8 @@ class SettingsController extends ApiMutableModelControllerBase
                 unset($iface[$key]);
             }
         }
+
+        $if = ArrayField::decodeUUID($uuid);
 
         $toapplylist[$if]['ifcfg'] = $iface;
         $toapplylist[$if]['ifcfg']['realif'] = (string) $node->if;
