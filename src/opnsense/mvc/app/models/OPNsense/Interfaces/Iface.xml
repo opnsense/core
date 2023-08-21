@@ -1,0 +1,374 @@
+<model>
+    <mount>/interfaces</mount>
+    <version>1.0.0</version>
+    <description>
+        Interface configuration
+    </description>
+    <items>
+        <interface type=".\ArrayField">
+            <if type=".\IfaceInterfaceField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <reference>tag.check001</reference>
+                    </check001>
+                    <check002>
+                        <ValidationMessage>The interface name should be unique.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check002>
+                </Constraints>
+            </if>
+            <descr type="TextField">
+                <Required>N</Required>
+            </descr>
+            <enable type="BooleanField">
+                <Required>N</Required>
+            </enable>
+            <lock type="BooleanField">
+                <Required>N</Required>
+            </lock>
+
+            <blockbogons type="BooleanField">
+                <Required>N</Required>
+            </blockbogons>
+            <blockpriv type="BooleanField">
+                <Required>N</Required>
+            </blockpriv>
+
+            <!-- Loopback Interface -->
+            <virtual type="BooleanField">
+                <Required>N</Required>
+            </virtual>
+            <internal_dynamic type="BooleanField">
+                <Required>N</Required>
+            </internal_dynamic>
+
+            <mtu type="IntegerField">
+                <MinimumValue>576</MinimumValue>
+                <MaximumValue>1500</MaximumValue>
+                <Required>N</Required>
+            </mtu>
+            <spoofmac type="MacaddrField">
+                <Required>N</Required>
+            </spoofmac>
+            <mss type="IntegerField">
+                <MinimumValue>576</MinimumValue>
+                <Required>N</Required>
+            </mss>
+            <promisc type="BooleanField">
+                <Required>N</Required>
+            </promisc>
+            <gateway_interface type="BooleanField">
+                <Required>N</Required>
+            </gateway_interface>
+
+            <!-- IPv4: Type -->
+            <type type="OptionField">
+                <Required>Y</Required>
+                <default>none</default>
+                <OptionValues>
+                    <none value="none">None</none>
+                    <static value="static">Static IPv4</static>
+                    <dhcp value="dhcp">DHCP</dhcp>
+                    <ppp value="ppp">PPP</ppp>
+                    <pppoe value="pppoe">PPPoE</pppoe>
+                    <pptp value="pptp">PPTP</pptp>
+                    <l2tp value="l2tp">L2TP</l2tp>
+                </OptionValues>
+                <Constraints>
+                    <check001>
+                        <reference>ipaddr.check001</reference>
+                    </check001>
+                    <check002>
+                        <reference>subnet.check001</reference>
+                    </check002>
+                </Constraints>
+            </type>
+
+            <!-- IPv4: Static -->
+            <ipaddr type="NetworkField">
+                <Required>N</Required>
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>false</NetMaskAllowed>
+                <WildcardEnabled>false</WildcardEnabled>
+                <ValidationMessage>please specify a valid IPv4 address</ValidationMessage>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Static IPv4 requires an IP address</ValidationMessage>
+                        <type>SetIfConstraint</type>
+                        <field>type</field>
+                        <check>static</check>
+                    </check001>
+                </Constraints>
+            </ipaddr>
+            <subnet type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>32</MaximumValue>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Static IPv4 requires an subnet mask</ValidationMessage>
+                        <type>SetIfConstraint</type>
+                        <field>type</field>
+                        <check>static</check>
+                    </check001>
+                </Constraints>
+            </subnet>
+            <gateway type=".\GatewayField">
+                <Required>N</Required>
+                <AddressFamily>ipv4</AddressFamily>
+                <EmptyValueLabel>Auto-detect</EmptyValueLabel>
+            </gateway>
+
+            <!-- IPv4: DHCP -->
+            <alias-address type="NetworkField">
+                <Required>N</Required>
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>false</NetMaskAllowed>
+                <WildcardEnabled>false</WildcardEnabled>
+                <ValidationMessage>please specify a valid IPv4 address</ValidationMessage>
+            </alias-address>
+            <alias-subnet type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>32</MaximumValue>
+            </alias-subnet>
+            <dhcprejectfrom type="NetworkField">
+                <Required>N</Required>
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>false</NetMaskAllowed>
+                <WildcardEnabled>false</WildcardEnabled>
+                <ValidationMessage>please specify a valid IPv4 address</ValidationMessage>
+            </dhcprejectfrom>
+            <dhcphostname type="TextField">
+                <Required>N</Required>
+            </dhcphostname>
+            <adv_dhcp_pt_timeout type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_timeout>
+            <adv_dhcp_pt_retry type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_retry>
+            <adv_dhcp_pt_select_timeout type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_select_timeout>
+            <adv_dhcp_pt_reboot type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_reboot>
+            <adv_dhcp_pt_backoff_cutoff type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_backoff_cutoff>
+            <adv_dhcp_pt_initial_interval type="IntegerField">
+                <Required>N</Required>
+            </adv_dhcp_pt_initial_interval>
+            <adv_dhcp_pt_values type="TextField">
+                <Required>N</Required>
+                <default>SavedCfg</default>
+            </adv_dhcp_pt_values>
+            <adv_dhcp_send_options type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_send_options>
+            <adv_dhcp_request_options type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_request_options>
+            <adv_dhcp_required_options type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_required_options>
+            <adv_dhcp_option_modifiers type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_option_modifiers>
+            <adv_dhcp_config_advanced type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_config_advanced>
+            <adv_dhcp_config_file_override type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_config_file_override>
+            <adv_dhcp_config_file_override_path type="TextField">
+                <Required>N</Required>
+            </adv_dhcp_config_file_override_path>
+
+            <!-- IPv6: Type -->
+            <type6 type="OptionField">
+                <Required>Y</Required>
+                <default>none</default>
+                <OptionValues>
+                    <none value="none">None</none>
+                    <static value="static">Static IPv6</static>
+                    <dhcp6 value="dhcp6">DHCPv6</dhcp6>
+                    <slaac value="slaac">SLAAC</slaac>
+                    <_6rd value="6rd">6rd Tunnel</_6rd>
+                    <_6to4 value="6to4">6to4 Tunnel</_6to4>
+                    <track6 value="track6">Track Interface</track6>
+                </OptionValues>
+                <Constraints>
+                    <check001>
+                        <reference>ipaddrv6.check001</reference>
+                    </check001>
+                    <check002>
+                        <reference>subnetv6.check001</reference>
+                    </check002>
+                </Constraints>
+            </type6>
+
+            <!-- IPv6: Static -->
+            <ipaddrv6 type="NetworkField">
+                <Required>N</Required>
+                <AddressFamily>ipv6</AddressFamily>
+                <NetMaskAllowed>false</NetMaskAllowed>
+                <WildcardEnabled>false</WildcardEnabled>
+                <ValidationMessage>please specify a valid IPv6 address</ValidationMessage>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Static IPv6 requires an IP address</ValidationMessage>
+                        <type>SetIfConstraint</type>
+                        <field>type6</field>
+                        <check>static</check>
+                    </check001>
+                </Constraints>
+            </ipaddrv6>
+            <subnetv6 type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>128</MaximumValue>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Static IPv6 requires an subnet mask</ValidationMessage>
+                        <type>SetIfConstraint</type>
+                        <field>type6</field>
+                        <check>static</check>
+                    </check001>
+                </Constraints>
+            </subnetv6>
+            <gateway6 type=".\GatewayField">
+                <Required>N</Required>
+                <AddressFamily>ipv6</AddressFamily>
+                <EmptyValueLabel>Auto-detect</EmptyValueLabel>
+            </gateway6>
+
+            <!-- IPv6: DHCP6 -->
+            <dhcp6prefixonly type="BooleanField">
+                <Required>N</Required>
+            </dhcp6prefixonly>
+            <dhcp6-ia-pd-len type="IntegerField">
+                <Required>N</Required>
+                <MinimumValue>48</MinimumValue>
+                <MaximumValue>64</MaximumValue>
+            </dhcp6-ia-pd-len>
+            <dhcp6-ia-pd-send-hint type="BooleanField">
+                <Required>N</Required>
+            </dhcp6-ia-pd-send-hint>
+            <dhcp6usev4iface type="BooleanField">
+                <Required>N</Required>
+            </dhcp6usev4iface>
+            <dhcp6vlanprio type="OptionField">
+                <Required>Y</Required>
+                <default>0</default>
+                <OptionValues>
+                    <dhcp6vlanprio1 value="1">Background (1, lowest)</dhcp6vlanprio1>
+                    <dhcp6vlanprio0 value="0">Best Effort (0, default)</dhcp6vlanprio0>
+                    <dhcp6vlanprio2 value="2">Excellent Effort (2)</dhcp6vlanprio2>
+                    <dhcp6vlanprio3 value="3">Critical Applications (3)</dhcp6vlanprio3>
+                    <dhcp6vlanprio4 value="4">Video (4)</dhcp6vlanprio4>
+                    <dhcp6vlanprio5 value="5">Voice (5)</dhcp6vlanprio5>
+                    <dhcp6vlanprio6 value="6">Internetwork Control (6)</dhcp6vlanprio6>
+                    <dhcp6vlanprio7 value="7">Network Control (7, highest)</dhcp6vlanprio7>
+                </OptionValues>
+            </dhcp6vlanprio>
+            <adv_dhcp6_interface_statement_information_only_enable type="BooleanField">
+                <Required>N</Required>
+            </adv_dhcp6_interface_statement_information_only_enable>
+            <adv_dhcp6_interface_statement_send_options type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_interface_statement_send_options>
+            <adv_dhcp6_interface_statement_request_options type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_interface_statement_request_options>
+            <adv_dhcp6_interface_statement_script type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_interface_statement_script>
+            <adv_dhcp6_id_assoc_statement_address_enable type="BooleanField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_address_enable>
+            <adv_dhcp6_id_assoc_statement_address type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_address>
+            <adv_dhcp6_id_assoc_statement_address_id type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_address_id>
+            <adv_dhcp6_id_assoc_statement_address_pltime type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_address_pltime>
+            <adv_dhcp6_id_assoc_statement_address_vltime type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_address_vltime>
+            <adv_dhcp6_id_assoc_statement_prefix_enable type="BooleanField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_prefix_enable>
+            <adv_dhcp6_id_assoc_statement_prefix type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_prefix>
+            <adv_dhcp6_id_assoc_statement_prefix_id type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_prefix_id>
+            <adv_dhcp6_id_assoc_statement_prefix_pltime type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_prefix_pltime>
+            <adv_dhcp6_id_assoc_statement_prefix_vltime type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_id_assoc_statement_prefix_vltime>
+            <adv_dhcp6_prefix_interface_statement_sla_len type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_prefix_interface_statement_sla_len>
+            <adv_dhcp6_authentication_statement_authname type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_authentication_statement_authname>
+            <adv_dhcp6_authentication_statement_protocol type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_authentication_statement_protocol>
+            <adv_dhcp6_authentication_statement_algorithm type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_authentication_statement_algorithm>
+            <adv_dhcp6_authentication_statement_rdm type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_authentication_statement_rdm>
+            <adv_dhcp6_authentication_statement_rdm type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_authentication_statement_rdm>
+            <adv_dhcp6_key_info_statement_keyname type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_key_info_statement_keyname>
+            <adv_dhcp6_key_info_statement_realm type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_key_info_statement_realm>
+            <adv_dhcp6_key_info_statement_keyid type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_key_info_statement_keyid>
+            <adv_dhcp6_key_info_statement_secret type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_key_info_statement_secret>
+            <adv_dhcp6_key_info_statement_expire type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_key_info_statement_expire>
+            <adv_dhcp6_config_advanced type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_config_advanced>
+            <adv_dhcp6_config_file_override type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_config_file_override>
+            <adv_dhcp6_config_file_override_path type="TextField">
+                <Required>N</Required>
+            </adv_dhcp6_config_file_override_path>
+
+            <!-- IPv6: Track Interface -->
+            <track6-interface type="TextField">
+                <Required>N</Required>
+            </track6-interface>
+            <track6-prefix-id type="TextField">
+                <Required>N</Required>
+            </track6-prefix-id>
+            <dhcpd6track6allowoverride type="BooleanField">
+                <Required>N</Required>
+            </dhcpd6track6allowoverride>
+        </interface>
+    </items>
+</model>

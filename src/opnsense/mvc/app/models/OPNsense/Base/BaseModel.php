@@ -166,7 +166,7 @@ abstract class BaseModel
      * @throws ModelException parse error
      * @throws ReflectionException
      */
-    private function parseXml(&$xml, &$config_data, &$internal_data)
+    protected function parseXml(&$xml, &$config_data, &$internal_data)
     {
         // copy xml tag attributes to Field
         if ($config_data != null) {

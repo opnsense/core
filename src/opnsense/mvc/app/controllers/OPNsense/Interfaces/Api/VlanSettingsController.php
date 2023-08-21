@@ -56,14 +56,21 @@ class VlanSettingsController extends ApiMutableModelControllerBase
             return (string)$current->vlanif;
         } else {
             /* auto-number new device */
-            $ifid = 0;
+            $vlanNumbers = [];
             foreach ($this->getModel()->vlan->iterateItems() as $node) {
-                if (preg_match("/^{$prefix}[\d]+$/", (string)$node->vlanif)) {
-                    $ifid = max($ifid, (int)filter_var((string)$node->vlanif, FILTER_SANITIZE_NUMBER_INT));
+                if (preg_match("/^{$prefix}(\d+)$/", (string) $node->vlanif, $matches)) {
+                    array_push($vlanNumbers, (int) $matches[1]);
                 }
             }
-            /* intentionally insert "0" between prefix and index */
-            return sprintf('%s0%d', $prefix, $ifid + 1);
+            sort($vlanNumbers);
+
+            for ($i = 1; $i <= count($vlanNumbers); ++$i) {
+                if ($vlanNumbers[$i - 1] != $i) {
+                    break;
+                }
+            }
+
+            return sprintf('%s%d', $prefix, $i);
         }
     }
 
@@ -102,7 +109,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
-        $new_vlanif = $this->generateVlanIfName($node);
+        $new_vlanif = $this->request->getPost('vlan')['vlanif'];
         $children = 0;
         foreach ($this->getModel()->vlan->iterateItems() as $cnode) {
             if ((string)$cnode->if == $old_vlanif) {
@@ -137,6 +144,13 @@ class VlanSettingsController extends ApiMutableModelControllerBase
                   ]
                 ];
             }
+        } elseif (null != $old_vlanif && $old_vlanif != $new_vlanif) {
+            $result = [
+                'result' => 'failed',
+                'validations' => [
+                    'vlan.vlanif' => gettext('VLAN interface cannot be changed after creation.'),
+                ],
+            ];
         } else {
             $result = $this->setBase('vlan', 'vlan', $uuid, ['vlanif' => $new_vlanif]);
             /* store interface name for apply action */
@@ -149,7 +163,9 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function addItemAction()
     {
-        return $this->addBase('vlan', 'vlan', ['vlanif' => $this->generateVlanIfName()]);
+        $new_vlanif = $this->request->getPost('vlan')['vlanif'];
+
+        return $this->addBase('vlan', 'vlan', ['vlanif' => $new_vlanif ? $new_vlanif : $this->generateVlanIfName()]);
     }
 
     public function getItemAction($uuid = null)
