@@ -39,9 +39,8 @@ class ArrayField extends BaseArrayField
         return self::encodeUUID($this->nextIfName());
     }
 
-    private function nextIfName()
+    private function nextIfName($prefix = 'opt')
     {
-        $prefix = 'opt';
         $config = Config::getInstance()->toArray();
 
         for ($i = 1; $i <= count($config['interfaces']); ++$i) {
@@ -62,7 +61,7 @@ class ArrayField extends BaseArrayField
      */
     public static function encodeUUID($data)
     {
-        // thiese positions will be encoded without the ability to decode back
+        // these positions will be encoded without the ability to decode back
         $data = substr_replace($data, ' ', 6, 0);
         $data = substr_replace($data, ' ', 8, 0);
 
