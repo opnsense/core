@@ -83,6 +83,11 @@ while (1) {
             continue;
         }
 
+        if ($report['status'] == 'force_down') {
+            /* the outcome is the same so simplify the status */
+            $report['status'] = 'down';
+        }
+
         if (isset($config['system']['gw_switch_default'])) {
             /* only consider down state transition in this case */
             if (!empty($mode[$report['name']]) && $mode[$report['name']] != $report['status'] && ($mode[$report['name']] == 'down' || $report['status'] == 'down')) {
