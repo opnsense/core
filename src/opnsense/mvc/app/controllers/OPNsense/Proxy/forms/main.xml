@@ -66,13 +66,6 @@
                 <advanced>true</advanced>
             </field>
             <field>
-                <id>proxy.general.dnsV4First</id>
-                <label>Enable DNS v4 first</label>
-                <type>checkbox</type>
-                <help>This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first. Squid will still perform both IPv6 and IPv4 DNS lookups before connecting. This option will restrict the situations under which IPv6 connectivity is used (and tested) and will hide network problems which would otherwise be detected and warned about.</help>
-                <advanced>true</advanced>
-            </field>
-            <field>
                 <id>proxy.general.useViaHeader</id>
                 <label>Use Via header</label>
                 <type>checkbox</type>
