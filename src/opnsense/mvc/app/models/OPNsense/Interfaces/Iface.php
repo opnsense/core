@@ -75,86 +75,49 @@ class Iface extends BaseModel
             $newChild = $newRoot->addChild($itemTagName);
             $newChild->addAttribute('uuid', ArrayField::encodeUUID($ifname));
 
+            $type = 'none';
+            $type6 = 'none';
+
             foreach ($node->children() as $key => $value) {
                 switch ($key) {
                     case 'ipaddr':
-                        $type = 'none';
-                        $ipaddr = '';
-
                         switch ($value) {
                             case 'dhcp':
-                                $type = $value;
-                                break;
-
                             case 'ppp':
-                                $type = $value;
-                                break;
-
                             case 'pppoe':
-                                $type = $value;
-                                break;
-
                             case 'ppptp':
-                                $type = $value;
-                                break;
-
                             case 'l2tp':
                                 $type = $value;
+                                $value = '';
                                 break;
 
                             default:
                                 $type = 'static';
-                                $ipaddr = $value;
                         }
-
-                        $newChild->addChild($key, $ipaddr);
-                        $newChild->addChild('type', $type);
                         break;
 
                     case 'ipaddrv6':
-                        $type6 = 'none';
-                        $ipaddrv6 = '';
-
                         switch ($value) {
                             case 'dhcp6':
-                                $type6 = $value;
-                                break;
-
                             case 'slaac':
-                                $type6 = $value;
-                                break;
-
                             case '6rd':
-                                $type6 = $value;
-                                // <prefix-6rd>2001:db8::/3</prefix-6rd>
-                                //      <prefix-6rd-v4addr>192.168.1.10</prefix-6rd-v4addr>
-                                //      <prefix-6rd-v4plen>8</prefix-6rd-v4plen>
-                                //      <gateway-6rd>192.168.1.10</gateway-6rd>
-                                break;
-
                             case '6to4':
-                                $type6 = $value;
-                                break;
-
                             case 'track6':
                                 $type6 = $value;
-                                // <track6-interface>opt1</track6-interface>
-                                //      <track6-prefix-id>0</track6-prefix-id>
+                                $value = '';
                                 break;
 
                             default:
                                 $type6 = 'static';
-                                $ipaddrv6 = $value;
                         }
-
-                        $newChild->addChild($key, $ipaddrv6);
-                        $newChild->addChild('type6', $type6);
                         break;
-
-                    default:
-                        $newChild->addChild($key, $value);
                 }
+
+                $newChild->addChild($key, $value);
             }
+
+            $newChild->addChild('type', $type);
+            $newChild->addChild('type6', $type6);
         }
 
         return $newRoot;
@@ -168,52 +131,59 @@ class Iface extends BaseModel
             $ifname = ArrayField::decodeUUID($node->attributes()['uuid']);
             $newChild = $newRoot->addChild($ifname);
 
-            $type = null;
-            $type6 = null;
+            $ipaddr = null;
+            $ipaddrv6 = null;
 
             foreach ($node->children() as $key => $value) {
                 switch ($key) {
                     case 'type':
                         switch ($value) {
                             case 'static':
-                                $type = null;
+                                $ipaddr = null;
                                 break;
 
                             case 'none':
-                                $type = '';
+                                $ipaddr = '';
                                 break;
 
                             default:
-                                $type = $value;
-                        }
-                        $value = '';
-                        break;
-
-                    case 'ipaddr':
-                        if (null !== $type) {
-                            $value = $type;
+                                $ipaddr = $value;
                         }
                         break;
 
                     case 'type6':
                         switch ($value) {
                             case 'static':
-                                $type6 = null;
+                                $ipaddrv6 = null;
                                 break;
 
                             case 'none':
-                                $type6 = '';
+                                $ipaddrv6 = '';
                                 break;
 
                             default:
-                                $type6 = $value;
+                                $ipaddrv6 = $value;
                         }
+                        break;
+                }
+            }
+
+            foreach ($node->children() as $key => $value) {
+                switch ($key) {
+                    case 'type':
+                    case 'type6':
                         $value = '';
                         break;
 
+                    case 'ipaddr':
+                        if (null !== $ipaddr) {
+                            $value = $ipaddr;
+                        }
+                        break;
+
                     case 'ipaddrv6':
-                        if (null !== $type6) {
-                            $value = $type6;
+                        if (null !== $ipaddrv6) {
+                            $value = $ipaddrv6;
                         }
                         break;
                 }
