@@ -59,7 +59,9 @@ mkdir -p /var/etc
 # from dropping "nologin" into the directory, preventing login on
 # the next boot.  However, do not touch the directory tree.
 for RUNDIR in /var/run /var/dhcpd/var/run /var/unbound/var/run; do
-	find ${RUNDIR} ! -type d -exec rm {} \;
+	if [ -d ${RUNDIR} ]; then
+		find ${RUNDIR} ! -type d -exec rm {} \;
+	fi
 done
 
 # setup output directory for php sessions
