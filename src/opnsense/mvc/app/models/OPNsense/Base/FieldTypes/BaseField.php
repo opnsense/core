@@ -446,6 +446,11 @@ abstract class BaseField
         }
     }
 
+    public function isRequired()
+    {
+        return $this->internalIsRequired;
+    }
+
     /**
      * check if this field is unused and required
      * @return bool
