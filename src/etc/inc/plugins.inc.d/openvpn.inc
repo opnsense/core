@@ -965,12 +965,11 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     if (empty($settings['common_name']) || empty($server['vpnid'])) {
         return false;
     }
-
     $conf = '';
-
     if (!empty($settings['block'])) {
         $conf .= "disable\n";
     }
+
     if (!empty($settings['push_reset'])) {
         $conf .= "push-reset\n";
     }
@@ -1018,16 +1017,6 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
     openvpn_add_dhcpopts($settings, $conf);
 
-    if (!empty($settings['tun_mtu'])) {
-        $conf .= 'tun-mtu ' . $settings['tun_mtu'] . PHP_EOL;
-    }
-    if (isset($settings['fragment']) && $settings['fragment'] != '') {
-        $conf .= 'fragment ' . $settings['fragment'] . PHP_EOL;
-    }
-    if (!empty($settings['mssfix'])) {
-        $conf .= 'mssfix' . PHP_EOL;
-    }
-
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     if (empty($target_filename)) {
         $target_filename = "/var/etc/openvpn-csc/" . $vpnid . "/" . $settings['common_name'];
@@ -1038,15 +1027,10 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         chown($target_filename, 'nobody');
         chgrp($target_filename, 'nobody');
         return $target_filename;
-    }
-
-    /* nothing was configured */
-
-    if (is_file($target_filename)) {
+    } elseif (is_file($target_filename)) {
         unlink($target_filename);
+        return null;
     }
-
-    return null;
 }
 
 function openvpn_prepare($device)

@@ -77,7 +77,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.</help>
+        <help>
+            Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.
+        </help>
     </field>
     <field>
         <id>cso.redirect_gateway</id>
@@ -108,7 +110,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported.</help>
+        <help>
+            Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported
+        </help>
     </field>
     <field>
         <id>cso.dns_servers</id>
@@ -116,7 +120,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.</help>
+        <help>
+            Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.
+        </help>
     </field>
     <field>
         <id>cso.ntp_servers</id>
@@ -124,7 +130,9 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.</help>
+        <help>
+            Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.
+        </help>
     </field>
     <field>
         <id>cso.wins_servers</id>
@@ -133,29 +141,8 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <advanced>true</advanced>
-        <help>Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.</help>
-    </field>
-    <field>
-        <type>header</type>
-        <label>Advanced Settings</label>
-        <collapse>true</collapse>
-    </field>
-    <field>
-        <id>cso.tun_mtu</id>
-        <label>TUN device MTU</label>
-        <type>text</type>
-        <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
-    </field>
-    <field>
-        <id>cso.fragment</id>
-        <label>Fragment size</label>
-        <type>text</type>
-        <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
-    </field>
-    <field>
-        <id>cso.mssfix</id>
-        <label>MSS fix</label>
-        <type>checkbox</type>
-        <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
+        <help>
+            Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.
+        </help>
     </field>
 </fields>
