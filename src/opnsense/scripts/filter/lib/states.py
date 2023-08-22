@@ -28,7 +28,6 @@ import fcntl
 import ipaddress
 import os
 import subprocess
-import sys
 import ujson
 
 
@@ -113,10 +112,7 @@ def fetch_rule_labels():
     return cached_labels['labels']
 
 
-def query_states(rule_label, filter_str):
-    addr_parser = AddressParser()
-
-    result = list()
+def split_filter_clauses(filter_str):
     filter_clauses = []
     filter_net_clauses = []
     for filter_clause in filter_str.split():
@@ -133,6 +129,15 @@ def query_states(rule_label, filter_str):
             filter_net_clauses.append([filter_network, filter_port])
         except ValueError:
             filter_clauses.append(filter_clause)
+    return (filter_net_clauses, filter_clauses)
+
+
+
+def query_states(rule_label, filter_str):
+    addr_parser = AddressParser()
+
+    result = list()
+    filter_net_clauses, filter_clauses = split_filter_clauses(filter_str)
 
     rule_labels = fetch_rule_labels()
     lines = subprocess.run(['/sbin/pfctl', '-vvs', 'state'], capture_output=True, text=True).stdout.strip().split('\n')
@@ -231,12 +236,13 @@ def query_top(rule_label, filter_str):
     addr_parser = AddressParser()
     result = list()
     rule_labels = fetch_rule_labels()
-    sp = subprocess.run(['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','9999999999999'], capture_output=True, text=True)
-    header = None
-    try:
-        filter_network = ipaddress.ip_network(filter_str.strip())
-    except ValueError:
-        filter_network = None
+    sp = subprocess.run(
+        ['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','9999999999999'],
+        capture_output=True,
+        text=True
+    )
+
+    filter_net_clauses, filter_clauses = split_filter_clauses(filter_str)
 
     for rownum, line in enumerate(sp.stdout.strip().split('\n')):
         parts = line.strip().split()
@@ -297,25 +303,34 @@ def query_top(rule_label, filter_str):
                 else:
                     record[timefield] = 0
 
-            search_line = " ".join(str(item) for item in filter(None, record.values()))
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
                 # label
                 continue
-            elif filter_network is not None:
-                try:
-                    match = False
-                    for field in ['src_addr', 'dst_addr', 'gateway']:
-                        addr = ipaddress.ip_network(record[field])
-                        if field is not None and ipaddress.ip_network(filter_network).overlaps(addr):
-                            match = True
+            elif filter_clauses or filter_net_clauses:
+                match = False
+                for filter_net in filter_net_clauses:
+                    try:
+                        match = False
+                        for field in ['src_addr', 'dst_addr', 'gw_addr']:
+                            port_field = "%s_port" % field[0:3]
+                            if record[field] is not None and addr_parser.overlaps(filter_net[0], record[field]):
+                                if filter_net[1] is None or filter_net[1] == record[port_field]:
+                                    match = True
+                        if not match:
+                            break
+                    except:
+                        continue
+                if not match:
+                    continue
+
+                if filter_clauses:
+                    search_line = " ".join(str(item) for item in filter(None, record.values()))
+                    for filter_clause in filter_clauses:
+                        if search_line.find(filter_clause) == -1:
+                            match = False
                             break
                     if not match:
                         continue
-                except:
-                    continue
-            elif filter_str != "" and search_line.lower().find(filter_str.lower()) == -1:
-                # apply filter when provided
-                continue
 
             result.append(record)
 
