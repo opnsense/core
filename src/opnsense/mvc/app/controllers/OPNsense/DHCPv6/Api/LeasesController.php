@@ -43,7 +43,8 @@ class LeasesController extends ApiControllerBase
         $backend = new Backend();
         $config = Config::getInstance()->object();
         $online = [];
-        $if_map = [];
+        $if_devs = [];
+        $if_descrs = [];
         $ip_ranges = [];
         $leases = [];
         $interfaces = [];
@@ -61,7 +62,8 @@ class LeasesController extends ApiControllerBase
 
         /* get all device names and their associated interface names */
         foreach ($config->interfaces->children() as $if => $if_props) {
-            $if_map[(string)$if_props->if] = (string)$if_props->descr ?: strtoupper($if);
+            $if_devs[$if] = (string)$if_props->if;
+            $if_descrs[$if] = (string)$if_props->descr ?: strtoupper($if);
         }
 
         /* list online IPs and MACs */
@@ -155,8 +157,8 @@ class LeasesController extends ApiControllerBase
                     if ($ndp['ip'] == $lease['address']) {
                         $leases[$idx]['mac'] = $ndp['mac'];
                         $leases[$idx]['man'] = empty($ndp['manufacturer']) ? '' : $ndp['manufacturer'];
-                        $leases[$idx]['if'] = $ndp['intf'];
-                        $leases[$idx]['if_descr'] = $if_map[$ndp['intf']];
+                        $leases[$idx]['if'] = array_search($ndp['intf'], $if_devs);
+                        $leases[$idx]['if_descr'] = $if_descrs[$leases[$idx]['if']];
                         if (!empty($leases[$idx]['if_descr'])) {
                             $interfaces[$leases[$idx]['if']] = $leases[$idx]['if_descr'];
                         }
@@ -194,13 +196,13 @@ class LeasesController extends ApiControllerBase
             $intf = '';
             $intf_descr = '';
             if (!empty($lease['if'])) {
-                $intf = array_search(strtoupper($lease['if']), $if_map);
-                $intf_descr = $if_map[$intf];
+                $intf = $lease['if'];
+                $intf_descr = $if_descrs[$intf];
             } else {
                 foreach ($ip_ranges as $cidr => $if) {
                     if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $cidr)) {
-                        $intf = $if;
-                        $intf_descr = $if_map[$intf];
+                        $intf = array_search($if, $if_devs);
+                        $intf_descr = $if_descrs[$intf];
                         break;
                     }
                 }
