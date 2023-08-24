@@ -31,7 +31,18 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
 
+function signalhandler($signal)
+{
+    global $config;
+
+    OPNsense\Core\Config::getInstance()->forceReload();
+    $config = parse_config();
+
+    syslog(LOG_NOTICE, 'Reloaded gateway watcher configuration on SIGHUP');
+}
+
 openlog('dpinger', LOG_DAEMON, LOG_LOCAL4);
+pcntl_signal(SIGHUP, 'signalhandler');
 
 $action = !empty($argv[1]) ? $argv[1] : null;
 
@@ -43,12 +54,10 @@ $mode = [];
 sleep($wait);
 
 while (1) {
-    $alarm = false;
-
-    OPNsense\Core\Config::getInstance()->forceReload();
-    $config = parse_config();
+    pcntl_signal_dispatch();
 
     $status = return_gateways_status();
+    $alarm = false;
 
     /* clear known gateways in first step to flush unknown in second step */
     $cleanup = $mode;

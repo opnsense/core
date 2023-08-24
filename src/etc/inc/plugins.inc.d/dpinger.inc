@@ -319,12 +319,17 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     }
 
     if (count(dpinger_services())) {
-        /* use a separate script to produce the monitor alerts which runs forever */
-        mwexecf(
-            '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
-            ['/var/run/gateway_watcher.pid', 'interface routes alarm'],
-            true
-        );
+        if (isvalidpid('/var/run/gateway_watcher.pid')) {
+            /* indicate that the configuration needs a reload */
+            killbypid('/var/run/gateway_watcher.pid', 'HUP');
+        } else {
+            /* use a separate script to produce the monitor alerts which runs forever */
+            mwexecf(
+                '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
+                ['/var/run/gateway_watcher.pid', 'interface routes alarm'],
+                true
+            );
+        }
     } else {
         killbypid('/var/run/gateway_watcher.pid');
     }
