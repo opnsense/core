@@ -402,21 +402,14 @@ abstract class Rule
 
     public function ruleOrigin()
     {
-
-        switch ($this->rule['#priority']) {
-            case 200000:
-                $origin = 'floating';
-                break;
-            case 300000:
-                $origin = 'group';
-                break;
-            case 400000:
-                $origin = 'interface';
-                break;
-            default:
-                $origin = 'internal';
+        if ($this->rule['#priority'] >= 200000 && $this->rule['#priority'] < 300000) {
+            return 'floating';
+        } elseif ($this->rule['#priority'] >= 300000 && $this->rule['#priority'] < 400000) {
+            return 'group';
+        } elseif ($this->rule['#priority'] >= 400000 && $this->rule['#priority'] < 500000) {
+            return 'interface';
         }
-        return $origin;
+        return 'internal';
     }
 
     /**
