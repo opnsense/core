@@ -43,7 +43,8 @@ class LeasesController extends ApiControllerBase
         $backend = new Backend();
         $config = Config::getInstance()->object();
         $online = [];
-        $if_map = [];
+        $if_devs = [];
+        $if_descrs = [];
         $ip_ranges = [];
         $interfaces = [];
 
@@ -60,7 +61,8 @@ class LeasesController extends ApiControllerBase
 
         /* get all device names and their associated interface names */
         foreach ($config->interfaces->children() as $if => $if_props) {
-            $if_map[(string)$if_props->if] = (string)$if_props->descr ?: strtoupper($if);
+            $if_devs[$if] = (string)$if_props->if;
+            $if_descrs[$if] = (string)$if_props->descr ?: strtoupper($if);
         }
 
         /* list online IPs and MACs */
@@ -153,14 +155,14 @@ class LeasesController extends ApiControllerBase
 
             if (!empty($lease['if'])) {
                 /* interface already included */
-                $intf = array_search(strtoupper($lease['if']), $if_map);
-                $intf_descr = $if_map[$intf];
+                $intf = $lease['if'];
+                $intf_descr = $if_descrs[$intf];
             } else {
                 /* interface not known, check range */
                 foreach ($ip_ranges as $cidr => $if_dev) {
                     if (!empty($lease['address']) && Util::isIPInCIDR($lease['address'], $cidr)) {
-                        $intf = $if_dev;
-                        $intf_descr = $if_map[$if_dev];
+                        $intf = array_search($if_dev, $if_devs);
+                        $intf_descr = $if_descrs[$intf];
                         break;
                     }
                 }
