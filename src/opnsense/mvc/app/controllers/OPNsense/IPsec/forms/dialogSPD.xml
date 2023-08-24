@@ -34,7 +34,7 @@
         <id>spd.destination</id>
         <label>Destination network</label>
         <type>text</type>
-        <help>destination network, leave empty to use the networks propogated in the child sa</help>
+        <help>destination network, leave empty to use the networks propagated in the child sa</help>
     </field>
     <field>
         <id>spd.description</id>
