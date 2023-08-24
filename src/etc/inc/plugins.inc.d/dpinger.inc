@@ -326,8 +326,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             /* use a separate script to produce the monitor alerts which runs forever */
             mwexecf(
                 '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
-                ['/var/run/gateway_watcher.pid', 'interface routes alarm'],
-                true
+                ['/var/run/gateway_watcher.pid', 'interface routes alarm']
             );
         }
     } else {
