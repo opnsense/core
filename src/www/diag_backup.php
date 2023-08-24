@@ -255,13 +255,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             }
                         }
                     }
-                    /* extract out rrd items, unset from $config when done */
-                    if (!empty($config['rrddata'])) {
-                        /* XXX we should point to the data... */
-                        rrd_import();
-                        unset($config['rrddata']);
-                    }
                     if (!empty($config['rrddata']) || !empty($pconfig['keepconsole'])){
+                        /* extract out rrd items, unset from $config when done */
+                        if (!empty($config['rrddata'])) {
+                            /* XXX we should point to the data... */
+                            rrd_import();
+                            unset($config['rrddata']);
+                        }
                         write_config();
                         convert_config();
                     }
