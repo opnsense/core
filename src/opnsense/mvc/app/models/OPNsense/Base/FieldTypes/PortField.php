@@ -29,6 +29,8 @@
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn;
+use OPNsense\Firewall\Alias;
+
 
 /**
  * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
@@ -39,7 +41,7 @@ class PortField extends BaseListField
     /**
      * @var array list of well known services
      */
-    private static $wellknownservices = array(
+    private static $wellknownservices = [
         'cvsup',
         'domain',
         'ftp',
@@ -85,12 +87,12 @@ class PortField extends BaseListField
         'telnet',
         'tftp',
         'rfb'
-    );
+    ];
 
     /**
      * @var array cached collected ports
      */
-    private static $internalCacheOptionList = array();
+    private static $internalCacheOptionList = [];
 
     /**
      * @var bool enable well known ports
@@ -103,17 +105,29 @@ class PortField extends BaseListField
     private $enableRanges = false;
 
     /**
+     * @var bool enable aliases
+     */
+    private $enableAlias = false;
+
+    /**
      * generate validation data (list of port numbers and well know ports)
      */
     protected function actionPostLoadingEvent()
     {
-        // only enableWellKnown influences valid options, keep static sets per option.
         $setid = $this->enableWellKnown ? "1" : "0";
+        $setid .= $this->enableAlias ? "1" : "0";
         if (empty(self::$internalCacheOptionList[$setid])) {
-            self::$internalCacheOptionList[$setid] = array();
+            self::$internalCacheOptionList[$setid] = [];
             if ($this->enableWellKnown) {
-                foreach (array("any") + self::$wellknownservices as $wellknown) {
+                foreach (["any"] + self::$wellknownservices as $wellknown) {
                     self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
+                }
+            }
+            if ($this->enableAlias) {
+                foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
+                    if (strpos((string)$alias->type, "port") !== false) {
+                        self::$internalCacheOptionList[$setid][(string)$alias->name] = (string)$alias->name;
+                    }
                 }
             }
             for ($port = 1; $port <= 65535; $port++) {
@@ -130,6 +144,15 @@ class PortField extends BaseListField
     public function setEnableWellKnown($value)
     {
         $this->enableWellKnown = strtoupper(trim($value)) == 'Y';
+    }
+
+    /**
+     * setter for maximum value
+     * @param integer $value
+     */
+    public function setEnableAlias($value)
+    {
+        $this->enableAlias = strtoupper(trim($value)) == 'Y';
     }
 
     /**
@@ -196,12 +219,12 @@ class PortField extends BaseListField
                             filter_var(
                                 $tmp[0],
                                 FILTER_VALIDATE_INT,
-                                array('options' => array('min_range' => 1, 'max_range' => 65535))
+                                ['options' => ['min_range' => 1, 'max_range' => 65535]]
                             ) !== false &&
                             filter_var(
                                 $tmp[1],
                                 FILTER_VALIDATE_INT,
-                                array('options' => array('min_range' => 1, 'max_range' => 65535))
+                                ['options' => ['min_range' => 1, 'max_range' => 65535]]
                             ) !== false &&
                             $tmp[0] < $tmp[1]
                         ) {
