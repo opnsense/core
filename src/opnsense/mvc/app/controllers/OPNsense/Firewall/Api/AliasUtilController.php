@@ -268,7 +268,7 @@ class AliasUtilController extends ApiControllerBase
      * API handler to look up in which rules an IP is used (either explicitly or included in a range).
      *
      * @return array Array with indexes 'status' (whether the call succeeded) and 'matches' (which rules match this IP,
-     *               only present if the call was succesful.)
+     *               only present if the call was successful.)
      * @throws \Exception
      */
     public function findReferencesAction()
