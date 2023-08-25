@@ -545,8 +545,70 @@ function system_host_route($host, $gateway)
     mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
-function system_default_route($gateway, $interface, $far = false)
+function system_interface_route($gw, $routes)
 {
+    $interface = $gw['interface'];
+    $gateway = $gw['gateway'];
+    $far = isset($gw['fargw']);
+    $device = $gw['if'];
+    $family = 'inet';
+
+    if (!is_ipaddrv4($gateway)) {
+        log_msg("ROUTING: not a valid interface gateway address: '{$gateway}'", LOG_ERR);
+        return;
+    }
+
+    if (!$far) {
+        /* special case tries to turn on far gateway when required for dynamic gateway */
+        $dynamicgw = trim(@file_get_contents("/tmp/{$device}_router") ?? '');
+        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
+            list (, $network) = interfaces_primary_address($interface);
+            if (!empty($network) && !ip_in_subnet($gateway, $network)) {
+                /*
+                 * If we do not fail primary network detection and the local address
+                 * is in not the same network as the gateway address set far flag.
+                 */
+                $far = 1;
+
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+            }
+        }
+    }
+
+    if (!$far) {
+        /* nothing to do */
+        return;
+    }
+
+    foreach ($routes as $route) {
+        /* find host routes on the link for the underlying device */
+        if ($route['netif'] != $device) {
+            continue;
+        } elseif ($route['proto'] != 'ipv4') {
+            continue;
+        } elseif (strpos($route['gateway'], 'link#') !== 0) {
+            continue;
+        /* XXX may consider "S" as well for manually assigned */
+        } elseif (strpos($route['flags'], 'H') === false) {
+            continue;
+        }
+
+        /* keeping previous, but do not log this noisy operation */
+        return;
+    }
+
+    log_msg("ROUTING: setting {$family} interface route to {$gateway} via {$device}");
+
+    /* never remove interface routes -- we only try to add if missing */
+    mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $device]);
+}
+
+function system_default_route($gw, $routes)
+{
+    $interface = $gw['interface'];
+    $gateway = $gw['gateway'];
+    $device = $gw['if'];
+
     if (is_ipaddrv4($gateway)) {
         $family = 'inet';
     } elseif (is_ipaddrv6($gateway)) {
@@ -556,50 +618,28 @@ function system_default_route($gateway, $interface, $far = false)
         return;
     }
 
-    $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
-
     if (is_linklocal($gateway)) {
-        $gateway .= "%{$realif}";
+        /* XXX always inet6 but why not do this elsewhere */
+        $gateway .= "%{$device}";
     }
 
-    /* XXX while this does prevent unnecessary work it cannot detect a flip of far gateway setting */
-    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
-    $current = trim(exec($tmpcmd), " \n");
-    if ($current == $gateway) {
-        log_msg("ROUTING: keeping current {$family} default gateway '{$gateway}'");
-        return;
-    }
-
-    if ($family == 'inet') {
-        $dynamicgw = trim(@file_get_contents("/tmp/{$realif}_router") ?? '');
-        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
-            /* special case tries to turn on far gateway when required for dynamic gateway */
-            list (, $network) = interfaces_primary_address($interface);
-            if (empty($network) || ip_in_subnet($gateway, $network)) {
-                /*
-                 * If we fail a primary network detection or the local address
-                 * is in the same network as the gateway address do nothing.
-                 */
-                $realif = null;
-            } else {
-                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
-            }
-        } elseif (!$far) {
-            /* standard case disables host routes when not set in a static gateway */
-            $realif = null;
+    foreach ($routes as $route) {
+        /* find out if the default route matches what we want to set */
+        if ($route['proto'] != ($family == 'inet6' ? 'ipv6' : 'ipv4')) {
+            continue;
+        } elseif ($route['destination'] != 'default') {
+            continue;
+        } elseif ($route['gateway'] != $gateway) {
+            continue;
         }
-    } else {
-        /* IPv6 does not support far gateway notion */
-        $realif = null;
+
+        log_msg("ROUTING: keeping {$family} default route to {$gateway}");
+        return;
     }
 
     log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
-    if (!empty($realif)) {
-        mwexecf('/sbin/route delete -%s %s -interface %s', [$family, $gateway, $realif], true);
-        mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $realif]);
-    }
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
@@ -618,6 +658,18 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways($ifdetails);
     $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
+    $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
+
+    foreach ($gateways->gatewaysIndexedByName(true) as $gateway) {
+        /* check if we need to add a required interface route to the gateway (IPv4 only) */
+        if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
+            continue;
+        } elseif (!empty($interface) && $interface != $gateway['interface']) {
+            continue;
+        }
+
+        system_interface_route($gateway, $routes);
+    }
 
     if (!empty($down_gateways)) {
         log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
@@ -640,7 +692,8 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             }
 
             log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
-            system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
+
+            system_default_route($gateway, $routes);
         }
     }
 
