@@ -543,7 +543,9 @@ class OpenVPN extends BaseModel
                     if ($tmp && isset($tmp['prv'])) {
                         $options['<key>'] = $tmp['prv'];
                         $options['<cert>'] = $tmp['crt'];
-                        if (isset($tmp['ca'])) {
+                        if (!empty((string)$node->ca)) {
+                            $options['<ca>'] = Store::getCaChain((string)$node->ca);
+                        } elseif (isset($tmp['ca'])) {
                             $options['<ca>'] = $tmp['ca']['crt'];
                         }
                     }

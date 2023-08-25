@@ -140,6 +140,13 @@
         <help>Select a certificate to use for this service.</help>
     </field>
     <field>
+        <id>instance.ca</id>
+        <label>Certificate Authority</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select a certificate authority when it differs from the attached certificate.</help>
+    </field>
+    <field>
         <id>instance.crl</id>
         <label>Certificate Revocation List</label>
         <type>dropdown</type>

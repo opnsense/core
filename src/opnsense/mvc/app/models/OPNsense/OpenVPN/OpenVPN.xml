@@ -196,6 +196,12 @@
                     <BlankDesc>None</BlankDesc>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
+                <ca type="CertificateField">
+                    <Required>N</Required>
+                    <type>ca</type>
+                    <BlankDesc> - Use from certificate</BlankDesc>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </ca>
                 <cert_depth type="OptionField">
                     <Required>N</Required>
                     <BlankDesc>Do Not Check</BlankDesc>
