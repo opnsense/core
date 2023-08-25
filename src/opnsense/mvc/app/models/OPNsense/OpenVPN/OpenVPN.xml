@@ -381,6 +381,11 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </ntp_servers>
+                <carp_depend_on type="VirtualIPField">
+                    <type>carp</type>
+                    <Required>N</Required>
+                    <key>mvc</key>
+                </carp_depend_on>
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
