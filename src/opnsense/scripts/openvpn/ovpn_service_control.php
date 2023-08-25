@@ -91,6 +91,27 @@ function ovpn_instance_stats($instance, $fhandle)
     return $data;
 }
 
+function get_vhid_status()
+{
+    $vhids = [];
+    $uuids = [];
+    foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
+        if ($item->mode == 'carp') {
+            $uuids[(string)$item->vhid] =  $id;
+        }
+    }
+    foreach (legacy_interfaces_details() as $ifdata) {
+        if (!empty($ifdata['carp'])) {
+            foreach ($ifdata['carp'] as $data) {
+                if (isset($uuids[$data['vhid']])) {
+                    $vhids[$uuids[$data['vhid']]] = $data['status'];
+                }
+            }
+        }
+    }
+    return $vhids;
+}
+
 
 $opts = getopt('ah', [], $optind);
 $args = array_slice($argv, $optind);
@@ -109,6 +130,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     if ($action != 'stop') {
         $mdl->generateInstanceConfig($instance_id);
     }
+    $vhids = $action == 'configure' ? get_vhid_status() : [];
     $instance_ids = [];
     foreach ($mdl->Instances->Instance->iterateItems() as $key => $node) {
         if (empty((string)$node->enabled)) {
@@ -133,7 +155,15 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                     ovpn_start($node, $statHandle);
                     break;
                 case 'configure':
-                    if ($instance_stats['has_changed'] || !isvalidpid($node->pidFilename)) {
+                    $carp_down = false;
+                    if ((string)$node->role == 'client' && !empty($vhids[(string)$node->carp_depend_on])) {
+                        $carp_down = $vhids[(string)$node->carp_depend_on] != 'MASTER';
+                    }
+                    if ($carp_down) {
+                        if (isvalidpid($node->pidFilename)) {
+                            ovpn_stop($node);
+                        }
+                    } elseif ($instance_stats['has_changed'] || !isvalidpid($node->pidFilename)) {
                         ovpn_stop($node);
                         ovpn_start($node, $statHandle);
                     }

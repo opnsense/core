@@ -130,6 +130,14 @@
         </help>
     </field>
     <field>
+        <id>instance.carp_depend_on</id>
+        <label>Depend on (carp)</label>
+        <type>dropdown</type>
+        <style>role role_client</style>
+        <help>The carp VHID to depend on, when this virtual address is not in master state,
+        the instance will be shutdown.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>Trust</label>
     </field>
