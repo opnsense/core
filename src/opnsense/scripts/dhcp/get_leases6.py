@@ -33,6 +33,7 @@ import calendar
 import datetime
 import time
 import argparse
+import re
 
 def parse_date(ymd, hms):
     dt = '%s %s' % (ymd, hms)
@@ -107,7 +108,9 @@ def parse_lease(lines):
     cur_segment = []
     addresses = []
     prefixes = []
-    iaid_duid = parse_iaid_duid(lines[0].split()[1])
+    # make sure any whitespace between the iaid_duid and the double quotes is removed
+    first = re.sub(r'"\s*([^"]*?)\s*"', r'"\1"', lines[0]).split()[1]
+    iaid_duid = parse_iaid_duid(first)
     lease['lease_type'] = lines[0].split()[0]
     lease.update(iaid_duid)
 
@@ -120,7 +123,7 @@ def parse_lease(lines):
 
         if parts[0] == 'iaaddr' or parts[0] == 'iaprefix':
             cur_segment.append(line)
-        elif len(line) > 3 and line[2] == '}' and len(cur_segment) > 0:
+        elif len(line) > 1 and line[0] == ' ' and '}' in line and len(cur_segment) > 0:
             cur_segment.append(line)
             (segment_type, segment) = parse_iaaddr_iaprefix(cur_segment)
             if segment_type == 'iaaddr':
