@@ -242,7 +242,7 @@ function system_resolvconf_generate($verbose = false)
 
 function get_locale_list()
 {
-    $locales = array();
+    $locales = [];
 
     /* first one is the default */
     $locales['en_US'] = gettext('English');
@@ -254,13 +254,18 @@ function get_locale_list()
     $locales['ja_JP'] = gettext('Japanese');
     $locales['ko_KR'] = gettext('Korean');
     $locales['no_NO'] = gettext('Norwegian');
-    $locales['pl_PL'] = gettext('Polish'); /* development only */
+    $locales['pl_PL'] = gettext('Polish');
     $locales['pt_BR'] = gettext('Portuguese (Brazil)');
     $locales['pt_PT'] = gettext('Portuguese (Portugal)');
     $locales['ru_RU'] = gettext('Russian');
     $locales['es_ES'] = gettext('Spanish');
     $locales['tr_TR'] = gettext('Turkish');
-    $locales['vi_VN'] = gettext('Vietnamese'); /* development only */
+    $locales['vi_VN'] = gettext('Vietnamese');
+
+    if (!product::getInstance()->development()) {
+        unset($locales['pl_PL']);
+        unset($locales['vi_VN']);
+    }
 
     return $locales;
 }
