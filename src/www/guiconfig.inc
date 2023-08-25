@@ -31,6 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* check before 'product' class is known to catch all errors */
 if (file_exists('/var/run/development')) {
     ini_set('display_errors', 0);
 }

@@ -59,6 +59,10 @@ final class product
         } else {
             self::$data['product_booting'] = false;
         }
+
+        /* development flag */
+        $develflag = '/var/run/development';
+        self::$data['product_development'] = file_exists($develflag);
     }
 
     private function __clone()
