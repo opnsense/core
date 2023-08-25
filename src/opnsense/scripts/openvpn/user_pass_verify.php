@@ -119,10 +119,9 @@ function do_auth($common_name, $serverid, $method, $auth_file)
         $authenticator = $authFactory->get($authName);
         if ($authenticator) {
             if ($authenticator->authenticate($username, $password)) {
-                $vpnid = filter_var($a_server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
                 // fetch or  create client specif override
                 $common_name = empty($a_server['cso_login_matching']) ? $common_name : $username;
-                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($vpnid, $common_name);
+                $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name);
                 if (empty($cso)) {
                     $cso = array("common_name" => $common_name);
                 }

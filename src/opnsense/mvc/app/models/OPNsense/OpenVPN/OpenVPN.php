@@ -267,7 +267,7 @@ class OpenVPN extends BaseModel
                 }
                 return [
                     'role' => (string)$node->role,
-                    'vpnid' => $server_id,
+                    'vpnid' => (string)$node->vpnid,
                     'authmode' => (string)$node->authmode,
                     'local_group' => $local_group,
                     'strictusercn' => (string)$node->strictusercn,
@@ -432,14 +432,14 @@ class OpenVPN extends BaseModel
                         $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
                         // hook event handlers
                         if (!empty((string)$node->authmode)) {
-                            $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node->vpnid}'\" via-env";
+                            $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
                             $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
                         } else {
                             // client specific profiles are being deployed using the connect event when no auth is used
-                            $options['client-connect'] = "\"{$event_script} '{$node->vpnid}'\"";
+                            $options['client-connect'] = "\"{$event_script} '{$node_uuid}'\"";
                         }
-                        $options['client-disconnect'] = "\"{$event_script} '{$node->vpnid}'\"";
-                        $options['tls-verify'] = "\"{$event_script} '{$node->vpnid}'\"";
+                        $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
+                        $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
                     }
 
                     if (!empty((string)$node->maxclients)) {
