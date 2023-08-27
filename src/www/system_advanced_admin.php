@@ -68,6 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'] ?? null;
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
+    $pconfig['ssh-ed25519-cert'] = $config['system']['ssh']['ssh-ed25519-cert'];
+    $pconfig['ssh-rsa-cert'] = $config['system']['ssh']['ssh-rsa-cert'];
+    $pconfig['ssh-ecdsa-cert'] = $config['system']['ssh']['ssh-ecdsa-cert'];
     $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
     $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
     $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
@@ -286,6 +289,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ssh']['noauto'] = 1;
 
         $config['system']['ssh']['interfaces'] = !empty($pconfig['sshinterfaces']) ? implode(',', $pconfig['sshinterfaces']) : null;
+        $config['system']['ssh']['ssh-ed25519-cert'] = $pconfig['ssh-ed25519-cert'];
+        $config['system']['ssh']['ssh-rsa-cert'] = $pconfig['ssh-rsa-cert'];
+        $config['system']['ssh']['ssh-ecdsa-cert'] = $pconfig['ssh-ecdsa-cert'];
         $config['system']['ssh']['kex'] = !empty($pconfig['ssh-kex']) ? implode(',', $pconfig['ssh-kex']) : null;
         $config['system']['ssh']['ciphers'] = !empty($pconfig['ssh-ciphers']) ? implode(',', $pconfig['ssh-ciphers']) : null;
         $config['system']['ssh']['macs'] = !empty($pconfig['ssh-macs']) ? implode(',', $pconfig['ssh-macs']) : null;
@@ -794,6 +800,33 @@ $(document).ready(function() {
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                 <td>
                   <button id="show-advanced-cryptocryptobtn" class="btn btn-xs btn-default" value="yes"><?= gettext('Show cryptographic overrides') ?></button>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
+                <td><a id="help_for_ed25519_certificate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ED25519 host key certificate"); ?></td>
+                <td>
+                    <input name="ssh-ed25519-cert" type="text" value="<?= $pconfig['ssh-ed25519-cert'] ?>"/>
+                    <div class="hidden" data-for="help_for_ed25519_certificate">
+                      <?=gettext("Set a host key certificate for the ED25519 SSH key");?>
+                    </div>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
+                <td><a id="help_for_rsa_certificate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RSA host key certificate"); ?></td>
+                <td>
+                    <input name="ssh-rsa-cert" type="text" value="<?= $pconfig['ssh-rsa-cert'] ?>"/>
+                    <div class="hidden" data-for="help_for_rsa_certificate">
+                      <?=gettext("Set a host key certificate for the RSA SSH key");?>
+                    </div>
+                </td>
+              </tr>
+              <tr class="show-advanced-crypto" style="display:none">
+                <td><a id="help_for_ecdsa_certificate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ECDSA host key certificate"); ?></td>
+                <td>
+                    <input name="ssh-ecdsa-cert" type="text" value="<?= $pconfig['ssh-ecdsa-cert'] ?>"/>
+                    <div class="hidden" data-for="help_for_ecdsa_certificate">
+                      <?=gettext("Set a host key certificate for the ECDSA SSH key");?>
+                    </div>
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
