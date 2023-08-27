@@ -173,7 +173,7 @@ function openssh_configure_do($verbose = false, $interface = '')
             file_put_contents($file, $config['system']['ssh'][$confname]);
             clear_subsystem_dirty('sshdkeys');
         } else {
-	    mark_subsystem_dirty('sshdkeys');
+	        mark_subsystem_dirty('sshdkeys');
             @unlink($file);
             clear_subsystem_dirty('sshdkeys');
         }
