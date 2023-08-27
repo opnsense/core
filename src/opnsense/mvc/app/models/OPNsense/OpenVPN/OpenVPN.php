@@ -277,7 +277,7 @@ class OpenVPN extends BaseModel
                 }
                 return [
                     'role' => (string)$node->role,
-                    'vpnid' => $server_id,
+                    'vpnid' => (string)$node->vpnid,
                     'authmode' => (string)$node->authmode,
                     'local_group' => $local_group,
                     'strictusercn' => (string)$node->strictusercn,
