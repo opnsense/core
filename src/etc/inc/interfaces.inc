@@ -2315,10 +2315,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'dhcp':
             interface_dhcp_configure($interface);
             break;
-        case 'pppoe':
         case 'l2tp':
-        case 'pptp':
         case 'ppp':
+        case 'pppoe':
+        case 'pptp':
             interface_ppps_configure($interface);
             break;
         default:
