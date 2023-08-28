@@ -981,9 +981,10 @@ function interface_ppps_configure($interface)
             }
         }
     }
-    $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : array();
-    $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : array();
-    $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : array();
+    $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
+    $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
+    $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
+    $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
 
     /*
      * We bring up the parent interface first because if DHCP is configured on the parent we need
@@ -991,14 +992,11 @@ function interface_ppps_configure($interface)
      */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
-            case "pppoe":
-                /* Bring the parent interface up */
+            case 'pppoe':
                 interfaces_bring_up($port);
-                /* Enable setautosrc to automatically change mac address if parent interface's changes */
-                mwexecf('/usr/sbin/ngctl msg %s: setautosrc 1', array($port));
                 break;
-            case "pptp":
-            case "l2tp":
+            case 'pptp':
+            case 'l2tp':
                 /* configure interface */
                 if (is_ipaddr($localips[$pid])) {
                     // Manually configure interface IP/subnet
@@ -1010,15 +1008,15 @@ function interface_ppps_configure($interface)
 
                 if (!is_ipaddr($localips[$pid])) {
                     log_msg("Could not get a Local IP address for PPTP/L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
-                    $localips[$pid] = "0.0.0.0";
+                    $localips[$pid] = '0.0.0.0';
                 }
                 if (!is_ipaddr($gateways[$pid])) {
                     log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_WARNING);
                     return;
                 }
                 break;
-            case "ppp":
-                if (!file_exists("{$port}")) {
+            case 'ppp':
+                if (!file_exists($port)) {
                     log_msg("Device {$port} does not exist. PPP link cannot start without the modem device.", LOG_ERR);
                     return;
                 }
@@ -1122,7 +1120,7 @@ EOD;
         $mpdconf .= "  set ipcp enable req-sec-dns\n";
     }
     foreach ($ports as $pid => $port) {
-        $mpdconf_arr = array();
+        $mpdconf_arr = [];
         $port = get_real_interface($port);
         if ($ppp['type'] == "ppp") {
             $mpdconf_arr[] = "create link static {$interface}_link{$pid} modem";
@@ -1154,7 +1152,6 @@ EOD;
             $mpdconf_arr[] = "set link bandwidth {$bandwidths[$pid]}";
         }
 
-        $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
             /* subtract default header when deriving from interface config (as shown there) */
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
@@ -1264,7 +1261,7 @@ EOD;
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
-        array("mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client")
+        ["mpd_{$interface}.conf", "/var/run/{$ppp['type']}_{$interface}.pid", "{$ppp['type']}client"]
     );
 
     /* appease netgraph by setting the correct node name */
@@ -1279,6 +1276,20 @@ EOD;
         }
         sleep(1);
         $i++;
+    }
+
+    switch ($ppp['type']) {
+        case 'pppoe':
+            /* automatically change MAC address if parent interface changes */
+            $ng_name = preg_replace('/[.:]/', '_', $ports[0]) . ':';
+            mwexecf('/usr/sbin/ngctl msg %s setautosrc 1', [$ng_name]);
+            /* FALLTHROUGH */
+        case 'l2tp':
+        case 'pptp':
+            legacy_interface_mtu($ifcfg['if'], $mtus[0]);
+            /* FALLTHROUGH */
+        default:
+            break;
     }
 }
 
@@ -2179,6 +2190,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
+    $is_ppp = false;
 
     switch ($wancfg['ipaddr'] ?? '') {
         case 'l2tp':
@@ -2187,6 +2199,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'pptp':
             /* hardware device underneath software node */
             $realhwif = get_ppp_parent($realif);
+            $is_ppp = true;
             break;
         default:
             /* hardware device remains a hardware device */
@@ -2274,10 +2287,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'dhcp':
             interface_dhcp_configure($interface);
             break;
-        case 'pppoe':
         case 'l2tp':
-        case 'pptp':
         case 'ppp':
+        case 'pppoe':
+        case 'pptp':
             interface_ppps_configure($interface);
             break;
         default:
@@ -2352,7 +2365,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             }
         }
 
-        if ($mtu != $intf_details['mtu']) {
+        if ($mtu != $intf_details['mtu'] && !$is_ppp) {
             legacy_interface_mtu($realif, $mtu);
         }
     }
