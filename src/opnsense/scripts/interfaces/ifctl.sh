@@ -27,6 +27,8 @@ DO_COMMAND=
 DO_CONTENTS=
 DO_VERBOSE=
 
+FILES="nameserver prefix router searchdomain"
+
 AF=
 MD=
 EX=
@@ -55,7 +57,7 @@ flush_routes()
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:cdi:lnprsV OPT; do
+while getopts 46a:cdi:lnOprsV OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -70,7 +72,7 @@ while getopts 46a:cdi:lnprsV OPT; do
 		;;
 	c)
 		DO_COMMAND="-c"
-		MD="nameserver prefix router searchdomain"
+		MD="${FILES}"
 		;;
 	d)
 		DO_COMMAND="-d"
@@ -83,6 +85,9 @@ while getopts 46a:cdi:lnprsV OPT; do
 		;;
 	n)
 		MD="nameserver"
+		;;
+	O)
+		DO_COMMAND="-O"
 		;;
 	p)
 		MD="prefix"
@@ -116,7 +121,7 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 	HAVE_ROUTE=
 
 	# iterate through possible files for cleanup
-	for MD in nameserver prefix router searchdomain; do
+	for MD in ${FILES}; do
 		for IFC in ${IF} ${IF}:slaac; do
 			FILE="/tmp/${IFC}_${MD}${EX}"
 			if [ ! -f ${FILE} ]; then
@@ -137,6 +142,30 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 	if [ -n "${HAVE_ROUTE}" ]; then
 		/sbin/pfctl -i ${IF} -Fs
 	fi
+
+	exit 0
+elif [ "${DO_COMMAND}" = "-O" ]; then
+	if [ -z "${IF}" ]; then
+		echo "Dumping requires interface option" >&2
+		exit 1
+	fi
+
+	# iterate through possible files to print its data (ignore -4/6)
+	for EX in '' v6; do
+		for MD in ${FILES}; do
+			for IFC in ${IF} ${IF}:slaac; do
+				FILE="/tmp/${IFC}_${MD}${EX}"
+				if [ ! -f ${FILE} ]; then
+					continue
+				fi
+				echo -n "${FILE}:"
+				for CONTENT in $(cat ${FILE}); do
+				    echo -n " ${CONTENT}"
+				done
+				echo
+			done
+		done
+	done
 
 	exit 0
 elif [ "${DO_COMMAND}" = "-l" ]; then
