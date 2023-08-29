@@ -39,19 +39,15 @@ class Gateways
 {
     var $configHandle = null;
     var $gatewaySeq = 0;
-    var $ifconfig = array();
     var $cached_gateways = array();
 
     /**
      * Construct new gateways object
-     * @param array $ifconfig containing serialized ifconfig data
+     * @param array $unused XXX shim to be removed after 24.1 when all callers are fixed
      */
-    public function __construct(array $ifconfig)
+    public function __construct(array $unused = [])
     {
         $this->configHandle = Config::getInstance()->object();
-        if ($ifconfig !== null) {
-            $this->ifconfig = $ifconfig;
-        }
     }
 
     /**
