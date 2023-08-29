@@ -1284,11 +1284,8 @@ EOD;
             $ng_name = preg_replace('/[.:]/', '_', $ports[0]) . ':';
             mwexecf('/usr/sbin/ngctl msg %s setautosrc 1', [$ng_name]);
             /* FALLTHROUGH */
-        case 'l2tp':
-        case 'pptp':
-            legacy_interface_mtu($ifcfg['if'], $mtus[0]);
-            /* FALLTHROUGH */
         default:
+            legacy_interface_mtu($ifcfg['if'], $mtus[0]);
             break;
     }
 }
