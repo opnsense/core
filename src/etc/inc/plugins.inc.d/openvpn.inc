@@ -965,11 +965,12 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     if (empty($settings['common_name']) || empty($server['vpnid'])) {
         return false;
     }
+
     $conf = '';
+
     if (!empty($settings['block'])) {
         $conf .= "disable\n";
     }
-
     if (!empty($settings['push_reset'])) {
         $conf .= "push-reset\n";
     }
@@ -1027,10 +1028,15 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         chown($target_filename, 'nobody');
         chgrp($target_filename, 'nobody');
         return $target_filename;
-    } elseif (is_file($target_filename)) {
-        unlink($target_filename);
-        return null;
     }
+
+    /* nothing was configured */
+
+    if (is_file($target_filename)) {
+        unlink($target_filename);
+    }
+
+    return null;
 }
 
 function openvpn_prepare($device)
