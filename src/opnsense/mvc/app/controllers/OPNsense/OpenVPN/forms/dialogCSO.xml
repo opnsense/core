@@ -135,27 +135,4 @@
         <advanced>true</advanced>
         <help>Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.</help>
     </field>
-    <field>
-        <type>header</type>
-        <label>Advanced Settings</label>
-        <collapse>true</collapse>
-    </field>
-    <field>
-        <id>cso.tun_mtu</id>
-        <label>TUN device MTU</label>
-        <type>text</type>
-        <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
-    </field>
-    <field>
-        <id>cso.fragment</id>
-        <label>Fragment size</label>
-        <type>text</type>
-        <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
-    </field>
-    <field>
-        <id>cso.mssfix</id>
-        <label>MSS fix</label>
-        <type>checkbox</type>
-        <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
-    </field>
 </fields>

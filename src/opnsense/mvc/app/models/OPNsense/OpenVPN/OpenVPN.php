@@ -143,9 +143,6 @@ class OpenVPN extends BaseModel
                 'description',
                 'dns_domain',
                 'dns_domain_search',
-                'fragment',
-                'mssfix',
-                'tun_mtu',
                 'tunnel_network',
                 'tunnel_networkv6',
             ];

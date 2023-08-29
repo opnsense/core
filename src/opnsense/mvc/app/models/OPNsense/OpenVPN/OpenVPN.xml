@@ -91,19 +91,6 @@
                 <description type="TextField">
                     <Required>N</Required>
                 </description>
-                <tun_mtu type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>60</MinimumValue>
-                    <MaximumValue>65535</MaximumValue>
-                </tun_mtu>
-                <fragment type="IntegerField">
-                    <Required>N</Required>
-                    <MinimumValue>0</MinimumValue>
-                    <MaximumValue>65528</MaximumValue>
-                </fragment>
-                <mssfix type="BooleanField">
-                    <Required>N</Required>
-                </mssfix>
             </Overwrite>
         </Overwrites>
         <Instances>
@@ -381,6 +368,19 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </ntp_servers>
+                <tun_mtu type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>60</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </tun_mtu>
+                <fragment type="IntegerField">
+                    <Required>N</Required>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65528</MaximumValue>
+                </fragment>
+                <mssfix type="BooleanField">
+                    <Required>N</Required>
+                </mssfix>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>
                     <Required>N</Required>

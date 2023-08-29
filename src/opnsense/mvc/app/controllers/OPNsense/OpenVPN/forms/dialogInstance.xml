@@ -362,4 +362,25 @@ Set to 0 to disable, remember to change your client as well.
             Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.
         </help>
     </field>
+    <field>
+        <id>instane.tun_mtu</id>
+        <label>TUN device MTU</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
+    </field>
+    <field>
+        <id>instane.fragment</id>
+        <label>Fragment size</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
+    </field>
+    <field>
+        <id>instance.mssfix</id>
+        <label>MSS fix</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
+    </field>
 </fields>
