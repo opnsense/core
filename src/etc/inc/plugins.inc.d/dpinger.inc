@@ -129,11 +129,11 @@ function dpinger_host_routes()
     return $routes;
 }
 
-function dpinger_instances($ifconfig_details = null)
+function dpinger_instances()
 {
     $instances = [];
 
-    $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
 
     foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
         if (empty($gateway['monitor'])) {
@@ -185,7 +185,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     $dpinger_default = dpinger_defaults();
     $routes = [];
 
-    foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
+    foreach (dpinger_instances() as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
         }

@@ -708,7 +708,7 @@ EOPP;
     }
 
     $iflist = get_configured_interface_with_descr();
-    $gwObject = new \OPNsense\Routing\Gateways($ifconfig_details);
+    $gwObject = new \OPNsense\Routing\Gateways();
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
@@ -1656,7 +1656,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
+    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (isset($iflist[$dhcrelayif]) && get_interface_ip($dhcrelayif, $ifconfig_details)) {
@@ -1768,7 +1768,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways($ifconfig_details))->gatewaysIndexedByName(true);
+    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true);
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (isset($iflist[$dhcrelayif]) && get_interface_ipv6($dhcrelayif, $ifconfig_details)) {

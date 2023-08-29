@@ -573,7 +573,7 @@ function _interfaces_gre_configure($gre)
         $gre['tunnel-remote-addr'],
     ]);
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
 
     foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
         if ($config['interfaces'][$ifname]['if'] == $gre['greif']) {
@@ -605,7 +605,7 @@ function _interfaces_gif_configure($gif)
 {
     global $config;
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
 
     if (is_ipaddrv4($gif['remote-addr'])) {
         $realifip = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
@@ -2615,7 +2615,7 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     mwexecf('/sbin/ifconfig %s stfv4net %s/%s', array($stfiface, $ip4address, $wancfg['prefix-6rd-v4plen']));
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $rd6brgw]);
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
     $ip4gateway = $gateways->getInterfaceGateway($interface, 'inet');
     system_host_route($wancfg['gateway-6rd'], $ip4gateway);
 
@@ -2701,7 +2701,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
     mwexecf('/sbin/ifconfig %s inet6 %s prefixlen 16', array($stfiface, $stflan));
     mwexecf('/usr/local/sbin/ifctl -i %s -6rd -a %s', [$stfiface, $stfbrgw]);
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
     $ip4gateway = $gateways->getInterfaceGateway($interface, 'inet');
     system_host_route('192.88.99.1', $ip4gateway);
 
@@ -3855,7 +3855,7 @@ function get_interfaces_info($include_unlinked = false)
 
     $all_intf_details = legacy_interfaces_details();
     $all_intf_stats = legacy_interface_stats();
-    $gateways = new \OPNsense\Routing\Gateways($all_intf_details);
+    $gateways = new \OPNsense\Routing\Gateways();
     $ifup = legacy_interface_listget('up');
     $result = [];
     $interfaces = legacy_config_get_interfaces(['virtual' => false]);

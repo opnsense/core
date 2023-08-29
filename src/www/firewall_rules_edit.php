@@ -40,7 +40,7 @@ $ostypes = json_decode(configd_run('filter list osfp json'));
 if ($ostypes == null) {
     $ostypes = array();
 }
-$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+$gateways = new \OPNsense\Routing\Gateways();
 
 
 /**

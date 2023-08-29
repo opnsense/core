@@ -346,7 +346,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 {
     global $config;
 
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
     $syscfg = config_read_array('system');
     $exclude_interfaces = [];
     $master_list = [];
@@ -656,7 +656,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     }
 
     $ifdetails = legacy_interfaces_details();
-    $gateways = new \OPNsense\Routing\Gateways($ifdetails);
+    $gateways = new \OPNsense\Routing\Gateways();
     $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
     $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
 
