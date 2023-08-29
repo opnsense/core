@@ -77,9 +77,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>
-            Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.
-        </help>
+        <help>Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.</help>
     </field>
     <field>
         <id>cso.redirect_gateway</id>
@@ -110,9 +108,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>
-            Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported
-        </help>
+        <help>Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported.</help>
     </field>
     <field>
         <id>cso.dns_servers</id>
@@ -120,9 +116,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>
-            Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.
-        </help>
+        <help>Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.</help>
     </field>
     <field>
         <id>cso.ntp_servers</id>
@@ -130,9 +124,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>
-            Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.
-        </help>
+        <help>Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.</help>
     </field>
     <field>
         <id>cso.wins_servers</id>
@@ -141,8 +133,6 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <advanced>true</advanced>
-        <help>
-            Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.
-        </help>
+        <help>Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.</help>
     </field>
 </fields>
