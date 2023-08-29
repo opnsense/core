@@ -457,7 +457,12 @@ function calculate_ipv6_delegation_length($if)
             break;
         case 'dhcp6':
             $dhcp6cfg = $config['interfaces'][$if];
-            if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
+            if (!empty($dhcp6cfg['adv_dhcp6_config_file_override'])) {
+                /* emit error since we cannot cope with custom config */
+                $pdlen = -1;
+            } elseif (!empty($dhcp6cfg['adv_dhcp6_config_advanced']) && is_numeric($dhcp6cfg['adv_dhcp6_prefix_interface_statement_sla_len'])) {
+                $pdlen = $dhcp6cfg['adv_dhcp6_prefix_interface_statement_sla_len'];
+            } elseif (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
                 $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
             }
             break;

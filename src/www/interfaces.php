@@ -2862,7 +2862,7 @@ include("head.inc");
                             endforeach;?>
                             </select>
                             <div class="hidden" data-for="help_for_dhcp6-ia-pd-len">
-                              <?=gettext("The value in this field is the delegated prefix length provided by the DHCPv6 server. Normally specified by the ISP."); ?>
+                              <?=gettext("The value in this field is the delegated prefix length provided by the DHCPv6 server."); ?>
                             </div>
                           </td>
                         </tr>
@@ -3083,7 +3083,7 @@ include("head.inc");
                               endfor;?>
                             </select>
                             <div class="hidden" data-for="help_for_prefix-6rd-v4plen">
-                              <?=gettext("The value in this field is the 6RD IPv4 prefix length. Normally specified by the ISP. A value of 0 means we embed the entire IPv4 address in the 6RD prefix."); ?>
+                              <?=gettext("The value in this field is the 6RD IPv4 prefix length. A value of 0 means we embed the entire IPv4 address in the 6RD prefix."); ?>
                             </div>
                           </td>
                         </tr>
