@@ -196,6 +196,6 @@ function return_down_gateways()
 /* XXX deprecated */
 function return_gateway_groups_array()
 {
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+    $gateways = new \OPNsense\Routing\Gateways();
     return $gateways->getGroups(return_gateways_status());
 }
