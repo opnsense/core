@@ -363,14 +363,14 @@ Set to 0 to disable, remember to change your client as well.
         </help>
     </field>
     <field>
-        <id>instane.tun_mtu</id>
+        <id>instance.tun_mtu</id>
         <label>TUN device MTU</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
     </field>
     <field>
-        <id>instane.fragment</id>
+        <id>instance.fragment</id>
         <label>Fragment size</label>
         <type>text</type>
         <advanced>true</advanced>

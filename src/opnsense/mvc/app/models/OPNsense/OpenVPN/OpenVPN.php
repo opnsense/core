@@ -509,10 +509,23 @@ class OpenVPN extends BaseModel
                         $options[$opt] = str_replace(',', ':', (string)$node->$opt);
                     }
                 }
+
                 if (!empty((string)$node->various_flags)) {
                     foreach (explode(',', (string)$node->various_flags) as $opt) {
                         $options[$opt] = null;
                     }
+                }
+
+                if (!empty((string)$node->tun_mtu)) {
+                    $options['tun-mtu'] = (string)$node->tun_mtu;
+                }
+
+                if ($node->fragment != null && (string)$node->fragment != '') {
+                    $options['fragment'] = (string)$node->fragment;
+                }
+
+                if (!empty((string)$node->mssfix)) {
+                    $options['mssfix'] = null;
                 }
 
                 // routes (ipv4, ipv6 local or push)
@@ -557,6 +570,7 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
+
                 // dump to file
                 $this->writeConfig($node->cnfFilename, $options);
             }

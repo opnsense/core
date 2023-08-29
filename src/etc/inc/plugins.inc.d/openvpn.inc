@@ -1018,16 +1018,6 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
     openvpn_add_dhcpopts($settings, $conf);
 
-    if (!empty($settings['tun_mtu'])) {
-        $conf .= 'tun-mtu ' . $settings['tun_mtu'] . PHP_EOL;
-    }
-    if (isset($settings['fragment']) && $settings['fragment'] != '') {
-        $conf .= 'fragment ' . $settings['fragment'] . PHP_EOL;
-    }
-    if (!empty($settings['mssfix'])) {
-        $conf .= 'mssfix' . PHP_EOL;
-    }
-
     $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     if (empty($target_filename)) {
         $target_filename = "/var/etc/openvpn-csc/" . $vpnid . "/" . $settings['common_name'];
