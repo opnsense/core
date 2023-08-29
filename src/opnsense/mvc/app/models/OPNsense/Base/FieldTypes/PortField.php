@@ -31,7 +31,6 @@ namespace OPNsense\Base\FieldTypes;
 use OPNsense\Phalcon\Filter\Validation\Validator\InclusionIn;
 use OPNsense\Firewall\Alias;
 
-
 /**
  * Class PortField field type for ports, includes validation for services in /etc/services or valid number ranges.
  * @package OPNsense\Base\FieldTypes
