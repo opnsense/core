@@ -46,7 +46,7 @@ class Gateways
      * Construct new gateways object
      * @param array $ifconfig containing serialized ifconfig data
      */
-    public function __construct(array $ifconfig)
+    public function __construct(array $ifconfig = [])
     {
         $this->configHandle = Config::getInstance()->object();
         if ($ifconfig !== null) {
