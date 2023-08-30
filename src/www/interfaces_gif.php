@@ -111,9 +111,7 @@ legacy_html_escape_form_data($a_gifs);
                     </tr>
                   </thead>
                   <tbody>
-<?php
-                  $i = 0;
-                  foreach ($a_gifs as $gif): ?>
+<?php foreach ($a_gifs as $i => $gif): ?>
                     <tr>
                       <td><?= html_safe(convert_friendly_interface_to_friendly_descr(explode('_vip', $gif['if'])[0])) ?></td>
                       <td><?=$gif['remote-addr'];?></td>
@@ -127,22 +125,7 @@ legacy_html_escape_form_data($a_gifs);
                         </button>
                       </td>
                     </tr>
-<?php
-                  $i++;
-                  endforeach; ?>
-                    <tr>
-                      <td colspan="4">
-                        <?=sprintf(
-                          gettext(
-                            'If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) Tunnel Broker ' .
-                            'on a WAN with a dynamic IP, you may want to add a %sHE.net Tunnelbroker dynamic DNS entry%s ' .
-                            'to keep your tunnel functional when your IP changes.'
-                          ),
-                          '<a href="services_dyndns.php">',
-                          '</a>'
-                        ); ?>
-                      </td>
-                    </tr>
+<?php endforeach ?>
                   </tbody>
                 </table>
               </div>
