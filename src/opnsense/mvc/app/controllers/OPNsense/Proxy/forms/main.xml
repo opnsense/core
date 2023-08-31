@@ -51,7 +51,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Type subnets/addresses you want to ignore for the access.log.</help>
-                <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -61,7 +60,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Type IPs of alternative DNS servers you like to use.</help>
-                <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -296,7 +294,6 @@
                 <label>Proxy interfaces</label>
                 <type>select_multiple</type>
                 <help>Select interface(s) the proxy will bind to.</help>
-                <hint>Type or select interface.</hint>
             </field>
             <field>
                 <id>proxy.forward.port</id>
@@ -370,7 +367,6 @@
                 <label>FTP proxy interfaces</label>
                 <type>select_multiple</type>
                 <help>Select interface(s) the ftp proxy will bind to.</help>
-                <hint>Type or select interface (Leave blank to disable ftp proxy).</hint>
             </field>
             <field>
                 <id>proxy.forward.ftpPort</id>
@@ -392,7 +388,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Type subnets you want to allow access to the proxy server.</help>
-                <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -401,7 +396,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Type IP addresses you want to allow access to the proxy server.</help>
-                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -410,7 +404,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Type IP addresses you want to deny access to the proxy server.</help>
-                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -419,7 +412,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Whitelist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
-                <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -428,7 +420,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Blacklist destination domains. You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "^https?:\/\/([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
-                <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -437,7 +428,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: "^(.)+Macintosh(.)+Firefox/37\.0" matches on "Macintosh version of Firefox revision 37.0"; "^Mozilla" matches on "all Mozilla based browsers"</help>
-                <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -447,7 +437,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: "video/flv" matches on "Flash Video"; "application/x-javascript" matches on "javascripts"</help>
-                <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -472,7 +461,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).</help>
-                <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -482,7 +470,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).</help>
-                <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -494,7 +481,6 @@
                 <type>checkbox</type>
                 <style>tokenize</style>
                 <help>If this checkbox is checked, you can use an ICAP server to filter or replace content.</help>
-                <hint>Select if you want to use ICAP.</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
             </field>
@@ -504,7 +490,6 @@
                 <type>text</type>
                 <style>tokenize</style>
                 <help>Enter the url where the REQMOD requests should be sent to.</help>
-                <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
             </field>
@@ -514,7 +499,6 @@
                 <type>text</type>
                 <style>tokenize</style>
                 <help>Enter the url where the RESPMOD requests should be sent to.</help>
-                <hint>Enter the URL of the ICAP Server</hint>
                 <allownew>true</allownew>
                 <advanced>false</advanced>
             </field>
@@ -524,7 +508,6 @@
                 <type>text</type>
                 <style>tokenize</style>
                 <help>Default ttl</help>
-                <hint>Enter the default ttl.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -534,7 +517,6 @@
                 <type>checkbox</type>
                 <style>tokenize</style>
                 <help>If you enable this option, the client IP address will be sent to the ICAP server. This can be useful if you want to filter traffic based on IP addresses.</help>
-                <hint>Send the client IP address to the ICAP server.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -544,7 +526,6 @@
                 <type>checkbox</type>
                 <style>tokenize</style>
                 <help>If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames. Authentication is required to use usernames.</help>
-                <hint>Check if the username should be sent to the ICAP server.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -554,7 +535,6 @@
                 <type>checkbox</type>
                 <style>tokenize</style>
                 <help>Use this option if your usernames need to be encoded.</help>
-                <hint>Check if you want to encode the username using base64.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -564,7 +544,6 @@
                 <type>text</type>
                 <style>tokenize</style>
                 <help>The header which should be used to send the username to the ICAP server.</help>
-                <hint>Enter the name of the header.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -574,7 +553,6 @@
                 <type>checkbox</type>
                 <style>tokenize</style>
                 <help>If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance.</help>
-                <hint>Enable if you want to use previews.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -584,7 +562,6 @@
                 <type>text</type>
                 <style>tokenize</style>
                 <help>Enter the size of the preview which is sent to the ICAP server.</help>
-                <hint>Enter the size of the preview.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -594,7 +571,6 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help>Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: "mydomain.com" matches on "*.mydomain.com"; "https://([a-zA-Z]+)\.mydomain\." matches on "http(s)://textONLY.mydomain.*"; "\.gif$" matches on "\*.gif" but not on "\*.gif\test"; "\[0-9]+\.gif$" matches on "\123.gif" but not on "\test.gif"</help>
-                <hint>Regular expressions are allowed.</hint>
                 <allownew>true</allownew>
             </field>
         </subtab>

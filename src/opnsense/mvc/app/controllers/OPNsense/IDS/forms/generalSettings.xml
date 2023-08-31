@@ -74,7 +74,6 @@
         <label>Interfaces</label>
         <type>select_multiple</type>
         <help>Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).</help>
-        <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>ids.general.homenet</id>
