@@ -49,9 +49,9 @@
                             }
                         } else {
                             if (row.disabled === "" || parseInt(row.disabled, 2) === 0) {
-                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-success" data-toggle="tooltip" title="{{ lang._('Disable') }}" data-value="0" data-row-id="' + row.uuid + '"></span>';
+                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-success bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Disable') }}" data-value="0" data-row-id="' + row.uuid + '"></span>';
                             } else {
-                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-muted" data-toggle="tooltip" title="{{ lang._('Enable') }}" data-value="1" data-row-id="' + row.uuid + '"></span>';
+                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-muted bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Enable') }}" data-value="1" data-row-id="' + row.uuid + '"></span>';
                             }
                         }
                     },
