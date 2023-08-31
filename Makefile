@@ -361,10 +361,23 @@ lint-xml:
 	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
 
 lint-model:
+	# XXX "default" must be changed to upper case "Default"
 	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
 	    -name "*.xml"); do \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
+		done; \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and default=""]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} has an empty default value set"; \
+		done; \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc="None"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} blank description is the default"; \
+		done; \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc and Required="Y"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} blank description not applicable on required field"; \
+		done; \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc and Multiple="Y"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} blank description not applicable on multiple field"; \
 		done; \
 	done
 

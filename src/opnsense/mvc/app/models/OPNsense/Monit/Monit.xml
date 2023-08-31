@@ -25,7 +25,7 @@
          <mailserver type="CSVListField">
             <default>127.0.0.1</default>
             <Required>Y</Required>
-            <multiple>Y</multiple>
+            <Multiple>Y</Multiple>
             <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
             <ChangeCase>lower</ChangeCase>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
@@ -96,7 +96,7 @@
          </httpdPort>
          <httpdAllow type="CSVListField">
             <Required>N</Required>
-            <multiple>Y</multiple>
+            <Multiple>Y</Multiple>
          </httpdAllow>
          <mmonitUrl type="TextField">
             <Required>N</Required>
@@ -241,7 +241,7 @@
          </address>
          <interface type="InterfaceField">
             <Required>N</Required>
-            <multiple>N</multiple>
+            <Multiple>N</Multiple>
             <AddParentDevices>Y</AddParentDevices>
             <filters>
                 <enable>/^(?!0).*$/</enable>
@@ -267,7 +267,7 @@
                </template>
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
-            <multiple>Y</multiple>
+            <Multiple>Y</Multiple>
             <Required>N</Required>
          </tests>
          <depends type="ModelRelationField">
@@ -279,7 +279,7 @@
                </template>
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
-            <multiple>Y</multiple>
+            <Multiple>Y</Multiple>
             <Required>N</Required>
          </depends>
          <polltime type="TextField">

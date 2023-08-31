@@ -10,7 +10,6 @@
             </enabled>
             <error_pages type="OptionField">
                 <Required>N</Required>
-                <Default>opnsense</Default>
                 <BlankDesc>Squid</BlankDesc>
                 <OptionValues>
                     <opnsense>OPNsense</opnsense>
@@ -256,7 +255,7 @@
         <forward>
             <interfaces type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <AllowDynamic>S</AllowDynamic>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -340,7 +339,7 @@
             </snmp_password>
             <ftpInterfaces type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <ipaddr>/^((?!dhcp).)*$/</ipaddr>
@@ -516,7 +515,7 @@
             <authentication>
                 <method type="AuthenticationServerField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                 </method>
                 <authEnforceGroup type="AuthGroupField">
                   <Required>N</Required>
@@ -714,7 +713,7 @@
                       </queues>
                   </Model>
                   <Required>Y</Required>
-                  <multiple>Y</multiple>
+                  <Multiple>Y</Multiple>
               </matches>
               <join_type type="OptionField">
                   <Required>Y</Required>
@@ -740,7 +739,7 @@
                       </queues>
                   </Model>
                   <Required>Y</Required>
-                  <multiple>Y</multiple>
+                  <Multiple>Y</Multiple>
               </proxies>
           </rule>
         </pac>

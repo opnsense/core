@@ -35,7 +35,7 @@
                     <default>0</default>
                 </prio>
                 <action type="OptionField">
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <disable>Disabled</disable>
                         <alert>Alert</alert>
@@ -53,12 +53,12 @@
                             </filters>
                         </rulesets>
                     </Model>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <ValidationMessage>Related ruleset not found.</ValidationMessage>
                     <Required>N</Required>
                 </rulesets>
                 <content type=".\PolicyContentField">
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <Required>N</Required>
                     <ValidationMessage>Policy rule not found.</ValidationMessage>
                 </content>
@@ -157,7 +157,7 @@
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
                 <default>wan</default>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <AddParentDevices>Y</AddParentDevices>
                 <filters>
                     <enable>/^(?!0).*$/</enable>

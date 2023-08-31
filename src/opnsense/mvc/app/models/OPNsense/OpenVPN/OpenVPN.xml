@@ -193,7 +193,6 @@
                 <crl type="CertificateField">
                     <Required>N</Required>
                     <type>crl</type>
-                    <BlankDesc>None</BlankDesc>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
@@ -250,7 +249,7 @@
                 </auth>
                 <data-ciphers type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
@@ -259,7 +258,7 @@
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
@@ -279,15 +278,12 @@
                 </tls_key>
                 <authmode type="AuthenticationServerField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
-                    <BlankDesc>None</BlankDesc>
+                    <Multiple>Y</Multiple>
                 </authmode>
-                <local_group type="AuthGroupField">
-                    <Required>N</Required>
-                </local_group>
+                <local_group type="AuthGroupField"/>
                 <various_flags type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <client-to-client>client-to-client</client-to-client>
                         <duplicate-cn>duplicate-cn</duplicate-cn>

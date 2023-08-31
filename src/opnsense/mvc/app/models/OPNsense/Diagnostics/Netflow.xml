@@ -8,14 +8,14 @@
         <capture>
             <interfaces type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
             <egress_only type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>

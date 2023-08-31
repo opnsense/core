@@ -158,7 +158,7 @@
                 <weight type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>100</MaximumValue>
-                    <Default>100</Default>
+                    <default>100</default>
                     <Required>Y</Required>
                     <ValidationMessage>Weight must be between 1...100</ValidationMessage>
                 </weight>
