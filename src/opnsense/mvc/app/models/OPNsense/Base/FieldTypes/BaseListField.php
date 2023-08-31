@@ -102,7 +102,7 @@ abstract class BaseListField extends BaseField
     public function getNodeData()
     {
         if (empty($this->internalEmptyDescription)) {
-            $this->internalEmptyDescription = gettext("none");
+            $this->internalEmptyDescription = gettext('None');
         }
         $result = array();
         // if option is not required, add empty placeholder
