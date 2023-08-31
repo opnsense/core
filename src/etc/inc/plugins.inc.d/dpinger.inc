@@ -37,7 +37,7 @@ function dpinger_services()
 
     $services = [];
 
-    foreach ((new \OPNsense\Gateways\Gateway)->gatewayIterator() as $gateway) {
+    foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
         if (!empty($gateway['monitor_disable']) || !empty($gateway['disabled'])) {
             continue;
         }
