@@ -223,7 +223,7 @@
                 </verify_client_cert>
                 <auth type="OptionField">
                     <Required>N</Required>
-                    <default>SHA1</default>
+                    <BlankDesc>OpenVPN default</BlankDesc>
                     <OptionValues>
                         <BLAKE2b512>BLAKE2b512 (512-bit)</BLAKE2b512>
                         <BLAKE2s256>BLAKE2s256 (256-bit)</BLAKE2s256>
@@ -281,7 +281,6 @@
                     <Required>N</Required>
                     <multiple>Y</multiple>
                     <BlankDesc>None</BlankDesc>
-                    <default>Local Database</default>
                 </authmode>
                 <local_group type="AuthGroupField">
                     <Required>N</Required>
@@ -307,20 +306,19 @@
                     <default>0</default>
                     <Required>Y</Required>
                 </strictusercn>
-                <username type="TextField">
-                </username>
-                <password  type="TextField">
-                </password>
-                <maxclients  type="IntegerField">
+                <username type="TextField"/>
+                <password type="TextField"/>
+                <maxclients type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <Required>N</Required>
                 </maxclients>
                 <keepalive_interval type="IntegerField">
-                    <default>10</default>
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </keepalive_interval>
                 <keepalive_timeout type="IntegerField">
-                    <default>60</default>
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </keepalive_timeout>
                 <reneg-sec type="IntegerField">
                     <MinimumValue>0</MinimumValue>
