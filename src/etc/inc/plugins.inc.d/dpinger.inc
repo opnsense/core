@@ -76,21 +76,6 @@ function dpinger_services()
     return $services;
 }
 
-function dpinger_defaults()
-{
-    return [
-        'alert_interval' => '1',
-        'data_length' => '0',
-        'interval' => '1',
-        'latencyhigh' => '500',
-        'latencylow' => '200',
-        'loss_interval' => '2',
-        'losshigh' => '20',
-        'losslow' => '10',
-        'time_period' => '60',
-    ];
-}
-
 function dpinger_configure()
 {
     return [
@@ -182,7 +167,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     }
 
     $ifconfig_details = legacy_interfaces_details();
-    $dpinger_default = dpinger_defaults();
     $routes = [];
 
     foreach (dpinger_instances() as $name => $gateway) {
@@ -306,11 +290,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
-            $params .= exec_safe(
-                $ppattern,
-                isset($gateway[$pname]) && is_numeric($gateway[$pname]) ?
-                    $gateway[$pname] : $dpinger_default[$pname]
-            );
+            $params .= exec_safe($ppattern, $gateway[$pname]);
         }
         $params .= exec_safe('%s ', $gateway['monitor']);
 
@@ -395,27 +375,18 @@ function dpinger_status()
             $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
             $r['status'] = $status[$gwname]['status'];
 
-            $settings = dpinger_defaults();
-
             if ($r['status'] != 'force_down') {
-                $keys = ['latencylow', 'latencyhigh', 'losslow', 'losshigh'];
+                $gateway = $instances[$gwname];
 
-                /* Replace default values by user-defined */
-                foreach ($keys as $key) {
-                    if (isset($instances[$gwname][$key]) && is_numeric($instances[$gwname][$key])) {
-                        $settings[$key] = $instances[$gwname][$key];
-                    }
-                }
-
-                if ($r['latency_avg'] > $settings['latencyhigh']) {
+                if ($r['latency_avg'] > $gateway['latencyhigh']) {
                     $r['status'] = 'down';
-                } elseif ($r['loss'] > $settings['losshigh']) {
+                } elseif ($r['loss'] > $gateway['losshigh']) {
                     $r['status'] = 'down';
-                } elseif ($r['latency_avg'] > $settings['latencylow'] && $r['loss'] > $settings['losslow']) {
+                } elseif ($r['latency_avg'] > $gateway['latencylow'] && $r['loss'] > $gateway['losslow']) {
                     $r['status'] = 'delay+loss';
-                } elseif ($r['latency_avg'] > $settings['latencylow']) {
+                } elseif ($r['latency_avg'] > $gateway['latencylow']) {
                     $r['status'] = 'delay';
-                } elseif ($r['loss'] > $settings['losslow']) {
+                } elseif ($r['loss'] > $gateway['losslow']) {
                     $r['status'] = 'loss';
                 } else {
                     $r['status'] = 'none';

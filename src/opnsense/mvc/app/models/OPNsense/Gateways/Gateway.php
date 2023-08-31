@@ -209,6 +209,11 @@ class Gateway extends BaseModel
                         foreach ($gateway->children() as $node) {
                             $record[$node->getName()] = (string)$node;
                         }
+                        foreach ($this->getDpingerDefaults() as $key => $value) {
+                            if (!array_key_exists($key, $record)) {
+                                $record[$key] = $value;
+                            }
+                        }
                         $record['uuid'] = '';
                         yield $record;
                     }
