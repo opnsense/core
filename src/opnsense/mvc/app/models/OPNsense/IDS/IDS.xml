@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.8</version>
-    <description>
-        OPNsense IDS
-    </description>
+    <version>1.0.9</version>
+    <description>OPNsense IDS</description>
     <items>
         <rules>
             <rule type="ArrayField">
@@ -167,7 +165,7 @@
                 </filters>
             </interfaces>
             <homenet type="NetworkField">
-                <Required>N</Required>
+                <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
                 <default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</default>
                 <asList>Y</asList>
@@ -193,9 +191,8 @@
                 <Required>N</Required>
             </UpdateCron>
             <AlertLogrotate type="OptionField">
-              <Required>N</Required>
+              <Required>Y</Required>
               <default>W0D23</default>
-              <BlankDesc>Default</BlankDesc>
               <OptionValues>
                   <W0D23>Weekly</W0D23>
                   <D0>Daily</D0>
@@ -203,7 +200,7 @@
               <ValidationMessage>Please select a valid rotation</ValidationMessage>
             </AlertLogrotate>
             <AlertSaveLogs type="IntegerField">
-                <Required>N</Required>
+                <Required>Y</Required>
                 <default>4</default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>1000</MaximumValue>
@@ -211,7 +208,6 @@
             </AlertSaveLogs>
             <MPMAlgo type="OptionField">
               <Required>N</Required>
-              <default>ac</default>
               <BlankDesc>Default</BlankDesc>
               <OptionValues>
                   <ac>Aho-Corasick</ac>
@@ -224,7 +220,6 @@
             <detect>
               <Profile type="OptionField">
                 <Required>N</Required>
-                <default>medium</default>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <low>Low</low>
