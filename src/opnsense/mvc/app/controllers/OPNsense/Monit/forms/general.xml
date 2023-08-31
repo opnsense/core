@@ -113,7 +113,6 @@
       <allownew>true</allownew>
       <help><![CDATA[The username:password or host/network etc. for accessing the Monit httpd service.<br>See <a rel="help" target="_blank" href="https://mmonit.com/monit/documentation/monit.html#Authentication">Monit Authentication</a>]]></help>
       <advanced>true</advanced>
-      <hint>user:password, @group... Finish with TAB.</hint>
    </field>
    <field>
       <id>monit.general.mmonitUrl</id>

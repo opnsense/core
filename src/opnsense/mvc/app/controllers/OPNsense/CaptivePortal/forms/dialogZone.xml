@@ -16,7 +16,6 @@
         <label>Interfaces</label>
         <type>select_multiple</type>
         <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
-        <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>zone.authservers</id>
