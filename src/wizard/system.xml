@@ -420,7 +420,7 @@ if (!empty($input_errors)) {
             </field>
         </fields>
         <stepbeforeformdisplay><![CDATA[
-foreach ((new Gateway())->gatewayIterator() as $gw) {
+foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gw) {
     if (empty($config['wizardtemp']['wangateway']) && $gw['name'] == 'WAN_GW') {
         $config['wizardtemp']['wangateway'] = $gw['gateway'];
     }

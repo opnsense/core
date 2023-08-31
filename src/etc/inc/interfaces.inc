@@ -1,5 +1,4 @@
 <?php
-use OPNsense\Gateways\Gateway;
 
 /*
  * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
@@ -1058,7 +1057,7 @@ default:
 EOD;
     $setdefaultgw = false;
     $founddefaultgw = false;
-    foreach ((new Gateway())->gatewayIterator() as $gateway) {
+    foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
         if ($interface == $gateway['interface'] && !empty($gateway['defaultgw'])) {
             $setdefaultgw = true;
             break;

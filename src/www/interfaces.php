@@ -37,8 +37,6 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-use OPNsense\Gateways\Gateway;
-
 /***************************************************************************************************************
  * imported from xmlparse_attr.inc
  ***************************************************************************************************************/
@@ -853,7 +851,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
             $match = false;
-            $gateways = iterator_to_array((new Gateway)->gatewayIterator());
+            $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway)->gatewayIterator());
             if (!empty($gateways)) {
                 foreach ($gateways as $gateway) {
                     if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
@@ -2066,7 +2064,7 @@ include("head.inc");
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              $gateways = iterator_to_array((new Gateway)->gatewayIterator());
+                              $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway)->gatewayIterator());
                               if (!empty($gateways)):
                                 foreach ($gateways as $gateway):
                                   if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
@@ -2583,7 +2581,7 @@ include("head.inc");
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              $gateways = iterator_to_array((new Gateway)->gatewayIterator());
+                              $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway)->gatewayIterator());
                               if (!empty($gateways)):
                                 foreach ($gateways as $gateway):
                                   if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):

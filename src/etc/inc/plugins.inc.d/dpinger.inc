@@ -31,15 +31,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- use OPNsense\Gateways\Gateway;
-
 function dpinger_services()
 {
     global $config;
 
     $services = [];
 
-    foreach ((new Gateway)->gatewayIterator() as $gateway) {
+    foreach ((new \OPNsense\Gateways\Gateway)->gatewayIterator() as $gateway) {
         if (!empty($gateway['monitor_disable']) || !empty($gateway['disabled'])) {
             continue;
         }
@@ -351,7 +349,7 @@ function dpinger_status()
     $instances = dpinger_instances();
     $status = [];
 
-    foreach ((new Gateway())->gatewayIterator() as $gwitem) {
+    foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gwitem) {
         if (!empty($gwitem['disabled'])) {
             continue;
         }
