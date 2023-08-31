@@ -37,7 +37,6 @@
         <label>DNS64 Prefix</label>
         <type>text</type>
         <hint>64:ff9b::/96</hint>
-        <help>If no DNS64 prefix is specified, the default prefix 64:ff9b::/96 (RFC 6052) will be used.</help>
     </field>
     <field>
         <id>unbound.general.noarecords</id>
