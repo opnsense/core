@@ -1,5 +1,4 @@
 <?php
-use OPNsense\Gateways\Gateway;
 
 /*
  * Copyright (C) 2014-2015 Deciso B.V.
@@ -37,6 +36,8 @@ require_once("filter.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+
+use OPNsense\Gateways\Gateway;
 
 /***************************************************************************************************************
  * imported from xmlparse_attr.inc

@@ -6,7 +6,6 @@
         <gateway_item type="ArrayField">
             <disabled type="BooleanField">
                 <Required>N</Required>
-                <!-- <default>0</default> -->
             </disabled>
             <name type="TextField">
                 <Required>Y</Required>
@@ -30,7 +29,7 @@
                 <multiple>N</multiple>
                 <default>wan</default>
                 <filters>
-                    <!-- <enable>/^(?!0).*$/</enable> -->
+                    <enable>/^(?!0).*$/</enable>
                     <virtual>/^(?!1).*$/</virtual>
                 </filters>
             </interface>
@@ -57,10 +56,8 @@
             </gateway>
             <defaultgw type="BooleanField">
                 <Required>N</Required>
-                <!-- <default>0</default> -->
             </defaultgw>
             <fargw type="BooleanField">
-                <!-- <default>0</default> -->
                 <Required>N</Required>
             </fargw>
             <monitor_disable type="BooleanField">
@@ -68,7 +65,6 @@
                 <Required>N</Required>
             </monitor_disable>
             <monitor_noroute type="BooleanField">
-                <!-- <default>0</default> -->
                 <Required>N</Required>
             </monitor_noroute>
             <monitor type="TextField">
@@ -82,7 +78,6 @@
                 </Constraints>
             </monitor>
             <force_down type="BooleanField">
-                <!-- <default>0</default> -->
                 <Required>N</Required>
             </force_down>
             <priority type="IntegerField">
@@ -99,7 +94,6 @@
                 <MaximumValue>5</MaximumValue>
             </weight>
             <latencylow type="IntegerField">
-                <!-- <default>200</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <Constraints>
@@ -110,7 +104,6 @@
                 </Constraints>
             </latencylow>
             <latencyhigh type="IntegerField">
-                <!-- <default>500</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <Constraints>
@@ -121,7 +114,6 @@
                 </Constraints>
             </latencyhigh>
             <losslow type="IntegerField">
-                <!-- <default>10</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>99</MaximumValue>
@@ -133,7 +125,6 @@
                 </Constraints>
             </losslow>
             <losshigh type="IntegerField">
-                <!-- <default>20</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>100</MaximumValue>
@@ -145,27 +136,22 @@
                 </Constraints>
             </losshigh>
             <interval type="IntegerField">
-                <!-- <default>1</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </interval>
             <alert_interval type="IntegerField">
-                <!-- <default>1</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </alert_interval>
             <time_period type="IntegerField">
-                <!-- <default>60</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </time_period>
             <loss_interval type="IntegerField">
-                <!-- <default>2</default> -->
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </loss_interval>
             <data_length type="IntegerField">
-                <!-- <default>0</default> -->
                 <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </data_length>
