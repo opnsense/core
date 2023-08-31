@@ -30,7 +30,6 @@
                 <authservers type="AuthenticationServerField">
                     <Required>N</Required>
                     <multiple>Y</multiple>
-                    <default>Local Database</default>
                 </authservers>
                 <alwaysSendAccountingReqs type="BooleanField">
                     <default>0</default>

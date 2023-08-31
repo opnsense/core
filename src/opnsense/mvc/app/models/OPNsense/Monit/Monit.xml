@@ -64,7 +64,6 @@
          </sslverify>
          <logfile type="TextField">
             <Required>N</Required>
-            <default>syslog facility log_daemon</default>
             <mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</mask>
             <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
          </logfile>
@@ -166,7 +165,6 @@
             <Required>N</Required>
          </format>
          <reminder type="IntegerField">
-            <default>10</default>
             <Required>N</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>

@@ -19,17 +19,16 @@
                 </OptionValues>
             </fam>
             <source_address type="NetworkField">
-              <Required>N</Required>
-              <NetMaskAllowed>N</NetMaskAllowed>
-              <ValidationMessage>Provide a valid source address</ValidationMessage>
+                <Required>N</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <ValidationMessage>Provide a valid source address</ValidationMessage>
             </source_address>
             <packetsize type="IntegerField">
+                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </packetsize>
-            <disable_frag type="BooleanField">
-                <default>0</default>
-            </disable_frag>
+            <disable_frag type="BooleanField"/>
             <description type="TextField">
                 <Required>N</Required>
                 <mask>/^(.){1,255}$/u</mask>
