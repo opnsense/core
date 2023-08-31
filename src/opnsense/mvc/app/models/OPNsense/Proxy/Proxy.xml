@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/proxy</mount>
     <version>1.0.6</version>
-    <description>
-        (squid) proxy settings
-    </description>
+    <description>Squid web proxy settings</description>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -56,7 +54,6 @@
                 <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
             </alternateDNSservers>
             <forwardedForHandling type="OptionField">
-                <default>on</default>
                 <Required>N</Required>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
@@ -68,8 +65,8 @@
                 </OptionValues>
             </forwardedForHandling>
             <uriWhitespaceHandling type="OptionField">
-                <default>strip</default>
                 <Required>N</Required>
+                <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <strip>Strip whitespaces</strip>
                     <deny>Deny request</deny>
@@ -82,21 +79,14 @@
                 <default>1</default>
                 <Required>Y</Required>
             </enablePinger>
-            <useViaHeader type="BooleanField">
-                <default>1</default>
-                <Required>N</Required>
-            </useViaHeader>
-            <suppressVersion type="BooleanField">
-                <default>0</default>
-                <Required>N</Required>
-            </suppressVersion>
+            <useViaHeader type="BooleanField"/>
+            <suppressVersion type="BooleanField"/>
             <connecttimeout type="IntegerField">
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>120</MaximumValue>
             </connecttimeout>
             <VisibleEmail type="EmailField">
-                <default>admin@localhost.local</default>
                 <Required>N</Required>
                 <ValidationMessage>Please enter a valid email address.</ValidationMessage>
             </VisibleEmail>
@@ -134,7 +124,6 @@
                       <Required>N</Required>
                     </maximum_object_size_in_memory>
                     <memory_cache_mode type="OptionField">
-                        <default>always</default>
                         <Required>N</Required>
                         <BlankDesc>Default</BlankDesc>
                         <OptionValues>
@@ -177,19 +166,16 @@
                     <Required>Y</Required>
                 </enabled>
                 <maxDownloadSize type="IntegerField">
-                    <default>2048</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the maximum download size (kB).</ValidationMessage>
                     <Required>N</Required>
                 </maxDownloadSize>
                 <maxUploadSize type="IntegerField">
-                    <default>1024</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the maximum upload size (kB).</ValidationMessage>
                     <Required>N</Required>
                 </maxUploadSize>
                 <OverallBandwidthTrotteling type="IntegerField">
-                    <default>1024</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the overall bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
@@ -204,7 +190,6 @@
                     </Constraints>
                 </OverallBandwidthTrotteling>
                 <perHostTrotteling type="IntegerField">
-                    <default>256</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the per host bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
@@ -273,7 +258,6 @@
                 <Required>N</Required>
                 <multiple>Y</multiple>
                 <AllowDynamic>S</AllowDynamic>
-                <default>lan</default>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <ipaddr>/^((?!dhcp).)*$/</ipaddr>
@@ -419,12 +403,10 @@
                     </OptionValues>
                 </youtube>
                 <safePorts type="CSVListField">
-                    <default>80:http,21:ftp,443:https,70:gopher,210:wais,1025-65535:unregistered ports,280:http-mgmt,488:gss-http,591:filemaker,777:multiling http</default>
                     <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
                     <Required>N</Required>
                 </safePorts>
                 <sslPorts type="CSVListField">
-                    <default>443:https</default>
                     <Required>N</Required>
                     <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
                 </sslPorts>
@@ -496,14 +478,8 @@
                     <default>0</default>
                     <Required>Y</Required>
                 </enable>
-                <RequestURL type="TextField">
-                    <default>icap://[::1]:1344/avscan</default>
-                    <Required>N</Required>
-                </RequestURL>
-                <ResponseURL type="TextField">
-                    <default>icap://[::1]:1344/avscan</default>
-                    <Required>N</Required>
-                </ResponseURL>
+                <RequestURL type="TextField"/>
+                <ResponseURL type="TextField"/>
                 <SendClientIP type="BooleanField">
                     <Required>Y</Required>
                     <default>1</default>
@@ -547,18 +523,15 @@
                   <Multiple>Y</Multiple>
                 </authEnforceGroup>
                 <realm type="TextField">
-                    <default>OPNsense proxy authentication</default>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
                     <Required>N</Required>
                 </realm>
                 <credentialsttl type="IntegerField">
-                    <default>2</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Credentials TTL needs to be an integer value above 0</ValidationMessage>
                     <Required>N</Required>
                 </credentialsttl>
                 <children type="IntegerField">
-                    <default>5</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Number of children needs to be an integer value above 0</ValidationMessage>
                     <Required>N</Required>
@@ -644,25 +617,21 @@
                 <Required>N</Required>
               </network>
               <domain_level_from type="IntegerField">
-                  <default>0</default>
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>Minimum domain level must be bigger than 0.</ValidationMessage>
                   <Required>N</Required>
               </domain_level_from>
               <domain_level_to type="IntegerField">
-                  <default>0</default>
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>A hostname cannot have a negative count of levels.</ValidationMessage>
                   <Required>N</Required>
               </domain_level_to>
               <time_from type="IntegerField">
-                  <default>0</default>
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>The first hour of the day is 0.</ValidationMessage>
                   <Required>N</Required>
               </time_from>
               <time_to type="IntegerField">
-                  <default>0</default>
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>23</MaximumValue>
                   <ValidationMessage>The last hour of the day is 23!</ValidationMessage>
