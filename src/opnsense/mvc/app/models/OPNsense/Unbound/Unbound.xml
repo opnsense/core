@@ -27,7 +27,6 @@
                 <default>0</default>
             </dns64>
             <dns64prefix type="NetworkField">
-                <default>64:ff9b::/96</default>
                 <Required>N</Required>
                 <NetMaskRequired>Y</NetMaskRequired>
                 <AddressFamily>ipv6</AddressFamily>
