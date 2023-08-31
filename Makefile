@@ -361,13 +361,12 @@ lint-xml:
 	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
 
 lint-model:
-	# XXX "default" must be changed to upper case "Default"
 	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
 	    -name "*.xml"); do \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and Default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
 		done; \
-		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and default=""]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and Default=""]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has an empty default value set"; \
 		done; \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc="None"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
@@ -437,6 +436,14 @@ style-fix: debug
 .for STYLEDIR in ${STYLEDIRS}
 	phpcbf --standard=ruleset.xml ${.CURDIR}/${STYLEDIR} || true
 .endfor
+
+style-model:
+	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
+	    -name "*.xml"); do \
+		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
+		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple/g' $${MODEL}; \
+		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
+	done
 
 style: style-python style-php
 
