@@ -31,14 +31,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+ use OPNsense\Gateways\Gateway;
+
 function dpinger_services()
 {
     global $config;
 
     $services = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
-        if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
+    foreach ((new Gateway)->gatewayIterator() as $gateway) {
+        if (!empty($gateway['monitor_disable']) || !empty($gateway['disabled'])) {
             continue;
         }
 
@@ -139,7 +141,7 @@ function dpinger_instances()
         if (empty($gateway['monitor'])) {
             /* skip monitors not currently attached */
             continue;
-        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+        } elseif (!empty($gateway['disabled']) || !empty($gateway['monitor_disable'])) {
             /* do not monitor if such was requested */
             continue;
         }
@@ -349,18 +351,18 @@ function dpinger_status()
     $instances = dpinger_instances();
     $status = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
-        if (isset($gwitem['disabled'])) {
+    foreach ((new Gateway())->gatewayIterator() as $gwitem) {
+        if (!empty($gwitem['disabled'])) {
             continue;
         }
 
         /* we seem to be concerned about disabled monitors just because of force_down */
-        $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
+        $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
 
         $status[$gwitem['name']] = [
             /* grab the runtime monitor from the instance if available */
             'monitor' => $instances[$gwitem['name']]['monitor'] ?? ($gwitem['monitor'] ?? '~'),
-            'status' => isset($gwitem['force_down']) ? 'force_down' : $gwstatus,
+            'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
             'name' => $gwitem['name'],
             'stddev' => '~',
             'delay' => '~',
@@ -428,7 +430,6 @@ function dpinger_status()
             $status[$gwname]['status'] = $r['status'];
         }
     }
-
     return $status;
 }
 

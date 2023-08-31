@@ -1,4 +1,5 @@
 <?php
+use OPNsense\Gateways\Gateway;
 
 /*
  * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
@@ -1057,15 +1058,13 @@ default:
 EOD;
     $setdefaultgw = false;
     $founddefaultgw = false;
-    if (isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            if ($interface == $gateway['interface'] && isset($gateway['defaultgw'])) {
-                $setdefaultgw = true;
-                break;
-            } elseif (isset($gateway['defaultgw']) && !empty($gateway['interface'])) {
-                $founddefaultgw = true;
-                break;
-            }
+    foreach ((new Gateway())->gatewayIterator() as $gateway) {
+        if ($interface == $gateway['interface'] && !empty($gateway['defaultgw'])) {
+            $setdefaultgw = true;
+            break;
+        } elseif (!empty($gateway['defaultgw']) && !empty($gateway['interface'])) {
+            $founddefaultgw = true;
+            break;
         }
     }
 

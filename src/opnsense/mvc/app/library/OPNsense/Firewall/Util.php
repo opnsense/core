@@ -62,6 +62,16 @@ class Util
         return !empty(filter_var($address, FILTER_VALIDATE_IP));
     }
 
+    public static function isIpv4Address($address)
+    {
+        return !empty(filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
+    }
+
+    public static function isIpv6Address($address)
+    {
+        return !empty(filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6));
+    }
+
     /**
      * is provided address a mac address.
      * @param string $address network address

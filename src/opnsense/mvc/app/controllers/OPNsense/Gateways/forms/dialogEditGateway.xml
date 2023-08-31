@@ -1,0 +1,150 @@
+<form>
+    <field>
+        <id>gateway_item.disabled</id>
+        <label>Disabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>gateway_item.name</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>gateway_item.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>gateway_item.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Choose which interface this gateway applies to.</help>
+    </field>
+    <field>
+        <id>gateway_item.ipprotocol</id>
+        <label>Address Family</label>
+        <type>dropdown</type>
+        <help>Choose the Internet Protocol this gateway uses.</help>
+    </field>
+    <field>
+        <id>gateway_item.gateway</id>
+        <label>IP Address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>gateway_item.defaultgw</id>
+        <label>Upstream Gateway</label>
+        <type>checkbox</type>
+        <help>This will select the above gateway as a default gateway candidate.</help>
+    </field>
+    <field>
+        <id>gateway_item.fargw</id>
+        <label>Far Gateway</label>
+        <type>checkbox</type>
+        <help>This will allow the gateway to exist outside of the interface subnet.</help>
+    </field>
+    <field>
+        <id>gateway_item.monitor_disable</id>
+        <label>Disable Gateway Monitoring</label>
+        <type>checkbox</type>
+        <help>This will consider this gateway as always being "up".</help>
+    </field>
+    <field>
+        <id>gateway_item.monitor_noroute</id>
+        <label>Disable Host Route</label>
+        <type>checkbox</type>
+        <help>Do not create a dedicated host route for this monitor.</help>
+    </field>
+    <field>
+        <id>gateway_item.monitor</id>
+        <label>Monitor IP</label>
+        <type>text</type>
+        <help>
+            Enter an alternative address here to be used to monitor the link.
+            This is used for the quality RRD graphs as well as the load balancer entries.
+            Use this if the gateway does not respond to ICMP echo requests (pings).
+        </help>
+    </field>
+    <field>
+        <id>gateway_item.force_down</id>
+        <label>Mark Gateway as Down</label>
+        <type>checkbox</type>
+        <help>This will force this gateway to be considered "down".</help>
+    </field>
+    <field>
+        <id>gateway_item.priority</id>
+        <label>Priority</label>
+        <type>text</type>
+        <help>Choose a value between 1 and 255. Influences sort order when selecting a (default) gateway, lower means more important.</help>
+    </field>
+    <field>
+        <id>gateway_item.weight</id>
+        <label>Weight</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Weight for this gateway when used in a Gateway Group.</help>
+    </field>
+    <field>
+        <id>gateway_item.latencylow</id>
+        <label>Latency Low Threshold</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Low threshold for latency in milliseconds. Default is 200.</help>
+    </field>
+    <field>
+        <id>gateway_item.latencyhigh</id>
+        <label>Latency High Threshold</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>High threshold for latency in milliseconds. Default is 500.</help>
+    </field>
+    <field>
+        <id>gateway_item.losslow</id>
+        <label>Packet Loss Low Threshold</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Low threshold for packet loss in %. Default is 10.</help>
+    </field>
+    <field>
+        <id>gateway_item.losshigh</id>
+        <label>Packet Loss High Threshold</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>High thresholds for packet loss in %. Default is 20.</help>
+    </field>
+    <field>
+        <id>gateway_item.interval</id>
+        <label>Probe Interval</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>How often that an ICMP probe will be sent in seconds. Default is 1.</help>
+    </field>
+    <field>
+        <id>gateway_item.alert_interval</id>
+        <label>Alert Interval</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Time interval between alerts. Default is 1.</help>
+    </field>
+    <field>
+        <id>gateway_item.time_period</id>
+        <label>Time Period</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>The time period over which results are averaged. Default is 60.</help>
+    </field>
+    <field>
+        <id>gateway_item.loss_interval</id>
+        <label>Loss Interval</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Time interval before packets are treated as lost. Default is 2.</help>
+    </field>
+    <field>
+        <id>gateway_item.data_length</id>
+        <label>Data Length</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Specify the number of data bytes to be sent. Default is 0.</help>
+    </field>
+</form>

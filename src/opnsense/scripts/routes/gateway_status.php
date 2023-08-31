@@ -65,7 +65,7 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true) as $gna
                 $gatewayItem['status_translated'] = gettext('Pending');
                 break;
         }
-    } elseif (isset($gw['disabled'])) {
+    } elseif (!empty($gw['disabled'])) {
         /* avoid disappearing an actively monitored instance when down */
         continue;
     } else {

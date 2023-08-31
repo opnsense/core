@@ -338,6 +338,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/forms/dialogEditGateway.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
@@ -637,6 +641,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
+/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Gateway.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Gateway.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
@@ -760,6 +767,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Gateways/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt
@@ -1089,6 +1097,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
+/usr/local/opnsense/service/conf/actions.d/actions_gateways.conf
 /usr/local/opnsense/service/conf/actions.d/actions_health.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ids.conf
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
@@ -2051,8 +2060,6 @@
 /usr/local/www/system_crlmanager.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php
-/usr/local/www/system_gateways.php
-/usr/local/www/system_gateways_edit.php
 /usr/local/www/system_general.php
 /usr/local/www/system_groupmanager.php
 /usr/local/www/system_hasync.php

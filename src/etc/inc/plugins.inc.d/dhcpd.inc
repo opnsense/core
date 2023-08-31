@@ -29,6 +29,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+ use OPNsense\Gateways\Gateway;
+
 function dhcpd_configure()
 {
     return [
@@ -1718,9 +1720,10 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         }
 
         if (!isset($destif)) {
-            if (is_array($config['gateways']['gateway_item'])) {
-                foreach ($config['gateways']['gateway_item'] as $gateway) {
-                    if (isset($gateway['defaultgw'])) {
+            $gateways = iterator_to_array((new Gateway)->gatewayIterator());
+            if (is_array($gateways)) {
+                foreach ($gateways as $gateway) {
+                    if (!empty($gateway['defaultgw'])) {
                         $destif = get_real_interface($gateway['interface']);
                         break;
                     }
@@ -1826,9 +1829,10 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         }
 
         if (!isset($destif)) {
-            if (is_array($config['gateways']['gateway_item'])) {
-                foreach ($config['gateways']['gateway_item'] as $gateway) {
-                    if (isset($gateway['defaultgw'])) {
+            $gateways = iterator_to_array((new Gateway)->gatewayIterator());
+            if (is_array($gateways)) {
+                foreach ($gateways as $gateway) {
+                    if (!empty($gateway['defaultgw'])) {
                         $destif = $gateway['interface'];
                         break;
                     }

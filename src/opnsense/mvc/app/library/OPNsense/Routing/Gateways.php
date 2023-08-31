@@ -30,6 +30,7 @@ namespace OPNsense\Routing;
 
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
+use OPNsense\Gateways\Gateway;
 
 /**
  * Class Gateways
@@ -234,41 +235,35 @@ class Gateways
                 'is_loopback' => true
             ];
             // iterate configured gateways
-            if (!empty($this->configHandle->gateways)) {
-                foreach ($this->configHandle->gateways->children() as $tag => $gateway) {
-                    if ($tag == "gateway_item" && !empty($gateway)) {
-                        if (in_array((string)$gateway->name, $reservednames)) {
-                            syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gateway->name . '" in config.xml needs manual removal');
+            foreach ((new Gateway())->gatewayIterator() as $gw_arr) {
+                if (!empty($gw_arr)) {
+                    if (in_array($gw_arr['name'], $reservednames)) {
+                        syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gw_arr['name'] . '" in config.xml needs manual removal');
+                    }
+                    $reservednames[] = $gw_arr['name'];
+                    if (empty($gw_arr['priority'])) {
+                        // default priority
+                        $gw_arr['priority'] = 255;
+                    }
+                    if (empty($gw_arr['ipprotocol'])) {
+                        // default address family
+                        $gw_arr['ipprotocol'] = 'inet';
+                    }
+                    $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
+                    $gw_arr['attribute'] = $i++;
+                    if (Util::isIpAddress($gw_arr['gateway'])) {
+                        if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
+                            $gw_arr['monitor'] = $gw_arr['gateway'];
                         }
-                        $reservednames[] = (string)$gateway->name;
-                        $gw_arr = array();
-                        foreach ($gateway as $key => $value) {
-                            $gw_arr[(string)$key] = (string)$value;
+                        $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
+                        $this->cached_gateways[$gwkey] = $gw_arr;
+                    } else {
+                        // dynamic gateways might have settings, temporary store
+                        if (empty($dynamic_gw[$gw_arr['interface']])) {
+                            $dynamic_gw[$gw_arr['interface']] = array();
                         }
-                        if (empty($gw_arr['priority'])) {
-                            // default priority
-                            $gw_arr['priority'] = 255;
-                        }
-                        if (empty($gw_arr['ipprotocol'])) {
-                            // default address family
-                            $gw_arr['ipprotocol'] = 'inet';
-                        }
-                        $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
-                        $gw_arr['attribute'] = $i++;
-                        if (Util::isIpAddress($gateway->gateway)) {
-                            if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
-                                $gw_arr['monitor'] = $gw_arr['gateway'];
-                            }
-                            $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
-                            $this->cached_gateways[$gwkey] = $gw_arr;
-                        } else {
-                            // dynamic gateways might have settings, temporary store
-                            if (empty($dynamic_gw[(string)$gateway->interface])) {
-                                $dynamic_gw[(string)$gateway->interface] = array();
-                            }
-                            $gw_arr['dynamic'] = true;
-                            $dynamic_gw[(string)$gateway->interface][] = $gw_arr;
-                        }
+                        $gw_arr['dynamic'] = true;
+                        $dynamic_gw[$gw_arr['interface']][] = $gw_arr;
                     }
                 }
             }
