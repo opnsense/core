@@ -210,7 +210,7 @@ class Gateway extends BaseModel
                             $record[$node->getName()] = (string)$node;
                         }
                         foreach ($this->getDpingerDefaults() as $key => $value) {
-                            if (!array_key_exists($key, $record)) {
+                            if (empty($record[$key])) {
                                 $record[$key] = $value;
                             }
                         }
