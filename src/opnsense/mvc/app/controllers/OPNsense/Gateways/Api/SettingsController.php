@@ -86,17 +86,17 @@ class SettingsController extends ApiMutableModelControllerBase
                 $gateways[$idx][$status_kw] = $i !== false ? $gateways_status[$i][$status_kw] : '~';
             }
 
-            $gateways[$idx]['label_class'] = 'default';
+            $gateways[$idx]['label_class'] = 'fa fa-plug text-default';
             if ($i !== false) {
                 if (str_contains($gateways_status[$i]['status'], 'down')) {
-                    $gateways[$idx]['label_class'] = 'danger';
+                    $gateways[$idx]['label_class'] = 'fa fa-plug text-danger';
                 } elseif (str_contains($gateways_status[$i]['status'], 'loss') || str_contains($gateways_status[$i]['status'], 'delay')) {
-                    $gateways[$idx]['label_class'] = 'warning';
+                    $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
                 } elseif (str_contains($gateways_status[$i]['status'], 'none')) {
-                    $gateways[$idx]['label_class'] = 'success';
+                    $gateways[$idx]['label_class'] = 'fa fa-plug text-success';
                 }
             } elseif (empty($gateway['disabled']) && !empty($gateway['monitor_disable'])) {
-                $gateways[$idx]['label_class'] = 'success';
+                $gateways[$idx]['label_class'] = 'fa fa-plug text-success';
             }
 
             if (empty($gateway['fargw']) && array_key_exists('gateway', $gateway)) {
@@ -119,8 +119,8 @@ class SettingsController extends ApiMutableModelControllerBase
                         }
 
                         if (empty($subnets) || !$match) {
-                            $gateways[$idx]['status'] = 'Misconfigured';
-                            $gateways[$idx]['label_class'] = 'warning';
+                            $gateways[$idx]['status'] = gettext('Misconfigured');
+                            $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
                         }
                     }
                 }

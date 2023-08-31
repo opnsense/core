@@ -90,7 +90,7 @@
                         return elem;
                     },
                     "statusformatter": function (column, row) {
-                        return '<div class="label label-' + row.label_class + '">' + row.status + '</div>';
+                        return '<div class="' + row.label_class + ' bootgrid-tooltip" data-toggle="tooltip" title="' + row.status + '"></div>';
                     },
                 }
             }
