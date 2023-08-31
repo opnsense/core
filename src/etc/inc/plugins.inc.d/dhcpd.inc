@@ -1828,7 +1828,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
         if (!isset($destif)) {
             $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway())->gatewayIterator());
-            if (is_array($gateways)) {
+            if (!empty($gateways)) {
                 foreach ($gateways as $gateway) {
                     if (!empty($gateway['defaultgw'])) {
                         $destif = $gateway['interface'];
