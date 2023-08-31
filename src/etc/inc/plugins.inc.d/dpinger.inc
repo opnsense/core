@@ -428,6 +428,7 @@ function dpinger_status()
             $status[$gwname]['status'] = $r['status'];
         }
     }
+
     return $status;
 }
 

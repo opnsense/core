@@ -56,6 +56,7 @@ class UniqueConstraint extends BaseConstraint
             if ($allowEmpty && empty((string)$node)) {
                 return true;
             }
+
             $containerNode = $node;
             $nodeName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
