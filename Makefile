@@ -360,6 +360,14 @@ lint-xml:
 	@find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.xml*" -type f -print0 | xargs -0 -n1 xmllint --noout
 
+lint-model:
+	@for MODEL in $$(find ${.CURDIR}/src/opnsense/mvc/app/models -depth 3 \
+	    -name "*.xml"); do \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
+		done; \
+	done
+
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
 
 lint-exec:
@@ -377,7 +385,7 @@ LINTBIN?=	${.CURDIR}/contrib/parallel-lint/parallel-lint
 lint-php:
 	@${LINTBIN} src
 
-lint: plist-check lint-shell lint-xml lint-exec lint-php
+lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
 
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
