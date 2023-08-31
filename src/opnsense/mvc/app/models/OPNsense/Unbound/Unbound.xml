@@ -5,11 +5,11 @@
     <items>
         <general>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
             <port type="PortField">
-                <default>53</default>
+                <Default>53</Default>
                 <Required>Y</Required>
             </port>
             <stats type="BooleanField"/>
@@ -37,7 +37,7 @@
             <txtsupport type="BooleanField"/>
             <cacheflush type="BooleanField"/>
             <local_zone_type type="OptionField">
-                <default>transparent</default>
+                <Default>transparent</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="transparent">transparent</opt1>
@@ -78,7 +78,7 @@
             <logservfail type="BooleanField"/>
             <loglocalactions type="BooleanField"/>
             <logverbosity type="OptionField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="0">Level 0</opt1>
@@ -90,7 +90,7 @@
                 </OptionValues>
             </logverbosity>
             <valloglevel  type="OptionField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="0">Level 0 (Default)</opt1>
@@ -105,7 +105,7 @@
                 <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
                 <WildcardEnabled>N</WildcardEnabled>
-                <default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</default>
+                <Default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</Default>
                 <asList>Y</asList>
             </privateaddress>
             <insecuredomain type="CSVListField"/>
@@ -132,7 +132,7 @@
         </advanced>
         <acls>
             <default_action type="OptionField">
-                <default>allow</default>
+                <Default>allow</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="allow">Allow</opt1>
@@ -142,7 +142,7 @@
             </default_action>
             <acl type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
@@ -150,7 +150,7 @@
                     <ValidationMessage>An Access list name is required</ValidationMessage>
                 </name>
                 <action type="OptionField">
-                    <default>allow</default>
+                    <Default>allow</Default>
                     <Required>Y</Required>
                     <OptionValues>
                         <opt1 value="allow">Allow</opt1>
@@ -179,7 +179,7 @@
         </acls>
         <dnsbl>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
             <safesearch type="BooleanField"/>
@@ -251,11 +251,11 @@
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </enabled>
                 <type type="OptionField">
                     <Required>Y</Required>
-                    <default>dot</default>
+                    <Default>dot</Default>
                     <OptionValues>
                         <dot>DNS over TLS</dot>
                         <forward>Forward</forward>
@@ -280,7 +280,7 @@
         <hosts>
             <host type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <hostname type="HostnameField">
@@ -294,7 +294,7 @@
                 </domain>
                 <rr type="OptionField">
                     <Required>Y</Required>
-                    <default>A</default>
+                    <Default>A</Default>
                     <OptionValues>
                         <A>A (IPv4 address)</A>
                         <AAAA>AAAA (IPv6 address)</AAAA>
@@ -361,7 +361,7 @@
         <aliases>
             <alias type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <host type="ModelRelationField">
@@ -408,7 +408,7 @@
         <domains>
             <domain type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <domain type=".\UnboundDomainField">
@@ -420,7 +420,7 @@
                     <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
                 <forward_tcp_upstream type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </forward_tcp_upstream>
                 <description type="TextField">

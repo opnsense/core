@@ -8,7 +8,7 @@
         <zones>
             <zone type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <zoneid type="AutoNumberField">
@@ -20,7 +20,7 @@
                 <interfaces type="InterfaceField">
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
-                    <default>lan</default>
+                    <Default>lan</Default>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
@@ -32,7 +32,7 @@
                     <Multiple>Y</Multiple>
                 </authservers>
                 <alwaysSendAccountingReqs type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </alwaysSendAccountingReqs>
                 <authEnforceGroup type="AuthGroupField">
@@ -40,21 +40,21 @@
                 </authEnforceGroup>
                 <idletimeout type="IntegerField">
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10080</MaximumValue>
                     <ValidationMessage>Idle timeout, in minutes, must be between 0 (no timeout) and 10080 (a week)</ValidationMessage>
                 </idletimeout>
                 <hardtimeout type="IntegerField">
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10080</MaximumValue>
                     <ValidationMessage>Hard timeout, in minutes, must be between 0 (no timeout) and 10080 (a week)</ValidationMessage>
                 </hardtimeout>
                 <concurrentlogins type="BooleanField">
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </concurrentlogins>
                 <certificate type="CertificateField">
                     <Required>N</Required>
@@ -77,15 +77,15 @@
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
                 <transparentHTTPProxy type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </transparentHTTPProxy>
                 <transparentHTTPSProxy type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </transparentHTTPSProxy>
                 <extendedPreAuthData type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </extendedPreAuthData>
                 <template type="ModelRelationField">

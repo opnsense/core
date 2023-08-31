@@ -21,7 +21,7 @@
             </members>
             <proto type="OptionField">
               <Required>Y</Required>
-              <default>lacp</default>
+              <Default>lacp</Default>
               <OptionValues>
                   <none>None</none>
                   <lacp>lacp</lacp>
@@ -32,7 +32,7 @@
               </OptionValues>
             </proto>
             <lacp_fast_timeout type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </lacp_fast_timeout>
             <use_flowid type="OptionField">

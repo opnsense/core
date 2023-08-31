@@ -12,7 +12,7 @@
             </hostname>
             <fam type="OptionField">
                 <Required>Y</Required>
-                <default>ip</default>
+                <Default>ip</Default>
                 <OptionValues>
                     <ip>IPv4</ip>
                     <ip6>IPv6</ip6>

@@ -5,25 +5,25 @@
    <items>
       <general>
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <interval type="IntegerField">
-            <default>120</default>
+            <Default>120</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400</ValidationMessage>
          </interval>
          <startdelay type="IntegerField">
-            <default>120</default>
+            <Default>120</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
          </startdelay>
          <mailserver type="CSVListField">
-            <default>127.0.0.1</default>
+            <Default>127.0.0.1</Default>
             <Required>Y</Required>
             <Multiple>Y</Multiple>
             <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
@@ -32,7 +32,7 @@
          </mailserver>
          <port type="IntegerField">
             <Required>Y</Required>
-            <default>25</default>
+            <Default>25</Default>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>65535</MaximumValue>
             <ValidationMessage>Port needs to be an integer value between 0 and 65535</ValidationMessage>
@@ -44,11 +44,11 @@
             <Required>N</Required>
          </password>
          <ssl type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </ssl>
          <sslversion type="OptionField">
-            <default>auto</default>
+            <Default>auto</Default>
             <Required>Y</Required>
             <OptionValues>
                <auto>AUTO</auto>
@@ -60,7 +60,7 @@
          </sslversion>
          <sslverify type="BooleanField">
             <Required>Y</Required>
-            <default>1</default>
+            <Default>1</Default>
          </sslverify>
          <logfile type="TextField">
             <Required>N</Required>
@@ -82,13 +82,13 @@
             <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
          </eventqueueSlots>
          <httpdEnabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </httpdEnabled>
          <httpdUsername type="TextField"/>
          <httpdPassword type="TextField"/>
          <httpdPort type="IntegerField">
-            <default>2812</default>
+            <Default>2812</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>65535</MaximumValue>
@@ -102,30 +102,30 @@
             <Required>N</Required>
          </mmonitUrl>
          <mmonitTimeout type="IntegerField">
-            <default>5</default>
+            <Default>5</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400</ValidationMessage>
          </mmonitTimeout>
          <mmonitRegisterCredentials type="BooleanField">
-            <default>1</default>
+            <Default>1</Default>
             <Required>Y</Required>
          </mmonitRegisterCredentials>
       </general>
       <alert type="ArrayField">
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <recipient type="EmailField">
-            <default>root@localhost.local</default>
+            <Default>root@localhost.local</Default>
             <Required>Y</Required>
             <ValidationMessage>Please enter a valid email address.</ValidationMessage>
          </recipient>
          <noton type="BooleanField">
             <Required>Y</Required>
-            <default>0</default>
+            <Default>0</Default>
          </noton>
          <events type="CSVListField">
             <Required>N</Required>
@@ -178,7 +178,7 @@
       </alert>
       <service type="ArrayField">
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <name type="TextField">
@@ -223,14 +223,14 @@
             <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
          </path>
          <timeout type="IntegerField">
-            <default>300</default>
+            <Default>300</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
          </timeout>
          <starttimeout type="IntegerField">
-            <default>30</default>
+            <Default>30</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
@@ -296,7 +296,7 @@
          </name>
          <type type="OptionField">
             <Required>Y</Required>
-            <default>Custom</default>
+            <Default>Custom</Default>
             <OptionValues>
                <Existence>Existence</Existence>
                <SystemResource>System Resource</SystemResource>

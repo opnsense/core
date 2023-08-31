@@ -15,7 +15,7 @@
             </port>
             <ipproto type="OptionField">
                 <Required>Y</Required>
-                <default>inet</default>
+                <Default>inet</Default>
                 <OptionValues>
                     <inet>IPv4</inet>
                     <inet6>IPv6</inet6>
@@ -30,7 +30,7 @@
                 <Required>N</Required>
             </source_port>
             <showtext type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </showtext>
         </settings>

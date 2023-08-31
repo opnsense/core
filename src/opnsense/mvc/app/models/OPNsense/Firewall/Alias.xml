@@ -12,7 +12,7 @@
         <aliases>
             <alias type=".\AliasField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <name type=".\AliasNameField">
@@ -26,7 +26,7 @@
                 </name>
                 <type type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
                         <host>Host(s)</host>
                         <network>Network(s)</network>

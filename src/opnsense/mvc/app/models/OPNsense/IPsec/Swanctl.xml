@@ -6,17 +6,17 @@
         <Connections>
             <Connection type=".\ConnnectionField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <proposals type=".\IPsecProposalField">
-                    <default>default</default>
+                    <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
                 </proposals>
                 <unique type="OptionField">
                     <Required>Y</Required>
-                    <default>no</default>
+                    <Default>no</Default>
                     <OptionValues>
                         <no>No (default)</no>
                         <never>Never</never>
@@ -25,12 +25,12 @@
                     </OptionValues>
                 </unique>
                 <aggressive type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </aggressive>
                 <version type="OptionField">
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                     <OptionValues>
                         <ike value="0">IKEv1+IKEv2</ike>
                         <ikev1 value="1">IKEv1</ikev1>
@@ -38,7 +38,7 @@
                     </OptionValues>
                 </version>
                 <mobike type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </mobike>
                 <local_addrs type=".\IKEAdressField">
@@ -48,7 +48,7 @@
                     <Required>N</Required>
                 </remote_addrs>
                 <encap type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </encap>
                 <reauth_time type="IntegerField">
@@ -81,7 +81,7 @@
                     <Multiple>Y</Multiple>
                 </pools>
                 <send_certreq type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </send_certreq>
                 <send_cert type="OptionField">
@@ -106,7 +106,7 @@
         <locals>
             <local type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -123,11 +123,11 @@
                     <Required>Y</Required>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10</MaximumValue>
-                    <default>0</default>
+                    <Default>0</Default>
                 </round>
                 <auth type="OptionField">
                     <Required>Y</Required>
-                    <default>psk</default>
+                    <Default>psk</Default>
                     <OptionValues>
                         <psk>Pre-Shared Key</psk>
                         <pubkey>Public Key</pubkey>
@@ -169,7 +169,7 @@
         <remotes>
             <remote type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -186,11 +186,11 @@
                     <Required>Y</Required>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10</MaximumValue>
-                    <default>0</default>
+                    <Default>0</Default>
                 </round>
                 <auth type="OptionField">
                     <Required>Y</Required>
-                    <default>psk</default>
+                    <Default>psk</Default>
                     <OptionValues>
                         <psk>Pre-Shared Key</psk>
                         <pubkey>Public Key</pubkey>
@@ -233,7 +233,7 @@
         <children>
             <child type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -252,17 +252,17 @@
                     <Required>N</Required>
                 </reqid>
                 <esp_proposals type=".\IPsecProposalField">
-                    <default>default</default>
+                    <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
                 </esp_proposals>
                 <sha256_96 type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </sha256_96>
                 <start_action type="OptionField">
                     <Required>Y</Required>
-                    <default>start</default>
+                    <Default>start</Default>
                     <OptionValues>
                         <none>None</none>
                         <trap_start value='trap|start'>Trap+start</trap_start>
@@ -273,7 +273,7 @@
                 </start_action>
                 <close_action type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>None</none>
                         <trap>Trap</trap>
@@ -282,7 +282,7 @@
                 </close_action>
                 <dpd_action  type="OptionField">
                     <Required>Y</Required>
-                    <default>clear</default>
+                    <Default>clear</Default>
                     <OptionValues>
                         <clear>Clear</clear>
                         <trap>Trap</trap>
@@ -291,7 +291,7 @@
                 </dpd_action>
                 <mode type="OptionField">
                     <Required>Y</Required>
-                    <default>tunnel</default>
+                    <Default>tunnel</Default>
                     <OptionValues>
                         <tunnel>Tunnel</tunnel>
                         <transport>Transport</transport>
@@ -300,7 +300,7 @@
                     </OptionValues>
                 </mode>
                 <policies type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </policies>
                 <local_ts type="NetworkField">
@@ -314,7 +314,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </remote_ts>
                 <rekey_time type="IntegerField">
-                    <default>3600</default>
+                    <Default>3600</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
                     <Required>Y</Required>
@@ -327,7 +327,7 @@
         <Pools>
             <Pool type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
@@ -351,7 +351,7 @@
         <VTIs>
             <VTI type=".\VTIField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <reqid type="IntegerField">
@@ -397,12 +397,12 @@
         <SPDs>
             <SPD type=".\SPDField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <protocol type="OptionField">
                     <Required>Y</Required>
-                    <default>esp</default>
+                    <Default>esp</Default>
                     <OptionValues>
                         <esp>ESP</esp>
                         <ah>AH</ah>

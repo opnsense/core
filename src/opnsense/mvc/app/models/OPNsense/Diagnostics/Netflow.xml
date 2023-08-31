@@ -22,7 +22,7 @@
             </egress_only>
             <version type="OptionField">
                 <Required>Y</Required>
-                <default>v9</default>
+                <Default>v9</Default>
                 <OptionValues>
                     <v5>v5</v5>
                     <v9>v9</v9>
@@ -36,19 +36,19 @@
         </capture>
         <collect>
             <enable type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enable>
         </collect>
         <activeTimeout type="IntegerField">
-            <default>1800</default>
+            <Default>1800</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Active timeout needs to be an integer value between 1 and 86400</ValidationMessage>
          </activeTimeout>
          <inactiveTimeout type="IntegerField">
-            <default>15</default>
+            <Default>15</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>

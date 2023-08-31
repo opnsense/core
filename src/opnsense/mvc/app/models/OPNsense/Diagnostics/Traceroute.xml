@@ -12,7 +12,7 @@
             </hostname>
             <ipproto type="OptionField">
                 <Required>Y</Required>
-                <default>inet</default>
+                <Default>inet</Default>
                 <OptionValues>
                     <inet>IPv4</inet>
                     <inet6>IPv6</inet6>
@@ -20,7 +20,7 @@
             </ipproto>
             <protocol type="OptionField">
                 <Required>Y</Required>
-                <default>udp</default>
+                <Default>udp</Default>
                 <OptionValues>
                     <udp>UDP</udp>
                     <icmp>ICMP</icmp>

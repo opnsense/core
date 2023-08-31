@@ -17,7 +17,7 @@
                 </name>
                 <keyType type="OptionField">
                     <Required>Y</Required>
-                    <default>rsa</default>
+                    <Default>rsa</Default>
                     <OptionValues>
                         <rsa>RSA</rsa>
                         <ecdsa>ECDSA</ecdsa>
@@ -59,7 +59,7 @@
                 </remote_ident>
                 <keyType type="OptionField">
                     <Required>Y</Required>
-                    <default>PSK</default>
+                    <Default>PSK</Default>
                     <OptionValues>
                         <PSK>PSK</PSK>
                         <EAP>EAP</EAP>
