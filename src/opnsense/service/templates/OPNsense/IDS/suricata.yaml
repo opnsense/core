@@ -14,7 +14,7 @@
 vars:
   # more specific is better for alert accuracy and performance
   address-groups:
-    HOME_NET: "[{{OPNsense.IDS.general.homenet|default('192.168.0.0/16,10.0.0.0/8,172.16.0.0/12')}}]"
+    HOME_NET: "[{{OPNsense.IDS.general.homenet}}]"
     EXTERNAL_NET: "!$HOME_NET"
     HTTP_SERVERS: "$HOME_NET"
     SMTP_SERVERS: "$HOME_NET"
