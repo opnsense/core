@@ -48,7 +48,7 @@ class M1_0_0 extends BaseModelMigration
 
                 // monitor_disable was "on" when no node present
                 $monitor_disable = !empty((string)$gateway->monitor_disable);
-                $node->monitor_disable = $monitor_disable ? 1 : 0;
+                $node->monitor_disable->setValue($monitor_disable ? '1' : '0');
 
                 foreach ($gateway as $key => $value) {
                     $node->$key = (string)$value;

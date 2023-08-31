@@ -249,6 +249,9 @@ class Gateways
                         // default address family
                         $gw_arr['ipprotocol'] = 'inet';
                     }
+                    if (empty($gw_arr['monitor_disable'])) {
+                        $gw_arr['monitor_disable'] = 0;
+                    }
                     $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
                     $gw_arr['attribute'] = $i++;
                     if (Util::isIpAddress($gw_arr['gateway'])) {

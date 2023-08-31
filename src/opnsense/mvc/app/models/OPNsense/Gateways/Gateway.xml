@@ -35,7 +35,7 @@
             </interface>
             <ipprotocol type="OptionField">
                 <default>inet</default>
-                <Required>N</Required>
+                <Required>Y</Required>
                 <OptionValues>
                     <inet>IPv4</inet>
                     <inet6>IPv6</inet6>
@@ -62,7 +62,7 @@
             </fargw>
             <monitor_disable type="BooleanField">
                 <default>1</default>
-                <Required>N</Required>
+                <Required>Y</Required>
             </monitor_disable>
             <monitor_noroute type="BooleanField">
                 <Required>N</Required>
@@ -82,7 +82,7 @@
             </force_down>
             <priority type="IntegerField">
                 <default>255</default>
-                <Required>N</Required>
+                <Required>Y</Required>
                 <ValidationMessage>Priority must be a value between 1 and 255</ValidationMessage>
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>255</MaximumValue>
