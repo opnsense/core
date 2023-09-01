@@ -250,9 +250,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     // if item has toggled, serialize to config and save
                     if ($result['changed']) {
                         $this->save();
-
-                        // trigger dpinger instance start/stop. Action to take is implicit
-                        (new Backend())->configdpRun("gateways toggle instance", [(string)$node->name]);
                     }
                 }
             }
