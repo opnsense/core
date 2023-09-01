@@ -133,28 +133,31 @@ class SettingsController extends ApiMutableModelControllerBase
     public function getGatewayAction($uuid = null)
     {
         if ($uuid != null) {
-            /* uuid can be a gateway name in cases where the gateway is automatically generated */
             $gateways = array_values($this->gw->gatewaysIndexedByName(true, false, true));
             $idx = array_search($uuid, array_column($gateways, 'uuid'));
-            $idx = $idx !== false ? $idx : array_search($uuid, array_column($gateways, 'name'));
-            if ($idx !== false) {
-                $mdl = $this->getModel();
-                $node = $mdl->gateway_item;
-                if ($node != null && $node->isArrayType()) {
-                    $node = $node->Add();
-                    $node->setNodes($gateways[$idx]);
-                    return ['gateway_item' => $node->getNodes()];
+            if ($idx === false) {
+                /* uuid can be a gateway name in cases where the gateway is automatically generated
+                 * or when iterating the legacy configuration
+                 */
+                $idx = array_search($uuid, array_column($gateways, 'name'));
+                if ($idx !== false) {
+                    $mdl = $this->getModel();
+                    $node = $mdl->gateway_item;
+                    if ($node != null && $node->isArrayType()) {
+                        $node = $node->Add();
+                        $node->setNodes($gateways[$idx]);
+                        return ['gateway_item' => $node->getNodes()];
+                    }
+                } else {
+                    $uuid = null;
                 }
-            }
-        } else {
-            $mdl = $this->getModel();
-            $node = $mdl->gateway_item;
-            if ($node != null && $node->isArrayType()) {
-                $node = $node->Add();
-                return ['gateway_item' => $node->getNodes()];
+            } else {
+                /* make sure getBase() returns a node */
+                $uuid = null;
             }
         }
-        return [];
+
+        return $this->getBase('gateway_item', 'gateway_item', $uuid);
     }
 
     public function setGatewayAction($uuid)
