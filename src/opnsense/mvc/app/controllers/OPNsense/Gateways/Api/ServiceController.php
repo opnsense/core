@@ -50,8 +50,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         $result = ["status" => "failed"];
         if ($this->request->isPost()) {
             $this->sessionClose();
-            $backend = new Backend();
-            $backend->configdRun('interface routes configure');
+            (new Backend())->configdRun('interface routes configure');
             $result = parent::reconfigureAction();
         }
 
