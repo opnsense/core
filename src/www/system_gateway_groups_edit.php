@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
+$a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_gateway_groups[$_GET['id']])) {

@@ -33,7 +33,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $all_intf_details = legacy_interfaces_details();
-$a_gateways = (new \OPNsense\Routing\Gateways($all_intf_details))->gatewaysIndexedByName();
+$a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

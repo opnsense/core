@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-$gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
+$gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 ?>
 
 <script>
