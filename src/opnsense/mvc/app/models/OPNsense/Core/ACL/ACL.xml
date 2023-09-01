@@ -632,30 +632,32 @@
             <pattern>api/diagnostics/log/core/pkg/*</pattern>
         </patterns>
     </page-system-firmware-manualupdate>
+    <page-system-gateways>
+        <name>System: Gateways</name>
+        <patterns>
+            <pattern>ui/gateways/single</pattern>
+            <pattern>api/gateways/settings/searchGateway/*</pattern>
+        </patterns>
+    </page-system-gateways>
+    <page-system-gateways-editgateway>
+        <name>System: Gateways: Edit Gateway</name>
+        <patterns>
+            <pattern>ui/gateways/single</pattern>
+            <pattern>api/gateways/settings/*</pattern>
+        </patterns>
+    </page-system-gateways-editgateway>
     <page-system-gatewaygroups>
         <name>System: Gateway Groups</name>
         <patterns>
             <pattern>system_gateway_groups.php*</pattern>
         </patterns>
     </page-system-gatewaygroups>
-    <page-system-gateways>
-        <name>System: Gateways</name>
-        <patterns>
-            <pattern>system_gateways.php*</pattern>
-        </patterns>
-    </page-system-gateways>
     <page-system-gateways-editgatewaygroups>
         <name>System: Gateways: Edit Gateway Groups</name>
         <patterns>
             <pattern>system_gateway_groups_edit.php*</pattern>
         </patterns>
     </page-system-gateways-editgatewaygroups>
-    <page-system-gateways-editgateway>
-        <name>System: Gateways: Edit Gateway</name>
-        <patterns>
-            <pattern>system_gateways_edit.php*</pattern>
-        </patterns>
-    </page-system-gateways-editgateway>
     <page-system-generalsetup>
         <name>System: General Setup</name>
         <patterns>

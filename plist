@@ -340,7 +340,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/SettingsController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/IndexController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/SingleController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/forms/dialogEditGateway.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
@@ -767,7 +767,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Gateways/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Gateways/single.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt
