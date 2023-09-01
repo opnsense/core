@@ -66,11 +66,11 @@
                         return elements;
                     },
                     "nameformatter": function (column, row) {
-                        let elem = '<span>' + row.name + '</span>&nbsp;';
+                        let elem = '<span class="break">' + row.name + ' ';
                         if (row.defaultgw == '1') {
-                            elem += '<strong>({{ lang._('active')}})</strong';
+                            elem += '<strong>({{ lang._('active')}})</strong>';
                         }
-                        return elem;
+                        return elem + '</span>';
                     },
                     "interfaceformatter": function (column, row) {
                         return row.interface_descr;
@@ -79,19 +79,22 @@
                         return row.ipprotocol == 'inet' ? 'IPv4' : 'IPv6';
                     },
                     "priorityformatter": function (column, row) {
-                        let elem = row.priority;
                         if (row.defunct == '1') {
-                            elem = '{{ lang._('defunct') }}';
+                            row.priority = '{{ lang._('defunct') }}';
                         }
+                        let elem = '<span class="break">' + row.priority;
                         if (row.upstream == '1') {
-                            elem += '&nbsp;<small>({{ lang._('upstream') }})</small>';
+                            elem += ' <small>({{ lang._('upstream') }})</small>';
                         }
 
-                        return elem;
+                        return elem + '</span>';
                     },
                     "statusformatter": function (column, row) {
                         return '<div class="' + row.label_class + ' bootgrid-tooltip" data-toggle="tooltip" title="' + row.status + '"></div>';
                     },
+                    "descriptionFormatter": function (column, row) {
+                        return '<div class="break">' + row.descr + '</div>';
+                    }
                 }
             }
         });
@@ -100,6 +103,14 @@
         updateServiceControlUI('gateways');
     });
 </script>
+
+<style>
+.break {
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+}
+</style>
 
 <div class="tab-content content-box col-xs-12 __mb">
     <table id="grid-gateways" class="table table-condensed table-hover table-striped table-responsive" data-editAlert="GatewayChangeMessage" data-editDialog="DialogGateway">
@@ -118,7 +129,7 @@
             <th data-column-id="stddev" data-type="string">{{ lang._('RTTd') }}</th>
             <th data-column-id="loss" data-type="string">{{ lang._('Loss') }}</th>
             <th data-column-id="status" data-type="string" data-formatter="statusformatter">{{ lang._('Status') }}</th>
-            <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
+            <th data-column-id="descr" data-type="string" data-formatter="descriptionFormatter">{{ lang._('Description') }}</th>
             <th data-column-id="commands" data-formatter="commands", data-sortable="false"></th>
         </tr>
         </thead>
