@@ -393,7 +393,7 @@ class Gateways
      * @param bool $disabled return disabled gateways
      * @param bool $localhost inet/inet6 type
      * @param bool $inactive is inactive
-     * @return string type name
+     * @return array name => gateway
      */
     public function gatewaysIndexedByName($disabled = false, $localhost = false, $inactive = false)
     {
