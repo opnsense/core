@@ -9,7 +9,7 @@
         <general>
             <!-- fields -->
             <FromEmail type="EmailField">
-                <default>sample@example.com</default>
+                <Default>sample@example.com</Default>
                 <Required>Y</Required>
             </FromEmail>
         </general>
@@ -92,7 +92,7 @@
         </SingleSelect>
         <DependConstraint>
             <value1 type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
