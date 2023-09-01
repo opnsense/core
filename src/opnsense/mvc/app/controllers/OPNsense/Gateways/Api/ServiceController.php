@@ -51,8 +51,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         if ($this->request->isPost()) {
             $this->sessionClose();
             $backend = new Backend();
-            $backend->configdRun('service restart routing');
-            $backend->configdRun('filter reload');
+            $backend->configdRun('interface routes configure');
             $result = parent::reconfigureAction();
         }
 
