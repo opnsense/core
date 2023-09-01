@@ -241,7 +241,6 @@
          </address>
          <interface type="InterfaceField">
             <Required>N</Required>
-            <Multiple>N</Multiple>
             <AddParentDevices>Y</AddParentDevices>
             <filters>
                 <enable>/^(?!0).*$/</enable>

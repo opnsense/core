@@ -378,6 +378,9 @@ lint-model:
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and BlankDesc and Multiple="Y"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} blank description not applicable on multiple field"; \
 		done; \
+		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and Multiple="N"]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} Multiple=N is the default"; \
+		done; \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and OptionValues[default[not(@value)] or multiple[not(@value)] or required[not(@value)]]]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} option element default/multiple/required without value attribute"; \
 		done; \
