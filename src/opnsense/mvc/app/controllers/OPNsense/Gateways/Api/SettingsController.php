@@ -149,11 +149,9 @@ class SettingsController extends ApiMutableModelControllerBase
                         return ['gateway_item' => $node->getNodes()];
                     }
                 } else {
+                    /* make sure getBase() returns a node */
                     $uuid = null;
                 }
-            } else {
-                /* make sure getBase() returns a node */
-                $uuid = null;
             }
         }
 
