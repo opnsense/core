@@ -72,9 +72,9 @@
               <option data-type='rsa' value="3072">3072</option>
               <option data-type='rsa' value="4096">4096</option>
               <option data-type='rsa' value="8192">8192</option>
-              <option data-type='ecdsa' value="256">256</option>
-              <option data-type='ecdsa' value="384">384</option>
-              <option data-type='ecdsa' value="521">521</option>
+              <option data-type='ecdsa' value="256">NIST P-256</option>
+              <option data-type='ecdsa' value="384">NIST P-384</option>
+              <option data-type='ecdsa' value="521">NIST P-521</option>
           </select>
           <button id="keygen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new.') }}" data-toggle="tooltip">
             <i class="fa fa-fw fa-gear"></i>
