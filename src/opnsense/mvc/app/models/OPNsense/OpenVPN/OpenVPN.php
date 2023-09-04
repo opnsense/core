@@ -145,6 +145,7 @@ class OpenVPN extends BaseModel
                 'dns_domain_search',
                 'tunnel_network',
                 'tunnel_networkv6',
+                'route_gateway',
             ];
             foreach ($opts as $fieldname) {
                 $result[$fieldname] = (string)$cso->$fieldname;
