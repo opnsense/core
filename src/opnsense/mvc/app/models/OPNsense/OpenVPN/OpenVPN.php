@@ -32,6 +32,7 @@ use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Trust\Store;
 use OPNsense\Core\Config;
+use OPNsense\Core\File;
 use OPNsense\Firewall\Util;
 
 /**
@@ -359,9 +360,7 @@ class OpenVPN extends BaseModel
                 if ($key == 'auth-user-pass') {
                     // user/passwords need to be feed using a file
                     $output .= $key . " " . $value['filename'] . "\n";
-                    @touch($value['filename']);
-                    @chmod($value['filename'], 0600);
-                    file_put_contents($value['filename'], $value['content']);
+                    File::file_put_contents($value['filename'], $value['content'], 0600);
                 } else {
                     foreach ($value as $item) {
                         $output .= $key . " " . $item . "\n";
@@ -371,9 +370,7 @@ class OpenVPN extends BaseModel
                 $output .= $key . " " . $value . "\n";
             }
         }
-        @touch($filename);
-        @chmod($filename, 0600);
-        file_put_contents($filename, $output);
+        File::file_put_contents($filename, $output, 0600);
     }
 
     /**
