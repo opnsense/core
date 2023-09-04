@@ -33,12 +33,6 @@
             options:{
                 selection: false,
                 formatters:{
-                    bytes: function(column, row) {
-                        if (row[column.id] && row[column.id] > 0) {
-                            return byteFormat(row[column.id], 2);
-                        }
-                        return '';
-                    },
                     commands: function (column, row) {
                         if (row.is_client) {
                             return '<button type="button" class="btn btn-xs btn-default ovpn-command command-kill" data-toggle="tooltip" title="{{ lang._('Kill') }}" data-common_name="'+row.common_name+'" data-row-id="' + row.id + '"><span class="fa fa-times fa-fw"></span></button>';
