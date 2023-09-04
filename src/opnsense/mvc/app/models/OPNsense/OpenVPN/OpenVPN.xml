@@ -44,6 +44,10 @@
                     <Required>N</Required>
                     <asList>Y</asList>
                 </remote_networks>
+                <route_gateway type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                </route_gateway>
                 <redirect_gateway type="OptionField">
                     <Required>N</Required>
                     <Multiple>Y</Multiple>

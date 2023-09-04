@@ -414,6 +414,10 @@ function openvpn_add_dhcpopts(&$settings, &$conf)
         }
     }
 
+    if (!empty($settings['route_gateway'])) {
+        $conf .= "push \"route-gateway {$settings['route_gateway']}\"\n";
+    }
+
     if (!empty($settings['redirect_gateway'])) {
         $redirgw = str_replace(',', ' ', $settings['redirect_gateway']);
         $conf .= "push \"redirect-gateway {$redirgw}\"\n";
