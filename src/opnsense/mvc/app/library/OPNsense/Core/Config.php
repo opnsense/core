@@ -546,6 +546,7 @@ class Config extends Singleton
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
             mkdir($target_dir);
+            chmod($target_dir, 0750);
         }
         if (file_exists($target_dir . "config-" . $timestamp . ".xml")) {
             // The new target backup filename shouldn't exists, because of the use of microtime.
@@ -555,7 +556,7 @@ class Config extends Singleton
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
         }
-        copy($this->config_file, $target_dir . $target_filename);
+        File::file_put_contents($target_dir . $target_filename, file_get_contents($this->config_file), 0640);
 
         return $target_dir . $target_filename;
     }
