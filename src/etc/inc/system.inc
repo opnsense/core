@@ -263,7 +263,7 @@ function get_locale_list()
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
-        unset($locales['pl_PL']);
+        /* below 30% progress */
         unset($locales['vi_VN']);
     }
 
