@@ -39,19 +39,15 @@ class Gateways
 {
     var $configHandle = null;
     var $gatewaySeq = 0;
-    var $ifconfig = array();
     var $cached_gateways = array();
 
     /**
      * Construct new gateways object
-     * @param array $ifconfig containing serialized ifconfig data
+     * @param array $unused XXX shim to be removed after 24.1 when all callers are fixed
      */
-    public function __construct(array $ifconfig = [])
+    public function __construct(array $unused = [])
     {
         $this->configHandle = Config::getInstance()->object();
-        if ($ifconfig !== null) {
-            $this->ifconfig = $ifconfig;
-        }
     }
 
     /**
@@ -359,7 +355,6 @@ class Gateways
             foreach ($dynamic_gw as $intfgws) {
                 foreach ($intfgws as $gw_arr) {
                     if (!empty($gw_arr)) {
-                        $gw_arr['disabled'] = true;
                         $gw_arr['defunct'] = true;
                         unset($gw_arr['gateway']);
                         $this->cached_gateways[] = $gw_arr;
@@ -383,7 +378,7 @@ class Gateways
             if ($gateway['ipprotocol'] == $ipproto) {
                 if (is_array($skip) && in_array($gateway['name'], $skip)) {
                     continue;
-                } elseif (!empty($gateway['disabled']) || !empty($gateway['is_loopback']) || !empty($gateway['force_down'])) {
+                } elseif (!empty($gateway['disabled']) || !empty($gateway['defunct']) || !empty($gateway['is_loopback']) || !empty($gateway['force_down'])) {
                     continue;
                 } else {
                     return $gateway;
@@ -476,7 +471,7 @@ class Gateways
     public function getInterfaceGateway($interface, $ipproto = "inet", $only_configured = false, $property = 'gateway')
     {
         foreach ($this->getGateways() as $gateway) {
-            if (!empty($gateway['disabled']) || $gateway['ipprotocol'] != $ipproto) {
+            if (!empty($gateway['disabled']) || !empty($gateway['defunct']) || $gateway['ipprotocol'] != $ipproto) {
                 continue;
             } elseif (!empty($gateway['is_loopback']) || empty($gateway['gateway'])) {
                 continue;
