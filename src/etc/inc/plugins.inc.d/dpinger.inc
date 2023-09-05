@@ -33,19 +33,9 @@
 
 function dpinger_services()
 {
-    global $config;
-
     $services = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gateway) {
-        if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
-            continue;
-        }
-
-        if (empty($config['interfaces'][$gateway['interface']]['enable'])) {
-            continue;
-        }
-
+    foreach (dpinger_instances() as $name => $gateway) {
         $pconfig = [];
         $pconfig['description'] = sprintf(gettext('Gateway monitor (%s)'), $gateway['name']);
         $pconfig['php']['restart'] = ['dpinger_configure_do'];
@@ -129,17 +119,12 @@ function dpinger_host_routes()
     return $routes;
 }
 
-function dpinger_instances()
+function dpinger_instances($extended = false)
 {
     $instances = [];
 
-    $gateways = new \OPNsense\Routing\Gateways();
-
-    foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-        if (empty($gateway['monitor'])) {
-            /* skip monitors not currently attached */
-            continue;
-        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+    foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $name => $gateway) {
+        if (isset($gateway['monitor_disable']) && !$extended) {
             /* do not monitor if such was requested */
             continue;
         }
@@ -151,12 +136,8 @@ function dpinger_instances()
         if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
             $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
-        if (!empty($gateway['gateway'])) {
-            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-            }
-        } else {
-            log_msg("Gateway currently empty for {$gateway['monitor']} on {$gateway['interface']}");
+        if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
+            $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
         }
 
         $instances[$name] = $gateway;
@@ -188,6 +169,10 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     foreach (dpinger_instances() as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
+        }
+
+        if (empty($gateway['gateway'])) {
+            log_msg("Gateway currently empty for {$gateway['monitor']} on {$gateway['interface']}");
         }
 
         $gwifip = null;
@@ -346,21 +331,16 @@ function dpinger_run()
 
 function dpinger_status()
 {
-    $instances = dpinger_instances();
     $status = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
-        if (isset($gwitem['disabled'])) {
-            continue;
-        }
-
+    foreach (dpinger_instances(true) as $gwitem) {
         /* we seem to be concerned about disabled monitors just because of force_down */
         $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
 
         $status[$gwitem['name']] = [
             /* grab the runtime monitor from the instance if available */
-            'monitor' => $instances[$gwitem['name']]['monitor'] ?? ($gwitem['monitor'] ?? '~'),
             'status' => isset($gwitem['force_down']) ? 'force_down' : $gwstatus,
+            'monitor' => $gwitem['monitor'] ?? '~',
             'name' => $gwitem['name'],
             'stddev' => '~',
             'delay' => '~',
@@ -398,12 +378,10 @@ function dpinger_status()
             $settings = dpinger_defaults();
 
             if ($r['status'] != 'force_down') {
-                $keys = ['latencylow', 'latencyhigh', 'losslow', 'losshigh'];
-
                 /* Replace default values by user-defined */
-                foreach ($keys as $key) {
-                    if (isset($instances[$gwname][$key]) && is_numeric($instances[$gwname][$key])) {
-                        $settings[$key] = $instances[$gwname][$key];
+                foreach (['latencylow', 'latencyhigh', 'losslow', 'losshigh'] as $key) {
+                    if (isset($gwitem[$key]) && is_numeric($gwitem[$key])) {
+                        $settings[$key] = $gwitem[$key];
                     }
                 }
 

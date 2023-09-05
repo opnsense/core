@@ -660,7 +660,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
     $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
 
-    foreach ($gateways->gatewaysIndexedByName(true) as $gateway) {
+    foreach ($gateways->gatewaysIndexedByName() as $gateway) {
         /* check if we need to add a required interface route to the gateway (IPv4 only) */
         if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
             continue;
@@ -766,7 +766,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         if (!empty($interface)) {
             $reloads = [];
 
-            foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
+            foreach ($gateways->gatewaysIndexedByName() as $name => $gateway) {
                 if ($family !== null && $family !== $gateway['ipprotocol']) {
                     continue;
                 }
