@@ -58,7 +58,6 @@
                 </OptionValues>
             </lacp_strict>
             <mtu type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>576</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </mtu>

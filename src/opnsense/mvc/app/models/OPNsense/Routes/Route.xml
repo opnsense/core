@@ -15,9 +15,7 @@
             <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
             <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
           </gateway>
-          <descr type="TextField">
-            <Required>N</Required>
-          </descr>
+          <descr type="TextField"/>
           <disabled type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>

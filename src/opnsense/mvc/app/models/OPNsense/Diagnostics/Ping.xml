@@ -1,9 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>
-        OPNsense Ping Diagnostics
-    </description>
+    <description>OPNsense Ping Diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
@@ -19,18 +17,15 @@
                 </OptionValues>
             </fam>
             <source_address type="NetworkField">
-                <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <ValidationMessage>Provide a valid source address</ValidationMessage>
             </source_address>
             <packetsize type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </packetsize>
             <disable_frag type="BooleanField"/>
             <description type="TextField">
-                <Required>N</Required>
                 <mask>/^(.){1,255}$/u</mask>
                 <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
             </description>

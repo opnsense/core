@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
     <version>1.0.1</version>
-    <description>
-        OPNsense IPsec
-    </description>
+    <description>OPNsense IPsec</description>
     <items>
         <general>
             <enabled type="LegacyLinkField">

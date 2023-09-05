@@ -1,9 +1,7 @@
 <model>
     <mount>/vlans</mount>
     <version>1.0.0</version>
-    <description>
-        VLAN configuration
-    </description>
+    <description>VLAN configuration</description>
     <items>
         <vlan type="ArrayField">
             <if type=".\VlanInterfaceField">
@@ -43,16 +41,13 @@
                 </OptionValues>
             </pcp>
             <proto type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>Auto</BlankDesc>
                 <OptionValues>
                     <opt1 value="802.1q">802.1Q</opt1>
                     <opt2 value="802.1ad">802.1ad</opt2>
                 </OptionValues>
             </proto>
-            <descr type="TextField">
-              <Required>N</Required>
-            </descr>
+            <descr type="TextField"/>
             <vlanif type="TextField">
               <Required>Y</Required>
               <Constraints>

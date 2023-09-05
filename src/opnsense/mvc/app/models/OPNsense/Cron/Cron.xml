@@ -59,7 +59,6 @@
                 <parameters type="TextField">
                     <mask>/^([^;|`]){1,255}$/</mask>
                     <ValidationMessage>Enter valid parameter(s) for the chosen command (Found illegal characters).</ValidationMessage>
-                    <Required>N</Required>
                 </parameters>
                 <description type="TextField">
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>

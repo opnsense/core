@@ -1,9 +1,7 @@
 <model>
     <mount>/virtualip</mount>
     <version>1.0.0</version>
-    <description>
-        Virtual IP configuration
-    </description>
+    <description>Virtual IP configuration</description>
     <items>
         <vip type="ArrayField">
             <interface type=".\VipInterfaceField">
@@ -23,7 +21,6 @@
             </mode>
             <subnet type=".\VipNetworkField">
                 <!--required, but validated in model -->
-                <Required>N</Required>
                 <Constraints>
                     <check001>
                         <ValidationMessage>Address already assigned.</ValidationMessage>
@@ -33,11 +30,8 @@
             </subnet>
             <subnet_bits type=".\VipNetworkField">
                 <!--required, but validated in model -->
-                <Required>N</Required>
             </subnet_bits>
-            <gateway type="NetworkField">
-                <Required>N</Required>
-            </gateway>
+            <gateway type="NetworkField"/>
             <noexpand type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
@@ -46,11 +40,8 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </nobind>
-            <password type="TextField">
-                <Required>N</Required>
-            </password>
+            <password type="TextField"/>
             <vhid type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>255</MaximumValue>
                 <ValidationMessage>Invalid VHID number provided, Acceptable values for vhid are 1 to 255.</ValidationMessage>
@@ -69,9 +60,7 @@
                 <MaximumValue>254</MaximumValue>
                 <ValidationMessage>Invalid skew value, acceptable values are 0 to 255.</ValidationMessage>
             </advskew>
-            <descr type="TextField">
-              <Required>N</Required>
-            </descr>
+            <descr type="TextField"/>
         </vip>
     </items>
 </model>

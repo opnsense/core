@@ -1,9 +1,7 @@
 <model>
     <mount>//tests/OPNsense/TestModel</mount>
     <version>1.0.0</version>
-    <description>
-        OPNsense RecursiveModel test
-    </description>
+    <description>OPNsense RecursiveModel test</description>
     <items>
         <!-- container -->
         <general>

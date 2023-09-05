@@ -1,9 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>
-        OPNsense Traceroute Diagnostics
-    </description>
+    <description>OPNsense Traceroute Diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
@@ -27,7 +25,6 @@
                 </OptionValues>
             </protocol>
             <source_address type="NetworkField">
-              <Required>N</Required>
               <NetMaskAllowed>N</NetMaskAllowed>
               <ValidationMessage>Provide a valid source address</ValidationMessage>
             </source_address>

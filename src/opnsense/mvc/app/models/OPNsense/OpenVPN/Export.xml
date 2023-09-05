@@ -15,7 +15,6 @@
                 </hostname>
                 <template type="TextField"/>
                 <local_port type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>Port needs to be an integer value between 1 and 65535</ValidationMessage>

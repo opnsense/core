@@ -1,9 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.1</version>
-    <description>
-        OPNsense Packet Capture
-    </description>
+    <description>OPNsense Packet Capture</description>
     <items>
         <settings>
             <interface type=".\InterfaceField">
@@ -12,7 +10,6 @@
                 <Multiple>Y</Multiple>
             </interface>
             <description type="TextField">
-                <Required>N</Required>
                 <mask>/^(.){1,255}$/u</mask>
                 <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
             </description>
@@ -36,20 +33,16 @@
                 <Required>Y</Required>
                 <Default>any</Default>
             </protocol>
-            <host type=".\HostField">
-                <Required>N</Required>
-            </host>
+            <host type=".\HostField"/>
             <port_not type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
             </port_not>
             <port type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </port>
             <snaplen type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>262144</MaximumValue>
             </snaplen>
