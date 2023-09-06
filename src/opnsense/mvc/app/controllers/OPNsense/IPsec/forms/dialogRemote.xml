@@ -38,7 +38,7 @@
         <id>remote.eap_id</id>
         <label>EAP Id</label>
         <type>text</type>
-        <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method</help>
+        <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method. If set to %any the EAP-Identity method will be used to ask the client for an EAP identity.</help>
         <style>remote_auth remote_auth_eap-mschapv2 remote_auth_eap-tls remote_auth_eap-radius</style>
     </field>
     <field>
