@@ -1666,8 +1666,8 @@ function dhcpd_dhcrelay4_configure($verbose = false)
      * on the interface in which the destination server sits.
      */
     $srvips = explode(",", $dhcrelaycfg['server']);
-    foreach ($srvips as $srcidx => $srvip) {
-        unset($destif);
+    foreach ($srvips as $srvip) {
+        $destif = null;
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
@@ -1681,16 +1681,16 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = get_real_interface($a_gateways[$rtent['gateway']]['interface']);
+                    $destif = $a_gateways[$rtent['gateway']]['if'];
                     break;
                 }
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet", $route_str);
             array_shift($route_str);
@@ -1714,23 +1714,22 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
-            if (is_array($config['gateways']['gateway_item'])) {
-                foreach ($config['gateways']['gateway_item'] as $gateway) {
-                    if (isset($gateway['defaultgw'])) {
-                        $destif = get_real_interface($gateway['interface']);
-                        break;
-                    }
+        if (empty($destif)) {
+            foreach ($a_gateways as $gateway) {
+                if (isset($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
+                    $destif = $gateway['if'];
+                    break;
                 }
-            } else {
-                $destif = get_real_interface("wan");
             }
         }
 
         if (!empty($destif)) {
             $dhcrelayifs[] = $destif;
+        } else {
+            log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
         }
     }
+
     $dhcrelayifs = array_unique($dhcrelayifs);
 
     if (!empty($dhcrelayifs)) {
@@ -1779,9 +1778,9 @@ function dhcpd_dhcrelay6_configure($verbose = false)
      * on the interface in which the destination server sits.
      */
     $srvips = explode(",", $dhcrelaycfg['server']);
-    $srvifaces = array();
-    foreach ($srvips as $srcidx => $srvip) {
-        unset($destif);
+    $srvifaces = [];
+    foreach ($srvips as $srvip) {
+        $destif = null;
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
@@ -1795,18 +1794,18 @@ function dhcpd_dhcrelay6_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             if (isset($config['staticroutes']['route'])) {
                 foreach ($config['staticroutes']['route'] as $rtent) {
                     if (ip_in_subnet($srvip, $rtent['network'])) {
-                        $destif = $a_gateways[$rtent['gateway']]['interface'];
+                        $destif = $a_gateways[$rtent['gateway']]['if'];
                         break;
                     }
                 }
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet6", $route_str);
             array_shift($route_str);
@@ -1822,21 +1821,19 @@ function dhcpd_dhcrelay6_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
-            if (is_array($config['gateways']['gateway_item'])) {
-                foreach ($config['gateways']['gateway_item'] as $gateway) {
-                    if (isset($gateway['defaultgw'])) {
-                        $destif = $gateway['interface'];
-                        break;
-                    }
+        if (empty($destif)) {
+            foreach ($a_gateways as $gateway) {
+                if (isset($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
+                    $destif = $gateway['if'];
+                    break;
                 }
-            } else {
-                $destif = get_real_interface("wan");
             }
         }
 
         if (!empty($destif)) {
             $srvifaces[] = "{$srvip}%{$destif}";
+        } else {
+            log_msg("dhcpd_dhcrelay6_configure() found no suitable interface for {$srvip}", LOG_WARNING);
         }
     }
 
