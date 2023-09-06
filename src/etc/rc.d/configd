@@ -1,7 +1,5 @@
 #!/bin/sh
 #
-# $FreeBSD$
-#
 # PROVIDE: configd
 # REQUIRE: SERVERS
 # KEYWORD: shutdown

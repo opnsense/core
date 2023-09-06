@@ -29,8 +29,6 @@
  */
 
 $etc_group = <<<EOF
-# \$FreeBSD$
-#
 wheel:*:0:root
 daemon:*:1:
 kmem:*:2:
@@ -72,8 +70,6 @@ nobody:*:65534:
 EOF;
 
 $etc_master_passwd = <<<EOF
-# \$FreeBSD$
-#
 root::0:0::0:0:Charlie &:/root:/bin/csh
 toor:*:0:0::0:0:Bourne-again Superuser:/root:
 installer:*:0:0::0:0:Installer Superuser:/root:/usr/sbin/nologin
@@ -106,8 +102,6 @@ nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
 EOF;
 
 $etc_shells = <<<EOF
-# \$FreeBSD$
-#
 # List of acceptable shells for chpass(1).
 # Ftpd will not allow users to connect who are not using
 # one of these shells.
@@ -134,7 +128,6 @@ foreach ($known_shells as $shell) {
 
 $etc_ttys = <<<EOF
 #
-# \$FreeBSD$
 #	@(#)ttys	5.1 (Berkeley) 4/17/89
 #
 # This file specifies various information about terminals on the system.
