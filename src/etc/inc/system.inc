@@ -1260,14 +1260,15 @@ function system_login_configure($verbose = false)
 
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
-        foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
+        foreach (['ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7'] as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
                 fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
                 continue 2;
             }
         }
+
         /* serial terminals */
-        foreach (array('tty%s0', 'tty%s1', 'tty%s2', 'tty%s3') as $serialport) {
+        foreach (['tty%s0', 'tty%s1', 'tty%s2', 'tty%s3'] as $serialport) {
             $serialport = sprintf($serialport, isset($config['system']['serialusb']) ? 'U' : 'u');
             if (stripos($tty, $serialport) === 0) {
                 fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
@@ -1275,14 +1276,17 @@ function system_login_configure($verbose = false)
             }
         }
 
-        if (!empty($tty) && strpos($tty, 'xc0') === false) {
+        /* xen terminal */
+        if (strpos($tty, 'xc0') === 0) {
+            $on_off_secure_w = $virtual_enabled ? 'onifconsole secure' : 'off secure';
+            fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_w}\n");
+            continue;
+        }
+
+        if (!empty($tty)) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
-    }
-
-    if (file_exists('/dev/xc0')) {
-        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
     }
 
     fclose($fd);
