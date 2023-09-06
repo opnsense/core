@@ -1,6 +1,4 @@
 #
-# $FreeBSD$
-#
 # PAM configuration for the "sshd" service
 #
 
