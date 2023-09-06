@@ -971,11 +971,9 @@ EOPP;
 
         if (!empty($dhcpifconf['gateway'])) {
             $routers = $dhcpifconf['gateway'] != "none" ? $dhcpifconf['gateway'] : null;
-        } elseif ($gwObject->hasGateways("inet")) {
+        } else {
             // by default, add interface address in "option routers"
             $routers = $ifcfgip;
-        } else {
-            $routers = null;
         }
         if (!empty($routers)) {
             $dhcpdconf .= "  option routers {$routers};\n";

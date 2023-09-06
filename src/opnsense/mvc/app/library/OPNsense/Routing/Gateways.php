@@ -416,20 +416,6 @@ class Gateways
     }
 
     /**
-     * @param string $ipproto inet/inet6
-     * @return bool has any gateway configured for the requested protocol
-     */
-    public function hasGateways($ipproto)
-    {
-        foreach ($this->getGateways() as $gateway) {
-            if (empty($gateway['disabled']) && $ipproto == $gateway['ipprotocol']) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * @param string $name gateway name
      * @return string|null gateway address
      */
