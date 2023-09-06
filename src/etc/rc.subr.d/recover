@@ -109,7 +109,7 @@ $etc_shells = <<<EOF
 
 EOF;
 
-$known_shells = array(
+$known_shells = [
     '/bin/csh',
     '/bin/sh',
     '/bin/tcsh',
@@ -118,7 +118,7 @@ $known_shells = array(
     '/usr/local/bin/zsh',
     '/usr/local/sbin/opnsense-installer',
     '/usr/local/sbin/opnsense-shell',
-);
+];
 
 foreach ($known_shells as $shell) {
     if (file_exists($shell)) {
