@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -175,6 +175,10 @@ ttyu2	"/usr/libexec/getty 3wire"	vt100	onifconsole secure
 ttyu3	"/usr/libexec/getty 3wire"	vt100	onifconsole secure
 # Dumb console
 dcons	"/usr/libexec/getty std.9600"	vt100	off secure
+# Xen Virtual console
+xc0	"/usr/libexec/getty Pc"		xterm	onifconsole secure
+# RISC-V HTIF console
+rcons	"/usr/libexec/getty std.9600"	vt100	onifconsole secure
 
 EOF;
 
