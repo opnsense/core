@@ -253,7 +253,9 @@ class OpenVPN extends BaseModel
                 }
                 // find caref
                 $this_caref = null;
-                if (isset(Config::getInstance()->object()->cert)) {
+                if (!empty((string)$node->ca)) {
+                    $this_caref = (string)$node->ca;
+                } elseif (isset(Config::getInstance()->object()->cert)) {
                     foreach (Config::getInstance()->object()->cert as $cert) {
                         if (isset($cert->refid) && (string)$node->cert == $cert->refid) {
                             $this_caref = (string)$cert->caref;
