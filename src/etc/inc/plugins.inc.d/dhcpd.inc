@@ -1684,7 +1684,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         if (!isset($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = get_real_interface($a_gateways[$rtent['gateway']]['interface']);
+                    $destif = $a_gateways[$rtent['gateway']]['if'];
                     break;
                 }
             }
@@ -1799,7 +1799,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
             if (isset($config['staticroutes']['route'])) {
                 foreach ($config['staticroutes']['route'] as $rtent) {
                     if (ip_in_subnet($srvip, $rtent['network'])) {
-                        $destif = $a_gateways[$rtent['gateway']]['interface'];
+                        $destif = $a_gateways[$rtent['gateway']]['if'];
                         break;
                     }
                 }
