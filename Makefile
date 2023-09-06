@@ -27,13 +27,7 @@ all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
 .include "Mk/defaults.mk"
-
-CORE_ABI?=	23.7
-CORE_MESSAGE?=	Carry on my wayward son
-CORE_NAME?=	opnsense-devel
-# adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
-CORE_TYPE?=	development
+.include "Mk/version.mk"
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
