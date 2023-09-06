@@ -708,7 +708,6 @@ EOPP;
     }
 
     $iflist = get_configured_interface_with_descr();
-    $gwObject = new \OPNsense\Routing\Gateways($ifconfig_details);
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
