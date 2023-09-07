@@ -141,14 +141,9 @@ while (1) {
         }
     }
 
-   /* react to alarm if backend action was given */
-    if ($alarm) {
-        if ($action != null) {
-            configd_run($action);
-        }
-        /* XXX this blacks out all alarms for the grace period after alarm */
-        sleep($wait);
-    } else {
-        sleep($poll);
+    if ($alarm && $action != null) {
+        configd_run($action);
     }
+
+    sleep($alarm ? $wait : $poll);
 }
