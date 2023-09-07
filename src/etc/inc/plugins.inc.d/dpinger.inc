@@ -171,7 +171,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         foreach (['monitor', 'gateway'] as $key) {
             if (empty($gateway[$key])) {
                 log_msg("Skipping gateway {$name} due to empty '{$key}' property.", LOG_WARNING);
-		continue;
+                continue;
             }
         }
 
