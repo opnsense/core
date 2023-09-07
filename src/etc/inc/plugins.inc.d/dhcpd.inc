@@ -224,7 +224,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $radvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
+        $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
@@ -477,7 +477,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $radvdconf .= "# Generated RADVD config for {$autotype} assignment from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
