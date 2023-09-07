@@ -125,17 +125,14 @@
         <type>select_multiple</type>
         <allownew>true</allownew>
         <style>tokenize role role_client</style>
-        <help>Remote host name or IP address with optional port, examples:
-            my.remote.local  dead:beaf::  my.remote.local:1494  [dead:beaf::]:1494 192.168.1.1:1494
-        </help>
+        <help>Remote host name or IP address with optional port, examples: my.remote.local dead:beaf:: my.remote.local:1494 [dead:beaf::]:1494 192.168.1.1:1494</help>
     </field>
     <field>
         <id>instance.carp_depend_on</id>
-        <label>Depend on (carp)</label>
+        <label>Depend on (CARP)</label>
         <type>dropdown</type>
         <style>role role_client</style>
-        <help>The carp VHID to depend on, when this virtual address is not in master state,
-        the instance will be shutdown.</help>
+        <help>The CARP VHID to depend on. When this virtual address is not in master state, the instance will be shutdown.</help>
     </field>
     <field>
         <type>header</type>
