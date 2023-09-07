@@ -30,6 +30,7 @@
 require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
+require_once 'plugins.inc.d/dpinger.inc';
 
 function signalhandler($signal)
 {
@@ -56,7 +57,7 @@ sleep($wait);
 while (1) {
     pcntl_signal_dispatch();
 
-    $status = return_gateways_status();
+    $status = dpinger_status();
     $alarm = false;
 
     /* clear known gateways in first step to flush unknown in second step */
@@ -140,14 +141,9 @@ while (1) {
         }
     }
 
-   /* react to alarm if backend action was given */
-    if ($alarm) {
-        if ($action != null) {
-            configd_run($action);
-        }
-        /* XXX this blacks out all alarms for the grace period after alarm */
-        sleep($wait);
-    } else {
-        sleep($poll);
+    if ($alarm && $action != null) {
+        configd_run($action);
     }
+
+    sleep($alarm ? $wait : $poll);
 }
