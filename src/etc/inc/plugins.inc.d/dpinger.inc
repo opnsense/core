@@ -150,7 +150,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
-        if (isvalidpid($pidfile)) {
+        if (isvalidpid($proc['pidfile'])) {
             killbypid($proc['pidfile']);
         }
     }
