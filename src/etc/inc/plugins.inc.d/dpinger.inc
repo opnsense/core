@@ -146,11 +146,13 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
 
-    foreach (dpinger_processes() as $running_gwname => $process) {
+    foreach (dpinger_processes() as $running_gwname => $proc) {
         if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
-        killbypid($process['pidfile']);
+        if (isvalidpid($pidfile)) {
+            killbypid($proc['pidfile']);
+        }
     }
 
     if (!empty($gwname) && $gwname == ':watcher:') {
@@ -352,7 +354,7 @@ function dpinger_status()
             continue;
         }
 
-        $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 3);
+        $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 1);
         if (!$fp) {
             continue;
         }
@@ -419,10 +421,6 @@ function dpinger_processes()
     }
 
     foreach ($pidfiles as $pidfile) {
-        if (!isvalidpid($pidfile)) {
-            /* spare caller from trying to read a stale socket later on */
-            continue;
-        }
         if (preg_match('/^dpinger_(.+)\.pid$/', basename($pidfile), $matches)) {
             $socket_file = preg_replace('/\.pid$/', '.sock', $pidfile);
             $result[$matches[1]] = [
