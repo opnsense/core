@@ -249,12 +249,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("The probe interval needs to be positive.");
     }
 
-    if (!is_numeric($dpinger_config['alert_interval'])) {
-        $input_errors[] = gettext("The alert interval needs to be a numeric value.");
-    } elseif ($dpinger_config['alert_interval'] < 1) {
-        $input_errors[] = gettext("The alert interval needs to be positive.");
-    }
-
     if (!is_numeric($dpinger_config['data_length'])) {
         $input_errors[] = gettext("The data length needs to be a numeric value.");
     } elseif ($dpinger_config['data_length'] < 0) {
@@ -324,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
-        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length') as $fieldname) {
+        foreach (['latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length'] as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -404,7 +398,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'monitor_noroute',
         'name',
         'weight',
-        'alert_interval',
         'data_length',
         'time_period',
         'loss_interval',
@@ -451,7 +444,7 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
@@ -702,15 +695,6 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
-                 <tr class="advanced hidden">
-                  <td><a id="help_for_alert_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alert Interval");?></td>
-                  <td>
-                    <input name="alert_interval" id="alert_interval" type="text" value="<?=$pconfig['alert_interval'];?>" />
-                    <div class="hidden" data-for="help_for_alert_interval">
-                      <?= sprintf(gettext('Time interval between alerts. Default is %d.'), $dpinger_default['alert_interval']) ?>
-                    </div>
-                  </td>
-                </tr>
                 <tr class="advanced hidden">
                   <td><a id="help_for_time_period" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Period");?></td>
                   <td>
@@ -725,7 +709,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
                     <div class="hidden" data-for="help_for_loss_interval">
-                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d.'), $dpinger_default['loss_interval']) ?>
+                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d, calculated as four times the probe interval).'), $dpinger_default['loss_interval']) ?>
                     </div>
                   </td>
                 </tr>
