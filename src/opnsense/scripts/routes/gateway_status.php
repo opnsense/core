@@ -30,9 +30,10 @@
 require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
+require_once 'plugins.inc.d/dpinger.inc';
 
 $result = [];
-$gateways_status = return_gateways_status();
+$gateways_status = dpinger_status();
 
 foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname => $gw) {
     $gatewayItem = ['name' => $gname];
