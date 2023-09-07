@@ -69,12 +69,11 @@ function dpinger_services()
 function dpinger_defaults()
 {
     return [
-        'alert_interval' => '1',
         'data_length' => '0',
         'interval' => '1',
         'latencyhigh' => '500',
         'latencylow' => '200',
-        'loss_interval' => '2',
+        'loss_interval' => '4',
         'losshigh' => '20',
         'losslow' => '10',
         'time_period' => '60',
@@ -286,9 +285,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             'interval' => '-s %ss ',
             'loss_interval' => '-l %ss ',
             'time_period' => '-t %ss ',
-            'alert_interval' => '-A %ss ',
-            'latencyhigh' => '-D %s ',
-            'losshigh' => '-L %s ',
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
