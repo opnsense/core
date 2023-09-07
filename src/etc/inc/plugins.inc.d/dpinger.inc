@@ -128,15 +128,11 @@ function dpinger_instances($extended = false)
             continue;
         }
 
-        /*
-         * If gateway is a local link and 'monitor' is global routable
-         * then the ICMP6 response would not find its way back home.
-         */
-        if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-            $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-        }
-        if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-            $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
+        foreach (['monitor', 'gateway'] as $key) {
+            /* add link-local scope where missing */
+            if (!empty($gateway[$key]) && is_linklocal($gateway[$key]) && strpos($gateway[$key], '%') === false) {
+                $gateway[$key] .= '%' . $gateway['if'];
+            }
         }
 
         $instances[$name] = $gateway;
@@ -172,8 +168,11 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        if (empty($gateway['gateway'])) {
-            log_msg("Gateway currently empty for {$gateway['monitor']} on {$gateway['interface']}");
+        foreach (['monitor', 'gateway'] as $key) {
+            if (empty($gateway[$key])) {
+                log_msg("Skipping gateway {$name} due to empty '{$key}' property.", LOG_WARNING);
+                continue;
+            }
         }
 
         $gwifip = null;
