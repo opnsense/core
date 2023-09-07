@@ -72,9 +72,9 @@ POSSIBILITY OF SUCH DAMAGE.
                         for (let i=0; i < values.length ; ++i) {
                             $optgroup.append(
                               $("<option>").val(values[i]).text(values[i].substr(0, 50))
-                                .data('property', key)
-                                .data('value', values[i])
-                                .data('content', "<span class='badge'>"+key+"\\"+values[i].substr(0, 50)+"</span>")
+                                .attr('data-property', key)
+                                .attr('data-value', values[i])
+                                .attr('data-content', "<span class='badge'>"+key+"\\"+values[i].substr(0, 50)+"</span>")
                             );
                         }
                         $('#rulemetadata').append($optgroup);

@@ -140,7 +140,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-    hook_ipv4v6('ipv4v6net', 'network-id', '128');
+    hook_ipv4v6('ipv4v6net', 'network-id');
   });
 </script>
 <?php include("fbegin.inc"); ?>
@@ -211,20 +211,18 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('GIF tunnel remote address') ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td style="width:285px">
                             <input name="tunnel-remote-addr" type="text" id="tunnel-remote-addr" value="<?=$pconfig['tunnel-remote-addr'];?>" />
                           </td>
                           <td>
-                            <select name="tunnel-remote-net" data-network-id="tunnel-remote-addr" class="selectpicker ipv4v6net" data-size="10" id="tunnel-remote-net" data-width="auto">
-<?php
-                            for ($i = 128; $i > 0; $i--):?>
+                            <select name="tunnel-remote-net" data-network-id="tunnel-remote-addr" class="selectpicker ipv4v6net" data-size="10" id="tunnel-remote-net" data-width="70px">
+<?php for ($i = 128; $i > 0; $i--): ?>
                               <option value="<?=$i;?>"  <?=$i == $pconfig['tunnel-remote-net'] ? "selected=\"selected\"" : "";?> >
                                   <?=$i;?>
                               </option>
-<?php
-                            endfor;?>
+<?php endfor ?>
                             </select>
                           </td>
                         </tr>

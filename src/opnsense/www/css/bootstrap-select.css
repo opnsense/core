@@ -1,10 +1,34 @@
 /*!
- * Bootstrap-select v1.13.3 (https://developer.snapappointments.com/bootstrap-select)
+ * Bootstrap-select v1.13.18 (https://developer.snapappointments.com/bootstrap-select)
  *
- * Copyright 2012-2018 SnapAppointments, LLC
+ * Copyright 2012-2020 SnapAppointments, LLC
  * Licensed under MIT (https://github.com/snapappointments/bootstrap-select/blob/master/LICENSE)
  */
 
+@-webkit-keyframes bs-notify-fadeOut {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@-o-keyframes bs-notify-fadeOut {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes bs-notify-fadeOut {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 select.bs-select-hidden,
 .bootstrap-select > select.bs-select-hidden,
 select.selectpicker {
@@ -13,13 +37,28 @@ select.selectpicker {
 .bootstrap-select {
   width: 348px \0;
   /*IE9 and below*/
+  vertical-align: middle;
 }
 .bootstrap-select > .dropdown-toggle {
   position: relative;
   width: 100%;
-  z-index: 1;
   text-align: right;
   white-space: nowrap;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+.bootstrap-select > .dropdown-toggle:after {
+  margin-top: -1px;
 }
 .bootstrap-select > .dropdown-toggle.bs-placeholder,
 .bootstrap-select > .dropdown-toggle.bs-placeholder:hover,
@@ -63,22 +102,23 @@ select.selectpicker {
   padding: 0 !important;
   opacity: 0 !important;
   border: none;
+  z-index: 0 !important;
 }
 .bootstrap-select > select.mobile-device {
   top: 0;
   left: 0;
   display: block !important;
   width: 100% !important;
-  z-index: 2;
+  z-index: 2 !important;
 }
 .has-error .bootstrap-select .dropdown-toggle,
 .error .bootstrap-select .dropdown-toggle,
 .bootstrap-select.is-invalid .dropdown-toggle,
-.was-validated .bootstrap-select .selectpicker:invalid + .dropdown-toggle {
+.was-validated .bootstrap-select select:invalid + .dropdown-toggle {
   border-color: #b94a48;
 }
 .bootstrap-select.is-valid .dropdown-toggle,
-.was-validated .bootstrap-select .selectpicker:valid + .dropdown-toggle {
+.was-validated .bootstrap-select select:valid + .dropdown-toggle {
   border-color: #28a745;
 }
 .bootstrap-select.fit-width {
@@ -97,15 +137,18 @@ select.selectpicker {
   margin-bottom: 0;
   padding: 0;
   border: none;
+  height: auto;
 }
 :not(.input-group) > .bootstrap-select.form-control:not([class*="col-"]) {
   width: 100%;
 }
 .bootstrap-select.form-control.input-group-btn {
+  float: none;
   z-index: auto;
 }
-.bootstrap-select.form-control.input-group-btn:not(:first-child):not(:last-child) > .btn {
-  border-radius: 0;
+.form-inline .bootstrap-select,
+.form-inline .bootstrap-select.form-control:not([class*="col-"]) {
+  width: auto;
 }
 .bootstrap-select:not(.input-group-btn),
 .bootstrap-select[class*="col-"] {
@@ -167,26 +210,40 @@ select.selectpicker {
 .bootstrap-select.bs-container .dropdown-menu {
   z-index: 1060;
 }
-.bootstrap-select .dropdown-toggle:before {
-  content: '';
-  display: inline-block;
-}
 .bootstrap-select .dropdown-toggle .filter-option {
-  position: absolute;
+  position: static;
   top: 0;
   left: 0;
-  padding-top: inherit;
-  padding-right: inherit;
-  padding-bottom: inherit;
-  padding-left: inherit;
+  float: left;
   height: 100%;
   width: 100%;
   text-align: left;
+  overflow: hidden;
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
 }
-.bootstrap-select .dropdown-toggle .filter-option-inner {
+.bs3.bootstrap-select .dropdown-toggle .filter-option {
+  padding-right: inherit;
+}
+.input-group .bs3-has-addon.bootstrap-select .dropdown-toggle .filter-option {
+  position: absolute;
+  padding-top: inherit;
+  padding-bottom: inherit;
+  padding-left: inherit;
+  float: none;
+}
+.input-group .bs3-has-addon.bootstrap-select .dropdown-toggle .filter-option .filter-option-inner {
   padding-right: inherit;
 }
 .bootstrap-select .dropdown-toggle .filter-option-inner-inner {
+  overflow: hidden;
+}
+.bootstrap-select .dropdown-toggle .filter-expand {
+  width: 0 !important;
+  float: left;
+  opacity: 0 !important;
   overflow: hidden;
 }
 .bootstrap-select .dropdown-toggle .caret {
@@ -267,6 +324,11 @@ select.selectpicker {
      -moz-box-sizing: border-box;
           box-sizing: border-box;
 }
+.bootstrap-select .dropdown-menu .notify.fadeOut {
+  -webkit-animation: 300ms linear 750ms forwards bs-notify-fadeOut;
+       -o-animation: 300ms linear 750ms forwards bs-notify-fadeOut;
+          animation: 300ms linear 750ms forwards bs-notify-fadeOut;
+}
 .bootstrap-select .no-results {
   padding: 3px;
   background: #f5f5f5;
@@ -281,6 +343,9 @@ select.selectpicker {
 .bootstrap-select.fit-width .dropdown-toggle .filter-option-inner,
 .bootstrap-select.fit-width .dropdown-toggle .filter-option-inner-inner {
   display: inline;
+}
+.bootstrap-select.fit-width .dropdown-toggle .bs-caret:before {
+  content: '\00a0';
 }
 .bootstrap-select.fit-width .dropdown-toggle .caret {
   position: static;
@@ -303,6 +368,8 @@ select.selectpicker {
   height: 1em;
   border-style: solid;
   border-width: 0 0.26em 0.26em 0;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
   -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
        -o-transform: rotate(45deg);
@@ -390,14 +457,3 @@ select.selectpicker {
   width: 100%;
   float: none;
 }
-
-/* OPNsense edit to fix https://github.com/opnsense/core/issues/2612 :
- * Move checkmarks to left hand side of the dropdown.
- */
-.bootstrap-select .dropdown-menu > li > a {
-  padding: 3px 20px 3px 30px;
-}
-.bootstrap-select.show-tick .dropdown-menu .selected span.check-mark {
-  left: 10px;
-}
-/* End OPNsense edit to fix #2612. */

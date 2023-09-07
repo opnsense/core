@@ -194,7 +194,7 @@ $( document ).ready(function() {
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
-                            <select name="<?=$gwname;?>" class="selectpicker act-tier-change" data-width='auto' data-proto="<?=$gateway['ipprotocol'];?>">
+                            <select name="<?=$gwname;?>" class="selectpicker act-tier-change" data-width="100px" data-proto="<?=$gateway['ipprotocol'];?>">
 <?php
                               for ($tierId = 0 ; $tierId < 6 ; ++$tierId):
                                 $is_selected = false;
