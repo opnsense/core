@@ -36,31 +36,33 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'auth.inc';
 
-/**
- * retrieve config property by path (e.g. system.firmware), return simple type or json
- */
-function get_config_prop($path, $cnf = null)
+/* return simple type or json for config property */
+function read_config_prop($content)
 {
-    global $config;
+    if (is_array($content)) {
+        return json_encode($content, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    } elseif ($content != '') {
+        return $content . PHP_EOL;
+    }
 
-    $cnf = $cnf === null ? $config : $cnf;
+    return null;
+}
+
+/* retrieve config property by path (e.g. system.firmware) */
+function get_config_prop($path, $cnf)
+{
     $path = !is_array($path) ? explode('.', $path) : $path;
     $node_name = array_shift($path);
 
-    if (isset($cnf[$node_name])) {
-        if (!empty($path)) {
-            return get_config_prop($path, $cnf[$node_name]);
-        } else {
-            $content = $cnf[$node_name];
-            if (is_array($content)) {
-                return json_encode($content, true);
-            } else {
-                return $content;
-            }
-        }
-    } else {
-        return null;
+    if ($node_name != '') {
+        $cnf = isset($cnf[$node_name]) ? $cnf[$node_name] : '';
     }
+
+    if (!empty($path)) {
+        return get_config_prop($path, $cnf);
+    }
+
+    return read_config_prop($cnf);
 }
 
 function get_all_services($name = '', $id = '')
@@ -130,7 +132,7 @@ if (isset($opts['h'])) {
         }
     }
 } elseif (isset($opts['g'])) {
-   echo get_config_prop($args[0]) . PHP_EOL;
+   echo get_config_prop($args[0] ?? '', $config);
 } elseif (isset($opts['i'])) {
     if (plugins_interfaces()) {
         write_config('Updated plugin interface configuration');
