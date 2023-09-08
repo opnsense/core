@@ -91,6 +91,16 @@
         </help>
     </field>
     <field>
+        <id>connection.local_port</id>
+        <label>Local port</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help> 
+          Local UDP port for IKE communication. If the default of port 500 is used, 
+          automatic IKE port floating to port 4500 is used to work around NAT issues. 
+        </help>
+    </field>
+    <field>
         <id>connection.remote_addrs</id>
         <label>Remote addresses</label>
         <type>select_multiple</type>
@@ -104,6 +114,16 @@
           If FQDNs are assigned they are resolved every time a configuration lookup is done.
           If DNS resolution times out, the lookup is delayed for that time.
           To initiate a connection, at least one specific address or DNS name must be specified.
+        </help>
+    </field>
+    <field>
+        <id>connection.remote_port</id>
+        <label>Remote port</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+          Remote UDP port for IKE communication. If the default of port 500 is used, 
+          automatic IKE port floating to port 4500 is used to work around NAT issues.
         </help>
     </field>
     <field>
