@@ -224,7 +224,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $radvdconf .= "# Generated RADVD config for manual assignment on $dhcpv6if\n";
+        $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
