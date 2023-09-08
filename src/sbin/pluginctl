@@ -36,6 +36,13 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'auth.inc';
 
+/* normalize the config path */
+function strip_config_path($path)
+{
+   $path = preg_replace('/\.\.*/', '.', $path);
+   $path = preg_replace('/^\./', '', $path);
+   return preg_replace('/\.*$/', '', $path);
+}
 /* return simple type or json for config property */
 function read_config_prop($content)
 {
@@ -65,6 +72,53 @@ function get_config_prop($path, $cnf)
     return read_config_prop($cnf);
 }
 
+/* flush config property by path (but prevent dropping the root node) */
+function flush_config_prop($path)
+{
+    global $config;
+
+    if ($path == '') {
+        echo "Cannot flush root node." . PHP_EOL;
+        return;
+    }
+
+    $nodes = explode('.', $path);
+    $final = array_pop($nodes);
+    $cnf = &$config;
+
+    foreach ($nodes as $node_name) {
+        if (!isset($cnf[$node_name])) {
+            echo "Cannot find $path" . PHP_EOL;
+            return;
+        }
+        $cnf = &$cnf[$node_name];
+    }
+
+    if (!isset($cnf[$final])) {
+        echo "Cannot find $path" . PHP_EOL;
+        return;
+    }
+
+    echo "======= $path:" . PHP_EOL;
+    echo read_config_prop($cnf[$final]);
+    echo "=======" . PHP_EOL;
+
+    echo "Do you want to flush this config property? [y/N]: ";
+
+    $fp = fopen('php://stdin', 'r');
+    $key = chop(fgets($fp));
+    fclose($fp);
+
+    if (!in_array($key, ['y', 'Y'])) {
+        return;
+    }
+
+    unset($cnf[$final]);
+    write_config("Flushed {$path} via pluginctl");
+
+    echo "Done. A backup was created and can be restored if needed." . PHP_EOL;
+}
+
 function get_all_services($name = '', $id = '')
 {
     $services = [];
@@ -90,14 +144,15 @@ function get_all_services($name = '', $id = '')
     return $services;
 }
 
-$opts = getopt('cDdghIirSs', [], $optind);
+$opts = getopt('cDdfghIirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -D | -d | -g | -h | -I | -i | -r | -S | -s] ...\n\n";
+    echo "Usage: pluginctl [-c | -D | -d | -f | -g | -h | -I | -i | -r | -S | -s] ...\n\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
+    echo "\t-f flush config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-I information mode, lists registered device statistics\n";
@@ -131,8 +186,10 @@ if (isset($opts['h'])) {
             }
         }
     }
+} elseif (isset($opts['f'])) {
+   flush_config_prop(strip_config_path($args[0] ?? ''));
 } elseif (isset($opts['g'])) {
-   echo get_config_prop($args[0] ?? '', $config);
+   echo get_config_prop(strip_config_path($args[0] ?? ''), $config);
 } elseif (isset($opts['i'])) {
     if (plugins_interfaces()) {
         write_config('Updated plugin interface configuration');
