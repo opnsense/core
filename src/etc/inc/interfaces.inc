@@ -2175,6 +2175,32 @@ function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = nu
     }
 }
 
+function interface_configure_mtu($device, $mtu, $ifconfig_details)
+{
+    global $config;
+
+    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+        $parent_device = interface_parent_devices($device)[0];
+        $parent_mtu = $mtu + 4;
+        $force = false;
+
+        $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_device)] ?? [];
+        if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
+            $parent_mtu = $parent_cfg['mtu'];
+            $force = true;
+        }
+
+        if ($force || $mtu > $ifconfig_details[$parent_device]['mtu']) {
+            /* configure parent MTU recursively to avoid a fail for current device MTU requirement */
+            interface_configure_mtu($parent_device, $parent_mtu, $ifconfig_details);
+        }
+    }
+
+    if ($mtu != $ifconfig_details[$device]['mtu']) {
+        legacy_interface_mtu($device, $mtu);
+    }
+}
+
 function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false)
 {
     global $config;
@@ -2190,7 +2216,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
-    $is_ppp = false;
 
     switch ($wancfg['ipaddr'] ?? '') {
         case 'l2tp':
@@ -2199,7 +2224,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         case 'pptp':
             /* hardware device underneath software node */
             $realhwif = get_ppp_parent($realif);
-            $is_ppp = true;
             break;
         default:
             /* hardware device remains a hardware device */
@@ -2283,6 +2307,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* apply interface hardware settings (tso, lro, ..) */
     configure_interface_hardware($realhwif, $ifconfig_details);
 
+    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
+        interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
+    }
+
     switch ($wancfg['ipaddr'] ?? '') {
         case 'dhcp':
             interface_dhcp_configure($interface);
@@ -2346,28 +2374,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      */
     if ($realif != $realifv6) {
         mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $interface_descr]);
-    }
-
-    if (!empty($wancfg['mtu'])) {
-        $intf_details = $ifconfig_details[$realhwif];
-        $mtu = $wancfg['mtu'];
-
-        if (strstr($realif, 'vlan') || strstr($realif, 'qinq')) {
-            $parent_realif = interface_parent_devices($realif)[0];
-            $parent_details = $ifconfig_details[$parent_realif];
-
-            /* configure parent MTU now to avoid silent fail for current interface MTU change */
-            $parentcfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_realif)];
-            if (isset($parentcfg['enable']) && !empty($parentcfg['mtu'])) {
-                if ($parentcfg['mtu'] != $parent_details['mtu']) {
-                    legacy_interface_mtu($parent_realif, $parentcfg['mtu']);
-                }
-            }
-        }
-
-        if ($mtu != $intf_details['mtu'] && !$is_ppp) {
-            legacy_interface_mtu($realif, $mtu);
-        }
     }
 
     interfaces_vips_configure($interface);
