@@ -46,7 +46,6 @@
                 </local_addrs>
                 <local_port type="OptionField">
                     <Required>N</Required>
-                    <Default></Default>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
@@ -57,7 +56,6 @@
                 </remote_addrs>
                 <remote_port type="OptionField">
                     <Required>N</Required>
-                    <Default></Default>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
