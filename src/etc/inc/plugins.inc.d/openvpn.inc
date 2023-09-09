@@ -824,7 +824,17 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
             }
             if (!empty($settings['crlref'])) {
                 $crl = lookup_crl($settings['crlref']);
-                openvpn_add_keyfile($crl['text'] ?? '', $conf, $mode_id, "crl-verify");
+                // openvpn_add_keyfile is to intusive for existingfetch
+                if ($crl['crlmethod'] == "existingfetch") {
+                    $fpath = "/var/etc/openvpn/{$mode_id}.crl-verify";
+                    /* ensure safe / clean state for the crl */
+                    @unlink($fpath);
+                    /* TODO: use get_crlfetch_outfile from system_crlmanager.php */
+                    symlink("/var/preserve/" . $crl["refid"] . ".crl", $fpath);
+                    $conf .= "crl-verify {$fpath} \n";
+                } else {
+                    openvpn_add_keyfile($crl['text'] ?? '', $conf, $mode_id, "crl-verify");
+                }
             }
             if (!empty($settings['tls'])) {
                 if ($settings['tlsmode'] == "crypt") {
@@ -1266,10 +1276,17 @@ function openvpn_refresh_crls()
                 case 'server_tls':
                 case 'server_tls_user':
                 case 'server_user':
+                    $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
+                    /* ensure safe / clean state for the crl */
+                    @unlink($fpath);
                     if (!empty($settings['crlref'])) {
                         $crl = lookup_crl($settings['crlref']);
-                        $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
+                        if ($crl['crlmethod'] == "existingfetch") {
+                            /* TODO: use get_crlfetch_outfile from system_crlmanager.php */
+                            symlink("/var/preserve/" . $crl["refid"] . ".crl", $fpath);
+                        } else {
+                            file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
+                        }
                         @chmod($fpath, 0644);
                     }
                     break;
@@ -1280,7 +1297,14 @@ function openvpn_refresh_crls()
         if (!empty((string)$node->enabled) && !empty((string)$node->crl)) {
             $fpath = "/var/etc/openvpn/server-{$key}.crl-verify";
             $crl = lookup_crl((string)$node->crl);
-            file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
+            /* ensure safe / clean state for the crl */
+            @unlink($fpath);
+            if ($crl['crlmethod'] == "existingfetch") {
+                /* TODO: use get_crlfetch_outfile from system_crlmanager.php */
+                symlink("/var/preserve/" . $crl["refid"] . ".crl", $fpath);
+            } else {
+                file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
+            }
             @chmod($fpath, 0644);
         }
     }
