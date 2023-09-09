@@ -73,11 +73,11 @@ abstract class BaseConstraint extends BaseValidator
      */
     protected function getOptionValueList($fieldname)
     {
-        $result = array();
+        $result = [];
         $options = $this->getOption($fieldname);
         if (!empty($options)) {
-            foreach ($options as $option) {
-                $result[] = $option;
+            foreach ($options as $tag => $option) {
+                $result[$tag] = $option;
             }
         }
         return $result;
