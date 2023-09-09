@@ -44,9 +44,23 @@
                 <local_addrs type=".\IKEAdressField">
                     <Required>N</Required>
                 </local_addrs>
+                <local_port type="OptionField">
+                    <Required>N</Required>
+                    <OptionValues>
+                        <port500 value="">500 (default)</port500>
+                        <port4500 value="4500">4500 (NAT-T)</port4500>
+                    </OptionValues>
+                </local_port>
                 <remote_addrs type=".\IKEAdressField">
                     <Required>N</Required>
                 </remote_addrs>
+                <remote_port type="OptionField">
+                    <Required>N</Required>
+                    <OptionValues>
+                        <port500 value="">500 (default)</port500>
+                        <port4500 value="4500">4500 (NAT-T)</port4500>
+                    </OptionValues>
+                </remote_port>
                 <encap type="BooleanField">
                     <default>0</default>
                     <Required>Y</Required>
