@@ -57,13 +57,13 @@
                     },
                     "commands": function (column, row) {
                         let data = row.uuid === '' ? row.name : row.uuid;
-                        let elements = '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                        let elements = '<div class="break"><button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
                         '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-clone"></span></button>';
 
                         if (row.uuid !== '') {
                             elements += '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                         }
-                        return elements;
+                        return elements + '</div>';
                     },
                     "nameformatter": function (column, row) {
                         let elem = '<span class="break">' + row.name + ' ';
