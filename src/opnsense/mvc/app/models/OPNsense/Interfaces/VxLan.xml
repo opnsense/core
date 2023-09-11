@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/Interfaces/vxlans</mount>
     <version>1.0.1</version>
-    <description>
-        VXLAN configuration
-    </description>
+    <description>VXLAN configuration</description>
     <items>
         <vxlan type="ArrayField">
             <deviceId type="AutoNumberField">
@@ -19,16 +17,12 @@
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanlocal>
             <vxlanremote type="NetworkField">
-                <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanremote>
             <vxlangroup type="NetworkField">
-                <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlangroup>
-            <vxlandev  type="InterfaceField">
-                <Required>N</Required>
-            </vxlandev>
+            <vxlandev type="InterfaceField"/>
         </vxlan>
     </items>
 </model>

@@ -1,14 +1,12 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
     <version>1.0.1</version>
-    <description>
-        Captive portal application model
-    </description>
+    <description>Captive portal application model</description>
     <items>
         <zones>
             <zone type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <zoneid type="AutoNumberField">
@@ -19,8 +17,8 @@
                 </zoneid>
                 <interfaces type="InterfaceField">
                     <Required>Y</Required>
-                    <multiple>Y</multiple>
-                    <default>lan</default>
+                    <Multiple>Y</Multiple>
+                    <Default>lan</Default>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
@@ -29,10 +27,10 @@
                 </interfaces>
                 <authservers type="AuthenticationServerField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                 </authservers>
                 <alwaysSendAccountingReqs type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </alwaysSendAccountingReqs>
                 <authEnforceGroup type="AuthGroupField">
@@ -54,7 +52,7 @@
                 </hardtimeout>
                 <concurrentlogins type="BooleanField">
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </concurrentlogins>
                 <certificate type="CertificateField">
                     <Required>N</Required>
@@ -77,15 +75,15 @@
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
                 <transparentHTTPProxy type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </transparentHTTPProxy>
                 <transparentHTTPSProxy type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </transparentHTTPSProxy>
                 <extendedPreAuthData type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </extendedPreAuthData>
                 <template type="ModelRelationField">

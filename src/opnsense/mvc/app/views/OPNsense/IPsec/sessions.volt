@@ -154,8 +154,8 @@
             <th data-column-id="remote-ts" data-type="string" data-formatter="addresses">{{ lang._('Remote subnets') }}</th>
             <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
             <th data-column-id="install-time" data-type="string">{{ lang._('Time') }}</th>
-            <th data-column-id="bytes-in" data-type="string">{{ lang._('Bytes in') }}</th>
-            <th data-column-id="bytes-out" data-type="string">{{ lang._('Bytes out') }}</th>
+            <th data-column-id="bytes-in" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes in') }}</th>
+            <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
         </tr>
       </thead>
       <tbody>

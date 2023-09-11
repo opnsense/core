@@ -26,8 +26,8 @@
         <label>Id</label>
         <type>text</type>
         <help>IKE identity to use for authentication round.
-          When using certificate authentication.
-          The IKE identity must be contained in the certificate,
+          When using certificate authentication
+          the IKE identity must be contained in the certificate;
           either as the subject DN or as a subjectAltName
           (the identity will default to the certificate’s subject DN if not specified).
           Refer to https://docs.strongswan.org/docs/5.9/config/identityParsing.html for details on how
@@ -38,7 +38,7 @@
         <id>local.eap_id</id>
         <label>EAP Id</label>
         <type>text</type>
-        <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method</help>
+        <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method. If set to %any the EAP-Identity method will be used to ask the client for an EAP identity.</help>
         <style>local_auth local_auth_eap-mschapv2 local_auth_eap-tls local_auth_eap-radius</style>
     </field>
     <field>

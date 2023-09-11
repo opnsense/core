@@ -224,7 +224,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $radvdconf .= "# Generated for DHCPv6 server $dhcpv6if\n";
+        $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
@@ -477,7 +477,7 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             }
         }
 
-        $radvdconf .= "# Generated config for {$autotype} delegation from {$trackif} on {$if}\n";
+        $radvdconf .= "# Generated RADVD config for {$autotype} assignment from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
         $radvdconf .= sprintf("\tAdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
@@ -708,7 +708,6 @@ EOPP;
     }
 
     $iflist = get_configured_interface_with_descr();
-    $gwObject = new \OPNsense\Routing\Gateways();
 
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!isset($dhcpifconf['enable']) || !isset($iflist[$dhcpif])) {
@@ -971,11 +970,9 @@ EOPP;
 
         if (!empty($dhcpifconf['gateway'])) {
             $routers = $dhcpifconf['gateway'] != "none" ? $dhcpifconf['gateway'] : null;
-        } elseif ($gwObject->hasGateways("inet")) {
+        } else {
             // by default, add interface address in "option routers"
             $routers = $ifcfgip;
-        } else {
-            $routers = null;
         }
         if (!empty($routers)) {
             $dhcpdconf .= "  option routers {$routers};\n";
@@ -1656,7 +1653,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true);
+    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (isset($iflist[$dhcrelayif]) && get_interface_ip($dhcrelayif, $ifconfig_details)) {
@@ -1669,8 +1666,8 @@ function dhcpd_dhcrelay4_configure($verbose = false)
      * on the interface in which the destination server sits.
      */
     $srvips = explode(",", $dhcrelaycfg['server']);
-    foreach ($srvips as $srcidx => $srvip) {
-        unset($destif);
+    foreach ($srvips as $srvip) {
+        $destif = null;
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
@@ -1684,16 +1681,16 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             foreach (get_staticroutes() as $rtent) {
                 if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = get_real_interface($a_gateways[$rtent['gateway']]['interface']);
+                    $destif = $a_gateways[$rtent['gateway']]['if'];
                     break;
                 }
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet", $route_str);
             array_shift($route_str);
@@ -1717,24 +1714,22 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
-            $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway())->gatewayIterator());
-            if (!empty($gateways)) {
-                foreach ($gateways as $gateway) {
-                    if (!empty($gateway['defaultgw'])) {
-                        $destif = get_real_interface($gateway['interface']);
-                        break;
-                    }
+        if (empty($destif)) {
+            foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
+                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
+                    $destif = $gateway['if'];
+                    break;
                 }
-            } else {
-                $destif = get_real_interface("wan");
             }
         }
 
         if (!empty($destif)) {
             $dhcrelayifs[] = $destif;
+        } else {
+            log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
         }
     }
+
     $dhcrelayifs = array_unique($dhcrelayifs);
 
     if (!empty($dhcrelayifs)) {
@@ -1769,7 +1764,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true);
+    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
     $dhcifaces = explode(",", $dhcrelaycfg['interface']);
     foreach ($dhcifaces as $dhcrelayif) {
         if (isset($iflist[$dhcrelayif]) && get_interface_ipv6($dhcrelayif, $ifconfig_details)) {
@@ -1783,9 +1778,9 @@ function dhcpd_dhcrelay6_configure($verbose = false)
      * on the interface in which the destination server sits.
      */
     $srvips = explode(",", $dhcrelaycfg['server']);
-    $srvifaces = array();
-    foreach ($srvips as $srcidx => $srvip) {
-        unset($destif);
+    $srvifaces = [];
+    foreach ($srvips as $srvip) {
+        $destif = null;
 
         /* XXX runs multiple times because of server address loop :( */
         foreach (array_keys($iflist) as $ifname) {
@@ -1799,18 +1794,18 @@ function dhcpd_dhcrelay6_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             if (isset($config['staticroutes']['route'])) {
                 foreach ($config['staticroutes']['route'] as $rtent) {
                     if (ip_in_subnet($srvip, $rtent['network'])) {
-                        $destif = $a_gateways[$rtent['gateway']]['interface'];
+                        $destif = $a_gateways[$rtent['gateway']]['if'];
                         break;
                     }
                 }
             }
         }
 
-        if (!isset($destif)) {
+        if (empty($destif)) {
             /* Create an array from the existing route table */
             exec("/usr/bin/netstat -rnWf inet6", $route_str);
             array_shift($route_str);
@@ -1826,22 +1821,19 @@ function dhcpd_dhcrelay6_configure($verbose = false)
             }
         }
 
-        if (!isset($destif)) {
-            $gateways = iterator_to_array((new \OPNsense\Gateways\Gateway())->gatewayIterator());
-            if (!empty($gateways)) {
-                foreach ($gateways as $gateway) {
-                    if (!empty($gateway['defaultgw'])) {
-                        $destif = $gateway['interface'];
-                        break;
-                    }
+        if (empty($destif)) {
+            foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
+                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
+                    $destif = $gateway['if'];
+                    break;
                 }
-            } else {
-                $destif = get_real_interface("wan");
             }
         }
 
         if (!empty($destif)) {
             $srvifaces[] = "{$srvip}%{$destif}";
+        } else {
+            log_msg("dhcpd_dhcrelay6_configure() found no suitable interface for {$srvip}", LOG_WARNING);
         }
     }
 

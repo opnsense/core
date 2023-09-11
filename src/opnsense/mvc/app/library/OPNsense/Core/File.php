@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2018 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,43 +26,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("interfaces.inc");
+namespace OPNsense\Core;
 
-$vfaces = [
-    '_stf',
-    '_vlan',
-    '_wlan',
-    'bridge',
-    'carp',
-    'enc',
-    'gif',
-    'gre',
-    'ipfw', /* ipfw logging device, not enabled by default */
-    'ipsec',
-    'l2tp',
-    'lagg',
-    'lo',
-    'ng',
-    'ovpnc',
-    'ovpns',
-    'pflog',
-    'pfsync',
-    'plip',
-    'ppp',
-    'pppoe',
-    'pptp',
-    'qinq',
-    'tap',
-    'tun',
-    'vlan',
-    'vxlan',
-];
-
-$response = legacy_interfaces_details();
-
-foreach ($response as $ifname => &$intf) {
-    $tmp_ifnames = preg_split('/\d+/', $ifname);
-    $intf['is_physical'] = !count(array_intersect($tmp_ifnames, $vfaces));
+class File
+{
+    /**
+     * file_put_contents wrapper which sets permissions before writing data.
+     * @param string $filename Path to the file where to write the data.
+     * @param mixed $data The data to write.
+     * @param int $permissions permissions to set, see chmod for usage
+     * @param int $flags flags to pass to file_put_contents()
+     * @return int|false
+     */
+    public static function file_put_contents(string $filename, mixed $data, int $permissions = 0640, int $flags = 0)
+    {
+        @touch($filename);
+        @chmod($filename, $permissions);
+        return file_put_contents($filename, $data, $flags);
+    }
 }
-
-echo json_encode($response);

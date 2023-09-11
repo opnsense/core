@@ -1,9 +1,7 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.1</version>
-    <description>
-        OPNsense DNS Diagnostics
-    </description>
+    <description>OPNsense DNS Diagnostics</description>
     <items>
         <settings>
             <hostname type="HostnameField">
@@ -11,7 +9,6 @@
                <ValidationMessage>Provide a valid hostname or address to query</ValidationMessage>
             </hostname>
             <server type="NetworkField">
-              <Required>N</Required>
               <NetMaskAllowed>N</NetMaskAllowed>
               <ValidationMessage>Provide a valid server address</ValidationMessage>
             </server>

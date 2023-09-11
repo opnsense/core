@@ -10,12 +10,12 @@
                     <Required>Y</Required>
                 </sid>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
@@ -26,16 +26,16 @@
         <policies>
             <policy type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <prio type="IntegerField">
                     <ValidationMessage>Priority should be a number.</ValidationMessage>
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                 </prio>
                 <action type="OptionField">
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <disable>Disabled</disable>
                         <alert>Alert</alert>
@@ -53,20 +53,20 @@
                             </filters>
                         </rulesets>
                     </Model>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <ValidationMessage>Related ruleset not found.</ValidationMessage>
                     <Required>N</Required>
                 </rulesets>
                 <content type=".\PolicyContentField">
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <Required>N</Required>
                     <ValidationMessage>Policy rule not found.</ValidationMessage>
                 </content>
                 <new_action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
-                        <default>Default</default>
+                        <default value="default">Default</default>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
                         <disable>Disable</disable>
@@ -83,7 +83,7 @@
             <rule type="ArrayField">
                 <!--user defined rules -->
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <source type="NetworkField">
@@ -104,7 +104,7 @@
                 </description>
                 <action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
@@ -112,7 +112,7 @@
                     </OptionValues>
                 </action>
                 <bypass type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </bypass>
             </rule>
@@ -124,7 +124,7 @@
                     <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                 </filename>
                 <enabled type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enabled>
             </file>
@@ -143,21 +143,21 @@
         </fileTags>
         <general>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
             <ips type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </ips>
             <promisc type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </promisc>
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
-                <default>wan</default>
-                <multiple>Y</multiple>
+                <Default>wan</Default>
+                <Multiple>Y</Multiple>
                 <AddParentDevices>Y</AddParentDevices>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -167,7 +167,7 @@
             <homenet type="NetworkField">
                 <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
-                <default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</default>
+                <Default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</Default>
                 <asList>Y</asList>
             </homenet>
             <defaultPacketSize type="IntegerField">
@@ -192,7 +192,7 @@
             </UpdateCron>
             <AlertLogrotate type="OptionField">
               <Required>Y</Required>
-              <default>W0D23</default>
+              <Default>W0D23</Default>
               <OptionValues>
                   <W0D23>Weekly</W0D23>
                   <D0>Daily</D0>
@@ -201,7 +201,7 @@
             </AlertLogrotate>
             <AlertSaveLogs type="IntegerField">
                 <Required>Y</Required>
-                <default>4</default>
+                <Default>4</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>1000</MaximumValue>
                 <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
@@ -243,15 +243,15 @@
               </toserver_groups>
             </detect>
             <syslog type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </syslog>
             <syslog_eve type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </syslog_eve>
             <LogPayload type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </LogPayload>
             <verbosity type="OptionField">

@@ -80,6 +80,17 @@
         <help>Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.</help>
     </field>
     <field>
+        <id>cso.route_gateway</id>
+        <label>Redirect gateway</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>
+            Specify a default gateway to use for the connected client.
+            Without one set the first address in the netblock is being offered. When segmenting the tunnel (server) network,
+            this one might not be accessible from the client.
+        </help>
+    </field>
+    <field>
         <id>cso.redirect_gateway</id>
         <label>Redirect gateway</label>
         <type>select_multiple</type>

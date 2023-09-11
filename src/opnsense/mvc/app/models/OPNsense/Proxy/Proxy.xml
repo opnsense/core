@@ -5,12 +5,11 @@
     <items>
         <general>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
             <error_pages type="OptionField">
                 <Required>N</Required>
-                <Default>opnsense</Default>
                 <BlankDesc>Squid</BlankDesc>
                 <OptionValues>
                     <opnsense>OPNsense</opnsense>
@@ -26,11 +25,11 @@
             <logging>
                 <enable>
                     <accessLog type="BooleanField">
-                        <default>1</default>
+                        <Default>1</Default>
                         <Required>Y</Required>
                     </accessLog>
                     <storeLog type="BooleanField">
-                        <default>1</default>
+                        <Default>1</Default>
                         <Required>Y</Required>
                     </storeLog>
                 </enable>
@@ -76,7 +75,7 @@
                 </OptionValues>
             </uriWhitespaceHandling>
             <enablePinger type="BooleanField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
             </enablePinger>
             <useViaHeader type="BooleanField"/>
@@ -98,15 +97,15 @@
             <cache>
                 <local>
                     <enabled type="BooleanField">
-                        <default>0</default>
+                        <Default>0</Default>
                         <Required>Y</Required>
                     </enabled>
                     <directory type="TextField">
-                        <default>/var/squid/cache</default>
+                        <Default>/var/squid/cache</Default>
                         <Required>Y</Required>
                     </directory>
                     <cache_mem type="IntegerField">
-                        <default>256</default>
+                        <Default>256</Default>
                         <MinimumValue>0</MinimumValue>
                         <ValidationMessage>Specify a positive memory cache size. (number of MB's)</ValidationMessage>
                         <Required>Y</Required>
@@ -133,36 +132,36 @@
                         </OptionValues>
                     </memory_cache_mode>
                     <size type="IntegerField">
-                        <default>100</default>
+                        <Default>100</Default>
                         <MinimumValue>1</MinimumValue>
                         <ValidationMessage>Specify a positive cache size. (number of MB's)</ValidationMessage>
                         <Required>Y</Required>
                     </size>
                     <l1 type="IntegerField">
-                        <default>16</default>
+                        <Default>16</Default>
                         <MinimumValue>1</MinimumValue>
                         <ValidationMessage>Specify a positive number of first-level subdirectories.</ValidationMessage>
                         <Required>Y</Required>
                     </l1>
                     <l2 type="IntegerField">
-                        <default>256</default>
+                        <Default>256</Default>
                         <MinimumValue>1</MinimumValue>
                         <ValidationMessage>Specify a positive number of second-level subdirectories.</ValidationMessage>
                         <Required>Y</Required>
                     </l2>
                     <cache_linux_packages type="BooleanField">
-                        <default>0</default>
+                        <Default>0</Default>
                         <Required>Y</Required>
                     </cache_linux_packages>
                     <cache_windows_updates type="BooleanField">
-                        <default>0</default>
+                        <Default>0</Default>
                         <Required>Y</Required>
                     </cache_windows_updates>
                 </local>
             </cache>
             <traffic>
                 <enabled type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enabled>
                 <maxDownloadSize type="IntegerField">
@@ -202,7 +201,7 @@
             </traffic>
             <parentproxy>
                 <enabled type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enabled>
                 <host type="HostnameField">
@@ -218,17 +217,17 @@
                     </Constraints>
                 </host>
                 <enableauth type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enableauth>
                 <user type="TextField">
-                    <default>username</default>
+                    <Default>username</Default>
                     <Required>Y</Required>
                     <mask>/^([0-9a-zA-Z\._\-%@]){1,128}$/u</mask>
                     <ValidationMessage>Username can be up to 128 signs long. Alphanumeric characters and also dot, dash, percent sign (for URL escapes), at sign and underscore allowed.</ValidationMessage>
                 </user>
                 <password type="TextField">
-                    <default>password</default>
+                    <Default>password</Default>
                     <Required>Y</Required>
                     <mask>/^([0-9a-zA-Z\._\-%]){1,128}$/u</mask>
                     <ValidationMessage>Password can be up to 128 signs long. Alphanumeric characters and also dot, dash, percent sign (for URL escapes) and underscore allowed.</ValidationMessage>
@@ -256,7 +255,7 @@
         <forward>
             <interfaces type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <AllowDynamic>S</AllowDynamic>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -264,21 +263,21 @@
                 </filters>
             </interfaces>
             <port type="IntegerField">
-                <default>3128</default>
+                <Default>3128</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </port>
             <sslbumpport type="IntegerField">
-                <default>3129</default>
+                <Default>3129</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>SSL Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </sslbumpport>
             <sslbump type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
@@ -291,7 +290,7 @@
                 </Constraints>
             </sslbump>
             <sslurlonly type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
                 <Constraints>
                     <check001>
@@ -311,20 +310,20 @@
             </sslnobumpsites>
             <ssl_crtd_storage_max_size type="IntegerField">
               <Required>Y</Required>
-              <default>4</default>
+              <Default>4</Default>
               <MinimumValue>1</MinimumValue>
               <MaximumValue>65535</MaximumValue>
               <ValidationMessage>max size needs to be an integer value between 1 and 65535</ValidationMessage>
             </ssl_crtd_storage_max_size>
             <sslcrtd_children type="IntegerField">
               <Required>Y</Required>
-              <default>5</default>
+              <Default>5</Default>
               <MinimumValue>1</MinimumValue>
               <MaximumValue>32</MaximumValue>
               <ValidationMessage>the number of sslrtd children needs to be an integer value between 1 and 32</ValidationMessage>
             </sslcrtd_children>
             <snmp_enable type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </snmp_enable>
             <snmp_port type="IntegerField">
@@ -332,37 +331,37 @@
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>SNMP port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
-                <default>3401</default>
+                <Default>3401</Default>
             </snmp_port>
             <snmp_password type="TextField">
-                <default>public</default>
+                <Default>public</Default>
                 <Required>Y</Required>
             </snmp_password>
             <ftpInterfaces type="InterfaceField">
                 <Required>N</Required>
-                <multiple>Y</multiple>
+                <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                 </filters>
             </ftpInterfaces>
             <ftpPort type="IntegerField">
-                <default>2121</default>
+                <Default>2121</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>FTP Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </ftpPort>
             <ftpTransparentMode type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </ftpTransparentMode>
             <addACLforInterfaceSubnets type="BooleanField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
             </addACLforInterfaceSubnets>
             <transparentMode type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </transparentMode>
             <acl>
@@ -414,7 +413,7 @@
                     <blacklists>
                         <blacklist type="ArrayField">
                             <enabled type="BooleanField">
-                                <default>1</default>
+                                <Default>1</Default>
                                 <Required>Y</Required>
                             </enabled>
                             <filename type="TextField">
@@ -448,7 +447,7 @@
                                 <Multiple>Y</Multiple>
                             </filter>
                             <sslNoVerify type="BooleanField">
-                                <default>0</default>
+                                <Default>0</Default>
                                 <Required>Y</Required>
                             </sslNoVerify>
                             <description type="TextField">
@@ -475,38 +474,38 @@
             </acl>
             <icap>
                 <enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enable>
                 <RequestURL type="TextField"/>
                 <ResponseURL type="TextField"/>
                 <SendClientIP type="BooleanField">
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </SendClientIP>
                 <SendUsername type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </SendUsername>
                 <EncodeUsername type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </EncodeUsername>
                 <UsernameHeader type="TextField">
                     <Required>Y</Required>
-                    <default>X-Username</default>
+                    <Default>X-Username</Default>
                     <mask>/^([a-zA-Z-]+)$/</mask>
                 </UsernameHeader>
                 <EnablePreview type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </EnablePreview>
                 <PreviewSize type="IntegerField">
-                    <default>1024</default>
+                    <Default>1024</Default>
                     <Required>Y</Required>
                 </PreviewSize>
                 <OptionsTTL type="IntegerField">
-                    <default>60</default>
+                    <Default>60</Default>
                     <Required>Y</Required>
                 </OptionsTTL>
                 <exclude type="CSVListField">
@@ -516,7 +515,7 @@
             <authentication>
                 <method type="AuthenticationServerField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                 </method>
                 <authEnforceGroup type="AuthGroupField">
                   <Required>N</Required>
@@ -587,7 +586,7 @@
                   <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <negate type="BooleanField">
-                  <default>0</default>
+                  <Default>0</Default>
                   <Required>Y</Required>
               </negate>
               <match_type type="OptionField">
@@ -698,7 +697,7 @@
           </match>
           <rule type="ArrayField">
               <enabled type="BooleanField">
-                  <default>1</default>
+                  <Default>1</Default>
                   <Required>Y</Required>
               </enabled>
               <description type="TextField">
@@ -714,7 +713,7 @@
                       </queues>
                   </Model>
                   <Required>Y</Required>
-                  <multiple>Y</multiple>
+                  <Multiple>Y</Multiple>
               </matches>
               <join_type type="OptionField">
                   <Required>Y</Required>
@@ -740,7 +739,7 @@
                       </queues>
                   </Model>
                   <Required>Y</Required>
-                  <multiple>Y</multiple>
+                  <Multiple>Y</Multiple>
               </proxies>
           </rule>
         </pac>

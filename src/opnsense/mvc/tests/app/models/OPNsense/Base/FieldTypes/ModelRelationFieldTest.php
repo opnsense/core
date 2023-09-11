@@ -249,7 +249,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         $field->eventPostLoading();
         $field->setValue("");
         $node_data = $field->getNodeData();
-        $this->assertEquals($node_data[""], array("value" => "none","selected" => true));
+        $this->assertEquals($node_data[""], array("value" => "None","selected" => true));
     }
 
     /**

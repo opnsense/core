@@ -493,6 +493,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Routing.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
@@ -963,7 +964,6 @@
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/list_arp.py
-/usr/local/opnsense/scripts/interfaces/list_interfaces.php
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
@@ -1265,7 +1265,7 @@
 /usr/local/opnsense/version/core
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
-/usr/local/opnsense/www/css/bootstrap-select-1.13.3.css
+/usr/local/opnsense/www/css/bootstrap-select.css
 /usr/local/opnsense/www/css/chart.css
 /usr/local/opnsense/www/css/dns-overview.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg

@@ -172,11 +172,18 @@ class Swanctl extends BaseModel
                         }
                         $thisnode[$attr_name] = implode(',', $tmp);
                     } elseif ($attr_name == 'pubkeys') {
+                        if ((string)$node->auth != 'pubkey') {
+                            // explicit skip, pubkeys bound to auth type selection
+                            continue;
+                        }
                         $tmp = [];
                         foreach (explode(',', (string)$attr) as $item) {
                             $tmp[] = $item . '.pem';
                         }
                         $thisnode[$attr_name] = implode(',', $tmp);
+                    } elseif ($attr_name == 'eap_id' && strpos((string)$node->auth, 'eap') === false) {
+                        // explicit skip, eap_id is only valid for eap auth types.
+                        continue;
                     } else {
                         $thisnode[$attr_name] = (string)$attr;
                     }

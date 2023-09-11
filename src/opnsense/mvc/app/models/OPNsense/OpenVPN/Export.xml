@@ -15,17 +15,16 @@
                 </hostname>
                 <template type="TextField"/>
                 <local_port type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>Port needs to be an integer value between 1 and 65535</ValidationMessage>
                 </local_port>
                 <random_local_port type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </random_local_port>
                 <validate_server_cn type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </validate_server_cn>
                 <cryptoapi type="BooleanField"/>

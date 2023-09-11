@@ -32,6 +32,7 @@ use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Trust\Store;
 use OPNsense\Core\Config;
+use OPNsense\Core\File;
 use OPNsense\Firewall\Util;
 
 /**
@@ -145,6 +146,7 @@ class OpenVPN extends BaseModel
                 'dns_domain_search',
                 'tunnel_network',
                 'tunnel_networkv6',
+                'route_gateway',
             ];
             foreach ($opts as $fieldname) {
                 $result[$fieldname] = (string)$cso->$fieldname;
@@ -260,7 +262,9 @@ class OpenVPN extends BaseModel
                 }
                 // find caref
                 $this_caref = null;
-                if (isset(Config::getInstance()->object()->cert)) {
+                if (!empty((string)$node->ca)) {
+                    $this_caref = (string)$node->ca;
+                } elseif (isset(Config::getInstance()->object()->cert)) {
                     foreach (Config::getInstance()->object()->cert as $cert) {
                         if (isset($cert->refid) && (string)$node->cert == $cert->refid) {
                             $this_caref = (string)$cert->caref;
@@ -358,9 +362,7 @@ class OpenVPN extends BaseModel
                 if ($key == 'auth-user-pass') {
                     // user/passwords need to be feed using a file
                     $output .= $key . " " . $value['filename'] . "\n";
-                    @touch($value['filename']);
-                    @chmod($value['filename'], 0600);
-                    file_put_contents($value['filename'], $value['content']);
+                    File::file_put_contents($value['filename'], $value['content'], 0600);
                 } else {
                     foreach ($value as $item) {
                         $output .= $key . " " . $item . "\n";
@@ -370,9 +372,7 @@ class OpenVPN extends BaseModel
                 $output .= $key . " " . $value . "\n";
             }
         }
-        @touch($filename);
-        @chmod($filename, 0600);
-        file_put_contents($filename, $output);
+        File::file_put_contents($filename, $output, 0600);
     }
 
     /**

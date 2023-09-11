@@ -1,14 +1,11 @@
 <model>
     <mount>//OPNsense/Interfaces/loopbacks</mount>
     <version>1.0.0</version>
-    <description>
-        VXLAN configuration
-    </description>
+    <description>Loopback configuration</description>
     <items>
         <loopback type="ArrayField">
             <deviceId type="AutoNumberField">
                 <Required>Y</Required>
-                <MinimumValue>1</MinimumValue>
             </deviceId>
             <description type="TextField">
                 <Required>Y</Required>

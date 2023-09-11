@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -265,7 +265,9 @@ function legacy_interfaces_details($intf = null)
         return $result;
     }
 
+    $vfaces = interfaces_virtual_patterns();
     $current_interface = null;
+
     foreach ($ifconfig_data as $lineid => $line) {
         $line_parts = explode(' ', $line);
         if (strpos(trim($line), 'flags=') !== false && $line[0] != "\t") {
@@ -278,6 +280,8 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]["ipv4"] = [];
             $result[$current_interface]["ipv6"] = [];
             $result[$current_interface]["supported_media"] = [];
+            $result[$current_interface]["is_physical"] = !count(array_intersect(preg_split('/\d+/', $current_interface), $vfaces));
+            $result[$current_interface]["device"] = $current_interface;
             if (preg_match("/ mtu ([0-9]*).*$/", $line, $matches)) {
                 $result[$current_interface]["mtu"] = $matches[1];
             }
@@ -568,27 +572,10 @@ function configure_interface_hardware($ifs, $intf_details = null)
     }
 }
 
-/*
- *   get_interface_list() - Return a list of all physical interfaces
- *   along with MAC, IPv4 and status.
- *
- *   $only_active = false -- interfaces that are available in the system
- *                  true  -- interfaces that are physically connected
- *
- *   $include_dmesg = false -- skip probing dmesg for more information
- *                    true  -- probe dmesg for more information
- */
-function get_interface_list($only_active = false, $include_dmesg = false)
+function interfaces_virtual_patterns()
 {
-    $dmesg_arr = [];
-    $iflist = [];
-
-    if ($include_dmesg) {
-        exec('/sbin/dmesg', $dmesg_arr);
-    }
-
-    /* XXX list of virtual interface types, device 'pattern' actually registers them */
-    $vfaces = [
+    /* list of virtual device type patterns */
+    return [
         '_stf',
         '_vlan',
         '_wlan',
@@ -617,6 +604,28 @@ function get_interface_list($only_active = false, $include_dmesg = false)
         'vlan',
         'vxlan',
     ];
+}
+
+/*
+ *   get_interface_list() - Return a list of all physical interfaces
+ *   along with MAC, IPv4 and status.
+ *
+ *   $only_active = false -- interfaces that are available in the system
+ *                  true  -- interfaces that are physically connected
+ *
+ *   $include_dmesg = false -- skip probing dmesg for more information
+ *                    true  -- probe dmesg for more information
+ */
+function get_interface_list($only_active = false, $include_dmesg = false)
+{
+    $dmesg_arr = [];
+    $iflist = [];
+
+    if ($include_dmesg) {
+        exec('/sbin/dmesg', $dmesg_arr);
+    }
+
+    $vfaces = interfaces_virtual_patterns();
 
     $ifnames_wlan = legacy_interface_listget('wlan');
     $ifnames_up = legacy_interface_listget('up');

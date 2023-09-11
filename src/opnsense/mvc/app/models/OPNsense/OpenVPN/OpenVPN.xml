@@ -6,7 +6,7 @@
         <Overwrites>
             <Overwrite type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <servers type=".\OpenVPNServerField">
@@ -17,11 +17,11 @@
                     <Required>Y</Required>
                 </common_name>
                 <block type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </block>
                 <push_reset type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </push_reset>
                 <tunnel_network type="NetworkField">
@@ -44,6 +44,10 @@
                     <Required>N</Required>
                     <asList>Y</asList>
                 </remote_networks>
+                <route_gateway type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
+                </route_gateway>
                 <redirect_gateway type="OptionField">
                     <Required>N</Required>
                     <Multiple>Y</Multiple>
@@ -59,7 +63,7 @@
                     </OptionValues>
                 </redirect_gateway>
                 <register_dns type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
                 <dns_domain type="HostnameField">
@@ -99,12 +103,12 @@
                     <Required>Y</Required>
                 </vpnid>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <dev_type type="OptionField">
                     <Required>Y</Required>
-                    <default>tun</default>
+                    <Default>tun</Default>
                     <OptionValues>
                         <tun>tun</tun>
                         <tap>tap</tap>
@@ -112,7 +116,7 @@
                 </dev_type>
                 <verb type="OptionField">
                     <Required>Y</Required>
-                    <default>3</default>
+                    <Default>3</Default>
                     <OptionValues>
                         <o0 value="0">0 (No output except fatal errors.)</o0>
                         <o1 value="1">1 (Normal)</o1>
@@ -130,7 +134,7 @@
                 </verb>
                 <proto type="OptionField">
                     <Required>Y</Required>
-                    <default>udp</default>
+                    <Default>udp</Default>
                     <OptionValues>
                         <udp>UDP</udp>
                         <udp4>UDP (IPv4)</udp4>
@@ -149,7 +153,7 @@
                 </local>
                 <topology type="OptionField">
                     <Required>Y</Required>
-                    <default>subnet</default>
+                    <Default>subnet</Default>
                     <OptionValues>
                         <net30>net30</net30>
                         <p2p>p2p</p2p>
@@ -159,7 +163,7 @@
                 <remote type=".\RemoteHostField">
                 </remote>
                 <role type="OptionField">
-                    <default>server</default>
+                    <Default>server</Default>
                     <Required>Y</Required>
                     <OptionValues>
                         <client>Client</client>
@@ -193,7 +197,6 @@
                 <crl type="CertificateField">
                     <Required>N</Required>
                     <type>crl</type>
-                    <BlankDesc>None</BlankDesc>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
@@ -215,7 +218,7 @@
                 </cert_depth>
                 <verify_client_cert type="OptionField">
                     <Required>Y</Required>
-                    <default>require</default>
+                    <Default>require</Default>
                     <OptionValues>
                         <none>none</none>
                         <require>required</require>
@@ -250,7 +253,7 @@
                 </auth>
                 <data-ciphers type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
@@ -259,7 +262,7 @@
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
@@ -279,15 +282,12 @@
                 </tls_key>
                 <authmode type="AuthenticationServerField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
-                    <BlankDesc>None</BlankDesc>
+                    <Multiple>Y</Multiple>
                 </authmode>
-                <local_group type="AuthGroupField">
-                    <Required>N</Required>
-                </local_group>
+                <local_group type="AuthGroupField"/>
                 <various_flags type="OptionField">
                     <Required>N</Required>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <client-to-client>client-to-client</client-to-client>
                         <duplicate-cn>duplicate-cn</duplicate-cn>
@@ -299,11 +299,11 @@
                     </OptionValues>
                 </various_flags>
                 <username_as_common_name type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </username_as_common_name>
                 <strictusercn type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </strictusercn>
                 <username type="TextField"/>
@@ -343,7 +343,7 @@
                     </OptionValues>
                 </redirect_gateway>
                 <register_dns type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
                 <dns_domain type="HostnameField">
@@ -393,7 +393,7 @@
             <StaticKey type="ArrayField">
                 <mode type="OptionField">
                     <Required>Y</Required>
-                    <default>crypt</default>
+                    <Default>crypt</Default>
                     <OptionValues>
                         <auth>auth (Authenticate control channel packets)</auth>
                         <crypt>crypt (Encrypt and authenticate all control channel packets)</crypt>

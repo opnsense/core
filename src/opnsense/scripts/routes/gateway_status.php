@@ -30,11 +30,12 @@
 require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
+require_once 'plugins.inc.d/dpinger.inc';
 
 $result = [];
-$gateways_status = return_gateways_status();
+$gateways_status = dpinger_status();
 
-foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true) as $gname => $gw) {
+foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname => $gw) {
     $gatewayItem = ['name' => $gname];
     $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : '~';
     if (!empty($gateways_status[$gname])) {
@@ -65,9 +66,6 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true) as $gna
                 $gatewayItem['status_translated'] = gettext('Pending');
                 break;
         }
-    } elseif (!empty($gw['disabled'])) {
-        /* avoid disappearing an actively monitored instance when down */
-        continue;
     } else {
         $gatewayItem['status'] = 'none';
         $gatewayItem['status_translated'] = gettext('Online');
@@ -75,6 +73,8 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName(true) as $gna
         $gatewayItem['stddev'] = '~';
         $gatewayItem['delay'] = '~';
     }
+
     $result[] = $gatewayItem;
 }
+
 echo json_encode($result) . PHP_EOL;

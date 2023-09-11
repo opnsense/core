@@ -207,7 +207,7 @@ function userIsAdmin($username)
 
 function auth_get_shells($uid = 0)
 {
-    $shells = array('' => '/sbin/nologin');
+    $shells = array('' => '/usr/sbin/nologin');
 
     if ($uid == 0) {
         $shells = array('' => '/usr/local/sbin/opnsense-shell');
@@ -344,7 +344,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_group = 'wheel';
         $user_home = '/root';
     } else {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/sbin/nologin';
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
         $user_home = "/home/{$user_name}";
         $user_group = 'nobody';
     }

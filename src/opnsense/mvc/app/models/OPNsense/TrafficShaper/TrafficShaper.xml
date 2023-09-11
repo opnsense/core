@@ -12,7 +12,7 @@
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <bandwidth type="IntegerField">
@@ -22,7 +22,7 @@
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
                     <Required>Y</Required>
-                    <default>Kbit</default>
+                    <Default>Kbit</Default>
                     <OptionValues>
                         <bit>bit/s</bit>
                         <Kbit>kbit/s</Kbit>
@@ -39,7 +39,7 @@
                 </queue>
                 <mask type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>(none)</none>
                         <src-ip>source</src-ip>
@@ -64,7 +64,7 @@
                     </OptionValues>
                 </scheduler>
                 <codel_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -87,11 +87,11 @@
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
                 <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </codel_ecn_enable>
                 <pie_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -141,7 +141,7 @@
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <pipe type="ModelRelationField">
@@ -164,7 +164,7 @@
                 </weight>
                 <mask type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>(none)</none>
                         <src-ip>source</src-ip>
@@ -178,7 +178,7 @@
                     <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
                 </buckets>
                 <codel_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -201,11 +201,11 @@
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
                 <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </codel_ecn_enable>
                 <pie_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -228,7 +228,7 @@
         <rules>
             <rule type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <sequence type="IntegerField">
@@ -236,11 +236,11 @@
                     <MaximumValue>1000000</MaximumValue>
                     <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </sequence>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
-                    <default>wan</default>
+                    <Default>wan</Default>
                     <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
@@ -255,7 +255,7 @@
                 </interface2>
                 <proto type="OptionField">
                     <Required>Y</Required>
-                    <default>ip</default>
+                    <Default>ip</Default>
                     <OptionValues>
                         <ip>ip</ip>
                         <ip4>ipv4</ip4>
@@ -281,34 +281,34 @@
                 <source type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
+                    <Default>any</Default>
                     <asList>Y</asList>
                 </source>
                 <source_not type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </source_not>
                 <src_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
+                    <Default>any</Default>
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
+                    <Default>any</Default>
                     <asList>Y</asList>
                 </destination>
                 <destination_not type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </destination_not>
                 <dst_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
+                    <Default>any</Default>
                 </dst_port>
                 <dscp type="OptionField">
                     <Required>N</Required>

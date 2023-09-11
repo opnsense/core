@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,8 +29,6 @@
  */
 
 $etc_group = <<<EOF
-# \$FreeBSD$
-#
 wheel:*:0:root
 daemon:*:1:
 kmem:*:2:
@@ -72,8 +70,6 @@ nobody:*:65534:
 EOF;
 
 $etc_master_passwd = <<<EOF
-# \$FreeBSD$
-#
 root::0:0::0:0:Charlie &:/root:/bin/csh
 toor:*:0:0::0:0:Bourne-again Superuser:/root:
 installer:*:0:0::0:0:Installer Superuser:/root:/usr/sbin/nologin
@@ -106,8 +102,6 @@ nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
 EOF;
 
 $etc_shells = <<<EOF
-# \$FreeBSD$
-#
 # List of acceptable shells for chpass(1).
 # Ftpd will not allow users to connect who are not using
 # one of these shells.
@@ -115,7 +109,7 @@ $etc_shells = <<<EOF
 
 EOF;
 
-$known_shells = array(
+$known_shells = [
     '/bin/csh',
     '/bin/sh',
     '/bin/tcsh',
@@ -124,7 +118,7 @@ $known_shells = array(
     '/usr/local/bin/zsh',
     '/usr/local/sbin/opnsense-installer',
     '/usr/local/sbin/opnsense-shell',
-);
+];
 
 foreach ($known_shells as $shell) {
     if (file_exists($shell)) {
@@ -134,7 +128,6 @@ foreach ($known_shells as $shell) {
 
 $etc_ttys = <<<EOF
 #
-# \$FreeBSD$
 #	@(#)ttys	5.1 (Berkeley) 4/17/89
 #
 # This file specifies various information about terminals on the system.
@@ -182,6 +175,10 @@ ttyu2	"/usr/libexec/getty 3wire"	vt100	onifconsole secure
 ttyu3	"/usr/libexec/getty 3wire"	vt100	onifconsole secure
 # Dumb console
 dcons	"/usr/libexec/getty std.9600"	vt100	off secure
+# Xen Virtual console
+xc0	"/usr/libexec/getty Pc"		xterm	onifconsole secure
+# RISC-V HTIF console
+rcons	"/usr/libexec/getty std.9600"	vt100	onifconsole secure
 
 EOF;
 
