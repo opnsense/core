@@ -95,10 +95,7 @@
         <label>Local port</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help> 
-          Local UDP port for IKE communication. If the default of port 500 is used, 
-          automatic IKE port floating to port 4500 is used to work around NAT issues. 
-        </help>
+        <help>UDP port for IKE communication. If the default of port 500 is used, automatic IKE port floating to port 4500 is used to work around NAT issues.</help>
     </field>
     <field>
         <id>connection.remote_addrs</id>
@@ -121,10 +118,7 @@
         <label>Remote port</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help>
-          Remote UDP port for IKE communication. If the default of port 500 is used, 
-          automatic IKE port floating to port 4500 is used to work around NAT issues.
-        </help>
+        <help>UDP port for IKE communication. If the default of port 500 is used, automatic IKE port floating to port 4500 is used to work around NAT issues.</help>
     </field>
     <field>
         <id>connection.encap</id>
