@@ -681,7 +681,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         }
 
         $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
-        if ($gateway == null) {
+        if (empty($gateway['gateway'])) {
             continue;
         }
 
