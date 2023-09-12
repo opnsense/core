@@ -2357,13 +2357,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $loaded = array_merge($loaded, link_interface_to_gre($interface, true));
     $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
 
-    /* XXX device plugin hook */
-    $bridge = link_interface_to_bridge($interface);
-    if (!empty($bridge)) {
-        /* XXX _interfaces_bridge_configure() is probably cleaner */
-        interface_bridge_add_member($bridge, $realif);
-        /* XXX bridges can only load if all interfaces are there */
-    }
+    /* XXX bridge hook does "something" else -- should we attach $realifv6 too? ;) */
+    link_interface_to_bridge($interface, $realif);
 
     /* XXX reload routes for linked devices -- not great but also not avoidable at the moment */
     interfaces_restart_by_device($verbose, $loaded, false);
@@ -3643,23 +3638,23 @@ function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
     }
 }
 
-/****f* interfaces/link_interface_to_bridge
- * NAME
- *   link_interface_to_bridge - Finds out a bridge group for an interface
- * INPUTS
- *   $ip
- * RESULT
- *   bridge[0-99]
- ******/
-function link_interface_to_bridge($int)
+function link_interface_to_bridge($interface, $attach_device = null)
 {
     global $config;
 
     if (isset($config['bridges']['bridged'])) {
         foreach ($config['bridges']['bridged'] as $bridge) {
-            if (in_array($int, explode(',', $bridge['members']))) {
-                return "{$bridge['bridgeif']}";
+            if (!in_array($interface, explode(',', $bridge['members']))) {
+                continue;
             }
+
+            if ($attach_device) {
+                /* XXX _interfaces_bridge_configure() is probably cleaner */
+                interface_bridge_add_member($bridge, $attach_device);
+                /* XXX bridges can only load if all interfaces are there */
+            }
+
+            return $bridge['bridgeif'];
         }
     }
 }
