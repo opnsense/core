@@ -62,20 +62,9 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 system_resolver_configure();
 
 list ($ip) = interfaces_primary_address($interface);
-
 if (!is_ipaddr($ip)) {
-    /*
-     * Take care of OpenVPN and similar if you generate the event
-     * to reconfigure an interface.  OpenVPN might be in tap(4)
-     * mode and not have an IP address.
-     */
-    if (substr($device, 0, 4) != 'ovpn') {
-        log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
-        return;
-    }
-
-    /* force a non-IP value here that makes the problem explicit when debugged */
-    $ip = 'openvpn_xxx';
+    log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
+    return;
 }
 
 $cacheip_file = "/tmp/{$device}_oldip";
@@ -92,12 +81,6 @@ interfaces_vips_configure($interface, 4);
 
 $greifs = link_interface_to_gre($interface, true, 4);
 $gififs = link_interface_to_gif($interface, true, 4);
-
-$bridge = link_interface_to_bridge($interface);
-if (!empty($bridge)) {
-    /* XXX _interfaces_bridge_configure() is probably cleaner */
-    interface_bridge_add_member($bridge, $device);
-}
 
 switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
     case '6to4':
