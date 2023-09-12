@@ -90,11 +90,7 @@ log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interfac
 
 interfaces_vips_configure($interface, 4);
 
-$gres = link_interface_to_gre($interface);
-foreach ($gres as $gre) {
-    _interfaces_gre_configure($gre);
-}
-
+$greifs = link_interface_to_gre($interface, true, 4);
 $gififs = link_interface_to_gif($interface, true, 4);
 
 $bridge = link_interface_to_bridge($interface);
@@ -127,26 +123,7 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         break;
 }
 
-$restartifs = [];
-
-foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
-    foreach ($gififs as $gifif) {
-        if ($ifparent['if'] == $gifif) {
-            $restartifs[$ifname] = 1;
-        }
-    }
-
-    foreach ($gres as $gre) {
-        if ($ifparent['if'] == $gre['greif']) {
-            $restartifs[$ifname] = 1;
-        }
-    }
-}
-
-foreach (array_keys($restartifs) as $ifname) {
-    interface_configure(false, $ifname);
-    system_routing_configure(false, $ifname);
-}
+interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 
 /*
  * Interface reconfigure finished here so sync

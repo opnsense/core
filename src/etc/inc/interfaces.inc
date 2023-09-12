@@ -512,34 +512,26 @@ function _interfaces_gre_configure($gre)
 {
     global $config;
 
-    /*
-     * The model used by GRE stuffs the alias IP into 'if' and we have
-     * no way of directly seeing the interface (handled slightly better
-     * with GIF) so we need to look it up here.  We can decide to ditch
-     * this or change it to match GIF but for now just retain what we have.
-     */
-    $parent = explode('_vip', $gre['if'])[0];
-    if (is_ipaddr($parent)) {
-        foreach (get_configured_ip_aliases_list() as $ip => $int) {
-            if ($ip == $parent) {
-                $parent = $int;
-                break;
-            }
-        }
+    if (is_ipaddrv4($gre['remote-addr'])) {
+        $realifip = get_interface_ip($gre['if']);
+        $family = 'inet';
+    } elseif (is_ipaddrv6($gre['remote-addr'])) {
+        $realifip = get_interface_ipv6($gre['if']);
+        $family = 'inet6';
     }
-
-    interfaces_bring_up(get_real_interface($parent)); /* XXX overreach? */
 
     /* XXX avoid destroy/create */
     legacy_interface_destroy($gre['greif']);
     legacy_interface_create($gre['greif']);
 
-    /* Do not change the order here for more see gre(4) NOTES section. */
-    if (is_ipaddrv6($gre['remote-addr'])) {
-        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', [ $gre['greif'], get_interface_ipv6($gre['if']), $gre['remote-addr']]);
-    } else {
-        mwexecf('/sbin/ifconfig %s tunnel %s %s', [$gre['greif'], get_interface_ip($gre['if']), $gre['remote-addr']]);
+    /* ensured device is there, but do not configure unless system is ready */
+    if (empty($realifip)) {
+        log_msg("Device {$gre['greif']} missing required local address, skipping now.");
+        return;
     }
+
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $realifip, $gre['remote-addr']]);
+
     if (is_ipaddrv6($gre['tunnel-local-addr']) || is_ipaddrv6($gre['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
         if ($gre['tunnel-remote-net'] != '128' && ip_in_subnet($gre['tunnel-remote-addr'], "{$gre['tunnel-local-addr']}/{$gre['tunnel-remote-net']}")) {
@@ -2379,13 +2371,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     interfaces_vips_configure($interface);
 
     /* XXX device plugin hook */
-    $gres = link_interface_to_gre($interface);
-    foreach ($gres as $gre) {
-        _interfaces_gre_configure($gre);
-        $loaded[] = $gre['greif'];
-    }
-
-    /* XXX device plugin hook */
+    $loaded = array_merge($loaded, link_interface_to_gre($interface, true));
     $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
 
     /* XXX device plugin hook */
@@ -3651,6 +3637,24 @@ function link_interface_to_track6($wanif, $update = false)
     return $list;
 }
 
+function interfaces_restart_by_device($verbose, $devices)
+{
+    $restartifs = [];
+
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
+        foreach ($devices as $device) {
+            if ($ifparent['if'] == $device) {
+                $restartifs[$ifname] = 1;
+            }
+        }
+    }
+
+    foreach (array_keys($restartifs) as $ifname) {
+        interface_configure($verbose, $ifname);
+        system_routing_configure($verbose, $ifname);
+    }
+}
+
 /****f* interfaces/link_interface_to_bridge
  * NAME
  *   link_interface_to_bridge - Finds out a bridge group for an interface
@@ -3672,7 +3676,7 @@ function link_interface_to_bridge($int)
     }
 }
 
-function link_interface_to_gre($interface)
+function link_interface_to_gre($interface, $update = false, $family = null)
 {
     global $config;
 
@@ -3690,9 +3694,21 @@ function link_interface_to_gre($interface)
                     }
                 }
             }
-            if ($parent == $interface) {
-                $result[] = $gre;
+
+            if ($parent != $interface) {
+                continue;
+            } elseif ($family == 4 && !is_ipaddrv4($gre['remote-addr'])) {
+                continue;
+            } elseif ($family == 6 && !is_ipaddrv6($gre['remote-addr'])) {
+                continue;
             }
+
+            if ($update) {
+                _interfaces_gre_configure($gre);
+            }
+
+            /* callers are only concerned with the resulting device names */
+            $result[] = $gre['greif'];
         }
     }
 
