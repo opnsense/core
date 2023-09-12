@@ -95,10 +95,7 @@ foreach ($gres as $gre) {
     _interfaces_gre_configure($gre);
 }
 
-$gifs = link_interface_to_gif($interface);
-foreach ($gifs as $gif) {
-    _interfaces_gif_configure($gif);
-}
+$gififs = link_interface_to_gif($interface, true, 4);
 
 $bridge = link_interface_to_bridge($interface);
 if (!empty($bridge)) {
@@ -133,8 +130,8 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
 $restartifs = [];
 
 foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
-    foreach ($gifs as $gif) {
-        if ($ifparent['if'] == $gif['gifif']) {
+    foreach ($gififs as $gifif) {
+        if ($ifparent['if'] == $gifif) {
             $restartifs[$ifname] = 1;
         }
     }

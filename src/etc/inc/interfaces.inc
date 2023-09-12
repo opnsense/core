@@ -610,26 +610,29 @@ function _interfaces_gif_configure($gif)
     if (is_ipaddrv4($gif['remote-addr'])) {
         $realifip = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
         $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
+        $family = 'inet';
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
         $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
         $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
+        /* XXX link-local seems to work, but remote end may not match expectation (GUA) */
         if (is_linklocal($realifgw) && strpos($realifgw, '%') === false) {
             $realifgw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
         }
+        $family = 'inet6';
     }
-
-    interfaces_bring_up(get_real_interface(explode('_vip', $gif['if'])[0])); /* XXX overreach? */
 
     /* XXX avoid destroy/create */
     legacy_interface_destroy($gif['gifif']);
     legacy_interface_create($gif['gifif']);
 
-    /* Do not change the order here for more see gif(4) NOTES section. */
-    if (is_ipaddrv6($gif['remote-addr'])) {
-        mwexecf('/sbin/ifconfig %s inet6 tunnel %s %s', array($gif['gifif'], $realifip, $gif['remote-addr']));
-    } else {
-        mwexecf('/sbin/ifconfig %s tunnel %s %s', array($gif['gifif'], $realifip, $gif['remote-addr']));
+    /* ensured device is there, but do not configure unless system is ready */
+    if (empty($realifip)) {
+        log_msg("Device {$gif['gifif']} missing required local address, skipping now.");
+        return;
     }
+
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $realifip, $gif['remote-addr']]);
+
     if (is_ipaddrv6($gif['tunnel-local-addr']) || is_ipaddrv6($gif['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
         if ($gif['tunnel-remote-net'] != '128' && ip_in_subnet($gif['tunnel-remote-addr'], "{$gif['tunnel-local-addr']}/{$gif['tunnel-remote-net']}")) {
@@ -2383,11 +2386,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX device plugin hook */
-    $gifs = link_interface_to_gif($interface);
-    foreach ($gifs as $gif) {
-        _interfaces_gif_configure($gif);
-        $loaded[] = $gif['gifif'];
-    }
+    $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
 
     /* XXX device plugin hook */
     $bridge = link_interface_to_bridge($interface);
@@ -3700,7 +3699,7 @@ function link_interface_to_gre($interface)
     return $result;
 }
 
-function link_interface_to_gif($interface)
+function link_interface_to_gif($interface, $update = false, $family = null)
 {
     global $config;
 
@@ -3708,9 +3707,20 @@ function link_interface_to_gif($interface)
 
     if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $gif) {
-            if (explode('_vip', $gif['if'])[0] == $interface) {
-                $result[] = $gif;
+            if (explode('_vip', $gif['if'])[0] != $interface) {
+                continue;
+            } elseif ($family == 4 && !is_ipaddrv4($gif['remote-addr'])) {
+                continue;
+            } elseif ($family == 6 && !is_ipaddrv6($gif['remote-addr'])) {
+                continue;
             }
+
+            if ($update) {
+                _interfaces_gif_configure($gif);
+            }
+
+            /* callers are only concerned with the resulting device names */
+            $result[] = $gif['gifif'];
         }
     }
 
