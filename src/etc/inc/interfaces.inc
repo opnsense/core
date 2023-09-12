@@ -497,13 +497,12 @@ function interfaces_gre_configure($device)
     global $config;
 
     if (!isset($config['gres']['gre'])) {
-        return;
+        return null;
     }
 
     foreach ($config['gres']['gre'] as $gre) {
         if ($gre['greif'] == $device) {
-            _interfaces_gre_configure($gre);
-            return;
+            return _interfaces_gre_configure($gre);
         }
     }
 }
@@ -511,6 +510,10 @@ function interfaces_gre_configure($device)
 function _interfaces_gre_configure($gre)
 {
     global $config;
+
+    /* XXX avoid destroy/create */
+    legacy_interface_destroy($gre['greif']);
+    legacy_interface_create($gre['greif']);
 
     if (is_ipaddrv4($gre['remote-addr'])) {
         $realifip = get_interface_ip($gre['if']);
@@ -520,14 +523,10 @@ function _interfaces_gre_configure($gre)
         $family = 'inet6';
     }
 
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($gre['greif']);
-    legacy_interface_create($gre['greif']);
-
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($realifip)) {
         log_msg("Device {$gre['greif']} missing required local address, skipping now.");
-        return;
+        return null;
     }
 
     mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $realifip, $gre['remote-addr']]);
@@ -565,16 +564,7 @@ function _interfaces_gre_configure($gre)
         $gre['tunnel-remote-addr'],
     ]);
 
-    $gateways = new \OPNsense\Routing\Gateways();
-
-    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
-        if ($config['interfaces'][$ifname]['if'] == $gre['greif']) {
-            if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
-                system_routing_configure(false, $ifname);
-                break;
-            }
-        }
-    }
+    return $gre['greif'];
 }
 
 function interfaces_gif_configure($device)
@@ -582,13 +572,12 @@ function interfaces_gif_configure($device)
     global $config;
 
     if (!isset($config['gifs']['gif'])) {
-        return;
+        return null;
     }
 
     foreach ($config['gifs']['gif'] as $gif) {
         if ($gif['gifif'] == $device) {
-            _interfaces_gif_configure($gif);
-            return;
+            return _interfaces_gif_configure($gif);
         }
     }
 }
@@ -596,6 +585,10 @@ function interfaces_gif_configure($device)
 function _interfaces_gif_configure($gif)
 {
     global $config;
+
+    /* XXX avoid destroy/create */
+    legacy_interface_destroy($gif['gifif']);
+    legacy_interface_create($gif['gifif']);
 
     $gateways = new \OPNsense\Routing\Gateways();
 
@@ -613,14 +606,10 @@ function _interfaces_gif_configure($gif)
         $family = 'inet6';
     }
 
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($gif['gifif']);
-    legacy_interface_create($gif['gifif']);
-
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($realifip)) {
         log_msg("Device {$gif['gifif']} missing required local address, skipping now.");
-        return;
+        return null;
     }
 
     mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $realifip, $gif['remote-addr']]);
@@ -653,6 +642,7 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
+    /* XXX investigate one-off host route use */
     if (!empty($realifgw)) {
         system_host_route($gif['remote-addr'], $realifgw);
     }
@@ -665,14 +655,7 @@ function _interfaces_gif_configure($gif)
         $gif['tunnel-remote-addr'],
     ]);
 
-    foreach (array_keys(get_configured_interface_with_descr()) as $ifname) {
-        if ($config['interfaces'][$ifname]['if'] == $gif['gifif']) {
-            if ($gateways->getInterfaceGateway($ifname, 'inet') || $gateways->getInterfaceGateway($ifname, 'inet6')) {
-                system_routing_configure(false, $ifname);
-                break;
-            }
-        }
-    }
+    return $gif['gifif'];
 }
 
 function interfaces_hardware($verbose = false)
@@ -2382,6 +2365,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         /* XXX bridges can only load if all interfaces are there */
     }
 
+    /* XXX reload routes for linked devices -- not great but also not avoidable at the moment */
+    interfaces_restart_by_device($verbose, $loaded, false);
+
     /* XXX may be called twice since also tied to dhcp configure */
     interfaces_staticarp_configure($interface, $ifconfig_details);
 
@@ -3637,7 +3623,7 @@ function link_interface_to_track6($wanif, $update = false)
     return $list;
 }
 
-function interfaces_restart_by_device($verbose, $devices)
+function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
 {
     $restartifs = [];
 
@@ -3650,7 +3636,9 @@ function interfaces_restart_by_device($verbose, $devices)
     }
 
     foreach (array_keys($restartifs) as $ifname) {
-        interface_configure($verbose, $ifname);
+        if ($reconfigure) {
+            interface_configure($verbose, $ifname);
+        }
         system_routing_configure($verbose, $ifname);
     }
 }
@@ -3703,8 +3691,9 @@ function link_interface_to_gre($interface, $update = false, $family = null)
                 continue;
             }
 
-            if ($update) {
-                _interfaces_gre_configure($gre);
+            if ($update && empty(_interfaces_gre_configure($gre))) {
+                /* only return the ones that did configure correctly */
+                continue;
             }
 
             /* callers are only concerned with the resulting device names */
@@ -3731,8 +3720,9 @@ function link_interface_to_gif($interface, $update = false, $family = null)
                 continue;
             }
 
-            if ($update) {
-                _interfaces_gif_configure($gif);
+            if ($update && empty(_interfaces_gif_configure($gif))) {
+                /* only return the ones that did configure correctly */
+                continue;
             }
 
             /* callers are only concerned with the resulting device names */
