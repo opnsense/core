@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     # cleanup removed aliases when reloading all
     if to_update is None:
-        registered_aliases = [alias.get_name() for alias in aliases if alias.is_managed()]
+        registered_aliases = [alias.get_name() for alias in aliases if (alias.is_managed() and alias.get_type() != 'external')]
         to_remove = list()
         to_remove_files = dict()
         for filename in glob.glob('/var/db/aliastables/*.txt'):
