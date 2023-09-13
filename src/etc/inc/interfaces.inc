@@ -225,7 +225,7 @@ function interfaces_bridge_configure($device)
 
 function _interfaces_bridge_configure($bridge)
 {
-    $ret = $brige['bridgeif'];
+    $ret = $bridge['bridgeif'];
 
     /* XXX avoid destroy/create */
     legacy_interface_destroy($bridge['bridgeif']);
