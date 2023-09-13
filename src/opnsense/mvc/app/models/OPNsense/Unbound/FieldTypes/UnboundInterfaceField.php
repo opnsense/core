@@ -28,14 +28,14 @@
 
 namespace OPNsense\Unbound\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Base\FieldTypes\CSVListField;
 use OPNsense\Core\Config;
 
 /**
  * Class UnboundDomainField
  * @package OPNsense\Unbound\FieldTypes
  */
-class UnboundInterfaceField extends BaseListField
+class UnboundInterfaceField extends CSVListField
 {
     /**
      * Iterate over all interfaces in the configuration and only exclude
@@ -44,10 +44,11 @@ class UnboundInterfaceField extends BaseListField
     public function actionPostLoadingEvent()
     {
         $config = Config::getInstance()->object();
+        $list = [];
 
         foreach ($config->interfaces->children() as $key => $node) {
-            if ((empty($node->virtual) || $key == 'lo0') && !empty($node->enable)) {
-                $this->internalOptionList[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
+            if (empty($node->virtual) && !empty($node->enable)) {
+                $list[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
             }
         }
 
@@ -55,11 +56,13 @@ class UnboundInterfaceField extends BaseListField
             if (!empty($setting) && empty((string)$setting->disable)) {
                 $key = 'ovpn' . substr($mode, 8, 1) . (string)$setting->vpnid;
                 $type = substr($mode, 8, 6);
-                $this->internalOptionList[$key] = "OpenVPN {$type} (" . (!empty($setting->description) ?
+                $list[$key] = "OpenVPN {$type} (" . (!empty($setting->description) ?
                     (string)$setting->description : (string)$setting->vpnid) . ")";
             }
         }
 
-        natcasesort($this->internalOptionList);
+        natcasesort($list);
+
+        $this->setSelectOptions($list);
     }
 }

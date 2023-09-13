@@ -14,6 +14,8 @@
         <id>unbound.general.active_interface</id>
         <label>Network Interfaces</label>
         <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
         <help>
             Interface IP addresses used for responding to queries from clients.
             If an interface has both IPv4 and IPv6 IPs, both are used.
@@ -115,6 +117,8 @@
         <id>unbound.general.outgoing_interface</id>
         <label>Outgoing Network Interfaces</label>
         <type>select_multiple</type>
+        <allownew>true</allownew>
+        <style>tokenize</style>
         <advanced>true</advanced>
         <help>
             Utilize different network interfaces that Unbound will use to send queries to authoritative servers and receive their replies.
