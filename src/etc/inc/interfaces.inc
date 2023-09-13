@@ -225,6 +225,8 @@ function interfaces_bridge_configure($device)
 
 function _interfaces_bridge_configure($bridge)
 {
+    $ret = $brige['bridgeif'];
+
     /* XXX avoid destroy/create */
     legacy_interface_destroy($bridge['bridgeif']);
     legacy_interface_create($bridge['bridgeif']);
@@ -242,6 +244,8 @@ function _interfaces_bridge_configure($bridge)
         $device = get_real_interface($member);
         if (!does_interface_exist($device)) {
             log_msg("Device {$bridge['bridgeif']} cannot attach non-existent member {$device}, skipping now.");
+            /* continue but mark this as failed for caller so they could retry */
+            $ret = null;
             continue;
         }
 
@@ -375,7 +379,7 @@ function _interfaces_bridge_configure($bridge)
 
     interfaces_bring_up($bridge['bridgeif']);
 
-    return $bridge['bridgeif'];
+    return $ret;
 }
 
 function interfaces_lagg_configure($verbose = false)
