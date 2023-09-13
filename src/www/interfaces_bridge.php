@@ -120,17 +120,15 @@ legacy_html_escape_form_data($a_bridges);
                         <td><?= $bridge['bridgeif'] ?></td>
                         <td>
 <?php
-                        $members = explode(',', $bridge['members']);
-                        $j = 0;
-                        foreach ($members as $member) {
-                            if (isset($ifdescrs[$member])) {
-                                echo htmlspecialchars($ifdescrs[$member]);
-                                $j++;
+                        $members = explode(',', $bridge['members'] ?? '');
+                        foreach ($members as $key => $member) {
+                            if (!isset($ifdescrs[$member])) {
+                                unset($members[$key]);
+                            } else {
+                                $members[$key] = $ifdescrs[$member];
                             }
-                            if ($j > 0 && $j < count($members)) {
-                                echo ", ";
-                            }
-                        }?>
+                        }
+                        echo implode(', ', $members); ?>
                         </td>
                         <td><?=$bridge['descr'];?></td>
                         <td><?= !empty($bridge['linklocal']) ? gettext('On') : gettext('Off') ?></td>

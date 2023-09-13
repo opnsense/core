@@ -36,9 +36,12 @@ $a_bridges = &config_read_array('bridges', 'bridged');
 
 // interface list
 $ifacelist = [];
-foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $intf => $intfdata) {
+foreach (legacy_config_get_interfaces(['virtual' => false]) as $intf => $intfdata) {
     if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
         $ifacelist[$intf] = $intfdata['descr'];
+        if (!isset($intfdata['enable'])) {
+            $ifacelist[$intf] .= ' (' . gettext('disabled') . ')';
+        }
     }
 }
 
@@ -93,12 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = [];
     $pconfig = $_POST;
 
-    /* input validation */
-    $reqdfields = explode(" ", "members");
-    $reqdfieldsn = [gettext('Member Interfaces')];
-
-    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-
     $not_between_int = function($val, $min, $max) {
         return !is_numeric($val) || $val < $min || $val > $max;
     };
@@ -133,8 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (is_array($pconfig['members'])) {
-        foreach($pconfig['members'] as $ifmembers) {
+    $members = !empty($pconfig['members']) ? $pconfig['members'] : [];
+    if (!empty($members)) {
+        foreach($members as $ifmembers) {
             if (empty($config['interfaces'][$ifmembers])) {
                 $input_errors[] = gettext("A member interface passed does not exist in configuration");
             }
@@ -147,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    $members = !empty($pconfig['members']) ? $pconfig['members'] : [];
     foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'] as $section) {
         if (!empty($pconfig[$section])) {
             foreach ($pconfig[$section] as $if) {
@@ -277,7 +274,7 @@ $(document).ready(function() {
                         $bridge_interfaces = [];
                         foreach ($a_bridges as $idx => $bridge_item) {
                             if (!isset($id) || $idx != $id) {
-                                $bridge_interfaces = array_merge(explode(',', $bridge_item['members']), $bridge_interfaces);
+                                $bridge_interfaces = array_merge(explode(',', $bridge_item['members'] ?? ''), $bridge_interfaces);
                             }
                         }
                         foreach ($ifacelist as $ifn => $ifinfo):

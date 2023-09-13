@@ -213,73 +213,66 @@ function interfaces_bridge_configure($device)
     global $config;
 
     if (!isset($config['bridges']['bridged'])) {
-        return;
+        return null;
     }
 
     foreach ($config['bridges']['bridged'] as $bridge) {
         if ($bridge['bridgeif'] == $device) {
-            _interfaces_bridge_configure($bridge);
-            return;
+            return _interfaces_bridge_configure($bridge);
         }
     }
 }
 
 function _interfaces_bridge_configure($bridge)
 {
-    if (empty($bridge['members'])) {
-        /* XXX really necessary? we would like our bridge anyway */
-        log_msg("No members found on {$bridge['bridgeif']}", LOG_WARNING);
-        return;
+    /* XXX avoid destroy/create */
+    legacy_interface_destroy($bridge['bridgeif']);
+    legacy_interface_create($bridge['bridgeif']);
+
+    $checklist = get_configured_interface_with_descr();
+    $members = [];
+
+    /* find all required members */
+    foreach (explode(',', $bridge['members'] ?? '') as $member) {
+        if (empty($checklist[$member])) {
+            /* ignores disabled ones */
+            continue;
+        }
+
+        $device = get_real_interface($member);
+        if (!does_interface_exist($device)) {
+            log_msg("Device {$bridge['bridgeif']} cannot attach non-existent member {$device}, skipping now.");
+            continue;
+        }
+
+        $members[$member] = $device;
     }
 
-    $members = explode(',', $bridge['members']);
-
-    /* Calculate smaller mtu and enforce it */
+    /* calculate smaller mtu and enforce it */
     $mtu = null;
-    foreach ($members as $member) {
-        $opts = legacy_interface_stats(get_real_interface($member));
+    foreach ($members as $member => $device) {
+        $opts = legacy_interface_stats($device);
         if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
             $mtu = $opts['mtu'];
         }
     }
 
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($bridge['bridgeif']);
-    legacy_interface_create($bridge['bridgeif']);
-
     mwexecf('/sbin/ifconfig %s inet6 %sauto_linklocal', [$bridge['bridgeif'], isset($bridge['linklocal']) ? '' : '-']);
 
-    $checklist = get_configured_interface_with_descr();
-
-    /* Add interfaces to bridge */
-    foreach ($members as $member) {
-        if (empty($checklist[$member])) {
-            continue;
-        }
-
-        /* XXX why can we not iterate this once for MTU check and interface add */
-        $realif = get_real_interface($member);
-        if (!does_interface_exist($realif)) {
-            log_msg("interface '{$realif}' not defined in interfaces bridge - up", LOG_WARNING);
-            continue;
-        }
-
-        /* make sure the parent interface is up */
-        configure_interface_hardware($realif);
-        legacy_interface_mtu($realif, $mtu);
-        interfaces_bring_up($realif);
-        legacy_bridge_member($bridge['bridgeif'], $realif);
+    /* add member interfaces to bridge */
+    foreach ($members as $member => $device) {
+        configure_interface_hardware($device);
+        legacy_interface_mtu($device, $mtu);
+        interfaces_bring_up($device);
+        legacy_bridge_member($bridge['bridgeif'], $device);
     }
 
     if (isset($bridge['enablestp'])) {
-        /* Choose spanning tree proto */
-        mwexec("/sbin/ifconfig {$bridge['bridgeif']} proto " . escapeshellarg($bridge['proto']));
-
+        mwexecf('/sbin/ifconfig %s proto %s', [$bridge['bridgeif'], $bridge['proto']]);
         if (!empty($bridge['stp'])) {
             $stpifs = explode(',', $bridge['stp']);
             foreach ($stpifs as $stpif) {
-                $realif = get_real_interface($stpif);
-                mwexec("/sbin/ifconfig {$bridge['bridgeif']} stp {$realif}");
+                mwexecf('/sbin/ifconfig %s stp %s', [$bridge['bridgeif'], get_real_interface($stpif)]);
             }
         }
         if (!empty($bridge['maxage'])) {
@@ -381,29 +374,8 @@ function _interfaces_bridge_configure($bridge)
     }
 
     interfaces_bring_up($bridge['bridgeif']);
-}
 
-function interface_bridge_add_member($bridgeif, $realif)
-{
-    $ifconfig_details = legacy_interfaces_details();
-
-    if (empty($ifconfig_details[$bridgeif]) || empty($ifconfig_details[$realif])) {
-        return;
-    }
-
-    configure_interface_hardware($realif);
-
-    /*
-     * The MTU of the first member interface to be added is used as the bridge
-     * MTU.  All additional members are required to have exactly the same MTU
-     * value.
-     */
-    if ($ifconfig_details[$bridgeif]['mtu'] != $ifconfig_details[$realif]['mtu']) {
-        legacy_interface_mtu($realif, $ifconfig_details[$bridgeif]['mtu']);
-    }
-
-    interfaces_bring_up($realif);
-    legacy_bridge_member($bridgeif, $realif);
+    return $bridge['bridgeif'];
 }
 
 function interfaces_lagg_configure($verbose = false)
@@ -2353,12 +2325,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     interfaces_vips_configure($interface);
 
-    /* XXX device plugin hook */
+    /* XXX device dependency plugin hook */
     $loaded = array_merge($loaded, link_interface_to_gre($interface, true));
     $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
 
-    /* XXX bridge hook does "something" else -- should we attach $realifv6 too? ;) */
-    link_interface_to_bridge($interface, $realif);
+    /* XXX device member plugin hook */
+    link_interface_to_bridge($interface, $realif, $ifconfig_details);
 
     /* XXX reload routes for linked devices -- not great but also not avoidable at the moment */
     interfaces_restart_by_device($verbose, $loaded, false);
@@ -3428,7 +3400,7 @@ function interface_parent_devices($device)
     } elseif (strstr($device, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged') as $bridge) {
             if ($device == $bridge['bridgeif']) {
-                foreach (explode(',', $bridge['members']) as $member) {
+                foreach (explode(',', $bridge['members'] ?? '') as $member) {
                     /* bridge stores members as configured interfaces */
                     $parents[] = get_real_interface($member);
                 }
@@ -3638,25 +3610,41 @@ function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
     }
 }
 
-function link_interface_to_bridge($interface, $attach_device = null)
+function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_details = [/* must be set for attach to work */])
 {
-    global $config;
-
-    if (isset($config['bridges']['bridged'])) {
-        foreach ($config['bridges']['bridged'] as $bridge) {
-            if (!in_array($interface, explode(',', $bridge['members']))) {
-                continue;
-            }
-
-            if ($attach_device) {
-                /* XXX _interfaces_bridge_configure() is probably cleaner */
-                interface_bridge_add_member($bridge, $attach_device);
-                /* XXX bridges can only load if all interfaces are there */
-            }
-
-            return $bridge['bridgeif'];
+    foreach (config_read_array('bridges', 'bridged') as $bridge) {
+        if (!in_array($interface, explode(',', $bridge['members'] ?? ''))) {
+            continue;
         }
+
+        if ($attach_device) {
+            if (empty($ifconfig_details[$bridge['bridgeif']])) {
+                log_msg("Device {$attach_device} cannot be added to non-existent {$bridge['bridgeif']}, skipping now.");
+                break;
+            } elseif (empty($ifconfig_details[$attach_device])) {
+                log_msg("Device {$attach_device} was not found so it cannot be added to {$bridge['bridgeif']}, skipping now.");
+                break;
+            }
+
+            configure_interface_hardware($attach_device);
+
+            /*
+             * The MTU of the first member interface to be added is used as the bridge
+             * MTU.  All additional members are required to have exactly the same MTU
+             * value.
+             */
+            if ($ifconfig_details[$bridge['bridgeif']]['mtu'] != $ifconfig_details[$attach_device]['mtu']) {
+                legacy_interface_mtu($attach_device, $ifconfig_details[$bridge['bridgeif']]['mtu']);
+            }
+
+            interfaces_bring_up($attach_device);
+            legacy_bridge_member($bridge['bridgeif'], $attach_device);
+        }
+
+        return $bridge['bridgeif'];
     }
+
+    return null;
 }
 
 function link_interface_to_gre($interface, $update = false, $family = null)
