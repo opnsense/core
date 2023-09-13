@@ -3646,14 +3646,26 @@ function link_interface_to_track6($wanif, $update = false)
     return $list;
 }
 
-/****f* interfaces/link_interface_to_bridge
- * NAME
- *   link_interface_to_bridge - Finds out a bridge group for an interface
- * INPUTS
- *   $ip
- * RESULT
- *   bridge[0-99]
- ******/
+function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
+{
+    $restartifs = [];
+
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
+        foreach ($devices as $device) {
+            if ($ifparent['if'] == $device) {
+                $restartifs[$ifname] = 1;
+            }
+        }
+    }
+
+    foreach (array_keys($restartifs) as $ifname) {
+        if ($reconfigure) {
+            interface_configure($verbose, $ifname);
+        }
+        system_routing_configure($verbose, $ifname);
+    }
+}
+
 function link_interface_to_bridge($int)
 {
     global $config;
