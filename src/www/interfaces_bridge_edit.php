@@ -39,9 +39,6 @@ $ifacelist = [];
 foreach (legacy_config_get_interfaces(['virtual' => false]) as $intf => $intfdata) {
     if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
         $ifacelist[$intf] = $intfdata['descr'];
-        if (!isset($intfdata['enable'])) {
-            $ifacelist[$intf] .= ' (' . gettext('disabled') . ')';
-        }
     }
 }
 
