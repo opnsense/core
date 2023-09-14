@@ -29,7 +29,6 @@
 namespace OPNsense\Unbound\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
-use OPNsense\Core\Config;
 
 class M1_0_8 extends BaseModelMigration
 {
