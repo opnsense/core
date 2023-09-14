@@ -573,14 +573,20 @@ function _interfaces_gif_configure($gif)
         $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
         $family = 'inet';
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
-        $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
-        /* XXX link-local seems to work, but remote end may not match expectation (GUA) */
-        if (is_linklocal($realifgw) && strpos($realifgw, '%') === false) {
-            $realifgw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
+        if (is_linklocal($gateway['remote-addr'])) {
+            $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'scoped');
+            $realifgw = null;
+        } else {
+            $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'routed');
+            $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
+            if (is_linklocal($realifgw) && strpos($realifgw, '%') === false) {
+                $realifgw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
+            }
         }
         $family = 'inet6';
     }
+
+    $remote_addr = $gif['remote-addr'] . (strpos($realifip, '%') === false ? '' : '%' . explode('%', $realifip)[1]);
 
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($realifip)) {
@@ -588,7 +594,7 @@ function _interfaces_gif_configure($gif)
         return null;
     }
 
-    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $realifip, $gif['remote-addr']]);
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $realifip, $remote_addr]);
 
     if (is_ipaddrv6($gif['tunnel-local-addr']) || is_ipaddrv6($gif['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
@@ -618,9 +624,8 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
-    /* XXX investigate one-off host route use */
     if (!empty($realifgw)) {
-        system_host_route($gif['remote-addr'], $realifgw);
+        system_host_route($remote_addr, $realifgw);
     }
 
     interfaces_bring_up($gif['gifif']);
@@ -3766,7 +3771,7 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
     return $ip;
 }
 
-function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
+function get_interface_ipv6($interface = 'wan', $ifconfig_details = null, $mode = 'primary')
 {
     if (is_ipaddrv6($interface)) {
         return $interface;
@@ -3782,7 +3787,18 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
         }
     }
 
-    list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
+    switch ($mode) {
+    case 'routed':
+        list ($ipv6) = interfaces_routed_address6($interface, $ifconfig_details);
+        break;
+    case 'scoped':
+        list ($ipv6) = interfaces_scoped_address6($interface, $ifconfig_details);
+        break;
+    case 'primary':
+    default:
+        list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
+        break;
+    }
 
     return $ipv6;
 }
