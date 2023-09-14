@@ -38,21 +38,20 @@ use OPNsense\Core\Config;
 class UnboundInterfaceField extends BaseListField
 {
     /**
-     * Iterate over all interfaces in the configuration and only exclude
-     * virtual interfaces, except for lo0 (separate assigned loopbacks are not virtual).
+     * Iterate over all interfaces in the configuration and only exclude virtual interfaces.
      */
     public function actionPostLoadingEvent()
     {
         $config = Config::getInstance()->object();
 
         foreach ($config->interfaces->children() as $key => $node) {
-            if ((empty($node->virtual) || $key == 'lo0') && !empty($node->enable)) {
+            if (empty($node->virtual)) {
                 $this->internalOptionList[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
             }
         }
 
         foreach ($config->openvpn->children() as $mode => $setting) {
-            if (!empty($setting) && empty((string)$setting->disable)) {
+            if (!empty($setting)) {
                 $key = 'ovpn' . substr($mode, 8, 1) . (string)$setting->vpnid;
                 $type = substr($mode, 8, 6);
                 $this->internalOptionList[$key] = "OpenVPN {$type} (" . (!empty($setting->description) ?
