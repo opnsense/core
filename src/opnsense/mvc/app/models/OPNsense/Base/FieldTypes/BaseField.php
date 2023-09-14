@@ -759,4 +759,12 @@ abstract class BaseField
         $parts = explode("\\", get_class($this));
         return $parts[count($parts) - 1];
     }
+
+    /**
+     * normalize the internal value to allow passing validation
+     */
+    public function normalizeValue()
+    {
+        /* implemented where needed */
+    }
 }
