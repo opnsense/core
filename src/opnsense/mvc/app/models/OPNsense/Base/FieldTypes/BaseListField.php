@@ -144,4 +144,20 @@ abstract class BaseListField extends BaseField
         }
         return $validators;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function normalizeValue()
+    {
+        $values = [];
+
+        foreach ($this->getNodeData() as $key => $node) {
+            if ($node['selected']) {
+                $values[] = $key;
+            }
+        }
+
+        $this->setValue(implode(',', $values));
+    }
 }
