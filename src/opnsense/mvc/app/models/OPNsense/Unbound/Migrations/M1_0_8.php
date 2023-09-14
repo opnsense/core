@@ -29,46 +29,13 @@
 namespace OPNsense\Unbound\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
-use OPNsense\Core\Config;
 
-class M1_0_5 extends BaseModelMigration
+class M1_0_8 extends BaseModelMigration
 {
     public function run($model)
     {
-        $config = Config::getInstance()->object();
-        $new = [];
-        foreach ($model->general->iterateItems() as $key => $node) {
-            if (isset($config->unbound->$key)) {
-                if ($key == 'port' && empty($config->unbound->port)) {
-                    $model->general->port->applyDefault();
-                    continue;
-                } elseif (in_array($key, ['dnssec', 'enable'])) {
-                    $new[$key] = empty($config->unbound->$key) ? 0 : 1;
-                    continue;
-                }
-                $new[$key] = (string)$config->unbound->$key;
-            }
-        }
-
-        $new['enabled'] = isset($config->unbound->enable) ? '1' : '0';
-
-        $model->general->setNodes($new);
-
-        /* discard missing interfaces to pass validation */
+        /* scrub the spurious "lo0" value which may be in the config */
         $model->general->active_interface->normalizeValue();
         $model->general->outgoing_interface->normalizeValue();
-    }
-
-    public function post($model)
-    {
-        $config = Config::getInstance()->object();
-        foreach ($model->general->iterateItems() as $key => $node) {
-            if (isset($config->unbound->$key)) {
-                unset($config->unbound->$key);
-            }
-        }
-        if (isset($config->unbound->enable)) {
-            unset($config->unbound->enable);
-        }
     }
 }
