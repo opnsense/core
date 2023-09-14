@@ -117,7 +117,7 @@ legacy_html_escape_form_data($a_bridges);
                     $ifdescrs = [];
                     foreach (legacy_config_get_interfaces(['virtual' => false]) as $intf => $intfdata) {
                         if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
-                            $ifdescr[$intf] = $intfdata['descr'];
+                            $ifdescrs[$intf] = $intfdata['descr'];
                         }
                     }
                     foreach ($a_bridges as $bridge): ?>
