@@ -47,8 +47,7 @@
 
 <div class="content-box" style="padding-bottom: 1.5em;">
 {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_GeneralSettings'])}}
-    <div class="col-md-12">
-        <hr/>
+    <div class="col-md-12 __mt">
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/unbound/service/reconfigureGeneral'
                 data-label="{{ lang._('Apply') }}"
