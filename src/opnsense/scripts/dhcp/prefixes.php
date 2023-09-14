@@ -87,7 +87,7 @@ foreach (plugins_run('static_mapping') as $map) {
 
         if (!empty($host['ipaddrv6'])) {
             /* we want static mapping to have a higher priority */
-            $duid_arr[$host['duid']]['address'] = $host['ipaddrv6'];
+            $duid_arr[$host['duid']]['address'] = is_linklocal($host['ipaddrv6']) ? $host['ipaddrv6'] . '%' . get_real_interface($host['interface']) : $host['ipaddrv6'];
         }
     }
 }
