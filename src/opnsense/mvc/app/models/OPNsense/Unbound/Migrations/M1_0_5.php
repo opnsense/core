@@ -54,6 +54,7 @@ class M1_0_5 extends BaseModelMigration
 
         $model->general->setNodes($new);
 
+        /* discard missing interfaces to pass validation */
         $model->general->active_interface->normalizeValue();
         $model->general->outgoing_interface->normalizeValue();
     }
