@@ -14,20 +14,17 @@
             </port>
             <stats type="BooleanField"/>
             <active_interface type=".\UnboundInterfaceField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
             </active_interface>
             <dnssec type="BooleanField"/>
             <dns64 type="BooleanField"/>
             <dns64prefix type="NetworkField">
-                <Required>N</Required>
                 <NetMaskRequired>Y</NetMaskRequired>
                 <AddressFamily>ipv6</AddressFamily>
             </dns64prefix>
             <noarecords type="BooleanField"/>
             <regdhcp type="BooleanField"/>
             <regdhcpdomain type="TextField">
-                <Required>N</Required>
                 <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
             </regdhcpdomain>
@@ -54,7 +51,6 @@
                 </OptionValues>
             </local_zone_type>
             <outgoing_interface type=".\UnboundInterfaceField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
             </outgoing_interface>
             <enable_wpad type="BooleanField"/>
@@ -98,9 +94,7 @@
                     <opt3 value="2">Level 2</opt3>
                 </OptionValues>
             </valloglevel>
-            <privatedomain type="CSVListField">
-                <Required>N</Required>
-            </privatedomain>
+            <privatedomain type="CSVListField"/>
             <privateaddress type="NetworkField">
                 <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
@@ -171,7 +165,6 @@
                     <asList>Y</asList>
                 </networks>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
@@ -184,7 +177,6 @@
             </enabled>
             <safesearch type="BooleanField"/>
             <type type="OptionField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <atf>Abuse.ch - ThreatFox IOC database</atf>
@@ -222,23 +214,15 @@
                     <yy>YoYo List</yy>
                 </OptionValues>
             </type>
-            <lists type="CSVListField">
-                <Required>N</Required>
-            </lists>
-            <whitelists type="CSVListField">
-                <Required>N</Required>
-            </whitelists>
-            <blocklists type="CSVListField">
-                <Required>N</Required>
-            </blocklists>
+            <lists type="CSVListField"/>
+            <whitelists type="CSVListField"/>
+            <blocklists type="CSVListField"/>
             <wildcards type="CSVListField">
-                <Required>N</Required>
                 <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 <MaskPerItem>Y</MaskPerItem>
             </wildcards>
             <address type="NetworkField">
-                <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
             </address>
@@ -262,19 +246,14 @@
                     </OptionValues>
                 </type>
                 <domain type="TextField">
-                    <Required>N</Required>
                     <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <server type="NetworkField">
                     <Required>Y</Required>
                 </server>
-                <port type="PortField">
-                    <Required>N</Required>
-                </port>
-                <verify type="HostnameField">
-                    <Required>N</Required>
-                </verify>
+                <port type="PortField"/>
+                <verify type="HostnameField"/>
             </dot>
         </dots>
         <hosts>
@@ -284,7 +263,6 @@
                     <Required>Y</Required>
                 </enabled>
                 <hostname type="HostnameField">
-                    <Required>N</Required>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
@@ -352,7 +330,6 @@
                     </Constraints>
                 </server>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
@@ -399,7 +376,6 @@
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
@@ -424,7 +400,6 @@
                     <Required>Y</Required>
                 </forward_tcp_upstream>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
