@@ -126,10 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_gif_configure($gif['gifif']);
             ifgroup_setup();
-            $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
-            if ($confif != '') {
-                interface_configure(false, $confif);
-            }
+            interfaces_restart_by_device(false, [$gif['gifif']]);
             header(url_safe('Location: /interfaces_gif.php'));
             exit;
         }
