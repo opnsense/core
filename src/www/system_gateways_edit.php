@@ -277,7 +277,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $a_gateway_item = &config_read_array('gateways', 'gateway_item');
-        $reloadif = "";
         $gateway = array();
 
         $gateway['interface'] = $pconfig['interface'];
@@ -350,8 +349,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($pconfig['isAjax'])) {
             echo $pconfig['name'];
             exit;
-        } elseif (!empty($reloadif)) {
-            configdp_run('interface reconfigure', array($reloadif));
         }
 
         header(url_safe('Location: /system_gateways.php'));
