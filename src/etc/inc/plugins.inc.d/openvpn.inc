@@ -455,7 +455,7 @@ function openvpn_add_keyfile($data, &$conf, $mode_id, $directive, $opt = '')
 function openvpn_reconfigure($mode, $settings, $device_only = false)
 {
     if (empty($settings)) {
-        return;
+        return null;
     }
 
     openvpn_create_dirs();
@@ -486,8 +486,9 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if ($device_only || isset($settings['disable'])) {
-        return;
+        return $devname;
     }
+
     mwexecf('/sbin/ifconfig %s down', array($devname));
 
     $proto = strtolower($settings['protocol']);
@@ -1045,14 +1046,13 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
 function openvpn_prepare($device)
 {
-    if (str_starts_with($device, 'ovpn')) {
-        $vpnid = preg_replace("/[^0-9]/", "", $device);
-        $settings = (new OPNsense\OpenVPN\OpenVPN())->getInstanceById($vpnid);
-        if ($settings) {
-            // XXX: split device creation and legacy configure?
-            openvpn_reconfigure($settings['role'], $settings, true);
-        }
+    $settings = (new OPNsense\OpenVPN\OpenVPN())->getInstanceById(preg_replace('/[^0-9]/', '', $device));
+    if (empty($settings)) {
+        return null;
     }
+
+    // XXX: split device creation and legacy configure?
+    return openvpn_reconfigure($settings['role'], $settings, true);
 }
 
 function openvpn_configure_single($id)
