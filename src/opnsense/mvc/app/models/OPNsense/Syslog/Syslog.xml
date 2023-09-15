@@ -27,7 +27,6 @@
                   </OptionValues>
                 </transport>
                 <program type="JsonKeyValueStoreField">
-                  <Required>N</Required>
                   <Multiple>Y</Multiple>
                   <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
                   <SourceFile>/tmp/syslog_applications.json</SourceFile>
@@ -36,7 +35,6 @@
                   <ValidationMessage>Specify valid source applications.</ValidationMessage>
                 </program>
                 <level type="OptionField">
-                  <Required>N</Required>
                   <Multiple>Y</Multiple>
                   <OptionValues>
                       <debug>debug</debug>
@@ -50,7 +48,6 @@
                   </OptionValues>
                 </level>
                 <facility type="OptionField">
-                  <Required>N</Required>
                   <Multiple>Y</Multiple>
                   <OptionValues>
                       <kern>kernel messages</kern>
@@ -82,7 +79,6 @@
                     <Required>Y</Required>
                 </hostname>
                 <certificate type="CertificateField">
-                    <Required>N</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certificate>
                 <port type="PortField">
@@ -93,9 +89,7 @@
                   <Default>0</Default>
                   <Required>Y</Required>
                 </rfc5424>
-                <description type="TextField">
-                  <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </destination>
         </destinations>
     </items>
