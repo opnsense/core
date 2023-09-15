@@ -55,11 +55,9 @@
                     </Model>
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related ruleset not found.</ValidationMessage>
-                    <Required>N</Required>
                 </rulesets>
                 <content type=".\PolicyContentField">
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                     <ValidationMessage>Policy rule not found.</ValidationMessage>
                 </content>
                 <new_action type="OptionField">
@@ -73,7 +71,6 @@
                     </OptionValues>
                 </new_action>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
@@ -86,14 +83,9 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
-                <source type="NetworkField">
-                    <Required>N</Required>
-                </source>
-                <destination type="NetworkField">
-                    <Required>N</Required>
-                </destination>
+                <source type="NetworkField"/>
+                <destination type="NetworkField"/>
                 <fingerprint type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
                     <ValidationMessage>A SSL fingerprint should be a 59 character long hex value.</ValidationMessage>
                 </fingerprint>
@@ -136,7 +128,6 @@
                   <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </property>
               <value type="TextField">
-                  <Required>N</Required>
                   <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </value>
             </tag>
@@ -171,7 +162,6 @@
                 <asList>Y</asList>
             </homenet>
             <defaultPacketSize type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>82</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>Enter a valid packet size</ValidationMessage>
@@ -188,7 +178,6 @@
                     </queues>
                 </Model>
                 <ValidationMessage>Related cron not found.</ValidationMessage>
-                <Required>N</Required>
             </UpdateCron>
             <AlertLogrotate type="OptionField">
               <Required>Y</Required>
@@ -207,7 +196,6 @@
                 <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
             </AlertSaveLogs>
             <MPMAlgo type="OptionField">
-              <Required>N</Required>
               <BlankDesc>Default</BlankDesc>
               <OptionValues>
                   <ac>Aho-Corasick</ac>
@@ -219,7 +207,6 @@
             </MPMAlgo>
             <detect>
               <Profile type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <low>Low</low>
@@ -230,13 +217,11 @@
                 <ValidationMessage>Please select a valid detection profile</ValidationMessage>
               </Profile>
               <toclient_groups type="IntegerField">
-                  <Required>N</Required>
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                   <ValidationMessage>Enter a valid toclient-groups size</ValidationMessage>
               </toclient_groups>
               <toserver_groups type="IntegerField">
-                  <Required>N</Required>
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                   <ValidationMessage>Enter a valid toserver-groups size</ValidationMessage>
@@ -255,7 +240,6 @@
                 <Required>Y</Required>
             </LogPayload>
             <verbosity type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>DEFAULT (0)</BlankDesc>
                 <OptionValues>
                     <v>INFO (1)</v>
