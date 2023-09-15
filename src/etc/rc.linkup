@@ -62,12 +62,10 @@ function handle_argument_group($action, $device)
         case 'stop':
             log_msg(sprintf("DEVD: Ethernet detached event for %s(%s)", $interface, $device));
             interface_bring_down($interface);
-            filter_configure(false, false);
             break;
         case 'start':
             log_msg(sprintf("DEVD: Ethernet attached event for %s(%s)", $interface, $device));
             interface_configure(false, $interface, true, true);
-            filter_configure(false, false);
             break;
         default:
             log_msg("DEVD: The action parameter passed is wrong ($action)", LOG_ERR);
