@@ -26,16 +26,13 @@
                     <ValidationMessage>At least one interface must be selected</ValidationMessage>
                 </interfaces>
                 <authservers type="AuthenticationServerField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </authservers>
                 <alwaysSendAccountingReqs type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
                 </alwaysSendAccountingReqs>
-                <authEnforceGroup type="AuthGroupField">
-                    <Required>N</Required>
-                </authEnforceGroup>
+                <authEnforceGroup type="AuthGroupField"/>
                 <idletimeout type="IntegerField">
                     <Required>Y</Required>
                     <Default>0</Default>
@@ -55,21 +52,17 @@
                     <Default>1</Default>
                 </concurrentlogins>
                 <certificate type="CertificateField">
-                    <Required>N</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certificate>
                 <servername type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
                 <allowedAddresses type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([\/0-9.,])*/u</mask>
                     <ValidationMessage>Please enter valid addresses</ValidationMessage>
                 </allowedAddresses>
                 <allowedMACAddresses type="CSVListField">
-                    <Required>N</Required>
                     <ChangeCase>lower</ChangeCase>
                     <mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</mask>
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
@@ -95,7 +88,6 @@
                         </template>
                     </Model>
                     <ValidationMessage>Related template not found</ValidationMessage>
-                    <Required>N</Required>
                 </template>
                 <description type="TextField">
                     <Required>Y</Required>
