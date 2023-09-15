@@ -9,7 +9,6 @@
                 <Required>Y</Required>
             </enabled>
             <error_pages type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>Squid</BlankDesc>
                 <OptionValues>
                     <opnsense>OPNsense</opnsense>
@@ -20,7 +19,6 @@
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>ICP port needs to be an integer value between 1 and 65535</ValidationMessage>
-                <Required>N</Required>
             </icpPort>
             <logging>
                 <enable>
@@ -34,11 +32,9 @@
                     </storeLog>
                 </enable>
                 <ignoreLogACL type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </ignoreLogACL>
                 <target type="OptionField">
-                    <Required>N</Required>
                     <BlankDesc>File</BlankDesc>
                     <OptionValues>
                         <file_extendend>File (Extended)</file_extendend>
@@ -49,11 +45,9 @@
                 </target>
             </logging>
             <alternateDNSservers type="CSVListField">
-                <Required>N</Required>
                 <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
             </alternateDNSservers>
             <forwardedForHandling type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <on>Append client's IP (on)</on>
@@ -64,7 +58,6 @@
                 </OptionValues>
             </forwardedForHandling>
             <uriWhitespaceHandling type="OptionField">
-                <Required>N</Required>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <strip>Strip whitespaces</strip>
@@ -81,16 +74,13 @@
             <useViaHeader type="BooleanField"/>
             <suppressVersion type="BooleanField"/>
             <connecttimeout type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>120</MaximumValue>
             </connecttimeout>
             <VisibleEmail type="EmailField">
-                <Required>N</Required>
                 <ValidationMessage>Please enter a valid email address.</ValidationMessage>
             </VisibleEmail>
             <VisibleHostname type="TextField">
-                <Required>N</Required>
                 <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
                 <ValidationMessage>Please enter a valid servername, ip address or leave this option blank.</ValidationMessage>
             </VisibleHostname>
@@ -114,16 +104,13 @@
                       <MinimumValue>1</MinimumValue>
                       <MaximumValue>99999</MaximumValue>
                       <ValidationMessage>Specify a maximum object size. (number of MB's)</ValidationMessage>
-                      <Required>N</Required>
                     </maximum_object_size>
                     <maximum_object_size_in_memory type="IntegerField">
                       <MinimumValue>1</MinimumValue>
                       <MaximumValue>99999</MaximumValue>
                       <ValidationMessage>Specify a maximum object size in memory. (number of KB's)</ValidationMessage>
-                      <Required>N</Required>
                     </maximum_object_size_in_memory>
                     <memory_cache_mode type="OptionField">
-                        <Required>N</Required>
                         <BlankDesc>Default</BlankDesc>
                         <OptionValues>
                             <always>Keep all most recent files (always)</always>
@@ -167,17 +154,14 @@
                 <maxDownloadSize type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the maximum download size (kB).</ValidationMessage>
-                    <Required>N</Required>
                 </maxDownloadSize>
                 <maxUploadSize type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the maximum upload size (kB).</ValidationMessage>
-                    <Required>N</Required>
                 </maxUploadSize>
                 <OverallBandwidthTrotteling type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the overall bandwidth for downloads in kilobits per second.</ValidationMessage>
-                    <Required>N</Required>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Both throttling parameters should either be filled or empty</ValidationMessage>
@@ -191,7 +175,6 @@
                 <perHostTrotteling type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the per host bandwidth for downloads in kilobits per second.</ValidationMessage>
-                    <Required>N</Required>
                     <Constraints>
                         <check001>
                             <reference>OverallBandwidthTrotteling.check001</reference>
@@ -205,7 +188,6 @@
                     <Required>Y</Required>
                 </enabled>
                 <host type="HostnameField">
-                    <Required>N</Required>
                     <Constraints>
                         <check001>
                             <ValidationMessage>A host must be set.</ValidationMessage>
@@ -233,7 +215,6 @@
                     <ValidationMessage>Password can be up to 128 signs long. Alphanumeric characters and also dot, dash, percent sign (for URL escapes) and underscore allowed.</ValidationMessage>
                 </password>
                 <port type="PortField">
-                    <Required>N</Required>
                     <Constraints>
                         <check001>
                             <ValidationMessage>A port must be set.</ValidationMessage>
@@ -244,17 +225,12 @@
                         </check001>
                     </Constraints>
                 </port>
-                <localdomains type="CSVListField">
-                    <Required>N</Required>
-                </localdomains>
-                <localips type="CSVListField">
-                    <Required>N</Required>
-                </localips>
+                <localdomains type="CSVListField"/>
+                <localips type="CSVListField"/>
             </parentproxy>
         </general>
         <forward>
             <interfaces type="InterfaceField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
                 <AllowDynamic>S</AllowDynamic>
                 <filters>
@@ -299,12 +275,10 @@
                 </Constraints>
             </sslurlonly>
             <sslcertificate type="CertificateField">
-                <Required>N</Required>
                 <Type>ca</Type>
                 <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
             </sslcertificate>
             <sslnobumpsites type="CSVListField">
-              <Required>N</Required>
               <mask>/^([a-zA-Z0-9\.:\[\]\s\-]*?,)*([a-zA-Z0-9\.:\[\]\s\-]*)$/</mask>
               <ValidationMessage>Please enter ip addresses or domain names here</ValidationMessage>
             </sslnobumpsites>
@@ -338,7 +312,6 @@
                 <Required>Y</Required>
             </snmp_password>
             <ftpInterfaces type="InterfaceField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -366,36 +339,23 @@
             </transparentMode>
             <acl>
                 <allowedSubnets type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </allowedSubnets>
                 <unrestricted type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </unrestricted>
                 <bannedHosts type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </bannedHosts>
-                <whiteList type="CSVListField">
-                    <Required>N</Required>
-                </whiteList>
-                <blackList type="CSVListField">
-                    <Required>N</Required>
-                </blackList>
-                <browser type="CSVListField">
-                    <Required>N</Required>
-                </browser>
-                <mimeType type="CSVListField">
-                    <Required>N</Required>
-                </mimeType>
+                <whiteList type="CSVListField"/>
+                <blackList type="CSVListField"/>
+                <browser type="CSVListField"/>
+                <mimeType type="CSVListField"/>
                 <googleapps type="HostnameField">
-                    <Required>N</Required>
                     <mask>/^([a-zA-Z0-9]){0,}\.([a-zA-Z0-9].){0,}/</mask>
                     <ValidationMessage>Please enter a valid domain name here</ValidationMessage>
                 </googleapps>
                 <youtube type="OptionField">
-                    <Required>N</Required>
                     <OptionValues>
                         <strict>Strict</strict>
                         <moderate>Moderate</moderate>
@@ -403,10 +363,8 @@
                 </youtube>
                 <safePorts type="CSVListField">
                     <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
-                    <Required>N</Required>
                 </safePorts>
                 <sslPorts type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
                 </sslPorts>
                 <remoteACLs>
@@ -432,15 +390,12 @@
                                 <ValidationMessage>This does not look like a valid url.</ValidationMessage>
                             </url>
                             <username type="TextField">
-                              <Required>N</Required>
-                              <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                             </username>
                             <password type="TextField">
-                              <Required>N</Required>
-                              <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                             </password>
                             <filter type="JsonKeyValueStoreField">
-                                <Required>N</Required>
                                 <SourceField>filename</SourceField>
                                 <SourceFile>/usr/local/etc/squid/acl/%s.index</SourceFile>
                                 <SelectAll>Y</SelectAll>
@@ -468,7 +423,6 @@
                             </queues>
                         </Model>
                         <ValidationMessage>Related cron not found</ValidationMessage>
-                        <Required>N</Required>
                     </UpdateCron>
                 </remoteACLs>
             </acl>
@@ -508,32 +462,25 @@
                     <Default>60</Default>
                     <Required>Y</Required>
                 </OptionsTTL>
-                <exclude type="CSVListField">
-                    <Required>N</Required>
-                </exclude>
+                <exclude type="CSVListField"/>
             </icap>
             <authentication>
                 <method type="AuthenticationServerField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </method>
                 <authEnforceGroup type="AuthGroupField">
-                  <Required>N</Required>
-                  <Multiple>Y</Multiple>
+                    <Multiple>Y</Multiple>
                 </authEnforceGroup>
                 <realm type="TextField">
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
-                    <Required>N</Required>
                 </realm>
                 <credentialsttl type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Credentials TTL needs to be an integer value above 0</ValidationMessage>
-                    <Required>N</Required>
                 </credentialsttl>
                 <children type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Number of children needs to be an integer value above 0</ValidationMessage>
-                    <Required>N</Required>
                 </children>
             </authentication>
         </forward>
@@ -562,11 +509,9 @@
                   </OptionValues>
               </proxy_type>
               <url type="TextField">
-                  <Required>N</Required>
                   <ValidationMessage>This does not look like a valid proxy or direct connection.</ValidationMessage>
               </url>
               <description type="TextField">
-                  <Required>N</Required>
                   <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
           </proxy>
@@ -582,7 +527,6 @@
                   </Constraints>
               </name>
               <description type="TextField">
-                  <Required>N</Required>
                   <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <negate type="BooleanField">
@@ -605,36 +549,27 @@
                       <time_range>Time Range</time_range>
                   </OptionValues>
               </match_type>
-              <hostname type="TextField">
-                  <Required>N</Required>
-              </hostname>
+              <hostname type="TextField"/>
               <url type="TextField">
                   <Mask>/^[^"]*$/</Mask>
-                  <Required>N</Required>
               </url>
-              <network type="NetworkField">
-                <Required>N</Required>
-              </network>
+              <network type="NetworkField"/>
               <domain_level_from type="IntegerField">
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>Minimum domain level must be bigger than 0.</ValidationMessage>
-                  <Required>N</Required>
               </domain_level_from>
               <domain_level_to type="IntegerField">
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>A hostname cannot have a negative count of levels.</ValidationMessage>
-                  <Required>N</Required>
               </domain_level_to>
               <time_from type="IntegerField">
                   <MinimumValue>0</MinimumValue>
                   <ValidationMessage>The first hour of the day is 0.</ValidationMessage>
-                  <Required>N</Required>
               </time_from>
               <time_to type="IntegerField">
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>23</MaximumValue>
                   <ValidationMessage>The last hour of the day is 23!</ValidationMessage>
-                  <Required>N</Required>
               </time_to>
               <date_from type="OptionField">
                   <Required>Y</Required>
@@ -701,7 +636,6 @@
                   <Required>Y</Required>
               </enabled>
               <description type="TextField">
-                  <Required>N</Required>
                   <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
               </description>
               <matches type="ModelRelationField">
@@ -745,7 +679,6 @@
         </pac>
         <error_pages>
           <template type="TextField">
-              <Required>N</Required>
               <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
               <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
           </template>
