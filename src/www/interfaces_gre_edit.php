@@ -96,10 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_gre_configure($gre['greif']);
             ifgroup_setup();
-            $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
-            if ($confif != '') {
-                interface_configure(false, $confif);
-            }
+            interfaces_restart_by_device(false, [$gre['greif']]);
             header(url_safe('Location: /interfaces_gre.php'));
             exit;
         }

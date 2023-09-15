@@ -223,10 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_bridge_configure($bridge['bridgeif']);
             ifgroup_setup();
-            $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
-            if ($confif != '') {
-                interface_configure(false, $confif);
-            }
+            interfaces_restart_by_device(false, [$bridge['bridgeif']]);
             header(url_safe('Location: /interfaces_bridge.php'));
             exit;
         }
