@@ -1715,7 +1715,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
         }
 
         if (empty($destif)) {
-            foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
+            foreach ($a_gateways as $gateway) {
                 if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
                     $destif = $gateway['if'];
                     break;
@@ -1822,7 +1822,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
         }
 
         if (empty($destif)) {
-            foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
+            foreach ($a_gateways as $gateway) {
                 if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
                     $destif = $gateway['if'];
                     break;
