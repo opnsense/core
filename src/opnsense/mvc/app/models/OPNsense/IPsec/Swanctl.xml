@@ -41,21 +41,15 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </mobike>
-                <local_addrs type=".\IKEAdressField">
-                    <Required>N</Required>
-                </local_addrs>
+                <local_addrs type=".\IKEAdressField"/>
                 <local_port type="OptionField">
-                    <Required>N</Required>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
                     </OptionValues>
                 </local_port>
-                <remote_addrs type=".\IKEAdressField">
-                    <Required>N</Required>
-                </remote_addrs>
+                <remote_addrs type=".\IKEAdressField"/>
                 <remote_port type="OptionField">
-                    <Required>N</Required>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
@@ -68,30 +62,24 @@
                 <reauth_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </reauth_time>
                 <rekey_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </rekey_time>
                 <over_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </over_time>
                 <dpd_delay  type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </dpd_delay>
                 <dpd_timeout type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </dpd_timeout>
                 <pools type=".\PoolsField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </pools>
                 <send_certreq type="BooleanField">
@@ -99,7 +87,6 @@
                     <Required>Y</Required>
                 </send_certreq>
                 <send_cert type="OptionField">
-                    <Required>N</Required>
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
                         <ifasked>If asked</ifasked>
@@ -107,14 +94,11 @@
                         <always>Always</always>
                     </OptionValues>
                 </send_cert>
-                <keyingtries  type="IntegerField">
+                <keyingtries type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>1000</MaximumValue>
-                    <Required>N</Required>
                 </keyingtries>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </Connection>
         </Connections>
         <locals>
@@ -152,15 +136,12 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </id>
                 <eap_id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
                 </eap_id>
                 <certs type="CertificateField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
@@ -173,11 +154,8 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                 </pubkeys>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </local>
         </locals>
         <remotes>
@@ -215,15 +193,12 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </id>
                 <eap_id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
                 </eap_id>
                 <certs type="CertificateField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
@@ -236,12 +211,9 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                 </pubkeys>
                 <!-- XXX add cacert field + logic in ipsec_write_cas -->
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </remote>
         </remotes>
         <children>
@@ -263,7 +235,6 @@
                 <reqid type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <Required>N</Required>
                 </reqid>
                 <esp_proposals type=".\IPsecProposalField">
                     <Default>default</Default>
@@ -333,9 +304,7 @@
                     <MaximumValue>500000</MaximumValue>
                     <Required>Y</Required>
                 </rekey_time>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </child>
         </children>
         <Pools>
@@ -345,7 +314,6 @@
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
                     <Constraints>
                         <check001>
@@ -403,9 +371,7 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </VTI>
         </VTIs>
         <SPDs>
@@ -441,12 +407,9 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </source>
                 <destination type="NetworkField">
-                    <Required>N</Required>
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </SPD>
         </SPDs>
     </items>
