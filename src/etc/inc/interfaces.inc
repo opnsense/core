@@ -1500,8 +1500,6 @@ function _interfaces_wlan_clone($realif, $wlcfg)
             break;
     }
 
-    $baseif = interface_get_wireless_base($wlcfg['if']);
-
     if (does_interface_exist($realif)) {
         exec("/sbin/ifconfig " . escapeshellarg($realif), $output, $ret);
         $ifconfig_str = implode(PHP_EOL, $output);
@@ -1522,18 +1520,20 @@ function _interfaces_wlan_clone($realif, $wlcfg)
     }
 
     if ($needs_clone) {
+        $baseif = interface_get_wireless_base($wlcfg['if']);
+
         legacy_interface_destroy($realif);
 
         exec("/sbin/ifconfig wlan create wlandev {$baseif} {$mode} bssid name {$realif} 2>&1", $out, $ret);
         if ($ret != 0) {
             log_msg("Failed to clone interface {$baseif} with error code {$ret}, output {$out[0]}", LOG_ERR);
-            return false;
+            return null;
         }
 
         file_put_contents("/tmp/{$realif}_oldmac", get_interface_mac($realif));
     }
 
-    return true;
+    return $realif;
 }
 
 function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX kill side effect */
