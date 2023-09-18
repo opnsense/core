@@ -178,8 +178,6 @@ function system_resolvconf_host_routes()
 
 function system_resolvconf_generate($verbose = false)
 {
-    global $config;
-
     service_log('Generating /etc/resolv.conf...', $verbose);
 
     $syscfg = config_read_array('system');
