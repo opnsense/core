@@ -144,11 +144,12 @@ function get_all_services($name = '', $id = '')
     return $services;
 }
 
-$opts = getopt('cDdfghIirSs', [], $optind);
+$opts = getopt('46cDdfghIirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -D | -d | -f | -g | -h | -I | -i | -r | -S | -s] ...\n\n";
+    echo "Usage: pluginctl [-4|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s] ...\n\n";
+    echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
@@ -160,7 +161,8 @@ if (isset($opts['h'])) {
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
-    echo "\nWithout arguments, a list of plugins of the requested type is shown.\n";
+} elseif (isset($opts['4'])) {
+    echo json_encode(interfaces_primary_address($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
