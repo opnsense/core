@@ -45,11 +45,12 @@ class UniqueConstraint extends BaseConstraint
      */
     public function validate($validator, $attribute): bool
     {
-        $allowEmpty = ($this->getOption('allowEmpty') === 'Y') ? true : false;
-
         $node = $this->getOption('node');
         $fieldSeparator = chr(10) . chr(0);
         if ($node) {
+            if (!$node->isRequired() && empty((string)$node)) {
+                return true;
+            }
             $containerNode = $node;
             $nodeName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
@@ -66,10 +67,6 @@ class UniqueConstraint extends BaseConstraint
                 // calculate the key for this node
                 $nodeKey = '';
                 foreach ($keyFields as $field) {
-                    // skip empty nodes that aren't required, but are allowed to be empty
-                    if (!$parentNode->$field->isRequired() && $allowEmpty && empty((string)$parentNode->$field)) {
-                        continue;
-                    }
                     $nodeKey .= $fieldSeparator . $parentNode->$field;
                 }
                 // when an ArrayField is found in range, traverse nodes and compare keys
