@@ -485,27 +485,25 @@ function interfaces_gre_configure($device)
 
 function _interfaces_gre_configure($gre)
 {
-    global $config;
-
     /* XXX avoid destroy/create */
     legacy_interface_destroy($gre['greif']);
     legacy_interface_create($gre['greif']);
 
     if (is_ipaddrv4($gre['remote-addr'])) {
-        $realifip = get_interface_ip($gre['if']);
+        $local_addr = get_interface_ip($gre['if']);
         $family = 'inet';
     } elseif (is_ipaddrv6($gre['remote-addr'])) {
-        $realifip = get_interface_ipv6($gre['if']);
+        $local_addr = get_interface_ipv6($gre['if']);
         $family = 'inet6';
     }
 
     /* ensured device is there, but do not configure unless system is ready */
-    if (empty($realifip)) {
+    if (empty($local_addr)) {
         log_msg("Device {$gre['greif']} missing required local address, skipping now.");
         return null;
     }
 
-    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $realifip, $gre['remote-addr']]);
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $local_addr, $gre['remote-addr']]);
 
     if (is_ipaddrv6($gre['tunnel-local-addr']) || is_ipaddrv6($gre['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
@@ -560,8 +558,6 @@ function interfaces_gif_configure($device)
 
 function _interfaces_gif_configure($gif)
 {
-    global $config;
-
     /* XXX avoid destroy/create */
     legacy_interface_destroy($gif['gifif']);
     legacy_interface_create($gif['gifif']);
@@ -569,32 +565,32 @@ function _interfaces_gif_configure($gif)
     $gateways = new \OPNsense\Routing\Gateways();
 
     if (is_ipaddrv4($gif['remote-addr'])) {
-        $realifip = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
+        $local_addr = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
+        $remote_gw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
         $family = 'inet';
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
         if (is_linklocal($gateway['remote-addr'])) {
-            $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'scoped');
-            $realifgw = null;
+            $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'scoped');
+            $remote_gw = null;
         } else {
-            $realifip = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'routed');
-            $realifgw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
-            if (is_linklocal($realifgw) && strpos($realifgw, '%') === false) {
-                $realifgw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
+            $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'routed');
+            $remote_gw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
+            if (is_linklocal($remote_gw) && strpos($remote_gw, '%') === false) {
+                $remote_gw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
             }
         }
         $family = 'inet6';
     }
 
-    $remote_addr = $gif['remote-addr'] . (strpos($realifip, '%') === false ? '' : '%' . explode('%', $realifip)[1]);
+    $remote_addr = $gif['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
 
     /* ensured device is there, but do not configure unless system is ready */
-    if (empty($realifip)) {
+    if (empty($local_addr)) {
         log_msg("Device {$gif['gifif']} missing required local address, skipping now.");
         return null;
     }
 
-    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $realifip, $remote_addr]);
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $local_addr, $remote_addr]);
 
     if (is_ipaddrv6($gif['tunnel-local-addr']) || is_ipaddrv6($gif['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
@@ -624,8 +620,8 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
-    if (!empty($realifgw)) {
-        system_host_route($remote_addr, $realifgw);
+    if (!empty($remote_gw)) {
+        system_host_route($remote_addr, $remote_gw);
     }
 
     interfaces_bring_up($gif['gifif']);
