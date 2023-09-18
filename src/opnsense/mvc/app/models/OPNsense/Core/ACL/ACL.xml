@@ -635,14 +635,14 @@
     <page-system-gateways>
         <name>System: Gateways</name>
         <patterns>
-            <pattern>ui/gateways/single</pattern>
+            <pattern>ui/gateways/configuration</pattern>
             <pattern>api/gateways/settings/searchGateway/*</pattern>
         </patterns>
     </page-system-gateways>
     <page-system-gateways-editgateway>
         <name>System: Gateways: Edit Gateway</name>
         <patterns>
-            <pattern>ui/gateways/single</pattern>
+            <pattern>ui/gateways/configuration</pattern>
             <pattern>api/gateways/settings/*</pattern>
         </patterns>
     </page-system-gateways-editgateway>

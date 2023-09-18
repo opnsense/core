@@ -28,12 +28,12 @@
 
 namespace OPNsense\Gateways;
 
-class SingleController extends \OPNsense\Base\IndexController
+class ConfigurationController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
         // include dialog form definitions
         $this->view->formDialogEditGateway = $this->getForm("dialogEditGateway");
-        $this->view->pick('OPNsense/Gateways/single');
+        $this->view->pick('OPNsense/Gateways/configuration');
     }
 }
