@@ -493,9 +493,11 @@ function _interfaces_gre_configure($gre)
         $local_addr = get_interface_ip($gre['if']);
         $family = 'inet';
     } elseif (is_ipaddrv6($gre['remote-addr'])) {
-        $local_addr = get_interface_ipv6($gre['if']);
+        $local_addr = get_interface_ipv6($gre['if'], null, is_linklocal($gre['remote-addr']) ? 'scoped' : 'routed');
         $family = 'inet6';
     }
+
+    $remote_addr = $gre['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
 
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($local_addr)) {
@@ -503,7 +505,7 @@ function _interfaces_gre_configure($gre)
         return null;
     }
 
-    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $local_addr, $gre['remote-addr']]);
+    mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $local_addr, $remote_addr]);
 
     if (is_ipaddrv6($gre['tunnel-local-addr']) || is_ipaddrv6($gre['tunnel-remote-addr'])) {
         /* check if destination is local to source and if not we need the traditional point-to-point setup */
@@ -563,20 +565,21 @@ function _interfaces_gif_configure($gif)
     legacy_interface_create($gif['gifif']);
 
     $gateways = new \OPNsense\Routing\Gateways();
+    $interface = explode('_vip', $gif['if'])[0];
 
     if (is_ipaddrv4($gif['remote-addr'])) {
         $local_addr = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $remote_gw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet');
+        $remote_gw = $gateways->getInterfaceGateway($interface, 'inet');
         $family = 'inet';
     } elseif (is_ipaddrv6($gif['remote-addr'])) {
-        if (is_linklocal($gateway['remote-addr'])) {
+        if (is_linklocal($gif['remote-addr'])) {
             $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'scoped');
             $remote_gw = null;
         } else {
             $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'routed');
-            $remote_gw = $gateways->getInterfaceGateway(explode('_vip', $gif['if'])[0], 'inet6');
+            $remote_gw = $gateways->getInterfaceGateway($interface, 'inet6');
             if (is_linklocal($remote_gw) && strpos($remote_gw, '%') === false) {
-                $remote_gw .= '%' . get_real_interface(explode('_vip', $gif['if'])[0], 'inet6');
+                $remote_gw .= '%' . get_real_interface($interface, 'inet6');
             }
         }
         $family = 'inet6';
