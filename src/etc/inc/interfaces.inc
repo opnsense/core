@@ -4394,8 +4394,7 @@ function interfaces_primary_address($interface, $ifconfig_details = null)
         break; /* all done */
     }
 
-    /* DO NOT REORDER */
-    return [ 'address' => $ifcfgip, 'network' => $network, 'bits' => $subnetbits, 'device' => $device ];
+    return [ $ifcfgip, $network, $subnetbits, $device ];
 }
 
 function _interfaces_primary_address6($interface, $ifconfig_details = null, $allow_track = true, $link_local = false)

@@ -162,7 +162,14 @@ if (isset($opts['h'])) {
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
 } elseif (isset($opts['4'])) {
-    echo json_encode(interfaces_primary_address($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    $raw = interfaces_primary_address($args[0] ?? null);
+    $ret = [
+        'address' => $raw[0],
+        'network' => $raw[1],
+        'bits' => $raw[2],
+        'device' => $raw[3],
+    ];
+    echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
