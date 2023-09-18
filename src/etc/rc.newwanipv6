@@ -93,6 +93,9 @@ log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interfac
 
 interfaces_vips_configure($interface, 6);
 
+$greifs = link_interface_to_gre($interface, true, 6);
+$gififs = link_interface_to_gif($interface, true, 6);
+
 switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
     case 'slaac':
         /* require immediate reconfiguration before reconfiguring clients */
@@ -101,6 +104,8 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
     default:
         break;
 }
+
+interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 
 /* XXX handling reloads for tracked interfaces is difficult, for now reload multiple times */
 $interfaces = array_keys(link_interface_to_track6($interface, true));

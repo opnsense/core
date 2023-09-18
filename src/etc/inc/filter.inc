@@ -652,7 +652,7 @@ function filter_rules_legacy(&$FilterIflist)
     $bridge_interfaces = [];
     if (!empty($config['bridges']['bridged'])) {
         foreach ($config['bridges']['bridged'] as $bridge) {
-            $bridge_interfaces = array_merge(explode(',', $bridge['members']), $bridge_interfaces);
+            $bridge_interfaces = array_merge(explode(',', $bridge['members'] ?? ''), $bridge_interfaces);
         }
     }
     foreach ($FilterIflist as $on => $oc) {

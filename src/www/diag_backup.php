@@ -77,7 +77,6 @@ $areas = array(
     'dhcrelay' => gettext('DHCP Relay'),
     'dhcrelay6' => gettext('DHCPv6 Relay'),
     'dnsmasq' => gettext('Dnsmasq DNS'),
-    'dyndnses' => gettext('Dynamic DNS'),
     'dnsupdates' => gettext('RFC 2136'),
     'filter' => gettext('Firewall Rules'),
     'gateways' => gettext('Gateways'),

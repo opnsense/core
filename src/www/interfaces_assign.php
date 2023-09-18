@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         continue;
                     }
 
-                    $members = explode(",", strtoupper($bridge['members']));
+                    $members = explode(',', strtoupper($bridge['members'] ?? ''));
                     foreach ($members as $member) {
                         if ($member == $ifnames[0]) {
                             $input_errors[] = sprintf(gettext("You cannot set port %s to interface %s because this interface is a member of %s."), $portname, $member, $portname);

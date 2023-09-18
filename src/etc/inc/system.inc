@@ -178,8 +178,6 @@ function system_resolvconf_host_routes()
 
 function system_resolvconf_generate($verbose = false)
 {
-    global $config;
-
     service_log('Generating /etc/resolv.conf...', $verbose);
 
     $syscfg = config_read_array('system');
@@ -681,7 +679,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         }
 
         $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
-        if ($gateway == null) {
+        if (empty($gateway['gateway'])) {
             continue;
         }
 

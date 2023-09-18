@@ -37,12 +37,8 @@
             <MaximumValue>65535</MaximumValue>
             <ValidationMessage>Port needs to be an integer value between 0 and 65535</ValidationMessage>
          </port>
-         <username type="TextField">
-            <Required>N</Required>
-         </username>
-         <password type="TextField">
-            <Required>N</Required>
-         </password>
+         <username type="TextField"/>
+         <password type="TextField"/>
          <ssl type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
@@ -63,22 +59,18 @@
             <Default>1</Default>
          </sslverify>
          <logfile type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</mask>
             <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
          </logfile>
          <statefile type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?$/</mask>
             <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
          </statefile>
          <eventqueuePath type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?$/</mask>
             <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
          </eventqueuePath>
          <eventqueueSlots type="IntegerField">
-            <Required>N</Required>
             <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
          </eventqueueSlots>
          <httpdEnabled type="BooleanField">
@@ -95,12 +87,9 @@
             <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535</ValidationMessage>
          </httpdPort>
          <httpdAllow type="CSVListField">
-            <Required>N</Required>
             <Multiple>Y</Multiple>
          </httpdAllow>
-         <mmonitUrl type="TextField">
-            <Required>N</Required>
-         </mmonitUrl>
+         <mmonitUrl type="TextField"/>
          <mmonitTimeout type="IntegerField">
             <Default>5</Default>
             <Required>Y</Required>
@@ -128,7 +117,6 @@
             <Default>0</Default>
          </noton>
          <events type="CSVListField">
-            <Required>N</Required>
             <SelectOptions>
                <action>Action done</action>
                <checksum>Checksum failed</checksum>
@@ -161,17 +149,13 @@
                <uptime>Uptime failed</uptime>
             </SelectOptions>
          </events>
-         <format type="TextField">
-            <Required>N</Required>
-         </format>
+         <format type="TextField"/>
          <reminder type="IntegerField">
-            <Required>N</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
          </reminder>
          <description type="TextField">
-            <Required>N</Required>
             <mask>/^.{1,255}$/u</mask>
             <ValidationMessage>Enter a description.</ValidationMessage>
          </description>
@@ -192,9 +176,7 @@
                </check001>
             </Constraints>
          </name>
-         <description type="TextField">
-            <Required>N</Required>
-         </description>
+         <description type="TextField"/>
          <type type="OptionField">
             <Required>Y</Required>
             <OptionValues>
@@ -210,15 +192,11 @@
             </OptionValues>
          </type>
          <pidfile type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?$/</mask>
             <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
          </pidfile>
-         <match type="TextField">
-            <Required>N</Required>
-         </match>
+         <match type="TextField"/>
          <path type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
             <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
          </path>
@@ -236,11 +214,8 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
          </starttimeout>
-         <address type="HostnameField">
-            <Required>N</Required>
-         </address>
+         <address type="HostnameField"/>
          <interface type="InterfaceField">
-            <Required>N</Required>
             <AddParentDevices>Y</AddParentDevices>
             <filters>
                 <enable>/^(?!0).*$/</enable>
@@ -248,12 +223,10 @@
             </filters>
          </interface>
          <start type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </start>
          <stop type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </stop>
@@ -267,7 +240,6 @@
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
             <Multiple>Y</Multiple>
-            <Required>N</Required>
          </tests>
          <depends type="ModelRelationField">
             <Model>
@@ -279,10 +251,8 @@
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
             <Multiple>Y</Multiple>
-            <Required>N</Required>
          </depends>
          <polltime type="TextField">
-            <Required>N</Required>
             <mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
          </polltime>
@@ -339,7 +309,6 @@
             </OptionValues>
          </action>
          <path type="TextField">
-            <Required>N</Required>
             <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
             <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
          </path>

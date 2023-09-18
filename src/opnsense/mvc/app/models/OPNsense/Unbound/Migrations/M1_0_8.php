@@ -26,39 +26,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Unbound\FieldTypes;
+namespace OPNsense\Unbound\Migrations;
 
-use OPNsense\Base\FieldTypes\BaseListField;
-use OPNsense\Core\Config;
+use OPNsense\Base\BaseModelMigration;
 
-/**
- * Class UnboundDomainField
- * @package OPNsense\Unbound\FieldTypes
- */
-class UnboundInterfaceField extends BaseListField
+class M1_0_8 extends BaseModelMigration
 {
-    /**
-     * Iterate over all interfaces in the configuration and only exclude virtual interfaces.
-     */
-    public function actionPostLoadingEvent()
+    public function run($model)
     {
-        $config = Config::getInstance()->object();
-
-        foreach ($config->interfaces->children() as $key => $node) {
-            if (empty($node->virtual)) {
-                $this->internalOptionList[$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-            }
-        }
-
-        foreach ($config->openvpn->children() as $mode => $setting) {
-            if (!empty($setting)) {
-                $key = 'ovpn' . substr($mode, 8, 1) . (string)$setting->vpnid;
-                $type = substr($mode, 8, 6);
-                $this->internalOptionList[$key] = "OpenVPN {$type} (" . (!empty($setting->description) ?
-                    (string)$setting->description : (string)$setting->vpnid) . ")";
-            }
-        }
-
-        natcasesort($this->internalOptionList);
+        /* scrub the spurious "lo0" value which may be in the config */
+        $model->general->active_interface->normalizeValue();
+        $model->general->outgoing_interface->normalizeValue();
     }
 }

@@ -446,6 +446,11 @@ abstract class BaseField
         }
     }
 
+    public function isRequired()
+    {
+        return $this->internalIsRequired;
+    }
+
     /**
      * check if this field is unused and required
      * @return bool
@@ -758,5 +763,13 @@ abstract class BaseField
     {
         $parts = explode("\\", get_class($this));
         return $parts[count($parts) - 1];
+    }
+
+    /**
+     * normalize the internal value to allow passing validation
+     */
+    public function normalizeValue()
+    {
+        /* implemented where needed */
     }
 }

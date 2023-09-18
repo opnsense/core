@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_POST['apply'])) {
         configd_run('interface routes configure');
-        configd_run('dyndns reload');
 
         clear_subsystem_dirty('gwgroups');
 
