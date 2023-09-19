@@ -323,21 +323,16 @@ class Template(object):
         result = list()
         failed = False
         for template_name in self.iter_modules(module_name):
-            wildcard_pos = module_name.find('*')
             syslog_notice("generate template container %s" % template_name)
             try:
                 for filename in self._generate(template_name, create_directory):
                     result.append(filename)
             except Exception as render_exception:
-                if wildcard_pos > -1:
-                    # log failure, but proceed processing when doing a wildcard search
-                    syslog_error('error generating template %s : %s' % (
-                        template_name, traceback.format_exc()
-                    ))
-                    failed = True
-                else:
-                    # XXX raises "Execute error" rather than "ERR" over socket
-                    raise render_exception
+                # log failure, but proceed processing for possible wildcard search
+                syslog_error('error generating template %s : %s' % (
+                    template_name, traceback.format_exc()
+                ))
+                failed = True
 
         if not result or failed:
             return None
