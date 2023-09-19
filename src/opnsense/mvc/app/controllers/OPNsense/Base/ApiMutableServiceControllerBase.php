@@ -194,7 +194,10 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             }
 
             if (!empty(static::$internalServiceTemplate)) {
-                $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
+                $result = trim($backend->configdpRun('template reload', [static::$internalServiceTemplate]) ?? '');
+                if ($result !== 'OK') {
+                    throw new UserException(gettext('Template generation failed. See backend log for details.'));
+                }
             }
 
             if ($this->serviceEnabled()) {
