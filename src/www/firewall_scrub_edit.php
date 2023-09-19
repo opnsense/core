@@ -562,7 +562,7 @@ include("head.inc");
                     <td style="width:78%">
                       <input type="checkbox" name="noscrub" id="noscrub" <?= !empty($pconfig['noscrub']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_noscrub">
-                        <?=gettext("Enabling this option will disable scub (normalisation) for traffic matching this rule."); ?>
+                        <?=gettext("Enabling this option will disable scrub (normalization) for traffic matching this rule."); ?>
                       </div>
                     </td>
                   </tr>
