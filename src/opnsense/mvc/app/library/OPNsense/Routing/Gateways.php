@@ -558,7 +558,7 @@ class Gateways
                                 }
                             }
                         }
-                        // exit when tier has (a) usable gateway(s)
+                        // exit when tier has usable gateways
                         if (!empty($result[(string)$gw_group->name])) {
                             break;
                         }

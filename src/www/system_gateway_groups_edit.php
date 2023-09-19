@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Invalid pool option specified");
     }
     if (count($pconfig['item']) == 0) {
-        $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
+        $input_errors[] = gettext('No gateway has been selected to be used in this group.');
     }
 
     if (count($input_errors) == 0) {
