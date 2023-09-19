@@ -3787,16 +3787,16 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null, $mode 
     }
 
     switch ($mode) {
-    case 'routed':
-        list ($ipv6) = interfaces_routed_address6($interface, $ifconfig_details);
-        break;
-    case 'scoped':
-        list ($ipv6) = interfaces_scoped_address6($interface, $ifconfig_details);
-        break;
-    case 'primary':
-    default:
-        list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
-        break;
+        case 'routed':
+            list ($ipv6) = interfaces_routed_address6($interface, $ifconfig_details);
+            break;
+        case 'scoped':
+            list ($ipv6) = interfaces_scoped_address6($interface, $ifconfig_details);
+            break;
+        case 'primary':
+        default:
+            list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
+            break;
     }
 
     return $ipv6;
