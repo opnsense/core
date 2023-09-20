@@ -193,19 +193,19 @@ function interfaces_wlan_clone($device)
         $realif = get_real_interface($if);
         /* XXX 'if' check only required if parent is still embedded */
         if ($device == $realif || $device == $config['interfaces'][$if]['if']) {
-            _interfaces_wlan_clone($realif, $config['interfaces'][$if]);
-            return;
+            return _interfaces_wlan_clone($realif, $config['interfaces'][$if]);
         }
     }
 
     if (isset($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as $clone) {
             if ($device == $clone['cloneif']) {
-                _interfaces_wlan_clone($clone['cloneif'], $clone);
-                return;
+                return _interfaces_wlan_clone($clone['cloneif'], $clone);
             }
         }
     }
+
+    return null;
 }
 
 function interfaces_bridge_configure($device)
@@ -213,15 +213,16 @@ function interfaces_bridge_configure($device)
     global $config;
 
     if (!isset($config['bridges']['bridged'])) {
-        return;
+        return null;
     }
 
     foreach ($config['bridges']['bridged'] as $bridge) {
         if ($bridge['bridgeif'] == $device) {
-            _interfaces_bridge_configure($bridge);
-            return;
+            return _interfaces_bridge_configure($bridge);
         }
     }
+
+    return null;
 }
 
 function _interfaces_bridge_configure($bridge)
@@ -497,15 +498,16 @@ function interfaces_gre_configure($device)
     global $config;
 
     if (!isset($config['gres']['gre'])) {
-        return;
+        return null;
     }
 
     foreach ($config['gres']['gre'] as $gre) {
         if ($gre['greif'] == $device) {
-            _interfaces_gre_configure($gre);
-            return;
+            return _interfaces_gre_configure($gre);
         }
     }
+
+    return null;
 }
 
 function _interfaces_gre_configure($gre)
@@ -590,15 +592,16 @@ function interfaces_gif_configure($device)
     global $config;
 
     if (!isset($config['gifs']['gif'])) {
-        return;
+        return null;
     }
 
     foreach ($config['gifs']['gif'] as $gif) {
         if ($gif['gifif'] == $device) {
-            _interfaces_gif_configure($gif);
-            return;
+            return _interfaces_gif_configure($gif);
         }
     }
+
+    return null;
 }
 
 function _interfaces_gif_configure($gif)
