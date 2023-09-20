@@ -3770,7 +3770,7 @@ function get_interface_ip($interface = 'wan', $ifconfig_details = null)
     return $ip;
 }
 
-function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
+function get_interface_ipv6($interface = 'wan', $ifconfig_details = null, $mode = 'primary')
 {
     if (is_ipaddrv6($interface)) {
         return $interface;
@@ -3786,7 +3786,18 @@ function get_interface_ipv6($interface = 'wan', $ifconfig_details = null)
         }
     }
 
-    list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
+    switch ($mode) {
+        case 'routed':
+            list ($ipv6) = interfaces_routed_address6($interface, $ifconfig_details);
+            break;
+        case 'scoped':
+            list ($ipv6) = interfaces_scoped_address6($interface, $ifconfig_details);
+            break;
+        case 'primary':
+        default:
+            list ($ipv6) = interfaces_primary_address6($interface, $ifconfig_details);
+            break;
+    }
 
     return $ipv6;
 }
