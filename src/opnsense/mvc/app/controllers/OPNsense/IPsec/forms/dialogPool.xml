@@ -15,4 +15,12 @@
         <type>text</type>
         <help>Subnet or range defining addresses allocated in pool. Accepts a single CIDR subnet defining the pool to allocate addresses from.</help>
     </field>
+    <field>
+        <id>pool.dns</id>
+        <label>DNS</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>DNS servers to push as configuration payload (RFC4306 3.15 - Value 3 and 10). Accepts multiple IPv4/IPv6 addresses.</help>
+    </field>
 </form>
