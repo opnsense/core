@@ -3682,7 +3682,7 @@ function link_interface_to_bridge($int)
     }
 }
 
-function link_interface_to_gre($interface)
+function link_interface_to_gre($interface, $update = false, $family = null)
 {
     global $config;
 
@@ -3700,16 +3700,28 @@ function link_interface_to_gre($interface)
                     }
                 }
             }
-            if ($parent == $interface) {
-                $result[] = $gre;
+
+            if ($parent != $interface) {
+                continue;
+            } elseif ($family == 4 && !is_ipaddrv4($gre['remote-addr'])) {
+                continue;
+            } elseif ($family == 6 && !is_ipaddrv6($gre['remote-addr'])) {
+                continue;
             }
+
+            if ($update && empty(_interfaces_gre_configure($gre))) {
+                /* only return the ones that did configure correctly */
+                continue;
+            }
+
+            $result[] = $gre;
         }
     }
 
     return $result;
 }
 
-function link_interface_to_gif($interface)
+function link_interface_to_gif($interface, $update = false, $family = null)
 {
     global $config;
 
@@ -3717,9 +3729,20 @@ function link_interface_to_gif($interface)
 
     if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $gif) {
-            if (explode('_vip', $gif['if'])[0] == $interface) {
-                $result[] = $gif;
+            if (explode('_vip', $gif['if'])[0] != $interface) {
+                continue;
+            } elseif ($family == 4 && !is_ipaddrv4($gif['remote-addr'])) {
+                continue;
+            } elseif ($family == 6 && !is_ipaddrv6($gif['remote-addr'])) {
+                continue;
             }
+
+            if ($update && empty(_interfaces_gif_configure($gif))) {
+                /* only return the ones that did configure correctly */
+                continue;
+            }
+
+            $result[] = $gif;
         }
     }
 
