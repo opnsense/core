@@ -33,7 +33,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF WHISTLE COMMUNICATIONS
 # IS ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# This BSD compatable licence re-added for clarity.
+# This BSD compatible licence re-added for clarity.
 #
 #################################################################
 
@@ -1441,7 +1441,7 @@ SetBaudrate2:
 ## what we program the S-register to equal if it doesn't match.
 ##
 ## The $checkValue must match exactly on the first line of output.
-## If we get any wierd error, then fail the script.
+## If we get any weird error, then fail the script.
 ##
 
 ModemCheckValue:

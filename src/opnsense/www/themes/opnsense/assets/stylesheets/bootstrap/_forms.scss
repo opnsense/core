@@ -43,7 +43,7 @@ label {
 // is required to ensure optimum display with or without those classes to better
 // address browser inconsistencies.
 
-// Override content-box in Normalize (isnt specific enough)
+// Override content-box in Normalize (isn't specific enough)
 input[type="search"] {
   @include box-sizing(border-box);
 }
@@ -137,7 +137,7 @@ input[type="color"]
 
   // Disabled and read-only inputs
   //
-  // HTML5 says that controls under a fieldset > legend:first-child wont be
+  // HTML5 says that controls under a fieldset > legend:first-child won't be
   // disabled if the fieldset is disabled. Due to implementation difficulty, we
   // dont honor that edge case; we style them as disabled anyway.
   &[disabled],

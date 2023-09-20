@@ -182,7 +182,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     }
 
     /**
-     * When -a is specified, cleaup up old or disabled instances
+     * When -a is specified, cleanup up old or disabled instances
      */
     if ($instance_id == null) {
         $to_clean = [];

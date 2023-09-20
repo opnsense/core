@@ -203,7 +203,7 @@ class TextFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * literal integer passes validation, and is retreived as string
+     * literal integer passes validation, and is retrieved as string
      * not required (BaseField default)
      * no mask (TextField default)
      */
@@ -217,7 +217,7 @@ class TextFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * literal integer passes validation with regex pattern, and is retreived as string
+     * literal integer passes validation with regex pattern, and is retrieved as string
      * not required (BaseField default)
      * no mask (TextField default)
      */
@@ -232,7 +232,7 @@ class TextFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * literal integer fails validation with regex pattern, and is retreived as string
+     * literal integer fails validation with regex pattern, and is retrieved as string
      * not required (BaseField default)
      * no mask (TextiFled default)
      */

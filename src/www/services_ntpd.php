@@ -445,7 +445,7 @@ include("head.inc");
                         <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
-                        <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
+                        <?=gettext("A leap second file allows NTP to advertise an upcoming leap second addition or subtraction.");?>
                         <?=gettext("Normally this is only useful if this server is a stratum 1 time server.");?>
                         <br /><br />
                         <?=gettext("Enter Leap second configuration as text:");?><br />

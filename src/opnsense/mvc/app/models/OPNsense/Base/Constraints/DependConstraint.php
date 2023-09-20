@@ -32,7 +32,7 @@ namespace OPNsense\Base\Constraints;
 
 /**
  * Class DependConstraint, add a constraint to this field stating dependency of another field
- * (if this field is empty then the refered field should be empty too)
+ * (if this field is empty then the referred field should be empty too)
  * @package OPNsense\Base\Constraints
  */
 class DependConstraint extends BaseConstraint

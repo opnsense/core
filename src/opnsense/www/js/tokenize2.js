@@ -78,7 +78,7 @@
         searchFromStart: true,
         searchHighlight: true,
         displayNoResultsMessage: false,
-        noResultsMessageText: 'No results mached "%s"',
+        noResultsMessageText: 'No results matched "%s"',
         delimiter: ',',
         dataSource: 'select',
         debounce: 0,
@@ -2006,7 +2006,7 @@
     var containerDefaults = {
             // If true, items can be dragged from this container
             drag: true,
-            // If true, items can be droped onto this container
+            // If true, items can be dropped onto this container
             drop: true,
             // Exclude items from being draggable, if the
             // selector matches the item
