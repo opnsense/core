@@ -328,7 +328,13 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <ValidationMessage>Please specify a valid CIDR subnet.</ValidationMessage>
                 </addrs>
-                <dns type=".\PoolsDNSField"/>
+                <dns type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>    
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <AsList>Y</AsList>
+                    <ValidationMessage>'Entry is not a valid IPv4 or IPv6 address.'</ValidationMessage>
+                </dns>
             </Pool>
         </Pools>
         <VTIs>
