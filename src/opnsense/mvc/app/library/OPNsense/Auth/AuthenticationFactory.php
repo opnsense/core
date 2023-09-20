@@ -208,7 +208,7 @@ class AuthenticationFactory
                             return true;
                         } else {
                             // since checkConstraints() is defined on the service, who doesn't know about the
-                            // authentication method. We can safely asume we cannot authenticate.
+                            // authentication method. We can safely assume we cannot authenticate.
                             syslog(LOG_WARNING, sprintf(
                                 "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
                                 $username,
