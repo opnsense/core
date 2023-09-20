@@ -329,7 +329,7 @@
                     <ValidationMessage>Please specify a valid CIDR subnet.</ValidationMessage>
                 </addrs>
                 <dns type="NetworkField">
-                    <FieldSeparator>,</FieldSeparator>    
+                    <FieldSeparator>,</FieldSeparator>
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
                     <AsList>Y</AsList>
