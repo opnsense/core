@@ -314,7 +314,8 @@
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
-                    <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z\.,_\-:]){1,1024}$/u</mask>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Pool name must be unique.</ValidationMessage>
