@@ -899,8 +899,8 @@ app-layer:
              decompress-depth: 0
 
            # Take a random value for inspection sizes around the specified value.
-           # This lower the risk of some evasion techniques but could lead
-           # detection change between runs. It is set to 'yes' by default.
+           # This lowers the risk of some evasion techniques but could lead
+           # to detection change between runs. It is set to 'yes' by default.
            #randomize-inspection-sizes: yes
            # If randomize-inspection-sizes is active, the value of various
            # inspection size will be chosen in the [1 - range%, 1 + range%]
@@ -1308,8 +1308,8 @@ flow-timeouts:
 #                               # this size.  Can be specified in kb, mb,
 #                               # gb.  Just a number indicates it's in bytes.
 #     randomize-chunk-size: yes # Take a random value for chunk size around the specified value.
-#                               # This lower the risk of some evasion techniques but could lead
-#                               # detection change between runs. It is set to 'yes' by default.
+#                               # This lowers the risk of some evasion techniques but could lead
+#                               # to detection change between runs. It is set to 'yes' by default.
 #     randomize-chunk-range: 10 # If randomize-chunk-size is active, the value of chunk-size is
 #                               # a random value between (1 - randomize-chunk-range/100)*toserver-chunk-size
 #                               # and (1 + randomize-chunk-range/100)*toserver-chunk-size and the same
