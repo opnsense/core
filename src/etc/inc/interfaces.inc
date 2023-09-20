@@ -221,6 +221,8 @@ function interfaces_bridge_configure($device)
             return _interfaces_bridge_configure($bridge);
         }
     }
+
+    return null;
 }
 
 function _interfaces_bridge_configure($bridge)
@@ -481,6 +483,8 @@ function interfaces_gre_configure($device)
             return _interfaces_gre_configure($gre);
         }
     }
+
+    return null;
 }
 
 function _interfaces_gre_configure($gre)
@@ -556,6 +560,8 @@ function interfaces_gif_configure($device)
             return _interfaces_gif_configure($gif);
         }
     }
+
+    return null;
 }
 
 function _interfaces_gif_configure($gif)
