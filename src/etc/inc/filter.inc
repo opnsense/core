@@ -200,7 +200,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         empty($config['nat']['outbound']['mode']) ||
           in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))
     ) {
-        // generate standard outbound rules when mode is automatic ot hybrid
+        // generate standard outbound rules when mode is automatic or hybrid
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {

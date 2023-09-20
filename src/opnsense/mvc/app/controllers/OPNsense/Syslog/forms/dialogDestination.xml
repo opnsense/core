@@ -53,7 +53,7 @@
     <id>destination.rfc5424</id>
     <label>rfc5424</label>
     <type>checkbox</type>
-    <help>Use rfc5424 formated messages for this destination.</help>
+    <help>Use rfc5424 formatted messages for this destination.</help>
   </field>
   <field>
     <id>destination.description</id>
