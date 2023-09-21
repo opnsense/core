@@ -9,18 +9,18 @@
                 <AllowDynamic>S</AllowDynamic>
             </interface>
             <mode type="OptionField">
-              <Required>Y</Required>
-              <Default>ipalias</Default>
-              <OptionValues>
-                  <ipalias>IP Alias</ipalias>
-                  <carp>CARP</carp>
-                  <proxyarp>Proxy ARP</proxyarp>
-                  <!-- madness without function -->
-                  <other>Other</other>
-              </OptionValues>
+                <Required>Y</Required>
+                <Default>ipalias</Default>
+                <OptionValues>
+                    <ipalias>IP Alias</ipalias>
+                    <carp>CARP</carp>
+                    <proxyarp>Proxy ARP</proxyarp>
+                    <!-- madness without function -->
+                    <other>Other</other>
+                </OptionValues>
             </mode>
             <subnet type=".\VipNetworkField">
-                <!--required, but validated in model -->
+                <!-- required, but validated in model -->
                 <Constraints>
                     <check001>
                         <ValidationMessage>Address already assigned.</ValidationMessage>
@@ -29,7 +29,7 @@
                 </Constraints>
             </subnet>
             <subnet_bits type=".\VipNetworkField">
-                <!--required, but validated in model -->
+                <!-- required, but validated in model -->
             </subnet_bits>
             <gateway type="NetworkField"/>
             <noexpand type="BooleanField">
