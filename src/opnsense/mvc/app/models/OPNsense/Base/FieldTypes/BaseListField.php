@@ -126,7 +126,7 @@ abstract class BaseListField extends BaseField
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getValidators()
     {
@@ -146,7 +146,7 @@ abstract class BaseListField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function normalizeValue()
     {
