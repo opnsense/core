@@ -35,7 +35,7 @@ use OPNsense\Base\FieldTypes\TextField;
 class UniqueTestContainer extends ArrayField
 {
     private $uniqueConstraints = [];
-    private $valuesRequired = "true";
+    private $valuesRequired = true;
 
     /**
      * @param $nodes a single node or an array of nodes
@@ -80,10 +80,6 @@ class UniqueTestContainer extends ArrayField
 
     public function validate()
     {
-        if (empty($this->uniqueConstraints)) {
-            return [];
-        }
-
         $validator = new \OPNsense\Base\Validation();
         $constraint = $this->uniqueConstraints[0];
         $ret = $constraint->validate($validator, '');
