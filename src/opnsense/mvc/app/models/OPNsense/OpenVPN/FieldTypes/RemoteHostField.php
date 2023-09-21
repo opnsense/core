@@ -52,7 +52,7 @@ class RemoteHostField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getValidators()
     {
