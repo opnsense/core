@@ -98,8 +98,8 @@ plugins_configure('dhcp', true);
 plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
-plugins_configure('monitor', true, [null, true]);
 filter_configure_sync(true);
+plugins_configure('monitor', true, [null, true]);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 rrd_configure(true, true);
