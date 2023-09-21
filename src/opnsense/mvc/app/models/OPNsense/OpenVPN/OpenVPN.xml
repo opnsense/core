@@ -171,7 +171,6 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
                 <cert type="CertificateField">
-                    <Required>Y</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cert>
                 <crl type="CertificateField">

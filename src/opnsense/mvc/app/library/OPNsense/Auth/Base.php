@@ -140,7 +140,7 @@ abstract class Base
     /**
      * update user group membership
      * @param string $username username
-     * @param string $memberof list (\n seperated) of groups
+     * @param string $memberof list (\n separated) of groups
      * @param array $scope list of groups that should be considered
      * @param boolean $createuser create user when it does not exist
      */

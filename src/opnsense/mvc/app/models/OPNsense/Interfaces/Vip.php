@@ -44,7 +44,7 @@ class Vip extends BaseModel
         $vips = [];
         $carp_vhids = [];
 
-        // collect chaned VIP entries
+        // collect changed VIP entries
         $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();

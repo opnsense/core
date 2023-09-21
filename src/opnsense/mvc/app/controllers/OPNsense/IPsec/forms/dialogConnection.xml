@@ -87,7 +87,7 @@
           As an initiator, the first non-range/non-subnet is used to initiate the connection from.
           As a responder the local destination address must match at least to one of the specified addresses, subnets or ranges.
           If FQDNs are assigned, they are resolved every time a configuration lookup is done.
-          If DNS resolution times out, the lookup is delayed for that time. When left empty %any is choosen as default.
+          If DNS resolution times out, the lookup is delayed for that time. When left empty %any is chosen as default.
         </help>
     </field>
     <field>

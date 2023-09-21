@@ -948,7 +948,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($clone_count > 1) {
                     $wlanif = get_real_interface($if);
                     $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
-                    if (!_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if])) {
+                    if (empty(_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if]))) {
                         $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
                     } else {
                         legacy_interface_destroy("{$wlanif}_");

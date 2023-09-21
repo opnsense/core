@@ -142,7 +142,7 @@ class Alias(object):
             it was an alias from us if such a file exists.
             :return: boolean
         """
-        return self.get_parser() is not None or os.path.isfile(self._filename_alias_hash)
+        return self.get_parser() is not None and os.path.isfile(self._filename_alias_hash)
 
     def cached(self):
         """ load cached contents in case we don't want to resolve the alias

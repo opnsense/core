@@ -323,7 +323,7 @@ class ApiControllerBase extends ControllerRoot
      */
     public function afterExecuteRoute($dispatcher)
     {
-        // exit when reponse headers are already set
+        // exit when response headers are already set
         if ($this->response->getHeaders()->get("Status") != null) {
             return false;
         } else {

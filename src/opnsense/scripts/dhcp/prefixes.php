@@ -86,8 +86,15 @@ foreach (plugins_run('static_mapping') as $map) {
         }
 
         if (!empty($host['ipaddrv6'])) {
+            $ipaddrv6 = $host['ipaddrv6'];
+
+            /* although link-local is not a real static mapping use it to reach the downstream router */
+            if (is_linklocal($ipaddrv6) && strpos($ipaddrv6, '%') === false) {
+                $ipaddrv6 .= '%' . get_real_interface($host['interface'], 'inet6');
+            }
+
             /* we want static mapping to have a higher priority */
-            $duid_arr[$host['duid']]['address'] = $host['ipaddrv6'];
+            $duid_arr[$host['duid']]['address'] = $ipaddrv6;
         }
     }
 }

@@ -212,7 +212,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasChild($name)
     {
@@ -224,7 +224,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getChild($name)
     {
@@ -236,7 +236,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function iterateItems()
     {

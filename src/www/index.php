@@ -37,6 +37,7 @@ $widgetCollection = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $config['widgets'];
+    legacy_html_escape_form_data($pconfig);
     // set default dashboard view
     $pconfig['sequence'] = !empty($pconfig['sequence']) ? $pconfig['sequence'] : '';
     $pconfig['column_count'] = !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($config['widgets']['sequence']);
     }
     if (!empty($_POST['column_count'])) {
-        $config['widgets']['column_count'] = $_POST['column_count'];
+        $config['widgets']['column_count'] = filter_var($_POST['column_count'], FILTER_SANITIZE_NUMBER_INT);
     } elseif(isset($config['widgets']['column_count'])) {
         unset($config['widgets']['column_count']);
     }

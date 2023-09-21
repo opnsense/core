@@ -46,7 +46,7 @@ function hook_ipv4v6(classname, data_id, prefixlen)
                 let val = $(this).val();
                 if (val.indexOf(":") != -1) {
                     for (let i = 33; i <= 128; ++i) {
-                        $("#"+selectlist_id+' option[value=' + i + ']').show()
+                        $("#"+selectlist_id+' option[value=' + i + ']').attr('disabled', null);
                     }
                     if ((type === undefined && val == '') || type === '4') {
                         net = prefixlen == undefined ? '64' : prefixlen;
@@ -58,12 +58,16 @@ function hook_ipv4v6(classname, data_id, prefixlen)
                     }
                     type = '4';
                     for (let i = 33; i <= 128; ++i) {
-                        $("#"+selectlist_id+' option[value=' + i + ']').hide()
+                        $("#"+selectlist_id+' option[value=' + i + ']').attr('disabled', 'disabled');
                     }
                 }
                 $("#"+selectlist_id).val(net);
                 $(this).data('ipv4v6', type);
                 /* when select list uses selectpicker, refresh */
+                $("#"+selectlist_id).data('hideDisabled', true);
+                if ($("#"+selectlist_id).val() === null) {
+                    $("#"+selectlist_id).val(type === '6' ? '64' : '24');
+                }
                 if ($("#"+selectlist_id).hasClass('selectpicker')) {
                     $("#"+selectlist_id).selectpicker('refresh');
                 }
