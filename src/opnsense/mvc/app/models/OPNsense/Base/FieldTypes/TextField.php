@@ -57,6 +57,14 @@ class TextField extends BaseField
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Text does not validate.');
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -66,7 +74,7 @@ class TextField extends BaseField
         if ($this->internalValue != null) {
             if ($this->internalValue != null && $this->internalMask != null) {
                 $validators[] = new Regex([
-                    'message' => gettext($this->internalValidationMessage) ?? gettext('Text does not validate.'),
+                    'message' => $this->getValidationMessage(),
                     'pattern' => trim($this->internalMask),
                 ]);
             }

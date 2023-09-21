@@ -173,17 +173,13 @@ class PortField extends BaseListField
     }
 
     /**
-     * return validation message
+     * @inheritdoc
      */
-    protected function getValidationMessage()
+    protected function defaultValidationMessage()
     {
-        if ($this->internalValidationMessage == null) {
-            $msg = gettext('Please specify a valid port number (1-65535).');
-            if ($this->enableWellKnown) {
-                $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
-            }
-        } else {
-            $msg = $this->internalValidationMessage;
+        $msg = gettext('Please specify a valid port number (1-65535).');
+        if ($this->enableWellKnown) {
+            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
         }
         return $msg;
     }
