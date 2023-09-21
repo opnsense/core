@@ -43,11 +43,6 @@ class TextField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "text validation error";
-
-    /**
      * @var null|string validation mask (regex)
      */
     protected $internalMask = null;
@@ -70,8 +65,10 @@ class TextField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             if ($this->internalValue != null && $this->internalMask != null) {
-                $validators[] = new Regex(array('message' => $this->internalValidationMessage,
-                    'pattern' => trim($this->internalMask)));
+                $validators[] = new Regex([
+                    'message' => gettext($this->internalValidationMessage) ?? gettext('Text does not validate.'),
+                    'pattern' => trim($this->internalMask),
+                ]);
             }
         }
         return $validators;
