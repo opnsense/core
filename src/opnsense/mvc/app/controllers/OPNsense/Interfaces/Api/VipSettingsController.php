@@ -43,12 +43,12 @@ class VipSettingsController extends ApiMutableModelControllerBase
      */
     private function getVipOverlay()
     {
-        $overlay = ['network' => ''];
+        $overlay = ['network' => '', 'subnet' => '', 'subnet_bits' => ''];
         $tmp = $this->request->getPost('vip');
         if (!empty($tmp['network'])) {
             $parts = explode('/', $tmp['network'], 2);
             $overlay['subnet'] = $parts[0];
-            if (count($parts) < 2) {
+            if (count($parts) == 1 || $parts[1] == '') {
                 $overlay['subnet_bits'] = strpos($parts[0], ':') !== false ? 128 : 32;
             } else {
                 $overlay['subnet_bits'] = $parts[1];
