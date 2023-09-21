@@ -57,7 +57,7 @@ class TextField extends BaseField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {

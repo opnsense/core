@@ -173,7 +173,7 @@ class PortField extends BaseListField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {

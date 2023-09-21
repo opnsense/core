@@ -58,7 +58,7 @@ abstract class BaseListField extends BaseField
     protected $internalMultiSelect = false;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {

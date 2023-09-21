@@ -54,7 +54,7 @@ class NetworkAliasField extends BaseListField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {
@@ -95,7 +95,7 @@ class NetworkAliasField extends BaseListField
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setMultiple($value)
     {
