@@ -514,6 +514,7 @@ abstract class BaseField
         }
         return $result;
     }
+
     /**
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
@@ -522,7 +523,7 @@ abstract class BaseField
     {
         $validators = $this->getConstraintValidators();
         if ($this->isEmptyAndRequired()) {
-            $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage));
+            $validators[] = new PresenceOf(['message' => gettext('A value is required.')]);
         }
         return $validators;
     }
@@ -575,7 +576,6 @@ abstract class BaseField
         return $result;
     }
 
-
     /**
      * get nodes as array structure
      * @return array
@@ -602,7 +602,6 @@ abstract class BaseField
     {
         return (string)$this;
     }
-
 
     /**
      * update model with data returning missing repeating tag types.
@@ -636,7 +635,6 @@ abstract class BaseField
             }
         }
     }
-
 
     /**
      * Add this node and its children to the supplied simplexml node pointer.
