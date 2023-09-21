@@ -58,11 +58,6 @@ abstract class BaseListField extends BaseField
     protected $internalMultiSelect = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = null;
-
-    /**
      * @return string validation message
      */
     protected function getValidationMessage()
