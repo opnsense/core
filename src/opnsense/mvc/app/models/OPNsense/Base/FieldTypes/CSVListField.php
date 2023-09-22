@@ -70,7 +70,6 @@ class CSVListField extends BaseField
     protected function defaultValidationMessage()
     {
         return gettext('List validation error.');
-
     }
 
     /**
