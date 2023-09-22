@@ -13,10 +13,6 @@
         <id>pool.addrs</id>
         <label>Network</label>
         <type>text</type>
-        <help>
-          Subnet or range defining addresses allocated in pool.
-          Accepts a single CIDR subnet defining the pool to allocate addresses from
-        </help>
+        <help>Subnet or range defining addresses allocated in pool. Accepts a single CIDR subnet defining the pool to allocate addresses from.</help>
     </field>
-
 </form>
