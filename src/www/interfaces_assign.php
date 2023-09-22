@@ -172,7 +172,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (isset($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $x => $rule) {
-                    if ($rule['interface'] == $id) {
+                    /* XXX this doesn't match floating rules with multiple values */
+                    if (isset($rule['interface']) && $rule['interface'] == $id) {
                         unset($config['filter']['rule'][$x]);
                     }
                 }
