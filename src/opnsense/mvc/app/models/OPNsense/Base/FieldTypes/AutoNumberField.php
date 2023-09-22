@@ -44,11 +44,6 @@ class AutoNumberField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "invalid integer value";
-
-    /**
      * maximum value for this field
      * @var integer
      */
@@ -61,6 +56,14 @@ class AutoNumberField extends BaseField
     private $minimum_value;
 
     /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Invalid integer value.');
+    }
+
+    /**
      * constructor, set absolute min and max values
      * @param null|string $ref direct reference to this object
      * @param null|string $tagname xml tagname to use
@@ -68,6 +71,7 @@ class AutoNumberField extends BaseField
     public function __construct($ref = null, $tagname = null)
     {
         parent:: __construct($ref, $tagname);
+
         $this->minimum_value = 1;
         $this->maximum_value = PHP_INT_MAX - 1;
     }
@@ -130,11 +134,12 @@ class AutoNumberField extends BaseField
         $validators = parent::getValidators();
 
         if ($this->internalValue != null) {
-            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
-            $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
-                "min" => $this->minimum_value,
-                "max" => $this->maximum_value
-                ));
+            $validators[] = new IntegerValidator(['message' => $this->getValidationMessage()]);
+            $validators[] = new MinMaxValidator([
+                'message' => $this->getValidationMessage(),
+                'min' => $this->minimum_value,
+                'max' => $this->maximum_value,
+            ]);
         }
         return $validators;
     }
