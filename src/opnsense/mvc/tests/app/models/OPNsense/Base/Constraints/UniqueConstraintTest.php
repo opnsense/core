@@ -36,6 +36,7 @@ class UniqueTestContainer extends ArrayField
 {
     private $uniqueConstraints = [];
     private $valuesRequired = false;
+    private $internalNodes = [];
 
     /**
      * @param $nodes a single node or an array of nodes
@@ -64,6 +65,7 @@ class UniqueTestContainer extends ArrayField
             }
             $node->setValue($value);
             $container->addChildNode($name, $node);
+            $this->internalNodes[] = $node;
         }
 
         if ($fields_added) {
@@ -76,6 +78,11 @@ class UniqueTestContainer extends ArrayField
     public function setRequired($required)
     {
         $this->valuesRequired = $required;
+
+        foreach ($this->internalNodes as $node) {
+            /* cover earlier set nodes */
+            $node->setRequired($this->valuesRequired ? "Y" : "N");
+        }
     }
 
     public function validate()
@@ -132,10 +139,7 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $this->assertEquals(0, $msgs->count());
 
-        $container = new UniqueTestContainer();
         $container->setRequired(true);
-        $container->addNode(['unique_test' => '']);
-        $container->addNode(['unique_test' => '']);
 
         $msgs = $container->validate();
 
@@ -152,10 +156,7 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $this->assertEquals(0, $msgs->count());
 
-        $container = new UniqueTestContainer();
         $container->setRequired(true);
-        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
-        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
 
         $msgs = $container->validate();
 
@@ -171,5 +172,11 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $msgs = $container->validate();
 
         $this->assertEquals(0, $msgs->count());
+
+        $container->setRequired(true);
+
+        $msgs = $container->validate();
+
+        $this->assertEquals(1, $msgs->count());
     }
 }
