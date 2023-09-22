@@ -35,7 +35,7 @@ use OPNsense\Base\FieldTypes\TextField;
 class UniqueTestContainer extends ArrayField
 {
     private $uniqueConstraints = [];
-    private $valuesRequired = true;
+    private $valuesRequired = false;
 
     /**
      * @param $nodes a single node or an array of nodes
@@ -81,113 +81,95 @@ class UniqueTestContainer extends ArrayField
     public function validate()
     {
         $validator = new \OPNsense\Base\Validation();
-        $constraint = $this->uniqueConstraints[0];
-        $ret = $constraint->validate($validator, '');
-        $msgs = $validator->getMessages();
+        foreach ($this->uniqueConstraints as $idx => $constraint) {
+            $validator->add($idx, $constraint);
+        }
+        $msgs = $validator->validate([]);
 
-        return [$ret, $msgs];
+        return $msgs;
     }
 }
 
 class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 {
-    public function testEqualValues()
-    {
-        $container = new UniqueTestContainer();
-        $container->addNode(['unique_test' => 'value1']);
-        $container->addNode(['unique_test' => 'value1']);
-
-        list($ret, $msgs) = $container->validate();
-
-        $this->assertEquals(1, $msgs->count());
-        $this->assertEquals(false, $ret);
-    }
-
-    public function testNonEqualValues()
+    public function testNonEqualAndEqualValues()
     {
         $container = new UniqueTestContainer();
         $container->addNode(['unique_test' => 'value1']);
         $container->addNode(['unique_test' => 'value2']);
 
-        list($ret, $msgs) = $container->validate();
-
+        $msgs = $container->validate();
         $this->assertEquals(0, $msgs->count());
-        $this->assertEquals(true, $ret);
-    }
 
-    public function testMultipleEqualValues()
-    {
-        $container = new UniqueTestContainer();
-        $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
-        $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
+        $container->addNode(['unique_test' => 'value1']);
 
-        list($ret, $msgs) = $container->validate();
-
+        $msgs = $container->validate();
         $this->assertEquals(1, $msgs->count());
-        $this->assertEquals(false, $ret);
     }
 
-    public function testMultipleNonEqualValues()
+    public function testMultipleNonEqualAndEqualValues()
     {
         $container = new UniqueTestContainer();
-        $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value1']);
+        $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
+        $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value3']);
+
+        $msgs = $container->validate();
+        $this->assertEquals(0, $msgs->count());
+
         $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
 
-        list($ret, $msgs) = $container->validate();
-
-        $this->assertEquals(0, $msgs->count());
-        $this->assertEquals(true, $ret);
+        $msgs = $container->validate();
+        $this->assertEquals(1, $msgs->count());
     }
 
-    public function testEmptyValuesNonRequired()
+    public function testEmptyValuesNotRequiredAndRequired()
     {
         $container = new UniqueTestContainer();
-        $container->setRequired(false);
         $container->addNode(['unique_test' => '']);
         $container->addNode(['unique_test' => '']);
 
-        list($ret, $msgs) = $container->validate();
+        $msgs = $container->validate();
 
         $this->assertEquals(0, $msgs->count());
-        $this->assertEquals(true, $ret);
-    }
 
-    public function testMultipleEmptyValuesNonRequired()
-    {
         $container = new UniqueTestContainer();
-        $container->setRequired(false);
-        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
-        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
+        $container->setRequired(true);
+        $container->addNode(['unique_test' => '']);
+        $container->addNode(['unique_test' => '']);
 
-        list($ret, $msgs) = $container->validate();
-
-        $this->assertEquals(0, $msgs->count());
-        $this->assertEquals(true, $ret);
-    }
-
-    public function testMultipleSetAndEmptyValuesNonRequired()
-    {
-        $container = new UniqueTestContainer();
-        $container->setRequired(false);
-        $container->addNode(['unique_test1' => 'value1', 'unique_test2' => '']);
-        $container->addNode(['unique_test1' => 'value1', 'unique_test2' => '']);
-
-        list($ret, $msgs) = $container->validate();
+        $msgs = $container->validate();
 
         $this->assertEquals(1, $msgs->count());
-        $this->assertEquals(false, $ret);
+    }
+
+    public function testMultipleEmptyValuesNotRequiredAndRequired()
+    {
+        $container = new UniqueTestContainer();
+        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
+        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
+
+        $msgs = $container->validate();
+
+        $this->assertEquals(0, $msgs->count());
+
+        $container = new UniqueTestContainer();
+        $container->setRequired(true);
+        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
+        $container->addNode(['unique_test' => '', 'unique_test2' => '']);
+
+        $msgs = $container->validate();
+
+        $this->assertEquals(1, $msgs->count());
     }
 
     public function testFirstValueEmptyPassAll()
     {
         $container = new UniqueTestContainer();
-        $container->setRequired(false);
         $container->addNode(['unique_test1' => '', 'unique_test2' => 'value1']);
         $container->addNode(['unique_test1' => '', 'unique_test2' => 'value1']);
 
-        list($ret, $msgs) = $container->validate();
+        $msgs = $container->validate();
 
         $this->assertEquals(0, $msgs->count());
-        $this->assertEquals(true, $ret);
     }
 }
