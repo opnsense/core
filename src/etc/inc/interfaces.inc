@@ -3459,7 +3459,7 @@ function interface_parent_devices($device)
     } elseif (strstr($device, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged') as $bridge) {
             if ($device == $bridge['bridgeif']) {
-                foreach (explode(',', $bridge['members']) as $member) {
+                foreach (explode(',', $bridge['members'] ?? '') as $member) {
                     /* bridge stores members as configured interfaces */
                     $parents[] = get_real_interface($member);
                 }
