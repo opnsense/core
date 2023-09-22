@@ -499,6 +499,8 @@ class OpenVPN extends BaseModel
                 $options['proto'] = (string)$node->proto;
                 $options['verb'] = (string)$node->verb;
                 $options['verify-client-cert'] = (string)$node->verify_client_cert;
+                $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
+                $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
                 foreach (
                     [
