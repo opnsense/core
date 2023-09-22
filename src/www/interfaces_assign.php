@@ -140,6 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             write_config();
+
+            header(url_safe('Location: /interfaces_assign.php'));
+            exit;
         }
     } elseif (!empty($_POST['id']) && !empty($_POST['action']) && $_POST['action'] == 'del' & !empty($config['interfaces'][$_POST['id']]) ) {
         // ** Delete interface **
