@@ -35,7 +35,13 @@ use OPNsense\Base\Validators\CallbackValidator;
  */
 class Base64Field extends TextField
 {
-    protected $internalValidationMessage = "invalid base64 encoded string";
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Invalid Base64-encoded string.');
+    }
 
     /**
      * @param string $value to validate
@@ -45,7 +51,7 @@ class Base64Field extends TextField
     {
         $messages = [];
         if (base64_encode(base64_decode($value, true)) != str_replace("\n", "", $value)) {
-            $messages[] = $this->internalValidationMessage;
+            $messages[] = $this->getValidationMessage();
         }
         return $messages;
     }

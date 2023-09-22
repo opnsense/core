@@ -42,11 +42,6 @@ class UniqueIdField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "Unique ID is immutable";
-
-    /**
      * @var null|string initial field value
      */
     private $initialValue = null;
@@ -67,8 +62,10 @@ class UniqueIdField extends BaseField
         }
         $validators = parent::getValidators();
         // unique id may not change..
-        $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-            'domain' => array($this->initialValue)));
+        $validators[] = new InclusionIn([
+            'message' => gettext('Unique ID is immutable.'),
+            'domain' => [$this->initialValue],
+        ]);
         return $validators;
     }
 }

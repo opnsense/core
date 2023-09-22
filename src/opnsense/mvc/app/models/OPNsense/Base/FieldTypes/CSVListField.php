@@ -43,11 +43,6 @@ class CSVListField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "list validation error";
-
-    /**
      * item separator
      * @var string
      */
@@ -68,6 +63,14 @@ class CSVListField extends BaseField
      * @var bool marks if regex validation should occur on a per-item basis.
      */
     protected $internalMaskPerItem = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('List validation error.');
+    }
 
     /**
      * set validation mask
@@ -162,12 +165,12 @@ class CSVListField extends BaseField
                     $items = explode($this->separatorchar, $this->internalValue);
                     foreach ($items as $item) {
                         if (!$regex_match($item, $this->internalMask)) {
-                            return ["\"" . $item . "\" is invalid. " . $this->internalValidationMessage];
+                            return ["\"" . $item . "\" is invalid. " . $this->getValidationMessage()];
                         }
                     }
                 } else {
                     if (!$regex_match($this->internalValue, $this->internalMask)) {
-                        return [$this->internalValidationMessage];
+                        return [$this->getValidationMessage()];
                     }
                 }
                 return [];
