@@ -1361,13 +1361,9 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
             } else {
                 if (!empty($dhcpdv6cfg[$ifname]['range']['from']) && !empty($dhcpdv6cfg[$ifname]['range']['to'])) {
                     /* get config entry and marry it to the live prefix */
-                    $dhcpdv6cfg[$ifname]['range'] = array(
-                        'from' => merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']),
-                        'to' => merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']),
-                    );
-                }
-
-                if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
+                    $dhcpdv6cfg[$ifname]['range']['from'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']);
+                    $dhcpdv6cfg[$ifname]['range']['to'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']);
+                } elseif (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
                     /* XXX $pdlen is never validated against prefixlenght setting, but must be smaller or equal */
                     $pdlen = 64 - calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
 
@@ -1872,7 +1868,7 @@ function dhcpd_staticmap($proto = null, $valid_addresses = true, $domain_fallbac
                     continue;
                 }
 
-                if (!empty($ipaddrv6) && strpos($host['ipaddrv6'], '::') === 0) {
+                if (!empty($ipaddrv6)) {
                     /* expand IPv6 suffix address, but only allow user-given compressed suffix */
                     $host['ipaddrv6'] = merge_ipv6_address($ipaddrv6, $host['ipaddrv6']);
                 }
