@@ -46,6 +46,18 @@ class SettingsController extends ApiMutableModelControllerBase
         $this->gw = new \OPNsense\Routing\Gateways();
     }
 
+    public function reconfigureAction()
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            (new Backend())->configdRun('interface routes configure');
+            $result = ["status" => "ok"];
+        }
+
+        return $result;
+    }
+
     public function searchGatewayAction()
     {
         $cfg = Config::getInstance()->object();

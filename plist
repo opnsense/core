@@ -338,7 +338,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/ConfigurationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/forms/dialogEditGateway.xml
@@ -1098,7 +1097,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
-/usr/local/opnsense/service/conf/actions.d/actions_gateways.conf
 /usr/local/opnsense/service/conf/actions.d/actions_health.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ids.conf
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf

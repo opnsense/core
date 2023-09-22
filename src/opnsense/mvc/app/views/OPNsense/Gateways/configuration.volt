@@ -100,7 +100,6 @@
         });
 
         $("#reconfigureAct").SimpleActionButton();
-        updateServiceControlUI('gateways');
     });
 </script>
 
@@ -156,9 +155,8 @@
         <tr>
             <td>
                 <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/gateways/service/reconfigure'
+                        data-endpoint='/api/gateways/settings/reconfigure'
                         data-label="{{ lang._('Apply') }}"
-                        data-service-widget="gateways"
                         data-error-title="{{ lang._('Error reconfiguring gateways') }}"
                         type="button"
                 ></button>
