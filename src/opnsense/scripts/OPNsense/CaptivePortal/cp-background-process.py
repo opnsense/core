@@ -238,7 +238,7 @@ def main():
         except SystemExit:
             break
         except sqlite3.DatabaseError:
-            # try to repair a broken sqlite database if it apears to be broken after using a table
+            # try to repair a broken sqlite database if it appears to be broken after using a table
             syslog.syslog(syslog.LOG_ERR, "Forcefully repair database (%s)" % traceback.format_exc().replace("\n", " "))
             check_and_repair('/var/captiveportal/captiveportal.sqlite', force_repair=True)
             time.sleep(60)
