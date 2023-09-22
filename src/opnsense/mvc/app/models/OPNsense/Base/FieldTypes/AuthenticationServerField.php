@@ -52,11 +52,6 @@ class AuthenticationServerField extends BaseListField
     private $internalCacheKey = '*';
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "please specify a valid authentication server";
-
-    /**
      * generate validation data (list of AuthServers)
      */
     protected function actionPostLoadingEvent()

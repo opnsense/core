@@ -48,11 +48,6 @@ class AliasContentField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "alias name required";
-
-    /**
      * @var array list of known countries
      */
     private static $internalCountryCodes = [];
@@ -81,7 +76,6 @@ class AliasContentField extends BaseField
         }
         return $result;
     }
-
 
     /**
      * split and yield items
@@ -344,7 +338,6 @@ class AliasContentField extends BaseField
         }
         return $messages;
     }
-    //
 
     /**
      * retrieve field validators for this field type

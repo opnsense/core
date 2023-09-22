@@ -45,11 +45,6 @@ class AliasNameField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "alias name required";
-
-    /**
      * retrieve field validators for this field type
      * @return array returns list of validators
      */
