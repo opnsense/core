@@ -3398,7 +3398,7 @@ function get_ppp_parent($ifcfg_if)
 }
 
 /* collect hardware device parents for VLAN, LAGG and bridges */
-function interface_parent_devices($device)
+function interface_parent_devices($device, $as_interface = false)
 {
     $parents = [];
 
@@ -3415,7 +3415,7 @@ function interface_parent_devices($device)
             if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members'] ?? '') as $member) {
                     /* bridge stores members as configured interfaces */
-                    $parents[] = get_real_interface($member);
+                    $parents[] = $as_interface ? $member : get_real_interface($member);
                 }
                 break;
             }
