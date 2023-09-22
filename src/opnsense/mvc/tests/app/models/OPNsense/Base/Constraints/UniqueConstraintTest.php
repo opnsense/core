@@ -44,7 +44,7 @@ class UniqueTestContainer extends ArrayField
      * multiple array elements, while multiple nodes represent
      * the usage of 'addFields'
      */
-    public function addNode($nodes) 
+    public function addNode($nodes)
     {
         // UniqueConstraint requires a depth of 2, so add a container node
         $container = new ContainerField();

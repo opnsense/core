@@ -816,6 +816,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/TestModel.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModelTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/Constraints/ComparedToFieldConstraintTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/Constraints/UniqueConstraintTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthGroupFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthGroupFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/AuthenticationServerFieldTest.php
