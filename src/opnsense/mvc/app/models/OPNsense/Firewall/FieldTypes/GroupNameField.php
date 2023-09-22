@@ -44,11 +44,6 @@ class GroupNameField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "group name required";
-
-    /**
      * retrieve field validators for this field type
      * @return array returns list of validators
      */
@@ -59,7 +54,7 @@ class GroupNameField extends BaseField
             [
                 "callback" => function ($value) {
                     $result = [];
-                    if (empty($value) || preg_match('/[^a-zA-Z0-9_]+/', $value, $match)) {
+                    if (preg_match('/[^a-zA-Z0-9_]+/', $value, $match)) {
                         $result[] = gettext('Only letters, digits and underscores are allowed as the group name.');
                     }
                     if (!empty($value) && strlen($value) > 15) {
