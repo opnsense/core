@@ -4,8 +4,7 @@
     <description>Firewall aliases</description>
     <items>
         <geoip>
-            <url type="UrlField">
-            </url>
+            <url type="UrlField"/>
         </geoip>
         <aliases>
             <alias type=".\AliasField">

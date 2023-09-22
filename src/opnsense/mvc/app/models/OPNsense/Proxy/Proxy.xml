@@ -387,7 +387,6 @@
                             </filename>
                             <url type="UrlField">
                                 <Required>Y</Required>
-                                <ValidationMessage>This does not look like a valid url.</ValidationMessage>
                             </url>
                             <username type="TextField">
                                 <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
