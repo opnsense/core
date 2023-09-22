@@ -566,6 +566,11 @@ function find_smallest_cidr6($ips)
 /* merge IPv6 address prefix of default size 64 with suffix */
 function merge_ipv6_address($prefix, $suffix, $size = 64)
 {
+    if (strpos($suffix, '::') !== 0) {
+        /* do not override full addresses */
+        return $suffix;
+    }
+
     $size = 128 - $size;
 
     $prefix_bits = unpack('N*', inet_pton($prefix));
