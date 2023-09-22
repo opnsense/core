@@ -5,6 +5,7 @@
     <items>
         <ifgroupentry type=".\GroupField">
             <ifname type=".\GroupNameField">
+                <Required>Y</Required>
                 <Constraints>
                     <check001>
                         <ValidationMessage>Group name already exists!</ValidationMessage>
