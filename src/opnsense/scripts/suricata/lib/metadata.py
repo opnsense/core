@@ -53,7 +53,7 @@ class Metadata(object):
                 rule_xml.attrib['metadata_source'] = os.path.basename(filename)
                 yield rule_xml
             except xml.etree.ElementTree.ParseError:
-                # unparseable metadata
+                # unparsable metadata
                 syslog.syslog(syslog.LOG_ERR, 'suricata metadata unparsable @ %s' % filename)
                 continue
 
