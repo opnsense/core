@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['radius_auth_port'] = "1812";
         $pconfig['radius_acct_port'] = "1813";
         $pconfig['type'] = 'ldap';
+        $pconfig['sync_memberof_constraint'] = true;
         // gather auth plugin defaults
         // the hotplug properties should be different per type, if not the default won't function correctly
         foreach ($authCNFOptions as $authType) {
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            $pconfig['sync_memberof_constraint'] = !empty($a_server[$id]['ldap_sync_memberof_constraint']);
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
@@ -248,6 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
+              $server['ldap_sync_memberof_constraint'] = !empty($pconfig['sync_memberof_constraint']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['ldap_sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
@@ -323,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $all_authfields = array(
     'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
     'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'sync_memberof', 'sync_create_local_users', 'radius_host',
+    'ldap_read_properties', 'sync_memberof', 'sync_memberof_constraint', 'sync_create_local_users', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs',
     'password_policy_duration', 'enable_password_policy_constraints',
     'password_policy_complexity', 'password_policy_length'
@@ -496,10 +499,16 @@ $( document ).ready(function() {
     $("#ldap_read_properties, #type").change(function(){
         if ($(this).is(":checked") || $("#type").val() == 'radius' ) {
             $("#sync_memberof").prop('disabled', false);
+            if ($("#type").val() !== 'radius') {
+                $("#sync_memberof_constraint").prop('disabled', false);
+            }
             $("#sync_memberof_groups").prop('disabled', false);
             $("#sync_create_local_users").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
+            if ($("#type").val() !== 'radius') {
+              $("#sync_memberof_constraint").prop('disabled', true);
+            }
             $("#sync_memberof_groups").prop('disabled', true);
             $("#sync_create_local_users").prop('disabled', true);
         }
@@ -810,6 +819,15 @@ endif; ?>
                                   "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
                                   "Group memberships will be persisted in OPNsense. ".
                                   "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
+                  <td>
+                    <input id="sync_memberof_constraint" name="sync_memberof_constraint" type="checkbox" <?= empty($pconfig['sync_memberof_constraint']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_sync_memberof_constraint">
+                      <?= gettext("Constraint allowed groups to those selected in the container section. This may offer additional security in cases where users are able to inject memberOf attributes in different trees.");?>
                     </div>
                   </td>
                 </tr>
