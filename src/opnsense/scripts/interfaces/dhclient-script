@@ -26,7 +26,7 @@ IFCONFIG='/sbin/ifconfig -n'
 LOCALHOST=127.0.0.1
 
 if [ -x /usr/bin/logger ]; then
-	LOGGER="/usr/bin/logger -s -p user.notice -t dhclient"
+	LOGGER="/usr/bin/logger -s -p user.notice -t dhclient dhclient-script:"
 else
 	LOGGER=echo
 fi
@@ -130,9 +130,9 @@ delete_old_routes() {
 	# If we supported multiple default routes, we'd be removing each
 	# one here.  We don't so just delete the default route if it's
 	# through our interface.
-	if is_default_interface; then
+	#if is_default_interface; then
 		#route delete default >/dev/null 2>&1
-	fi
+	#fi
 
 	if [ -n "$old_static_routes" ]; then
 		set $old_static_routes
@@ -261,6 +261,8 @@ fi
 
 : ${resolvconf_enable="NO"}
 
+$LOGGER "Reason $reason on $interface executing"
+
 case $reason in
 MEDIUM)
 	eval "$IFCONFIG $interface $medium"
@@ -349,14 +351,11 @@ TIMEOUT)
 				add_new_alias
 			fi
 			add_new_routes
-			if ! is_default_interface; then
-				/usr/local/sbin/configctl -d interface newip $interface
+			add_new_resolv_conf
+			#if ! is_default_interface; then
+				/usr/local/sbin/configctl -d interface newip $interface force
 				exit_with_hooks 0
-			fi
-			if add_new_resolv_conf; then
-				/usr/local/sbin/configctl -d interface newip $interface
-				exit_with_hooks 0
-			fi
+			#fi
 		fi
 	fi
 	eval "$IFCONFIG $interface inet -alias $new_ip_address $medium"
