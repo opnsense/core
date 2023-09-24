@@ -4369,11 +4369,20 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
 function interfaces_has_prefix_only($interface)
 {
     $interfaces_a = config_read_array('interfaces');
+    $ret = false;
 
-    return empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
-        ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
-        empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-        isset($interfaces_a[$interface]['dhcp6prefixonly']));
+    switch ($interfaces_a[$interface]['ipaddrv6'] ?? '') {
+        case 'dhcp6':
+            $ret = empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
+                ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
+                empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
+                isset($interfaces_a[$interface]['dhcp6prefixonly']));
+            break;
+        default:
+            break;
+    }
+
+    return $ret;
 }
 
 function interfaces_primary_address($interface, $ifconfig_details = null)
