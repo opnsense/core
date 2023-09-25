@@ -336,7 +336,7 @@ class Gateways
                         $this->cached_gateways[$gwkey] = $thisconf;
                     } elseif (
                         $ipproto == 'inet6'
-                            && in_array($ifcfg['ipaddrv6'] ?? null, ['slaac', 'dhcp6', '6to4', '6rd'])
+                            && in_array($ifcfg['ipaddrv6'] ?? 'none', ['slaac', 'dhcp6', '6to4', '6rd'])
                     ) {
                         // Dynamic IPv6 interface, but no router solicit response received using rtsold.
                         $gwkey = $this->newKey($thisconf['priority'], !empty($thisconf['defaultgw']));
