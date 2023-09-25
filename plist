@@ -269,10 +269,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/SessionController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/VoucherController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/forms/dialogZone.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SystemController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
@@ -729,6 +731,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/backup_history.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/halt.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/license.volt
@@ -1982,7 +1985,6 @@
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
-/usr/local/www/diag_confbak.php
 /usr/local/www/diag_defaults.php
 /usr/local/www/diag_logs_settings.php
 /usr/local/www/fbegin.inc
