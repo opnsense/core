@@ -46,7 +46,7 @@ class FilterRule extends Rule
         'gateway' => 'parseRoute',
         'reply' =>  'parsePlain',
         'ipprotocol' => 'parsePlain',
-        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ',
+        'protocol' => self::PARSE_PROTO,
         'from' => 'parsePlainCurly,from ',
         'from_port' => 'parsePlainCurly, port ',
         'os' => 'parsePlain, os {","}',
