@@ -58,7 +58,7 @@ class DNatRule extends Rule
             'nat' => 'parseStaticText,nat ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
-            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ',
             'interface.from' => 'parseInterface, from (,:network)',
             'from' => 'parsePlainCurly,to ',
             'interface.to' => 'parseInterface, -> (,)',

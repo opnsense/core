@@ -40,7 +40,7 @@ class SNatRule extends Rule
         'log' => 'parseBool,log',
         'interface' => 'parseInterface',
         'ipprotocol' => 'parsePlain',
-        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ',
         'from' => 'parsePlain,from ',
         'sourceport' => 'parsePlain, port ',
         'to' => 'parsePlain,to ',
