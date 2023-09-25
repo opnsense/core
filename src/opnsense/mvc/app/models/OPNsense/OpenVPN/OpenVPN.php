@@ -52,10 +52,10 @@ class OpenVPN extends BaseModel
             if ($validateFullModel || $node->isFieldChanged()) {
                 $tagName = $node->getInternalXMLTagName();
                 $parentNode = $node->getParentNode();
-                $parentKey = $parentNode->__reference;
                 $parentTagName = $parentNode->getInternalXMLTagName();
+
                 if ($parentTagName === 'Instance') {
-                    $instances[$parentKey] = $parentNode;
+                    $instances[$parentNode->__reference] = $parentNode;
                 }
             }
         }
