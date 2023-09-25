@@ -706,7 +706,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
                     <div class="hidden" data-for="help_for_loss_interval">
-                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d, calculated as four times the probe interval).'), $dpinger_default['loss_interval']) ?>
+                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d, calculated as four times the probe interval.'), $dpinger_default['loss_interval']) ?>
                     </div>
                   </td>
                 </tr>
