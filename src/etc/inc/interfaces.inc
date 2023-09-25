@@ -1021,7 +1021,7 @@ default:
 EOD;
     $setdefaultgw = false;
     $founddefaultgw = false;
-    foreach ((new \OPNsense\Gateways\Gateway())->gatewayIterator() as $gateway) {
+    foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
         if ($interface == $gateway['interface'] && !empty($gateway['defaultgw'])) {
             $setdefaultgw = true;
             break;

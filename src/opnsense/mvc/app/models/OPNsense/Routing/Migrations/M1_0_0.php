@@ -26,11 +26,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Gateways\Migrations;
+namespace OPNsense\Routing\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
-use OPNsense\Gateways\Gateway;
+use OPNsense\Routing\Gateways;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -58,7 +58,7 @@ class M1_0_0 extends BaseModelMigration
                     $node->$key = (string)$value;
                 }
 
-                $dpinger_defaults = (new Gateway)::getDpingerDefaults();
+                $dpinger_defaults = (new Gateways)::getDpingerDefaults();
                 // apply dpinger defaults if old model didn't have them set
                 foreach ($dpinger_defaults as $key => $value) {
                     if (empty((string)$node->$key)) {

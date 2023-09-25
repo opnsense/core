@@ -36,15 +36,8 @@ use OPNsense\Firewall\Util;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
-    protected static $internalModelClass = '\OPNsense\Gateways\Gateway';
+    protected static $internalModelClass = '\OPNsense\Routing\Gateways';
     protected static $internalModelName = 'gateways';
-    private $gw = null;
-
-    public function initialize()
-    {
-        parent::initialize();
-        $this->gw = new \OPNsense\Routing\Gateways();
-    }
 
     public function reconfigureAction()
     {
@@ -63,15 +56,15 @@ class SettingsController extends ApiMutableModelControllerBase
         $cfg = Config::getInstance()->object();
         $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
         $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true);
-        $gateways = array_values($this->gw->gatewaysIndexedByName(true, false, true));
+        $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
         $down_gateways = !empty((string)$cfg->system->gw_switch_default) ? array_map(function ($gw){
             if (str_contains($gw['status'], 'down')) {
                 return $gw['name'];
             }
         }, $gateways_status) : [];
 
-        $default_gwv4 = $this->gw->getDefaultGW($down_gateways, 'inet');
-        $default_gwv6 = $this->gw->getDefaultGW($down_gateways, 'inet6');
+        $default_gwv4 = $this->getModel()->getDefaultGW($down_gateways, 'inet');
+        $default_gwv6 = $this->getModel()->getDefaultGW($down_gateways, 'inet6');
 
         foreach ($gateways as $idx => $gateway) {
             $gateways[$idx]['upstream'] = 0;
@@ -145,7 +138,7 @@ class SettingsController extends ApiMutableModelControllerBase
     public function getGatewayAction($uuid = null)
     {
         if ($uuid != null) {
-            $gateways = array_values($this->gw->gatewaysIndexedByName(true, false, true));
+            $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
             $idx = array_search($uuid, array_column($gateways, 'uuid'));
             if ($idx === false) {
                 /* uuid can be a gateway name in cases where the gateway is automatically generated
@@ -196,7 +189,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = ["result" => "failed"];
         if ($this->request->isPost()) {
             if ($uuid != null) {
-                $gateways = array_values($this->gw->gatewaysIndexedByName(true, false, true));
+                $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
                 $idx = array_search($uuid, array_column($gateways, 'uuid'));
                 if ($idx === false) {
                     return $result;

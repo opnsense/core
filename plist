@@ -526,7 +526,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/Regex.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Filter/Validation/Validator/Url.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Logger/Logger.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CrashReporterStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
@@ -641,9 +640,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
-/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Gateway.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Gateway.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Gateways/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
@@ -709,6 +705,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.php
