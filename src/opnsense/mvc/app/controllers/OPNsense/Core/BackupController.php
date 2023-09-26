@@ -36,7 +36,7 @@ namespace OPNsense\Core;
  */
 class BackupController extends \OPNsense\Base\IndexController
 {
-    public function historyAction($selected_host=null)
+    public function historyAction($selected_host = null)
     {
         $this->view->selected_host = $selected_host;
         $this->view->pick('OPNsense/Core/backup_history');

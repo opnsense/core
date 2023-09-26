@@ -33,7 +33,6 @@ use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-
 /**
  * Class BackupController
  * @package OPNsense\Core\Api
@@ -105,7 +104,7 @@ class BackupController extends ApiControllerBase
                         'username' => (string)$xmlNode->revision->username,
                         'filesize' => filesize($filename),
                         'id' => basename($filename)
-                    ] ;
+                    ];
                     $result['items'][] = $cfg_item;
                 }
             }
@@ -195,7 +194,7 @@ class BackupController extends ApiControllerBase
                     $payload = @simplexml_load_file($filename);
                     $hostname = '';
                     if ($payload !== false && isset($payload->system) && isset($payload->system->hostname)) {
-                        $hostname = $payload->system->hostname . "." .$payload->system->domain;
+                        $hostname = $payload->system->hostname . "." . $payload->system->domain;
                     }
                     $target_filename = urlencode('config-' . $hostname . '-' . explode('/config-', $filename, 2)[1]);
                     $this->response->setContentType('application/octet-stream');
