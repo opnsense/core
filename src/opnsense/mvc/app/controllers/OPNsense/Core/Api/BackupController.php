@@ -136,7 +136,7 @@ class BackupController extends ApiControllerBase
             }
             if (!empty($bckfilename1) && !empty($bckfilename2)) {
                 $diff = [];
-                exec("/usr/bin/diff -u " . escapeshellarg($bckfilename1) . " " . escapeshellarg($bckfilename2), $diff);
+                exec("/usr/bin/diff -u " . escapeshellarg($bckfilename2) . " " . escapeshellarg($bckfilename1), $diff);
                 if (!empty($diff)) {
                     foreach ($diff as $line) {
                         $result['items'][] = htmlspecialchars($line, ENT_QUOTES | ENT_HTML401);
