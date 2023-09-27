@@ -4,8 +4,7 @@
     <description>Firewall aliases</description>
     <items>
         <geoip>
-            <url type="UrlField">
-            </url>
+            <url type="UrlField"/>
         </geoip>
         <aliases>
             <alias type=".\AliasField">
@@ -65,7 +64,7 @@
                 </interface>
                 <counters type="BooleanField"/>
                 <updatefreq type="NumericField">
-                    <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
+                    <ValidationMessage>Days and hours should be numeric values or left empty.</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
                 <categories type="ModelRelationField">
