@@ -49,12 +49,26 @@ class M1_0_0 extends BaseModelMigration
                 // monitor_disable was "on" when no node present
                 $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
 
+                if (empty((string)$gateway->priority)) {
+                    $node->priority = '255';
+                }
+
+                if (empty((string)$gateway->ipprotocol)) {
+                    $node->ipprotocol = 'inet';
+                }
+
                 foreach ($gateway as $key => $value) {
                     if ($key === 'gateway') {
                         // change all occurences of "dynamic" to empty string
                         $node->gateway = str_replace('dynamic', '', (string)$value);
                         continue;
                     }
+
+                    if ($key === 'alert_interval') {
+                        // alert_interval was removed
+                        continue;
+                    }
+
                     $node->$key = (string)$value;
                 }
 

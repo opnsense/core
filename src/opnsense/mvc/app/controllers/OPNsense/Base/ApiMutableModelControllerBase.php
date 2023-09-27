@@ -78,6 +78,18 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
     }
 
+    public function isValidUUID($uuid)
+    {
+        if (
+            !is_string($uuid) ||
+            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
      * Throws a user exception when the $uuid seems to be used in some other config section.
@@ -452,10 +464,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
-                if (
-                    !is_string($uuid) ||
-                    preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
-                ) {
+                if (!$this->isValidUUID($uuid)) {
                     // invalid uuid, upsert not allowed
                     return ["result" => "failed"];
                 }

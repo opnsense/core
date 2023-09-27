@@ -139,10 +139,6 @@
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </interval>
-            <alert_interval type="IntegerField">
-                <Required>N</Required>
-                <MinimumValue>1</MinimumValue>
-            </alert_interval>
             <time_period type="IntegerField">
                 <Required>N</Required>
                 <MinimumValue>1</MinimumValue>

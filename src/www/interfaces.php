@@ -851,12 +851,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
             $match = false;
-            $gateways = iterator_to_array((new \OPNsense\Routing\Gateways())->gatewayIterator());
-            if (!empty($gateways)) {
-                foreach ($gateways as $gateway) {
-                    if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
-                        $match = true;
-                    }
+            foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
+                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
+                    $match = true;
                 }
             }
             if (!$match) {
@@ -2064,18 +2061,16 @@ include("head.inc");
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              $gateways = iterator_to_array((new \OPNsense\Routing\Gateways())->gatewayIterator());
-                              if (!empty($gateways)):
-                                foreach ($gateways as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
+                                  <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
                             <div class="hidden" data-for="help_for_gateway">
                               <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
@@ -2581,18 +2576,16 @@ include("head.inc");
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              $gateways = iterator_to_array((new \OPNsense\Routing\Gateways())->gatewayIterator());
-                              if (!empty($gateways)):
-                                foreach ($gateways as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
+                                <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
                             <div class="hidden" data-for="help_for_gatewayv6">
                               <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .

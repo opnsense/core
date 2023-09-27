@@ -636,16 +636,9 @@
         <name>System: Gateways</name>
         <patterns>
             <pattern>ui/gateways/configuration</pattern>
-            <pattern>api/gateways/settings/searchGateway/*</pattern>
-        </patterns>
-    </page-system-gateways>
-    <page-system-gateways-editgateway>
-        <name>System: Gateways: Edit Gateway</name>
-        <patterns>
-            <pattern>ui/gateways/configuration</pattern>
             <pattern>api/gateways/settings/*</pattern>
         </patterns>
-    </page-system-gateways-editgateway>
+    </page-system-gateways>
     <page-system-gatewaygroups>
         <name>System: Gateway Groups</name>
         <patterns>

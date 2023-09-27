@@ -29,9 +29,9 @@
 namespace OPNsense\Routing;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 use Phalcon\Messages\Message;
-use OPNsense\Core\Config;
 
 class Gateways extends BaseModel
 {
@@ -52,7 +52,6 @@ class Gateways extends BaseModel
     public static function getDpingerDefaults()
     {
         return [
-            'alert_interval' => 1,
             'data_length' => 0,
             'interval' => 1,
             'latencyhigh' => 500,
@@ -109,19 +108,19 @@ class Gateways extends BaseModel
             case 'latencylow':
             case 'latencyhigh':
                 if ((string)$parent->latencylow > (string)$parent->latencyhigh) {
-                    $messages->appendMessage(new Message("The high latency threshold needs to be higher than the low latency threshold.", $ref.".".$tag));
+                    $messages->appendMessage(new Message(gettext("The high latency threshold needs to be higher than the low latency threshold."), $ref.".".$tag));
                 }
                 break;
             case 'losslow':
             case 'losshigh':
                 if ((string)$parent->losslow > (string)$parent->losshigh) {
-                    $messages->appendMessage(new Message("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold.", $ref.".".$tag));
+                    $messages->appendMessage(new Message(gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold."), $ref.".".$tag));
                 }
                 break;
             case 'time_period':
             case 'interval':
                 if ((string)$parent->time_period < (2.1 * (intval((string)$parent->interval)))) {
-                    $messages->appendMessage(new Message("The time period needs to be at least 2.1 times that of the probe interval.", $ref.".".$tag));
+                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2.1 times that of the probe interval."), $ref.".".$tag));
                 }
                 break;
         }
@@ -142,7 +141,7 @@ class Gateways extends BaseModel
                 if ($uuid === explode('.', $ref)[1]) {
                     $old = (string)$item->name;
                     if ($old !== $new) {
-                        $messages->appendMessage(new Message("Changing name on a gateway is not allowed.", $ref.".name"));
+                        $messages->appendMessage(new Message(gettext("Changing name on a gateway is not allowed."), $ref.".name"));
                     }
                 }
             }
@@ -191,7 +190,7 @@ class Gateways extends BaseModel
         if (!empty((string)$ifcfg->$ipproto) && Util::isIpAddress((string)$ifcfg->$ipproto)) {
             $ipFormat = $ipproto === 'ipaddr' ? 'IPv4' : 'IPv6';
             $messages->appendMessage(new Message(
-                "Dynamic gateway values cannot be specified for interfaces with a static ".$ipFormat." configuration.",
+                sprintf(gettext("Dynamic gateway values cannot be specified for interfaces with a static %s configuration."), $ipFormat),
                 $ref.".gateway"
             ));
         }
@@ -226,6 +225,22 @@ class Gateways extends BaseModel
                         foreach ($gateway->children() as $node) {
                             $record[$node->getName()] = (string)$node;
                         }
+
+                        /* impute possible missing values */
+                        if (empty($record['priority'])) {
+                            // default priority
+                            $record['priority'] = 255;
+                        }
+
+                        if (empty($record['ipprotocol'])) {
+                            // default address family
+                            $record['ipprotocol'] = 'inet';
+                        }
+
+                        if (empty($record['monitor_disable'])) {
+                            $record['monitor_disable'] = 0;
+                        }
+
                         foreach ($this->getDpingerDefaults() as $key => $value) {
                             if (empty($record[$key])) {
                                 $record[$key] = $value;
@@ -424,38 +439,25 @@ class Gateways extends BaseModel
             ];
             // iterate configured gateways
             foreach ($this->gatewayIterator() as $gw_arr) {
-                if (!empty($gw_arr)) {
-                    if (in_array($gw_arr['name'], $reservednames)) {
-                        syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gw_arr['name'] . '" in config.xml needs manual removal');
+                if (in_array($gw_arr['name'], $reservednames)) {
+                    syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gw_arr['name'] . '" in config.xml needs manual removal');
+                }
+                $reservednames[] = $gw_arr['name'];
+                $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
+                $gw_arr['attribute'] = $i++;
+                if (Util::isIpAddress($gw_arr['gateway'])) {
+                    if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
+                        $gw_arr['monitor'] = $gw_arr['gateway'];
                     }
-                    $reservednames[] = $gw_arr['name'];
-                    if (empty($gw_arr['priority'])) {
-                        // default priority
-                        $gw_arr['priority'] = 255;
+                    $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
+                    $this->cached_gateways[$gwkey] = $gw_arr;
+                } else {
+                    // dynamic gateways might have settings, temporary store
+                    if (empty($dynamic_gw[$gw_arr['interface']])) {
+                        $dynamic_gw[$gw_arr['interface']] = array();
                     }
-                    if (empty($gw_arr['ipprotocol'])) {
-                        // default address family
-                        $gw_arr['ipprotocol'] = 'inet';
-                    }
-                    if (empty($gw_arr['monitor_disable'])) {
-                        $gw_arr['monitor_disable'] = 0;
-                    }
-                    $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
-                    $gw_arr['attribute'] = $i++;
-                    if (Util::isIpAddress($gw_arr['gateway'])) {
-                        if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
-                            $gw_arr['monitor'] = $gw_arr['gateway'];
-                        }
-                        $gwkey = $this->newKey($gw_arr['priority'], !empty($gw_arr['defaultgw']));
-                        $this->cached_gateways[$gwkey] = $gw_arr;
-                    } else {
-                        // dynamic gateways might have settings, temporary store
-                        if (empty($dynamic_gw[$gw_arr['interface']])) {
-                            $dynamic_gw[$gw_arr['interface']] = array();
-                        }
-                        $gw_arr['dynamic'] = true;
-                        $dynamic_gw[$gw_arr['interface']][] = $gw_arr;
-                    }
+                    $gw_arr['dynamic'] = true;
+                    $dynamic_gw[$gw_arr['interface']][] = $gw_arr;
                 }
             }
             // add dynamic gateways

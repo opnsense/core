@@ -67,17 +67,21 @@ class SettingsController extends ApiMutableModelControllerBase
         $default_gwv6 = $this->getModel()->getDefaultGW($down_gateways, 'inet6');
 
         foreach ($gateways as $idx => $gateway) {
-            $gateways[$idx]['upstream'] = 0;
-            if (!empty($gateway['defaultgw'])) {
-                $gateways[$idx]['upstream'] = 1;
+            if (empty($gateway['uuid'])) {
+                $gateways[$idx]['uuid'] = $gateway['name'];
             }
 
-            $gateways[$idx]['defaultgw'] = 0;
+            $gateways[$idx]['inactive'] = (empty($gateway['is_loopback']) && empty($gateway['if'])) ? true : false;
+            $gateways[$idx]['virtual'] = empty($gateway['virtual']) ? false : true;
+            $gateways[$idx]['disabled'] = empty($gateway['disabled']) ? false : true;
+            $gateways[$idx]['upstream'] = empty($gateway['defaultgw']) ? false : true;
 
+            $gateways[$idx]['defaultgw'] = false;
             foreach (['default_gwv4', 'default_gwv6'] as $default_gw) {
+                /* gateway might be configured as defaultgw, whether it is active is determined here */
                 if (!empty($$default_gw)) {
                     if ($gateway['name'] == $$default_gw['name']) {
-                        $gateways[$idx]['defaultgw'] = 1;
+                        $gateways[$idx]['defaultgw'] = true;
                     }
                 }
             }
@@ -130,6 +134,11 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
             }
+
+            if ($gateways[$idx]['inactive']) {
+                $gateways[$idx]['status'] = gettext('No interface attached');
+                $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
+            }
         }
 
         return $this->searchRecordsetBase($gateways);
@@ -137,26 +146,16 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function getGatewayAction($uuid = null)
     {
-        if ($uuid != null) {
-            $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
-            $idx = array_search($uuid, array_column($gateways, 'uuid'));
-            if ($idx === false) {
-                /* uuid can be a gateway name in cases where the gateway is automatically generated
-                 * or when iterating the legacy configuration
-                 */
-                $idx = array_search($uuid, array_column($gateways, 'name'));
-                if ($idx !== false) {
-                    $mdl = $this->getModel();
-                    $node = $mdl->gateway_item;
-                    if ($node != null && $node->isArrayType()) {
-                        $node = $node->Add();
-                        $node->setNodes($gateways[$idx]);
-                        return ['gateway_item' => $node->getNodes()];
-                    }
-                } else {
-                    /* make sure getBase() returns a node */
-                    $uuid = null;
-                }
+        if (!$this->isValidUUID($uuid)) {
+            /* uuid is likely a gateway name (legacy config) */
+            $gateway = $this->getModel()->gatewaysIndexedByName(true, false, true)[$uuid] ?? [];
+            if (!empty($gateway)) {
+                $node = $this->getModel()->gateway_item->Add();
+                $node->setNodes($gateway);
+                return ['gateway_item' => $node->getNodes()];
+            } else {
+                /* make sure getBase() returns a node */
+                $uuid = null;
             }
         }
 
@@ -165,17 +164,13 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setGatewayAction($uuid)
     {
-        $result = ["result" => "failed"];
-        if ($uuid != null) {
+        if (!$this->isValidUUID($uuid)) {
             $mdl = $this->getModel();
-            $node = $mdl->getNodeByReference('gateway_item'.'.'.$uuid);
-            if ($node == null) {
-                /* not a valid uuid, facilitate upsert */
-                $uuid = $mdl->gateway_item->generateUUID();
-            }
-
-            $result = $this->setBase('gateway_item', 'gateway_item', $uuid);
+            $uuid = $mdl->gateway_item->generateUUID();
         }
+
+        $result = $this->setBase('gateway_item', 'gateway_item', $uuid);
+
         return $result;
     }
 
@@ -189,31 +184,37 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = ["result" => "failed"];
         if ($this->request->isPost()) {
             if ($uuid != null) {
-                $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
-                $idx = array_search($uuid, array_column($gateways, 'uuid'));
-                if ($idx === false) {
-                    return $result;
-                }
+                $gateway = $this->getModel()->getNodeByReference('gateway_item.' . $uuid);
                 $cfg = Config::getInstance()->object();
+                $groups = [];
                 foreach ($cfg->gateways->children() as $tag => $gw_group) {
                     if ($tag == 'gateway_group' && !empty($gw_group)) {
                         foreach ($gw_group->item as $item) {
                             $name = explode("|", (string)$item);
-                            if ($name[0] == $gateways[$idx]['name']) {
-                                throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Gateway Group '%s'"),
-                                    $gateways[$idx]['name'], (string)$gw_group->name));
+                            if ($name[0] == $gateway->name) {
+                                $groups[] = (string)$gw_group->name;
                             }
                         }
                     }
                 }
 
+                if (!empty($groups)) {
+                    throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Gateway Group(s) '%s'"),
+                        $gateway->name, implode(', ', $groups)));
+                }
+
+                $routes = [];
                 foreach ($cfg->staticroutes->children() as $route) {
                     if (!empty($route)) {
-                        if ((string)$route->gateway == $gateways[$idx]['name']) {
-                            throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Static Route '%s'"),
-                                $gateways[$idx]['name'], (string)$route->network));
+                        if ((string)$route->gateway == $gateway->name) {
+                            $routes[] = (string)$route->network;
                         }
                     }
+                }
+
+                if (!empty($routes)) {
+                    throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Static Route(s) '%s'"),
+                        $gateway->name, implode(', ', $routes)));
                 }
 
                 $result = $this->delBase('gateway_item', $uuid);

@@ -40,34 +40,24 @@
                 rowSelect: false,
                 formatters: {
                     "rowtoggle": function (column, row) {
-                        /* XXX: tooltips aren't styled and positioned to the opnsense default */
-                        if (row.uuid === '') {
-                            if (row.disabled === "" || parseInt(row.disabled, 2) === 0) {
-                                return '<span class="fa fa-play text-success"></span>';
-                            } else {
-                                return '<span class="fa fa-play text-muted"></span>';
-                            }
+                        if (row.disabled) {
+                            return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-muted bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Enable') }}" data-value="1" data-row-id="' + row.uuid + '"></span>';
                         } else {
-                            if (row.disabled === "" || parseInt(row.disabled, 2) === 0) {
-                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-success bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Disable') }}" data-value="0" data-row-id="' + row.uuid + '"></span>';
-                            } else {
-                                return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-muted bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Enable') }}" data-value="1" data-row-id="' + row.uuid + '"></span>';
-                            }
+                            return '<span style="cursor: pointer;" class="fa fa-play command-toggle text-success bootgrid-tooltip" data-toggle="tooltip" title="{{ lang._('Disable') }}" data-value="0" data-row-id="' + row.uuid + '"></span>';
                         }
                     },
                     "commands": function (column, row) {
-                        let data = row.uuid === '' ? row.name : row.uuid;
-                        let elements = '<div class="break"><button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-clone"></span></button>';
+                        let elements = '<div class="break"><button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>';
 
-                        if (row.uuid !== '') {
-                            elements += '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + data + '"><span class="fa fa-fw fa-trash-o"></span></button>';
+                        if (!row.virtual) {
+                            elements += '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
                         }
                         return elements + '</div>';
                     },
                     "nameformatter": function (column, row) {
                         let elem = '<span class="break">' + row.name + ' ';
-                        if (row.defaultgw == '1') {
+                        if (row.defaultgw) {
                             elem += '<strong>({{ lang._('active')}})</strong>';
                         }
                         return elem + '</span>';

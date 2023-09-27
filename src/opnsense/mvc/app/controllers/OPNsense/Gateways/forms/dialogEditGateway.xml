@@ -120,13 +120,6 @@
         <help>How often that an ICMP probe will be sent in seconds. Default is 1.</help>
     </field>
     <field>
-        <id>gateway_item.alert_interval</id>
-        <label>Alert Interval</label>
-        <advanced>true</advanced>
-        <type>text</type>
-        <help>Time interval between alerts. Default is 1.</help>
-    </field>
-    <field>
         <id>gateway_item.time_period</id>
         <label>Time Period</label>
         <advanced>true</advanced>
