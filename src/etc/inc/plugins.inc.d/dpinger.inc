@@ -318,7 +318,7 @@ function dpinger_status()
         $status[$gwitem['name']] = [
             /* grab the runtime monitor from the instance if available */
             'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
-            'monitor' => $gwitem['monitor'] ?: '~',
+            'monitor' => !empty($gwitem['monitor']) ? $gwitem['monitor'] : '~',
             'name' => $gwitem['name'],
             'stddev' => '~',
             'delay' => '~',
