@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2018 Deciso B.V.
+ *    Copyright (C) 2023 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,37 +28,17 @@
  *
  */
 
-namespace OPNsense\Base\Constraints;
+namespace OPNsense\Core;
 
 /**
- * Class DependConstraint, add a constraint to this field stating dependency of another field
- * (if this field is empty then the referred field should be empty too)
- * @package OPNsense\Base\Constraints
+ * Class BackupController
+ * @package OPNsense\Core
  */
-class DependConstraint extends BaseConstraint
+class BackupController extends \OPNsense\Base\IndexController
 {
-    /**
-     * Executes validation, expects a list of fields in "addFields" which to check for content.
-     * Fields are concerned empty if boolean false or containing an empty string
-     *
-     * @param $validator
-     * @param string $attribute
-     * @return boolean
-     */
-    public function validate($validator, $attribute): bool
+    public function historyAction($selected_host = null)
     {
-        $node = $this->getOption('node');
-        if ($node) {
-            $parentNode = $node->getParentNode();
-            if ($this->isEmpty($node)) {
-                foreach (array_unique($this->getOptionValueList('addFields')) as $fieldname) {
-                    if (!$this->isEmpty($parentNode->$fieldname)) {
-                        $this->appendMessage($validator, $attribute);
-                        break;
-                    }
-                }
-            }
-        }
-        return true;
+        $this->view->selected_host = $selected_host;
+        $this->view->pick('OPNsense/Core/backup_history');
     }
 }

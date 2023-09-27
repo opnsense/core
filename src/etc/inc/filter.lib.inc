@@ -273,7 +273,7 @@ function filter_core_rules_system($fw, $defaults)
         $fw->registerFilterRule(
             1,
             ['protocol' => 'carp', 'direction' => 'any', 'to' => $to, 'descr' => 'CARP defaults',
-                '#ref' => 'firewall_virtual_ip.php'],
+                '#ref' => 'ui/interfaces/vip'],
             $defaults['pass']
         );
     }

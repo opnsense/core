@@ -110,7 +110,7 @@ $do_reboot = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-
+    $pconfig['backupcount'] = isset($config['system']['backupcount']) ? $config['system']['backupcount'] : null;
     foreach ($backupFactory->listProviders() as $providerId => $provider) {
         foreach ($provider['handle']->getConfigurationFields() as $field) {
             $fieldId = $providerId . "_" .$field['name'];
@@ -324,6 +324,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             system_cron_configure();
         }
+    } elseif (!empty($pconfig['save'])) {
+        if ($pconfig['backupcount'] != null && (!is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] <= 0)) {
+            $input_errors[] = gettext('Backup count must be greater than zero.');
+        }
+        if (count($input_errors) == 0) {
+            if ($pconfig['backupcount'] != null) {
+                $config['system']['backupcount'] = $pconfig['backupcount'];
+            } elseif (isset($config['system']['backupcount'])) {
+                unset($config['system']['backupcount']);
+            }
+            write_config('Changed backup revision count');
+            $savemsg = get_std_save_message();
+        }
     }
 }
 
@@ -374,6 +387,32 @@ $( document ).ready(function() {
       <?php if (isset($input_messages)) print_info_box($input_messages); ?>
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <form method="post" enctype="multipart/form-data">
+        <section class="col-xs-12">
+            <div class="content-box tab-content table-responsive __mb">
+                <table class="table table-striped">
+                    <div class="content-box tab-content table-responsive __mb">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td colspan="2"><strong><?= gettext('Backup Count') ?></strong></td>
+                            </tr>
+                            <tr>
+                                <td><input name="backupcount" type="text" size="5" value="<?= html_safe($pconfig['backupcount']) ?>"/></td>
+                                <td><?= gettext("Enter the number of older configurations to keep in the local backup cache."); ?></td>
+                            </tr>
+                            <tr>
+                                <td><input name="save" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Save')) ?>"/></td>
+                                <td>
+                                    <?= gettext('Be aware of how much space is consumed by backups before adjusting this value.'); ?>
+<?php if (count(OPNsense\Core\Config::getInstance()->getBackups(true)) > 0): ?>
+                                    <?= gettext('Current space used:') . ' ' . exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+<?php endif ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                </table>
+            </div>
+        </section>
         <section class="col-xs-12">
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped">

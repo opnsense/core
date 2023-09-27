@@ -359,7 +359,7 @@
         });
 
         /**
-         * update expiration (updatefreq is splitted into days and hours on the form)
+         * update expiration (updatefreq is split into days and hours on the form)
          */
         $("#alias\\.updatefreq").change(function(){
             if ($(this).val() !== "") {

@@ -693,6 +693,24 @@ abstract class BaseField
     }
 
     /**
+     * @return string default validation message
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Validation failed.');
+    }
+
+    /**
+     * @return string current validation message
+     */
+    protected function getValidationMessage()
+    {
+        return $this->internalValidationMessage !== null ?
+            gettext($this->internalValidationMessage) :
+            $this->defaultValidationMessage();
+    }
+
+    /**
      * set Validation message ( for usage in model xml )
      * @param string $msg validation message (on failure)
      */

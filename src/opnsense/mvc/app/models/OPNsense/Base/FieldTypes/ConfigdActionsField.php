@@ -42,11 +42,6 @@ class ConfigdActionsField extends BaseListField
     private static $internalStaticOptionList = array();
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "please specify a valid action";
-
-    /**
      * @var array filters to use on the configd selection
      */
     private $internalFilters = array();

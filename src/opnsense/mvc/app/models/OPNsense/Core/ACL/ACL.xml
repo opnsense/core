@@ -80,7 +80,8 @@
     <page-diagnostics-configurationhistory>
         <name>Diagnostics: Configuration History</name>
         <patterns>
-            <pattern>diag_confbak.php*</pattern>
+            <pattern>ui/core/backup/history*</pattern>
+            <pattern>api/core/backup/*</pattern>
         </patterns>
     </page-diagnostics-configurationhistory>
     <page-diagnostics-factorydefaults>

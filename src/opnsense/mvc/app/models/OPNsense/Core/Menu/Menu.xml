@@ -34,9 +34,7 @@
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
             <Defaults url="/diag_defaults.php"/>
-            <History url="/diag_confbak.php">
-                <none url="/diag_confbak.php*" visibility="hidden"/>
-            </History>
+            <History url="/ui/core/backup/history/this"/>
         </Configuration>
         <Firmware cssClass="fa fa-building-o fa-fw">
             <Status order="10" url="/ui/core/firmware#status"/>

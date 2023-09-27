@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Deciso B.V.
+ * Copyright (C) 2017-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,6 +70,16 @@ class Util
     public static function isIpv6Address($address)
     {
         return !empty(filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6));
+    }
+
+    /**
+     * is provided address an link-locak IPv6 address.
+     * @param string $address network address
+     * @return boolean
+     */
+    public static function isLinkLocal($address)
+    {
+        return !!preg_match('/^fe[89ab][0-9a-f]:/i', $address);
     }
 
     /**

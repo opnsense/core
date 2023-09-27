@@ -52,10 +52,10 @@ class OpenVPN extends BaseModel
             if ($validateFullModel || $node->isFieldChanged()) {
                 $tagName = $node->getInternalXMLTagName();
                 $parentNode = $node->getParentNode();
-                $parentKey = $parentNode->__reference;
                 $parentTagName = $parentNode->getInternalXMLTagName();
+
                 if ($parentTagName === 'Instance') {
-                    $instances[$parentKey] = $parentNode;
+                    $instances[$parentNode->__reference] = $parentNode;
                 }
             }
         }
@@ -434,7 +434,7 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->username_as_common_name)) {
                         $options['username-as-common-name'] = null;
                     }
-                    // server only setttings
+                    // server only settings
                     if (!empty((string)$node->server) || !empty((string)$node->server_ipv6)) {
                         $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
                         // hook event handlers
@@ -499,6 +499,8 @@ class OpenVPN extends BaseModel
                 $options['proto'] = (string)$node->proto;
                 $options['verb'] = (string)$node->verb;
                 $options['verify-client-cert'] = (string)$node->verify_client_cert;
+                $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
+                $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
                 foreach (
                     [

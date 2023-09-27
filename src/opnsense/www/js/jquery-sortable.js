@@ -32,7 +32,7 @@
   var containerDefaults = {
     // If true, items can be dragged from this container
     drag: true,
-    // If true, items can be droped onto this container
+    // If true, items can be dropped onto this container
     drop: true,
     // Exclude items from being draggable, if the
     // selector matches the item

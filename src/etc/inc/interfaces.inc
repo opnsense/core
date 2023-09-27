@@ -2176,7 +2176,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $realif = get_real_interface($interface);
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    switch ($wancfg['ipaddr'] ?? '') {
+    switch ($wancfg['ipaddr'] ?? 'none') {
         case 'l2tp':
         case 'ppp':
         case 'pppoe':
@@ -2270,7 +2270,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
-    switch ($wancfg['ipaddr'] ?? '') {
+    switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
             interface_dhcp_configure($interface);
             break;
@@ -2296,7 +2296,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
 
-    switch ($wancfg['ipaddrv6'] ?? '') {
+    switch ($wancfg['ipaddrv6'] ?? 'none') {
         case 'slaac':
         case 'dhcp6':
             /* XXX move these to tunables maybe as they are global anyway */
@@ -3396,7 +3396,7 @@ function get_ppp_parent($ifcfg_if)
 }
 
 /* collect hardware device parents for VLAN, LAGG and bridges */
-function interface_parent_devices($device)
+function interface_parent_devices($device, $as_interface = false)
 {
     $parents = [];
 
@@ -3413,7 +3413,7 @@ function interface_parent_devices($device)
             if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members'] ?? '') as $member) {
                     /* bridge stores members as configured interfaces */
-                    $parents[] = get_real_interface($member);
+                    $parents[] = $as_interface ? $member : get_real_interface($member);
                 }
                 break;
             }
@@ -3967,15 +3967,15 @@ function get_interfaces_info($include_unlinked = false)
         $ifinfo['outerrs'] = $ifinfotmp['output errors'];
         $ifinfo['collisions'] = $ifinfotmp['collisions'];
 
-        $link_type = $config['interfaces'][$ifdescr]['ipaddr'] ?? '';
+        $link_type = $config['interfaces'][$ifdescr]['ipaddr'] ?? 'none';
         switch ($link_type) {
             case 'dhcp':
                 $ifinfo['dhcplink'] = isvalidpid("/var/run/dhclient.{$ifinfo['if']}.pid") ? 'up' : 'down';
                 break;
             /* PPPoE/PPTP/L2TP interface? -> get status from virtual interface */
-            case "pppoe":
-            case "pptp":
-            case "l2tp":
+            case 'pppoe':
+            case 'pptp':
+            case 'l2tp':
                 if ($ifinfo['status'] == "up") {
                     /* XXX get PPPoE link status for dial on demand */
                     $ifinfo["{$link_type}link"] = "up";
@@ -3984,7 +3984,7 @@ function get_interfaces_info($include_unlinked = false)
                 }
                 break;
             /* PPP interface? -> get uptime for this session and cumulative uptime from the persistent log file in conf */
-            case "ppp":
+            case 'ppp':
                 if ($ifinfo['status'] == "up") {
                     $ifinfo['ppplink'] = "up";
                 } else {
@@ -4026,7 +4026,7 @@ function get_interfaces_info($include_unlinked = false)
             }
         }
 
-        switch ($config['interfaces'][$ifdescr]['ipaddrv6'] ?? '') {
+        switch ($config['interfaces'][$ifdescr]['ipaddrv6'] ?? 'none') {
             case 'dhcp6':
                 $ifinfo['dhcp6link'] = isvalidpid('/var/run/dhcp6c.pid') && file_exists("/var/etc/dhcp6c_{$ifdescr}.conf") ? 'up' : 'down';
                 break;
@@ -4367,11 +4367,20 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
 function interfaces_has_prefix_only($interface)
 {
     $interfaces_a = config_read_array('interfaces');
+    $ret = false;
 
-    return empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
-        ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
-        empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-        isset($interfaces_a[$interface]['dhcp6prefixonly']));
+    switch ($interfaces_a[$interface]['ipaddrv6'] ?? 'none') {
+        case 'dhcp6':
+            $ret = empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
+                ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
+                empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
+                isset($interfaces_a[$interface]['dhcp6prefixonly']));
+            break;
+        default:
+            break;
+    }
+
+    return $ret;
 }
 
 function interfaces_primary_address($interface, $ifconfig_details = null)

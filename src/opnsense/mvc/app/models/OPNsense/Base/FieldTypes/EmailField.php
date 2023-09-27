@@ -42,9 +42,12 @@ class EmailField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
+     * {@inheritdoc}
      */
-    protected $internalValidationMessage = "email address invalid";
+    protected function defaultValidationMessage()
+    {
+        return gettext('Email address is invalid.');
+    }
 
     /**
      * retrieve field validators for this field type
@@ -54,7 +57,7 @@ class EmailField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new Email(array('message' => $this->internalValidationMessage));
+            $validators[] = new Email(['message' => $this->getValidationMessage()]);
         }
         return $validators;
     }

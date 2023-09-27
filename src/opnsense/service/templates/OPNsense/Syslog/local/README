@@ -7,6 +7,6 @@ A strict format is required here. f_local_[filename without .conf]. (e.g. f_loca
 
 All of these files are combined into a large configuration file defining a target per local file and a system log
 file containing all not catched in the local definitions.
-A local target named system is therefor not allowed here.
+A local target named system is therefore not allowed here.
 
 Underscores will be replaced as path reference, app_file.conf will result in a file /var/log/app/file/file_[XX].log

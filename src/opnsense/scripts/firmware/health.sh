@@ -108,7 +108,7 @@ set_check()
 			echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 		fi
 	else
-		echo "Error ${MTREE_RET} ocurred." | ${TEE} ${LOCKFILE}
+		echo "Error ${MTREE_RET} occurred." | ${TEE} ${LOCKFILE}
 		echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 	fi
 
