@@ -87,7 +87,7 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        if (isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['monitor_noroute'])) {
             /* no need to register */
             continue;
         } elseif (empty($gateway['gateway'])) {
@@ -231,7 +231,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        if (!empty($gateway['gateway']) && !isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['gateway']) && empty($gateway['monitor_noroute'])) {
             if (isset($routes[$gateway['monitor']])) {
                 log_msg("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
             } else {
