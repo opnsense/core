@@ -635,8 +635,8 @@
     <page-system-gateways>
         <name>System: Gateways</name>
         <patterns>
-            <pattern>ui/gateways/configuration</pattern>
-            <pattern>api/gateways/settings/*</pattern>
+            <pattern>ui/routing/configuration</pattern>
+            <pattern>api/routing/settings/*</pattern>
         </patterns>
     </page-system-gateways>
     <page-system-gatewaygroups>

@@ -338,9 +338,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/Api/SettingsController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/ConfigurationController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Gateways/forms/dialogEditGateway.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IDS/IndexController.php
@@ -431,6 +428,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/forms/dialogEditRoute.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/ConfigurationController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/forms/dialogEditGateway.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/IndexController.php
@@ -767,7 +767,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Gateways/configuration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/connections.volt
@@ -792,6 +791,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Routing/configuration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt

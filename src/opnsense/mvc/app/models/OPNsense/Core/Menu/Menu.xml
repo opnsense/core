@@ -49,7 +49,7 @@
             <LogFile order="80" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
-            <Configuration order="10" url="/ui/gateways/configuration"></Configuration>
+            <Configuration order="10" url="/ui/routing/configuration"></Configuration>
             <Group order="20" url="/system_gateway_groups.php">
                 <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>

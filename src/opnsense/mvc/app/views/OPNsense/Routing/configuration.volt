@@ -28,12 +28,12 @@
     $( document ).ready(function() {
 
         $("#grid-gateways").UIBootgrid({
-            search:'/api/gateways/settings/searchGateway/',
-            get:'/api/gateways/settings/getGateway/',
-            set:'/api/gateways/settings/setGateway/',
-            add:'/api/gateways/settings/addGateway/',
-            del:'/api/gateways/settings/delGateway/',
-            toggle:'/api/gateways/settings/toggleGateway/',
+            search:'/api/routing/settings/searchGateway/',
+            get:'/api/routing/settings/getGateway/',
+            set:'/api/routing/settings/setGateway/',
+            add:'/api/routing/settings/addGateway/',
+            del:'/api/routing/settings/delGateway/',
+            toggle:'/api/routing/settings/toggleGateway/',
             options: {
                 selection: false,
                 multiSelect: false,
@@ -145,7 +145,7 @@
         <tr>
             <td>
                 <button class="btn btn-primary" id="reconfigureAct"
-                        data-endpoint='/api/gateways/settings/reconfigure'
+                        data-endpoint='/api/routing/settings/reconfigure'
                         data-label="{{ lang._('Apply') }}"
                         data-error-title="{{ lang._('Error reconfiguring gateways') }}"
                         type="button"

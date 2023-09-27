@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Gateways;
+namespace OPNsense\Routing;
 
 class ConfigurationController extends \OPNsense\Base\IndexController
 {
@@ -34,6 +34,6 @@ class ConfigurationController extends \OPNsense\Base\IndexController
     {
         // include dialog form definitions
         $this->view->formDialogEditGateway = $this->getForm("dialogEditGateway");
-        $this->view->pick('OPNsense/Gateways/configuration');
+        $this->view->pick('OPNsense/Routing/configuration');
     }
 }

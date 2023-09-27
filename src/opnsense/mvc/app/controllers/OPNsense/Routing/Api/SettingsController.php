@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Gateways\Api;
+namespace OPNsense\Routing\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
