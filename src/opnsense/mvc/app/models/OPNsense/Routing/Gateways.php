@@ -56,7 +56,7 @@ class Gateways extends BaseModel
             'interval' => 1,
             'latencyhigh' => 500,
             'latencylow' => 200,
-            'loss_interval' => 2,
+            'loss_interval' => 4,
             'losshigh' => 20,
             'losslow' => 10,
             'time_period' => 60,
