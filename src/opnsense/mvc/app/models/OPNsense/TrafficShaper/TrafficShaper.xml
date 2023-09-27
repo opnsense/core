@@ -32,7 +32,6 @@
                     <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s, Mbit/s or Gbit/s</ValidationMessage>
                 </bandwidthMetric>
                 <queue type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>100</MaximumValue>
                     <ValidationMessage>queue size should be between 2...100</ValidationMessage>
@@ -47,13 +46,11 @@
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
                 </buckets>
                 <scheduler type="OptionField">
-                    <Required>N</Required>
                     <BlankDesc>Weighted Fair Queueing</BlankDesc>
                     <OptionValues>
                         <fifo>FIFO</fifo>
@@ -77,12 +74,10 @@
                     </Constraints>
                 </codel_enable>
                 <codel_target type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_target>
                 <codel_interval type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
@@ -100,27 +95,22 @@
                     </Constraints>
                 </pie_enable>
                 <fqcodel_quantum type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_quantum>
                 <fqcodel_limit type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_limit>
                 <fqcodel_flows type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_flows>
                 <origin type="TextField">
-                    <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
                     <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
                 <delay type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>3000</MaximumValue>
                     <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
@@ -172,7 +162,6 @@
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
@@ -191,12 +180,10 @@
                     </Constraints>
                 </codel_enable>
                 <codel_target type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_target>
                 <codel_interval type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
@@ -219,7 +206,6 @@
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
                 <origin type="TextField">
-                    <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
@@ -247,7 +233,6 @@
                     </filters>
                 </interface>
                 <interface2 type="InterfaceField">
-                    <Required>N</Required>
                     <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
@@ -275,7 +260,6 @@
                 <iplen type="IntegerField">
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <Required>N</Required>
                     <ValidationMessage>The absolute limitation for packet size is 64K (65535 bytes)</ValidationMessage>
                 </iplen>
                 <source type="NetworkField">
@@ -311,7 +295,6 @@
                     <Default>any</Default>
                 </dst_port>
                 <dscp type="OptionField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <be>Best Effort</be>
@@ -338,7 +321,6 @@
                     </OptionValues>
                 </dscp>
                 <direction type="OptionField">
-                    <Required>N</Required>
                     <BlankDesc>both</BlankDesc>
                     <OptionValues>
                         <in>in</in>
@@ -368,11 +350,9 @@
                     <Required>Y</Required>
                 </target>
                 <description type="TextField">
-                    <Required>N</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
                 </description>
                 <origin type="TextField">
-                    <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
