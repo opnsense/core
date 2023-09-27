@@ -326,14 +326,14 @@ abstract class BaseModel
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
-
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
         }
-        $this->internal_mountpoint = $model_xml->mount;
 
+        $this->internal_mountpoint = $model_xml->mount;
         $config_array = [];
-        if ($this->internal_mountpoint != ':memory:') {
+
+        if (!$this->isVolatile()) {
             /*
              *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
              *       mountpoints starting with a single /
@@ -350,8 +350,6 @@ abstract class BaseModel
                 $config_array = simplexml_import_dom($tmp_config_data->item(0));
             }
         }
-
-
 
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData);
@@ -426,6 +424,15 @@ abstract class BaseModel
     public function iterateItems()
     {
         return $this->internalData->iterateItems();
+    }
+
+    /**
+     * check if the model is not persistent in the config
+     * @return true if memory model, false if config is stored
+     */
+    public function isVolatile()
+    {
+        return $this->internal_mountpoint == ':memory:';
     }
 
     /**
@@ -586,12 +593,13 @@ abstract class BaseModel
                 throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
-        if ($this->internal_mountpoint != ':memory:') {
-            $this->internalSerializeToConfig();
-            return true;
-        } else {
+
+        if ($this->isVolatile()) {
             return false;
         }
+
+        $this->internalSerializeToConfig();
+        return true;
     }
 
     /**
@@ -645,7 +653,7 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if ($this->internal_mountpoint == ':memory:') {
+        if ($this->isVolatile()) {
             return false;
         } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
