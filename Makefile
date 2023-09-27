@@ -528,6 +528,9 @@ push:
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
 
+validate:
+	@src/opnsense/mvc/script/run_validations.php
+
 test: debug
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
 		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
