@@ -131,7 +131,7 @@
         <label>Loss Interval</label>
         <advanced>true</advanced>
         <type>text</type>
-        <help>Time interval before packets are treated as lost. Default is 2.</help>
+        <help>Time interval before packets are treated as lost. Default is 4 (four times the probe interval).</help>
     </field>
     <field>
         <id>gateway_item.data_length</id>
