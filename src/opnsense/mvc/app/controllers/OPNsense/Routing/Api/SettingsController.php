@@ -113,6 +113,9 @@ class SettingsController extends ApiMutableModelControllerBase
                     if (array_key_exists($gateway['if'], $ifconfig)) {
                         $ipproto = $gateway['ipprotocol'] === 'inet' ? 'ipv4' : 'ipv6';
                         $subnets = [];
+
+                        $ptp = in_array("pointopoint", $ifconfig[$gateway['if']]['flags'] ?? []);
+
                         foreach ($ifconfig[$gateway['if']][$ipproto] as $ip) {
                             if (!empty($ip['ipaddr']) && !empty($ip['subnetbits'])) {
                                 $subnets[] = $ip['ipaddr'] . '/' . $ip['subnetbits'];
@@ -127,7 +130,7 @@ class SettingsController extends ApiMutableModelControllerBase
                             }
                         }
 
-                        if (empty($subnets) || !$match) {
+                        if ((empty($subnets) || !$match) && !$ptp) {
                             $gateways[$idx]['status'] = gettext('Misconfigured');
                             $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
                         }
