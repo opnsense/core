@@ -6,17 +6,17 @@
         <Connections>
             <Connection type=".\ConnnectionField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <proposals type=".\IPsecProposalField">
-                    <default>default</default>
+                    <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
                 </proposals>
                 <unique type="OptionField">
                     <Required>Y</Required>
-                    <default>no</default>
+                    <Default>no</Default>
                     <OptionValues>
                         <no>No (default)</no>
                         <never>Never</never>
@@ -25,12 +25,12 @@
                     </OptionValues>
                 </unique>
                 <aggressive type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </aggressive>
                 <version type="OptionField">
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                     <OptionValues>
                         <ike value="0">IKEv1+IKEv2</ike>
                         <ikev1 value="1">IKEv1</ikev1>
@@ -38,68 +38,55 @@
                     </OptionValues>
                 </version>
                 <mobike type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </mobike>
-                <local_addrs type=".\IKEAdressField">
-                    <Required>N</Required>
-                </local_addrs>
+                <local_addrs type=".\IKEAdressField"/>
                 <local_port type="OptionField">
-                    <Required>N</Required>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
                     </OptionValues>
                 </local_port>
-                <remote_addrs type=".\IKEAdressField">
-                    <Required>N</Required>
-                </remote_addrs>
+                <remote_addrs type=".\IKEAdressField"/>
                 <remote_port type="OptionField">
-                    <Required>N</Required>
                     <OptionValues>
                         <port500 value="">500 (default)</port500>
                         <port4500 value="4500">4500 (NAT-T)</port4500>
                     </OptionValues>
                 </remote_port>
                 <encap type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </encap>
                 <reauth_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </reauth_time>
                 <rekey_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </rekey_time>
                 <over_time type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </over_time>
                 <dpd_delay  type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </dpd_delay>
                 <dpd_timeout type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
-                    <Required>N</Required>
                 </dpd_timeout>
                 <pools type=".\PoolsField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </pools>
                 <send_certreq type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </send_certreq>
                 <send_cert type="OptionField">
-                    <Required>N</Required>
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
                         <ifasked>If asked</ifasked>
@@ -107,20 +94,17 @@
                         <always>Always</always>
                     </OptionValues>
                 </send_cert>
-                <keyingtries  type="IntegerField">
+                <keyingtries type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>1000</MaximumValue>
-                    <Required>N</Required>
                 </keyingtries>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </Connection>
         </Connections>
         <locals>
             <local type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -137,11 +121,11 @@
                     <Required>Y</Required>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10</MaximumValue>
-                    <default>0</default>
+                    <Default>0</Default>
                 </round>
                 <auth type="OptionField">
                     <Required>Y</Required>
-                    <default>psk</default>
+                    <Default>psk</Default>
                     <OptionValues>
                         <psk>Pre-Shared Key</psk>
                         <pubkey>Public Key</pubkey>
@@ -152,15 +136,12 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </id>
                 <eap_id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
                 </eap_id>
                 <certs type="CertificateField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
@@ -173,17 +154,14 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                 </pubkeys>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </local>
         </locals>
         <remotes>
             <remote type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -200,11 +178,11 @@
                     <Required>Y</Required>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>10</MaximumValue>
-                    <default>0</default>
+                    <Default>0</Default>
                 </round>
                 <auth type="OptionField">
                     <Required>Y</Required>
-                    <default>psk</default>
+                    <Default>psk</Default>
                     <OptionValues>
                         <psk>Pre-Shared Key</psk>
                         <pubkey>Public Key</pubkey>
@@ -215,15 +193,12 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
                 </id>
                 <eap_id type="TextField">
-                    <Required>N</Required>
                     <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
                 </eap_id>
                 <certs type="CertificateField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certs>
@@ -236,18 +211,15 @@
                         </host>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                 </pubkeys>
                 <!-- XXX add cacert field + logic in ipsec_write_cas -->
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </remote>
         </remotes>
         <children>
             <child type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <connection type="ModelRelationField">
@@ -263,23 +235,22 @@
                 <reqid type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <Required>N</Required>
                 </reqid>
                 <esp_proposals type=".\IPsecProposalField">
-                    <default>default</default>
+                    <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
                 </esp_proposals>
                 <sha256_96 type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </sha256_96>
                 <start_action type="OptionField">
                     <Required>Y</Required>
-                    <default>start</default>
+                    <Default>start</Default>
                     <OptionValues>
                         <none>None</none>
-                        <trap_start value='trap|start'>Trap+start</trap_start>
+                        <trap_start value="trap|start">Trap+start</trap_start>
                         <route>Route</route>
                         <start>Start</start>
                         <trap>Trap</trap>
@@ -287,7 +258,7 @@
                 </start_action>
                 <close_action type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>None</none>
                         <trap>Trap</trap>
@@ -296,7 +267,7 @@
                 </close_action>
                 <dpd_action  type="OptionField">
                     <Required>Y</Required>
-                    <default>clear</default>
+                    <Default>clear</Default>
                     <OptionValues>
                         <clear>Clear</clear>
                         <trap>Trap</trap>
@@ -305,7 +276,7 @@
                 </dpd_action>
                 <mode type="OptionField">
                     <Required>Y</Required>
-                    <default>tunnel</default>
+                    <Default>tunnel</Default>
                     <OptionValues>
                         <tunnel>Tunnel</tunnel>
                         <transport>Transport</transport>
@@ -314,7 +285,7 @@
                     </OptionValues>
                 </mode>
                 <policies type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </policies>
                 <local_ts type="NetworkField">
@@ -328,20 +299,18 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </remote_ts>
                 <rekey_time type="IntegerField">
-                    <default>3600</default>
+                    <Default>3600</Default>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>500000</MaximumValue>
                     <Required>Y</Required>
                 </rekey_time>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </child>
         </children>
         <Pools>
             <Pool type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <name type="TextField">
@@ -365,14 +334,14 @@
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
                     <AsList>Y</AsList>
-                    <ValidationMessage>'Entry is not a valid IPv4 or IPv6 address.'</ValidationMessage>
+                    <ValidationMessage>Entry is not a valid IPv4 or IPv6 address.</ValidationMessage>
                 </dns>
             </Pool>
         </Pools>
         <VTIs>
             <VTI type=".\VTIField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <reqid type="IntegerField">
@@ -410,20 +379,18 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </VTI>
         </VTIs>
         <SPDs>
             <SPD type=".\SPDField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <protocol type="OptionField">
                     <Required>Y</Required>
-                    <default>esp</default>
+                    <Default>esp</Default>
                     <OptionValues>
                         <esp>ESP</esp>
                         <ah>AH</ah>
@@ -448,12 +415,9 @@
                     <WildcardEnabled>N</WildcardEnabled>
                 </source>
                 <destination type="NetworkField">
-                    <Required>N</Required>
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination>
-                <description type="TextField">
-                    <Required>N</Required>
-                </description>
+                <description type="TextField"/>
             </SPD>
         </SPDs>
     </items>
