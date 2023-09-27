@@ -250,7 +250,7 @@
                     <Default>start</Default>
                     <OptionValues>
                         <none>None</none>
-                        <trap_start value='trap|start'>Trap+start</trap_start>
+                        <trap_start value="trap|start">Trap+start</trap_start>
                         <route>Route</route>
                         <start>Start</start>
                         <trap>Trap</trap>
@@ -334,7 +334,7 @@
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
                     <AsList>Y</AsList>
-                    <ValidationMessage>'Entry is not a valid IPv4 or IPv6 address.'</ValidationMessage>
+                    <ValidationMessage>Entry is not a valid IPv4 or IPv6 address.</ValidationMessage>
                 </dns>
             </Pool>
         </Pools>

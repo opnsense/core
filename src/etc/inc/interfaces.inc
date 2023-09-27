@@ -1019,21 +1019,7 @@ default:
   set iface name {$ifcfg['if']}
 
 EOD;
-    $setdefaultgw = false;
-    $founddefaultgw = false;
-    foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
-        if ($interface == $gateway['interface'] && !empty($gateway['defaultgw'])) {
-            $setdefaultgw = true;
-            break;
-        } elseif (!empty($gateway['defaultgw']) && !empty($gateway['interface'])) {
-            $founddefaultgw = true;
-            break;
-        }
-    }
 
-    if (!$founddefaultgw || $setdefaultgw) {
-        $mpdconf .= "  set iface route default\n";
-    }
     if (isset($ppp['ondemand'])) {
         $mpdconf .= "  set iface enable on-demand\n";
     } else {
