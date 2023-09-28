@@ -22,9 +22,7 @@
                     </check001>
                 </Constraints>
             </name>
-            <descr type="TextField">
-                <Required>N</Required>
-            </descr>
+            <descr type="TextField"/>
             <interface type="InterfaceField">
                 <Required>Y</Required>
                 <multiple>N</multiple>
@@ -43,7 +41,6 @@
                 </OptionValues>
             </ipprotocol>
             <gateway type="TextField">
-                <Required>N</Required>
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>
@@ -63,7 +60,6 @@
             </monitor_disable>
             <monitor_noroute type="BooleanField"/>
             <monitor type="TextField">
-                <Required>N</Required>
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>
@@ -87,7 +83,6 @@
                 <MaximumValue>5</MaximumValue>
             </weight>
             <latencylow type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <Constraints>
                     <ValidationMessage>The low latency threshold needs to be lower than the high latency threshold.</ValidationMessage>
@@ -97,7 +92,6 @@
                 </Constraints>
             </latencylow>
             <latencyhigh type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <Constraints>
                     <ValidationMessage>The high latency threshold needs to be higher than the low latency threshold.</ValidationMessage>
@@ -107,7 +101,6 @@
                 </Constraints>
             </latencyhigh>
             <losslow type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>99</MaximumValue>
                 <Constraints>
@@ -118,7 +111,6 @@
                 </Constraints>
             </losslow>
             <losshigh type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>100</MaximumValue>
                 <Constraints>
@@ -129,19 +121,15 @@
                 </Constraints>
             </losshigh>
             <interval type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </interval>
             <time_period type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </time_period>
             <loss_interval type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>1</MinimumValue>
             </loss_interval>
             <data_length type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>0</MinimumValue>
             </data_length>
         </gateway_item>
