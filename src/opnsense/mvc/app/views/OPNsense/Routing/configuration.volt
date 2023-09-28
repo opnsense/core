@@ -69,11 +69,11 @@
                         return row.ipprotocol == 'inet' ? 'IPv4' : 'IPv6';
                     },
                     "priorityformatter": function (column, row) {
-                        if (row.defunct == '1') {
+                        if (row.defunct) {
                             row.priority = '{{ lang._('defunct') }}';
                         }
                         let elem = '<span class="break">' + row.priority;
-                        if (row.upstream == '1') {
+                        if (row.upstream) {
                             elem += ' <small>({{ lang._('upstream') }})</small>';
                         }
 

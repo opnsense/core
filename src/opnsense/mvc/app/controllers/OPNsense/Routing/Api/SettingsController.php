@@ -71,11 +71,10 @@ class SettingsController extends ApiMutableModelControllerBase
                 $gateways[$idx]['uuid'] = $gateway['name'];
             }
 
-            $gateways[$idx]['inactive'] = (empty($gateway['is_loopback']) && empty($gateway['if'])) ? true : false;
-            $gateways[$idx]['virtual'] = empty($gateway['virtual']) ? false : true;
-            $gateways[$idx]['disabled'] = empty($gateway['disabled']) ? false : true;
-            $gateways[$idx]['upstream'] = empty($gateway['defaultgw']) ? false : true;
-
+            /* flags used by view to filter or format elements */
+            $gateways[$idx]['virtual'] = !empty($gateway['virtual']);
+            $gateways[$idx]['disabled'] = !empty($gateway['disabled']);
+            $gateways[$idx]['upstream'] = !empty($gateway['defaultgw']);
             $gateways[$idx]['defaultgw'] = false;
             foreach (['default_gwv4', 'default_gwv6'] as $default_gw) {
                 /* gateway might be configured as defaultgw, whether it is active is determined here */
@@ -86,15 +85,15 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
             }
 
-            /* Format interface name */
+            /* format interface name */
             $gateways[$idx]['interface_descr'] = (string)$cfg->interfaces->{$gateway['interface']}->descr ?: strtoupper($gateway['interface']);
 
+            /* parse gateway and monitoring status */
             $i = array_search($gateway['name'], array_column($gateways_status, 'name'));
             $gateways[$idx]['status'] = $i !== false ? $gateways_status[$i]['status_translated'] : 'Pending';
             foreach (['delay', 'stddev', 'loss'] as $status_kw) {
                 $gateways[$idx][$status_kw] = $i !== false ? $gateways_status[$i][$status_kw] : '~';
             }
-
             $gateways[$idx]['label_class'] = 'fa fa-plug text-default';
             if ($i !== false) {
                 if (str_contains($gateways_status[$i]['status'], 'down')) {
@@ -108,13 +107,16 @@ class SettingsController extends ApiMutableModelControllerBase
                 $gateways[$idx]['label_class'] = 'fa fa-plug text-success';
             }
 
+            /* warn about misconfigured gateways */
             if (empty($gateway['fargw']) && array_key_exists('gateway', $gateway)) {
                 if (Util::isIpAddress($gateway['gateway'])) {
-                    if (array_key_exists($gateway['if'], $ifconfig)) {
+                    /* exclude non-static entries in the config */
+                    $proto = $gateway['ipprotocol'] === 'inet' ? 'ipaddr' : 'ipaddrv6';
+                    $ip = (string)$cfg->interfaces->{$gateway['interface']}->{$proto};
+                    $include = (!empty($ip) && Util::isIpAddress($ip));
+                    if ($include && array_key_exists($gateway['if'], $ifconfig)) {
                         $ipproto = $gateway['ipprotocol'] === 'inet' ? 'ipv4' : 'ipv6';
                         $subnets = [];
-
-                        $ptp = in_array("pointopoint", $ifconfig[$gateway['if']]['flags'] ?? []);
 
                         foreach ($ifconfig[$gateway['if']][$ipproto] as $ip) {
                             if (!empty($ip['ipaddr']) && !empty($ip['subnetbits'])) {
@@ -130,15 +132,15 @@ class SettingsController extends ApiMutableModelControllerBase
                             }
                         }
 
-                        if ((empty($subnets) || !$match) && !$ptp) {
-                            $gateways[$idx]['status'] = gettext('Misconfigured');
+                        if (empty($subnets) || !$match) {
+                            $gateways[$idx]['status'] = gettext('Misconfigured Gateway IP');
                             $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
                         }
                     }
                 }
             }
 
-            if ($gateways[$idx]['inactive']) {
+            if (empty($gateway['is_loopback']) && empty($gateway['if'])) {
                 $gateways[$idx]['status'] = gettext('No interface attached');
                 $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
             }
