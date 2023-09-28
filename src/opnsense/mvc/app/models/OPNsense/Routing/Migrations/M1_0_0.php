@@ -75,7 +75,7 @@ class M1_0_0 extends BaseModelMigration
                 }
 
                 // apply dpinger defaults if old model didn't have them set
-                foreach ((new Gateways)::getDpingerDefaults() as $key => $value) {
+                foreach (Gateways::getDpingerDefaults() as $key => $value) {
                     if (empty((string)$node->$key)) {
                         $node->$key = $value;
                     }
