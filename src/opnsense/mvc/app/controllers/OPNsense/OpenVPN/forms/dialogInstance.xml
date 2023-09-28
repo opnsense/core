@@ -131,7 +131,7 @@
         <id>instance.carp_depend_on</id>
         <label>Depend on (CARP)</label>
         <type>dropdown</type>
-        <style>role role_client</style>
+        <style>role role_client selectpicker</style>
         <help>The CARP VHID to depend on. When this virtual address is not in master state, the instance will be shutdown.</help>
     </field>
     <field>
