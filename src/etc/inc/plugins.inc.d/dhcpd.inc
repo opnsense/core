@@ -1363,7 +1363,9 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
                     /* get config entry and marry it to the live prefix */
                     $dhcpdv6cfg[$ifname]['range']['from'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']);
                     $dhcpdv6cfg[$ifname]['range']['to'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']);
-                } elseif (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
+                }
+
+                if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
                     /* XXX $pdlen is never validated against prefixlenght setting, but must be smaller or equal */
                     $pdlen = 64 - calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
 
