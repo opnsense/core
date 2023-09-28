@@ -45,20 +45,20 @@ class M1_0_0 extends BaseModelMigration
         if (!empty($config->gateways) && !empty($config->gateways->gateway_item)) {
             foreach ($config->gateways->gateway_item as $gateway) {
                 $node = $model->gateway_item->Add();
-                $node_properties = iterator_to_array($node->iterateItems());
 
-                // apply non-existing/empty nodes
-                foreach ($node_properties as $key => $value) {
-                    if (empty((string)$gateway->$key)) {
-                        // either key doesn't exist or value is null
-                        $node->$key = (string)$value;
-                    }
-                }
-
-                // monitoring was on when no node present, exception to the rule above
+                // monitoring was on when no node present
                 $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
 
+                if (empty((string)$gateway->priority)) {
+                    $node->priority = '255';
+                }
+
+                if (empty((string)$gateway->ipprotocol)) {
+                    $node->ipprotocol = 'inet';
+                }
+
                 // migrate set nodes
+                $node_properties = iterator_to_array($node->iterateItems());
                 foreach ($gateway as $key => $value) {
                     if (!array_key_exists($key, $node_properties)) {
                         // skip unknown nodes
