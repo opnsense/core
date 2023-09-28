@@ -1260,7 +1260,7 @@
 /usr/local/opnsense/version/core
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
-/usr/local/opnsense/www/css/bootstrap-select-1.13.3.css
+/usr/local/opnsense/www/css/bootstrap-select.css
 /usr/local/opnsense/www/css/chart.css
 /usr/local/opnsense/www/css/dns-overview.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg
