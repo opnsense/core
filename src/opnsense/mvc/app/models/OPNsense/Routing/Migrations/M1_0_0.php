@@ -45,36 +45,34 @@ class M1_0_0 extends BaseModelMigration
         if (!empty($config->gateways) && !empty($config->gateways->gateway_item)) {
             foreach ($config->gateways->gateway_item as $gateway) {
                 $node = $model->gateway_item->Add();
+                $node_properties = iterator_to_array($node->iterateItems());
 
-                // monitor_disable was "on" when no node present
-                $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
-
-                if (empty((string)$gateway->priority)) {
-                    $node->priority = '255';
+                /* apply non-existing nodes */
+                foreach ($node_properties as $key => $value) {
+                    if (empty((string)$gateway->$key)) {
+                        // either key doesn't exist or value is null
+                        $node->$key = (string)$value;
+                    }
                 }
 
-                if (empty((string)$gateway->ipprotocol)) {
-                    $node->ipprotocol = 'inet';
-                }
-
+                /* migrate set nodes */
                 foreach ($gateway as $key => $value) {
+                    if (!array_key_exists($key, $node_properties)) {
+                        // skip unknown nodes
+                        continue;
+                    }
+
                     if ($key === 'gateway') {
                         // change all occurences of "dynamic" to empty string
                         $node->gateway = str_replace('dynamic', '', (string)$value);
                         continue;
                     }
 
-                    if ($key === 'alert_interval') {
-                        // alert_interval was removed
-                        continue;
-                    }
-
                     $node->$key = (string)$value;
                 }
 
-                $dpinger_defaults = (new Gateways)::getDpingerDefaults();
                 // apply dpinger defaults if old model didn't have them set
-                foreach ($dpinger_defaults as $key => $value) {
+                foreach ((new Gateways)::getDpingerDefaults() as $key => $value) {
                     if (empty((string)$node->$key)) {
                         $node->$key = $value;
                     }
