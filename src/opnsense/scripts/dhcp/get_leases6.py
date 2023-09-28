@@ -58,7 +58,7 @@ def parse_iaaddr_iaprefix(input):
             segment[field_name] = parts[2].strip(';')
         elif field_name in ('preferred-life', 'max-life'):
             field_value = parts[1].strip(';')
-        elif field_name == 'ends':
+        elif field_name == 'ends' and len(parts) >= 4:
             field_value = parse_date(parts[2], parts[3])
 
         if field_value is not None:
