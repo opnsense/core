@@ -47,7 +47,7 @@ class M1_0_0 extends BaseModelMigration
                 $node = $model->gateway_item->Add();
                 $node_properties = iterator_to_array($node->iterateItems());
 
-                /* apply non-existing nodes */
+                // apply non-existing/empty nodes
                 foreach ($node_properties as $key => $value) {
                     if (empty((string)$gateway->$key)) {
                         // either key doesn't exist or value is null
@@ -55,7 +55,10 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
 
-                /* migrate set nodes */
+                // monitoring was on when no node present, exception to the rule above
+                $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
+
+                // migrate set nodes
                 foreach ($gateway as $key => $value) {
                     if (!array_key_exists($key, $node_properties)) {
                         // skip unknown nodes

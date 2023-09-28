@@ -5,7 +5,8 @@
     <items>
         <gateway_item type="ArrayField">
             <disabled type="BooleanField">
-                <Required>N</Required>
+                <Default>0</Default>
+                <Required>Y</Required>
             </disabled>
             <name type="TextField">
                 <Required>Y</Required>
@@ -54,19 +55,13 @@
                     </check001>
                 </Constraints>
             </gateway>
-            <defaultgw type="BooleanField">
-                <Required>N</Required>
-            </defaultgw>
-            <fargw type="BooleanField">
-                <Required>N</Required>
-            </fargw>
+            <defaultgw type="BooleanField"/>
+            <fargw type="BooleanField"/>
             <monitor_disable type="BooleanField">
                 <default>1</default>
                 <Required>Y</Required>
             </monitor_disable>
-            <monitor_noroute type="BooleanField">
-                <Required>N</Required>
-            </monitor_noroute>
+            <monitor_noroute type="BooleanField"/>
             <monitor type="TextField">
                 <Required>N</Required>
                 <Constraints>
@@ -77,9 +72,7 @@
                     </check001>
                 </Constraints>
             </monitor>
-            <force_down type="BooleanField">
-                <Required>N</Required>
-            </force_down>
+            <force_down type="BooleanField"/>
             <priority type="IntegerField">
                 <default>255</default>
                 <Required>Y</Required>
