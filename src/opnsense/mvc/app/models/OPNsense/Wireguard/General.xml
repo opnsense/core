@@ -1,0 +1,11 @@
+<model>
+    <mount>//OPNsense/wireguard/general</mount>
+    <description>WireGuard configuration</description>
+    <version>0.0.1</version>
+    <items>
+        <enabled type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </enabled>
+    </items>
+</model>

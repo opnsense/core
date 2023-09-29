@@ -1,0 +1,45 @@
+<model>
+    <mount>//OPNsense/wireguard/client</mount>
+    <description>Wireguard Client configuration</description>
+    <version>0.0.7</version>
+    <items>
+        <clients>
+            <client type="ArrayField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([0-9a-zA-Z._\-]){1,64}$/u</mask>
+                    <ValidationMessage>Should be a string between 1 and 64 characters. Allowed characters are alphanumeric characters, dash and underscores.</ValidationMessage>
+                </name>
+                <pubkey type="Base64Field">
+                    <Required>Y</Required>
+                    <ValidationMessage>Should be a base64-encoded 32 byte string.</ValidationMessage>
+                </pubkey>
+                <psk type="Base64Field">
+                    <Required>N</Required>
+                    <ValidationMessage>Should be a base64-encoded 32 byte string.</ValidationMessage>
+                </psk>
+                <tunneladdress type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <Required>Y</Required>
+                    <asList>Y</asList>
+                </tunneladdress>
+                <serveraddress type="HostnameField">
+                    <Required>N</Required>
+                </serveraddress>
+                <serverport type="PortField">
+                    <Required>N</Required>
+                </serverport>
+                <keepalive type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>86400</MaximumValue>
+                    <ValidationMessage>Please specify a value between 1 and 86400.</ValidationMessage>
+                    <Required>N</Required>
+                </keepalive>
+            </client>
+        </clients>
+    </items>
+</model>

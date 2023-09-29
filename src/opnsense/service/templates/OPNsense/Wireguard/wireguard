@@ -1,0 +1,2 @@
+# disable the wireguard rc scripts when installed, bootup handled via rc.syshook
+wireguard_enable="NO"
