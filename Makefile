@@ -189,6 +189,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			sudo \
 			syslog-ng \
 			unbound \
+			wireguard-kmod \
 			wpa_supplicant \
 			zip \
 			${CORE_DEPENDS_${CORE_ARCH}}
