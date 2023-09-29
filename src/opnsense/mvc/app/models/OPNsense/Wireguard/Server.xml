@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/wireguard/server</mount>
-    <description>Wireguard Server configuration</description>
+    <description>WireGuard instance configuration</description>
     <version>0.0.4</version>
     <items>
         <servers>
@@ -25,22 +25,17 @@
                     <Required>Y</Required>
                     <ValidationMessage>A private key is required</ValidationMessage>
                 </privkey>
-                <port type="PortField">
-                    <Required>N</Required>
-                </port>
+                <port type="PortField"/>
                 <mtu type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9300</MaximumValue>
-                    <Required>N</Required>
                 </mtu>
                 <dns type="CSVListField">
-                    <Required>N</Required>
                     <mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</mask>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
-                    <Required>N</Required>
                     <asList>Y</asList>
                 </tunneladdress>
                 <disableroutes type="BooleanField">
@@ -56,12 +51,9 @@
                         </check001>
                     </Constraints>
                 </disableroutes>
-                <gateway type="NetworkField">
-                    <Required>N</Required>
-                </gateway>
+                <gateway type="NetworkField"/>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>
-                    <Required>N</Required>
                     <key>mvc</key>
                 </carp_depend_on>
                 <peers type="ModelRelationField">
@@ -73,7 +65,6 @@
                         </template>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <Required>N</Required>
                     <ValidationMessage>Choose an Peer.</ValidationMessage>
                 </peers>
             </server>

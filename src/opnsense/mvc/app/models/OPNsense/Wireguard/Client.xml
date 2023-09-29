@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/wireguard/client</mount>
-    <description>Wireguard Client configuration</description>
+    <description>Wireguard peer configuration</description>
     <version>0.0.7</version>
     <items>
         <clients>
@@ -16,28 +16,19 @@
                 </name>
                 <pubkey type="Base64Field">
                     <Required>Y</Required>
-                    <ValidationMessage>Should be a base64-encoded 32 byte string.</ValidationMessage>
                 </pubkey>
-                <psk type="Base64Field">
-                    <Required>N</Required>
-                    <ValidationMessage>Should be a base64-encoded 32 byte string.</ValidationMessage>
-                </psk>
+                <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
                     <asList>Y</asList>
                 </tunneladdress>
-                <serveraddress type="HostnameField">
-                    <Required>N</Required>
-                </serveraddress>
-                <serverport type="PortField">
-                    <Required>N</Required>
-                </serverport>
+                <serveraddress type="HostnameField"/>
+                <serverport type="PortField"/>
                 <keepalive type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>86400</MaximumValue>
                     <ValidationMessage>Please specify a value between 1 and 86400.</ValidationMessage>
-                    <Required>N</Required>
                 </keepalive>
             </client>
         </clients>

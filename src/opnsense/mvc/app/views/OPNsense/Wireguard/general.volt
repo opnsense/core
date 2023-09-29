@@ -33,7 +33,7 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#grid-clients").UIBootgrid(
+        $("#grid-peers").UIBootgrid(
             {
                 'search':'/api/wireguard/client/searchClient',
                 'get':'/api/wireguard/client/getClient/',
@@ -44,7 +44,7 @@
             }
         );
 
-        $("#grid-servers").UIBootgrid(
+        $("#grid-instances").UIBootgrid(
             {
                 'search':'/api/wireguard/server/searchServer',
                 'get':'/api/wireguard/server/getServer/',
@@ -67,7 +67,7 @@
         });
 
         /**
-         * Move keypair generation button inside the server form and hook api event
+         * Move keypair generation button inside the instance form and hook api event
          */
         $("#control_label_server\\.pubkey").append($("#keygen_div").detach().show());
         $("#keygen").click(function(){
@@ -80,11 +80,12 @@
         })
     });
 </script>
+
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
-    <li><a data-toggle="tab" href="#servers">{{ lang._('Local') }}</a></li>
-    <li><a data-toggle="tab" href="#clients">{{ lang._('Endpoints') }}</a></li>
+    <li><a data-toggle="tab" href="#instances">{{ lang._('Instances') }}</a></li>
+    <li><a data-toggle="tab" href="#peers">{{ lang._('Peers') }}</a></li>
 </ul>
 
 <div class="tab-content content-box tab-content">
@@ -93,14 +94,14 @@
             {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
         </div>
     </div>
-    <div id="clients" class="tab-pane fade in">
-        <table id="grid-clients" class="table table-responsive" data-editDialog="dialogEditWireguardClient">
+    <div id="peers" class="tab-pane fade in">
+        <table id="grid-peers" class="table table-responsive" data-editDialog="dialogEditWireguardClient">
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                     <th data-column-id="name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
-                    <th data-column-id="serveraddress" data-type="string" data-visible="true">{{ lang._('Endpoint Address') }}</th>
-                    <th data-column-id="serverport" data-type="string" data-visible="true">{{ lang._('Endpoint Port') }}</th>
+                    <th data-column-id="serveraddress" data-type="string" data-visible="true">{{ lang._('Endpoint address') }}</th>
+                    <th data-column-id="serverport" data-type="string" data-visible="true">{{ lang._('Endpoint port') }}</th>
                     <th data-column-id="tunneladdress" data-type="string" data-visible="true">{{ lang._('Allowed IPs') }}</th>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
@@ -118,13 +119,13 @@
             </tfoot>
         </table>
     </div>
-    <div id="servers" class="tab-pane fade in">
+    <div id="instances" class="tab-pane fade in">
         <span id="keygen_div" style="display:none" class="pull-right">
             <button id="keygen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new keypair.') }}" data-toggle="tooltip">
               <i class="fa fa-fw fa-gear"></i>
             </button>
         </span>
-        <table id="grid-servers" class="table table-responsive" data-editDialog="dialogEditWireguardServer">
+        <table id="grid-instances" class="table table-responsive" data-editDialog="dialogEditWireguardServer">
             <thead>
                 <tr>
                     <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
@@ -132,7 +133,7 @@
                     <th data-column-id="interface" data-type="string" data-visible="true">{{ lang._('Interface') }}</th>
                     <th data-column-id="tunneladdress" data-type="string" data-visible="true">{{ lang._('Tunnel Address') }}</th>
                     <th data-column-id="port" data-type="string" data-visible="true">{{ lang._('Port') }}</th>
-                    <th data-column-id="peers" data-type="string" data-visible="true">{{ lang._('Endpoints') }}</th>
+                    <th data-column-id="peers" data-type="string" data-visible="true">{{ lang._('Peers') }}</th>
                     <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
@@ -166,5 +167,5 @@
     </div>
 </section>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditWireguardClient,'id':'dialogEditWireguardClient','label':lang._('Edit Endpoint')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditWireguardServer,'id':'dialogEditWireguardServer','label':lang._('Edit Local Configuration')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditWireguardClient,'id':'dialogEditWireguardClient','label':lang._('Edit peer')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditWireguardServer,'id':'dialogEditWireguardServer','label':lang._('Edit instance')])}}

@@ -32,8 +32,8 @@
 <table class="table table-striped table-condensed" id="wg-table">
     <thead>
         <tr>
-            <th><?= gettext("Interface") ?></th>
-            <th><?= gettext("Endpoint") ?></th>
+            <th><?= gettext("Instance") ?></th>
+            <th><?= gettext("Peer") ?></th>
             <th><?= gettext("Public Key") ?></th>
             <th><?= gettext("Latest Handshake") ?></th>
         </tr>

@@ -3,25 +3,25 @@
         <id>client.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
-        <help>This will enable or disable the client config.</help>
+        <help>This will enable or disable the peer.</help>
     </field>
     <field>
         <id>client.name</id>
         <label>Name</label>
         <type>text</type>
-        <help>Set the name for this instance.</help>
+        <help>Set the name for this peer.</help>
     </field>
     <field>
         <id>client.pubkey</id>
-        <label>Public Key</label>
+        <label>Public key</label>
         <type>text</type>
-        <help>Public key of this instance.</help>
+        <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
     </field>
     <field>
         <id>client.psk</id>
-        <label>Shared Secret</label>
+        <label>Pre-shared key</label>
         <type>text</type>
-        <help>Shared secret (PSK) for this peer. You can generate a key using "wg genpsk" on a client with WireGuard installed.</help>
+        <help>Shared secret (PSK) for this peer. You can generate a key using "wg genpsk".</help>
     </field>
     <field>
         <id>client.tunneladdress</id>
@@ -33,19 +33,19 @@
     </field>
     <field>
         <id>client.serveraddress</id>
-        <label>Endpoint Address</label>
+        <label>Endpoint address</label>
         <type>text</type>
         <help>Set public IP address the endpoint listens to.</help>
     </field>
     <field>
         <id>client.serverport</id>
-        <label>Endpoint Port</label>
+        <label>Endpoint port</label>
         <type>text</type>
         <help>Set port the endpoint listens to.</help>
     </field>
     <field>
         <id>client.keepalive</id>
-        <label>Keepalive Interval</label>
+        <label>Keepalive interval</label>
         <type>text</type>
         <help>Set persistent keepalive interval in seconds.</help>
     </field>
