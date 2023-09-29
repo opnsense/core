@@ -72,7 +72,7 @@
            <!-- filter per type container -->
            <div id="type_filter_container" class="btn-group">
                <select id="type_filter"  data-title="{{ lang._('Type') }}" class="selectpicker" multiple="multiple" data-width="200px">
-                    <option value="interface">{{ lang._('Interface') }}</option>
+                    <option value="interface">{{ lang._('Instance') }}</option>
                     <option value="peer">{{ lang._('Peer') }}</option>
                </select>
            </div>
@@ -80,7 +80,7 @@
        <table id="grid-sessions" class="table table-condensed table-hover table-striped table-responsive">
            <thead>
              <tr>
-                 <th data-column-id="if" data-type="string" data-width="8em">{{ lang._('Interface') }}</th>
+                 <th data-column-id="if" data-type="string" data-width="8em">{{ lang._('Device') }}</th>
                  <th data-column-id="type" data-type="string" data-width="8em" data-visible="false">{{ lang._('Type') }}</th>
                  <th data-column-id="status" data-type="string" data-width="8em" >{{ lang._('Status') }}</th>
                  <th data-column-id="public-key" data-type="string" data-identifier="true">{{ lang._('Public key') }}</th>

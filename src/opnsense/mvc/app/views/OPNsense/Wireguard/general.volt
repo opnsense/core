@@ -130,7 +130,7 @@
                 <tr>
                     <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                     <th data-column-id="name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
-                    <th data-column-id="interface" data-type="string" data-visible="true">{{ lang._('Interface') }}</th>
+                    <th data-column-id="interface" data-type="string" data-visible="true">{{ lang._('Device') }}</th>
                     <th data-column-id="tunneladdress" data-type="string" data-visible="true">{{ lang._('Tunnel Address') }}</th>
                     <th data-column-id="port" data-type="string" data-visible="true">{{ lang._('Port') }}</th>
                     <th data-column-id="peers" data-type="string" data-visible="true">{{ lang._('Peers') }}</th>
