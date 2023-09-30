@@ -1,6 +1,6 @@
 {#
- # OPNsense (c) 2014-2023 by Deciso B.V.
- # OPNsense (c) 2018 Michael Muenz <m.muenz@gmail.com>
+ # Copyright (c) 2014-2023 Deciso B.V.
+ # Copyright (c) 2018 Michael Muenz <m.muenz@gmail.com>
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
