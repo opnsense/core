@@ -79,17 +79,8 @@ log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interfac
 
 interfaces_vips_configure($interface, 4);
 
-$greifs = link_interface_to_gre($interface);
-foreach ($greifs as $key => $gre) {
-    _interfaces_gre_configure($gre);
-    $greifs[$key] = $gre['greif'];
-}
-
-$gififs = link_interface_to_gif($interface);
-foreach ($gififs as $key =>$gif) {
-    _interfaces_gif_configure($gif);
-    $gififs[$key] = $gif['gifif'];
-}
+$greifs = link_interface_to_gre($interface, true, 4);
+$gififs = link_interface_to_gif($interface, true, 4);
 
 switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
     case '6to4':
