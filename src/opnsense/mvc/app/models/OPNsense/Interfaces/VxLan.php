@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 Deciso B.V.
+ * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,56 @@
 
 namespace OPNsense\Interfaces;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 class VxLan extends BaseModel
 {
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+
+        foreach ($this->vxlan->iterateItems() as $vxlan) {
+
+            $vxlangroup = (string) $vxlan->vxlangroup;
+            $vxlanremote = (string) $vxlan->vxlanremote;
+            $vxlandev = (string) $vxlan->vxlandev;
+
+            // Validation 1: At least one of vxlangroup and vxlanremote must be populated, but not both.
+            if ((!empty($vxlangroup) && !empty($vxlanremote)) ||
+                (empty($vxlangroup) && empty($vxlanremote))) {
+                $messages->appendMessage(new Message(
+                    "Remote address -or- Multicast group has to be specified",
+                    "vxlan.vxlanremote",
+                    "GroupOrRemote"
+                ));
+                $messages->appendMessage(new Message(
+                    "Multicast group -or- Remote address has to be specified",
+                    "vxlan.vxlangroup",
+                    "GroupOrRemote"
+                ));
+            }
+
+            // Validation 2: If vxlanremote is populated, vxlandev must be an empty string.
+             if (!empty($vxlanremote) && !empty($vxlandev)) {
+                $messages->appendMessage(new Message(
+                    "Remote address is specified, Device must be None",
+                    "vxlan.vxlandev",
+                    "DeviceRequirementForRemote"
+                    
+                ));
+            }
+
+            // Validation 3: If vxlangroup is populated, vxlandev must not be an empty string.
+             if (!empty($vxlangroup) && empty($vxlandev)) {
+                $messages->appendMessage(new Message(
+                    "Multicast group is specified, a Device must also be specified",
+                    "vxlan.vxlandev",
+                    "DeviceRequirementForGroup"
+                ));
+            }
+        }
+
+        return $messages;
+    }
 }
