@@ -849,7 +849,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['dhcprejectfrom'])) {
             foreach (explode(',', $pconfig['dhcprejectfrom']) as $addr) {
                 if (!is_ipaddrv4($addr)) {
-                    $input_errors[] = gettext('A valid alias IP address list must be specified to reject DHCP leases from.');
+                    $input_errors[] = gettext('A valid IP address list must be specified to reject DHCP leases from.');
                     break;
                 }
             }
