@@ -79,7 +79,10 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
                     entry = value.rstrip().lower()
                     if not self._whitelist_pattern.match(entry):
                         if self.domain_pattern.match(entry):
-                            result[entry] = {'bl': 'Manual', 'wildcard': False}
+                            if entry.startswith('*.'): # reformat wildcard domain
+                                result[entry[2:]] = {'bl': 'Manual', 'wildcard': True}
+                            else:
+                                result[entry] = {'bl': 'Manual', 'wildcard': False}
                 elif key.startswith('wildcard'):
                     entry = value.rstrip().lower()
                     if self.domain_pattern.match(entry):
