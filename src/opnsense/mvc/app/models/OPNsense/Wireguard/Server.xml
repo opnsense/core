@@ -11,7 +11,7 @@
                 </enabled>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([0-9a-zA-Z._\-]){1,64}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z._\-]){1,64}$/u</Mask>
                     <ValidationMessage>Should be a string between 1 and 64 characters. Allowed characters are alphanumeric characters, dash and underscores.</ValidationMessage>
                 </name>
                 <instance type="AutoNumberField">
@@ -31,7 +31,7 @@
                     <MaximumValue>9300</MaximumValue>
                 </mtu>
                 <dns type="CSVListField">
-                    <mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</mask>
+                    <Mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</Mask>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">

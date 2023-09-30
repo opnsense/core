@@ -11,7 +11,7 @@
                 </enabled>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([0-9a-zA-Z._\-]){1,64}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z._\-]){1,64}$/u</Mask>
                     <ValidationMessage>Should be a string between 1 and 64 characters. Allowed characters are alphanumeric characters, dash and underscores.</ValidationMessage>
                 </name>
                 <pubkey type="Base64Field">

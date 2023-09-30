@@ -136,10 +136,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
@@ -193,10 +193,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
@@ -315,7 +315,7 @@
                 </enabled>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([0-9a-zA-Z\.,_\-:]){1,1024}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\.,_\-:]){1,1024}$/u</Mask>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Pool name must be unique.</ValidationMessage>

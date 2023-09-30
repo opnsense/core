@@ -32,7 +32,7 @@
                     </storeLog>
                 </enable>
                 <ignoreLogACL type="CSVListField">
-                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                    <Mask>/^([\/0-9a-fA-F.:,])*/u</Mask>
                 </ignoreLogACL>
                 <target type="OptionField">
                     <BlankDesc>File</BlankDesc>
@@ -45,7 +45,7 @@
                 </target>
             </logging>
             <alternateDNSservers type="CSVListField">
-                <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                <Mask>/^([\/0-9a-fA-F.:,])*/u</Mask>
             </alternateDNSservers>
             <forwardedForHandling type="OptionField">
                 <BlankDesc>Default</BlankDesc>
@@ -81,7 +81,7 @@
                 <ValidationMessage>Please enter a valid email address.</ValidationMessage>
             </VisibleEmail>
             <VisibleHostname type="TextField">
-                <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
+                <Mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</Mask>
                 <ValidationMessage>Please enter a valid servername, ip address or leave this option blank.</ValidationMessage>
             </VisibleHostname>
             <cache>
@@ -205,13 +205,13 @@
                 <user type="TextField">
                     <Default>username</Default>
                     <Required>Y</Required>
-                    <mask>/^([0-9a-zA-Z\._\-%@]){1,128}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\._\-%@]){1,128}$/u</Mask>
                     <ValidationMessage>Username can be up to 128 signs long. Alphanumeric characters and also dot, dash, percent sign (for URL escapes), at sign and underscore allowed.</ValidationMessage>
                 </user>
                 <password type="TextField">
                     <Default>password</Default>
                     <Required>Y</Required>
-                    <mask>/^([0-9a-zA-Z\._\-%]){1,128}$/u</mask>
+                    <Mask>/^([0-9a-zA-Z\._\-%]){1,128}$/u</Mask>
                     <ValidationMessage>Password can be up to 128 signs long. Alphanumeric characters and also dot, dash, percent sign (for URL escapes) and underscore allowed.</ValidationMessage>
                 </password>
                 <port type="PortField">
@@ -279,7 +279,7 @@
                 <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
             </sslcertificate>
             <sslnobumpsites type="CSVListField">
-              <mask>/^([a-zA-Z0-9\.:\[\]\s\-]*?,)*([a-zA-Z0-9\.:\[\]\s\-]*)$/</mask>
+              <Mask>/^([a-zA-Z0-9\.:\[\]\s\-]*?,)*([a-zA-Z0-9\.:\[\]\s\-]*)$/</Mask>
               <ValidationMessage>Please enter ip addresses or domain names here</ValidationMessage>
             </sslnobumpsites>
             <ssl_crtd_storage_max_size type="IntegerField">
@@ -339,20 +339,20 @@
             </transparentMode>
             <acl>
                 <allowedSubnets type="CSVListField">
-                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                    <Mask>/^([\/0-9a-fA-F.:,])*/u</Mask>
                 </allowedSubnets>
                 <unrestricted type="CSVListField">
-                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                    <Mask>/^([\/0-9a-fA-F.:,])*/u</Mask>
                 </unrestricted>
                 <bannedHosts type="CSVListField">
-                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
+                    <Mask>/^([\/0-9a-fA-F.:,])*/u</Mask>
                 </bannedHosts>
                 <whiteList type="CSVListField"/>
                 <blackList type="CSVListField"/>
                 <browser type="CSVListField"/>
                 <mimeType type="CSVListField"/>
                 <googleapps type="HostnameField">
-                    <mask>/^([a-zA-Z0-9]){0,}\.([a-zA-Z0-9].){0,}/</mask>
+                    <Mask>/^([a-zA-Z0-9]){0,}\.([a-zA-Z0-9].){0,}/</Mask>
                     <ValidationMessage>Please enter a valid domain name here</ValidationMessage>
                 </googleapps>
                 <youtube type="OptionField">
@@ -362,10 +362,10 @@
                     </OptionValues>
                 </youtube>
                 <safePorts type="CSVListField">
-                    <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
+                    <Mask>/^([ \-0-9a-zA-Z:,])*/u</Mask>
                 </safePorts>
                 <sslPorts type="CSVListField">
-                    <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
+                    <Mask>/^([ \-0-9a-zA-Z:,])*/u</Mask>
                 </sslPorts>
                 <remoteACLs>
                     <blacklists>
@@ -389,10 +389,10 @@
                                 <Required>Y</Required>
                             </url>
                             <username type="TextField">
-                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                                <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                             </username>
                             <password type="TextField">
-                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                                <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                             </password>
                             <filter type="JsonKeyValueStoreField">
                                 <SourceField>filename</SourceField>
@@ -406,7 +406,7 @@
                             </sslNoVerify>
                             <description type="TextField">
                                 <Required>Y</Required>
-                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                                <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                             </description>
                         </blacklist>
                     </blacklists>
@@ -447,7 +447,7 @@
                 <UsernameHeader type="TextField">
                     <Required>Y</Required>
                     <Default>X-Username</Default>
-                    <mask>/^([a-zA-Z-]+)$/</mask>
+                    <Mask>/^([a-zA-Z-]+)$/</Mask>
                 </UsernameHeader>
                 <EnablePreview type="BooleanField">
                     <Default>1</Default>
@@ -471,7 +471,7 @@
                     <Multiple>Y</Multiple>
                 </authEnforceGroup>
                 <realm type="TextField">
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                 </realm>
                 <credentialsttl type="IntegerField">
                     <MinimumValue>1</MinimumValue>
@@ -511,7 +511,7 @@
                   <ValidationMessage>This does not look like a valid proxy or direct connection.</ValidationMessage>
               </url>
               <description type="TextField">
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <Mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
               </description>
           </proxy>
           <match type="ArrayField">
@@ -526,7 +526,7 @@
                   </Constraints>
               </name>
               <description type="TextField">
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <Mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
               </description>
               <negate type="BooleanField">
                   <Default>0</Default>
@@ -635,7 +635,7 @@
                   <Required>Y</Required>
               </enabled>
               <description type="TextField">
-                  <mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <Mask>/^([\t\n\v\f\r 0-9a-zA-Z\-.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
               </description>
               <matches type="ModelRelationField">
                   <Model>
@@ -678,7 +678,7 @@
         </pac>
         <error_pages>
           <template type="TextField">
-              <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
+              <Mask>/[0-9a-zA-Z\+\=\/]{20,}/u</Mask>
               <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
           </template>
         </error_pages>
