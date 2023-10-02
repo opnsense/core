@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'gateway',
         'icmptype',
         'icmp6-type',
+        'interfacenot',
         'interface',
         'ipprotocol',
         'log',
@@ -216,6 +217,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         ,gettext("Protocol"),gettext("Source"),gettext("Destination"));
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+    if (!empty($pconfig['interfacenot']) && (
+        (is_array($pconfig['interface']) && count($pconfig['interface']) != 1 ) || empty($pconfig['interface']))
+    ) {
+        $input_errors[] = gettext("Inverting interfaces is only allowed for single targets to avoid mis-interpretations");
+    }
 
     if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['gateway'])) {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
@@ -474,6 +481,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
+
+        $filterent['interfacenot'] = !empty($pconfig['interfacenot']);
 
         // allow 0 in adaptive timeouts
         if (is_numericint($pconfig['adaptivestart']) && is_numericint($pconfig['adaptiveend'])) {
@@ -851,6 +860,20 @@ include("head.inc");
                   </tr>
 <?php
                   endif; ?>
+<?php
+                  if (!empty($pconfig['floating'])): ?>
+                  <tr>
+                    <td><a id="help_for_interfacenot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface / Invert");?></td>
+                    <td>
+                        <input name="interfacenot" type="checkbox" <?= !empty($pconfig['interfacenot']) ? "checked=\"checked\"" : "";?> />
+                        <?= gettext('Use this option to invert the sense of the match.') ?>
+                        <div class="hidden" data-for="help_for_interfacenot">
+                          <?=gettext('Use all but selected interfaces');?>
+                        </div>
+                    </td>
+                  </tr>
+<?php
+                  endif;?>
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
