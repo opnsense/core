@@ -47,21 +47,12 @@ class OpenVPN extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        $instances = [];
-        foreach ($this->getFlatNodes() as $key => $node) {
-            if ($validateFullModel || $node->isFieldChanged()) {
-                $tagName = $node->getInternalXMLTagName();
-                $parentNode = $node->getParentNode();
-                $parentTagName = $parentNode->getInternalXMLTagName();
-
-                if ($parentTagName === 'Instance') {
-                    $instances[$parentNode->__reference] = $parentNode;
-                }
-            }
-        }
-
         // validate changed instances
-        foreach ($instances as $key => $instance) {
+        foreach ($this->Instances->Instance->iterateItems() as $instance) {
+            if (!$validateFullModel && !$instance->isFieldChanged()) {
+                continue;
+            }
+            $key = $instance->__reference;
             if ($instance->role == 'client') {
                 if (empty((string)$instance->remote)) {
                     $messages->appendMessage(new Message(gettext("Remote required"), $key . ".remote"));
@@ -69,9 +60,21 @@ class OpenVPN extends BaseModel
                 if (empty((string)$instance->username) xor empty((string)$instance->password)) {
                     $messages->appendMessage(
                         new Message(
-                            gettext("When ussing password authentication, both username and password are required"),
+                            gettext("When using password authentication, both username and password are required"),
                             $key . ".username"
                         )
+                    );
+                }
+            } elseif ($instance->role == 'server') {
+                if ($instance->dev_type == 'tun' &&
+                    empty((string)$instance->server) &&
+                    empty((string)$instance->server_ipv6)
+                ) {
+                    $messages->appendMessage(
+                        new Message(gettext("An ipv4 and/or ipv6 tunnel network is required"), $key . ".server")
+                    );
+                    $messages->appendMessage(
+                        new Message(gettext("An ipv4 and/or ipv6 tunnel network is required"), $key . ".server_ipv6")
                     );
                 }
             }
@@ -497,6 +500,10 @@ class OpenVPN extends BaseModel
                 $options['daemon'] = "openvpn_{$node->role}{$node->vpnid}";
                 $options['management'] = "{$node->sockFilename} unix";
                 $options['proto'] = (string)$node->proto;
+                if (substr((string)$node->proto, 0, 3) == "tcp") {
+                    // suffix role for tcp connections, required in tap mode
+                    $options['proto'] .= ('-'  . (string)$node->role);
+                }
                 $options['verb'] = (string)$node->verb;
                 $options['verify-client-cert'] = (string)$node->verify_client_cert;
                 $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
