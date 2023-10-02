@@ -180,6 +180,9 @@
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <atf>Abuse.ch - ThreatFox IOC database</atf>
+                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
+                    <oisd1>OISD - Domain Blocklist Big</oisd1>
+                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
                     <aa>AdAway List</aa>
                     <ag>AdGuard List</ag>
                     <bla0>Blocklist.site Abuse</bla0>
