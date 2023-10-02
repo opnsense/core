@@ -326,6 +326,9 @@ abstract class Rule
      */
     protected function parseInterface($value, $prefix = "on ", $suffix = "")
     {
+        if (!empty($this->rule['interfacenot'])) {
+            $prefix = "{$prefix} ! ";
+        }
         if (empty($value)) {
             return "";
         } elseif (empty($this->interfaceMapping[$value]['if'])) {

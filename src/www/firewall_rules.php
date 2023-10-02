@@ -757,12 +757,17 @@ $( document ).ready(function() {
                     if (empty($ifgroups) && $rule->ruleOrigin() == 'group'){
                         // group view, skip group section (groups can't be nested)
                         $is_selected = false;
-                    } elseif ($rule->getInterface() == $selected_if) {
+                    } elseif ($rule->getInterface() == $selected_if && empty($rule->getRawRule()['interfacenot'])) {
                         // interface view and this interface is selected
                         $is_selected = true;
                     } elseif ($selected_if == "FloatingRules" && $rule->ruleOrigin() == 'floating') {
                         // floating view, skip floating
                         $is_selected = false;
+                    } elseif (!empty($rule->getRawRule()['interfacenot'])) {
+                        // inverted interface, all but selected
+                        if (!in_array($selected_if, explode(',', $rule->getInterface()))) {
+                            $is_selected = true;
+                        }
                     } elseif (($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules") {
                         // floating type of rule and "floating" view
                         $is_selected = true;
@@ -832,6 +837,7 @@ $( document ).ready(function() {
                                 <?=$intf_count;?>
                               </a>
                           <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                            <?= !empty($rule->getRawRule()['interfacenot']) ? '!' : '';?>
                             <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$rule->getInterface();?>">
                               <?=$intf_count;?>
                             </a>
@@ -970,6 +976,7 @@ $( document ).ready(function() {
                             <?=$intf_count;?>
                           </a>
                       <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                        <?= !empty($filterent['interfacenot']) ? '!' : '';?>
                         <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$filterent['interface'];?>">
                           <?=$intf_count;?>
                         </a>
