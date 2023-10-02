@@ -247,4 +247,17 @@ class ArrayField extends BaseField
             yield $key => $node;
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isFieldChanged()
+    {
+        foreach (parent::iterateItems() as $child) {
+            if ($child->isFieldChanged()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
