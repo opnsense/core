@@ -857,16 +857,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
             $match = false;
-            if (!empty($config['gateways']['gateway_item'])) {
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gateway'], $gateway)) {
-                        $match = true;
-                    }
-                }
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gatewayv6'], $gateway)) {
-                        $match = true;
-                    }
+            foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
+                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
+                    $match = true;
                 }
             }
             if (!$match) {
@@ -2162,17 +2155,16 @@ include("head.inc");
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
+                                  <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
                             <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
                             <div class="hidden" id="addgateway">
@@ -2723,17 +2715,16 @@ include("head.inc");
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
+                                <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
                             <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
                             <div class="hidden" id="addgatewayv6">

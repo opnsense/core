@@ -1714,7 +1714,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
 
         if (empty($destif)) {
             foreach ($a_gateways as $gateway) {
-                if (isset($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
+                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
                     $destif = $gateway['if'];
                     break;
                 }
@@ -1821,7 +1821,7 @@ function dhcpd_dhcrelay6_configure($verbose = false)
 
         if (empty($destif)) {
             foreach ($a_gateways as $gateway) {
-                if (isset($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
+                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
                     $destif = $gateway['if'];
                     break;
                 }
