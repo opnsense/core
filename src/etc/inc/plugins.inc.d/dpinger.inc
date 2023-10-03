@@ -309,34 +309,29 @@ function dpinger_run()
 
 function dpinger_status()
 {
+    $procs = dpinger_processes();
     $status = [];
 
     foreach (dpinger_instances(true) as $gwitem) {
         /* we seem to be concerned about disabled monitors just because of force_down */
         $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
+        $gwname = $gwitem['name'];
 
-        $status[$gwitem['name']] = [
+        $status[$gwname] = $report = [
             'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
             /* grab the runtime monitor from the instance if available */
             'monitor' => $gwitem['monitor'] ?? '~',
-            /* XXX looks like a model issue for non-config gateways */
-            'latencyhigh' => $gwitem['latencyhigh'] ?? null,
-            'latencylow' => $gwitem['latencylow'] ?? null,
-            'losshigh' => $gwitem['losshigh'] ?? null,
-            'losslow' => $gwitem['losslow'] ?? null,
-            'name' => $gwitem['name'],
+            'name' => $gwname,
             'stddev' => '~',
             'delay' => '~',
             'loss' => '~',
         ];
-    }
 
-    foreach (dpinger_processes() as $gwname => $proc) {
-        if (!isset($status[$gwname])) {
+        if (!isset($procs[$gwitem['name']])) {
             continue;
         }
 
-        $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 1);
+        $fp = @stream_socket_client("unix://{$procs[$gwname]['socket']}", $errno, $errstr, 1);
         if (!$fp) {
             continue;
         }
@@ -348,35 +343,34 @@ function dpinger_status()
 
         fclose($fp);
 
-        $r = [];
-
-        list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
-            explode(' ', preg_replace('/\n/', '', $dinfo));
-
-        if ($r['latency_stddev'] != '0' || $r['loss'] != '0') {
-            $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
-            $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
-            $r['status'] = $status[$gwname]['status'];
-
-            if ($r['status'] != 'force_down') {
-                if ($r['latency_avg'] > $status[$gwname]['latencyhigh'] || $r['loss'] > $status[$gwname]['losshigh']) {
-                    $r['status'] = 'down';
-                } elseif ($r['latency_avg'] > $status[$gwname]['latencylow'] && $r['loss'] > $status[$gwname]['losslow']) {
-                    $r['status'] = 'delay+loss';
-                } elseif ($r['latency_avg'] > $status[$gwname]['latencylow']) {
-                    $r['status'] = 'delay';
-                } elseif ($r['loss'] > $status[$gwname]['losslow']) {
-                    $r['status'] = 'loss';
-                } else {
-                    $r['status'] = 'none';
-                }
-            }
-
-            $status[$gwname]['delay'] = sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1));
-            $status[$gwname]['stddev'] = sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1));
-            $status[$gwname]['loss'] = sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1));
-            $status[$gwname]['status'] = $r['status'];
+        list(, $latency_avg, $latency_stddev, $loss) = explode(' ', preg_replace('/\n/', '', $dinfo));
+        if ($latency_stddev == '0' && $loss == '0') {
+            continue;
         }
+
+        $latency_stddev = round($latency_stddev / 1000, 1);
+        $latency_avg = round($latency_avg / 1000, 1);
+
+        if ($report['status'] != 'force_down') {
+            if ($latency_avg > $gwitem['latencyhigh'] || $loss > $gwitem['losshigh']) {
+                $report['status'] = 'down';
+            } elseif ($latency_avg > $gwitem['latencylow'] && $loss > $gwitem['losslow']) {
+                $report['status'] = 'delay+loss';
+            } elseif ($latency_avg > $gwitem['latencylow']) {
+                $report['status'] = 'delay';
+            } elseif ($loss > $gwitem['losslow']) {
+                $report['status'] = 'loss';
+            } else {
+                $report['status'] = 'none';
+            }
+        }
+
+        $report['delay'] = sprintf('%0.1f ms', empty($latency_avg) ? 0.0 : round($latency_avg, 1));
+        $report['stddev'] = sprintf('%0.1f ms', empty($latency_stddev) ? 0.0 : round($latency_stddev, 1));
+        $report['loss'] = sprintf('%0.1f %%', empty($loss) ? 0.0 : round($loss, 1));
+
+        /* rewrite report using gathered information */
+        $status[$gwname] = $report;
     }
 
     return $status;
