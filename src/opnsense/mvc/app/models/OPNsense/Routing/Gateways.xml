@@ -1,0 +1,137 @@
+<model>
+    <mount>//OPNsense/Gateways</mount>
+    <description>Gateways configuration</description>
+    <version>0.0.1</version>
+    <items>
+        <gateway_item type="ArrayField">
+            <disabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </disabled>
+            <name type="TextField">
+                <Required>Y</Required>
+                <ValidationMessage>
+                    A valid gateway name must be specified. The name must be less than 32 characters long
+                    and may only consist of the following characters: a-z, A-Z, 0-9, _
+                </ValidationMessage>
+                <mask>/^[a-zA-Z0-9_\-]{1,32}$/</mask>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>Gateway with this name already exists.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </name>
+            <descr type="TextField"/>
+            <interface type="InterfaceField">
+                <Required>Y</Required>
+                <multiple>N</multiple>
+                <default>wan</default>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <virtual>/^(?!1).*$/</virtual>
+                </filters>
+            </interface>
+            <ipprotocol type="OptionField">
+                <default>inet</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <inet>IPv4</inet>
+                    <inet6>IPv6</inet6>
+                </OptionValues>
+            </ipprotocol>
+            <gateway type="TextField">
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>This Gateway IP address already exists.</ValidationMessage>
+                        <allowEmpty>Y</allowEmpty>
+                        <exclusions>
+                            <field1>dynamic</field1>
+                        </exclusions>
+                    </check001>
+                </Constraints>
+            </gateway>
+            <defaultgw type="BooleanField"/>
+            <fargw type="BooleanField"/>
+            <monitor_disable type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </monitor_disable>
+            <monitor_noroute type="BooleanField"/>
+            <monitor type="TextField">
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>This Monitor IP address already exists.</ValidationMessage>
+                        <allowEmpty>Y</allowEmpty>
+                    </check001>
+                </Constraints>
+            </monitor>
+            <force_down type="BooleanField"/>
+            <priority type="IntegerField">
+                <default>255</default>
+                <Required>Y</Required>
+                <ValidationMessage>Priority must be a value between 1 and 255</ValidationMessage>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>255</MaximumValue>
+            </priority>
+            <weight type="IntegerField">
+                <default>1</default>
+                <Required>Y</Required>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>5</MaximumValue>
+            </weight>
+            <latencylow type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <Constraints>
+                    <ValidationMessage>The low latency threshold needs to be lower than the high latency threshold.</ValidationMessage>
+                    <type>ComparedToFieldConstraint</type>
+                    <field>latencyhigh</field>
+                    <operator>lt</operator>
+                </Constraints>
+            </latencylow>
+            <latencyhigh type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <Constraints>
+                    <ValidationMessage>The high latency threshold needs to be higher than the low latency threshold.</ValidationMessage>
+                    <type>ComparedToFieldConstraint</type>
+                    <field>latencylow</field>
+                    <operator>gt</operator>
+                </Constraints>
+            </latencyhigh>
+            <losslow type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>99</MaximumValue>
+                <Constraints>
+                    <ValidationMessage>The low latency threshold needs to be lower than the high latency threshold.</ValidationMessage>
+                    <type>ComparedToFieldConstraint</type>
+                    <field>losshigh</field>
+                    <operator>lt</operator>
+                </Constraints>
+            </losslow>
+            <losshigh type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>100</MaximumValue>
+                <Constraints>
+                    <ValidationMessage>The high Packet Loss threshold needs to be higher than the low Packet Loss threshold.</ValidationMessage>
+                    <type>ComparedToFieldConstraint</type>
+                    <field>losslow</field>
+                    <operator>gt</operator>
+                </Constraints>
+            </losshigh>
+            <interval type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </interval>
+            <time_period type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </time_period>
+            <loss_interval type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+            </loss_interval>
+            <data_length type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </data_length>
+        </gateway_item>
+    </items>
+</model>

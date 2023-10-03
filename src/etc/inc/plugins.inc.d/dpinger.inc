@@ -66,20 +66,6 @@ function dpinger_services()
     return $services;
 }
 
-function dpinger_defaults()
-{
-    return [
-        'data_length' => '0',
-        'interval' => '1',
-        'latencyhigh' => '500',
-        'latencylow' => '200',
-        'loss_interval' => '4',
-        'losshigh' => '20',
-        'losslow' => '10',
-        'time_period' => '60',
-    ];
-}
-
 function dpinger_configure()
 {
     return [
@@ -101,7 +87,7 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        if (isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['monitor_noroute'])) {
             /* no need to register */
             continue;
         } elseif (empty($gateway['gateway'])) {
@@ -160,7 +146,6 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
     }
 
     $ifconfig_details = legacy_interfaces_details();
-    $dpinger_default = dpinger_defaults();
     $routes = [];
 
     foreach (dpinger_instances() as $name => $gateway) {
@@ -246,7 +231,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        if (!empty($gateway['gateway']) && !isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['gateway']) && empty($gateway['monitor_noroute'])) {
             if (isset($routes[$gateway['monitor']])) {
                 log_msg("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
             } else {
@@ -288,11 +273,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
-            $params .= exec_safe(
-                $ppattern,
-                isset($gateway[$pname]) && is_numeric($gateway[$pname]) ?
-                    $gateway[$pname] : $dpinger_default[$pname]
-            );
+            $params .= exec_safe($ppattern, $gateway[$pname]);
         }
         $params .= exec_safe('%s ', $gateway['monitor']);
 
@@ -329,14 +310,14 @@ function dpinger_run()
 function dpinger_status()
 {
     $status = [];
-
-    foreach (dpinger_instances(true) as $gwitem) {
+    $dpinger_instances = dpinger_instances(true);
+    foreach ($dpinger_instances as $gwitem) {
         /* we seem to be concerned about disabled monitors just because of force_down */
-        $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
+        $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
 
         $status[$gwitem['name']] = [
             /* grab the runtime monitor from the instance if available */
-            'status' => isset($gwitem['force_down']) ? 'force_down' : $gwstatus,
+            'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
             'monitor' => $gwitem['monitor'] ?? '~',
             'name' => $gwitem['name'],
             'stddev' => '~',
@@ -349,6 +330,7 @@ function dpinger_status()
         if (!isset($status[$gwname])) {
             continue;
         }
+        $gwitem = $dpinger_instances[$gwname];
 
         $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 1);
         if (!$fp) {
@@ -372,25 +354,16 @@ function dpinger_status()
             $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
             $r['status'] = $status[$gwname]['status'];
 
-            $settings = dpinger_defaults();
-
             if ($r['status'] != 'force_down') {
-                /* Replace default values by user-defined */
-                foreach (['latencylow', 'latencyhigh', 'losslow', 'losshigh'] as $key) {
-                    if (isset($gwitem[$key]) && is_numeric($gwitem[$key])) {
-                        $settings[$key] = $gwitem[$key];
-                    }
-                }
-
-                if ($r['latency_avg'] > $settings['latencyhigh']) {
+                if ($r['latency_avg'] > $gwitem['latencyhigh']) {
                     $r['status'] = 'down';
-                } elseif ($r['loss'] > $settings['losshigh']) {
+                } elseif ($r['loss'] > $gwitem['losshigh']) {
                     $r['status'] = 'down';
-                } elseif ($r['latency_avg'] > $settings['latencylow'] && $r['loss'] > $settings['losslow']) {
+                } elseif ($r['latency_avg'] > $gwitem['latencylow'] && $r['loss'] > $gwitem['losslow']) {
                     $r['status'] = 'delay+loss';
-                } elseif ($r['latency_avg'] > $settings['latencylow']) {
+                } elseif ($r['latency_avg'] > $gwitem['latencylow']) {
                     $r['status'] = 'delay';
-                } elseif ($r['loss'] > $settings['losslow']) {
+                } elseif ($r['loss'] > $gwitem['losslow']) {
                     $r['status'] = 'loss';
                 } else {
                     $r['status'] = 'none';

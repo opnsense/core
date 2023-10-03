@@ -857,16 +857,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
             $match = false;
-            if (!empty($config['gateways']['gateway_item'])) {
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gateway'], $gateway)) {
-                        $match = true;
-                    }
-                }
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gatewayv6'], $gateway)) {
-                        $match = true;
-                    }
+            foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
+                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
+                    $match = true;
                 }
             }
             if (!$match) {
@@ -1550,94 +1543,6 @@ include("head.inc");
           $("#addgatewayv6").toggleClass("hidden visible");
       });
 
-      //
-      // new gateway action
-      //
-      $('#gwsave').click(function () {
-          event.preventDefault();
-          $('#gwsave').prop('disabled', true);
-          var iface = $('#if').val();
-          var name = $('#name').val();
-          var descr = $('#gatewaydescr').val();
-          var gatewayip = $('#gatewayip').val();
-          var ajaxhelper = "&ajaxip=" + escape($('#ipaddr').val()) + "&ajaxnet=" + escape($('#subnet').val());
-          var defaultgw = "";
-          if ($("#defaultgw").prop('checked')) {
-              defaultgw = "&defaultgw=on";
-          }
-          var fargw = "";
-          if ($("#fargw").prop('checked')) {
-              fargw = "&fargw=on";
-          }
-          jQuery.ajax( "system_gateways_edit.php", {
-            type: 'post',
-            data: 'isAjax=true&ipprotocol=inet' + defaultgw + fargw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
-            error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
-                    alert(request.responseText);
-                } else {
-                    alert("Sorry, we could not create your IPv4 gateway at this time.");
-                }
-                $('#gwsave').prop('disabled', false);
-            },
-            success: function(response) {
-                $("#addgateway").toggleClass("hidden visible");
-                var selected = "selected=selected";
-                if (!$("#multiwangw").prop('checked')) {
-                    selected = "";
-                }
-                $('#gateway').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
-                $('#gateway').selectpicker('refresh');
-                $('#gwsave').prop('disabled', false);
-            }
-          });
-      });
-      $("#gwcancel").click(function(){
-          $("#addgateway").toggleClass("hidden visible");
-      });
-
-      //
-      // new gateway v6 action
-      //
-      $('#gwsavev6').click(function () {
-          event.preventDefault();
-          $('#gwsavev6').prop('disabled', true);
-          var iface = $('#if').val();
-          var name = $('#namev6').val();
-          var descr = $('#gatewaydescrv6').val();
-          var gatewayip = $('#gatewayipv6').val();
-          var ajaxhelper = "&ajaxip=" + escape($('#ipaddrv6').val()) + "&ajaxnet=" + escape($('#subnetv6').val());
-          var defaultgw = "";
-          if ($("#defaultgwv6").prop('checked')) {
-              defaultgw = "&defaultgw=on";
-          }
-          jQuery.ajax( "system_gateways_edit.php", {
-            type: 'post',
-            data: 'isAjax=true&ipprotocol=inet6' + defaultgw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
-            error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
-                    alert(request.responseText);
-                } else {
-                    alert("Sorry, we could not create your IPv6 gateway at this time.");
-                }
-                $('#gwsavev6').prop('disabled', false);
-            },
-            success: function(response) {
-                $("#addgatewayv6").toggleClass("hidden visible");
-                var selected = "selected=selected";
-                if (!$("#multiwangwv6").prop('checked')) {
-                    selected = "";
-                }
-                $('#gatewayv6').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
-                $('#gatewayv6').selectpicker('refresh');
-                $('#gwsavev6').prop('disabled', false);
-            }
-          });
-      });
-      $("#gwcancelv6").click(function(){
-          $("#addgatewayv6").toggleClass("hidden visible");
-      });
-
       // handle dhcp advanced/basic or custom file select
       $("#dhcp_mode :input").change(function(){
           $(".dhcp_basic").addClass("hidden");
@@ -2162,65 +2067,19 @@ include("head.inc");
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
+                                  <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
-                            <div class="hidden" id="addgateway">
-                              <br/>
-                              <table class="table table-striped table-condensed">
-                                <tbody>
-                                  <tr>
-                                    <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Default gateway') ?></td>
-                                    <td><input type="checkbox" id="defaultgw" name="defaultgw" <?= strtolower($if) == 'wan' ? 'checked="checked"' : '' ?> /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Far gateway') ?></td>
-                                    <td><input type="checkbox" id="fargw" name="fargw" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Multi-WAN gateway') ?></td>
-                                    <td><input type="checkbox" id="multiwangw" name="multiwangw" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway Name') ?></td>
-                                    <td><input type="text" id="name" name="name" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv4') ?>" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway IPv4') ?></td>
-                                    <td><input type="text" id="gatewayip" name="gatewayip" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Description') ?></td>
-                                    <td><input type="text" id="gatewaydescr" name="gatewaydescr" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td></td>
-                                    <td>
-                                      <div id='savebuttondiv'>
-                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?= html_safe(gettext('Save')) ?>" />
-                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
@@ -2723,59 +2582,19 @@ include("head.inc");
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
+                                <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
-                            <div class="hidden" id="addgatewayv6">
-                              <br/>
-                              <table class="table table-striped table-condensed">
-                                <tbody>
-                                  <tr>
-                                    <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Default gateway') ?></td>
-                                    <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?= strtolower($if) == 'wan' ?  'checked="checked"' : '' ?> /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Multi-WAN gateway') ?></td>
-                                    <td><input type="checkbox" id="multiwangwv6" name="multiwangwv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway Name') ?></td>
-                                    <td><input id="namev6" type="text" name="namev6" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv6') ?>" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?=gettext("Gateway IPv6"); ?></td>
-                                    <td><input id="gatewayipv6" type="text" name="gatewayipv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?=gettext("Description"); ?></td>
-                                    <td><input id="gatewaydescrv6" type="text" name="gatewaydescrv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td></td>
-                                    <td>
-                                      <input class="btn btn-primary" id="gwsavev6" type="button" value="<?= html_safe(gettext('Save')) ?>" />
-                                      <input class="btn btn-default" id="gwcancelv6" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
