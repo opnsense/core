@@ -310,15 +310,20 @@ function dpinger_run()
 function dpinger_status()
 {
     $status = [];
-    $dpinger_instances = dpinger_instances(true);
-    foreach ($dpinger_instances as $gwitem) {
+
+    foreach (dpinger_instances(true) as $gwitem) {
         /* we seem to be concerned about disabled monitors just because of force_down */
         $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
 
         $status[$gwitem['name']] = [
-            /* grab the runtime monitor from the instance if available */
             'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
+            /* grab the runtime monitor from the instance if available */
             'monitor' => $gwitem['monitor'] ?? '~',
+            /* XXX looks like a model issue for non-config gateways */
+            'latencyhigh' => $gwitem['latencyhigh'] ?? null,
+            'latencylow' => $gwitem['latencylow'] ?? null,
+            'losshigh' => $gwitem['losshigh'] ?? null,
+            'losslow' => $gwitem['losslow'] ?? null,
             'name' => $gwitem['name'],
             'stddev' => '~',
             'delay' => '~',
@@ -330,7 +335,6 @@ function dpinger_status()
         if (!isset($status[$gwname])) {
             continue;
         }
-        $gwitem = $dpinger_instances[$gwname];
 
         $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 1);
         if (!$fp) {
@@ -355,15 +359,13 @@ function dpinger_status()
             $r['status'] = $status[$gwname]['status'];
 
             if ($r['status'] != 'force_down') {
-                if ($r['latency_avg'] > $gwitem['latencyhigh']) {
+                if ($r['latency_avg'] > $status[$gwname]['latencyhigh'] || $r['loss'] > $status[$gwname]['losshigh']) {
                     $r['status'] = 'down';
-                } elseif ($r['loss'] > $gwitem['losshigh']) {
-                    $r['status'] = 'down';
-                } elseif ($r['latency_avg'] > $gwitem['latencylow'] && $r['loss'] > $gwitem['losslow']) {
+                } elseif ($r['latency_avg'] > $status[$gwname]['latencylow'] && $r['loss'] > $status[$gwname]['losslow']) {
                     $r['status'] = 'delay+loss';
-                } elseif ($r['latency_avg'] > $gwitem['latencylow']) {
+                } elseif ($r['latency_avg'] > $status[$gwname]['latencylow']) {
                     $r['status'] = 'delay';
-                } elseif ($r['loss'] > $gwitem['losslow']) {
+                } elseif ($r['loss'] > $status[$gwname]['losslow']) {
                     $r['status'] = 'loss';
                 } else {
                     $r['status'] = 'none';
