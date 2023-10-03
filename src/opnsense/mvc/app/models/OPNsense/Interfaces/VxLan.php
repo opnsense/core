@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019 - 2023 Deciso B.V.
+ * Copyright (C) 2019-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,13 +44,15 @@ class VxLan extends BaseModel
             $vxlandev = (string) $vxlan->vxlandev;
 
             // Validate that values in Fields have been changed, prevents configuration save lockout when invalid data is present.
-            if ($validateFullModel ||
+            if (
+                $validateFullModel ||
                 $vxlan->vxlangroup->isFieldChanged() ||
                 $vxlan->vxlanremote->isFieldChanged() ||
                 $vxlan->vxlandev->isFieldChanged()
             ) {
                 // Validation 1: At least one of vxlangroup and vxlanremote must be populated, but not both.
-                if ((!empty($vxlangroup) && !empty($vxlanremote)) ||
+                if (
+                    (!empty($vxlangroup) && !empty($vxlanremote)) ||
                     (empty($vxlangroup) && empty($vxlanremote))
                 ) {
                     $messages->appendMessage(new Message(

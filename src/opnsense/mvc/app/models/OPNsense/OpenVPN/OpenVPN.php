@@ -66,7 +66,8 @@ class OpenVPN extends BaseModel
                     );
                 }
             } elseif ($instance->role == 'server') {
-                if ($instance->dev_type == 'tun' &&
+                if (
+                    $instance->dev_type == 'tun' &&
                     empty((string)$instance->server) &&
                     empty((string)$instance->server_ipv6)
                 ) {
