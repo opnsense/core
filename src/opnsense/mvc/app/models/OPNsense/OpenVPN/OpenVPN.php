@@ -84,7 +84,7 @@ class OpenVPN extends BaseModel
                     $tmp = Store::getCertificate((string)$instance->cert);
                     if (empty($tmp) || !isset($tmp['ca'])) {
                         $messages->appendMessage(new Message(
-                            gettext("Unable to locate a Certificate Authority for this certificate"),
+                            gettext('Unable to locate a CA for this certificate.'),
                             $key . ".cert"
                         ));
                     }
@@ -93,12 +93,22 @@ class OpenVPN extends BaseModel
                 if (
                     $instance->cert->isFieldChanged() ||
                     $instance->verify_client_cert->isFieldChanged() ||
+                    $instance->ca->isFieldChanged() ||
                     $validateFullModel
                 ) {
-                    if ((string)$instance->verify_client_cert != 'none') {
+                    if ((string)$instance->verify_client_cert != 'none' && $instance->role == 'server') {
                         $messages->appendMessage(new Message(
-                            gettext("To validate a certificate, one has to be provided "),
+                            gettext('To validate a certificate one has to be provided.'),
                             $key . ".verify_client_cert"
+                        ));
+                    } elseif (
+                        $instance->role == 'client' &&
+                        empty((string)$instance->cert) &&
+                        empty((string)$instance->ca)
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext('When no certificate is provided a CA needs to be provided.'),
+                            $key . ".cert"
                         ));
                     }
                 }
@@ -111,7 +121,7 @@ class OpenVPN extends BaseModel
                 ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
             ) {
                 $messages->appendMessage(new Message(
-                    gettext("Timeout should be larger than interval"),
+                    gettext('Timeout should be larger than interval.'),
                     $key . ".keepalive_timeout"
                 ));
             }
@@ -428,6 +438,7 @@ class OpenVPN extends BaseModel
                         // updated via plugins_configure('crl');
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
+                    $options['verify-client-cert'] = (string)$node->verify_client_cert;
                     if (!empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $options['server'] = $parts[0] . " " . Util::CIDRToMask($parts[1]);
@@ -506,7 +517,6 @@ class OpenVPN extends BaseModel
                     $options['proto'] .= ('-'  . (string)$node->role);
                 }
                 $options['verb'] = (string)$node->verb;
-                $options['verify-client-cert'] = (string)$node->verify_client_cert;
                 $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
                 $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
@@ -567,15 +577,15 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
-
+                if (!empty((string)$node->ca)) {
+                    $options['<ca>'] = Store::getCaChain((string)$node->ca);
+                }
                 if (!empty((string)$node->cert)) {
                     $tmp = Store::getCertificate((string)$node->cert);
                     if ($tmp && isset($tmp['prv'])) {
                         $options['<key>'] = $tmp['prv'];
                         $options['<cert>'] = $tmp['crt'];
-                        if (!empty((string)$node->ca)) {
-                            $options['<ca>'] = Store::getCaChain((string)$node->ca);
-                        } elseif (isset($tmp['ca'])) {
+                        if (empty($options['<ca>']) && isset($tmp['ca'])) {
                             $options['<ca>'] = $tmp['ca']['crt'];
                         }
                     }

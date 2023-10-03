@@ -162,6 +162,7 @@
         <id>instance.verify_client_cert</id>
         <label>Verify Client Certificate</label>
         <type>dropdown</type>
+        <style>selectpicker role role_server</style>
         <help>Specify if the client is required to offer a certificate.</help>
     </field>
     <field>
