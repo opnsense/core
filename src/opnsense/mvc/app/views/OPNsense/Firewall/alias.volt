@@ -758,11 +758,12 @@
                                     </td>
                                     <td>
                                         <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
-                                    </td>
-                                    <td>
-                                        <span class="help-block" id="help_block_alias.categories">
+                                        <span class="hidden" data-for="help_for_alias.categories">
                                             {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.categories"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.updatefreq">
