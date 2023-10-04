@@ -46,9 +46,6 @@
                         <type>UniqueConstraint</type>
                         <ValidationMessage>This Gateway IP address already exists.</ValidationMessage>
                         <allowEmpty>Y</allowEmpty>
-                        <exclusions>
-                            <field1>dynamic</field1>
-                        </exclusions>
                     </check001>
                 </Constraints>
             </gateway>
