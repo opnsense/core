@@ -72,10 +72,10 @@ class OpenVPN extends BaseModel
                     empty((string)$instance->server_ipv6)
                 ) {
                     $messages->appendMessage(
-                        new Message(gettext("An ipv4 and/or ipv6 tunnel network is required"), $key . ".server")
+                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server')
                     );
                     $messages->appendMessage(
-                        new Message(gettext("An ipv4 and/or ipv6 tunnel network is required"), $key . ".server_ipv6")
+                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server_ipv6')
                     );
                 }
             }
