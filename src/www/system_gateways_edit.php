@@ -33,7 +33,7 @@ require_once("plugins.inc.d/dpinger.inc");
 
 $gateways = new \OPNsense\Routing\Gateways();
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
-$dpinger_default = dpinger_defaults();
+$dpinger_default = $gateways->getDpingerDefaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /****
     /* XXX: dpinger needs to take defaults under consideration
     /****/
-    $dpinger_config = dpinger_defaults();
+    $dpinger_config = $gateways->getDpingerDefaults();
     foreach ($dpinger_config as $prop => $value) {
         $dpinger_config[$prop] = !empty($pconfig[$prop]) ? $pconfig[$prop] : $value;
     }
