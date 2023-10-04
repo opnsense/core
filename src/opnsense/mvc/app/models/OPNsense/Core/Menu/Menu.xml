@@ -193,12 +193,12 @@
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
-            <Instances VisibleName="Instances [new]" order="5" url="/ui/openvpn/instances"/>
-            <Servers order="10" url="/vpn_openvpn_server.php">
+            <Instances url="/ui/openvpn/instances"/>
+            <Servers VisibleName="Servers [legacy]" order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
                 <Step url="/wizard.php?xml=openvpn*" visibility="hidden"/>
             </Servers>
-            <Clients order="20" url="/vpn_openvpn_client.php">
+            <Clients VisibleName="Clients [legacy]" order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
             </Clients>
             <CSC order="30" VisibleName="Client Specific Overrides" url="/ui/openvpn/client_overwrites"/>
