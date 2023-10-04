@@ -109,7 +109,7 @@ function dpinger_instances($extended = false)
     $instances = [];
 
     foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $name => $gateway) {
-        if (isset($gateway['monitor_disable']) && !$extended) {
+        if (!empty($gateway['monitor_disable']) && !$extended) {
             /* do not monitor if such was requested */
             continue;
         }
