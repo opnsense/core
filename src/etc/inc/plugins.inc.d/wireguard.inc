@@ -100,7 +100,30 @@ function wireguard_xmlrpc_sync()
 
 function wireguard_devices()
 {
-    return [['pattern' => '^wg', 'volatile' => true]];
+    $names = [];
+    foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $key => $node) {
+        if (!empty((string)$node->enabled)) {
+            $names[(string)$node->interface] = [
+                'descr' => sprintf('%s (Wireguard - %s)', (string)$node->interface, (string)$node->name),
+                'ifdescr' => (string)$node->name,
+                'name' => (string)$node->interface
+            ];
+        }
+    }
+    return [[
+        'function' => 'wireguard_prepare', /* XXX only (empty) device creation */
+        'configurable' => false,
+        'pattern' => '^wg',
+        'type' => 'wireguard',
+        'volatile' => true,
+        'names' => $names,
+    ]];
+}
+
+function wireguard_prepare($device)
+{
+    mwexecf('/sbin/ifconfig wg create name %s', $device);
+    mwexecf('/sbin/ifconfig %s group wireguard', $device);
 }
 
 function wireguard_configure()
