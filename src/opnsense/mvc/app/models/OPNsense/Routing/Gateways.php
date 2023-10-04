@@ -93,7 +93,7 @@ class Gateways extends BaseModel
                 if (in_array($tagName, ['ipprotocol', 'gateway'])) {
                     $this->validateDynamicMatch($parent, $messages, $ref);
                 }
-                if (in_array($tagName, ['latencylow', 'latencyhigh', 'losslow', 'losshigh', 'time_period', 'interval'])) {
+                if (in_array($tagName, ['latencylow', 'latencyhigh', 'losslow', 'losshigh', 'time_period', 'interval', 'loss_interval'])) {
                     $this->validateDpingerSettings($tagName, $parent, $messages, $ref);
                 }
             }
@@ -119,8 +119,9 @@ class Gateways extends BaseModel
                 break;
             case 'time_period':
             case 'interval':
-                if ((string)$parent->time_period < (2.1 * (intval((string)$parent->interval)))) {
-                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2.1 times that of the probe interval."), $ref.".".$tag));
+            case 'loss_interval':
+                if ((string)$parent->time_period < 2 * (intval((string)$parent->interval) + intval((string)$parent->loss_interval))) {
+                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2 times the sum of the probe interval and the loss interval."), $ref.".".$tag));
                 }
                 break;
         }
