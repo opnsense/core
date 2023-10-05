@@ -68,19 +68,30 @@ foreach ($ipsec_status as $status_key => $status_value) {
         }
     }
 }
-// Initialize variable aggregated_data and loop through the ipsec_leases array to fetch the data for user, address and online status. Used later for div ipsec-mobile.
-$aggregated_data = array();
+// Initialize variable aggregated_data and loop through the ipsec_leases array to fetch the data for user, address and online status. Used later for div ipsec-mobile. Additionally count the unique_users in the same foreach loop, used for mobile_users count.
+$aggregated_data = [];
+$unique_users = [];
+
 foreach ($ipsec_leases as $lease) {
-    $user = $lease['user'];
-    $address = $lease['address'];
-    $online = $lease['online'];
     // For each unique user, initialize an empty array
-    if (!isset($aggregated_data[$user])) {
-        $aggregated_data[$user] = array();
+    if (!isset($aggregated_data[$lease['user']])) {
+        $aggregated_data[$lease['user']] = [];
     }
-    // Add the IP address to this user's array of addresses and connect it with the online status
-    $aggregated_data[$user][] = array('address' => $address, 'online' => $online);
+    // Add the lease data to this user's array of leases
+    $aggregated_data[$lease['user']][] = [
+        'address' => $lease['address'],
+        'online' => $lease['online']
+    ];
+    
+    // Count unique users in ipsec_leases array if lease is online
+    if ($lease['online']) {
+        $unique_users[$lease['user']] = true;
+    }
 }
+
+// Return the number of unique_users as mobile_users
+$mobile_users = count($unique_users);
+
 ?>
 <script>
     $(document).ready(function() {
@@ -145,18 +156,7 @@ foreach ($ipsec_leases as $lease) {
         </td>
         <td><?= (count($ipsec_tunnels) - $activetunnels); ?></td>
         <td>
-<?php
-    // Initialize variable unique_users
-    $unique_users = array();
-    foreach ($ipsec_leases as $lease) {
-        if ($lease['online']) {
-            // Count unique users in ipsec_leases array if lease is online
-            $unique_users[$lease['user']] = true;
-        }
-    }
-    // Return the number of unique_users as mobile_users
-    $mobile_users = count($unique_users);
-?>
+           <!-- mobile_users were counted in the earlier loop where data was aggregated -->
            <?=$mobile_users;?>
         </td>
       </tr>
