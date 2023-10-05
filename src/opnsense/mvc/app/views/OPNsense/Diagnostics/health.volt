@@ -1,5 +1,6 @@
 <!--
 /*
+*    Copyright (C) 2023 Deciso B.V.
 *    Copyright (C) 2015 Jos Schellevis <jos@opnsense.org>
 *    All rights reserved.
 *
@@ -53,17 +54,14 @@
 
 
 <script>
-    var chart;
-    var data = [];
-    var fetching_data = true;
-    var current_selection_from = 0;
-    var current_selection_to = 0;
-    var disabled = [];
-    var resizeTimer;
-    var current_detail = 0;
-    var csvData = [];
-    var zoom_buttons;
-    var rrd="";
+    let chart;
+    let data = [];
+    let disabled = [];
+    let resizeTimer;
+    let current_detail = 0;
+    let csvData = [];
+    let zoom_buttons;
+    let rrd="";
 
 
     // create our chart
@@ -114,42 +112,15 @@
         return chart;
     });
 
-    // Some options have changed, check and fetch data
-    function UpdateOptions() {
-        window.onresize = null; // clear any pending resize events
-        var inverse = false;
-        var detail = 0;
-        var resolution = 120;
-        if ($('input:radio[name=inverse]:checked').val() == 1) {
-            inverse = true;
-        }
-
-        detail = $('input:radio[name=detail]:checked').val();
-        resolution = $('input:radio[name=resolution]:checked').val();
-        if (detail != current_detail) {
-            chart.brushExtent([0, 0]);
-            getdata(rrd, 0, 0, resolution, detail);
-            current_detail = detail;
-        } else {
-            getdata(rrd, current_selection_from, current_selection_to, resolution, detail);
-            current_detail = detail;
-        }
-    }
-
     function getRRDlist() {
         ajaxGet("/api/diagnostics/systemhealth/getRRDlist/", {}, function (data, status) {
             if (status == "success") {
-                if (data.data.length == 0 ) {
-                    $(".page-content-head").removeClass("hidden");
-                    $('#info_tab').toggleClass('active');
-                    return;
-                }
-                var category;
-                var tabs="";
-                var subitem="";
-                var active_category=Object.keys(data["data"])[0];
-                var active_subitem=data["data"][active_category][0];
-                var rrd_name="";
+                let category;
+                let tabs = "";
+                let subitem = "";
+                let active_category = Object.keys(data["data"])[0];
+                let active_subitem = data["data"][active_category][0];
+                let rrd_name = "";
                 for ( category in data["data"]) {
                     if (category == active_category) {
                         tabs += '<li role="presentation" class="dropdown active">';
@@ -157,7 +128,7 @@
                         tabs += '<li role="presentation" class="dropdown">';
                     }
 
-                    subitem=data["data"][category][0]; // first sub item
+                    subitem = data["data"][category][0]; // first sub item
                     rrd_name = subitem + '-' + category;
 
                     // create dropdown menu
@@ -166,19 +137,16 @@
                     tabs+='</a>';
                     tabs+='<a data-toggle="tab" onclick="$(\'#'+rrd_name+'\').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;"><b>'+category[0].toUpperCase() + category.slice(1)+'</b></a>';
                     tabs+='<ul class="dropdown-menu" role="menu">';
-                    rrd_name="";
 
                     // add subtabs
-                    for (var count=0;  count<data["data"][category].length;++count ) {
+                    for (let count=0;  count<data["data"][category].length;++count ) {
                         subitem=data["data"][category][count];
                         rrd_name = subitem + '-' + category;
 
                         if (subitem==active_subitem && category==active_category) {
-                            tabs += '<li class="active"><a data-toggle="tab" class="rrd-item" onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'">' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
-                            rrd=rrd_name;
-                            getdata(rrd_name,0,0,120,false,0); // load initial data
+                            tabs += '<li class="active"><a data-toggle="tab" class="rrd_item" id="'+rrd_name+'">' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
                         } else {
-                            tabs += '<li><a data-toggle="tab" class="rrd-item"  onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'">' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
+                            tabs += '<li><a data-toggle="tab" class="rrd_item"  id="'+rrd_name+'">' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
                         }
                     }
                     tabs+='</ul>';
@@ -186,72 +154,45 @@
                 }
                 $('#maintabs').html(tabs);
                 $('#tab_1').toggleClass('active');
+
                 // map interface descriptions
-                $(".rrd-item").each(function(){
-                    var rrd_item = $(this);
-                    var rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
+                $(".rrd_item").each(function(){
+                    let rrd_item = $(this);
+                    let rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
                     $.map(data['interfaces'], function(value, key){
                         if (key.toLowerCase() == rrd_item_name) {
                             rrd_item.html(value['descr']);
                         }
                     });
                 });
-            } else {
-                alert("Error while fetching RRD list : "+status);
+                $(".rrd_item").click(function(){
+                    // switch between rrd graphs
+                    $('#zoom').empty();
+                    disabled = [];  // clear disabled stream data
+                    chart.brushExtent([0, 0]); // clear focus area
+                    getdata($(this).attr('id'));
+                });
+                $(".update_options").change(function(){
+                    window.onresize = null; // clear any pending resize events
+                    let rrd = $(".dropdown-menu > li.active > a").attr('id');
+                    if ($(this).attr('id') == 'zoom') {
+                        chart.brushExtent([0, 0]); // clear focus area
+                    }
+                    getdata(rrd);
+                });
+                $("#"+active_subitem+"-"+active_category).click();
             }
         });
     }
 
-    function getdata(rrd_name, from, to, maxitems, detail) {
+    function getdata(rrd_name) {
 
-        if (zoom_buttons===undefined) {
-            zoom_buttons="";
-        }
+        let from = 0;
+        let to = 0;
+        let maxitems = 120;
 
-        // Set defaults if not specified
-        if (rrd_name === undefined) {
-            rrd_name = rrd;
-            disabled = [];  // clear disabled stream data
-
-        } else {
-            if ( rrd_name!=rrd ) {
-                rrd = rrd_name; // set global rrd name to current rrd
-                disabled = [];  // clear disabled stream data
-                zoom_buttons=""; // clear zoom_buttons
-                chart.brushExtent([0, 0]); // clear focus area
-                $('#res0').parent().click(); // reset resolution
-            }
-        }
-
-        if (from === undefined) {
-            from = 0;
-        }
-        if (to === undefined) {
-            to = 0;
-
-        }
-        if (maxitems === undefined) {
-            maxitems = 120;
-
-        }
-
-        let inverse = false;
-        if ($('input:radio[name=inverse]:checked').val() == 1) {
-            inverse = true;
-        }
-        if (detail === undefined) {
-            detail = 0;
-        }
-
-        // Remember selected area
-        current_selection_from = from;
-        current_selection_to = to;
-
-        // Flag to know when we are fetching data
-        fetching_data = true;
-
-        // Used to set render the zoom/detail buttons
-        //zoom_buttons = "";
+        let detail = $('input:radio[name=detail]:checked').val() ?? '0';
+        let inverse = $('input:radio[name=inverse]:checked').val() == 1 ? '1' : '0';
 
         // array used for cvs export option
         csvData = [];
@@ -265,12 +206,11 @@
         // info bar - show loading info bar while refreshing data
         $('#loading').show();
         // API call to request data
-        ajaxGet("/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + String(from) + "/" + String(to) + "/" + String(maxitems) + "/" + String(inverse) + "/" + String(detail), {}, function (data, status) {
+        ajaxGet("/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + inverse + "/" + detail, {}, function (data, status) {
             if (status == "success") {
-                var stepsize = data["d3"]["stepSize"];
-                var scale = "{{ lang._('seconds') }}";
-                var dtformat = '%m/%d %H:%M';
-                var visible_time=to-from;
+                let stepsize = data["set"]["step_size"];
+                let scale = "{{ lang._('seconds') }}";
+                let dtformat = '%m/%d %H:%M';
 
                 // set defaults based on stepsize
                 if (stepsize >= 86400) {
@@ -287,53 +227,57 @@
                     dtformat = '%H:%M';
                 }
 
-                // if we have a focus area then change the x-scale to reflect current view
-                if (visible_time >= (86400*7)) { // one week
-                    dtformat = '\'%y w%U%';
-                } else if (visible_time >= (3600*48)) { // 48 hours
-                    dtformat = '\'%y d%j%';
-                } else if (visible_time >= (60*maxitems)) { // max minutes
-                    dtformat = '%H:%M';
-                }
-
                 // Add zoomlevel buttons/options
-                if ($('input:radio[name=detail]:checked').val() == undefined || zoom_buttons==="") {
+                if ($('input:radio[name=detail]:checked').val() == undefined) {
+                    $('#zoom').html("<b>No data available</b>");
                     for (let setcount = 0; setcount < data["sets"].length; ++setcount) {
-                        const recordedtime = data["sets"][setcount]["recorded_time"];
+                        const set_stepsize = data["sets"][setcount]["step_size"];
                         let detail_text = '';
                         // Find out what text matches best
-                        if (recordedtime >= 31536000) {
-                            detail_text = Math.floor(recordedtime / 31536000).toString() + " {{ lang._('Year(s)') }}";
-                        } else if (recordedtime >= 259200) {
-                            detail_text = Math.floor(recordedtime / 86400).toString() + " {{ lang._('Days') }}";
-                        } else if (recordedtime > 3600) {
-                            detail_text = Math.floor(recordedtime / 3600).toString() + " {{ lang._('Hours') }}";
+                        if (set_stepsize >= 31536000) {
+                            detail_text = Math.floor(set_stepsize / 31536000).toString() + " {{ lang._('Year(s)') }}";
+                        } else if (set_stepsize >= 259200) {
+                            detail_text = Math.floor(set_stepsize / 86400).toString() + " {{ lang._('Days') }}";
+                        } else if (set_stepsize > 3600) {
+                            detail_text = Math.floor(set_stepsize / 3600).toString() + " {{ lang._('Hours') }}";
                         } else {
-                            detail_text = Math.floor(recordedtime / 60).toString() + " {{ lang._('Minutes') }}";
+                            detail_text = Math.floor(set_stepsize / 60).toString() + " {{ lang._('Minute(s)') }}";
                         }
                         if (setcount == 0) {
-                            zoom_buttons += '<label class="btn btn-default active"> <input type="radio" id="d' + setcount.toString() + '" name="detail" checked="checked" value="' + setcount.toString() + '" /> ' + detail_text + ' </label>';
+                            $('#zoom').empty();
+                            $('#zoom').append('<label class="btn btn-default active"> <input type="radio" id="d' + setcount.toString() + '" name="detail" checked="checked" value="' + setcount.toString() + '" /> ' + detail_text + ' </label>');
                         } else {
-                            zoom_buttons += '<label class="btn btn-default"> <input type="radio" id="d' + setcount.toString() + '" name="detail" value="' + setcount.toString() + '" /> ' + detail_text + ' </label>';
+                            $('#zoom').append('<label class="btn btn-default"> <input type="radio" id="d' + setcount.toString() + '" name="detail" value="' + setcount.toString() + '" /> ' + detail_text + ' </label>');
                         }
 
                     }
-                    if (zoom_buttons === "") {
-                        zoom_buttons = "<b>No data available</b>";
-                    }
-                    // insert zoom buttons html code
-                    $('#zoom').html(zoom_buttons);
                 }
                 $('#stepsize').text(stepsize + " " + scale);
 
                 // Check for enabled or disabled stream, to make sure that same set stays selected after update
                 for (let index = 0; index < disabled.length; ++index) {
                     window.resize = null;
-                    data["d3"]["data"][index]["disabled"] = disabled[index]; // disable stream if it was disabled before updating dataset
+                    data["set"]["data"][index]["disabled"] = disabled[index]; // disable stream if it was disabled before updating dataset
                 }
 
                 // Create tables (general and detail)
                 if ($('input:radio[name=show_table]:checked').val() == 1) { // check if toggle table is on
+                    // Setup variables for table data
+                    let table_head; // used for table headings in html format
+                    let table_row_data = {}; // holds row data for table
+                    let table_view_rows = ""; // holds row data in html format
+
+                    let keyname = ""; // used for name of key
+                    let rowcounter = 0;// general row counter
+                    let min; // holds calculated minimum value
+                    let max; // holds calculated maximum value
+                    let average; // holds calculated average
+
+                    let t; // general date/time variable
+                    let item; // used for name of key
+
+                    let counter = 1; // used for row count
+
                     table_head = "<th>#</th>";
                     if ($('input:radio[name=toggle_time]:checked').val() == 1) {
                         table_head += "<th>{{ lang._('full date & time') }}</th>";
@@ -341,56 +285,41 @@
                         table_head += "<th>{{ lang._('timestamp') }}</th>";
                     }
 
-                    // Setup variables for table data
-                    var table_head; // used for table headings in html format
-                    var table_row_data = {}; // holds row data for table
-                    var table_view_rows = ""; // holds row data in html format
 
-                    var keyname = ""; // used for name of key
-                    var rowcounter = 0;// general row counter
-                    var min; // holds calculated minimum value
-                    var max; // holds calculated maximum value
-                    var average; // holds calculated average
-
-                    var t; // general date/time variable
-                    var item; // used for name of key
-
-                    var counter = 1; // used for row count
-
-                    for (let index = 0; index < data["d3"]["data"].length; ++index) {
+                    for (let index = 0; index < data["set"]["data"].length; ++index) {
                         rowcounter = 0;
                         min = 0;
                         max = 0;
                         average = 0;
-                        if (data["d3"]["data"][index]["disabled"] != true) {
-                            table_head += '<th>' + data["d3"]["data"][index]["key"] + '</th>';
-                            keyname = data["d3"]["data"][index]["key"].toString();
-                            for (var value_index = 0; value_index < data["d3"]["data"][index]["values"].length; ++value_index) {
+                        if (data["set"]["data"][index]["disabled"] != true) {
+                            table_head += '<th>' + data["set"]["data"][index]["key"] + '</th>';
+                            keyname = data["set"]["data"][index]["key"].toString();
+                            for (let value_index = 0; value_index < data["set"]["data"][index]["values"].length; ++value_index) {
 
-                                if (data["d3"]["data"][index]["values"][value_index][0] >= (from * 1000) && data["d3"]["data"][index]["values"][value_index][0] <= (to * 1000) || ( from == 0 && to == 0 )) {
+                                if (data["set"]["data"][index]["values"][value_index][0] >= (from * 1000) && data["set"]["data"][index]["values"][value_index][0] <= (to * 1000) || ( from == 0 && to == 0 )) {
 
-                                    if (table_row_data[data["d3"]["data"][index]["values"][value_index][0]] === undefined) {
-                                        table_row_data[data["d3"]["data"][index]["values"][value_index][0]] = {};
+                                    if (table_row_data[data["set"]["data"][index]["values"][value_index][0]] === undefined) {
+                                        table_row_data[data["set"]["data"][index]["values"][value_index][0]] = {};
                                     }
-                                    if (table_row_data[data["d3"]["data"][index]["values"][value_index][0]][data["d3"]["data"][index]["key"]] === undefined) {
-                                        table_row_data[data["d3"]["data"][index]["values"][value_index][0]][data["d3"]["data"][index]["key"]] = data["d3"]["data"][index]["values"][value_index][1];
+                                    if (table_row_data[data["set"]["data"][index]["values"][value_index][0]][data["set"]["data"][index]["key"]] === undefined) {
+                                        table_row_data[data["set"]["data"][index]["values"][value_index][0]][data["set"]["data"][index]["key"]] = data["set"]["data"][index]["values"][value_index][1];
                                     }
                                     if (csvData[rowcounter] === undefined) {
                                         csvData[rowcounter] = {};
                                     }
                                     if (csvData[rowcounter]["timestamp"] === undefined) {
-                                        t = new Date(parseInt(data["d3"]["data"][index]["values"][value_index][0]));
-                                        csvData[rowcounter]["timestamp"] = data["d3"]["data"][index]["values"][value_index][0] / 1000;
+                                        t = new Date(parseInt(data["set"]["data"][index]["values"][value_index][0]));
+                                        csvData[rowcounter]["timestamp"] = data["set"]["data"][index]["values"][value_index][0] / 1000;
                                         csvData[rowcounter]["date_time"] = t.toString();
                                     }
-                                    csvData[rowcounter][keyname] = data["d3"]["data"][index]["values"][value_index][1];
-                                    if (data["d3"]["data"][index]["values"][value_index][1] < min) {
-                                        min = data["d3"]["data"][index]["values"][value_index][1];
+                                    csvData[rowcounter][keyname] = data["set"]["data"][index]["values"][value_index][1];
+                                    if (data["set"]["data"][index]["values"][value_index][1] < min) {
+                                        min = data["set"]["data"][index]["values"][value_index][1];
                                     }
-                                    if (data["d3"]["data"][index]["values"][value_index][1] > max) {
-                                        max = data["d3"]["data"][index]["values"][value_index][1];
+                                    if (data["set"]["data"][index]["values"][value_index][1] > max) {
+                                        max = data["set"]["data"][index]["values"][value_index][1];
                                     }
-                                    average += data["d3"]["data"][index]["values"][value_index][1];
+                                    average += data["set"]["data"][index]["values"][value_index][1];
                                     ++rowcounter;
                                 }
                             }
@@ -403,7 +332,6 @@
 
                         }
                     }
-
 
                     for ( item in min_max_average) {
                         table_view_rows += "<tr>";
@@ -424,7 +352,7 @@
                         } else {
                             table_view_rows += "<tr><td>" + counter.toString() + "</td><td>" + parseInt(item / 1000).toString() + "</td>";
                         }
-                        for (var value in table_row_data[item]) {
+                        for (let value in table_row_data[item]) {
                             table_view_rows += "<td>" + table_row_data[item][value] + "</td>";
                         }
                         ++counter;
@@ -448,7 +376,7 @@
                 chart.interactive(true);
 
                 d3.select('#chart svg')
-                        .datum(data["d3"]["data"])
+                        .datum(data["set"]["data"])
                         .transition().duration(0)
                         .call(chart);
 
@@ -457,7 +385,6 @@
                 window.onresize = null; // clear any pending resize events
 
 
-                fetching_data = false;
                 $('#loading').hide(); // Data has been found and chart will be drawn
                 $('#averages').show();
                 $('#chart_title').show();
@@ -470,14 +397,16 @@
                 }
 
             } else {
-                alert("Error while fetching data : "+status);
+                $('#loading').hide();
+                $('#chart_title').show();
+                $('#chart_title').text("{{ lang._('Unable to load data') }}");
             }
         });
     }
 
     // convert a data Array to CSV format
     function convertToCSV(args) {
-        var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+        let result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
         data = args.data || null;
         if (data == null || !data.length) {
@@ -509,8 +438,8 @@
 
     // download CVS file
     function downloadCSV(args) {
-        var data, filename, link;
-        var csv = convertToCSV({
+        let data, filename, link;
+        let csv = convertToCSV({
             data: csvData
         });
         if (csv == null) return;
@@ -567,59 +496,36 @@
                     <div class="row">
                         <div class="col-md-12"></div>
                         <div class="col-md-4">
-                            <b>{{ lang._('Zoom level') }}:</b>
-                            <form onChange="UpdateOptions()">
-                                <div class="btn-group btn-group-xs" data-toggle="buttons" id="zoom">
-                                    <!-- The zoom buttons are generated based upon the current dataset -->
-                                </div>
-                            </form>
+                            <b>{{ lang._('Granularity') }}:</b>
+                            <div class="btn-group btn-group-xs update_options" data-toggle="buttons" id="zoom">
+                                <!-- The zoom buttons are generated based upon the current dataset -->
+                            </div>
                         </div>
                         <div class="col-md-2">
                             <b>{{ lang._('Inverse') }}:</b>
-                            <form onChange="UpdateOptions()">
-                                <div class="btn-group btn-group-xs" data-toggle="buttons">
-                                    <label class="btn btn-default active">
-                                        <input type="radio" id="in0" name="inverse" checked="checked" value="0"/> {{
-                                        lang._('Off') }}
-                                    </label>
-                                    <label class="btn btn-default">
-                                        <input type="radio" id="in1" name="inverse" value="1"/> {{ lang._('On') }}
-                                    </label>
-                                </div>
-                            </form>
+                            <div class="btn-group btn-group-xs update_options" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" id="in0" name="inverse" checked="checked" value="0"/>
+                                    {{lang._('Off') }}
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" id="in1" name="inverse" value="1"/> {{ lang._('On') }}
+                                </label>
+                            </div>
                         </div>
                         <div class="col-md-4">
-                            <b>{{ lang._('Resolution') }}:</b>
-                            <form onChange="UpdateOptions()">
-                                <div class="btn-group btn-group-xs" data-toggle="buttons">
-                                    <label class="btn btn-default active">
-                                        <input type="radio" id="res0" name="resolution" checked="checked" value="120"/>
-                                        {{ lang._('Standard') }}
-                                    </label>
-                                    <label class="btn btn-default">
-                                        <input type="radio" id="res1" name="resolution" value="240"/> {{
-                                        lang._('Medium') }}
-                                    </label>
-                                    <label class="btn btn-default">
-                                        <input type="radio" id="res2" name="resolution" value="600"/> {{ lang._('High')
-                                        }}
-                                    </label>
-                                </div>
-                            </form>
                         </div>
                         <div class="col-md-2">
                             <b>{{ lang._('Show Tables') }}:</b>
-                            <form onChange="UpdateOptions()">
-                                <div class="btn-group btn-group-xs" data-toggle="buttons">
-                                    <label class="btn btn-default active">
-                                        <input type="radio" id="tab0" name="show_table" checked="checked" value="0"/> {{
-                                        lang._('Off') }}
-                                    </label>
-                                    <label class="btn btn-default">
-                                        <input type="radio" id="tab1" name="show_table" value="1"/> {{ lang._('On') }}
-                                    </label>
-                                </div>
-                            </form>
+                            <div class="btn-group btn-group-xs update_options" data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" id="tab0" name="show_table" checked="checked" value="0"/> {{
+                                    lang._('Off') }}
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" id="tab1" name="show_table" value="1"/> {{ lang._('On') }}
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -684,17 +590,15 @@
                 <div class="btn-toolbar" role="toolbar">
                     <i>{{ lang._('Toggle Timeview') }}:</i>
 
-                    <form onChange="UpdateOptions();">
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-xs btn-default active">
-                                <input type="radio" id="time0" name="toggle_time" checked="checked" value="0"/> {{
-                                lang._('Timestamp') }}
-                            </label>
-                            <label class="btn btn-xs btn-default">
-                                <input type="radio" id="time1" name="toggle_time" value="1"/> {{ lang._('Full Date & Time') }}
-                            </label>
-                        </div>
-                    </form>
+                    <div class="btn-group update_options" data-toggle="buttons">
+                        <label class="btn btn-xs btn-default active">
+                            <input type="radio" id="time0" name="toggle_time" checked="checked" value="0"/> {{
+                            lang._('Timestamp') }}
+                        </label>
+                        <label class="btn btn-xs btn-default">
+                            <input type="radio" id="time1" name="toggle_time" value="1"/> {{ lang._('Full Date & Time') }}
+                        </label>
+                    </div>
                     <div class="btn btn-xs btn-primary inline" onclick='downloadCSV({ filename: rrd+".csv" });'>
                         <i class="fa fa-download"></i> {{ lang._('Download as CSV') }}
                     </div>
