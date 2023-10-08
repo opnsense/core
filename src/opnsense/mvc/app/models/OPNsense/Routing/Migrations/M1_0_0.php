@@ -81,6 +81,11 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
 
+                // increase time period if old model had it set too low
+                $min_time_period = 2 * (intval((string)$node->interval) + intval((string)$node->loss_interval));
+                if ((string)$node->time_period < $min_time_period) {
+                    $node->time_period = $min_time_period;
+                }
             }
         }
 
