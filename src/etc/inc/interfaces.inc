@@ -2339,6 +2339,28 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     service_log("done.\n", $verbose);
 
     if ($reload) {
+        /*
+         * XXX wait for DAD to finish to have IPv6 addresses ready
+         *
+         * This tries to minimise impact at the cost of doing it
+         * unconditionally for now.  The problem is that between staticv6
+         * and IPv6 VIPs the addresses could be in tentative state and
+         * programmatically waiting for tentative state addresses to
+         * become usable would create even more delays and possibly
+         * deadlocks.  The same is true for look-ahead or returning the
+         * fact that IPv6 addresses have been added here which would
+         * warrant a conditional wait outside of this conditional since
+         * it always applies but only breaks here for now.
+         *
+         * In the future it would be nicer to factor (parts of) the
+         * $reload mechanic to the caller.  This has been a source of
+         * numerous other problems for a number of years now back when
+         */
+        $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
+        if ($dad_delay) {
+            sleep($dad_delay + 1);
+        }
+
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
