@@ -2358,7 +2358,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
          */
         $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
         if ($dad_delay) {
-            sleep($dad_delay + 1);
+            //sleep($dad_delay + 1);
         }
 
         system_routing_configure($verbose, $interface);
