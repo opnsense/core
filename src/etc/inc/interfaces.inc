@@ -2115,7 +2115,7 @@ function interface_static6_configure($interface, $wancfg)
 
     $realif = get_real_interface($interface, 'inet6');
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s no_dad', [$realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']]);
 }
 
 function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = null)
@@ -2298,12 +2298,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
-     * 2. Set interface description to get more useful ifconfig output
-     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 2. Enable duplicate address detection (DAD) on main device
+     * 3. Set interface description to get more useful ifconfig output
+     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$realif, $interface_descr]);
 
     switch ($wancfg['ipaddrv6'] ?? 'none') {
         case 'slaac':

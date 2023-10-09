@@ -70,7 +70,10 @@ if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
 
 /* wait for DAD to complete to avoid discarding tentative address */
 $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
-sleep($dad_delay + 1);
+if ($dad_delay) {
+    /* XXX this is also required but missed for IPv6 VIPs created later in the script */
+    sleep($dad_delay + 1);
+}
 
 /* this may be required to cleanse the DNS information no longer available */
 system_resolver_configure();
