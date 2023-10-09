@@ -835,7 +835,7 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
         kill_hostapd($realif);
     }
 
-    $track6 = link_interface_to_track6($interface);
+    $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
         plugins_configure('dhcp', false, ['inet6', $track6]);
