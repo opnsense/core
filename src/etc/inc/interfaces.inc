@@ -834,7 +834,7 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
     /* may be required or not, but kept here for symmetry with IPv4 */
     if (!empty($ifcfg['ipaddrv6'])) {
         /* edge case: bring down a primary GUA, but not a link-local */
-        list ($ip6) = _interfaces_primary_address6($interface, $ifconfig_details, false, false);
+        list ($ip6) = _interfaces_primary_address6($interface, null, false, false);
         if (!empty($ip6)) {
             mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
         }
