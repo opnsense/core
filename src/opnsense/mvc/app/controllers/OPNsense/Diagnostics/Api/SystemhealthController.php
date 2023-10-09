@@ -119,7 +119,8 @@ class SystemhealthController extends ApiControllerBase
      * @param int $detail
      * @return array
      */
-    public function getSystemHealthAction($rrd = "", $inverse = 0, $detail = -1) {
+    public function getSystemHealthAction($rrd = "", $inverse = 0, $detail = -1)
+    {
         $rrd_details = $this->getRRDdetails($rrd)["data"];
         $response = (new Backend())->configdpRun('health fetch', [$rrd_details['filename']]);
         $response = json_decode($response ?? '', true);
@@ -133,13 +134,13 @@ class SystemhealthController extends ApiControllerBase
                     $record['area'] = true;
                     if ($inverse && $key % 2 != 0) {
                         foreach ($record['values'] as &$value) {
-                            $value[1] = $value[1]*-1;
+                            $value[1] = $value[1] * -1;
                         }
                     }
                     $response['set']['data'][] = $record;
                 }
             }
-            for ($i=0; $i < count($response['sets']); $i++) {
+            for ($i = 0; $i < count($response['sets']); $i++) {
                 unset($response['sets'][$detail]['ds']);
             }
             if (!empty($rrd_details["title"])) {

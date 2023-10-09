@@ -82,7 +82,7 @@ foreach ($ipsec_leases as $lease) {
         'address' => $lease['address'],
         'online' => $lease['online']
     ];
-    
+
     // Count unique users in ipsec_leases array if lease is online
     if ($lease['online']) {
         $unique_users[$lease['user']] = true;
