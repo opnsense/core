@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014 Deciso B.V.
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
@@ -49,61 +49,72 @@ function restore_config_section($section_name, $new_contents)
 {
     global $config;
 
+    $sections = [];
+
+    foreach ($section_name as $section) {
+        $sections = array_merge($sections, explode(',', $section));
+    }
+
+    $sections = array_unique($sections);
+
     $tmpxml = '/tmp/tmpxml';
 
     file_put_contents($tmpxml, $new_contents);
     $xml = load_config_from_file($tmpxml);
     @unlink($tmpxml);
 
-    if (!is_array($xml) || !isset($xml[$section_name])) {
+    if (!is_array($xml)) {
         return false;
     }
 
-    $config[$section_name] = $xml[$section_name];
+    foreach ($sections as $section) {
+        $old = &$config;
+        $new = &$xml;
 
-    write_config(sprintf('Restored section %s of config file', $section_name));
+        $path = explode('.', $section);
+        $target = array_shift($path);
+
+        foreach ($path as $node) {
+            if (!isset($new[$node])) {
+                continue 2;
+            }
+            $new = &$new[$path];
+            if (!isset($old[$node])) {
+                $old[$node] = [];
+            }
+            $old = &$old[$node];
+        }
+
+        if (isset($new[$target])) {
+            $old[$target] = $new[$target];
+        }
+    }
+
+    write_config(sprintf('Restored sections (%s) of config file', join(',', $sections)));
     convert_config();
 
     return true;
 }
 
-$areas = array(
-    'OPNsense' => gettext('OPNsense Additions'),	/* XXX need specifics */
+/* config areas that are not suitable for config sync live here */
+$areas = [
     'bridges' => gettext('Bridge Devices'),
-    'ca' => gettext('SSL Certificate Authorities'),
-    'cert' => gettext('SSL Certificates'),
-    'dhcpd' => gettext('DHCP Server'),
-    'dhcpdv6' => gettext('DHCPv6 Server'),
-    'dhcrelay' => gettext('DHCP Relay'),
-    'dhcrelay6' => gettext('DHCPv6 Relay'),
-    'dnsmasq' => gettext('Dnsmasq DNS'),
-    'dnsupdates' => gettext('RFC 2136'),
-    'filter' => gettext('Firewall Rules'),
-    'gateways' => gettext('Gateways'),
     'gifs' => gettext('GIF Devices'),
-    'igmpproxy' => gettext('IGMP Proxy'),
-    'installedpackages' => gettext('Universal Plug and Play'),	/* XXX only one, reduce depth! */
     'interfaces' => gettext('Interfaces'),
-    'ipsec' => gettext('IPsec'),
     'laggs' => gettext('LAGG Devices'),
-    'load_balancer' => gettext('Load Balancer'),
-    'nat' => gettext('Network Address Translation'),
-    'ntpd' => gettext('Network Time'),
-    'opendns' => gettext('DNS Filter'),
-    'openvpn' => gettext('OpenVPN'),
     'ppps' => gettext('Point-to-Point Devices'),
-    'proxyarp' => gettext('Proxy ARP'),
     'rrddata' => gettext('RRD Data'),
-    'staticroutes' => gettext('Static routes'),
-    'sysctl' => gettext('System tunables'),
-    'syslog' => gettext('Syslog'),
-    'system' => gettext('System'),
-    'unbound' => gettext('Unbound DNS'),
     'vlans' => gettext('VLAN Devices'),
-    'widgets' => gettext('Dashboard Widgets'),
     'wireless' => gettext('Wireless Devices'),
-    'wol' => gettext('Wake on LAN'),
-);
+];
+
+foreach (plugins_xmlrpc_sync() as $area) {
+    if (!empty($area['section'])) {
+        $areas[$area['section']] = $area['description'];
+    }
+}
+
+natcasesort($areas);
 
 $backupFactory = new OPNsense\Backup\BackupFactory();
 $do_reboot = false;
@@ -206,9 +217,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (count($input_errors) == 0) {
-            if (!empty($_POST['restorearea'])) {
-                if (!restore_config_section($_POST['restorearea'], $data)) {
-                    $input_errors[] = gettext("You have selected to restore an area but we could not locate the correct xml tag.");
+            if (!empty($pconfig['restorearea'])) {
+                if (!restore_config_section($pconfig['restorearea'], $data)) {
+                    $input_errors[] = gettext('The selected config file could not be parsed.');
                 } else {
                     if (!empty($config['rrddata'])) {
                         /* XXX we should point to the data... */
@@ -376,6 +387,32 @@ $( document ).ready(function() {
             $("#decrypt_opts").addClass("hidden");
         }
     });
+
+     $('#restorearea').change(function () {
+         if ($('#restorearea option:selected').text() == '') {
+             $.restorearea_warned = 0;
+         } else if ($.restorearea_warned != 1) {
+             $.restorearea_warned = 1;
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Selecting specific restore areas during a configuration import may ' .
+                     'cause loss of configuration integrity due to external references not being restored. It is ' .
+                     'recommended to keep this set to the default unless you know what you are doing.')) ?>',
+                 type: BootstrapDialog.TYPE_WARNING,
+                 btnOKClass: 'btn-warning',
+                 btnOKLabel: '<?= html_safe(gettext('I know what I am doing')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Use the default')) ?>',
+                 callback: function(result) {
+                     if (!result) {
+                         $('#restorearea option:selected').prop('selected', false);
+                         $('#restorearea').selectpicker('refresh');
+                         $.restorearea_warned = 0;
+                     }
+                 }
+             });
+         }
+     });
+     $.restorearea_warned = $('#restorearea option:selected').length ? 1 : 0;
 });
 //]]>
 </script>
@@ -458,18 +495,15 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <?=gettext("Restore area:"); ?>
+                    <?= gettext('Restore areas:') ?>
                     <div>
-                      <select name="restorearea" id="restorearea" class="selectpicker">
-                        <option value=""><?=gettext("ALL");?></option>
-<?php
-                      foreach($areas as $area => $areaname):?>
-                        <option value="<?=$area;?>"><?=$areaname;?></option>
-<?php
-                      endforeach;?>
+                      <select name="restorearea[]" id="restorearea" class="selectpicker" multiple="multiple" size="5" title="<?= html_safe(gettext('All (recommended)')) ?>" data-live-search="true" data-size="10">
+<?php foreach($areas as $area => $areaname): ?>
+                        <option value="<?= $area ?>"><?= $areaname ?></option>
+<?php endforeach ?>
                       </select>
                     </div>
-                    <input name="conffile" type="file" id="conffile" /><br/>
+                    <br/><input name="conffile" type="file" id="conffile" /><br/>
                     <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
                     <?=gettext("Reboot after a successful restore."); ?><br/>
                     <input name="keepconsole" type="checkbox" id="keepconsole" checked="checked" />
