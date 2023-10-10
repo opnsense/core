@@ -865,66 +865,101 @@ function system_trust_configure($verbose = false)
 
     service_log('Writing trust files...', $verbose);
 
-    $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';
-    $ca_cert_pem = '/usr/local/openssl/cert.pem';
-    if (file_exists($ca_root_nss)) {
-        $ca = file_get_contents($ca_root_nss);
-        foreach (config_read_array('ca') as $entry) {
-            if (!empty($entry['crt'])) {
-                // Split and cleans ca certificates, one entry could contain multiple certs if a user imported a bundle
-                // avoid expired ca's from being considered as valid alternatives.
-                $certlist = str_replace("\r", '', base64_decode($entry['crt']));
-                $user_cas = [""];
-                foreach (explode("\n", $certlist) as $row) {
-                    $user_cas[count($user_cas) - 1] .= $row . "\n";
-                    if (strpos($row, '---END') > 0) {
-                        $user_cas[] = "";
-                    }
-                }
-                $ca .= "\n# {$entry['descr']}\n";
-                $include_intermediates = !empty($config['system']['store_intermediate_certs']);
-                foreach ($user_cas as $user_ca) {
-                    if (!empty(trim($user_ca))) {
-                        $certinfo = @openssl_x509_parse($user_ca);
-                        $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
-                        $authoritykey = "";
-                        if (!empty($certext['authorityKeyIdentifier'])) {
-                            $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
-                        }
-                        $subjectkey = $certext['subjectKeyIdentifier'];
-                        $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
+    /*
+     * Write separate files because certcl will blacklist the whole file
+     * if the first certificate matches.  Unfortunately the blacklisting
+     * can also be harmful because it overrides the user choice given
+     * through our GUI autorities section.
+     *
+     * 1. Clear all files (a subdirectory is not supported)
+     * 2. Write all files
+     * 3. Execute rehash to fill /etc/ssl/certs
+     * 4. Pull all content from /etc/ssl/certs
+     * 5. Write bundle files with all /etc/ssl/certs content
+     */
 
-                        $error_line = "";
-                        if (!empty($certinfo['validTo']) && $certinfo['validTo_time_t'] < time()) {
-                            $error_line = sprintf(
-                                "(system local trust) refusing to import %s from %s (expired @ %s)",
-                                $certinfo['name'],
-                                $entry['descr'],
-                                date('r', $certinfo['validFrom_time_t'])
-                            );
-                        } elseif (!$include_intermediates && !$is_self_signed) {
-                            $error_line = sprintf(
-                                "(system local trust) skip intermediate certificate %s from %s",
-                                $certinfo['name'],
-                                $entry['descr']
-                            );
-                        }
-                        if (!empty($error_line)) {
-                            syslog(LOG_NOTICE, $error_line);
-                            $ca .= "#" .  str_replace("\n", "", $error_line);
-                        } else {
-                            $ca .= $user_ca;
-                        }
+    $ca_files = '/usr/local/share/certs/ca-root-opnsense-%s';
+
+    foreach (glob(sprintf($ca_files, '*')) as $ca_unlink) {
+        @unlink($ca_unlink);
+    }
+
+    foreach (config_read_array('ca') as $i => $entry) {
+        if (!empty($entry['crt'])) {
+            // Split and cleans ca certificates, one entry could contain multiple certs if a user imported a bundle
+            // avoid expired ca's from being considered as valid alternatives.
+            $certlist = str_replace("\r", '', base64_decode($entry['crt']));
+            $user_cas = [""];
+            foreach (explode("\n", $certlist) as $row) {
+                $user_cas[count($user_cas) - 1] .= $row . "\n";
+                if (strpos($row, '---END') > 0) {
+                    $user_cas[] = "";
+                }
+            }
+            $ca = "# {$entry['descr']}\n";
+            $ca_count = 0;
+            $include_intermediates = !empty($config['system']['store_intermediate_certs']);
+            foreach ($user_cas as $user_ca) {
+                if (!empty(trim($user_ca))) {
+                    $certinfo = @openssl_x509_parse($user_ca);
+                    $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
+                    $authoritykey = "";
+                    if (!empty($certext['authorityKeyIdentifier'])) {
+                        $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
+                    }
+                    $subjectkey = $certext['subjectKeyIdentifier'];
+                    $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
+
+                    $error_line = "";
+                    if (!empty($certinfo['validTo']) && $certinfo['validTo_time_t'] < time()) {
+                        $error_line = sprintf(
+                            "(system local trust) refusing to import %s from %s (expired @ %s)",
+                            $certinfo['name'],
+                            $entry['descr'],
+                            date('r', $certinfo['validFrom_time_t'])
+                        );
+                    } elseif (!$include_intermediates && !$is_self_signed) {
+                        $error_line = sprintf(
+                            "(system local trust) skip intermediate certificate %s from %s",
+                            $certinfo['name'],
+                            $entry['descr']
+                        );
+                    }
+                    if (!empty($error_line)) {
+                        syslog(LOG_NOTICE, $error_line);
+                        $ca .= "#" .  str_replace("\n", "", $error_line);
+                    } else {
+                        $ca .= $user_ca;
+                        $ca_count += 1;
                     }
                 }
             }
-        }
 
-        file_put_contents($ca_cert_pem, $ca);
-        copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
-        @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
-        copy($ca_cert_pem, '/etc/ssl/cert.pem');
-        chmod('/etc/ssl/cert.pem', 0644);
+            if ($ca_count) {
+                $ca_file = sprintf($ca_files, $i . '.crt');
+                file_put_contents(sprintf($ca_file, $i), $ca);
+                chmod(sprintf($ca_file, $i), 0644);
+            }
+        }
+    }
+
+    service_log("done.\n", $verbose);
+
+    /* collects all trusted certificates into /etc/ssl/certs directory */
+    passthru('/usr/sbin/certctl rehash');
+
+    service_log('Writing trust bundles...', $verbose);
+
+    /* collect all the file content and write it to compatibility bundle locations */
+    $ca_bundle = [];
+    foreach (glob('/etc/ssl/certs/*.[0-9]') as $file) {
+        $ca_bundle[] = file_get_contents($file);
+    }
+    $ca_bundle = join("\n", $ca_bundle);
+    foreach (['/etc/ssl/cert.pem', '/usr/local/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
+        @unlink($pem); /* do not clobber symlink target */
+        file_put_contents($pem, $ca_bundle);
+        chmod($pem, 0644);
     }
 
     service_log("done.\n", $verbose);
