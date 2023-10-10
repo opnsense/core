@@ -385,16 +385,19 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -503,6 +506,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Routing.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
@@ -570,6 +574,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/LegacyLinkField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/MacAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ModelRelationField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkAliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkField.php
@@ -675,6 +680,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipNetworkField.php
@@ -684,6 +690,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/dhcpd.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -800,6 +809,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -1002,6 +1012,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh

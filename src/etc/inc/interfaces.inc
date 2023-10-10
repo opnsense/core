@@ -3865,17 +3865,67 @@ function interfaces_staticarp_configure($if, $ifconfig_details = null)
         mwexecf('/usr/sbin/arp -d -i %s -a', [$ifcfg['if']]);
     }
 
-    if (isset($config['dhcpd'][$if]['staticmap'])) {
-        foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
-            if (!$want && !isset($arpent['arp_table_static_entry'])) {
-                continue;
+    interfaces_neighbors_configure($ifcfg['if'], $ifconfig_details);
+}
+
+function interfaces_neighbors_configure($device = null, $ifconfig_details = null)
+{
+    $subnets = [];
+
+    if (!empty($device)) {
+        if (empty($ifconfig_details) || empty($ifconfig_details[$device])) {
+            /* when called with an interface, require $ifconfig_details being passed */
+            return;
+        }
+        foreach (['ipv4', 'ipv6'] as $proto) {
+            if (!empty($ifconfig_details[$device])) {
+                foreach ($ifconfig_details[$device][$proto] as $item) {
+                    $subnets[] = $item['ipaddr'] . '/' . $item['subnetbits'];
+                }
             }
-            if (!isset($arpent['ipaddr'])) {
-                continue;
-            }
-            mwexecf('/usr/sbin/arp -s %s %s', [$arpent['ipaddr'], $arpent['mac']]);
         }
     }
+
+    $current_neightbors = [];
+    foreach ((new \OPNsense\Interfaces\Neighbor())->neighbor->iterateItems() as $key => $node) {
+        $found = empty($if);    /* unfiltered when no $if provided */
+        foreach ($subnets as $subnet) {
+            $found = ip_in_subnet((string)$node->ipaddress, $subnet);
+            if ($found) {
+                break;
+            }
+        }
+        if ($found) {
+            // IPv4 [arp] or IPv6 [ndp]
+            if (strpos($node->ipaddress, ":") === false) {
+                mwexecf('/usr/sbin/arp -s %s %s', [$node->ipaddress, $node->etheraddr]);
+            } else {
+                mwexecf('/usr/sbin/ndp -s %s %s', [$node->ipaddress, $node->etheraddr]);
+            }
+        }
+        $current_neightbors[] = (string)$node->ipaddress;
+    }
+
+    /* persist accounted addresses, without a cleanup that would be all seen since last cleanup */
+    $fobj = new \OPNsense\Core\FileObject('/tmp/interfaces_neighbors.json', 'a+');
+    $current = $fobj->readJson() ?? [];
+    $fobj->truncate(0)->writeJson(
+        !empty($device) ? array_unique(array_merge($current_neightbors, $current)) : $current_neightbors
+    );
+    unset($fobj);
+    /* only cleanup when applying all interfaces */
+    if (empty($device) && is_array($current)) {
+        foreach ($current as $item) {
+            if (is_string($item) && is_ipaddr($item) && !in_array($item, $current_neightbors)) {
+                if (strpos($item, ":") === false) {
+                    mwexecf('/usr/sbin/arp -d %s', [$item]);
+                } else {
+                    mwexecf('/usr/sbin/ndp -d %s', [$item]);
+                }
+            }
+        }
+    }
+
 }
 
 function get_interfaces_info($include_unlinked = false)
