@@ -2386,6 +2386,9 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         return;
     }
 
+    $realifv6 = get_real_interface($interface, 'inet6');
+    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled', [$realifv6, isset($lancfg['enable']) ? '-' : '']);
+
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
@@ -2394,10 +2397,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
             interface_track6_6rd_configure($interface, $lancfg);
             break;
         case 'slaac':
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv %sifdisabled', [
-                get_real_interface($interface, 'inet6'),
-                isset($lancfg['enable']) ? '-' : '',
-            ]);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv', [$realifv6]);
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
