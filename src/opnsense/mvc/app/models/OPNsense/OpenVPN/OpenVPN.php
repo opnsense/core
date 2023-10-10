@@ -84,7 +84,7 @@ class OpenVPN extends BaseModel
                     $tmp = Store::getCertificate((string)$instance->cert);
                     if (empty($tmp) || !isset($tmp['ca'])) {
                         $messages->appendMessage(new Message(
-                            gettext("Unable to locate a Certificate Authority for this certificate"),
+                            gettext('Unable to locate a CA for this certificate.'),
                             $key . ".cert"
                         ));
                     }
@@ -98,7 +98,7 @@ class OpenVPN extends BaseModel
                 ) {
                     if ((string)$instance->verify_client_cert != 'none' && $instance->role == 'server') {
                         $messages->appendMessage(new Message(
-                            gettext("To validate a certificate, one has to be provided "),
+                            gettext('To validate a certificate one has to be provided.'),
                             $key . ".verify_client_cert"
                         ));
                     } elseif (
@@ -107,7 +107,7 @@ class OpenVPN extends BaseModel
                         empty((string)$instance->ca)
                     ) {
                         $messages->appendMessage(new Message(
-                            gettext("When no certificate is provided, a CA need to be offered."),
+                            gettext('When no certificate is provided a CA needs to be provided.'),
                             $key . ".cert"
                         ));
                     }
@@ -121,7 +121,7 @@ class OpenVPN extends BaseModel
                 ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
             ) {
                 $messages->appendMessage(new Message(
-                    gettext("Timeout should be larger than interval"),
+                    gettext('Timeout should be larger than interval.'),
                     $key . ".keepalive_timeout"
                 ));
             }
