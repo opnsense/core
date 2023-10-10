@@ -200,8 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /****
     /* XXX: dpinger needs to take defaults under consideration
     /****/
-    $dpinger_config = $gateways->getDpingerDefaults();
-    foreach ($dpinger_config as $prop => $value) {
+    $dpinger_config = [];
+    foreach ($dpinger_default as $prop => $value) {
         $dpinger_config[$prop] = !empty($pconfig[$prop]) ? $pconfig[$prop] : $value;
     }
 
