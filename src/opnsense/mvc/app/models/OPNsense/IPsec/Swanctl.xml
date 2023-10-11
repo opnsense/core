@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Swanctl</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>OPNsense IPsec Connections</description>
     <items>
         <Connections>
@@ -98,7 +98,9 @@
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>1000</MaximumValue>
                 </keyingtries>
-                <description type="TextField"/>
+                <description type="TextField">
+                    <Required>Y</Required>
+                </description>
             </Connection>
         </Connections>
         <locals>
