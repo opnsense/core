@@ -114,25 +114,13 @@ class VipSettingsController extends ApiMutableModelControllerBase
         }
         $result = $this->searchBase(
             'vip',
-            ['interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits', 'vhid', 'advbase', 'advskew'],
+            [
+                'interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits',
+                'vhid', 'advbase', 'advskew', 'address', 'vhid_txt'
+            ],
             'descr',
             $filter_funct
         );
-
-        if (!empty($result['rows'])) {
-            foreach ($result['rows'] as &$row) {
-                $row['address'] = sprintf("%s/%s", $row['subnet'], $row['subnet_bits']);
-                $row['vhid_txt'] = $row['vhid'];
-                if ($row['mode'] == 'CARP') {
-                    $row['vhid_txt'] = sprintf(
-                        gettext('%s (freq. %s/%s)'),
-                        $row['vhid'],
-                        $row['advbase'],
-                        $row['advskew']
-                    );
-                }
-            }
-        }
         return $result;
     }
 

@@ -665,6 +665,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipNetworkField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VlanInterfaceField.php
