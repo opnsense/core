@@ -31,7 +31,6 @@ namespace OPNsense\Base;
 use Exception;
 use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
-use OPNsense\Base\ModelException;
 use OPNsense\Core\Config;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
