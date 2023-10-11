@@ -112,7 +112,9 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 return in_array($record->mode, $mode);
             };
         }
-        $result = $this->searchBase('vip', [
+        $result = $this->searchBase(
+            'vip',
+            [
                 'interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits',
                 'vhid', 'advbase', 'advskew', 'address', 'vhid_txt'
             ],

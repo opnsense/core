@@ -33,7 +33,6 @@ namespace OPNsense\Interfaces\FieldTypes;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 
-
 class VipField extends ArrayField
 {
     /**
@@ -52,7 +51,7 @@ class VipField extends ArrayField
                     $node->advskew
                 );
             } else {
-                $add_fields['vhid_txt'] = (string)$node->vhid ;
+                $add_fields['vhid_txt'] = (string)$node->vhid;
             }
             foreach ($add_fields as $key => $value) {
                 $tmp_node = new TextField();
