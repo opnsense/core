@@ -98,7 +98,9 @@
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>1000</MaximumValue>
                 </keyingtries>
-                <description type="TextField"/>
+                <description type="TextField">
+                    <Required>Y</Required>
+                </description>
             </Connection>
         </Connections>
         <locals>
