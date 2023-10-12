@@ -99,18 +99,24 @@ abstract class BaseListField extends BaseField
         $result = array();
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty((string)$this->internalValue) ? 1 : 0);
+            $result[""] = [
+                "value" => $this->internalEmptyDescription,
+                "selected" => empty((string)$this->internalValue) ? 1 : 0
+            ];
         }
 
         // explode options
         $options = explode(',', $this->internalValue);
         foreach ($this->internalOptionList as $optKey => $optValue) {
-            if (in_array($optKey, $options)) {
-                $selected = 1;
+            $selected = in_array($optKey, $options) ? 1 : 0;
+            if (is_array($optValue) && isset($optValue['value'])) {
+                // option container (multiple attributes), passthrough.
+                $result[$optKey] = $optValue;
             } else {
-                $selected = 0;
+                // standard (string) option
+                $result[$optKey] = ["value" => $optValue];
             }
-            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
+            $result[$optKey]["selected"] = $selected;
         }
 
         return $result;

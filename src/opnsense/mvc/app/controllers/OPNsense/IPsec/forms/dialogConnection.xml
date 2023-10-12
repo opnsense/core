@@ -20,6 +20,8 @@
         <id>connection.proposals</id>
         <label>Proposals</label>
         <type>select_multiple</type>
+        <style>selectpicker cipher_tooltip</style>
+        <size>10</size>
         <help>
           A proposal is a set of algorithms.
           For non-AEAD algorithms this includes IKE an encryption algorithm, an integrity algorithm,
@@ -198,6 +200,7 @@
         <id>connection.pools</id>
         <label>Pools</label>
         <type>select_multiple</type>
+        <size>5</size>
         <help>
             List of named IP pools to allocate virtual IP addresses and other configuration attributes from.
             Each name references a pool by name from either the pools section or an external pool.
