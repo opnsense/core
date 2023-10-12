@@ -1,0 +1,298 @@
+
+Advisory X41-2023-001: Two Vulnerabilities in OPNsense
+===========================================================
+Highest Severity Rating: High
+Confirmed Affected Versions: 23.1.11_1, 23.7.3, 23.7.4
+Confirmed Patched Versions: Commit 484753b2abe3fd0fcdb73d8bf00c3fc3709eb8b7
+Vendor: Deciso B.V. / OPNsense
+Vendor URL: https://opnsense.org
+Credit: X41 D-Sec GmbH, Yasar Klawohn and JM
+Status: Public
+Advisory-URL: https://www.x41-dsec.de/lab/advisories/x41-2023-001-opnsense
+
+
+Summary and Impact
+------------------
+The OPNsense dashboard displays widgets with information about the
+system, running services, gateways and more. These widgets can be
+arranged in different orders and columns. The values for the number of
+columns and the order of widgets are stored server-side and are the same
+for all users of an OPNsense instance. They are reflected unmodified on
+every visit. This can be abused by a low-privileged attacker to inject
+their own content into the page, enabling a cross-site scripting (XSS)
+attack that can result in privilege escalation.
+
+
+Product Description
+-------------------
+OPNsense is an open source, FreeBSD-based firewall and routing operating
+system. It includes many features of commercial firewalls and can be
+managed entirely via its web GUI.
+
+
+Stored XSS in the OPNsense Dashboard via the column_count Parameter
+===================================================================
+Severity Rating: High
+Vector: Network
+CWE: 79
+CVSS Score: 8.0
+CVSS Vector: 3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H
+Credit: X41 D-Sec GmbH, Yasar Klawohn
+
+
+Analysis
+--------
+The number of columns displayed in the dashboard is set via an HTTP POST
+request to /index.php, using the column_count request parameter. This
+parameter is not properly escaped when returned to the client. To
+exploit this issue, the payload "><script>alert(1)</script> is submitted
+as part of the column_count parameter. This input is reflected
+unmodified in the response and on any subsequent visit to the dashboard
+by any user. Only the "Lobby: Login / Logout / Dashboard" permission is
+required to abuse this issue.
+
+Once the server receives the POST request, the column_count parameter is
+written unmodified into the configuration:
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['origin'])
+                && $_POST['origin'] == 'dashboard') {
+        // ...
+        if (!empty($_POST['column_count'])) {
+            $config['widgets']['column_count'] = $_POST['column_count'];
+        } elseif(isset($config['widgets']['column_count'])) {
+            unset($config['widgets']['column_count']);
+        }
+        write_config('Widget configuration has been changed');
+        header(url_safe('Location: /index.php'));
+        exit;
+}
+// from:
+// 
+https://github.com/opnsense/core/blob/2306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L66-L79
+
+If the column_count parameter is not empty, it is used unmodified:
+
+// ...
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $pconfig = $config['widgets'];
+        // ...
+        $pconfig['column_count'] =
+           !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
+        // ...
+// from:
+// 
+https://github.com/opnsense/core/blob/306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L42
+
+Below, the unmodified value is written:
+
+<!-- ... -->
+<section class="page-content-main">
+      <form method="post" id="iform">
+        <input type="hidden" value="dashboard" name="origin" id="origin" />
+        <input type="hidden" value="" name="sequence" id="sequence" />
+        <input type="hidden" value="<?= $pconfig['column_count'];?>"
+            name="column_count" id="column_count_input" />
+      </form>
+<!-- ... -->
+<!-- from:
+https://github.com/opnsense/core/blob/306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L332
+-->
+
+Proof of Concept
+----------------
+Log in as root. On the left side, go to System -> Access -> Users, and
+add a new user. For "Effective Privileges", only select "Lobby: Login /
+Logout / Dashboard". The user is now only able to view the dashboard and
+the help pages.
+
+Log in as that newly created user and open your browser's network
+monitor. In the OPNsense dashboard, select "1 column" from the top right
+and then press "save settings". Repeat the POST request and replace the
+column_count variable with
+
+column_count=1"><script>alert(1)</script>
+
+Now, log in as admin again, you should see an alert box resulting from
+the following HTML response:
+
+<form method="post" id="iform">
+        <!-- .. -->
+        <input type="hidden" value="1">
+            <script>alert(1)</script>"
+            name="column_count" id="column_count_input" />
+</form>
+
+This is the stored XSS and can result in privilege escalation. The
+OPNsense developers did apply a Content-Security-Policy, but
+unfortunately allow unsafe-inline and unsafe-eval for scripts, which
+does not prevent the exploitation of this vulnerability.
+
+
+Stored XSS in the OPNsense Dashboard via the sequence Parameter
+===============================================================
+Severity Rating: High
+Vector: Network
+CWE: 79
+CVSS Score: 8.0
+CVSS Vector: 3.1/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:H
+Credit: X41 D-Sec GmbH, JM and Yasar Klawohn
+
+
+Analysis
+--------
+The order in which the widgets are displayed in the Dashboard is set via
+an HTTP POST request to /index.php, using the sequence request
+parameter. This parameter is not properly escaped when returned to the
+client. To exploit this issue, the payload "><script>alert(1)</script>
+is submitted as part of the sequence parameter. This input is reflected
+unmodified in the response and on any subsequent visit to the dashboard
+by any user. Only the "Lobby: Login / Logout / Dashboard" permission is
+required to abuse this issue.
+
+The order in which widgets are displayed on the dashboard can be set in
+the same POST request, via the sequence parameter. The sequence
+parameter has the following format:
+
+sequence=services_status-container:00000000-col3:show,
+        interface_list-container:00000001-col4:show,
+        gateways-container:00000002-col4:show
+
+Once the server receives the POST request, the sequence parameter is
+written unmodified into the configuration:
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['origin'])
+                && $_POST['origin'] == 'dashboard') {
+        if (!empty($_POST['sequence'])) {
+            $config['widgets']['sequence'] = $_POST['sequence'];
+        } elseif (isset($config['widgets']['sequence'])) {
+            unset($config['widgets']['sequence']);
+        }
+        // ...
+        write_config('Widget configuration has been changed');
+        header(url_safe('Location: /index.php'));
+        exit;
+}
+// from:
+// 
+https://github.com/opnsense/core/blob/cbaf7cee1f0a6fabd1ec4c752a5d169c402976dc/src/www/index.php#L66-L80
+
+When serving a GET request, the sequence parameter is returned
+unmodified, starting with a read of its value from the configuration:
+
+// ...
+$pconfig = $config['widgets'];
+// set default dashboard view
+$pconfig['sequence'] = !empty($pconfig['sequence']) ?
+        $pconfig['sequence'] : '';
+// ...
+// from:
+// 
+https://github.com/opnsense/core/blob/2306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L39-L41
+
+sequence is then split by comma and further split by colon into name,
+sortKey, and state. The list of widgets is sorted on the server side
+using the sortKey.
+
+$widgetSeqParts = explode(",", $pconfig['sequence']);
+foreach (glob('/usr/local/www/widgets/widgets/*.widget.php') as $php_file) {
+        $widgetItem = array();
+        // [...]
+        foreach ($widgetSeqParts as $seqPart) {
+            $tmp = explode(':', $seqPart);
+            if (count($tmp) == 3 &&
+                explode('-', $tmp[0])[0] == $widgetItem['name']
+            ) {
+                $widgetItem['state'] = $tmp[2];
+                $widgetItem['sortKey'] = $tmp[1];
+            }
+        }
+        $widgetCollection[] = $widgetItem;
+}
+// sort widgets
+usort($widgetCollection, function ($item1, $item2) {
+        return strcmp(strtolower($item1['sortKey']),
+            strtolower($item2['sortKey']));
+});
+// from:
+// 
+https://github.com/opnsense/core/blob/2306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L44-L65
+
+Finally, the sortKey is written unescaped into an HTML attribute:
+
+<section
+        class="widgetdiv"
+        data-sortkey="<?=$widgetItem['sortKey'] ?>"
+        id="<?=$widgetItem['name'];?>"
+        style="display:<?=$divdisplay;?>;"
+<!-- from:
+https://github.com/opnsense/core/blob/2306449329e462364c07317b23a1f257779a4fc8/src/www/index.php#L374
+-->
+
+
+Proof of Concept
+----------------
+Log in as root. On the left side, go to System -> Access -> Users, and
+add a new user. For "Effective Privileges", only select "Lobby: Login /
+Logout / Dashboard". The user is now only able to view the dashboard and
+the help pages.
+
+Log in as that newly created user and open your browser's network
+monitor. In the OPNsense dashboard, reorder the widgets via drag-and-
+drop, then press "save settings".
+
+Repeat the POST request and replace the sequence variable with
+
+sequence=gateways-container:1"><script>alert(1)</script>-col4:show
+
+Now, log in as admin again, you should see an alert box resulting from
+the following HTML response:
+
+<div class="container-fluid">
+        <!-- ... -->
+            <section class="widgetdiv" data-sortkey="1">
+                <script>alert(2)</script>
+                -col4" id="gateways"  style="display:block;">
+
+This is the stored XSS and can result in privilege escalation.
+
+The OPNsense developers did apply a Content-Security-Policy, but
+unfortunately allow unsafe-inline and unsafe-eval for scripts, which
+does not prevent the exploitation of this vulnerability.
+
+
+Workarounds
+===========
+
+Remove all effective privileges for /index.php* of low-privilege users.
+
+Timeline
+========
+2023-09-13: Problem discovered
+
+2023-09-14: Write-up and discovery of second finding
+
+2023-09-19: Disclosure to Deciso B.V. / OPNsense
+
+2023-09-19: Issue fixed upstream by Deciso B.V. / OPNsense
+
+2023-09-20: CVE requested
+
+2023-09-20: Informed Deciso B.V. / OPNsense that we will make the issues
+public the following day, since the patch is public
+
+2023-09-21: Release of advisory
+
+
+About X41 D-Sec GmbH
+====================
+X41 is an expert provider for application security services.
+Having extensive industry experience and expertise in the area of
+information security, a strong core security team of world class
+security experts enables X41 to perform premium security services.
+
+Fields of expertise in the area of application security are security
+centered code reviews, binary reverse engineering and vulnerability
+discovery.
+
+Custom research and IT security consulting and support services are core
+competencies of X41.
