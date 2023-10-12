@@ -33,6 +33,15 @@
         padding-bottom: 0 !important;
         word-break: break-all;
     }
+
+    div.backups {
+        height: 55px;
+        > .dropdown-toggle {
+            height: 50px;
+        }
+    }
+
+
 </style>
 <script>
     'use strict';
