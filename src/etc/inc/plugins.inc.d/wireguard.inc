@@ -122,8 +122,23 @@ function wireguard_devices()
 
 function wireguard_prepare($device)
 {
-    mwexecf('/sbin/ifconfig wg create name %s', $device);
-    mwexecf('/sbin/ifconfig %s group wireguard', $device);
+    foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $node) {
+        if ($device != (string)$node->interface) {
+            continue;
+        }
+
+        /* deleting the stat file marks the interface for eventual reconfiguration */
+        @unlink((string)$node->statFilename);
+
+        if (!does_interface_exist($device)) {
+            mwexecf('/sbin/ifconfig wg create name %s', $device);
+            mwexecf('/sbin/ifconfig %s group wireguard', $device);
+        }
+
+        return $device;
+    }
+
+    return null;
 }
 
 function wireguard_configure()
