@@ -3925,7 +3925,6 @@ function interfaces_neighbors_configure($device = null, $ifconfig_details = null
             }
         }
     }
-
 }
 
 function get_interfaces_info($include_unlinked = false)

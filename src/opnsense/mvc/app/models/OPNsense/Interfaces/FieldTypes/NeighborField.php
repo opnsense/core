@@ -35,7 +35,6 @@ use ReflectionException;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 
-
 class NeighborField extends ArrayField
 {
     protected static $internalStaticChildren = [];
@@ -71,7 +70,10 @@ class NeighborField extends ArrayField
                 }
             } catch (\Error | \Exception | ReflectionException $e) {
                 syslog(LOG_ERR, sprintf(
-                    "Invalid neightbor object %s in %s (%s)", $classname, realpath($filename), $e->getMessage()
+                    "Invalid neightbor object %s in %s (%s)",
+                    $classname,
+                    realpath($filename),
+                    $e->getMessage()
                 ));
             }
         }

@@ -28,7 +28,6 @@
 
 namespace OPNsense\Core;
 
-
 class FileObject
 {
     private $fhandle = null;
@@ -42,7 +41,7 @@ class FileObject
      */
     public function __construct($filename, $mode, $permissions = null, $operation = null)
     {
-        $this->fhandle = fopen($filename,  $mode . 'e');   /* always add close-on-exec flag to prevent fork inherit */
+        $this->fhandle = fopen($filename, $mode . 'e');   /* always add close-on-exec flag to prevent fork inherit */
 
         if ($permissions != null) {
             @chmod($filename, $permissions);

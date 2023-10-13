@@ -32,7 +32,6 @@ namespace OPNsense\Interfaces\Neighbor;
 
 use OPNsense\Core\Config;
 
-
 class dhcpd
 {
     public function collect()
@@ -44,7 +43,7 @@ class dhcpd
             foreach ($config->dhcpd->children() as $intf => $node) {
                 foreach ($node->children() as $key => $data) {
                     if ($key == 'staticmap') {
-                        if (!empty($data->arp_table_static_entry) || !empty($node->staticarp) ) {
+                        if (!empty($data->arp_table_static_entry) || !empty($node->staticarp)) {
                             $result[] = [
                                 'etheraddr' => (string)$data->mac,
                                 'ipaddress' => (string)$data->ipaddr,
