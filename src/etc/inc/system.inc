@@ -896,7 +896,7 @@ function system_trust_configure($verbose = false)
                     $user_cas[] = "";
                 }
             }
-            $ca = "# {$entry['descr']}\n";
+            $ca = "# OPNsense trust authority: {$entry['descr']}\n";
             $ca_count = 0;
             $include_intermediates = !empty($config['system']['store_intermediate_certs']);
             foreach ($user_cas as $user_ca) {
