@@ -223,14 +223,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                         wg_start($node, $statHandle, $carp_if_flag);
                         break;
                     case 'configure':
-                        if (
-                            @md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file'] ||
-                            !isset($ifdetails[(string)$node->interface]) || (
-                                // Interface has been setup, but without configuration
-                                empty($ifdetails[(string)$node->interface]['ipv4']) &&
-                                empty($ifdetails[(string)$node->interface]['ipv6'])
-                            )
-                        ) {
+                        if (@md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file']) {
                             if (get_stat_hash($statHandle)['interface'] != wg_reconfigure_hash($node)) {
                                 // Fluent reloading not supported for this instance, make sure the user is informed
                                 syslog(
