@@ -20,7 +20,8 @@
         <id>connection.proposals</id>
         <label>Proposals</label>
         <type>select_multiple</type>
-        <size>5</size>
+        <style>selectpicker cipher_tooltip</style>
+        <size>10</size>
         <help>
           A proposal is a set of algorithms.
           For non-AEAD algorithms this includes IKE an encryption algorithm, an integrity algorithm,

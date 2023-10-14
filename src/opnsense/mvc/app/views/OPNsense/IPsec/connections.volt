@@ -118,6 +118,37 @@
             }
         });
 
+        $(".cipher_tooltip").change(function(){
+            let sender = $(this);
+            if (!sender.hasClass('tooltip_started')) {
+                /**
+                 * hook cipher tooltip on initial load
+                 */
+                sender.parent().tooltip({
+                    title: function() {
+                        let container = $("<div/>");
+                        sender.find('option').each(function(){
+                            let option = $(this);
+                            if (option.is(':selected')) {
+                                container.append(
+                                    $("<small/>").html(option.parent().attr('label') + '&nbsp;/&nbsp;' + option.text()),
+                                    '<br/>'
+                                );
+                            }
+                        });
+                        sender.parent().find('button').attr('title', '');
+                        return container.html();
+                    },
+                    html: true,
+                    placement: 'right',
+                    container: 'body',
+                    trigger: 'hover'
+                });
+                sender.addClass('tooltip_started');
+            }
+        });
+
+
     });
 
 </script>
@@ -129,6 +160,10 @@
   div.section_header > h2 {
       padding-left: 5px;
       margin: 0px;
+  }
+  .tooltip-inner {
+    max-width: 500px;
+    text-align: left;
   }
 </style>
 
