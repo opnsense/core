@@ -35,19 +35,32 @@ namespace OPNsense\Base\FieldTypes;
 class OptionField extends BaseListField
 {
     /**
+     * @var string static option list, no need to parse the same structure multiple times
+     */
+    private static $internalCacheOptionList = [];
+
+    /**
      * setter for option values
      * @param $data
      */
     public function setOptionValues($data)
     {
-        if (is_array($data)) {
-            $this->internalOptionList = array();
+        if (is_array($data) && empty(self::$internalCacheOptionList)) {
+            self::$internalCacheOptionList = [];
             // copy options to internal structure, make sure we don't copy in array structures
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
-                    $this->internalOptionList[$key] = gettext($value);
+                    self::$internalCacheOptionList[$key] = gettext($value);
+                } else {
+                    foreach ($value as $subkey => $subval) {
+                        self::$internalCacheOptionList[$subkey] = [
+                            'value' => $subval,
+                            'optgroup' => $key
+                        ];
+                    }
                 }
             }
         }
+        $this->internalOptionList = self::$internalCacheOptionList;
     }
 }
