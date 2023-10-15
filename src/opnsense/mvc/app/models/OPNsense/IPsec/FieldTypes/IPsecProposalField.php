@@ -37,8 +37,6 @@ class IPsecProposalField extends BaseListField
 {
     private static $internalCacheOptionList = [];
 
-    private static $internalCipherGroups = [];
-
 
     private static function commonOptions()
     {
@@ -89,11 +87,9 @@ class IPsecProposalField extends BaseListField
              */
             foreach (self::commonOptions() as $group => $ciphers) {
                 foreach ($ciphers as $cipher => $description) {
-                    self::$internalCipherGroups[$cipher] = $group;
-                    self::$internalCacheOptionList[$cipher] = $description;
+                    self::$internalCacheOptionList[$cipher] = ['value' => $description, 'optgroup' => $group];
                 }
             }
-            $this->internalOptionList = self::$internalCacheOptionList;
             $dhgroups = [
                 'modp2048' => 'DH14',
                 'modp3072' => 'DH15',
@@ -121,24 +117,17 @@ class IPsecProposalField extends BaseListField
                             $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
                         }
                         if (empty(self::$internalCacheOptionList[$cipher])) {
-                            self::$internalCacheOptionList[$cipher] = $cipher . " [{$descr}]";
+                            self::$internalCacheOptionList[$cipher] = [
+                                'value' => $cipher . " [{$descr}]",
+                                'optgroup' => gettext('Miscellaneous')
+                            ];
+                        } elseif (empty(self::$internalCacheOptionList[$cipher]['value'])) {
+                            self::$internalCacheOptionList[$cipher]['value'] = $cipher . " [{$descr}]";
                         }
                     }
                 }
             }
         }
         $this->internalOptionList = self::$internalCacheOptionList;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNodeData()
-    {
-        $result = parent::getNodeData();
-        foreach ($result as $key => &$record) {
-            $record['optgroup'] = self::$internalCipherGroups[$key] ?? gettext('Miscellaneous');
-        }
-        return $result;
     }
 }
