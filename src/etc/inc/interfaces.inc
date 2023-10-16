@@ -2092,7 +2092,7 @@ function interface_static6_configure($interface, $wancfg)
 
     $realif = get_real_interface($interface, 'inet6');
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s no_dad', [$realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']]);
 }
 
 function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = null)
@@ -2275,12 +2275,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
+     * 2. Enable duplicate address detection (DAD) on main device
      * 2. Set interface description to get more useful ifconfig output
      * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$realif, $interface_descr]);
 
     switch ($wancfg['ipaddrv6'] ?? 'none') {
         case 'slaac':
@@ -2339,28 +2340,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     service_log("done.\n", $verbose);
 
     if ($reload) {
-        /*
-         * XXX wait for DAD to finish to have IPv6 addresses ready
-         *
-         * This tries to minimise impact at the cost of doing it
-         * unconditionally for now.  The problem is that between staticv6
-         * and IPv6 VIPs the addresses could be in tentative state and
-         * programmatically waiting for tentative state addresses to
-         * become usable would create even more delays and possibly
-         * deadlocks.  The same is true for look-ahead or returning the
-         * fact that IPv6 addresses have been added here which would
-         * warrant a conditional wait outside of this conditional since
-         * it always applies but only breaks here for now.
-         *
-         * In the future it would be nicer to factor (parts of) the
-         * $reload mechanic to the caller.  This has been a source of
-         * numerous other problems for a number of years now back when
-         */
-        $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
-        if ($dad_delay) {
-            //sleep($dad_delay + 1);
-        }
-
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
