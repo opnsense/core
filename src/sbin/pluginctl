@@ -216,7 +216,7 @@ if (isset($opts['h'])) {
 } elseif (isset($opts['S'])) {
     $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '');
     echo json_encode($services, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
-} elseif (isset($opts['s'])) {
+} elseif (!empty($args[0]) && isset($opts['s'])) {
     $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
     foreach ($services as $service) {
         $filter = isset($service['id']) ? ['id' => $service['id']] : [];
@@ -261,17 +261,23 @@ if (isset($opts['h'])) {
             $func = sprintf('%s_configure', $name);
             if (function_exists($func)) {
                 foreach ($func() as $when => $worker) {
-                    $results[$when] = 1;
+                    if (empty($results[$when])) {
+                        $results[$when] = [];
+                    }
+                    $results[$when][] = $func;
                 }
             }
         }
     }
 
-    $results = array_keys($results);
-    sort($results);
+    ksort($results);
 
-    foreach ($results as $result) {
-        echo "$result\n";
+    foreach ($results as $key => $value) {
+        if (is_array($value)) {
+            echo "$key {" . implode(',', $value) . "}\n";
+        } else {
+            echo "$key\n";
+        }
     }
 } else {
     /* second argument is hook */
