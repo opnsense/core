@@ -76,5 +76,4 @@ class UniqueIdField extends BaseField
         $this->fieldLoaded = true;
         $this->setValue(null);
     }
-
 }
