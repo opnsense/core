@@ -264,7 +264,7 @@ if (isset($opts['h'])) {
                     if (empty($results[$when])) {
                         $results[$when] = [];
                     }
-                    $results[$when][] = $func;
+                    $results[$when][] = $name;
                 }
             }
         }
@@ -274,7 +274,7 @@ if (isset($opts['h'])) {
 
     foreach ($results as $key => $value) {
         if (is_array($value)) {
-            echo "$key {" . implode(',', $value) . "}\n";
+            echo "$key => " . implode(',', $value) . "\n";
         } else {
             echo "$key\n";
         }
