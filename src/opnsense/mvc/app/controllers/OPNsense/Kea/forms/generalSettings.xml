@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>dhcpv4.general.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable DHCPv4 server.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <help>Select interfaces to listen on.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.valid_lifetime</id>
+        <label>Valid lifetime</label>
+        <type>text</type>
+        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+    </field>
+</form>

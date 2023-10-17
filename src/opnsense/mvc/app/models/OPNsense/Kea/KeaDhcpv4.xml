@@ -1,0 +1,81 @@
+<model>
+    <mount>//OPNsense/Kea/dhcp4</mount>
+    <version>0.0.1</version>
+    <description>Kea DHCPv4 configuration</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <interfaces type="InterfaceField">
+                <Multiple>Y</Multiple>
+            </interfaces>
+            <valid_lifetime type="IntegerField">
+                <Default>4000</Default>
+                <Required>Y</Required>
+            </valid_lifetime>
+        </general>
+        <subnets>
+            <subnet4 type="ArrayField">
+                <subnet type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <AddressFamily>ipv4</AddressFamily>
+                    <Required>Y</Required>
+                </subnet>
+                <option_data>
+                    <domain_name_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </domain_name_servers>
+                    <routers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </routers>
+                    <ntp_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </ntp_servers>
+                    <tftp_server_name type="TextField">
+                        <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+                    </tftp_server_name>
+                    <boot_file_name type="TextField">
+                        <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+                    </boot_file_name>
+                </option_data>
+                <pools type=".\KeaPoolsField">
+                </pools>
+            </subnet4>
+        </subnets>
+        <reservations>
+            <reservation type="ArrayField">
+                <subnet type="ModelRelationField">
+                    <Model>
+                        <pipes>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>subnets.subnet4</items>
+                            <display>subnet</display>
+                        </pipes>
+                    </Model>
+                    <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <Required>Y</Required>
+                </subnet>
+                <ip_address type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <AddressFamily>ipv4</AddressFamily>
+                </ip_address>
+                <hw_address type="MacAddressField">
+                    <Required>Y</Required>
+                </hw_address>
+                <description type="TextField">
+                </description>
+            </reservation>
+        </reservations>
+    </items>
+</model>

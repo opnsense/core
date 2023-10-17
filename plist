@@ -25,6 +25,7 @@
 /usr/local/etc/inc/plugins.inc.d/dpinger.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/ipsec.inc
+/usr/local/etc/inc/plugins.inc.d/kea.inc
 /usr/local/etc/inc/plugins.inc.d/loopback.inc
 /usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
@@ -401,6 +402,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/generalSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/StatusController.php
@@ -699,6 +706,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
@@ -813,6 +825,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
@@ -1139,6 +1152,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_interface.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipfw.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ipsec.conf
+/usr/local/opnsense/service/conf/actions.d/actions_kea.conf
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
@@ -1204,6 +1218,11 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rules.macro
 /usr/local/opnsense/service/templates/OPNsense/IPsec/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPsec/reqid_events.conf
+/usr/local/opnsense/service/templates/OPNsense/Kea/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Kea/kea-ctrl-agent.conf
+/usr/local/opnsense/service/templates/OPNsense/Kea/kea-dhcp4.conf
+/usr/local/opnsense/service/templates/OPNsense/Kea/keactrl.conf
+/usr/local/opnsense/service/templates/OPNsense/Kea/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
 /usr/local/opnsense/service/templates/OPNsense/Monit/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Monit/monitrc
@@ -1250,6 +1269,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/firewall.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/gateways.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/ipsec.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/kea.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/lighttpd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/monit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/ntpd.conf

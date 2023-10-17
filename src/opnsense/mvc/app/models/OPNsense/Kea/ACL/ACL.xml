@@ -1,0 +1,10 @@
+<acl>
+    <page-dhcp-kea-v4>
+        <name>Services: DHCP: Kea(v4)</name>
+        <description>Allow access to the KEA dhcp4 server</description>
+        <patterns>
+            <pattern>ui/kea/dhcp/v4</pattern>
+            <pattern>api/kea/dhcpv4/*</pattern>
+        </patterns>
+    </page-dhcp-kea-v4>
+</acl>
