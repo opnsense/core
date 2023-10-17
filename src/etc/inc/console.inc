@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function timeout($timer = 5)
+function timeout($timer = 7)
 {
     while (!isset($key)) {
         if ($timer >= 9) {
@@ -36,7 +36,7 @@ function timeout($timer = 5)
         } else {
             echo chr(8) . "{$timer}";
         }
-        shell_exec('/bin/stty -icanon min 0 time 25');
+        shell_exec('/bin/stty -icanon min 0 time 10');
         $key = shell_exec('/bin/dd count=1 status=none');
         shell_exec('/bin/stty icanon');
         if ($key == '') {

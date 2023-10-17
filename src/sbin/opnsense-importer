@@ -27,7 +27,7 @@
 INSTALL="/.probe.for.readonly"
 MNT="/tmp/hdrescue"
 SHELL="/bin/sh"
-WAIT="........."
+WAIT="......."
 
 if [ "$(id -u)" != "0" ]; then
 	echo "Must be root."
