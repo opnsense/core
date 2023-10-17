@@ -35,6 +35,7 @@ $gateways = new \OPNsense\Routing\Gateways();
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
 $dpinger_default = $gateways->getDpingerDefaults();
 
+
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -333,6 +334,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $gateway['fargw'] = true;
         } elseif (isset($gateway['fargw'])) {
             unset($gateway['fargw']);
+        }
+        /* XXX: temporary solution to prevent default values being stored when unchanged */
+        foreach ($dpinger_default as $key => $value) {
+            if (isset($gateway[$key]) && $gateway[$key] == $value) {
+                unset($gateway[$key]);
+            }
         }
 
         /* when saving the manual gateway we use the attribute which has the corresponding id */
