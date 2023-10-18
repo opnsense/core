@@ -645,6 +645,12 @@ function is_linklocal($ipaddr)
     return !!preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr ?? '');
 }
 
+/* returns true if $ipaddr is a valid uniquelocal address (inside fd00::/8) */
+function is_uniquelocal($ipaddr)
+{
+    return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
+}
+
 /* returns true if $ipaddr is a valid literal IPv6 address */
 function is_literalipaddrv6($ipaddr)
 {

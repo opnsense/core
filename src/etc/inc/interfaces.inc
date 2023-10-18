@@ -4414,7 +4414,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
 
         if ($link_local && !$addr['scope']) {
             continue;
-        } elseif (!$link_local && $addr['scope']) {
+        } elseif (!$link_local && ($addr['scope'] || is_uniquelocal($addr['address']))) {
             continue;
         }
 
