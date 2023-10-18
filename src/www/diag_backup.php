@@ -58,27 +58,33 @@ function restore_config_section($section_name, $new_contents)
     $sections = array_unique($sections);
 
     $tmpxml = '/tmp/tmpxml';
+    $xml = null;
 
-    file_put_contents($tmpxml, $new_contents);
-    $xml = load_config_from_file($tmpxml);
+    try {
+        file_put_contents($tmpxml, $new_contents);
+        $xml = load_config_from_file($tmpxml);
+    } catch (Exception $e) { }
+
     @unlink($tmpxml);
 
     if (!is_array($xml)) {
         return false;
     }
 
+    $restored = [];
+
     foreach ($sections as $section) {
         $old = &$config;
         $new = &$xml;
 
         $path = explode('.', $section);
-        $target = array_shift($path);
+        $target = array_pop($path);
 
         foreach ($path as $node) {
             if (!isset($new[$node])) {
                 continue 2;
             }
-            $new = &$new[$path];
+            $new = &$new[$node];
             if (!isset($old[$node])) {
                 $old[$node] = [];
             }
@@ -87,13 +93,17 @@ function restore_config_section($section_name, $new_contents)
 
         if (isset($new[$target])) {
             $old[$target] = $new[$target];
+            $restored[] = $section;
         }
     }
 
-    write_config(sprintf('Restored sections (%s) of config file', join(',', $sections)));
-    convert_config();
+    if (count($restored)) {
+        /* restored but may not have been modified at all */
+        write_config(sprintf('Restored sections (%s) of config file', join(',', $restored)));
+        convert_config();
+    }
 
-    return true;
+    return count($restored);
 }
 
 /* config areas that are not suitable for config sync live here */
@@ -120,8 +130,11 @@ $backupFactory = new OPNsense\Backup\BackupFactory();
 $do_reboot = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['backupcount'] = isset($config['system']['backupcount']) ? $config['system']['backupcount'] : null;
+    $pconfig['rebootafterrestore'] = true;
+    $pconfig['keepconsole'] = true;
+    $pconfig['decrypt'] = false;
     foreach ($backupFactory->listProviders() as $providerId => $provider) {
         foreach ($provider['handle']->getConfigurationFields() as $field) {
             $fieldId = $providerId . "_" .$field['name'];
@@ -129,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
     $mode = null;
 
@@ -218,8 +231,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             if (!empty($pconfig['restorearea'])) {
-                if (!restore_config_section($pconfig['restorearea'], $data)) {
+                $ret = restore_config_section($pconfig['restorearea'], $data);
+                if ($ret === false) {
                     $input_errors[] = gettext('The selected config file could not be parsed.');
+                } elseif ($ret === 0) {
+                    $input_errors[] = gettext('No requested restore area could not be found.');
                 } else {
                     if (!empty($config['rrddata'])) {
                         /* XXX we should point to the data... */
@@ -387,6 +403,7 @@ $( document ).ready(function() {
             $("#decrypt_opts").addClass("hidden");
         }
     });
+    $("#decryptconf").change();
 
      $('#restorearea').change(function () {
          if ($('#restorearea option:selected').text() == '') {
@@ -498,17 +515,17 @@ $( document ).ready(function() {
                     <?= gettext('Restore areas:') ?>
                     <div>
                       <select name="restorearea[]" id="restorearea" class="selectpicker" multiple="multiple" size="5" title="<?= html_safe(gettext('All (recommended)')) ?>" data-live-search="true" data-size="10">
-<?php foreach($areas as $area => $areaname): ?>
-                        <option value="<?= $area ?>"><?= $areaname ?></option>
+<?php foreach ($areas as $area => $areaname): ?>
+                        <option value="<?= html_safe($area) ?>" <?= in_array($area, $pconfig['restorearea'] ?? []) ? 'selected="selected"' : '' ?>><?= $areaname ?></option>
 <?php endforeach ?>
                       </select>
                     </div>
                     <br/><input name="conffile" type="file" id="conffile" /><br/>
-                    <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
+                    <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" <?= !empty($pconfig['rebootafterrestore']) ? 'checked="checked"' : '' ?>/>
                     <?=gettext("Reboot after a successful restore."); ?><br/>
-                    <input name="keepconsole" type="checkbox" id="keepconsole" checked="checked" />
+                    <input name="keepconsole" type="checkbox" id="keepconsole" <?= !empty($pconfig['keepconsole']) ? 'checked="checked"' : '' ?>/>
                     <?=gettext("Exclude console settings from import."); ?><br/>
-                    <input name="decrypt" type="checkbox" id="decryptconf"/>
+                    <input name="decrypt" type="checkbox" id="decryptconf" <?= !empty($pconfig['decrypt']) ? 'checked="checked"' : '' ?>/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
                       <table class="table table-condensed">
