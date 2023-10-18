@@ -57,7 +57,13 @@ sleep($wait);
 while (1) {
     pcntl_signal_dispatch();
 
-    $status = dpinger_status();
+    try {
+        $status = dpinger_status();
+    } catch (\Error $e) {
+        sleep($poll);
+        continue;
+    }
+
     $alarm = false;
 
     /* clear known gateways in first step to flush unknown in second step */
