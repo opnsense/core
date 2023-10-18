@@ -2276,8 +2276,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
      * 2. Enable duplicate address detection (DAD) on main device
-     * 2. Set interface description to get more useful ifconfig output
-     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 3. Set interface description to get more useful ifconfig output
+     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
