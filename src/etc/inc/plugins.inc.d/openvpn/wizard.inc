@@ -38,7 +38,7 @@ function cert_get_subject_hash($crt)
 
 function has_special_chars($text)
 {
-    return preg_match('/[^A-Za-z0-9 _-]/', $text);
+    return !!preg_match('/[^A-Za-z0-9 _-]/', $text);
 }
 
 function step1_submitphpaction()
