@@ -167,6 +167,9 @@
                     label: "{{ lang._('Yes') }}",
                     action: function(dialogRef) {
                         ajaxCall("/api/core/backup/delete_backup/" + $("#backups1").val(),{}, function(){
+                            $(".backups").find('[value="'+$("#backups1").val()+'"]').remove();
+                            $("#backups1").selectpicker('refresh');
+                            $("#backups1").change();
                             dialogRef.close();
                         });
                     }
