@@ -45,7 +45,6 @@
                     <check001>
                         <type>UniqueConstraint</type>
                         <ValidationMessage>This Gateway IP address already exists.</ValidationMessage>
-                        <allowEmpty>Y</allowEmpty>
                     </check001>
                 </Constraints>
             </gateway>
@@ -61,7 +60,6 @@
                     <check001>
                         <type>UniqueConstraint</type>
                         <ValidationMessage>This Monitor IP address already exists.</ValidationMessage>
-                        <allowEmpty>Y</allowEmpty>
                     </check001>
                 </Constraints>
             </monitor>
