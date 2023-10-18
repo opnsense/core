@@ -77,14 +77,15 @@ function getFormData(parent) {
                         }
                     }
                     // selectbox, collect selected items
-                    var tmp_str = "";
-                    sourceNode.children().each(function(index){
-                        if ($(this).prop("selected")){
-                            if (tmp_str !== "") tmp_str = tmp_str + separator;
-                            tmp_str = tmp_str + $(this).val();
-                        }
-                    });
-                    node[keypart] = tmp_str;
+                    if (!Array.isArray(sourceNode.val())) {
+                        node[keypart] = sourceNode.val();
+                    } else {
+                        node[keypart] = "";
+                        $.each(sourceNode.val(), function(idx, value){
+                            if (node[keypart] !== "") node[keypart] = node[keypart] + separator;
+                            node[keypart] = node[keypart] + value;
+                        });
+                    }
                 } else if (sourceNode.prop("type") === "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
@@ -178,7 +179,7 @@ function setFormData(parent,data) {
                             });
                         }
                         for (const [group, items] of Object.entries(optgroups)) {
-                            if (group == '' && optgroups.length == 1) {
+                            if (group == '' && optgroups.length <= 1) {
                                 targetNode.append(items);
                             } else {
                                 targetNode.append($("<optgroup/>").attr('label', group).append(items));
