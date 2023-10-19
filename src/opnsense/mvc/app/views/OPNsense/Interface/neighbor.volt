@@ -27,11 +27,11 @@
 <script>
     $( document ).ready(function() {
         $("#grid-neighbor").UIBootgrid(
-            {   search:'/api/interfaces/neighbor_settings/searchItem',
-                get:'/api/interfaces/neighbor_settings/getItem/',
-                set:'/api/interfaces/neighbor_settings/setItem/',
-                add:'/api/interfaces/neighbor_settings/addItem/',
-                del:'/api/interfaces/neighbor_settings/delItem/',
+            {   search:'/api/interfaces/neighbor_settings/search_item',
+                get:'/api/interfaces/neighbor_settings/get_item/',
+                set:'/api/interfaces/neighbor_settings/set_item/',
+                add:'/api/interfaces/neighbor_settings/add_item/',
+                del:'/api/interfaces/neighbor_settings/del_item/',
                 options:{
                     formatters: {
                         commands: function (column, row) {
