@@ -26,7 +26,7 @@
                 <Default>0</Default>
             </sequence>
             <descr type="TextField">
-                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                 <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
             </descr>
         </ifgroupentry>
