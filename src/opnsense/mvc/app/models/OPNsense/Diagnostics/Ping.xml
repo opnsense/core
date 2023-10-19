@@ -26,7 +26,7 @@
             </packetsize>
             <disable_frag type="BooleanField"/>
             <description type="TextField">
-                <mask>/^(.){1,255}$/u</mask>
+                <Mask>/^(.){1,255}$/u</Mask>
                 <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
             </description>
         </settings>
