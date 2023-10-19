@@ -175,7 +175,6 @@ class PortField extends BaseListField
         } else {
             return parent::setValue($value);
         }
-
     }
 
     /**
