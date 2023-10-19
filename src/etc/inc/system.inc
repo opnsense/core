@@ -245,6 +245,7 @@ function get_locale_list()
     /* first one is the default */
     $locales['en_US'] = gettext('English');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
+    $locales['zh_TW'] = gettext('Chinese (Traditional)');
     $locales['cs_CZ'] = gettext('Czech');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
@@ -261,7 +262,8 @@ function get_locale_list()
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
-        /* below 30% progress */
+        /* below 30% progress or currently unvetted */
+        unset($locales['zh_TW']);
         unset($locales['vi_VN']);
     }
 
