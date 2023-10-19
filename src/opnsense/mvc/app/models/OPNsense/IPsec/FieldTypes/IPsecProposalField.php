@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,6 @@ use OPNsense\Base\FieldTypes\BaseListField;
 class IPsecProposalField extends BaseListField
 {
     private static $internalCacheOptionList = [];
-
 
     private static function commonOptions()
     {
@@ -76,7 +75,6 @@ class IPsecProposalField extends BaseListField
         ];
     }
 
-
     protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalCacheOptionList)) {
@@ -90,6 +88,7 @@ class IPsecProposalField extends BaseListField
                     self::$internalCacheOptionList[$cipher] = ['value' => $description, 'optgroup' => $group];
                 }
             }
+
             $dhgroups = [
                 'modp2048' => 'DH14',
                 'modp3072' => 'DH15',
@@ -107,6 +106,7 @@ class IPsecProposalField extends BaseListField
                 'x25519' => 'DH31, Modern EC',
                 'x448' => 'DH32, Modern EC'
             ];
+
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
                     foreach ($dhgroups as $dhgroup => $descr) {
@@ -128,6 +128,7 @@ class IPsecProposalField extends BaseListField
                 }
             }
         }
+
         $this->internalOptionList = self::$internalCacheOptionList;
     }
 }
