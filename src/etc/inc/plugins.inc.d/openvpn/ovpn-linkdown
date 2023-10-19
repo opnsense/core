@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/usr/local/sbin/ifctl -4ci ${1}
-/usr/local/sbin/ifctl -6ci ${1}
+/usr/local/sbin/ifctl -4rd -i ${1}
+/usr/local/sbin/ifctl -6rd -i ${1}
