@@ -59,7 +59,7 @@ while (1) {
 
     try {
         $status = dpinger_status();
-    } catch (Exception $e) {
+    } catch (\Error $e) {
         sleep($poll);
         continue;
     }
