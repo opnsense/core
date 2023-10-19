@@ -141,8 +141,8 @@
                 return;
             }
             BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_INFO,
-                title: "{{ lang._('Action') }}",
+                type: BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('Confirmation required') }}",
                 message: "{{ lang._('Restore from Configuration Backup') }} <br/>" + $("#backups1 option:selected").data('content'),
                 buttons: [{
                 label: "{{ lang._('No') }}",
@@ -150,6 +150,7 @@
                     dialogRef.close();
                 }}, {
                     label: "{{ lang._('Yes') }}",
+                    cssClass: 'btn-warning',
                     action: function(dialogRef) {
                         ajaxCall("/api/core/backup/revert_backup/" + $("#backups1").val(),{}, function(){
                             dialogRef.close();
@@ -165,8 +166,8 @@
                 return;
             }
             BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_DANGER,
-                title: "{{ lang._('Action') }}",
+                type: BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('Confirmation required') }}",
                 message: "{{ lang._('Remove Configuration Backup') }} <br/>" + $("#backups1 option:selected").data('content'),
                 buttons: [{
                 label: "{{ lang._('No') }}",
@@ -174,6 +175,7 @@
                     dialogRef.close();
                 }}, {
                     label: "{{ lang._('Yes') }}",
+                    cssClass: 'btn-warning',
                     action: function(dialogRef) {
                         ajaxCall("/api/core/backup/delete_backup/" + $("#backups1").val(),{}, function(){
                             $(".backups").find('[value="'+$("#backups1").val()+'"]').remove();
