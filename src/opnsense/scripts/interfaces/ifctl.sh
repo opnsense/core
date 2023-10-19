@@ -138,11 +138,6 @@ if [ "${DO_COMMAND}" = "-c" ]; then
         # legacy behaviour originating from interface_bring_down()
 	/usr/sbin/arp -d -i ${IF} -a
 
-	# XXX maybe we do not have to kill states at all
-	if [ -n "${HAVE_ROUTE}" ]; then
-		/sbin/pfctl -i ${IF} -Fs
-	fi
-
 	exit 0
 elif [ "${DO_COMMAND}" = "-O" ]; then
 	if [ -z "${IF}" ]; then
