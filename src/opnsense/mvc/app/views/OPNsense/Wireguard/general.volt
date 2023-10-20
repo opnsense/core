@@ -90,14 +90,13 @@
 
 <div class="tab-content content-box tab-content">
     <div id="general" class="tab-pane fade in active">
-        <div class="content-box" style="padding-bottom: 1.5em;">
-            {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
-        </div>
+        {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
     </div>
     <div id="peers" class="tab-pane fade in">
-        <table id="grid-peers" class="table table-responsive" data-editDialog="dialogEditWireguardClient">
+        <table id="grid-peers" class="table table-condensed table-hover table-striped" data-editDialog="dialogEditWireguardClient">
             <thead>
                 <tr>
+                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                     <th data-column-id="name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
                     <th data-column-id="serveraddress" data-type="string" data-visible="true">{{ lang._('Endpoint address') }}</th>
@@ -114,6 +113,7 @@
                     <td colspan="6"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -125,9 +125,10 @@
               <i class="fa fa-fw fa-gear"></i>
             </button>
         </span>
-        <table id="grid-instances" class="table table-responsive" data-editDialog="dialogEditWireguardServer">
+        <table id="grid-instances" class="table table-condensed table-hover table-striped" data-editDialog="dialogEditWireguardServer">
             <thead>
                 <tr>
+                    <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="enabled" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                     <th data-column-id="name" data-type="string" data-visible="true">{{ lang._('Name') }}</th>
                     <th data-column-id="interface" data-type="string" data-visible="true">{{ lang._('Device') }}</th>
@@ -145,6 +146,7 @@
                     <td colspan="7"></td>
                     <td>
                         <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>
             </tfoot>
