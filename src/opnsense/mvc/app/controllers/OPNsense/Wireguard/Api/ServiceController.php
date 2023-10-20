@@ -47,15 +47,6 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceName = 'wireguard';
 
     /**
-     * hook group interface registration on reconfigure
-     * @return bool
-     */
-    protected function invokeInterfaceRegistration()
-    {
-        return true;
-    }
-
-    /**
      * @return array
      */
     public function reconfigureAction()
@@ -66,6 +57,7 @@ class ServiceController extends ApiMutableServiceControllerBase
 
         $this->sessionClose();
         $backend = new Backend();
+        $backend->configdRun('interface invoke registration');
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
         $backend->configdpRun('wireguard configure');
 
