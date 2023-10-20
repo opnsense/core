@@ -29,6 +29,7 @@
 
 require_once('script/load_phalcon.php');
 require_once('util.inc');
+require_once('config.inc');
 require_once('interfaces.inc');
 
 /**
@@ -121,6 +122,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
     syslog(LOG_NOTICE, "Wireguard interface {$server->name} ({$server->interface}) started");
+    interfaces_restart_by_device(false, [(string)$server->interface], false);
 }
 
 /**
@@ -263,6 +265,5 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             }
         }
     }
-    mwexecf('/usr/local/etc/rc.routing_configure');
 }
 closelog();
