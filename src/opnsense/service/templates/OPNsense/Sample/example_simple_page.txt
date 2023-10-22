@@ -18,9 +18,11 @@ list of configured network interfaces :
 
 {% endfor %}
 
+Physical interface connected to "lan" : {{ helpers.physical_interface('lan') }} or both lan and wan  {{ helpers.physical_interfaces(['lan', 'wan']) }}
+
 and a short list of firewall rules created (multiple rule items in filter section):
 
-{% for item in filter.rule%}
+{% for item in filter.rule %}
     descr : {{ item.descr }}
     type : {{ item.type }}
     interface : {{ item.interface }}
