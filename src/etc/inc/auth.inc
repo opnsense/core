@@ -378,14 +378,14 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_op = 'useradd -m -k /usr/share/skel -o';
     } elseif (
         $userattrs[0] == $user_name &&
-        /* XXX $user_pass comparison? */
+        /* match only if disabled or enabled in order to detect a change */
+        ($userattrs[1] == '*' && $user_pass == '*' || $userattrs[1] != '*' && $user_pass != '*') &&
         $userattrs[2] == $user_uid &&
         $userattrs[3] == $user_gid &&
         $userattrs[7] == $comment &&
         $userattrs[8] == $user_home &&
         $userattrs[9] == $user_shell
     ) {
-        // XXX: unchanged
         $user_op = null;
     } else {
         $user_op = 'usermod';
