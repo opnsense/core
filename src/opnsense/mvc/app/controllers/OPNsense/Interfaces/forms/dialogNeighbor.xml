@@ -3,13 +3,13 @@
         <id>neighbor.etheraddr</id>
         <label>Ether Address</label>
         <type>text</type>
-        <help>Hardware MAC address of the cllient (format xx:xx:xx:xx:xx:xx)</help>
+        <help>Hardware MAC address of the client (format xx:xx:xx:xx:xx:xx).</help>
     </field>
     <field>
         <id>neighbor.ipaddress</id>
         <label>IP address</label>
         <type>text</type>
-        <help>IP address to assign to the provided MAC address, which will either end up in the arp (IPv4) or ndp (IPv6) table</help>
+        <help>IP address to assign to the provided MAC address, which will either end up in the ARP (IPv4) or NDP (IPv6) table.</help>
     </field>
     <field>
         <id>neighbor.descr</id>
