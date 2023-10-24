@@ -121,7 +121,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     fseek($fhandle, 0);
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
-    syslog(LOG_NOTICE, "Wireguard interface {$server->name} ({$server->interface}) started");
+    syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
     interfaces_restart_by_device(false, [(string)$server->interface], false);
 }
 
@@ -133,7 +133,7 @@ function wg_stop($server)
     if (does_interface_exist($server->interface)) {
         legacy_interface_destroy($server->interface);
     }
-    syslog(LOG_NOTICE, "Wireguard interface {$server->name} ({$server->interface}) stopped");
+    syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) stopped");
 }
 
 
@@ -230,7 +230,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                 // Fluent reloading not supported for this instance, make sure the user is informed
                                 syslog(
                                     LOG_NOTICE,
-                                    "Wireguard interface {$node->name} ({$node->interface}) " .
+                                    "wireguard instance {$node->name} ({$node->interface}) " .
                                     "can not reconfigure without stopping it first."
                                 );
                                 wg_stop($node);

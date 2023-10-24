@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/wireguard/client</mount>
-    <description>Wireguard peer configuration</description>
+    <description>WireGuard peer configuration</description>
     <version>0.0.7</version>
     <items>
         <clients>

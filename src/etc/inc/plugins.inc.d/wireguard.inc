@@ -43,7 +43,7 @@ function wireguard_services()
     foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $key => $node) {
         if (!empty((string)$node->enabled)) {
             $services[] = [
-                'description' => "Wireguard " . htmlspecialchars($node->name),
+                'description' => 'WireGuard ' . htmlspecialchars($node->name),
                 'configd' => [
                     'start' => ["wireguard start {$key}"],
                     'restart' => ["wireguard restart {$key}"],
@@ -104,7 +104,7 @@ function wireguard_devices()
     foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $key => $node) {
         if (!empty((string)$node->enabled)) {
             $names[(string)$node->interface] = [
-                'descr' => sprintf('%s (Wireguard - %s)', (string)$node->interface, (string)$node->name),
+                'descr' => sprintf('%s (WireGuard - %s)', (string)$node->interface, (string)$node->name),
                 'ifdescr' => (string)$node->name,
                 'name' => (string)$node->interface
             ];

@@ -161,7 +161,7 @@
             <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint='/api/wireguard/service/reconfigure'
                     data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring Wireguard') }}"
+                    data-error-title="{{ lang._('Error reconfiguring WireGuard') }}"
                     type="button"
             ></button>
             <br/><br/>

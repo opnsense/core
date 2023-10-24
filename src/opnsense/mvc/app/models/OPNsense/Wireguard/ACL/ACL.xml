@@ -1,6 +1,6 @@
 <acl>
    <page-wireguard-config>
-      <name>VPN: Wireguard</name>
+      <name>VPN: WireGuard</name>
       <patterns>
          <pattern>ui/wireguard/*</pattern>
          <pattern>api/wireguard/*</pattern>
