@@ -28,10 +28,11 @@
 
 namespace OPNsense\Interfaces\Api;
 
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Base\UserException;
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Firewall\Util;
 
 class VipSettingsController extends ApiMutableModelControllerBase
 {
@@ -149,7 +150,11 @@ class VipSettingsController extends ApiMutableModelControllerBase
             }
         }
         if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
+            $addr = (string)$node->subnet;
+            if (Util::isLinkLocal($addr)) {
+                $addr .= "@{$node->interface}";
+            }
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
 
         return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
@@ -184,7 +189,11 @@ class VipSettingsController extends ApiMutableModelControllerBase
         }
         $response = $this->delBase("vip", $uuid);
         if (($response['result'] ?? '') == 'deleted') {
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
+            $addr = (string)$node->subnet;
+            if (Util::isLinkLocal($addr)) {
+                $addr .= "@{$node->interface}";
+            }
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
         return $response;
     }
