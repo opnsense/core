@@ -176,6 +176,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = $this->getModel()->whereUsed((string)$node->subnet);
         if (!empty($validations)) {
