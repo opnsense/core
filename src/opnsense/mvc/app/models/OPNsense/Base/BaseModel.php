@@ -427,6 +427,15 @@ abstract class BaseModel
     }
 
     /**
+     * iterate (non virtual) child nodes recursively
+     * @return mixed
+     */
+    public function iterateRecursiveItems()
+    {
+        return $this->internalData->iterateRecursiveItems();
+    }
+
+    /**
      * check if the model is not persistent in the config
      * @return true if memory model, false if config is stored
      */

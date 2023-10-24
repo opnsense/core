@@ -121,8 +121,12 @@ class ArrayField extends BaseField
         $new_record = array();
         foreach ($this->internalTemplateNode->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
-                // validate child nodes, nesting not supported in this version.
-                throw new \Exception("Unsupported copy, Array doesn't support nesting.");
+                foreach ($node->iterateRecursiveItems() as $subnode) {
+                    if (is_a($subnode, "OPNsense\\Base\\FieldTypes\\ArrayField")) {
+                        // validate child nodes, nesting not supported in this version.
+                        throw new \Exception("Unsupported copy, Array doesn't support nesting.");
+                    }
+                }
             }
             $new_record[$key] = clone $node;
         }
