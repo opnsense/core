@@ -315,6 +315,23 @@ abstract class BaseField
     }
 
     /**
+     * iterate all nodes recursively.
+     * @return Generator
+     */
+    public function iterateRecursiveItems()
+    {
+        if (count($this->getChildren()) == 0) {
+            yield $this;
+        } else {
+            foreach ($this->iterateItems() as $node) {
+                foreach ($node->iterateRecursiveItems() as $child) {
+                    yield $child;
+                }
+            }
+        }
+    }
+
+    /**
      * reflect default setter to internal child nodes
      * @param string $name property name
      * @param string $value property value
