@@ -1285,6 +1285,8 @@ function system_login_configure($verbose = false)
             continue;
         }
 
+        /* XXX rcons currently not tied to serial setting */
+
         if (!empty($tty)) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
