@@ -195,6 +195,10 @@
                     var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
                     $('html,aside').scrollTop(($(this).offset().top - navbar_center));
                 });
+                // prevent form submits on mvc pages
+                $("form").submit(function() {
+                    return false;
+                });
             });
         </script>
 
