@@ -31,6 +31,7 @@ require_once('script/load_phalcon.php');
 require_once('util.inc');
 require_once('config.inc');
 require_once('interfaces.inc');
+require_once('system.inc');
 
 /**
  * collect carp status per vhid
