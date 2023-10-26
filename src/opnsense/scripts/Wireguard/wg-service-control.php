@@ -69,7 +69,8 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     }
     mwexecf('/usr/bin/wg setconf %s %s', [$server->interface, $server->cnfFilename]);
 
-    foreach (explode(',', (string)$server->tunneladdress) as $alias) {
+    /* The tunneladdress can be empty, so array_filter without callback filters empty strings out. */
+    foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
         $proto = strpos($alias, ':') === false ? "inet" : "inet6";
         mwexecf('/sbin/ifconfig %s %s %s alias', [$server->interface, $proto, $alias]);
     }
