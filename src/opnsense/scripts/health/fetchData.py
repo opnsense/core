@@ -76,7 +76,7 @@ if len(sys.argv) > 1:
                 if rra.get('cf') == 'AVERAGE':
                     record = {'ds': []}
                     ds_count = len(ruleData['ds'])
-                    for ds in ruleData['ds']:
+                    for ds in (ruleData['ds'] if type(ruleData['ds']) is list else [ruleData['ds']]):
                         record['ds'].append({
                             'key': ds['name'].strip() if ds.get('name') else '',
                             'values': []
@@ -90,7 +90,7 @@ if len(sys.argv) > 1:
                         record['recorded_time'] = last_ts - first_ts
                         for idx, row in enumerate(rra['database']['row']):
                             this_ts = first_ts + (record['step_size'] * idx)
-                            for vidx, v in enumerate(row['v']):
+                            for vidx, v in enumerate(row['v'] if type(row['v']) is list else [row['v']]):
                                 if ds_count >= vidx:
                                     record['ds'][vidx]['values'].append([
                                         this_ts * 1000,
