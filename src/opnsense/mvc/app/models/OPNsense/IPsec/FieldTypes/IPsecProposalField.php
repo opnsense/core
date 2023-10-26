@@ -106,15 +106,21 @@ class IPsecProposalField extends BaseListField
                 'x25519' => 'DH31, Modern EC',
                 'x448' => 'DH32, Modern EC'
             ];
-
+            $gcm_prf_options = [];
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
                     foreach ($dhgroups as $dhgroup => $descr) {
+                        $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
                         if (strpos($encalg, 'gcm') !== false) {
-                            /** GCM includes hashing */
+                            /**
+                             * GCM includes hashing, for IKE we might optionally add PRF options, which we will sort at
+                             * the end of the list.
+                             */
+                            $gcm_prf_options[$cipher] = [
+                                'value' => $cipher . " [{$descr}]",
+                                'optgroup' => gettext('Miscellaneous')
+                            ];
                             $cipher = "{$encalg}-{$dhgroup}";
-                        } else {
-                            $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
                         }
                         if (empty(self::$internalCacheOptionList[$cipher])) {
                             self::$internalCacheOptionList[$cipher] = [
@@ -127,6 +133,7 @@ class IPsecProposalField extends BaseListField
                     }
                 }
             }
+            self::$internalCacheOptionList = self::$internalCacheOptionList + $gcm_prf_options;
         }
 
         $this->internalOptionList = self::$internalCacheOptionList;
