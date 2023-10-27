@@ -812,7 +812,7 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
         kill_hostapd($realif);
     }
 
-    $track6 = link_interface_to_track6($interface);
+    $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
         plugins_configure('dhcp', false, ['inet6', $track6]);
@@ -834,7 +834,7 @@ function interface_bring_down($interface = 'wan', $ifacecfg = false)
     /* may be required or not, but kept here for symmetry with IPv4 */
     if (!empty($ifcfg['ipaddrv6'])) {
         /* edge case: bring down a primary GUA, but not a link-local */
-        list ($ip6) = _interfaces_primary_address6($interface, $ifconfig_details, false, false);
+        list ($ip6) = _interfaces_primary_address6($interface, null, false, false);
         if (!empty($ip6)) {
             mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
         }
@@ -2092,7 +2092,7 @@ function interface_static6_configure($interface, $wancfg)
 
     $realif = get_real_interface($interface, 'inet6');
 
-    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s', array($realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']));
+    mwexecf('/sbin/ifconfig %s inet6 %s prefixlen %s no_dad', [$realif, $wancfg['ipaddrv6'], $wancfg['subnetv6']]);
 }
 
 function interfaces_addresses_flush($realif, $family = 4, $ifconfig_details = null)
@@ -2275,12 +2275,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
-     * 2. Set interface description to get more useful ifconfig output
-     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 2. Enable duplicate address detection (DAD) on main device
+     * 3. Set interface description to get more useful ifconfig output
+     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$realif, $interface_descr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$realif, $interface_descr]);
 
     switch ($wancfg['ipaddrv6'] ?? 'none') {
         case 'slaac':
@@ -2364,6 +2365,9 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         return;
     }
 
+    $realifv6 = get_real_interface($interface, 'inet6');
+    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled', [$realifv6, isset($lancfg['enable']) ? '-' : '']);
+
     switch ($trackcfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
@@ -2372,10 +2376,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
             interface_track6_6rd_configure($interface, $lancfg);
             break;
         case 'slaac':
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv %sifdisabled', [
-                get_real_interface($interface, 'inet6'),
-                isset($lancfg['enable']) ? '-' : '',
-            ]);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv', [$realifv6]);
             /* FALLTHROUGH */
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
@@ -3112,7 +3113,7 @@ EOD;
         $dhclientconf .= "  supersede interface-mtu 0;\n";
     }
 
-    if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
+    if (!empty($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
     }
 
@@ -3223,7 +3224,7 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
     if (empty($wancfg['dhcphonourmtu'])) {
         $dhclientconf .= "\tsupersede interface-mtu 0;\n";
     }
-    if (is_ipaddrv4($wancfg['dhcprejectfrom'])) {
+    if (!empty($wancfg['dhcprejectfrom'])) {
         $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
     }
     if (isset($wancfg['dhcpvlanprio'])) {
@@ -3843,15 +3844,64 @@ function interfaces_staticarp_configure($if, $ifconfig_details = null)
         mwexecf('/usr/sbin/arp -d -i %s -a', [$ifcfg['if']]);
     }
 
-    if (isset($config['dhcpd'][$if]['staticmap'])) {
-        foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
-            if (!$want && !isset($arpent['arp_table_static_entry'])) {
-                continue;
+    interfaces_neighbors_configure($ifcfg['if'], $ifconfig_details);
+}
+
+function interfaces_neighbors_configure($device = null, $ifconfig_details = null)
+{
+    $subnets = [];
+
+    if (!empty($device)) {
+        if (empty($ifconfig_details) || empty($ifconfig_details[$device])) {
+            /* when called with an interface, require $ifconfig_details being passed */
+            return;
+        }
+        foreach (['ipv4', 'ipv6'] as $proto) {
+            if (!empty($ifconfig_details[$device])) {
+                foreach ($ifconfig_details[$device][$proto] as $item) {
+                    $subnets[] = $item['ipaddr'] . '/' . $item['subnetbits'];
+                }
             }
-            if (!isset($arpent['ipaddr'])) {
-                continue;
+        }
+    }
+
+    $current_neightbors = [];
+    foreach ((new \OPNsense\Interfaces\Neighbor())->neighbor->iterateItems() as $key => $node) {
+        $found = empty($if);    /* unfiltered when no $if provided */
+        foreach ($subnets as $subnet) {
+            $found = ip_in_subnet((string)$node->ipaddress, $subnet);
+            if ($found) {
+                break;
             }
-            mwexecf('/usr/sbin/arp -s %s %s', [$arpent['ipaddr'], $arpent['mac']]);
+        }
+        if ($found) {
+            // IPv4 [arp] or IPv6 [ndp]
+            if (strpos($node->ipaddress, ":") === false) {
+                mwexecf('/usr/sbin/arp -s %s %s', [$node->ipaddress, $node->etheraddr]);
+            } else {
+                mwexecf('/usr/sbin/ndp -s %s %s', [$node->ipaddress, $node->etheraddr]);
+            }
+        }
+        $current_neightbors[] = (string)$node->ipaddress;
+    }
+
+    /* persist accounted addresses, without a cleanup that would be all seen since last cleanup */
+    $fobj = new \OPNsense\Core\FileObject('/tmp/interfaces_neighbors.json', 'a+');
+    $current = $fobj->readJson() ?? [];
+    $fobj->truncate(0)->writeJson(
+        !empty($device) ? array_unique(array_merge($current_neightbors, $current)) : $current_neightbors
+    );
+    unset($fobj);
+    /* only cleanup when applying all interfaces */
+    if (empty($device) && is_array($current)) {
+        foreach ($current as $item) {
+            if (is_string($item) && is_ipaddr($item) && !in_array($item, $current_neightbors)) {
+                if (strpos($item, ":") === false) {
+                    mwexecf('/usr/sbin/arp -d %s', [$item]);
+                } else {
+                    mwexecf('/usr/sbin/ndp -d %s', [$item]);
+                }
+            }
         }
     }
 }
@@ -4412,7 +4462,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
 
         if ($link_local && !$addr['scope']) {
             continue;
-        } elseif (!$link_local && $addr['scope']) {
+        } elseif (!$link_local && ($addr['scope'] || is_uniquelocal($addr['address']))) {
             continue;
         }
 

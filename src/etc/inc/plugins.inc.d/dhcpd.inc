@@ -247,8 +247,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         }
 
         switch ($dhcpv6ifconf['ramode']) {
-            case 'managed':
             case 'assist':
+            case 'managed':
                 $radvdconf .= "\tAdvManagedFlag on;\n";
                 $radvdconf .= "\tAdvOtherConfigFlag on;\n";
                 break;
@@ -312,6 +312,12 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
             $radvdconf .= "\tprefix {$stanza} {\n";
             $radvdconf .= "\t\tDeprecatePrefix " . (!empty($dhcpv6ifconf['AdvDeprecatePrefix']) ? $dhcpv6ifconf['AdvDeprecatePrefix'] : ($carp_mode ? 'off' : 'on')) . ";\n";
             switch ($dhcpv6ifconf['ramode']) {
+                case 'assist':
+                case 'stateless':
+                case 'unmanaged':
+                    $radvdconf .= "\t\tAdvOnLink on;\n";
+                    $radvdconf .= "\t\tAdvAutonomous on;\n";
+                    break;
                 case 'managed':
                     $radvdconf .= "\t\tAdvOnLink on;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
@@ -319,12 +325,6 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
                 case 'router':
                     $radvdconf .= "\t\tAdvOnLink off;\n";
                     $radvdconf .= "\t\tAdvAutonomous off;\n";
-                    break;
-                case 'assist':
-                case 'unmanaged':
-                case 'stateless':
-                    $radvdconf .= "\t\tAdvOnLink on;\n";
-                    $radvdconf .= "\t\tAdvAutonomous on;\n";
                     break;
                 default:
                     break;
@@ -1363,7 +1363,9 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
                     /* get config entry and marry it to the live prefix */
                     $dhcpdv6cfg[$ifname]['range']['from'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['from']);
                     $dhcpdv6cfg[$ifname]['range']['to'] = merge_ipv6_address($ifcfgipv6, $dhcpdv6cfg[$ifname]['range']['to']);
-                } elseif (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
+                }
+
+                if (!empty($dhcpdv6cfg[$ifname]['prefixrange']['from']) && !empty($dhcpdv6cfg[$ifname]['prefixrange']['to'])) {
                     /* XXX $pdlen is never validated against prefixlenght setting, but must be smaller or equal */
                     $pdlen = 64 - calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
 

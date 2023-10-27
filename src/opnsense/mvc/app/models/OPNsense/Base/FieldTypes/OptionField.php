@@ -41,11 +41,18 @@ class OptionField extends BaseListField
     public function setOptionValues($data)
     {
         if (is_array($data)) {
-            $this->internalOptionList = array();
+            $this->internalOptionList = [];
             // copy options to internal structure, make sure we don't copy in array structures
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
                     $this->internalOptionList[$key] = gettext($value);
+                } else {
+                    foreach ($value as $subkey => $subval) {
+                        $this->internalOptionList[$subkey] = [
+                            'value' => $subval,
+                            'optgroup' => $key
+                        ];
+                    }
                 }
             }
         }

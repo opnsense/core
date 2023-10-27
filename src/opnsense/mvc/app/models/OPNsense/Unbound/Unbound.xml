@@ -25,7 +25,7 @@
             <noarecords type="BooleanField"/>
             <regdhcp type="BooleanField"/>
             <regdhcpdomain type="TextField">
-                <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
             </regdhcpdomain>
             <regdhcpstatic type="BooleanField"/>
@@ -165,7 +165,7 @@
                     <asList>Y</asList>
                 </networks>
                 <description type="TextField">
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </acl>
@@ -180,6 +180,9 @@
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <atf>Abuse.ch - ThreatFox IOC database</atf>
+                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
+                    <oisd1>OISD - Domain Blocklist Big</oisd1>
+                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
                     <aa>AdAway List</aa>
                     <ag>AdGuard List</ag>
                     <bla0>Blocklist.site Abuse</bla0>
@@ -246,7 +249,7 @@
                     </OptionValues>
                 </type>
                 <domain type="TextField">
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <server type="NetworkField">
@@ -267,7 +270,7 @@
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <rr type="OptionField">
@@ -330,7 +333,7 @@
                     </Constraints>
                 </server>
                 <description type="TextField">
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </host>
@@ -372,11 +375,11 @@
                             <check></check>
                         </check001>
                     </Constraints>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <description type="TextField">
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </alias>
@@ -400,7 +403,7 @@
                     <Required>Y</Required>
                 </forward_tcp_upstream>
                 <description type="TextField">
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </domain>

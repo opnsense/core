@@ -1,0 +1,52 @@
+<form>
+    <field>
+        <id>client.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>This will enable or disable the peer.</help>
+    </field>
+    <field>
+        <id>client.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Set the name for this peer.</help>
+    </field>
+    <field>
+        <id>client.pubkey</id>
+        <label>Public key</label>
+        <type>text</type>
+        <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
+    </field>
+    <field>
+        <id>client.psk</id>
+        <label>Pre-shared key</label>
+        <type>text</type>
+        <help>Shared secret (PSK) for this peer. You can generate a key using "wg genpsk".</help>
+    </field>
+    <field>
+        <id>client.tunneladdress</id>
+        <label>Allowed IPs</label>
+        <style>tokenize</style>
+        <type>select_multiple</type>
+        <allownew>true</allownew>
+        <help>List of addresses allowed to pass trough the tunnel adapter. Please use CIDR notation like 10.0.0.1/24.</help>
+    </field>
+    <field>
+        <id>client.serveraddress</id>
+        <label>Endpoint address</label>
+        <type>text</type>
+        <help>Set public IP address the endpoint listens to.</help>
+    </field>
+    <field>
+        <id>client.serverport</id>
+        <label>Endpoint port</label>
+        <type>text</type>
+        <help>Set port the endpoint listens to.</help>
+    </field>
+    <field>
+        <id>client.keepalive</id>
+        <label>Keepalive interval</label>
+        <type>text</type>
+        <help>Set persistent keepalive interval in seconds.</help>
+    </field>
+</form>

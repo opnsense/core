@@ -48,7 +48,7 @@ class BaseBlocklistHandler:
         self.cur_bl_location = '/var/unbound/data/dnsbl.json'
 
         self.domain_pattern = re.compile(
-            r'^(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
+            r'^(\*\.){,1}(([\da-zA-Z_])([_\w-]{,62})\.){,127}(([\da-zA-Z])[_\w-]{,61})'
             r'?([\da-zA-Z]\.((xn\-\-[a-zA-Z\d]+)|([a-zA-Z\d]{2,})))$'
         )
 

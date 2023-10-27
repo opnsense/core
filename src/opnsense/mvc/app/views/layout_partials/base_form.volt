@@ -107,7 +107,7 @@
         {% endfor %}
         {% if apply_btn_id|default('') != '' %}
         <tr>
-            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }} </b><i id="{{base_form_id}}_progress" class=""></i></button></td>
+            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }}</b> <i id="{{base_form_id}}_progress" class=""></i></button></td>
         </tr>
         {% endif %}
         </tbody>

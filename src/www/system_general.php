@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['store_intermediate_certs'] = isset($config['system']['store_intermediate_certs']);
-    $pconfig['theme'] = $config['theme'];
+    $pconfig['theme'] = $config['theme'] ?? '';
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
 
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);

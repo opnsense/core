@@ -268,12 +268,38 @@ $.fn.UIBootgrid = function (params) {
             $('.selectpicker').selectpicker('refresh');
             // clear validation errors (if any)
             clearFormValidation('frm_' + editDlg);
-            if ($('#'+editDlg).hasClass('modal')) {
-                // show dialog
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
+            let target = $('#'+editDlg);
+            if (target.hasClass('modal')) {
+                // show dialog and hook draggable event on first show
+                target.modal({backdrop: 'static', keyboard: false});
+                if (!target.hasClass('modal_draggable')) {
+                    target.addClass('modal_draggable');
+                    let height=0, width=0, ypos=0, xpos=0;
+                    let this_header = target.find('.modal-header');
+                    this_header.css("cursor","move");
+                    this_header.on('mousedown', function(e){
+                        this_header.addClass("drag");
+                        height = target.outerHeight();
+                        width = target.outerWidth();
+                        ypos = target.offset().top + height - e.pageY;
+                        xpos = target.offset().left + width - e.pageX;
+                    });
+                    $(document.body).on('mousemove', function(e){
+                        let itop = e.pageY + ypos - height;
+                        let ileft = e.pageX + xpos - width;
+                        if (this_header.hasClass("drag")){
+                            target.offset({top: itop, left: ileft});
+                        }
+                    }).on('mouseup mouseleave', function(e){
+                        this_header.removeClass("drag");
+                    });
+                } else {
+                    // reset to starting position (remove drag distance)
+                    target.css('top', '').css('left', '');
+                }
             } else {
                 // when edit dialog isn't a modal, fire click event
-                $('#'+editDlg).click();
+                target.click();
             }
 
             if (this_grid.onBeforeRenderDialog) {
@@ -322,7 +348,7 @@ $.fn.UIBootgrid = function (params) {
         if (editAlert !== undefined) {
             $("#"+editAlert).slideDown(1000, function(){
                 setTimeout(function(){
-                    $("#"+editAlert).slideUp(2000);
+                    $("#"+editAlert).not(":animated").slideUp(2000);
                 }, 2000);
             });
         }
@@ -366,6 +392,7 @@ $.fn.UIBootgrid = function (params) {
             ajaxCall(params['del'] + uuid, {},function(data,status){
                 // reload grid after delete
                 std_bootgrid_reload(this_grid.attr('id'));
+                this_grid.showSaveAlert(event);
             });
         });
     };
@@ -385,6 +412,7 @@ $.fn.UIBootgrid = function (params) {
                 // refresh after load
                 $.when.apply(null, deferreds).done(function(){
                     std_bootgrid_reload(this_grid.attr('id'));
+                    this_grid.showSaveAlert(event);
                 });
             }
         });
@@ -459,6 +487,7 @@ $.fn.UIBootgrid = function (params) {
         ajaxCall(params['toggle'] + uuid, {},function(data,status){
             // reload grid after delete
             std_bootgrid_reload(this_grid.attr('id'));
+            this_grid.showSaveAlert(event);
         });
     };
 

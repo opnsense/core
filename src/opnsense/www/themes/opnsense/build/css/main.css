@@ -6103,7 +6103,7 @@ button.close {
 
 .modal-body {
   position: relative;
-  padding: 15px;
+  padding: 0px;
 }
 
 .modal-footer {
@@ -7566,4 +7566,8 @@ div[data-for*=help_for] {
 .tokens-container {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.bootstrap-dialog-body {
+  padding: 15px;
 }

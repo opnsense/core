@@ -135,6 +135,23 @@ class Helpers(object):
         """
         return self._template_in_data['__uuid__'].get(uuid, {})
 
+    def physical_interface(self, name):
+        """
+        :param name: interface technical name [lan, wan, opt]
+        :return: device name (e.g. em0), input name when not found
+        """
+        return self.getNodeByTag('interfaces.'+name+'.if') or name
+
+    def physical_interfaces(self, names):
+        """
+        :param names: list of interface technical names [lan, wan, opt]
+        :return: device names (e.g. ['em0']), skips missing entries
+        """
+        result = []
+        for name in names:
+            result.append(self.getNodeByTag('interfaces.'+name+'.if'))
+        return list(filter(None, result))
+
     @staticmethod
     def getIPNetwork(network):
         """

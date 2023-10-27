@@ -1,0 +1,17 @@
+<model>
+    <mount>//OPNsense/Interfaces/neighbors</mount>
+    <version>1.0.0</version>
+    <description>Neighbor configuration</description>
+    <items>
+        <neighbor type=".\NeighborField">
+            <etheraddr type="MacAddressField">
+                <Required>Y</Required>
+            </etheraddr>
+            <ipaddress type="NetworkField">
+                <Required>Y</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </ipaddress>
+            <descr type="TextField"/>
+        </neighbor>
+    </items>
+</model>

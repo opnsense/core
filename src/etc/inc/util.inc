@@ -618,7 +618,13 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr ?? '');
+    return !!preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr ?? '');
+}
+
+/* returns true if $ipaddr is a valid uniquelocal address (inside fd00::/8) */
+function is_uniquelocal($ipaddr)
+{
+    return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
@@ -730,8 +736,7 @@ function is_domain($domain, $allow_root = false)
 /* returns true if $macaddr is a valid MAC address */
 function is_macaddr($macaddr, $partial = false)
 {
-    $repeat = ($partial) ? '1,5' : '5';
-    return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . $repeat . '}$/i', $macaddr) == 1 ? true : false;
+    return !!preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . ($partial ? '1,' : '') . '5}$/i', $macaddr);
 }
 
 /* returns true if $port is a valid TCP/UDP port */

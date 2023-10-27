@@ -164,12 +164,17 @@ class PortField extends BaseListField
     }
 
     /**
-     * always lowercase portnames
+     * always lowercase known portnames
      * @param string $value
      */
     public function setValue($value)
     {
-        parent::setValue(trim(strtolower($value)));
+        $tmp = trim(strtolower($value));
+        if ($this->enableWellKnown && in_array($tmp, ["any"] + self::$wellknownservices)) {
+            return parent::setValue($tmp);
+        } else {
+            return parent::setValue($value);
+        }
     }
 
     /**

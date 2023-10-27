@@ -100,6 +100,7 @@
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <Neighbors order="930" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
         <Wireless order="940" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
@@ -190,12 +191,12 @@
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
-            <Instances VisibleName="Instances [new]" order="5" url="/ui/openvpn/instances"/>
-            <Servers order="10" url="/vpn_openvpn_server.php">
+            <Instances url="/ui/openvpn/instances"/>
+            <Servers VisibleName="Servers [legacy]" order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
                 <Step url="/wizard.php?xml=openvpn*" visibility="hidden"/>
             </Servers>
-            <Clients order="20" url="/vpn_openvpn_client.php">
+            <Clients VisibleName="Clients [legacy]" order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
             </Clients>
             <CSC order="30" VisibleName="Client Specific Overrides" url="/ui/openvpn/client_overwrites"/>

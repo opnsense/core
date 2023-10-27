@@ -189,6 +189,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			sudo \
 			syslog-ng \
 			unbound \
+			wireguard-kmod \
 			wpa_supplicant \
 			zip \
 			${CORE_DEPENDS_${CORE_ARCH}}
@@ -381,6 +382,9 @@ lint-model:
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and OptionValues[default[not(@value)] or multiple[not(@value)] or required[not(@value)]]]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} option element default/multiple/required without value attribute"; \
 		done; \
+		(xmllint $${MODEL} --xpath '//*[@type="CSVListField" and Mask and (not(MaskPerItem) or MaskPerItem=N)]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} uses Mask regex with MaskPerItem=N"; \
+		done; \
 	done
 
 SCRIPTDIRS!=	find ${.CURDIR}/src/opnsense/scripts -type d -depth 1
@@ -446,6 +450,7 @@ style-model:
 		perl -i -pe 's/<default>(.*?)<\/default>/<Default>$$1<\/Default>/g' $${MODEL}; \
 		perl -i -pe 's/<multiple>(.*?)<\/multiple>/<Multiple>$$1<\/Multiple>/g' $${MODEL}; \
 		perl -i -pe 's/<required>(.*?)<\/required>/<Required>$$1<\/Required>/g' $${MODEL}; \
+		perl -i -pe 's/<mask>(.*?)<\/mask>/<Mask>$$1<\/Mask>/g' $${MODEL}; \
 	done
 
 style: style-python style-php
@@ -527,6 +532,9 @@ push:
 
 migrate:
 	@src/opnsense/mvc/script/run_migrations.php
+
+validate:
+	@src/opnsense/mvc/script/run_validations.php
 
 test: debug
 	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \

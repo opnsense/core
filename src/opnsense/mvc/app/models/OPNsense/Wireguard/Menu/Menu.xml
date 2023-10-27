@@ -1,0 +1,9 @@
+<menu>
+    <VPN>
+      <WireGuard cssClass="fa fa-lock fa-fw" order="150">
+          <Settings order="10" url="/ui/wireguard/general/"/>
+          <Diagnostics order="20" url="/ui/wireguard/diagnostics/"/>
+          <LogFile order="70" VisibleName="Log File" url="/ui/diagnostics/log/core/wireguard"/>
+      </WireGuard>
+    </VPN>
+</menu>

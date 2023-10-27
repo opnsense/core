@@ -108,20 +108,19 @@ class Gateways extends BaseModel
             case 'latencylow':
             case 'latencyhigh':
                 if ((string)$parent->latencylow > (string)$parent->latencyhigh) {
-                    $messages->appendMessage(new Message(gettext("The high latency threshold needs to be higher than the low latency threshold."), $ref.".".$tag));
+                    $messages->appendMessage(new Message(gettext("The high latency threshold needs to be higher than the low latency threshold."), $ref . "." . $tag));
                 }
                 break;
             case 'losslow':
             case 'losshigh':
                 if ((string)$parent->losslow > (string)$parent->losshigh) {
-                    $messages->appendMessage(new Message(gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold."), $ref.".".$tag));
+                    $messages->appendMessage(new Message(gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold."), $ref . "." . $tag));
                 }
                 break;
             case 'time_period':
             case 'interval':
-            case 'loss_interval':
-                if ((string)$parent->time_period < 2 * (intval((string)$parent->interval) + intval((string)$parent->loss_interval))) {
-                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2 times the sum of the probe interval and the loss interval."), $ref.".".$tag));
+                if ((string)$parent->time_period < (2.1 * (intval((string)$parent->interval)))) {
+                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2.1 times that of the probe interval."), $ref . "." . $tag));
                 }
                 break;
         }
@@ -142,7 +141,7 @@ class Gateways extends BaseModel
                 if ($uuid === explode('.', $ref)[1]) {
                     $old = (string)$item->name;
                     if ($old !== $new) {
-                        $messages->appendMessage(new Message(gettext("Changing name on a gateway is not allowed."), $ref.".name"));
+                        $messages->appendMessage(new Message(gettext("Changing name on a gateway is not allowed."), $ref . ".name"));
                     }
                 }
             }
@@ -164,12 +163,16 @@ class Gateways extends BaseModel
 
             if ($ipproto === 'inet' && !Util::isIpv4Address($value)) {
                 $messages->appendMessage(new Message(
-                    "Address Family is specified as IPv4, but ". $value ." is not an IPv4 address", $ref .'.'.$tag));
+                    "Address Family is specified as IPv4, but " . $value . " is not an IPv4 address",
+                    $ref . '.' . $tag
+                ));
             }
 
             if ($ipproto === 'inet6' && !Util::isIpv6Address($value)) {
                 $messages->appendMessage(new Message(
-                    "Address Family is specified as IPv6, but the ". $tag ." is not an IPv6 address", $ref .'.'.$tag));
+                    "Address Family is specified as IPv6, but the " . $tag . " is not an IPv6 address",
+                    $ref . '.' . $tag
+                ));
             }
         }
     }
@@ -192,7 +195,7 @@ class Gateways extends BaseModel
             $ipFormat = $ipproto === 'ipaddr' ? 'IPv4' : 'IPv6';
             $messages->appendMessage(new Message(
                 sprintf(gettext("Dynamic gateway values cannot be specified for interfaces with a static %s configuration."), $ipFormat),
-                $ref.".gateway"
+                $ref . ".gateway"
             ));
         }
     }

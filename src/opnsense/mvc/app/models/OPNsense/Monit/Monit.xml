@@ -26,7 +26,7 @@
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
             <Multiple>Y</Multiple>
-            <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</Mask>
             <ChangeCase>lower</ChangeCase>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
@@ -59,15 +59,15 @@
             <Default>1</Default>
          </sslverify>
          <logfile type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
          </logfile>
          <statefile type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
          </statefile>
          <eventqueuePath type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
          </eventqueuePath>
          <eventqueueSlots type="IntegerField">
@@ -156,7 +156,7 @@
             <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
          </reminder>
          <description type="TextField">
-            <mask>/^.{1,255}$/u</mask>
+            <Mask>/^.{1,255}$/u</Mask>
             <ValidationMessage>Enter a description.</ValidationMessage>
          </description>
       </alert>
@@ -167,7 +167,7 @@
          </enabled>
          <name type="TextField">
             <Required>Y</Required>
-            <mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
             <Constraints>
                <check001>
@@ -192,12 +192,12 @@
             </OptionValues>
          </type>
          <pidfile type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
          </pidfile>
          <match type="TextField"/>
          <path type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
             <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
          </path>
          <timeout type="IntegerField">
@@ -223,11 +223,11 @@
             </filters>
          </interface>
          <start type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </start>
          <stop type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </stop>
          <tests type="ModelRelationField">
@@ -253,14 +253,14 @@
             <Multiple>Y</Multiple>
          </depends>
          <polltime type="TextField">
-            <mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
          </polltime>
       </service>
       <test type="ArrayField">
          <name type="TextField">
             <Required>Y</Required>
-            <mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
          </name>
          <type type="OptionField">
@@ -294,7 +294,7 @@
          </type>
          <condition type="TextField">
             <Required>Y</Required>
-            <mask>/^.{1,255}$/u</mask>
+            <Mask>/^.{1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
          </condition>
          <action type="OptionField">
@@ -309,7 +309,7 @@
             </OptionValues>
          </action>
          <path type="TextField">
-            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
             <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
          </path>
       </test>

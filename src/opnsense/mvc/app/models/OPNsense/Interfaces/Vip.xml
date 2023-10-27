@@ -3,7 +3,7 @@
     <version>1.0.0</version>
     <description>Virtual IP configuration</description>
     <items>
-        <vip type="ArrayField">
+        <vip type=".\VipField">
             <interface type=".\VipInterfaceField">
                 <Required>Y</Required>
                 <AllowDynamic>S</AllowDynamic>
