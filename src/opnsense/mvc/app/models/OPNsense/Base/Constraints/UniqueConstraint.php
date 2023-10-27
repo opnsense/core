@@ -64,7 +64,6 @@ class UniqueConstraint extends BaseConstraint
                 // collect (additional) key fields
                 $keyFields = array($nodeName);
                 $keyFields = array_unique(array_merge($keyFields, $this->getOptionValueList('addFields')));
-                $exclusions = array_unique($this->getOptionValueList('exclusions'));
                 // calculate the key for this node
                 $nodeKey = '';
                 foreach ($keyFields as $field) {
