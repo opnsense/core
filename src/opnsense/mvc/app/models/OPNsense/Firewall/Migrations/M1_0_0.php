@@ -92,6 +92,7 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
             }
+            \OPNsense\Firewall\Util::attachAliasObject($model);
         } elseif ($model instanceof Category) {
             $model->sync();
         } elseif ($model instanceof Group) {
@@ -100,7 +101,6 @@ class M1_0_0 extends BaseModelMigration
                 $new_group->members = str_replace(' ', ',', (string)$new_group->members);
             }
         }
-        \OPNsense\Firewall\Util::attachAliasObject($model);
     }
 
     /**
