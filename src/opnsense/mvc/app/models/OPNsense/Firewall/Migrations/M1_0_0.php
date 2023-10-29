@@ -100,6 +100,7 @@ class M1_0_0 extends BaseModelMigration
                 $new_group->members = str_replace(' ', ',', (string)$new_group->members);
             }
         }
+        \OPNsense\Firewall\Util::attachAliasObject($model);
     }
 
     /**
