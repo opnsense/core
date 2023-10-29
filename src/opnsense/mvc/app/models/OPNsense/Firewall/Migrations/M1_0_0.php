@@ -92,6 +92,7 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
             }
+            \OPNsense\Firewall\Util::attachAliasObject($model);
         } elseif ($model instanceof Category) {
             $model->sync();
         } elseif ($model instanceof Group) {
