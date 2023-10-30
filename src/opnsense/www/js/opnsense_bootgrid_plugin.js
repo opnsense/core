@@ -275,6 +275,9 @@ $.fn.UIBootgrid = function (params) {
                 if (!target.hasClass('modal_draggable')) {
                     target.addClass('modal_draggable');
                     let height=0, width=0, ypos=0, xpos=0;
+                    let top_boundary = parseInt($("section.page-content-main").css('padding-top'))
+                        + parseInt($("main.page-content").css('padding-top'))
+                        - parseInt($("div.modal-dialog").css('margin-top'));
                     let this_header = target.find('.modal-header');
                     this_header.css("cursor","move");
                     this_header.on('mousedown', function(e){
@@ -287,7 +290,7 @@ $.fn.UIBootgrid = function (params) {
                     $(document.body).on('mousemove', function(e){
                         let itop = e.pageY + ypos - height;
                         let ileft = e.pageX + xpos - width;
-                        if (this_header.hasClass("drag")){
+                        if (this_header.hasClass("drag") && itop >= top_boundary){
                             target.offset({top: itop, left: ileft});
                         }
                     }).on('mouseup mouseleave', function(e){
