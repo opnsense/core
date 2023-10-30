@@ -264,39 +264,37 @@ function get_wireless_modes($interface)
 
     $cloned_interface = get_real_interface($interface);
     if ($cloned_interface) {
-        $chan_list = "/sbin/ifconfig {$cloned_interface} list chan";
-        $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
-        $format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
+        $matches = [];
+
+        preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
 
         $interface_channels = [];
-        exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
 
-        foreach ($interface_channels as $c => $interface_channel) {
-            $channel_line = explode(",", $interface_channel);
-            $wireless_mode = trim($channel_line[0]);
-            $wireless_channel = trim($channel_line[1]);
-            if (trim($wireless_mode) != "") {
-                /* if we only have 11g also set 11b channels */
-                if ($wireless_mode == "11g") {
-                    if (!isset($wireless_modes["11b"])) {
-                        $wireless_modes["11b"] = array();
-                    }
-                } elseif ($wireless_mode == "11g ht") {
-                    if (!isset($wireless_modes["11b"])) {
-                        $wireless_modes["11b"] = array();
-                    } elseif (!isset($wireless_modes["11g"])) {
-                        $wireless_modes["11g"] = array();
-                    }
-                    $wireless_mode = "11ng";
-                } elseif ($wireless_mode == "11a ht") {
-                    if (!isset($wireless_modes["11a"])) {
-                        $wireless_modes["11a"] = array();
-                    }
-                    $wireless_mode = "11na";
-                }
-                $wireless_modes[$wireless_mode][$c] = $wireless_channel;
-            }
+        foreach (array_keys($matches[0]) as $i) {
+            $interface_channels[] = [$matches[1][$i], $matches[2][$i]];
         }
+
+        array_multisort($interface_channels);
+
+        foreach ($interface_channels as $wireless_info) {
+            /* XXX discard possible channel width for now */
+            $wireless_mode = explode('/', $wireless_info[1])[0];
+            $wireless_channel = (string)$wireless_info[0];
+            switch ($wireless_mode) {
+                case '11g ht':
+                    $wireless_mode = '11ng';
+                    break;
+                case '11a ht':
+                    $wireless_mode = '11na';
+                    break;
+                default:
+                    break;
+            }
+            $wireless_modes[$wireless_mode][] = $wireless_channel;
+        }
+
+        ksort($wireless_modes);
     }
 
     return $wireless_modes;
@@ -309,19 +307,16 @@ function get_wireless_channel_info($interface)
 
     $cloned_interface = get_real_interface($interface);
     if ($cloned_interface) {
-        $chan_list = "/sbin/ifconfig {$cloned_interface} list txpower";
-        $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
-        $format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
+        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $cloned_interface);
+        $matches = [];
 
-        $interface_channels = [];
-        exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
+        preg_match_all('/Channel\s+([^\s]+)\s+:\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+[^\s]+\s+([^\s]+)/', $chan_list, $matches);
 
-        foreach ($interface_channels as $channel_line) {
-            $channel_line = explode(",", $channel_line);
-            if (!isset($wireless_channels[$channel_line[0]])) {
-                $wireless_channels[$channel_line[0]] = $channel_line;
-            }
+        foreach (array_keys($matches[0]) as $i) {
+            $wireless_channels[$matches[1][$i]] = "{$matches[2][$i]} {$matches[3][$i]}@{$matches[4][$i]}/{$matches[5][$i]}";
         }
+
+        ksort($wireless_channels);
     }
 
     return $wireless_channels;
@@ -3190,18 +3185,15 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Standard"); ?></td>
                           <td>
                             <select name="standard" class="selectpicker" data-size="10" data-style="btn-default" id="standard">
-<?php
-                              foreach($wl_modes as $wl_standard => $wl_channels):?>
+<?php foreach (array_keys($wl_modes) as $wl_standard): ?>
                               <option value="<?=$wl_standard;?>" <?=$pconfig['standard'] == $wl_standard ? "selected=\"selected\"" : "";?>>
                                 802.<?=$wl_standard;?>
                               </option>
-<?php
-                              endforeach;?>
+<?php endforeach ?>
                             </select>
                           </td>
                         </tr>
-<?php
-                        if (isset($wl_modes['11g'])): ?>
+<?php if (isset($wl_modes['11g'])): ?>
                         <tr>
                           <td><a id="help_for_protmode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> 802.11g OFDM <?=gettext("Protection Mode"); ?></td>
                           <td>
@@ -3215,11 +3207,9 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        else: ?>
+<?php else: ?>
                           <input name="protmode" type="hidden" id="protmode" value="off" />
-<?php
-                        endif; ?>
+<?php endif ?>
                         <tr>
                           <td><a id="help_for_txpower" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transmit power"); ?></td>
                           <td>
@@ -3243,15 +3233,19 @@ include("head.inc");
                               <option <?= $pconfig['channel'] == 0 ? "selected=\"selected\"" : ""; ?> value="0"><?=gettext("Auto"); ?></option>
 <?php
                               $wl_chaninfo = get_wireless_channel_info($if);
-                              foreach($wl_modes as $wl_standard => $wl_channels):
-                                foreach($wl_channels as $wl_channel):?>
-                              <option value="<?=$wl_channel;?>" <?=$pconfig['channel'] == $wl_channel ? "selected=\"selected\" " : "";?>>
-                                  <?=$wl_standard;?> - <?=$wl_channel;?>
-                                  <?=isset($wl_chaninfo[$wl_channel]) ?  "( " . $wl_chaninfo[$wl_channel][1] . "@" . $wl_chaninfo[$wl_channel][2] . "/" . $wl_chaninfo[$wl_channel][3] . ")" : "";?>
+                              $wl_chanlist = [];
+                              foreach ($wl_modes as $wl_standard => $wl_channels) {
+                                  foreach ($wl_channels as $wl_channel) {
+                                      $wl_chanlist[$wl_channel][$wl_standard] = 1;
+                                  }
+                              }
+                              ksort($wl_chanlist);
+                              foreach($wl_chanlist as $wl_channel => $wl_standards): ?>
+                              <option value="<?= html_safe($wl_channel) ?>" <?=$pconfig['channel'] == $wl_channel ? 'selected="selected"' : '' ?>>
+                                  <?=$wl_channel ?> - <?= join(', ', array_keys($wl_standards)) ?>
+                                  <?= isset($wl_chaninfo[$wl_channel]) ? "({$wl_chaninfo[$wl_channel]})" : '' ?>
                               </option>
-<?php
-                                endforeach;
-                              endforeach;?>
+<?php endforeach ?>
                             </select>
                             <div class="hidden" data-for="help_for_channel">
                               <?=gettext("Legend: wireless standards - channel # (frequency @ max TX power / TX power allowed in reg. domain)"); ?>
@@ -3400,18 +3394,15 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        if (isset($wl_modes['11ng']) || isset($wl_modes['11na'])): ?>
+<?php if (isset($wl_modes['11ng']) || isset($wl_modes['11na'])): ?>
                         <tr>
                           <td><a id="help_for_puremode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Minimum standard"); ?></td>
                           <td>
                             <select name="puremode" class="selectpicker" data-style="btn-default" id="puremode">
                               <option <?=$pconfig['puremode'] == 'any' ? "selected=\"selected\"" : "";?> value="any"><?=gettext("Any"); ?></option>
-<?php
-                              if (isset($wl_modes['11g'])): ?>
+<?php if (isset($wl_modes['11g'])): ?>
                               <option <?=$pconfig['puremode'] == '11g' ? "selected=\"selected\"" : "";?> value="11g"><?=gettext("802.11g"); ?></option>
-<?php
-                              endif; ?>
+<?php endif ?>
                               <option <?=$pconfig['puremode'] == '11n' ? "selected=\"selected\"" : "";?> value="11n"><?=gettext("802.11n"); ?></option>
                             </select>
                             <div class="hidden" data-for="help_for_puremode">
@@ -3419,8 +3410,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        elseif (isset($wl_modes['11g'])): ?>
+<?php elseif (isset($wl_modes['11g'])): ?>
                         <tr>
                           <td><a id="help_for_puremode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.11g only"); ?></td>
                           <td>
@@ -3430,8 +3420,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        endif; ?>
+<?php endif ?>
                         <tr class="cfg-wireless-ap">
                           <td><a id="help_for_apbridge_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow intra-BSS communication"); ?></td>
                           <td>
