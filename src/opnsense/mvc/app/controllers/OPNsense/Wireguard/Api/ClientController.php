@@ -33,7 +33,6 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Wireguard\Server;
 
-
 class ClientController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'client';
@@ -77,7 +76,7 @@ class ClientController extends ApiMutableModelControllerBase
         if (!empty($this->request->getPost(static::$internalModelName)) && $this->request->isPost()) {
             $servers = [];
             if (!empty($this->request->getPost(static::$internalModelName)['servers'])) {
-                $servers = explode(',',  $this->request->getPost(static::$internalModelName)['servers']);
+                $servers = explode(',', $this->request->getPost(static::$internalModelName)['servers']);
             }
             Config::getInstance()->lock();
             $mdl = new Server();
@@ -90,7 +89,7 @@ class ClientController extends ApiMutableModelControllerBase
                 if (in_array($uuid, $peers) && !in_array($key, $servers)) {
                     $node->peers = implode(',', array_diff($peers, [$uuid]));
                 } elseif (!in_array($uuid, $peers) && in_array($key, $servers)) {
-                    $node->peers = implode(',', array_merge($peers,[$uuid]));
+                    $node->peers = implode(',', array_merge($peers, [$uuid]));
                 }
             }
             /**
