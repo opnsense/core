@@ -187,6 +187,7 @@ function wireguard_sync($verbose = false, $unused = '')
         mwexecf('/usr/bin/wg syncconf %s %s', [$device, $config]);
     }
 
+    closelog();
     reopenlog();
 
     service_log("done.\n", $verbose);
