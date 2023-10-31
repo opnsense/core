@@ -1148,7 +1148,7 @@ function get_single_sysctl($name)
         return '';
     }
     $value = get_sysctl($name);
-    if (empty($value) || !isset($value[$name])) {
+    if (!isset($value[$name])) {
         return '';
     }
     return $value[$name];
