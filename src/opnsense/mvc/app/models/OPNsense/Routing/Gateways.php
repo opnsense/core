@@ -220,7 +220,7 @@ class Gateways extends BaseModel
 
         if ($use_legacy) {
             $config = Config::getInstance()->object();
-            if (!empty($config->gateways) && !empty($config->gateways->gateway_item)) {
+            if (!empty($config->gateways) && count($config->gateways->children()) > 0) {
                 foreach ($config->gateways->children() as $tag => $gateway) {
                     if ($tag == 'gateway_item') {
                         $record = [];
