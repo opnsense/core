@@ -14,7 +14,7 @@
                     A valid gateway name must be specified. The name must be less than 32 characters long
                     and may only consist of the following characters: a-z, A-Z, 0-9, _
                 </ValidationMessage>
-                <mask>/^[a-zA-Z0-9_\-]{1,32}$/</mask>
+                <Mask>/^[a-zA-Z0-9_\-]{1,32}$/</Mask>
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>
@@ -25,15 +25,14 @@
             <descr type="TextField"/>
             <interface type="InterfaceField">
                 <Required>Y</Required>
-                <multiple>N</multiple>
-                <default>wan</default>
+                <Default>wan</Default>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <virtual>/^(?!1).*$/</virtual>
                 </filters>
             </interface>
             <ipprotocol type="OptionField">
-                <default>inet</default>
+                <Default>inet</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <inet>IPv4</inet>
@@ -51,7 +50,7 @@
             <defaultgw type="BooleanField"/>
             <fargw type="BooleanField"/>
             <monitor_disable type="BooleanField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
             </monitor_disable>
             <monitor_noroute type="BooleanField"/>
@@ -65,14 +64,14 @@
             </monitor>
             <force_down type="BooleanField"/>
             <priority type="IntegerField">
-                <default>255</default>
+                <Default>255</Default>
                 <Required>Y</Required>
                 <ValidationMessage>Priority must be a value between 1 and 255</ValidationMessage>
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>255</MaximumValue>
             </priority>
             <weight type="IntegerField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>5</MaximumValue>

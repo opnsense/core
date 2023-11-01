@@ -6,10 +6,17 @@
 # create a unique timestamp for our asset caching
 touch /usr/local/opnsense/www/index.php
 
-# remove spurious .pkgsave files pkg may have created
-for DIR in /boot /usr/libexec/bsdinstall /usr/local; do
-	daemon -f find ${DIR} -type f -name "*.pkgsave" -delete
-done
-
+daemon /bin/sh -s << EOF
 # remove our stale pyc files not handled by pkg
-daemon -f find /usr/local/opnsense -type f -name "*.pyc" -delete
+find /usr/local/opnsense -type f -name "*.pyc" -delete
+
+for DIR in /boot /usr/libexec/bsdinstall /usr/local; do
+	# remove spurious files from pkg
+	find \${DIR} ! \( -type d \) -a \
+	    \( -name "*.pkgsave" -o -name ".pkgtemp.*" \) -delete
+
+        # processs spurious directories from pkg
+        # (may not be empty so -delete does not work)
+	find \${DIR} -type d -name ".pkgtemp.*" -print0 | xargs -0 -n1 rm -r
+done
+EOF

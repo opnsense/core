@@ -69,7 +69,6 @@
         <id>server.peers</id>
         <label>Peers</label>
         <type>select_multiple</type>
-        <allownew>true</allownew>
         <help>List of peers for this instance.</help>
     </field>
     <field>

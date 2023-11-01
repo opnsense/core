@@ -630,8 +630,17 @@ table{
 }
 
 .table > tbody > tr > td:last-child{
-    padding-right: 15px;
+    padding-right: 10px;
 }
+
+.table > tbody > tr > td:first-child {
+  padding-left: 10px;
+}
+
+.table > thead > tr > th:first-child {
+  padding-left: 10px;
+}
+
 
 /* helpers */
 .__nowrap{

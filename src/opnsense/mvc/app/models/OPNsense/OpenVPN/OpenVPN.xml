@@ -156,6 +156,7 @@
                 </role>
                 <server type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
+                    <Strict>Y</Strict>
                 </server>
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>

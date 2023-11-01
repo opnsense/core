@@ -48,7 +48,7 @@ if opnsense-update -u > ${PIPEFILE} 2>&1; then
 		fi
 	fi
 
-	# aboort pending upgrades
+	# abort pending upgrades
 	opnsense-update -e >> ${LOCKFILE} 2>&1
 fi
 

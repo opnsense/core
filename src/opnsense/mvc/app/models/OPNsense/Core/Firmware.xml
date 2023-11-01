@@ -8,5 +8,6 @@
         <plugins type="TextField"/>
         <type type="TextField"/>
         <subscription type="TextField"/>
+        <reboot type="BooleanField"/>
     </items>
 </model>

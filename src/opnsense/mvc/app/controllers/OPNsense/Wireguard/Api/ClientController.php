@@ -30,6 +30,8 @@
 namespace OPNsense\Wireguard\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
+use OPNsense\Wireguard\Server;
 
 class ClientController extends ApiMutableModelControllerBase
 {
@@ -46,12 +48,22 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function getClientAction($uuid = null)
     {
-        return $this->getBase('client', 'clients.client', $uuid);
+        $result = $this->getBase('client', 'clients.client', $uuid);
+        if (!empty($result['client'])) {
+            $result['client']['servers'] = [];
+            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+                $result['client']['servers'][$key] = [
+                    'value' => (string)$node->name,
+                    'selected' => in_array($uuid, explode(',', (string)$node->peers)) ? '1' : '0'
+                ];
+            }
+        }
+        return $result;
     }
 
     public function addClientAction()
     {
-        return $this->addBase('client', 'clients.client');
+        return $this->setClientAction(null);
     }
 
     public function delClientAction($uuid)
@@ -61,6 +73,32 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function setClientAction($uuid)
     {
+        if (!empty($this->request->getPost(static::$internalModelName)) && $this->request->isPost()) {
+            $servers = [];
+            if (!empty($this->request->getPost(static::$internalModelName)['servers'])) {
+                $servers = explode(',', $this->request->getPost(static::$internalModelName)['servers']);
+            }
+            Config::getInstance()->lock();
+            $mdl = new Server();
+            if (empty($uuid)) {
+                // add new client, generate uuid
+                $uuid = $mdl->servers->generateUUID();
+            }
+            foreach ($mdl->servers->server->iterateItems() as $key => $node) {
+                $peers = array_filter(explode(',', (string)$node->peers));
+                if (in_array($uuid, $peers) && !in_array($key, $servers)) {
+                    $node->peers = implode(',', array_diff($peers, [$uuid]));
+                } elseif (!in_array($uuid, $peers) && in_array($key, $servers)) {
+                    $node->peers = implode(',', array_merge($peers, [$uuid]));
+                }
+            }
+            /**
+             * Save to in memory model.
+             * Ignore validations as $uuid might be new or trigger an existing validation issue.
+             * Persisting the data is handled by setBase()
+             */
+            $mdl->serializeToConfig(false, true);
+        }
         return $this->setBase('client', 'clients.client', $uuid);
     }
 

@@ -44,6 +44,12 @@
         <help>Set port the endpoint listens to.</help>
     </field>
     <field>
+        <id>client.servers</id>
+        <label>Instances</label>
+        <type>select_multiple</type>
+        <help>List of instances this peer belongs to.</help>
+    </field>
+    <field>
         <id>client.keepalive</id>
         <label>Keepalive interval</label>
         <type>text</type>
