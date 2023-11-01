@@ -264,37 +264,34 @@ function get_wireless_modes($interface)
 
     $cloned_interface = get_real_interface($interface);
     if ($cloned_interface) {
-        $chan_list = shell_safe('/sbin/ifconfig %s list chan', $cloned_interface);
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
         $matches = [];
 
-        preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht)?)/', $chan_list, $matches);
+        preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
 
         $interface_channels = [];
 
         foreach (array_keys($matches[0]) as $i) {
-            $interface_channels[$matches[1][$i]]= $matches[2][$i];
+            $interface_channels[] = [$matches[1][$i], $matches[2][$i]];
         }
 
-        ksort($interface_channels);
+        array_multisort($interface_channels);
 
-        foreach ($interface_channels as $wireless_channel => $wireless_mode) {
+        foreach ($interface_channels as $wireless_info) {
+            /* XXX discard possible channel width for now */
+            $wireless_mode = explode('/', $wireless_info[1])[0];
+            $wireless_channel = (string)$wireless_info[0];
             switch ($wireless_mode) {
                 case '11g ht':
-                    $wireless_modes['11g'][] = (string)$wireless_channel;
                     $wireless_mode = '11ng';
-                    /* FALLTHROUGH */
-                case '11g':
-                    $wireless_modes['11b'][] = (string)$wireless_channel;
                     break;
                 case '11a ht':
-                    $wireless_modes['11a'][] = (string)$wireless_channel;
                     $wireless_mode = '11na';
                     break;
                 default:
                     break;
             }
-
-            $wireless_modes[$wireless_mode][] = (string)$wireless_channel;
+            $wireless_modes[$wireless_mode][] = $wireless_channel;
         }
 
         ksort($wireless_modes);
@@ -3239,13 +3236,13 @@ include("head.inc");
                               $wl_chanlist = [];
                               foreach ($wl_modes as $wl_standard => $wl_channels) {
                                   foreach ($wl_channels as $wl_channel) {
-                                      $wl_chanlist[$wl_channel][] = $wl_standard;
+                                      $wl_chanlist[$wl_channel][$wl_standard] = 1;
                                   }
                               }
                               ksort($wl_chanlist);
                               foreach($wl_chanlist as $wl_channel => $wl_standards): ?>
                               <option value="<?= html_safe($wl_channel) ?>" <?=$pconfig['channel'] == $wl_channel ? 'selected="selected"' : '' ?>>
-                                  <?=$wl_channel ?> - <?= join(', ', $wl_standards) ?>
+                                  <?=$wl_channel ?> - <?= join(', ', array_keys($wl_standards)) ?>
                                   <?= isset($wl_chaninfo[$wl_channel]) ? "({$wl_chaninfo[$wl_channel]})" : '' ?>
                               </option>
 <?php endforeach ?>
