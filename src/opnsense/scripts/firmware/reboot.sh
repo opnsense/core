@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2018-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2018-2023 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,11 @@ if [ -n "${LQUERY}" -a -n "${RQUERY}" ]; then
 	if [ "$(${PKG} version -t ${LQUERY} ${RQUERY})" = "<" ]; then
 		echo ${RQUERY%%_*}
 	fi
+fi
+
+ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
+if [ -n "${ALWAYS_REBOOT}" ]; then
+	WANT_REBOOT=0
 fi
 
 # success is reboot:
