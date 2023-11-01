@@ -202,6 +202,30 @@ class Gateways extends BaseModel
     }
 
     /**
+     * Backwards compatibility for wizard, setaddr
+     */
+    public function createOrUpdateGateway($fields, $uuid = null)
+    {
+        if ($uuid != null) {
+            $node = $this->getNodeByReference('gateway_item.' . $uuid);
+        } else {
+            /* Create gateway */
+            $node = $this->getNodeByReference('gateway_item');
+            if ($node != null && $node->isArrayType()) {
+                $uuid = $this->gateway_item->generateUUID();
+                $node = $node->Add();
+                $node->setAttributeValue("uuid", $uuid);
+            }
+        }
+
+        if ($node != null && !empty($fields) && is_array($fields)) {
+            $node->setNodes($fields);
+            /* disable exception on validation failure */
+            $this->serializeToConfig(false, false);
+        }
+    }
+
+    /**
      * Iterate over all gateways defined in the config.
      * If no MVC model is available, use the legacy config.
      * @return \Generator
