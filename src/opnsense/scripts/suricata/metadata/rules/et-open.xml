@@ -3,6 +3,7 @@
     <location url="https://rules.emergingthreats.net/open/suricata-7.0/emerging.rules.tar.gz" prefix="ET open"/>
     <version url="https://rules.emergingthreats.net/open/suricata-7.0/version.txt"/>
     <files>
+        <file description="3coresec" url="inline::rules/3coresec.rules">3coresec.rules</file>
         <file description="botcc.portgrouped" url="inline::rules/botcc.portgrouped.rules">botcc.portgrouped.rules</file>
         <file description="botcc" url="inline::rules/botcc.rules">botcc.rules</file>
         <file description="ciarmy" url="inline::rules/ciarmy.rules">ciarmy.rules</file>
@@ -53,7 +54,6 @@
         <file description="emerging-web_specific_apps" url="inline::rules/emerging-web_specific_apps.rules">emerging-web_specific_apps.rules</file>
         <file description="emerging-worm" url="inline::rules/emerging-worm.rules">emerging-worm.rules</file>
         <file description="tor" url="inline::rules/tor.rules">tor.rules</file>
-        <!-- archived sets -->
-        <file description="emerging-trojan" url="inline::rules/emerging-trojan.rules" deprecated="true">emerging-trojan.rules</file>
+        <file description="threatview_CS_c2" url="inline::rules/threatview_CS_c2.rules">threatview_CS_c2.rules</file>
     </files>
 </ruleset>
