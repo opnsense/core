@@ -85,7 +85,7 @@ class ClientController extends ApiMutableModelControllerBase
                 $uuid = $mdl->servers->generateUUID();
             }
             foreach ($mdl->servers->server->iterateItems() as $key => $node) {
-                $peers = explode(',', (string)$node->peers);
+                $peers = array_filter(explode(',', (string)$node->peers));
                 if (in_array($uuid, $peers) && !in_array($key, $servers)) {
                     $node->peers = implode(',', array_diff($peers, [$uuid]));
                 } elseif (!in_array($uuid, $peers) && in_array($key, $servers)) {
