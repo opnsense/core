@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset documentation_url="https://doc.emergingthreats.net/bin/view/Main/EmergingFAQ">
+<ruleset documentation_url="https://community.emergingthreats.net/t/frequently-asked-questions/56">
     <location url="https://rules.emergingthreats.net/open/suricata-7.0/emerging.rules.tar.gz" prefix="ET open"/>
     <version url="https://rules.emergingthreats.net/open/suricata-7.0/version.txt"/>
     <files>
