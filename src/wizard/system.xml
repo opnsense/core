@@ -615,6 +615,7 @@ foreach ($gateways->gatewayIterator() as $gw) {
     if ($gw['name'] == 'WAN_GW' && !empty($gw['uuid'])) {
         $found = true;
         $gateways->createOrUpdateGateway(['gateway' => $config['wizardtemp']['wangateway']], $gw['uuid']);
+        $config['interfaces']['wan']['gateway'] = $gw['name'];
     }
 }
 if (!$found) {
