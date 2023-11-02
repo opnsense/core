@@ -287,7 +287,9 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
     ];
 
     $gw->createOrUpdateGateway($item, $uuid);
-    /* Serialize back to global config, capturing the changes made here.
+
+    /* 
+     * Serialize back to global config, capturing the changes made here.
      * write_config() will take care of writing the global config to disk later on
      */
     $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
