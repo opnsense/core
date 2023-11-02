@@ -428,8 +428,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
-            $this->checkAndThrowSafeDelete($uuid);
             Config::getInstance()->lock();
+            $this->checkAndThrowSafeDelete($uuid);
             $mdl = $this->getModel();
             if ($uuid != null) {
                 $tmp = $mdl;
