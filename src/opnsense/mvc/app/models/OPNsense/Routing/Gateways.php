@@ -221,7 +221,7 @@ class Gateways extends BaseModel
         if ($node != null && !empty($fields) && is_array($fields)) {
             $node->setNodes($fields);
             /* disable exception on validation failure */
-            $this->serializeToConfig(false, false);
+            $this->serializeToConfig(false, true);
         }
     }
 
