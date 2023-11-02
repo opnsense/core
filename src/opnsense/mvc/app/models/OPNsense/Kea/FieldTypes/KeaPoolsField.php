@@ -32,7 +32,6 @@ use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Firewall\Util;
 
-
 class KeaPoolsField extends BaseField
 {
     /**

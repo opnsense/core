@@ -31,7 +31,6 @@ namespace OPNsense\Kea;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 
-
 class KeaDhcpv4 extends BaseModel
 {
 }
