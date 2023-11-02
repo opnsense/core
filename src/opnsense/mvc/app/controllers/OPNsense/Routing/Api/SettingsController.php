@@ -57,7 +57,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
         $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true);
         $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
-        $down_gateways = !empty((string)$cfg->system->gw_switch_default) ? array_map(function ($gw){
+        $down_gateways = !empty((string)$cfg->system->gw_switch_default) ? array_map(function ($gw) {
             if (str_contains($gw['status'], 'down')) {
                 return $gw['name'];
             }
@@ -204,8 +204,11 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 if (!empty($groups)) {
-                    throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Gateway Group(s) '%s'"),
-                        $gateway->name, implode(', ', $groups)));
+                    throw new UserException(sprintf(
+                        gettext("Gateway %s cannot be deleted because it is in use on Gateway Group(s) '%s'"),
+                        $gateway->name,
+                        implode(', ', $groups)
+                    ));
                 }
 
                 $routes = [];
@@ -218,8 +221,11 @@ class SettingsController extends ApiMutableModelControllerBase
                 }
 
                 if (!empty($routes)) {
-                    throw new UserException(sprintf(gettext("Gateway %s cannot be deleted because it is in use on Static Route(s) '%s'"),
-                        $gateway->name, implode(', ', $routes)));
+                    throw new UserException(sprintf(
+                        gettext("Gateway %s cannot be deleted because it is in use on Static Route(s) '%s'"),
+                        $gateway->name,
+                        implode(', ', $routes)
+                    ));
                 }
 
                 $result = $this->delBase('gateway_item', $uuid);
