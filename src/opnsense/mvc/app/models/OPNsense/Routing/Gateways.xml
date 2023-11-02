@@ -3,7 +3,7 @@
     <description>Gateways configuration</description>
     <version>1.0.0</version>
     <items>
-        <gateway_item type="ArrayField">
+        <gateway_item type=".\GatewayField">
             <disabled type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>

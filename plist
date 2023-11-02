@@ -740,6 +740,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Migrations/M1_0_0.php

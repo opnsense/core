@@ -121,13 +121,6 @@ function dpinger_instances($extended = false)
             }
         }
 
-        foreach (\OPNsense\Routing\Gateways::getDpingerDefaults() as $key => $value) {
-            /* make sure callers can reliably query the dpinger settings */
-            if (empty($gateway[$key])) {
-                $gateway[$key] = $value;
-            }
-        }
-
         $instances[$name] = $gateway;
     }
 
@@ -280,7 +273,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
-            $params .= exec_safe($ppattern, $gateway[$pname]);
+            $params .= exec_safe($ppattern, $gateway["current_" . $pname]);
         }
         $params .= exec_safe('%s ', $gateway['monitor']);
 
@@ -358,14 +351,14 @@ function dpinger_status()
         $latency_stddev = round($latency_stddev / 1000, 1);
         $latency_avg = round($latency_avg / 1000, 1);
 
-        if ($report['status'] != 'force_down') {
-            if ($latency_avg > $gwitem['latencyhigh'] || $loss > $gwitem['losshigh']) {
+        if (isset($gwitem['current_losshigh']) && $report['status'] != 'force_down') {
+            if ($latency_avg > $gwitem['current_latencyhigh'] || $loss > $gwitem['current_losshigh']) {
                 $report['status'] = 'down';
-            } elseif ($latency_avg > $gwitem['latencylow'] && $loss > $gwitem['losslow']) {
+            } elseif ($latency_avg > $gwitem['current_latencylow'] && $loss > $gwitem['current_losslow']) {
                 $report['status'] = 'delay+loss';
-            } elseif ($latency_avg > $gwitem['latencylow']) {
+            } elseif ($latency_avg > $gwitem['current_latencylow']) {
                 $report['status'] = 'delay';
-            } elseif ($loss > $gwitem['losslow']) {
+            } elseif ($loss > $gwitem['current_losslow']) {
                 $report['status'] = 'loss';
             } else {
                 $report['status'] = 'none';

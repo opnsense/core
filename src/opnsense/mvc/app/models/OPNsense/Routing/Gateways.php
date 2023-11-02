@@ -39,96 +39,54 @@ class Gateways extends BaseModel
     var $gatewaySeq = 0;
     var $cached_gateways = array();
 
-    /**
-     * Construct new gateways object
-     * @param array $unused XXX shim to be removed after 24.1 when all callers are fixed
-     */
-    public function __construct(array $unused = [])
+    public function __construct()
     {
         parent::__construct();
         $this->configHandle = Config::getInstance()->object();
     }
 
-    public static function getDpingerDefaults()
-    {
-        return [
-            'data_length' => 0,
-            'interval' => 1,
-            'latencyhigh' => 500,
-            'latencylow' => 200,
-            'loss_interval' => 4,
-            'losshigh' => 20,
-            'losslow' => 10,
-            'time_period' => 60,
-        ];
-    }
-
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        $defaults = self::getDpingerDefaults();
 
-        foreach ($this->getFlatNodes() as $node) {
-            $tagName = $node->getInternalXMLTagName();
-            if (array_key_exists($tagName, $defaults)) {
-                if (empty((string)$node)) {
-                    /*
-                     * Since dpinger values are not required in the model,
-                     * we set them to the defaults here if they're empty, but keep them virtual so
-                     * they're not persisted. The validations below might depend on the values being set.
-                     */
-                    $node->setValue($defaults[$tagName]);
-                    $node->setInternalIsVirtual(true);
+        foreach ($this->gateway_item->iterateItems() as $gateway) {
+            if (!$validateFullModel && !$gateway->isFieldChanged()) {
+                continue;
+            }
+            $this->gateway_item->calculateCurrent($gateway);
+            $ref = $gateway->__reference;
+            $this->validateNameChange($gateway, $messages, $ref);
+            $this->validateDynamicMatch($gateway, $messages, $ref);
+            foreach (['gateway', 'monitor'] as $key) {
+                if (empty((string)$node->$key) || (string)$node->$key == 'dynamic') {
+                    continue;
+                } elseif ((string)$node->ipprotocol === 'inet' && !Util::isIpv4Address((string)$node->$key)) {
+                    $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $tag));
+                } elseif ((string)$node->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$node->$key)) {
+                    $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $tag));
                 }
             }
-        }
-
-        foreach ($this->getFlatNodes() as $key => $node) {
-            $tagName = $node->getInternalXMLTagName();
-            $parent = $node->getParentNode();
-            $ref = $parent->__reference;
-            if ($validateFullModel || $node->isFieldChanged()) {
-                if ($tagName === 'name') {
-                    $this->validateNameChange($parent, $messages, $ref);
-                }
-                if (in_array($tagName, ['ipprotocol', 'gateway', 'monitor'])) {
-                    $this->validateProtocolMatch($parent, $messages, $ref);
-                }
-                if (in_array($tagName, ['ipprotocol', 'gateway'])) {
-                    $this->validateDynamicMatch($parent, $messages, $ref);
-                }
-                if (in_array($tagName, ['latencylow', 'latencyhigh', 'losslow', 'losshigh', 'time_period', 'interval', 'loss_interval'])) {
-                    $this->validateDpingerSettings($tagName, $parent, $messages, $ref);
-                }
+            if (intval((string)$gateway->current_latencylow) > intval((string)$gateway->current_latencyhigh)) {
+                $msg = gettext("The high latency threshold needs to be higher than the low latency threshold.");
+                $messages->appendMessage(new Message($msg, $ref . ".latencyhigh"));
             }
-        }
+            if (intval((string)$gateway->current_losslow) > intval((string)$gateway->current_losshigh)) {
+                $msg = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold.");
+                $messages->appendMessage(new Message($msg, $ref . ".losshigh"));
+            }
+            if (
+                intval((string)$gateway->current_time_period) < (
+                    2 * (intval((string)$gateway->current_interval) + intval((string)$gateway->current_loss_interval))
+                )
+            ) {
+                $msg = gettext(
+                    "The time period needs to be at least 2 times the sum of the probe interval and the loss interval."
+                );
+                $messages->appendMessage(new Message($msg, $ref . ".time_period"));
+            }
 
+        }
         return $messages;
-    }
-
-    private function validateDpingerSettings($tag, $parent, $messages, $ref)
-    {
-        switch ($tag) {
-            case 'latencylow':
-            case 'latencyhigh':
-                if ((string)$parent->latencylow > (string)$parent->latencyhigh) {
-                    $messages->appendMessage(new Message(gettext("The high latency threshold needs to be higher than the low latency threshold."), $ref . "." . $tag));
-                }
-                break;
-            case 'losslow':
-            case 'losshigh':
-                if ((string)$parent->losslow > (string)$parent->losshigh) {
-                    $messages->appendMessage(new Message(gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold."), $ref . "." . $tag));
-                }
-                break;
-            case 'time_period':
-            case 'interval':
-            case 'loss_interval':
-                if ((string)$parent->time_period < 2 * (intval((string)$parent->interval) + intval((string)$parent->loss_interval))) {
-                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2 times the sum of the probe interval and the loss interval."), $ref . "." . $tag));
-                }
-                break;
-        }
     }
 
     private function validateNameChange($node, $messages, $ref)
@@ -146,60 +104,31 @@ class Gateways extends BaseModel
                 if ($uuid === explode('.', $ref)[1]) {
                     $old = (string)$item->name;
                     if ($old !== $new) {
-                        $messages->appendMessage(new Message(gettext("Changing name on a gateway is not allowed."), $ref . ".name"));
+                        $messages->appendMessage(
+                            new Message(gettext("Changing name on a gateway is not allowed."), $ref . ".name")
+                        );
                     }
                 }
             }
         }
     }
 
-    private function validateProtocolMatch($node, $messages, $ref)
-    {
-        $ipproto = (string)$node->ipprotocol;
-        $gateway = (string)$node->gateway;
-        $monitor = (string)$node->monitor;
-
-        foreach ([$gateway, $monitor] as $value) {
-            $tag = $value === $gateway ? 'gateway' : 'monitor';
-
-            if ($value === 'dynamic' || empty($value)) {
-                continue;
-            }
-
-            if ($ipproto === 'inet' && !Util::isIpv4Address($value)) {
-                $messages->appendMessage(new Message(
-                    "Address Family is specified as IPv4, but " . $value . " is not an IPv4 address",
-                    $ref . '.' . $tag
-                ));
-            }
-
-            if ($ipproto === 'inet6' && !Util::isIpv6Address($value)) {
-                $messages->appendMessage(new Message(
-                    "Address Family is specified as IPv6, but the " . $tag . " is not an IPv6 address",
-                    $ref . '.' . $tag
-                ));
-            }
-        }
-    }
-
     private function validateDynamicMatch($node, $messages, $ref)
     {
-        $gateway = (string)$node->gateway;
-        $ipproto = (string)$node->ipprotocol === 'inet' ? 'ipaddr' : 'ipaddrv6';
-
-        if (Util::isIpAddress($gateway)) {
+        if (Util::isIpAddress((string)$node->gateway)) {
             // not dynamic, so no validation needed. protocol validation is handled earlier in the chain
             return;
         }
-
-        $cfg = Config::getInstance()->object();
-
+        $ipproto = (string)$node->ipprotocol === 'inet' ? 'ipaddr' : 'ipaddrv6';
         $if = (string)$node->interface;
-        $ifcfg = $cfg->interfaces->$if;
+        $ifcfg = Config::getInstance()->object()->interfaces->$if;
         if (!empty((string)$ifcfg->$ipproto) && Util::isIpAddress((string)$ifcfg->$ipproto)) {
             $ipFormat = $ipproto === 'ipaddr' ? 'IPv4' : 'IPv6';
             $messages->appendMessage(new Message(
-                sprintf(gettext("Dynamic gateway values cannot be specified for interfaces with a static %s configuration."), $ipFormat),
+                sprintf(
+                    gettext("Dynamic gateway values cannot be specified for interfaces with a static %s configuration."),
+                    $ipFormat
+                ),
                 $ref . ".gateway"
             ));
         }
@@ -240,7 +169,12 @@ class Gateways extends BaseModel
         foreach ($this->gateway_item->iterateItems() as $gateway) {
             $record = [];
             foreach ($gateway->iterateItems() as $key => $value) {
-                $record[(string)$key] = (string)$value;
+                $record[$key] = (string)$value;
+                /* current_ values are virtual, in which case we need to fetch explicit */
+                $current_key = "current_{$key}";
+                if (isset($gateway->$current_key)) {
+                    $record[$current_key] = (string)$gateway->$current_key;
+                }
             }
             $record['uuid'] = (string)$gateway->getAttributes()['uuid'];
             yield $record;
@@ -273,11 +207,14 @@ class Gateways extends BaseModel
                         if (empty($record['monitor_disable'])) {
                             $record['monitor_disable'] = 0;
                         }
-
-                        foreach ($this->getDpingerDefaults() as $key => $value) {
+                        // backwards compatibility, hook "current_" fields
+                        foreach ($this->gateway_item->getDpingerDefaults() as $key => $value) {
                             if (empty($record[$key])) {
                                 // make sure node exists without value set
                                 $record[$key] = '';
+                                $record['current_' . $key] = $value;
+                            } else {
+                                $record['current_' . $key] = $record[$key];
                             }
                         }
                         $record['uuid'] = '';
@@ -474,7 +411,10 @@ class Gateways extends BaseModel
             // iterate configured gateways
             foreach ($this->gatewayIterator() as $gw_arr) {
                 if (in_array($gw_arr['name'], $reservednames)) {
-                    syslog(LOG_WARNING, 'Gateway: duplicated entry "' . $gw_arr['name'] . '" in config.xml needs manual removal');
+                    syslog(
+                        LOG_WARNING,
+                        'Gateway: duplicated entry "' . $gw_arr['name'] . '" in config.xml needs manual removal'
+                    );
                 }
                 $reservednames[] = $gw_arr['name'];
                 $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
@@ -600,7 +540,12 @@ class Gateways extends BaseModel
             if ($gateway['ipprotocol'] == $ipproto) {
                 if (is_array($skip) && in_array($gateway['name'], $skip)) {
                     continue;
-                } elseif (!empty($gateway['disabled']) || !empty($gateway['defunct']) || !empty($gateway['is_loopback']) || !empty($gateway['force_down'])) {
+                } elseif (
+                    !empty($gateway['disabled']) ||
+                    !empty($gateway['defunct']) ||
+                    !empty($gateway['is_loopback']) ||
+                    !empty($gateway['force_down'])
+                ) {
                     continue;
                 } else {
                     return $gateway;
@@ -757,7 +702,8 @@ class Gateways extends BaseModel
                                         $is_up = false;
                                         break;
                                     case 'delay+loss':
-                                        $is_up = stristr($gw_group->trigger, 'latency') === false && stristr($gw_group->trigger, 'loss') === false;
+                                        $is_up = stristr($gw_group->trigger, 'latency') === false &&
+                                                    stristr($gw_group->trigger, 'loss') === false;
                                         break;
                                     case 'delay':
                                         $is_up = stristr($gw_group->trigger, 'latency') === false;
