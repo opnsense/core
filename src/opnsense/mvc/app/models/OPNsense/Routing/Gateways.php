@@ -72,9 +72,13 @@ class Gateways extends BaseModel
             $tagName = $node->getInternalXMLTagName();
             if (array_key_exists($tagName, $defaults)) {
                 if (empty((string)$node)) {
-                    // Since dpinger values are not required in the model,
-                    // we set them to the defaults here if they're empty.
+                    /*
+                     * Since dpinger values are not required in the model,
+                     * we set them to the defaults here if they're empty, but keep them virtual so
+                     * they're not persisted. The validations below might depend on the values being set.
+                     */
                     $node->setValue($defaults[$tagName]);
+                    $node->setInternalIsVirtual(true);
                 }
             }
         }
@@ -272,7 +276,8 @@ class Gateways extends BaseModel
 
                         foreach ($this->getDpingerDefaults() as $key => $value) {
                             if (empty($record[$key])) {
-                                $record[$key] = $value;
+                                // make sure node exists without value set
+                                $record[$key] = '';
                             }
                         }
                         $record['uuid'] = '';

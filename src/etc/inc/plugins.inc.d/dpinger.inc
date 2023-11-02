@@ -121,6 +121,13 @@ function dpinger_instances($extended = false)
             }
         }
 
+        foreach (\OPNsense\Routing\Gateways::getDpingerDefaults() as $key => $value) {
+            /* make sure callers can reliably query the dpinger settings */
+            if (empty($gateway[$key])) {
+                $gateway[$key] = $value;
+            }
+        }
+
         $instances[$name] = $gateway;
     }
 
