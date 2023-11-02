@@ -28,9 +28,14 @@
 
 namespace OPNsense\Routing\Migrations;
 
+use Phalcon\Logger\Logger;
+use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
+use Phalcon\Messages\Messages;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Routing\Gateways;
+
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -42,7 +47,17 @@ class M1_0_0 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
 
-        if (!empty($config->gateways) && !empty($config->gateways->gateway_item)) {
+        // create logger to save possible consistency issues to
+        $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
+        $adapter->setFormatter(new Line('%message%'));
+        $logger = new Logger(
+            'messages',
+            [
+                'main' => $adapter
+            ]
+        );
+
+        if (!empty($config->gateways) && count($config->gateways->children()) > 0) {
             foreach ($config->gateways->gateway_item as $gateway) {
                 $node = $model->gateway_item->Add();
 
@@ -87,9 +102,30 @@ class M1_0_0 extends BaseModelMigration
                 if ((string)$node->time_period < $min_time_period) {
                     $node->time_period = $min_time_period;
                 }
+                if ($model->performValidation()->count() > 0) {
+                    $logger->error(sprintf("Migration skipped gateway %s (%s)", $gateway->name, $gateway->gateway));
+                    $model->gateway_item->del($node->getAttribute('uuid'));
+                }
             }
         }
 
         parent::run($model);
+    }
+
+    /**
+     * cleanup old config after config save
+     * @param $model
+     */
+    public function post($model)
+    {
+        if ($model instanceof Gateways) {
+            foreach ($model->gateway_item->iterateRecursiveItems() as $node) {
+                if (!$node->getInternalIsVirtual() && !empty((string)$node)) {
+                    /* There is at least one entry stored. */
+                    unset(Config::getInstance()->object()->gateways);
+                    return;
+                }
+            }
+        }
     }
 }

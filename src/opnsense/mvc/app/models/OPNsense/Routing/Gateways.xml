@@ -26,6 +26,7 @@
             <interface type="InterfaceField">
                 <Required>Y</Required>
                 <Default>wan</Default>
+                <AllowDynamic>Y</AllowDynamic>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                     <virtual>/^(?!1).*$/</virtual>
