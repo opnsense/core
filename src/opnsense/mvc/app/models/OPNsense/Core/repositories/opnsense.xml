@@ -22,7 +22,7 @@
         </mirror>
         <mirror>
             <url>https://opnsense.c0urier.net</url>
-            <description>c0urier.net (HTTPS, Lund, SE)</description>
+            <description>c0urier.net (HTTPS, Horsens, DK)</description>
         </mirror>
         <mirror>
             <url>https://mirror.cloudfence.com.br/opnsense</url>
