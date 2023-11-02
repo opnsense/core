@@ -41,21 +41,13 @@ use OPNsense\Backup\Local;
 
 /**
  * restore config section
- * @param string $section_name config section name
+ * @param array $section_sets config section sets
  * @param string $new_contents xml content
  * @return bool status
  */
-function restore_config_section($section_name, $new_contents)
+function restore_config_section($section_sets, $new_contents)
 {
     global $config;
-
-    $sections = [];
-
-    foreach ($section_name as $section) {
-        $sections = array_merge($sections, explode(',', $section));
-    }
-
-    $sections = array_unique($sections);
 
     $tmpxml = '/tmp/tmpxml';
     $xml = null;
@@ -73,27 +65,76 @@ function restore_config_section($section_name, $new_contents)
 
     $restored = [];
 
-    foreach ($sections as $section) {
-        $old = &$config;
-        $new = &$xml;
+    foreach ($section_sets as $section_set) {
+        $sections = explode(',', $section_set);
+        $found = [];
 
-        $path = explode('.', $section);
-        $target = array_pop($path);
+        /* first find the existing sections from the set to be imported */
+        foreach ($sections as $section) {
+            $new = &$xml;
 
-        foreach ($path as $node) {
-            if (!isset($new[$node])) {
-                continue 2;
+            $path = explode('.', $section);
+            $target = array_pop($path);
+
+            foreach ($path as $node) {
+                if (!isset($new[$node])) {
+                    continue 2;
+                }
+                $new = &$new[$node];
             }
-            $new = &$new[$node];
-            if (!isset($old[$node])) {
-                $old[$node] = [];
+
+            if (isset($new[$target])) {
+                $found[] = $section;
             }
-            $old = &$old[$node];
         }
 
-        if (isset($new[$target])) {
-            $old[$target] = $new[$target];
-            $restored[] = $section;
+        /* keep current config and skip to next one considering this set failed */
+        if (!count($found)) {
+            continue;
+        }
+
+        /* secondly delete every old config section to be able to force a migration too */
+        foreach (array_diff($sections, $found) as $section) {
+            $old = &$config;
+
+            $path = explode('.', $section);
+            $target = array_pop($path);
+
+            foreach ($path as $node) {
+                if (!isset($old[$node])) {
+                    continue 2;
+                }
+                $old = &$old[$node];
+            }
+
+            if (isset($old[$target])) {
+                unset($old[$target]);
+            }
+        }
+
+        /* thirdly and lastly import the found sections */
+        foreach ($found as $section) {
+            $old = &$config;
+            $new = &$xml;
+
+            $path = explode('.', $section);
+            $target = array_pop($path);
+
+            foreach ($path as $node) {
+                if (!isset($new[$node])) {
+                    continue 2;
+                }
+                $new = &$new[$node];
+                if (!isset($old[$node])) {
+                    $old[$node] = [];
+                }
+                $old = &$old[$node];
+            }
+
+            if (isset($new[$target])) {
+                $old[$target] = $new[$target];
+                $restored[] = $section;
+            }
         }
     }
 
