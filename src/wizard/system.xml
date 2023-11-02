@@ -607,14 +607,14 @@ $config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 
 $found = false;
 $defaultgw_found = false;
-$gw = new \OPNsense\Routing\Gateways();
-foreach ($gw->gatewayIterator() as $gw) {
+$gateways = new \OPNsense\Routing\Gateways();
+foreach ($gateways->gatewayIterator() as $gw) {
     if (!empty($gw['defaultgw'])) {
         $defaultgw_found = true;
     }
     if ($gw['name'] == 'WAN_GW' && !empty($gw['uuid'])) {
         $found = true;
-        $gw->createOrUpdateGateway(['gateway' => $config['wizardtemp']['wangateway']], $gw['uuid']);
+        $gateways->createOrUpdateGateway(['gateway' => $config['wizardtemp']['wangateway']], $gw['uuid']);
     }
 }
 if (!$found) {
@@ -628,7 +628,7 @@ if (!$found) {
         'defaultgw' => !$defaultgw_found,
     ];
 
-    $gw->createOrUpdateGateway($newgw);
+    $gateways->createOrUpdateGateway($newgw);
 }
 
 $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
