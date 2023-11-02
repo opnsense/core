@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/Gateways</mount>
     <description>Gateways configuration</description>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <items>
         <gateway_item type="ArrayField">
             <disabled type="BooleanField">

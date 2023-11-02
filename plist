@@ -442,6 +442,9 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/forms/dialogEditRoute.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/ConfigurationController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/forms/dialogEditGateway.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/IndexController.php
@@ -739,6 +742,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.php
@@ -834,6 +838,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Proxy/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Routing/configuration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
@@ -2120,8 +2125,6 @@
 /usr/local/www/system_crlmanager.php
 /usr/local/www/system_gateway_groups.php
 /usr/local/www/system_gateway_groups_edit.php
-/usr/local/www/system_gateways.php
-/usr/local/www/system_gateways_edit.php
 /usr/local/www/system_general.php
 /usr/local/www/system_groupmanager.php
 /usr/local/www/system_hasync.php

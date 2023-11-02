@@ -34,6 +34,7 @@ require_once("util.inc");
 require_once("filter.inc");
 require_once("util.inc");
 require_once("system.inc");
+require_once("xmlparse.inc");
 
 function console_prompt_for_yn($prompt_text, $default = '')
 {
@@ -177,17 +178,17 @@ $ifaceassigned = "";
 
 function next_unused_gateway_name($interface)
 {
-    global $config;
+    $gateways = iterator_to_array((new \OPNsense\Routing\Gateways())->gatewayIterator());
 
     $new_name = strtoupper($interface) . '_GW';
 
-    if (!isset($config['gateways']['gateway_item'])) {
+    if (empty($gateways)) {
         return $new_name;
     }
     $count = 1;
     do {
         $existing = false;
-        foreach ($config['gateways']['gateway_item'] as $item) {
+        foreach ($gateways as $item) {
             if ($item['name'] === $new_name) {
                 $existing = true;
                 break;
@@ -203,22 +204,31 @@ function next_unused_gateway_name($interface)
 
 function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet)
 {
-    global $fp;
+    global $fp, $config;
 
     $label_IPvX = $inet_type == 'inet6' ? 'IPv6' : 'IPv4';
 
-    $a_gateways = &config_read_array('gateways', 'gateway_item');
+    $gw = new \OPNsense\Routing\Gateways();
+    $gateways = iterator_to_array($gw->gatewayIterator());
+
     $is_default = true;
     $new_name = '';
+    $uuid = null;
 
-    foreach ($a_gateways as &$item) {
+    foreach ($gateways as $item) {
+        if (empty($item['uuid'])) {
+            /* Migration has failed, only creation possible */
+            $gateways = [];
+            break;
+        }
         if ($item['ipprotocol'] === $inet_type) {
             if ($item['interface'] === $interface && $item['gateway'] === $gatewayip) {
+                /* Reset this gateway to defaults */
                 $new_name = $item['name'];
-                unset($item);
+                $uuid = $item['uuid'];
                 continue;
             }
-            if (isset($item['defaultgw'])) {
+            if (!empty($item['defaultgw'])) {
                 $is_default = false;
             }
         }
@@ -226,10 +236,10 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
 
     if (!$is_default) {
         if (console_prompt_for_yn(sprintf('Do you want to use it as the default %s gateway?', $label_IPvX), $interface == 'wan' ? 'y' : 'n')) {
-            foreach ($a_gateways as &$item) {
+            foreach ($gateways as $item) {
                 if ($item['ipprotocol'] === $inet_type) {
-                    if (isset($item['defaultgw'])) {
-                        unset($item['defaultgw']);
+                    if (!empty($item['defaultgw']) && !empty($item['uuid'])) {
+                        $gw->createOrUpdateGateway(['defaultgw' => '0'], $item['uuid']);
                     }
                 }
             }
@@ -259,26 +269,30 @@ function add_gateway_to_config($interface, $gatewayip, $inet_type, $is_in_subnet
         echo "\n";
     }
 
-    if ($new_name == '') {
+    if (empty($new_name)) {
         $new_name = next_unused_gateway_name($interface);
     }
 
-    $item = array(
+    $item = [
+        'disabled' => 0,
         'descr' => sprintf('Interface %s Gateway', strtoupper($interface)),
-        'defaultgw' => $is_default,
+        'defaultgw' => $is_default ? 1 : 0,
         'ipprotocol' => $inet_type,
         'interface' => $interface,
         'gateway' => $gatewayip,
         'monitor_disable' => 1,
         'name' => $new_name,
-        'interval' => true,
         'weight' => 1,
-    );
-    if (!$is_in_subnet) {
-        $item['fargw'] = 1;
-    }
+        'fargw' => !$is_in_subnet ? 1 : 0
+    ];
 
-    $a_gateways[] = $item;
+    $gw->createOrUpdateGateway($item, $uuid);
+
+    /* 
+     * Serialize back to global config, capturing the changes made here.
+     * write_config() will take care of writing the global config to disk later on
+     */
+    $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
 
     return array($new_name, $nameserver);
 }

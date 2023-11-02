@@ -426,7 +426,7 @@ function core_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('Static Routes'),
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
-        'section' => 'staticroutes,gateways',
+        'section' => 'staticroutes,gateways,OPNsense.Gateways',
         'id' => 'staticroutes',
         'services' => ["routing", "dpinger"],
     );

@@ -93,7 +93,7 @@ class Gateways extends BaseModel
                 if (in_array($tagName, ['ipprotocol', 'gateway'])) {
                     $this->validateDynamicMatch($parent, $messages, $ref);
                 }
-                if (in_array($tagName, ['latencylow', 'latencyhigh', 'losslow', 'losshigh', 'time_period', 'interval'])) {
+                if (in_array($tagName, ['latencylow', 'latencyhigh', 'losslow', 'losshigh', 'time_period', 'interval', 'loss_interval'])) {
                     $this->validateDpingerSettings($tagName, $parent, $messages, $ref);
                 }
             }
@@ -119,8 +119,9 @@ class Gateways extends BaseModel
                 break;
             case 'time_period':
             case 'interval':
-                if ((string)$parent->time_period < (2.1 * (intval((string)$parent->interval)))) {
-                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2.1 times that of the probe interval."), $ref . "." . $tag));
+            case 'loss_interval':
+                if ((string)$parent->time_period < 2 * (intval((string)$parent->interval) + intval((string)$parent->loss_interval))) {
+                    $messages->appendMessage(new Message(gettext("The time period needs to be at least 2 times the sum of the probe interval and the loss interval."), $ref . "." . $tag));
                 }
                 break;
         }
@@ -201,6 +202,30 @@ class Gateways extends BaseModel
     }
 
     /**
+     * Backwards compatibility for wizard, setaddr
+     */
+    public function createOrUpdateGateway($fields, $uuid = null)
+    {
+        if ($uuid != null) {
+            $node = $this->getNodeByReference('gateway_item.' . $uuid);
+        } else {
+            /* Create gateway */
+            $node = $this->getNodeByReference('gateway_item');
+            if ($node != null && $node->isArrayType()) {
+                $uuid = $this->gateway_item->generateUUID();
+                $node = $node->Add();
+                $node->setAttributeValue("uuid", $uuid);
+            }
+        }
+
+        if ($node != null && !empty($fields) && is_array($fields)) {
+            $node->setNodes($fields);
+            /* disable exception on validation failure */
+            $this->serializeToConfig(false, true);
+        }
+    }
+
+    /**
      * Iterate over all gateways defined in the config.
      * If no MVC model is available, use the legacy config.
      * @return \Generator
@@ -214,8 +239,8 @@ class Gateways extends BaseModel
                 $record[(string)$key] = (string)$value;
             }
             $record['uuid'] = (string)$gateway->getAttributes()['uuid'];
-            // yield $record;
-            // $use_legacy = false;
+            yield $record;
+            $use_legacy = false;
         }
 
         if ($use_legacy) {

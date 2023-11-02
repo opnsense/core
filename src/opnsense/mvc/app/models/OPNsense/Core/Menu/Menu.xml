@@ -47,10 +47,7 @@
             <LogFile order="80" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
-            <Single order="10" url="/system_gateways.php">
-                <List url="/system_gateways.php*" visibility="hidden"/>
-                <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
-            </Single>
+            <Configuration order="10" url="/ui/routing/configuration"/>
             <Group order="20" url="/system_gateway_groups.php">
                 <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>

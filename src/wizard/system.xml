@@ -605,33 +605,34 @@ if (!empty($input_errors)) {
 $config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
 $config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 
-if (!empty($config['wizardtemp']['wangateway'])) {
-    config_read_array('gateways', 'gateway_item');
-    $found = false;
-    $defaultgw_found = false;
-    foreach ($config['gateways']['gateway_item'] as & $gw) {
-        if (isset($gw['defaultgw'])) {
-            $defaultgw_found = true;
-        }
-        if ($gw['name'] == 'WAN_GW') {
-            $found = true;
-            $gw['gateway'] = $config['wizardtemp']['wangateway'];
-            $config['interfaces']['wan']['gateway'] = $gw['name'];
-        }
+$found = false;
+$defaultgw_found = false;
+$gateways = new \OPNsense\Routing\Gateways();
+foreach ($gateways->gatewayIterator() as $gw) {
+    if (!empty($gw['defaultgw'])) {
+        $defaultgw_found = true;
     }
-    if (!$found) {
-        $newgw = [];
-        $newgw['interface'] = 'wan';
-        $newgw['gateway'] = $config['wizardtemp']['wangateway'];
-        $newgw['name'] = 'WAN_GW';
-        $newgw['weight'] = 1;
-        $newgw['monitor_disable'] = 1;
-        $newgw['descr'] = "WAN Gateway";
-        $newgw['defaultgw'] = !$defaultgw_found;
-        $config['gateways']['gateway_item'][] = $newgw;
-        $config['interfaces']['wan']['gateway'] = 'WAN_GW';
+    if ($gw['name'] == 'WAN_GW' && !empty($gw['uuid'])) {
+        $found = true;
+        $gateways->createOrUpdateGateway(['gateway' => $config['wizardtemp']['wangateway']], $gw['uuid']);
+        $config['interfaces']['wan']['gateway'] = $gw['name'];
     }
 }
+if (!$found) {
+    $newgw = [
+        'interface' => 'wan',
+        'gateway' => $config['wizardtemp']['wangateway'],
+        'name' => 'WAN_GW',
+        'weight' => 1,
+        'monitor_disable' => 1,
+        'descr' => "WAN Gateway",
+        'defaultgw' => !$defaultgw_found,
+    ];
+
+    $gateways->createOrUpdateGateway($newgw);
+}
+
+$config = OPNsense\Core\Config::getInstance()->toArray(listtags());
 
 unset($config['wizardtemp']);
 write_config();
