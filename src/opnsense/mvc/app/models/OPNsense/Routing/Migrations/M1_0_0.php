@@ -74,6 +74,14 @@ class M1_0_0 extends BaseModelMigration
                     $node->$key = (string)$value;
                 }
 
+                // set, but do not persist default values
+                foreach (Gateways::getDpingerDefaults() as $key => $value) {
+                    if (empty((string)$node->$key)) {
+                        $node->$key = $value;
+                        $node->$key->setInternalIsVirtual(true);
+                    }
+                }
+
                 // increase time period if old model had it set too low
                 $min_time_period = 2 * (intval((string)$node->interval) + intval((string)$node->loss_interval));
                 if ((string)$node->time_period < $min_time_period) {
