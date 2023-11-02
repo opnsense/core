@@ -44,12 +44,12 @@ require_once 'system.inc';
 /* upgrade config before doing anything else */
 convert_config(true);
 
+/* flush user-facing caches */
+(new OPNsense\Core\ACL())->invalidateCache();
+(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+
 /* reload subsystem that may have changed */
 system_firmware_configure(true);
 system_trust_configure(true);
 system_login_configure(true);
 system_syslog_start(true);
-
-/* flush user-facing caches */
-(new OPNsense\Core\ACL())->invalidateCache();
-(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
