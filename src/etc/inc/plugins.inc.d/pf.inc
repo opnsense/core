@@ -217,7 +217,7 @@ function pf_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('Aliases'),
         'help' => gettext('Synchronize the aliases over to the other HA host.'),
-        'section' => 'OPNsense.Firewall.Alias',
+        'section' => 'aliases,OPNsense.Firewall.Alias',
         'id' => 'aliases',
         'services' => ['pf'],
     );
