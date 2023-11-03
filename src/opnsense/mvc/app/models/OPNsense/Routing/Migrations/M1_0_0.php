@@ -36,7 +36,6 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Routing\Gateways;
 
-
 class M1_0_0 extends BaseModelMigration
 {
     /**
