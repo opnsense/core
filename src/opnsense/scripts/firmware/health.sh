@@ -213,7 +213,7 @@ EOF
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
-echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE} 
+echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE}
 
 set_check kernel
 set_check base
