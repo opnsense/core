@@ -389,7 +389,7 @@ function display_login_form($Login_Error)
         <?php else : ?>
           <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="40" alt="logo" />
         <?php endif ?>
-        <span class="text-primary">Veritawall</span>
+        <span class="text-primary">Muro</span>
     </div>
 
   <div class="container">
@@ -401,7 +401,7 @@ function display_login_form($Login_Error)
         <?php else : ?>
           <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="100" alt="logo" />
         <?php endif ?>
-        <h1 class="text-primary" style="font-size:90px">Veritawall</h1>
+        <h1 class="text-primary" style="font-size:90px">Muro</h1>
       </div>
     </div>
       <div>
