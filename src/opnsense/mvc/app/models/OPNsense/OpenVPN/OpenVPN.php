@@ -47,12 +47,21 @@ class OpenVPN extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        // validate changed instances
-        foreach ($this->Instances->Instance->iterateItems() as $instance) {
-            if (!$validateFullModel && !$instance->isFieldChanged()) {
-                continue;
+        $instances = [];
+        foreach ($this->getFlatNodes() as $key => $node) {
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $tagName = $node->getInternalXMLTagName();
+                $parentNode = $node->getParentNode();
+                $parentKey = $parentNode->__reference;
+                $parentTagName = $parentNode->getInternalXMLTagName();
+                if ($parentTagName === 'Instance') {
+                    $instances[$parentKey] = $parentNode;
+                }
             }
-            $key = $instance->__reference;
+        }
+
+        // validate changed instances
+        foreach ($instances as $key => $instance) {
             if ($instance->role == 'client') {
                 if (empty((string)$instance->remote)) {
                     $messages->appendMessage(new Message(gettext("Remote required"), $key . ".remote"));
@@ -60,22 +69,9 @@ class OpenVPN extends BaseModel
                 if (empty((string)$instance->username) xor empty((string)$instance->password)) {
                     $messages->appendMessage(
                         new Message(
-                            gettext("When using password authentication, both username and password are required"),
+                            gettext("When ussing password authentication, both username and password are required"),
                             $key . ".username"
                         )
-                    );
-                }
-            } elseif ($instance->role == 'server') {
-                if (
-                    $instance->dev_type == 'tun' &&
-                    empty((string)$instance->server) &&
-                    empty((string)$instance->server_ipv6)
-                ) {
-                    $messages->appendMessage(
-                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server')
-                    );
-                    $messages->appendMessage(
-                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server_ipv6')
                     );
                 }
             }
@@ -84,7 +80,7 @@ class OpenVPN extends BaseModel
                     $tmp = Store::getCertificate((string)$instance->cert);
                     if (empty($tmp) || !isset($tmp['ca'])) {
                         $messages->appendMessage(new Message(
-                            gettext('Unable to locate a CA for this certificate.'),
+                            gettext("Unable to locate a Certificate Authority for this certificate"),
                             $key . ".cert"
                         ));
                     }
@@ -93,22 +89,12 @@ class OpenVPN extends BaseModel
                 if (
                     $instance->cert->isFieldChanged() ||
                     $instance->verify_client_cert->isFieldChanged() ||
-                    $instance->ca->isFieldChanged() ||
                     $validateFullModel
                 ) {
-                    if ((string)$instance->verify_client_cert != 'none' && $instance->role == 'server') {
+                    if ((string)$instance->verify_client_cert != 'none') {
                         $messages->appendMessage(new Message(
-                            gettext('To validate a certificate one has to be provided.'),
+                            gettext("To validate a certificate, one has to be provided "),
                             $key . ".verify_client_cert"
-                        ));
-                    } elseif (
-                        $instance->role == 'client' &&
-                        empty((string)$instance->cert) &&
-                        empty((string)$instance->ca)
-                    ) {
-                        $messages->appendMessage(new Message(
-                            gettext('When no certificate is provided a CA needs to be provided.'),
-                            $key . ".cert"
                         ));
                     }
                 }
@@ -121,7 +107,7 @@ class OpenVPN extends BaseModel
                 ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
             ) {
                 $messages->appendMessage(new Message(
-                    gettext('Timeout should be larger than interval.'),
+                    gettext("Timeout should be larger than interval"),
                     $key . ".keepalive_timeout"
                 ));
             }
@@ -438,7 +424,6 @@ class OpenVPN extends BaseModel
                         // updated via plugins_configure('crl');
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
-                    $options['verify-client-cert'] = (string)$node->verify_client_cert;
                     if (!empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $options['server'] = $parts[0] . " " . Util::CIDRToMask($parts[1]);
@@ -449,7 +434,7 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->username_as_common_name)) {
                         $options['username-as-common-name'] = null;
                     }
-                    // server only settings
+                    // server only setttings
                     if (!empty((string)$node->server) || !empty((string)$node->server_ipv6)) {
                         $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
                         // hook event handlers
@@ -512,13 +497,8 @@ class OpenVPN extends BaseModel
                 $options['daemon'] = "openvpn_{$node->role}{$node->vpnid}";
                 $options['management'] = "{$node->sockFilename} unix";
                 $options['proto'] = (string)$node->proto;
-                if (substr((string)$node->proto, 0, 3) == "tcp") {
-                    // suffix role for tcp connections, required in tap mode
-                    $options['proto'] .= ('-'  . (string)$node->role);
-                }
                 $options['verb'] = (string)$node->verb;
-                $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
-                $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
+                $options['verify-client-cert'] = (string)$node->verify_client_cert;
 
                 foreach (
                     [
@@ -577,15 +557,15 @@ class OpenVPN extends BaseModel
                         }
                     }
                 }
-                if (!empty((string)$node->ca)) {
-                    $options['<ca>'] = Store::getCaChain((string)$node->ca);
-                }
+
                 if (!empty((string)$node->cert)) {
                     $tmp = Store::getCertificate((string)$node->cert);
                     if ($tmp && isset($tmp['prv'])) {
                         $options['<key>'] = $tmp['prv'];
                         $options['<cert>'] = $tmp['crt'];
-                        if (empty($options['<ca>']) && isset($tmp['ca'])) {
+                        if (!empty((string)$node->ca)) {
+                            $options['<ca>'] = Store::getCaChain((string)$node->ca);
+                        } elseif (isset($tmp['ca'])) {
                             $options['<ca>'] = $tmp['ca']['crt'];
                         }
                     }

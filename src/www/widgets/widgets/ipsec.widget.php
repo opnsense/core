@@ -68,29 +68,6 @@ foreach ($ipsec_status as $status_key => $status_value) {
         }
     }
 }
-// Initialize variable aggregated_data and loop through the ipsec_leases array to fetch the data for user, address and online status. Used later for div ipsec-mobile. Additionally count the unique_users in the same foreach loop, used for mobile_users count.
-$aggregated_data = [];
-$unique_users = [];
-
-foreach ($ipsec_leases as $lease) {
-    // For each unique user, initialize an empty array
-    if (!isset($aggregated_data[$lease['user']])) {
-        $aggregated_data[$lease['user']] = [];
-    }
-    // Add the lease data to this user's array of leases
-    $aggregated_data[$lease['user']][] = [
-        'address' => $lease['address'],
-        'online' => $lease['online']
-    ];
-
-    // Count unique users in ipsec_leases array if lease is online
-    if ($lease['online']) {
-        $unique_users[$lease['user']] = true;
-    }
-}
-
-// Return the number of unique_users as mobile_users
-$mobile_users = count($unique_users);
 
 ?>
 <script>
@@ -122,7 +99,7 @@ $mobile_users = count($unique_users);
         color: black;
     }
 </style>
-<div id="tabs">
+<div id="tabs" style="display:none">
     <div data-for="ipsec-overview" class="ipsec-tab table-cell activetab" style="cursor: pointer; display:table-cell">
         <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
     </div>
@@ -138,12 +115,15 @@ $mobile_users = count($unique_users);
   <table class="table table-striped">
     <thead>
       <tr>
+        <th style="text-align:center;" colspan="5">IPsec</th>
+      </tr>
+    </thead>
+    <tbody>   
+    <tr>
         <th><?= gettext('Active Tunnels');?></th>
         <th><?= gettext('Inactive Tunnels');?></th>
         <th><?= gettext('Mobile Users');?></th>
       </tr>
-    </thead>
-    <tbody>
       <tr>
         <td>
 <?php
@@ -156,8 +136,16 @@ $mobile_users = count($unique_users);
         </td>
         <td><?= (count($ipsec_tunnels) - $activetunnels); ?></td>
         <td>
-           <!-- mobile_users were counted in the earlier loop where data was aggregated -->
-           <?=$mobile_users;?>
+<?php
+        // count active mobile users
+        $mobile_users = 0;
+        foreach ($ipsec_leases as $lease) {
+            if ($lease['online']) {
+                ++$mobile_users;
+            }
+        }
+    ?>
+          <?=$mobile_users;?>
         </td>
       </tr>
     </tbody>
@@ -191,45 +179,28 @@ $mobile_users = count($unique_users);
     </tbody>
   </table>
 </div>
-
 <div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;">
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th><?=gettext('User');?></th>
-            <th><?=gettext('IP');?></th>
-            <th><?=gettext('Status');?></th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        // Generate the user and IP addresses table rows using the aggregated_data variable that was populated earlier
-        foreach ($aggregated_data as $user => $user_data):?>
-            <tr>
-                <td><?=htmlspecialchars($user);?></td>
-                <td>
-                    <table>
-                        <?php foreach($user_data as $lease): ?>
-                            <tr>
-                                <td><?=htmlspecialchars($lease['address']);?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </td>
-                <td>
-                    <table>
-                        <?php foreach($user_data as $lease):?>
-                            <tr>
-                                <td>
-                                    <!-- Show the online and offline status of each lease a user has. -->
-                                    <i class="fa fa-exchange fa-fw text-<?=$lease['online'] ? 'success' : 'danger' ?>"></i>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </td>
-            </tr>
-        <?php endforeach ?>
-        </tbody>
-    </table>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><?= gettext('User');?></th>
+        <th><?= gettext('IP');?></th>
+        <th><?= gettext('Status');?></th>
+      </tr>
+    </thead>
+    <tbody>
+<?php
+    foreach ($ipsec_leases as $lease):?>
+      <tr>
+        <td><?=htmlspecialchars($lease['user']);?></td>
+        <td><?=htmlspecialchars($lease['address']);?></td>
+        <td>
+          <i class="fa fa-exchange fa-fw text-<?= $lease['online'] ?  "success" : 'danger' ?>"></i>
+        </td>
+      </tr>
+
+<?php
+    endforeach;?>
+    </tbody>
+  </table>
 </div>

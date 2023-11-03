@@ -293,11 +293,11 @@ include("head.inc");
                 <td style="width:22%"><strong><?= gettext('IPv6 Options') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                  <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
+                <td><a id="help_for_ipv6allow" href="#" class="showhelp"></a> <?=gettext("Allow IPv6"); ?></td>
                 <td>
                   <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
                   <?=gettext("Allow IPv6"); ?>
@@ -317,7 +317,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
+                <td><a id="help_for_natreflection" href="#" class="showhelp"></a> <?=gettext("Reflection for port forwards");?></td>
                 <td>
                   <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
                   <div class="hidden" data-for="help_for_natreflection">
@@ -327,7 +327,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
+                <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"></a> <?=gettext("Reflection for 1:1");?></td>
                 <td>
                   <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
                   <div class="hidden" data-for="help_for_enablebinatreflection">
@@ -337,7 +337,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
+                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
                 <td>
                   <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
                   <div class="hidden" data-for="help_for_enablenatreflectionhelper">
@@ -355,7 +355,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
+                <td><a id="help_for_bogonsinterval" href="#" class="showhelp"></a> <?=gettext("Update Frequency");?></td>
                 <td>
                   <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
                   <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
@@ -382,7 +382,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
+                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"></a> <?=gettext("Skip rules");?> </td>
                 <td>
                   <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
                   <?=gettext("Skip rules when gateway is down"); ?>
@@ -402,7 +402,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
+                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"></a> <?=gettext("Sticky connections");?> </td>
                 <td>
                   <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
                   <?=gettext("Use sticky connections"); ?>
@@ -429,7 +429,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
+                <td><a id="help_for_pf_share_forward" href="#" class="showhelp"></a> <?=gettext('Shared forwarding');?> </td>
                 <td>
                   <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
                   <?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?>
@@ -442,7 +442,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
+                <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"></a> <?=gettext('Disable force gateway');?> </td>
                 <td>
                   <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
                   <?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?>
@@ -462,7 +462,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
+                <td><a id="help_for_schedule_states" href="#" class="showhelp"></a> <?=gettext("Schedule States"); ?></td>
                 <td>
                   <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
                   <div class="hidden" data-for="help_for_schedule_states">
@@ -480,7 +480,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_keepcounters" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Keep counters");?></td>
+                <td><a id="help_keepcounters" href="#" class="showhelp"></a> <?=gettext("Keep counters");?></td>
                 <td>
                   <input name="keepcounters" type="checkbox" <?= !empty($pconfig['keepcounters']) ? "checked=\"checked\"" : "";?>/>
                   <div class="hidden" data-for="help_keepcounters">
@@ -490,7 +490,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_pfdebug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Debug");?></td>
+                <td><a id="help_for_pfdebug" href="#" class="showhelp"></a> <?=gettext("Debug");?></td>
                 <td>
                   <select onchange="update_description(this.selectedIndex);" name="pfdebug" id="pfdebug" class="selectpicker" data-style="btn-default">
                     <option value="none"<?=$pconfig['pfdebug']=="none" ? " selected=\"selected\"" : ""; ?>>
@@ -512,7 +512,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>
+                <td><a id="help_for_optimization" href="#" class="showhelp"></a> <?=gettext("Firewall Optimization");?></td>
                 <td>
                   <select onchange="update_description(this.selectedIndex);" name="optimization" id="optimization" class="selectpicker" data-style="btn-default">
                     <option value="normal"<?=$pconfig['optimization']=="normal" ? " selected=\"selected\"" : ""; ?>>
@@ -552,7 +552,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_state-policy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bind states to interface");?></td>
+                <td><a id="help_for_state-policy" href="#" class="showhelp"></i></a> <?=gettext("Bind states to interface");?></td>
                 <td>
                   <input name="state-policy" type="checkbox" <?= !empty($pconfig['state-policy']) ? "checked=\"checked\"" : "";?>/>
                   <div class="hidden" data-for="help_for_state-policy">
@@ -562,7 +562,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablefilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Firewall");?></td>
+                <td><a id="help_for_disablefilter" href="#" class="showhelp"></a> <?=gettext("Disable Firewall");?></td>
                 <td>
                   <input name="disablefilter" type="checkbox" value="yes" <?= !empty($pconfig['disablefilter']) ? "checked=\"checked\"" : "";?>/>
                   <?=gettext("Disable all packet filtering.");?>
@@ -577,7 +577,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_adaptive" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Adaptive Timeouts");?></td>
+                <td><a id="help_for_adaptive" href="#" class="showhelp"></a> <?=gettext("Firewall Adaptive Timeouts");?></td>
                 <td>
                   <table class="table table-condensed">
                     <thead>
@@ -608,7 +608,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_maximumstates" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum States");?></td>
+                <td><a id="help_for_maximumstates" href="#" class="showhelp"></a> <?=gettext("Firewall Maximum States");?></td>
                 <td>
                   <input name="maximumstates" type="text" id="maximumstates" value="<?=$pconfig['maximumstates'];?>" />
                   <div class="hidden" data-for="help_for_maximumstates">
@@ -618,7 +618,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_maximumfrags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Fragments");?></td>
+                <td><a id="help_for_maximumfrags" href="#" class="showhelp"></a> <?=gettext("Firewall Maximum Fragments");?></td>
                 <td>
                   <input name="maximumfrags" type="text" id="maximumfrags" value="<?=$pconfig['maximumfrags'];?>" />
                   <div class="hidden" data-for="help_for_maximumfrags">
@@ -628,7 +628,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_maximumtableentries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Maximum Table Entries");?></td>
+                <td><a id="help_for_maximumtableentries" href="#" class="showhelp"></a> <?=gettext("Firewall Maximum Table Entries");?></td>
                 <td>
                   <input name="maximumtableentries" type="text" id="maximumtableentries" value="<?= html_safe($pconfig['maximumtableentries']) ?>"/>
                   <div class="hidden" data-for="help_for_maximumtableentries">
@@ -643,7 +643,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_bypassstaticroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static route filtering");?></td>
+                <td><a id="help_for_bypassstaticroutes" href="#" class="showhelp"></a> <?=gettext("Static route filtering");?></td>
                 <td>
                   <input name="bypassstaticroutes" type="checkbox" value="yes" <?=!empty($pconfig['bypassstaticroutes']) ? "checked=\"checked\"" : "";?>/>
                   <?=gettext("Bypass firewall rules for traffic on the same interface");?>
@@ -655,7 +655,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablereplyto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable reply-to') ?></td>
+                <td><a id="help_for_disablereplyto" href="#" class="showhelp"></a> <?=gettext('Disable reply-to') ?></td>
                 <td>
                   <input name="disablereplyto" type="checkbox" value="yes" <?=!empty($pconfig['disablereplyto']) ? "checked=\"checked\"" : "";?> />
                   <?=gettext("Disable reply-to on WAN rules");?>
@@ -666,7 +666,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable anti-lockout"); ?></td>
+                <td><a id="help_for_noantilockout" href="#" class="showhelp"></a> <?=gettext("Disable anti-lockout"); ?></td>
                 <td>
                   <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Disable administration anti-lockout rule') ?>
@@ -682,7 +682,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_aliasesresolveinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases Resolve Interval");?></td>
+                <td><a id="help_for_aliasesresolveinterval" href="#" class="showhelp"></a> <?=gettext("Aliases Resolve Interval");?></td>
                 <td>
                   <input name="aliasesresolveinterval" type="text" value="<?=$pconfig['aliasesresolveinterval']; ?>" />
                   <div class="hidden" data-for="help_for_aliasesresolveinterval">
@@ -693,7 +693,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_checkaliasesurlcert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Check certificate of aliases URLs");?></td>
+                <td><a id="help_for_checkaliasesurlcert" href="#" class="showhelp"></a> <?=gettext("Check certificate of aliases URLs");?></td>
                 <td>
                   <input name="checkaliasesurlcert" type="checkbox" value="yes" <?=!empty($pconfig['checkaliasesurlcert']) ? "checked=\"checked\"" : "";?> />
                   <?=gettext("Verify HTTPS certificates when downloading alias URLs");?>
@@ -711,7 +711,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_syncookies" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable syncookies");?></td>
+                <td><a id="help_for_syncookies" href="#" class="showhelp"></a> <?=gettext("Enable syncookies");?></td>
                 <td>
                   <select name="syncookies" id="syncookies" class="selectpicker">
                     <option value="" <?= empty($pconfig['syncookies']) ? "selected=\"selected\"" : ""; ?>>

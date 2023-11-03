@@ -127,7 +127,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <small id="header_data" style="display:none"></small>
                         </div>
                         <div class="pull-right">
-                            <button id="header_data_show" style="display:none" class="btn btn-default"><i class="fa fa-info-circle"></i></button>
+                            <button id="header_data_show" style="display:none" class="btn btn-default"></button>
                             <button id="refresh" type="button" class="btn btn-default">
                                 <span>{{ lang._('Refresh') }}</span>
                                 <span class="fa fa-refresh"></span>

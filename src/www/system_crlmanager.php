@@ -506,7 +506,7 @@ include("head.inc");
 <?php
               if (!isset($id)) :?>
               <tr>
-                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
+                <td style="width:22%"> <?=gettext("Method");?></td>
                 <td style="width:78%">
                   <select name="crlmethod" id="crlmethod">
                     <option value="internal" <?=$pconfig['crlmethod'] == "internal" ? "selected=\"selected\"" : "";?>><?=gettext("Create an internal Certificate Revocation List");?></option>
@@ -517,13 +517,13 @@ include("head.inc");
 <?php
               endif; ?>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td> <?=gettext("Descriptive name");?></td>
                 <td>
                   <input name="descr" type="text" id="descr" size="20" value="<?=$pconfig['descr'];?>"/>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Authority");?></td>
+                <td> <?=gettext("Certificate Authority");?></td>
                 <td>
                   <select name='caref' id='caref' class="selectpicker">
 <?php foreach ($a_ca as $ca): ?>
@@ -542,7 +542,7 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr>
-                  <td style="width:22%"><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
+                  <td style="width:22%"><a id="help_for_crltext" href="#" class="showhelp"></a> <?=gettext("CRL data");?></td>
                   <td style="width:78%">
                     <textarea name="crltext" id="crltext" cols="65" rows="7"><?=$pconfig['crltext'];?></textarea>
                     <div class="hidden" data-for="help_for_crltext">
@@ -561,7 +561,7 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr>
-                  <td style="width:22%"><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
+                  <td style="width:22%"><a id="help_for_lifetime" href="#" class="showhelp"></a> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                   <td style="width:78%">
                     <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
                     <div class="hidden" data-for="help_for_lifetime">
@@ -570,7 +570,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial");?></td>
+                  <td><a id="help_for_serial" href="#" class="showhelp"></a> <?=gettext("Serial");?></td>
                   <td>
                     <input name="serial" type="text" id="serial" size="5" value="<?=$pconfig['serial'];?>"/>
                     <div class="hidden" data-for="help_for_serial">
@@ -603,13 +603,13 @@ include("head.inc");
                 <th colspan="2"><?=gettext("Edit Imported Certificate Revocation List");?></th>
               </tr>
               <tr>
-                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td style="width:22%"> <?=gettext("Descriptive name");?></td>
                 <td style="width:78%">
                   <input name="descr" type="text" id="descr" size="20" value="<?=$thiscrl['descr'];?>"/>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_crltext" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CRL data");?></td>
+                <td><a id="help_for_crltext" href="#" class="showhelp"></a> <?=gettext("CRL data");?></td>
                 <td>
                   <textarea name="crltext" id="crltext" cols="65" rows="7"><?=base64_decode($thiscrl['text']);?></textarea>
                   <div class="hidden" data-for="help_for_crltext">

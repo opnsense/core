@@ -320,22 +320,23 @@ class Template(object):
         :param create_directory: automatically create directories to place template output in ( if not existing )
         :return: list of generated output files or None if template not found
         """
-        result = list()
-        failed = False
+        result = None
         for template_name in self.iter_modules(module_name):
+            wildcard_pos = module_name.find('*')
+            if result is None:
+                result = list()
             syslog_notice("generate template container %s" % template_name)
             try:
                 for filename in self._generate(template_name, create_directory):
                     result.append(filename)
             except Exception as render_exception:
-                # log failure, but proceed processing for possible wildcard search
-                syslog_error('error generating template %s : %s' % (
-                    template_name, traceback.format_exc()
-                ))
-                failed = True
-
-        if not result or failed:
-            return None
+                if wildcard_pos > -1:
+                    # log failure, but proceed processing when doing a wildcard search
+                    syslog_error('error generating template %s : %s' % (
+                        template_name, traceback.format_exc()
+                    ))
+                else:
+                    raise render_exception
 
         return result
 

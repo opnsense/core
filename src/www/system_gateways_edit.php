@@ -33,8 +33,7 @@ require_once("plugins.inc.d/dpinger.inc");
 
 $gateways = new \OPNsense\Routing\Gateways();
 $a_gateways = array_values($gateways->gatewaysIndexedByName(true, false, true));
-$dpinger_default = $gateways->getDpingerDefaults();
-
+$dpinger_default = dpinger_defaults();
 
 // form processing
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -201,8 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /****
     /* XXX: dpinger needs to take defaults under consideration
     /****/
-    $dpinger_config = [];
-    foreach ($dpinger_default as $prop => $value) {
+    $dpinger_config = dpinger_defaults();
+    foreach ($dpinger_config as $prop => $value) {
         $dpinger_config[$prop] = !empty($pconfig[$prop]) ? $pconfig[$prop] : $value;
     }
 
@@ -250,6 +249,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("The probe interval needs to be positive.");
     }
 
+    if (!is_numeric($dpinger_config['alert_interval'])) {
+        $input_errors[] = gettext("The alert interval needs to be a numeric value.");
+    } elseif ($dpinger_config['alert_interval'] < 1) {
+        $input_errors[] = gettext("The alert interval needs to be positive.");
+    }
+
     if (!is_numeric($dpinger_config['data_length'])) {
         $input_errors[] = gettext("The data length needs to be a numeric value.");
     } elseif ($dpinger_config['data_length'] < 0) {
@@ -278,6 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $a_gateway_item = &config_read_array('gateways', 'gateway_item');
+        $reloadif = "";
         $gateway = array();
 
         $gateway['interface'] = $pconfig['interface'];
@@ -318,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $gateway['defaultgw'] = ($pconfig['defaultgw'] == "yes" || $pconfig['defaultgw'] == "on");
 
-        foreach (['latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length'] as $fieldname) {
+        foreach (array('alert_interval', 'latencylow', 'latencyhigh', 'loss_interval', 'losslow', 'losshigh', 'time_period', 'data_length') as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
@@ -335,12 +341,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (isset($gateway['fargw'])) {
             unset($gateway['fargw']);
         }
-        /* XXX: temporary solution to prevent default values being stored when unchanged */
-        foreach ($dpinger_default as $key => $value) {
-            if (isset($gateway[$key]) && $gateway[$key] == $value) {
-                unset($gateway[$key]);
-            }
-        }
 
         /* when saving the manual gateway we use the attribute which has the corresponding id */
         if (isset($realid)) {
@@ -356,6 +356,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($pconfig['isAjax'])) {
             echo $pconfig['name'];
             exit;
+        } elseif (!empty($reloadif)) {
+            configdp_run('interface reconfigure', array($reloadif));
         }
 
         header(url_safe('Location: /system_gateways.php'));
@@ -402,6 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'monitor_noroute',
         'name',
         'weight',
+        'alert_interval',
         'data_length',
         'time_period',
         'loss_interval',
@@ -448,7 +451,7 @@ $( document ).ready(function() {
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
-  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
+  if ((!empty($pconfig['latencylow']) || !empty($pconfig['latencyhigh']) || !empty($pconfig['data_length']) || !empty($pconfig['losslow']) || !empty($pconfig['losshigh']) || (isset($pconfig['weight']) && $pconfig['weight'] > 1) || (!empty($pconfig['interval']) && ($pconfig['interval'] > $dpinger_default['interval'])) || (!empty($pconfig['alert_interval']) && ($pconfig['alert_interval'] > $dpinger_default['alert_interval'])) || (!empty($pconfig['time_period']) && ($pconfig['time_period'] > $dpinger_default['time_period'])) || (!empty($pconfig['loss_interval']) && ($pconfig['loss_interval'] > $dpinger_default['loss_interval'])))): ?>
     $("#btn_advanced").click();
 <?php
   endif;?>
@@ -473,11 +476,11 @@ $( document ).ready(function() {
                   <td style="width:22%"><?=gettext("Edit gateway");?></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                  <td><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                     <div class="hidden" data-for="help_for_disabled">
@@ -486,19 +489,19 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
+                  <td> <?= gettext('Name') ?></td>
                   <td>
                     <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Description') ?></td>
+                  <td> <?= gettext('Description') ?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                  <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <select name='interface' class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
@@ -515,7 +518,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ipprotocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address Family"); ?></td>
+                  <td><a id="help_for_ipprotocol" href="#" class="showhelp"></a> <?=gettext("Address Family"); ?></td>
                   <td>
                     <select id="ipprotocol" name="ipprotocol" class="selectpicker" data-style="btn-default" >
                       <option value="inet" <?=$pconfig['ipprotocol'] == 'inet' ? "selected='selected'" : "";?>>
@@ -531,13 +534,13 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('IP address') ?></td>
+                  <td><?= gettext('IP address') ?></td>
                   <td>
                     <input name="gateway" type="text" size="28" value="<?=!empty($pconfig['dynamic']) ? "dynamic" : $pconfig['gateway'];?>"/>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_defaultgw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Upstream Gateway"); ?></td>
+                  <td><a id="help_for_defaultgw" href="#" class="showhelp"></a> <?=gettext("Upstream Gateway"); ?></td>
                   <td>
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_defaultgw">
@@ -546,7 +549,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr id="fargw_opts">
-                  <td><a id="help_for_fargw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Far Gateway"); ?></td>
+                  <td><a id="help_for_fargw" href="#" class="showhelp"></a> <?=gettext("Far Gateway"); ?></td>
                   <td>
                     <input name="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
                     <div class="hidden" data-for="help_for_fargw">
@@ -555,7 +558,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_monitor_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Gateway Monitoring"); ?></td>
+                  <td><a id="help_for_monitor_disable" href="#" class="showhelp"></a> <?=gettext("Disable Gateway Monitoring"); ?></td>
                   <td>
                     <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_monitor_disable">
@@ -564,7 +567,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_monitor_noroute" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable Host Route') ?></td>
+                  <td><a id="help_for_monitor_noroute" href="#" class="showhelp"></a> <?=gettext('Disable Host Route') ?></td>
                   <td>
                     <input name="monitor_noroute" type="checkbox" value="yes" <?=!empty($pconfig['monitor_noroute']) ? 'checked="checked"' : '' ?>/>
                     <div class="hidden" data-for="help_for_monitor_noroute">
@@ -573,7 +576,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_monitor" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Monitor IP"); ?></td>
+                  <td><a id="help_for_monitor" href="#" class="showhelp"></a> <?=gettext("Monitor IP"); ?></td>
                   <td>
                       <input name="monitor" type="text" value="<?=$pconfig['gateway'] == $pconfig['monitor'] ? "" : $pconfig['monitor'] ;?>" size="28" />
                       <div class="hidden" data-for="help_for_monitor">
@@ -584,7 +587,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_force_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Mark Gateway as Down"); ?></td>
+                  <td><a id="help_for_force_down" href="#" class="showhelp"></a> <?=gettext("Mark Gateway as Down"); ?></td>
                   <td>
                     <input name="force_down" type="checkbox" value="yes" <?=!empty($pconfig['force_down']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" data-for="help_for_force_down">
@@ -595,7 +598,7 @@ $( document ).ready(function() {
 
 
                 <tr>
-                  <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                  <td><a id="help_for_priority" href="#" class="showhelp"></a> <?=gettext("Priority"); ?></td>
                   <td>
                     <select id="priority" name="priority" class="selectpicker"  data-live-search="true" data-size="5">
 <?php
@@ -613,7 +616,7 @@ $( document ).ready(function() {
                 </tr>
 
                 <tr class="advanced visible">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                  <td> <?=gettext("Advanced");?></td>
                   <td>
                     <input type="button" id="btn_advanced" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-default btn-xs"/><?=gettext(" - Show advanced option"); ?>
                   </td>
@@ -622,7 +625,7 @@ $( document ).ready(function() {
                     <td colspan="2"> <b><?=gettext("Advanced");?> </b> </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_weight" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Weight");?></td>
+                  <td><a id="help_for_weight" href="#" class="showhelp"></a> <?=gettext("Weight");?></td>
                   <td>
                     <select name="weight" class="selectpicker">
 <?php
@@ -639,7 +642,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_latency" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Latency thresholds");?></td>
+                  <td><a id="help_for_latency" href="#" class="showhelp"></a> <?=gettext("Latency thresholds");?></td>
                   <td>
                     <table class="table table-condensed">
                         <thead>
@@ -665,7 +668,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_loss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Packet Loss thresholds");?></td>
+                  <td><a id="help_for_loss" href="#" class="showhelp"></a> <?=gettext("Packet Loss thresholds");?></td>
                   <td>
                     <table class="table table-condensed">
                         <thead>
@@ -691,7 +694,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Probe Interval");?></td>
+                  <td><a id="help_for_interval" href="#" class="showhelp"></a> <?=gettext("Probe Interval");?></td>
                   <td>
                     <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" />
                     <div class="hidden" data-for="help_for_interval">
@@ -699,8 +702,17 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
+                 <tr class="advanced hidden">
+                  <td><a id="help_for_alert_interval" href="#" class="showhelp"></a> <?=gettext("Alert Interval");?></td>
+                  <td>
+                    <input name="alert_interval" id="alert_interval" type="text" value="<?=$pconfig['alert_interval'];?>" />
+                    <div class="hidden" data-for="help_for_alert_interval">
+                      <?= sprintf(gettext('Time interval between alerts. Default is %d.'), $dpinger_default['alert_interval']) ?>
+                    </div>
+                  </td>
+                </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_time_period" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Period");?></td>
+                  <td><a id="help_for_time_period" href="#" class="showhelp"></a> <?=gettext("Time Period");?></td>
                   <td>
                     <input name="time_period" id="interval" type="text" value="<?=$pconfig['time_period'];?>" />
                     <div class="hidden" data-for="help_for_time_period">
@@ -709,16 +721,16 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_loss_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Loss Interval");?></td>
+                  <td><a id="help_for_loss_interval" href="#" class="showhelp"></a> <?=gettext("Loss Interval");?></td>
                   <td>
                     <input name="loss_interval" id="loss_interval" type="text" value="<?=$pconfig['loss_interval'];?>" />
                     <div class="hidden" data-for="help_for_loss_interval">
-                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d, calculated as four times the probe interval.'), $dpinger_default['loss_interval']) ?>
+                      <?= sprintf(gettext('Time interval before packets are treated as lost. Default is %d.'), $dpinger_default['loss_interval']) ?>
                     </div>
                   </td>
                 </tr>
                 <tr class="advanced hidden">
-                  <td><a id="help_for_data_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Data Length");?></td>
+                  <td><a id="help_for_data_length" href="#" class="showhelp"></a> <?=gettext("Data Length");?></td>
                   <td>
                     <input name="data_length" id="data_length" type="text" value="<?=$pconfig['data_length'];?>" />
                     <div class="hidden" data-for="help_for_data_length">

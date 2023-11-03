@@ -1,7 +1,9 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
     <version>1.0.1</version>
-    <description>OPNsense IPsec</description>
+    <description>
+        OPNsense IPsec
+    </description>
     <items>
         <general>
             <enabled type="LegacyLinkField">
@@ -15,7 +17,7 @@
                 </name>
                 <keyType type="OptionField">
                     <Required>Y</Required>
-                    <Default>rsa</Default>
+                    <default>rsa</default>
                     <OptionValues>
                         <rsa>RSA</rsa>
                         <ecdsa>ECDSA</ecdsa>
@@ -24,7 +26,9 @@
                 <publicKey type="TextField">
                     <Required>Y</Required>
                 </publicKey>
-                <privateKey type="TextField"/>
+                <privateKey type="TextField">
+                    <Required>N</Required>
+                </privateKey>
                 <keySize type="IntegerField"/>
                 <keyFingerprint type="TextField"/>
             </keyPair>
@@ -33,7 +37,7 @@
             <preSharedKey type="ArrayField">
                 <ident type="TextField">
                     <Required>Y</Required>
-                    <Mask>/^([a-zA-Z0-9@\.\:\-]*)/u</Mask>
+                    <mask>/^([a-zA-Z0-9@\.\:\-]*)/u</mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <check001>
@@ -46,7 +50,8 @@
                     </Constraints>
                 </ident>
                 <remote_ident type="TextField">
-                    <Mask>/^([a-zA-Z0-9@\.\:\-]*)/u</Mask>
+                    <Required>N</Required>
+                    <mask>/^([a-zA-Z0-9@\.\:\-]*)/u</mask>
                     <ValidationMessage>The identifier contains invalid characters.</ValidationMessage>
                     <Constraints>
                         <reference>ident.check001</reference>
@@ -54,13 +59,15 @@
                 </remote_ident>
                 <keyType type="OptionField">
                     <Required>Y</Required>
-                    <Default>PSK</Default>
+                    <default>PSK</default>
                     <OptionValues>
                         <PSK>PSK</PSK>
                         <EAP>EAP</EAP>
                     </OptionValues>
                 </keyType>
-                <Key type="TextField"/>
+                <Key type="TextField">
+                    <Required>N</Required>
+                </Key>
             </preSharedKey>
         </preSharedKeys>
     </items>

@@ -161,11 +161,11 @@ $( document ).ready(function() {
                     <td><?=gettext("Edit NPTv6 entry"); ?></td>
                     <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                       <?= gettext('Disable this rule') ?>
@@ -175,7 +175,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                    <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                     <td>
                       <div class="input-group">
                         <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
@@ -194,7 +194,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Internal IPv6 Prefix"); ?></td>
+                    <td><a id="help_for_src" href="#" class="showhelp"></a> <?=gettext("Internal IPv6 Prefix"); ?></td>
                     <td>
                       <table style="border:0;">
                         <tr>
@@ -216,7 +216,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("External IPv6 Prefix"); ?></td>
+                    <td><a id="help_for_dst" href="#" class="showhelp"></a> <?=gettext("External IPv6 Prefix"); ?></td>
                     <td>
                       <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("External IPv6 Prefix");?>"/>
                       <div class="hidden" data-for="help_for_dst">
@@ -225,14 +225,14 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Log') ?></td>
+                    <td> <?=gettext('Log') ?></td>
                     <td>
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
                       <?= gettext('Log packets that are handled by this rule') ?><br/>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                    <td><a id="help_for_category" href="#" class="showhelp"></a> <?=gettext("Category"); ?></td>
                     <td>
                       <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
   <?php
@@ -247,7 +247,7 @@ $( document ).ready(function() {
                       </div>
                   </tr>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">

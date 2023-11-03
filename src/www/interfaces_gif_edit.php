@@ -126,7 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_gif_configure($gif['gifif']);
             ifgroup_setup();
-            interfaces_restart_by_device(false, [$gif['gifif']]);
+            $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);
+            if ($confif != '') {
+                interface_configure(false, $confif);
+            }
             header(url_safe('Location: /interfaces_gif.php'));
             exit;
         }
@@ -158,14 +161,14 @@ include("head.inc");
                     <td style="width:22%"><strong><?=gettext("GIF configuration");?></strong></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;
                     </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="width:22%"><a id="help_for_if" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Parent interface"); ?></td>
+                    <td style="width:22%"><a id="help_for_if" href="#" class="showhelp"></a> <?=gettext("Parent interface"); ?></td>
                     <td style="width:78%">
                       <select name="if" class="selectpicker" data-live-search="true">
 <?php
@@ -191,7 +194,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF remote address"); ?></td>
+                    <td><a id="help_for_remote-addr" href="#" class="showhelp"></a> <?=gettext("GIF remote address"); ?></td>
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
                       <div class="hidden" data-for="help_for_remote-addr">
@@ -200,7 +203,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF tunnel local address"); ?></td>
+                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"></a> <?=gettext("GIF tunnel local address"); ?></td>
                     <td>
                       <input name="tunnel-local-addr" type="text" value="<?=$pconfig['tunnel-local-addr'];?>" />
                       <div class="hidden" data-for="help_for_tunnel-local-addr">
@@ -209,7 +212,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('GIF tunnel remote address') ?></td>
+                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"></a> <?= gettext('GIF tunnel remote address') ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -235,7 +238,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_link2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Ingress filtering"); ?></td>
+                    <td><a id="help_for_link2" href="#" class="showhelp"></a> <?=gettext("Disable Ingress filtering"); ?></td>
                     <td>
                       <input name="link2" type="checkbox" id="link2" <?=!empty($pconfig['link2']) ? "checked=\"checked\"" :"";?> />
                       <div class="hidden" data-for="help_for_link2">
@@ -244,7 +247,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_link1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ECN friendly behavior"); ?></td>
+                    <td><a id="help_for_link1" href="#" class="showhelp"></a> <?=gettext("ECN friendly behavior"); ?></td>
                     <td>
                       <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_link1">
@@ -253,7 +256,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">

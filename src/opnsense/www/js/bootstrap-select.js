@@ -2681,7 +2681,7 @@
 
     // if the version was not set successfully
     if (!version.success) {
-      // try to retrieve it again
+      // try to retreive it again
       try {
         version.full = ($.fn.dropdown.Constructor.VERSION || '').split(' ')[0].split('.');
       }

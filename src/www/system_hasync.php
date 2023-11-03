@@ -113,21 +113,7 @@ include("head.inc");
 
 ?>
 <body>
-<script>
-  $( document ).ready(function() {
-      $(".sync_act").click(function(event){
-          event.preventDefault();
-          if ($(this).hasClass('fa-check-square-o')) {
-              $(".sync_item").attr('checked', 'checked');
-          } else {
-              $(".sync_item").attr('checked', null);
-          }
-      });
-  });
-</script>
 <?php include("fbegin.inc"); ?>
-
-
 <section class="page-content-main">
   <form method="post">
     <div class="container-fluid">
@@ -145,11 +131,11 @@ include("head.inc");
                   <td style="width:22%"><strong><?= gettext('General settings') ?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disablepreempt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable preempt') ?></td>
+                  <td><a id="help_for_disablepreempt" href="#" class="showhelp"></a> <?=gettext('Disable preempt') ?></td>
                   <td>
                     <input type="checkbox" name="disablepreempt" value="on" <?= !empty($pconfig['disablepreempt']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_disablepreempt">
@@ -158,7 +144,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disconnectppps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disconnect dialup interfaces') ?></td>
+                  <td><a id="help_for_disconnectppps" href="#" class="showhelp"></a> <?=gettext('Disconnect dialup interfaces') ?></td>
                   <td>
                     <input type="checkbox" name="disconnectppps" value="on" <?= !empty($pconfig['disconnectppps']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_disconnectppps">
@@ -167,7 +153,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_pfsyncenabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize States') ?></td>
+                  <td><a id="help_for_pfsyncenabled" href="#" class="showhelp"></a> <?=gettext('Synchronize States') ?></td>
                   <td>
                     <input type="checkbox" name="pfsyncenabled" value="on" <?= !empty($pconfig['pfsyncenabled']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_pfsyncenabled">
@@ -180,7 +166,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_pfsyncinterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Interface') ?></td>
+                  <td><a id="help_for_pfsyncinterface" href="#" class="showhelp"></a> <?=gettext('Synchronize Interface') ?></td>
                   <td>
                     <select name="pfsyncinterface" class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
@@ -205,7 +191,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_pfsyncpeerip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize Peer IP') ?></td>
+                  <td><a id="help_for_pfsyncpeerip" href="#" class="showhelp"></a> <?=gettext('Synchronize Peer IP') ?></td>
                   <td>
                     <input name="pfsyncpeerip" type="text" placeholder="224.0.0.240" value="<?=$pconfig['pfsyncpeerip']; ?>" />
                     <div class="hidden" data-for="help_for_pfsyncpeerip">
@@ -226,7 +212,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Synchronize Config to IP') ?></td>
+                  <td style="width:22%"><a id="help_for_synchronizetoip" href="#" class="showhelp"></a> <?= gettext('Synchronize Config to IP') ?></td>
                   <td>
                     <input name="synchronizetoip" type="text" value="<?=$pconfig['synchronizetoip']; ?>" />
                     <div class="hidden" data-for="help_for_synchronizetoip">
@@ -241,7 +227,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Remote System Username') ?></td>
+                  <td><a id="help_for_username" href="#" class="showhelp"></a> <?=gettext('Remote System Username') ?></td>
                   <td>
                     <input  name="username" type="text" value="<?=$pconfig['username'];?>" />
                     <div class="hidden" data-for="help_for_username">
@@ -253,7 +239,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Remote System Password') ?></td>
+                  <td><a id="help_for_password" href="#" class="showhelp"></a> <?=gettext('Remote System Password') ?></td>
                   <td>
                     <input type="password" autocomplete="new-password" name="password" value="<?=$pconfig['password']; ?>" />
                     <div class="hidden" data-for="help_for_password">
@@ -264,28 +250,13 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
-              </table>
-            </div>
-          </div>
-          <div class="tab-content content-box col-xs-12 __mb">
-              <div class="table-responsive">
-                <table class="table table-striped opnsense_standard_table_form">
-                  <tr>
-                    <td style="width:22%">
-                      <strong><?= gettext('Services to synchronize (XMLRPC Sync)') ?></strong>
-                    </td>
-                    <td>
-                      <i style="cursor: pointer;" class="sync_act fa fa-check-square-o fa-fw"  title="<?= html_safe(gettext('Select all')) ?>" data-toggle="tooltip" ></i>
-                      <i style="cursor: pointer;" class="sync_act fa fa-square-o fa-fw" title="<?= html_safe(gettext('Deselect All')) ?>" data-toggle="tooltip" ></i>
-                    </td>
-                  </tr>
                 <!-- Hook xmlrpc sync plugins -->
 <?php
                 foreach ($syncplugins as $syncid => $synccnf):?>
                 <tr>
-                  <td><a id="help_for_synchronize<?=$syncid?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=$synccnf['description'];?></td>
+                  <td><a id="help_for_synchronize<?=$syncid?>" href="#" class="showhelp"></a> <?=$synccnf['description'];?></td>
                   <td>
-                    <input type="checkbox" class="sync_item" name="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
+                    <input type="checkbox" name="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_synchronize<?=$syncid?>">
                       <?=$synccnf['help'];?>
                     </div>

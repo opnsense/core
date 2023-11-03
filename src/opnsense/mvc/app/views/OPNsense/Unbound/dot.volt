@@ -161,7 +161,6 @@
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/unbound/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
-                data-service-widget="unbound"
                 data-error-title="{{ lang._('Error reconfiguring unbound') }}"
                 type="button"
         ></button>

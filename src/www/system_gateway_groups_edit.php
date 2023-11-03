@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Invalid pool option specified");
     }
     if (count($pconfig['item']) == 0) {
-        $input_errors[] = gettext('No gateway has been selected to be used in this group.');
+        $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
     }
 
     if (count($input_errors) == 0) {
@@ -171,17 +171,17 @@ $( document ).ready(function() {
                     <td style="width:22%"></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group Name"); ?></td>
+                    <td> <?=gettext("Group Name"); ?></td>
                     <td>
                       <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_gatewayprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway Priority"); ?></td>
+                    <td><a id="help_for_gatewayprio" href="#" class="showhelp"></a> <?=gettext("Gateway Priority"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -231,7 +231,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_triggerlvl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Trigger Level"); ?></td>
+                    <td><a id="help_for_triggerlvl" href="#" class="showhelp"></a> <?=gettext("Trigger Level"); ?></td>
                     <td>
                       <select name='trigger' class='selectpicker'>
                         <option value="down" <?=$pconfig['trigger'] == "down" ? "selected=\"selected\"" :"";?> ><?=gettext("Member Down");?></option>
@@ -245,7 +245,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                    <td><a id="help_for_poolopts" href="#" class="showhelp"></a> <?=gettext("Pool Options:");?></td>
                     <td>
                       <select name="poolopts" class="selectpicker">
                         <option value="" <?=empty($pconfig['poolopts']) ? "selected=\"selected\"" : ""; ?>>
@@ -266,7 +266,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div data-for="help_for_descr" class="hidden">

@@ -61,9 +61,9 @@
         <tbody>
 {% if advanced|default(false) or help|default(false) %}
         <tr>
-            <td style="text-align:left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{base_form_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
+            <td style="text-align:left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-info-circle text-danger" id="show_advanced_{{base_form_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
             <td colspan="2" style="text-align:right">
-                {% if help|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_form_id}}"></i></a>{% endif %}
+                {% if help|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-info-circle text-danger" id="show_all_help_{{base_form_id}}"></i></a>{% endif %}
             </td>
         </tr>
 {% endif %}
@@ -107,7 +107,7 @@
         {% endfor %}
         {% if apply_btn_id|default('') != '' %}
         <tr>
-            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }}</b> <i id="{{base_form_id}}_progress" class=""></i></button></td>
+            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }} </b><i id="{{base_form_id}}_progress" class=""></i></button></td>
         </tr>
         {% endif %}
         </tbody>

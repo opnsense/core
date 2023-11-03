@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['radius_auth_port'] = "1812";
         $pconfig['radius_acct_port'] = "1813";
         $pconfig['type'] = 'ldap';
-        $pconfig['sync_memberof_constraint'] = true;
         // gather auth plugin defaults
         // the hotplug properties should be different per type, if not the default won't function correctly
         foreach ($authCNFOptions as $authType) {
@@ -91,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
-            $pconfig['sync_memberof_constraint'] = !empty($a_server[$id]['ldap_sync_memberof_constraint']);
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
@@ -250,7 +248,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
-              $server['ldap_sync_memberof_constraint'] = !empty($pconfig['sync_memberof_constraint']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['ldap_sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
@@ -326,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $all_authfields = array(
     'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
     'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'sync_memberof', 'sync_memberof_constraint', 'sync_create_local_users', 'radius_host',
+    'ldap_read_properties', 'sync_memberof', 'sync_create_local_users', 'radius_host',
     'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs',
     'password_policy_duration', 'enable_password_policy_constraints',
     'password_policy_complexity', 'password_policy_length'
@@ -499,16 +496,10 @@ $( document ).ready(function() {
     $("#ldap_read_properties, #type").change(function(){
         if ($(this).is(":checked") || $("#type").val() == 'radius' ) {
             $("#sync_memberof").prop('disabled', false);
-            if ($("#type").val() !== 'radius') {
-                $("#sync_memberof_constraint").prop('disabled', false);
-            }
             $("#sync_memberof_groups").prop('disabled', false);
             $("#sync_create_local_users").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
-            if ($("#type").val() !== 'radius') {
-              $("#sync_memberof_constraint").prop('disabled', true);
-            }
             $("#sync_memberof_groups").prop('disabled', true);
             $("#sync_create_local_users").prop('disabled', true);
         }
@@ -536,11 +527,11 @@ $( document ).ready(function() {
                   <td style="width:22%"></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name"); ?></td>
+                  <td> <?=gettext("Descriptive name"); ?></td>
                   <td>
 <?php if (!isset($id)) :
 ?>
@@ -554,7 +545,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?></td>
+                  <td> <?=gettext("Type"); ?></td>
                   <td>
 <?php if (!isset($id)) :
 ?>
@@ -578,7 +569,7 @@ endif; ?>
                 </tr>
                 <!-- Local Database -->
                 <tr class="auth_local auth_options hidden">
-                  <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Policy'); ?></td>
+                  <td><a id="help_for_enable_password_policy_constraints" href="#" class="showhelp"></a> <?=gettext('Policy'); ?></td>
                   <td>
                     <input id="enable_password_policy_constraints" name="enable_password_policy_constraints" type="checkbox" <?= empty($pconfig['enable_password_policy_constraints']) ? '' : 'checked="checked"';?> />
                     <?= gettext('Enable password policy constraints') ?>
@@ -588,7 +579,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_local auth_options password_policy_constraints hidden">
-                  <td><a id="help_for_password_policy_duration" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Duration'); ?></td>
+                  <td><a id="help_for_password_policy_duration" href="#" class="showhelp"></a> <?=gettext('Duration'); ?></td>
                   <td>
                     <select id="password_policy_duration" name="password_policy_duration" class="selectpicker" data-style="btn-default">
                       <option <?=empty($pconfig['password_policy_duration']) ? "selected=\"selected\"" : "";?> value="0"><?=gettext("Disable");?></option>
@@ -604,7 +595,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_local auth_options password_policy_constraints hidden">
-                  <td><a id="help_for_password_policy_length" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Length'); ?></td>
+                  <td><a id="help_for_password_policy_length" href="#" class="showhelp"></a> <?=gettext('Length'); ?></td>
                   <td>
                     <select id="password_policy_length" name="password_policy_length" class="selectpicker" data-style="btn-default">
                       <option <?=$pconfig['password_policy_length'] == '4' ? "selected=\"selected\"" : "";?> value="4">4</option>
@@ -621,7 +612,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_local auth_options password_policy_constraints hidden">
-                  <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Complexity'); ?></td>
+                  <td><a id="help_for_password_policy_complexity" href="#" class="showhelp"></a> <?=gettext('Complexity'); ?></td>
                   <td>
                     <input id="password_policy_complexity" name="password_policy_complexity" type="checkbox" <?= empty($pconfig['password_policy_complexity']) ? '' : 'checked="checked"';?> />
                     <?= gettext('Enable complexity requirements') ?>
@@ -632,7 +623,7 @@ endif; ?>
                 </tr>
                 <!-- LDAP -->
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname or IP address");?></td>
+                  <td><a id="help_for_ldap_host" href="#" class="showhelp"></a> <?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="ldap_host" type="text" id="ldap_host" size="20" value="<?=$pconfig['ldap_host'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_host">
@@ -641,13 +632,13 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Port value");?></td>
+                  <td> <?=gettext("Port value");?></td>
                   <td>
                     <input name="ldap_port" type="text" id="ldap_port" size="5" value="<?=$pconfig['ldap_port'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_urltype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transport");?></td>
+                  <td><a id="help_for_ldap_urltype" href="#" class="showhelp"></a> <?=gettext("Transport");?></td>
                   <td>
                     <select name="ldap_urltype" id="ldap_urltype" class="selectpicker" data-style="btn-default">
                       <option value="TCP - Standard" data-port="389" <?=$pconfig['ldap_urltype'] == "TCP - Standard" ? "selected=\"selected\"" : "";?>>
@@ -666,7 +657,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol version");?></td>
+                  <td><?=gettext("Protocol version");?></td>
                   <td>
                     <select name="ldap_protver" id="ldap_protver" class="selectpicker" data-style="btn-default">
                       <option value="2" <?=$pconfig['ldap_protver'] == 2 ? "selected=\"selected\"" : "";?>>2</option>
@@ -675,7 +666,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_binddn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bind credentials");?></td>
+                  <td><a id="help_for_ldap_binddn" href="#" class="showhelp"></a> <?=gettext("Bind credentials");?></td>
                   <td>
                     <?=gettext("User DN:");?><br/>
                     <input name="ldap_binddn" type="text" id="ldap_binddn" size="40" value="<?=$pconfig['ldap_binddn'];?>"/>
@@ -687,7 +678,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
+                  <td><?=gettext("Search scope");?></td>
                   <td>
                     <select name="ldap_scope" id="ldap_scope" class="selectpicker" data-style="btn-default">
                       <option value="one" <?=$pconfig['ldap_scope'] == 'one' ? "selected=\"selected\"" : "";?>>
@@ -700,13 +691,13 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Base DN");?></td>
+                  <td><?=gettext("Base DN");?></td>
                   <td>
                     <input name="ldap_basedn" type="text" id="ldap_basedn" size="40" value="<?=$pconfig['ldap_basedn'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldapauthcontainers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication containers");?></td>
+                  <td><a id="help_for_ldapauthcontainers" href="#" class="showhelp"></a> <?=gettext("Authentication containers");?></td>
                   <td>
                     <ul class="list-inline">
                     <li><input name="ldapauthcontainers" type="text" id="ldapauthcontainers" size="40" value="<?=$pconfig['ldap_authcn'];?>"/></li>
@@ -720,7 +711,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_extended_query" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Extended Query");?></td>
+                  <td><a id="help_for_ldap_extended_query" href="#" class="showhelp"></a> <?=gettext("Extended Query");?></td>
                   <td>
                     <input name="ldap_extended_query" type="text" id="ldap_extended_query" size="40" value="<?=$pconfig['ldap_extended_query'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_extended_query">
@@ -731,7 +722,7 @@ endif; ?>
 <?php if (!isset($id)) :
 ?>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Initial Template");?></td>
+                  <td><?=gettext("Initial Template");?></td>
                   <td>
                     <select name="ldap_tmpltype" id="ldap_tmpltype" class="selectpicker" data-style="btn-default">
                       <option value="open"><?=gettext('OpenLDAP');?></option>
@@ -743,7 +734,7 @@ endif; ?>
 <?php
 endif; ?>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User naming attribute");?></td>
+                  <td><a id="help_for_ldap_attr_user" href="#" class="showhelp"></a> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
                     <div class="hidden" data-for="help_for_ldap_attr_user">
@@ -752,7 +743,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_ldap_read_properties" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Read properties'); ?></td>
+                  <td><a id="help_for_ldap_read_properties" href="#" class="showhelp"></a> <?=gettext('Read properties'); ?></td>
                   <td>
                     <input id="ldap_read_properties" name="ldap_read_properties" type="checkbox" <?= empty($pconfig['ldap_read_properties']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_ldap_read_properties">
@@ -763,19 +754,19 @@ endif; ?>
                 </tr>
                 <!-- RADIUS -->
                 <tr class="auth_radius auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hostname or IP address");?></td>
+                  <td><?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="radius_host" type="text" id="radius_host" size="20" value="<?=$pconfig['radius_host'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_radius auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Secret");?></td>
+                  <td><?=gettext("Shared Secret");?></td>
                   <td>
                     <input name="radius_secret" type="password" autocomplete="new-password" id="radius_secret" size="20" value="<?=$pconfig['radius_secret'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_radius auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Services offered");?></td>
+                  <td><?=gettext("Services offered");?></td>
                   <td>
                     <select name="radius_srvcs" id="radius_srvcs" class="selectpicker" data-style="btn-default">
                       <option value="both" <?=$pconfig['radius_srvcs'] == 'both' ? "selected=\"selected\"" :"";?>>
@@ -788,19 +779,19 @@ endif; ?>
                   </td>
                 </tr>
                 <tr id="radius_auth" class="auth_radius auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication port value");?></td>
+                  <td><?=gettext("Authentication port value");?></td>
                   <td>
                     <input name="radius_auth_port" type="text" id="radius_auth_port" size="5" value="<?=$pconfig['radius_auth_port'];?>"/>
                   </td>
                 </tr>
                 <tr id="radius_acct" class="auth_radius auth_options hidden">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Accounting port value");?></td>
+                  <td><?=gettext("Accounting port value");?></td>
                   <td>
                     <input name="radius_acct_port" type="text" id="radius_acct_port" size="5" value="<?=$pconfig['radius_acct_port'];?>"/>
                   </td>
                 </tr>
                 <tr class="auth_radius auth_options hidden">
-                  <td><a id="help_for_radius_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication Timeout");?></td>
+                  <td><a id="help_for_radius_timeout" href="#" class="showhelp"></a> <?=gettext("Authentication Timeout");?></td>
                   <td>
                     <input name="radius_timeout" type="text" id="radius_timeout" size="20" value="<?=$pconfig['radius_timeout'];?>"/>
                     <div class="hidden" data-for="help_for_radius_timeout">
@@ -811,7 +802,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_sync_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Synchronize groups'); ?></td>
+                  <td><a id="help_for_sync_memberof" href="#" class="showhelp"></a> <?=gettext('Synchronize groups'); ?></td>
                   <td>
                     <input id="sync_memberof" name="sync_memberof" type="checkbox" <?= empty($pconfig['sync_memberof']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_sync_memberof">
@@ -822,17 +813,8 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
-                  <td>
-                    <input id="sync_memberof_constraint" name="sync_memberof_constraint" type="checkbox" <?= empty($pconfig['sync_memberof_constraint']) ? '' : 'checked="checked"';?> />
-                    <div class="hidden" data-for="help_for_sync_memberof_constraint">
-                      <?= gettext("Constraint allowed groups to those selected in the container section. This may offer additional security in cases where users are able to inject memberOf attributes in different trees.");?>
-                    </div>
-                  </td>
-                </tr>
                 <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
+                  <td><a id="help_for_sync_memberof_groups" href="#" class="showhelp"></a> <?=gettext('Limit groups'); ?></td>
                   <td>
                     <select name='sync_memberof_groups[]' id="sync_memberof_groups" class="selectpicker" multiple="multiple">
 <?php
@@ -849,7 +831,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
-                  <td><a id="help_for_sync_create_local_users" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic user creation"); ?></td>
+                  <td><a id="help_for_sync_create_local_users" href="#" class="showhelp"></a> <?=gettext("Automatic user creation"); ?></td>
                   <td>
                     <input id="sync_create_local_users" name="sync_create_local_users" type="checkbox" <?= empty($pconfig['sync_create_local_users']) ? '' : 'checked="checked"';?> />
                     <div class="hidden" data-for="help_for_sync_create_local_users">
@@ -870,10 +852,10 @@ endif; ?>
                       <td>
 <?php
                         if (!empty($field['help'])):?>
-                        <a id="help_for_field_<?=$typename;?>_<?=$fieldname;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                        <a id="help_for_field_<?=$typename;?>_<?=$fieldname;?>" href="#" class="showhelp"></a>
 <?php
                         else:?>
-                        <i class="fa fa-info-circle text-muted"></i>
+                        
 <?php
                         endif;?>
                         <?=$field['name']; ?>

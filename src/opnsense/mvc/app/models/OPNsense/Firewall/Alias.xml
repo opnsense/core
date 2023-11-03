@@ -1,15 +1,18 @@
 <model>
     <mount>//OPNsense/Firewall/Alias</mount>
     <version>1.0.1</version>
-    <description>Firewall aliases</description>
+    <description>
+        Firewall aliases
+    </description>
     <items>
         <geoip>
-            <url type="UrlField"/>
+            <url type="UrlField">
+            </url>
         </geoip>
         <aliases>
             <alias type=".\AliasField">
                 <enabled type="BooleanField">
-                    <Default>1</Default>
+                    <default>1</default>
                     <Required>Y</Required>
                 </enabled>
                 <name type=".\AliasNameField">
@@ -23,7 +26,7 @@
                 </name>
                 <type type="OptionField">
                     <Required>Y</Required>
-                    <Default>alert</Default>
+                    <default>alert</default>
                     <OptionValues>
                         <host>Host(s)</host>
                         <network>Network(s)</network>
@@ -62,9 +65,11 @@
                       </check001>
                   </Constraints>
                 </interface>
-                <counters type="BooleanField"/>
+                <counters type="BooleanField">
+                    <default>0</default>
+                </counters>
                 <updatefreq type="NumericField">
-                    <ValidationMessage>Days and hours should be numeric values or left empty.</ValidationMessage>
+                    <ValidationMessage>Days and hours should be numeric values or left empty</ValidationMessage>
                 </updatefreq>
                 <content type=".\AliasContentField"/>
                 <categories type="ModelRelationField">
@@ -75,11 +80,13 @@
                             <display>name</display>
                         </rulesets>
                     </Model>
-                    <Multiple>Y</Multiple>
+                    <multiple>Y</multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
+                    <Required>N</Required>
                 </categories>
                 <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
+                    <Required>N</Required>
+                    <mask>/^(.){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </alias>

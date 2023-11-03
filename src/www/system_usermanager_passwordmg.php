@@ -198,29 +198,29 @@ $( document ).ready(function() {
                     <td style="width:22%"><strong><?= gettext('User Settings') ?></strong></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Old password"); ?></td>
+                    <td> <?=gettext("Old password"); ?></td>
                     <td>
                       <input name="passwordfld0" type="password" autocomplete="new-password" id="passwordfld0" size="20" />
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("New password"); ?></td>
+                    <td> <?=gettext("New password"); ?></td>
                     <td>
                       <input name="passwordfld1" type="password" autocomplete="new-password" id="passwordfld1" size="20" />
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Confirmation");?></td>
+                    <td> <?=gettext("Confirmation");?></td>
                     <td>
                       <input name="passwordfld2" type="password" autocomplete="new-password" id="passwordfld2" size="20" />
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
+                    <td><a id="help_for_language" href="#" class="showhelp"></a> <?=gettext("Language");?></td>
                     <td>
                       <select name="language" class="selectpicker" data-style="btn-default">
                         <option value="" <?= empty($pconfig['language']) ? "selected='selected'" : '' ?>><?=gettext('System defaults') ?></option>
@@ -252,7 +252,7 @@ $( document ).ready(function() {
                 <td style="width:78%; text-align:right">
               </tr>
               <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Request new OTP seed");?></td>
+                  <td> <?=gettext("Request new OTP seed");?></td>
                   <td>
                       <button class="btn btn-primary" id="btn_new_otp_seed"><i class="fa fa-ticket fa-fw"></i></button>
                       <div style="display:none;" id="otp_qrcode"></div>

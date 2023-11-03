@@ -1,10 +1,16 @@
 <menu>
     <Services>
-        <CaptivePortal VisibleName="Captive Portal" cssClass="fa fa-paper-plane-o fa-fw">
+        <CaptivePortal VisibleName="AAA (Captive Portal)" order="142">
             <Administration order="10" url="/ui/captiveportal"/>
             <Sessions order="20" url="/ui/captiveportal/session"/>
             <Vouchers order="30" url="/ui/captiveportal/voucher"/>
             <Log order="40" VisibleName="Log File" url="/ui/diagnostics/log/core/portalauth"/>
         </CaptivePortal>
     </Services>
+
+    <ReportsandLogs>
+    <LogFiles>
+     <CaptivePortalLogFiles VisibleName="Captive portal Log File" order="210" url="/ui/diagnostics/log/core/portalauth"/>
+    </LogFiles>
+  </ReportsandLogs>
 </menu>

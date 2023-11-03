@@ -1,6 +1,6 @@
 <menu>
     <VPN>
-        <IPsec cssClass="fa fa-lock fa-fw" order="10">
+        <IPsec order="10">
             <Connections order="5" url="/ui/ipsec/connections"/>
             <Tunnels order="10" VisibleName="Tunnel Settings [legacy]" url="/ui/ipsec/tunnels">
                 <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
@@ -17,7 +17,12 @@
             <SAD order="80" VisibleName="Security Association Database" url="/ui/ipsec/sad"/>
             <SPD order="90" VisibleName="Security Policy Database" url="/ui/ipsec/spd"/>
             <VTI order="90" VisibleName="Virtual Tunnel Interfaces" url="/ui/ipsec/vti"/>
-            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/ipsec"/>
+            
         </IPsec>
     </VPN>
+    <ReportsandLogs>
+    <LogFiles>
+      <LogFile order="35" VisibleName="IPsec Log File" url="/ui/diagnostics/log/core/ipsec"/>
+    </LogFiles>
+  </ReportsandLogs>
 </menu>

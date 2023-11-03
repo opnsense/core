@@ -304,14 +304,14 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         &nbsp;&nbsp;
                       </td>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a id="help_for_gps" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GPS"); ?></td>
+                      <td><a id="help_for_gps" href="#" class="showhelp"></a> <?=gettext("GPS"); ?></td>
                       <td>
                         <!-- Start with the original "Default", list a "Generic" and then specific configs alphabetically -->
                         <select id="gpstype" name="type">
@@ -337,7 +337,7 @@ SureGPS =    #Sure Electronics SKG16B
                     $serialports = glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE);
                     if (!empty($serialports)):?>
                     <tr>
-                      <td><a id="help_for_gpsport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Serial port') ?></td>
+                      <td><a id="help_for_gpsport" href="#" class="showhelp"></a> <?=gettext('Serial port') ?></td>
                       <td>
                         <select name="port" class="selectpicker">
                           <option value=""><?=gettext("none");?></option>
@@ -371,7 +371,7 @@ SureGPS =    #Sure Electronics SKG16B
                     endif;?>
                     <tr>
                       <!-- 1 = RMC, 2 = GGA, 4 = GLL, 8 = ZDA or ZDG -->
-                      <td><a id="help_for_nmea" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('NMEA sentences') ?></td>
+                      <td><a id="help_for_nmea" href="#" class="showhelp"></a> <?=gettext('NMEA sentences') ?></td>
                       <td>
                         <input type="hidden" name="nmea" value="<?=$pconfig['nmea'];?>" id="nmea">
                         <select id="gpsnmea" multiple="multiple" class="selectpicker">
@@ -387,7 +387,7 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_fudge1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Fudge time 1 (seconds)') ?></td>
+                      <td><a id="help_for_fudge1" href="#" class="showhelp"></a> <?= gettext('Fudge time 1 (seconds)') ?></td>
                       <td>
                         <input name="fudge1" type="text" id="gpsfudge1" min="-1" max="1" size="20" value="<?=$pconfig['fudge1'];?>" />
                         <div class="hidden" data-for="help_for_fudge1">
@@ -395,7 +395,7 @@ SureGPS =    #Sure Electronics SKG16B
                         </div>
                     </tr>
                     <tr>
-                      <td><a id="help_for_fudge2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time 2 (seconds)');?></td>
+                      <td><a id="help_for_fudge2" href="#" class="showhelp"></a> <?=gettext('Fudge time 2 (seconds)');?></td>
                       <td>
                         <input name="fudge2" type="text" id="gpsfudge2" min="-1" max="1" size="20" value="<?=$pconfig['fudge2'];?>" />
                         <div class="hidden" data-for="help_for_fudge2">
@@ -404,7 +404,7 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_stratum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Stratum') ?></td>
+                      <td><a id="help_for_stratum" href="#" class="showhelp"></a> <?=gettext('Stratum') ?></td>
                       <td>
                         <input name="stratum" type="text" id="gpsstratum"  value="<?=$pconfig['stratum'];?>" />
                         <div class="hidden" data-for="help_for_stratum">
@@ -414,7 +414,7 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Flags') ?></td>
+                      <td> <?=gettext('Flags') ?></td>
                       <td>
                         <table class="table table-condensed">
                           <tr>
@@ -482,7 +482,7 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_refid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Clock ID') ?></td>
+                      <td><a id="help_for_refid" href="#" class="showhelp"></a> <?=gettext('Clock ID') ?></td>
                       <td>
                         <input name="refid" type="text" id="gpsrefid" value="<?=$pconfig['refid'];?>" />
                         <div class="hidden" data-for="help_for_refid">
@@ -492,7 +492,7 @@ SureGPS =    #Sure Electronics SKG16B
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('GPS Initialization') ?></td>
+                      <td> <?=gettext('GPS Initialization') ?></td>
                       <td>
                         <div >
                           <input class="btn btn-xs btn-default" type="button" id="showgpsinitbox" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show GPS Initialization commands");?>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2023 Deciso B.V.
+ * Copyright (C) 2022 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,105 +37,53 @@ class IPsecProposalField extends BaseListField
 {
     private static $internalCacheOptionList = [];
 
-    private static function commonOptions()
-    {
-        /* group and cipher order, when set to null an auto generated description will be used */
-        return [
-            gettext('Internal') => [
-                'default' => gettext('default')
-            ],
-            gettext('Commonly used AES') => [
-                'aes256-sha256-modp2048' => null,
-                'aes256-sha512-modp2048' => null,
-                'aes128-sha256-modp2048' => null,
-                'aes128-sha512-modp2048' => null,
-                'aes256-sha256-modp4096' => null,
-                'aes256-sha512-modp4096' => null,
-                'aes256-sha256-ecp521' => null,
-                'aes256-sha512-ecp521' => null,
-            ],
-            gettext('Commonly used AES with Galois/Counter Mode') => [
-                'aes256gcm16-modp2048' => null,
-                'aes256gcm16-ecp521' => null,
-                'aes256gcm16-x25519' => 'aes256gcm16-curve25519 [DH31, Modern EC]',
-                'aes256gcm16-x448' => 'aes256gcm16-curve448 [DH32, Modern EC]',
-                'aes128gcm16-modp2048' => null,
-                'aes128gcm16-ecp521' => null,
-                'aes128gcm16-x25519' => 'aes128gcm16-curve25519 [DH31, Modern EC]',
-                'aes128gcm16-x448' => 'aes128gcm16-curve448 [DH32, Modern EC]',
-            ],
-            gettext('Commonly used, but insecure cipher suites') => [
-                'aes256-sha1-modp2048' => 'aes256-sha1-modp2048 [DH14]',
-                'aes128-sha1-modp2048' => 'aes128-sha1-modp2048 [DH14]',
-                'aes256-sha1-modp4096' => 'aes256-sha1-modp4096 [DH16]',
-                'aes256-sha1-ecp521' => 'aes256-sha1-ecp521 [DH21, NIST EC]',
-                'aes256-sha512-modp1024' => 'aes256-sha512-modp1024 [DH2]',
-                'null-sha256-x25519' => gettext('null-sha256-x25519 (testing only, no encryption!)')
-            ]
-        ];
-    }
-
     protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalCacheOptionList)) {
-            /**
-             *  Build cipher suite options, for more information, we refer to the following documents:
-             *  https://wiki.strongswan.org/projects/strongswan/wiki/CipherSuiteExamples
-             *  https://wiki.strongswan.org/projects/strongswan/wiki/SecurityRecommendations/50
-             */
-            foreach (self::commonOptions() as $group => $ciphers) {
-                foreach ($ciphers as $cipher => $description) {
-                    self::$internalCacheOptionList[$cipher] = ['value' => $description, 'optgroup' => $group];
-                }
-            }
+            self::$internalCacheOptionList['default'] = gettext('default');
+            // sort commmonly used on top (ref https://wiki.strongswan.org/projects/strongswan/wiki/CipherSuiteExamples)
+            self::$internalCacheOptionList['aes192gcm16-ecp384'] = 'aes192gcm16-ecp384';
+            self::$internalCacheOptionList['aes256gcm16-ecp521'] = 'aes256gcm16-ecp521';
+            self::$internalCacheOptionList['aes256gcm16-aes128gcm16-ecp384-ecp256'] = 'aes256gcm16-aes128gcm16-ecp384-ecp256';
+            self::$internalCacheOptionList['aes128gcm16-ecp256'] = 'aes128gcm16-ecp256';
+            self::$internalCacheOptionList['aes128gcm16-x25519'] = 'aes128gcm16-x25519';
+            self::$internalCacheOptionList['aes128gcm16-aesxcbc-x25519'] = 'aes128gcm16-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes192-sha384-ecp384'] = 'aes192-sha384-ecp384';
+            self::$internalCacheOptionList['aes256-sha512-ecp521'] = 'aes256-sha512-ecp521';
+            self::$internalCacheOptionList['aes128-sha256-sha1'] = 'aes128-sha256-sha1';
+            self::$internalCacheOptionList['aes128-sha256-modp2048s256'] = 'aes128-sha256-modp2048s256';
+            self::$internalCacheOptionList['aes128-sha1-modp1024s160'] = 'aes128-sha1-modp1024s160';
+            self::$internalCacheOptionList['aes256-aes128-sha384-sha256-ecp384-ecp256'] = 'aes256-aes128-sha384-sha256-ecp384-ecp256';
+            self::$internalCacheOptionList['aes128ctr-aesxcbc-x25519'] = 'aes128ctr-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes128ccm12-x25519'] = 'aes128ccm12-x25519';
+            self::$internalCacheOptionList['aes128ccm12-aesxcbc-x25519'] = 'aes128ccm12-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes128gmac-x25519'] = 'aes128gmac-x25519';
+            self::$internalCacheOptionList['aes128-sha256-x25519'] = 'aes128-sha256-x25519';
+            self::$internalCacheOptionList['aes128-aesxcbc-x25519'] = 'aes128-aesxcbc-x25519';
+            self::$internalCacheOptionList['aes192-sha384-x25519'] = 'aes192-sha384-x25519';
+            self::$internalCacheOptionList['aes256-sha512-x25519'] = 'aes256-sha512-x25519';
+            self::$internalCacheOptionList['aes128-sha256-ecp256'] = 'aes128-sha256-ecp256';
 
-            $dhgroups = [
-                'modp2048' => 'DH14',
-                'modp3072' => 'DH15',
-                'modp4096' => 'DH16',
-                'modp6144' => 'DH17',
-                'modp8192' => 'DH18',
-                'ecp224' => 'DH26, NIST EC',
-                'ecp256' => 'DH19, NIST EC',
-                'ecp384' => 'DH20, NIST EC',
-                'ecp521' => 'DH21, NIST EC',
-                'ecp224bp' => 'DH27, Brainpool EC',
-                'ecp256bp' => 'DH28, Brainpool EC',
-                'ecp384bp' => 'DH29, Brainpool EC',
-                'ecp512bp' => 'DH30, Brainpool EC',
-                'x25519' => 'DH31, Modern EC',
-                'x448' => 'DH32, Modern EC'
-            ];
-            $gcm_prf_options = [];
+            self::$internalCacheOptionList['null-sha256-x25519'] = sprintf(
+                gettext('%s (testing only!)'),
+                'null-sha256-x25519'
+            );
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
-                    foreach ($dhgroups as $dhgroup => $descr) {
+                    foreach (
+                        [
+                        'modp2048', 'modp3072', 'modp4096', 'modp6144', 'modp8192', 'ecp224',
+                        'ecp256', 'ecp384', 'ecp521', 'ecp224bp', 'ecp256bp', 'ecp384bp', 'ecp512bp',
+                        'x25519', 'x448'] as $dhgroup
+                    ) {
                         $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
-                        if (strpos($encalg, 'gcm') !== false) {
-                            /**
-                             * GCM includes hashing, for IKE we might optionally add PRF options, which we will sort at
-                             * the end of the list.
-                             */
-                            $gcm_prf_options[$cipher] = [
-                                'value' => $cipher . " [{$descr}]",
-                                'optgroup' => gettext('Miscellaneous')
-                            ];
-                            $cipher = "{$encalg}-{$dhgroup}";
-                        }
-                        if (empty(self::$internalCacheOptionList[$cipher])) {
-                            self::$internalCacheOptionList[$cipher] = [
-                                'value' => $cipher . " [{$descr}]",
-                                'optgroup' => gettext('Miscellaneous')
-                            ];
-                        } elseif (empty(self::$internalCacheOptionList[$cipher]['value'])) {
-                            self::$internalCacheOptionList[$cipher]['value'] = $cipher . " [{$descr}]";
+                        if (!isset(self::$internalCacheOptionList[$cipher])) {
+                            self::$internalCacheOptionList[$cipher] = $cipher;
                         }
                     }
                 }
             }
-            self::$internalCacheOptionList = self::$internalCacheOptionList + $gcm_prf_options;
         }
-
         $this->internalOptionList = self::$internalCacheOptionList;
     }
 }

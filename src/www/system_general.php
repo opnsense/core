@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['store_intermediate_certs'] = isset($config['system']['store_intermediate_certs']);
-    $pconfig['theme'] = $config['theme'] ?? '';
+    $pconfig['theme'] = $config['theme'];
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
 
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
@@ -283,11 +283,11 @@ $( document ).ready(function() {
               <td style="width:22%"><strong><?= gettext('System') ?></strong></td>
               <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
-                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname"); ?></td>
+              <td><a id="help_for_hostname" href="#" class="showhelp"></a> <?=gettext("Hostname"); ?></td>
               <td>
                 <input name="hostname" type="text" size="40" value="<?=$pconfig['hostname'];?>" />
                 <div class="hidden" data-for="help_for_hostname">
@@ -296,7 +296,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain"); ?></td>
+              <td><a id="help_for_domain" href="#" class="showhelp"></a> <?=gettext("Domain"); ?></td>
               <td>
                 <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                 <div class="hidden" data-for="help_for_domain">
@@ -307,7 +307,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_timezone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time zone"); ?></td>
+              <td><a id="help_for_timezone" href="#" class="showhelp"></a> <?=gettext("Time zone"); ?></td>
               <td>
                 <select name="timezone" id="timezone" data-size="10" class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
@@ -324,7 +324,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
+              <td><a id="help_for_language" href="#" class="showhelp"></a> <?=gettext("Language");?></td>
               <td>
                 <select name="language" class="selectpicker" data-style="btn-default">
 <?php
@@ -341,7 +341,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_theme" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Theme"); ?></td>
+              <td><a id="help_for_theme" href="#" class="showhelp"></a> <?=gettext("Theme"); ?></td>
               <td>
                 <select name="theme" class="selectpicker">
 <?php
@@ -368,7 +368,7 @@ $( document ).ready(function() {
               <td style="width:78%"></td>
             </tr>
             <tr>
-              <td><a id="help_for_trust_store_intermediate_certs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Store intermediate"); ?></td>
+              <td><a id="help_for_trust_store_intermediate_certs" href="#" class="showhelp"></a> <?=gettext("Store intermediate"); ?></td>
               <td>
                 <input name="store_intermediate_certs" type="checkbox" id="store_intermediate_certs" <?= !empty($pconfig['store_intermediate_certs']) ? "checked=\"checked\"" : "";?> />
                 <div class="hidden" data-for="help_for_trust_store_intermediate_certs">
@@ -390,7 +390,7 @@ $( document ).ready(function() {
               <td style="width:78%"></td>
             </tr>
             <tr>
-              <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
+              <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
                 <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
                 <?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?>
@@ -402,7 +402,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_dnsservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers"); ?></td>
+              <td><a id="help_for_dnsservers" href="#" class="showhelp"></a> <?=gettext("DNS servers"); ?></td>
               <td>
                 <table class="table table-striped table-condensed">
                   <thead>
@@ -450,7 +450,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_dnssearchdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS search domain') ?></td>
+              <td><a id="help_for_dnssearchdomain" href="#" class="showhelp"></a> <?= gettext('DNS search domain') ?></td>
               <td>
                 <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
                 <div class="hidden" data-for="help_for_dnssearchdomain">
@@ -460,7 +460,7 @@ $( document ).ready(function() {
             </tr>
             <tr>
             <tr>
-              <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS server options"); ?></td>
+              <td><a id="help_for_dnsservers_opt" href="#" class="showhelp"></a> <?=gettext("DNS server options"); ?></td>
               <td>
                 <input name="dnsallowoverride" id="dnsallowoverride" type="checkbox" value="yes" <?= $pconfig['dnsallowoverride'] ? 'checked="checked"' : '' ?>/>
                 <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
@@ -498,7 +498,7 @@ $( document ).ready(function() {
               </td>
             </tr>
               <tr>
-                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Gateway switching') ?></td>
+                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"></a> <?=gettext('Gateway switching') ?></td>
                 <td>
                   <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? 'checked="checked"' : '' ?> />
                   <?=gettext("Allow default gateway switching"); ?>

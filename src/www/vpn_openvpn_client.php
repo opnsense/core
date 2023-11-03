@@ -556,11 +556,11 @@ $( document ).ready(function() {
               <td style="width:22%"><strong><?=gettext("General information"); ?></strong></td>
               <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
-                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+              <td><a id="help_for_disable" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
               <td>
                 <input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
                 <div class="hidden" data-for="help_for_disable">
@@ -569,7 +569,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+              <td><a id="help_for_description" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
               <td>
                 <input name="description" type="text" class="form-control unknown" size="30" value="<?=$pconfig['description'];?>" />
                 <div class="hidden" data-for="help_for_description">
@@ -578,7 +578,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Mode");?></td>
+              <td> <?=gettext("Server Mode");?></td>
               <td>
                 <select name="mode" id="mode">
 <?php
@@ -597,7 +597,7 @@ $( document ).ready(function() {
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
+              <td><a id="help_for_protocol" href="#" class="showhelp"></a> <?=gettext("Protocol");?></td>
               <td>
                 <select name='protocol' class="form-control">
 <?php
@@ -618,7 +618,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Device mode");?></td>
+            <td> <?=gettext("Device mode");?></td>
               <td>
               <select name="dev_mode" id="dev_mode">
 <?php
@@ -634,7 +634,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
+            <td> <?=gettext("Interface"); ?></td>
             <td>
               <select name="interface" class="form-control">
 <?php
@@ -661,7 +661,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote server");?></td>
+            <td> <?=gettext("Remote server");?></td>
             <td>
               <table class="table table-striped table-condensed" id="maintable">
                 <thead>
@@ -713,7 +713,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Retry DNS resolution"); ?></td>
+            <td><a id="help_for_resolve_retry" href="#" class="showhelp"></a> <?=gettext("Retry DNS resolution"); ?></td>
             <td>
               <input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? 'checked="checked"' : '' ?>/>
               <?= gettext('Infinitely resolve remote server') ?>
@@ -723,19 +723,19 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy host or address");?></td>
+            <td> <?=gettext("Proxy host or address");?></td>
             <td>
               <input name="proxy_addr" type="text" class="form-control unknown" size="30" value="<?=$pconfig['proxy_addr'];?>" />
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy port");?></td>
+            <td> <?=gettext("Proxy port");?></td>
             <td>
               <input name="proxy_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['proxy_port'];?>" />
             </td>
           </tr>
           <tr>
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy authentication extra options");?></td>
+            <td> <?=gettext("Proxy authentication extra options");?></td>
             <td>
               <?=gettext("Authentication method"); ?>
               <select name="proxy_authtype" id="proxy_authtype" class="form-control select">
@@ -752,7 +752,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
+            <td><a id="help_for_local_port" href="#" class="showhelp"></a> <?=gettext("Local port");?></td>
             <td>
               <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
               <div class="hidden" data-for="help_for_local_port">
@@ -772,7 +772,7 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("User Authentication Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td style="width:22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
+            <td style="width:22%"><a id="help_for_auth_user_pass" href="#" class="showhelp"></a> <?=gettext("User name/pass"); ?></td>
             <td style="width:78%">
               <div><?=gettext("Username"); ?></div>
               <div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['auth_user'];?>" /></div>
@@ -785,7 +785,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_reneg-sec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Renegotiate time"); ?></td>
+            <td><a id="help_for_reneg-sec" href="#" class="showhelp"></a> <?=gettext("Renegotiate time"); ?></td>
             <td>
               <input type="text" name="reneg-sec" value="<?=$pconfig['reneg-sec'];?>">
               <div class="hidden" data-for="help_for_reneg-sec">
@@ -806,7 +806,7 @@ $( document ).ready(function() {
             <td style="width:78%"></td>
           </tr>
           <tr class="tls_option">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
+            <td> <?=gettext("TLS Authentication"); ?></td>
             <td>
                 <select id="tlsmode" name='tlsmode' class="form-control">
                     <option value="" <?= empty($pconfig['tlsmode']) ? "selected=\"selected\"" : "";?>>
@@ -822,7 +822,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr class="tls_option">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Shared Key"); ?></td>
+            <td><?=gettext("TLS Shared Key"); ?></td>
             <td>
 <?php
               if (empty($pconfig['tls'])) :?>
@@ -837,7 +837,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr class="tls_option">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Authority"); ?></td>
+            <td> <?=gettext("Peer Certificate Authority"); ?></td>
             <td>
 <?php
               if (isset($config['ca'])) :?>
@@ -861,7 +861,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr class="tls_option">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Client Certificate"); ?></td>
+            <td> <?=gettext("Client Certificate"); ?></td>
             <td>
               <select name='certref' class="form-control">
 <?php
@@ -901,7 +901,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr  class="psk_option">
-            <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Key"); ?></td>
+            <td> <?=gettext("Shared Key"); ?></td>
             <td>
 <?php
               if (empty($pconfig['shared_key'])) :?>
@@ -916,7 +916,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
+            <td><a id="help_for_crypto" href="#" class="showhelp"></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
             <td>
               <select name="crypto" class="form-control">
 <?php
@@ -932,7 +932,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
+            <td><a id="help_for_digest" href="#" class="showhelp"></a> <?=gettext("Auth Digest Algorithm"); ?></td>
             <td>
               <select name="digest" class="form-control">
 <?php
@@ -963,7 +963,7 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Tunnel Settings"); ?></strong></td>
           </tr>
           <tr>
-            <td style="width:22%"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
+            <td style="width:22%"><a id="help_for_tunnel_network" href="#" class="showhelp"></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
             <td style="width:78%">
               <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
               <div class="hidden" data-for="help_for_tunnel_network">
@@ -978,7 +978,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
+            <td><a id="help_for_tunnel_networkv6" href="#" class="showhelp"></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
             <td>
               <input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
               <div class="hidden" data-for="help_for_tunnel_networkv6">
@@ -993,7 +993,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network"); ?></td>
+            <td><a id="help_for_remote_network" href="#" class="showhelp"></a> <?=gettext("IPv4 Remote Network"); ?></td>
             <td>
               <input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
               <div class="hidden" data-for="help_for_remote_network">
@@ -1008,7 +1008,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network"); ?></td>
+            <td><a id="help_for_remote_networkv6" href="#" class="showhelp"></a> <?=gettext("IPv6 Remote Network"); ?></td>
             <td>
               <input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
               <div class="hidden" data-for="help_for_remote_networkv6">
@@ -1023,7 +1023,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_use_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Limit outgoing bandwidth");?></td>
+            <td><a id="help_for_use_shaper" href="#" class="showhelp"></a> <?=gettext("Limit outgoing bandwidth");?></td>
             <td>
               <input name="use_shaper" type="text" class="form-control unknown" size="5" value="<?=$pconfig['use_shaper'];?>" />
               <div class="hidden" data-for="help_for_use_shaper">
@@ -1035,7 +1035,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
+            <td><a id="help_for_compression" href="#" class="showhelp"></a> <?=gettext("Compression"); ?></td>
             <td>
               <select name="compression" class="form-control">
                 <?php
@@ -1055,7 +1055,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
+            <td><a id="help_for_passtos" href="#" class="showhelp"></a> <?=gettext("Type-of-Service"); ?></td>
             <td>
               <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
               <div class="hidden" data-for="help_for_passtos">
@@ -1064,7 +1064,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr id="chkboxRouteNoPull">
-            <td><a id="help_for_route_no_pull" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't pull routes"); ?></td>
+            <td><a id="help_for_route_no_pull" href="#" class="showhelp"></a> <?=gettext("Don't pull routes"); ?></td>
             <td>
               <input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
               <div class="hidden" data-for="help_for_route_no_pull">
@@ -1073,7 +1073,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr id="chkboxRouteNoExec">
-            <td><a id="help_for_route_no_exec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't add/remove routes"); ?></td>
+            <td><a id="help_for_route_no_exec" href="#" class="showhelp"></a> <?=gettext("Don't add/remove routes"); ?></td>
             <td>
               <input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
               <div class="hidden" data-for="help_for_route_no_exec">
@@ -1093,7 +1093,7 @@ $( document ).ready(function() {
             <td colspan="2"><strong><?=gettext("Advanced configuration"); ?></strong></td>
           </tr>
           <tr>
-            <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
+            <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"></a> <?=gettext("Advanced"); ?></td>
             <td style="width:78%">
               <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
               <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
@@ -1103,7 +1103,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr id="comboboxVerbosityLevel">
-              <td><a id="help_for_verbosity_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verbosity level");?></td>
+              <td><a id="help_for_verbosity_level" href="#" class="showhelp"></a> <?=gettext("Verbosity level");?></td>
               <td>
               <select name="verbosity_level" class="form-control">
               <?php

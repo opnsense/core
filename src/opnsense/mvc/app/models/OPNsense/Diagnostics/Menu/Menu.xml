@@ -1,9 +1,11 @@
 <menu>
-    <Reporting>
-        <Health url="/ui/diagnostics/systemhealth" cssClass="fa fa-heartbeat fa-fw"/>
-        <Insight url="/ui/diagnostics/networkinsight" cssClass="fa fa-binoculars fa-fw" />
-        <NetFlow url="/ui/diagnostics/netflow" cssClass="fa fa-rss fa-fw"/>
-    </Reporting>
+    <ReportsandLogs>
+    <Reports>
+        <Health url="/ui/diagnostics/systemhealth" />
+        <Insight url="/ui/diagnostics/networkinsight" />
+        <NetFlow url="/ui/diagnostics/netflow" />
+    </Reports>
+    </ReportsandLogs>
     <System>
         <Diagnostics>
             <Activity url="/ui/diagnostics/activity" />
@@ -13,11 +15,11 @@
             <Status order="20" url="/ui/diagnostics/interface/routes"/>
         </Routes>
     </System>
-    <Interfaces>
+    <!-- <Interfaces>
         <Diagnostics>
             <ARPTable VisibleName="ARP Table" url="/ui/diagnostics/interface/arp"/>
             <NDPTable VisibleName="NDP Table" url="/ui/diagnostics/interface/ndp"/>
             <Netstat VisibleName="Netstat" url="/ui/diagnostics/interface/netstat"/>
         </Diagnostics>
-    </Interfaces>
+    </Interfaces> -->
 </menu>

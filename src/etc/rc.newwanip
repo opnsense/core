@@ -62,9 +62,20 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
 system_resolver_configure();
 
 list ($ip) = interfaces_primary_address($interface);
+
 if (!is_ipaddr($ip)) {
-    log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
-    return;
+    /*
+     * Take care of OpenVPN and similar if you generate the event
+     * to reconfigure an interface.  OpenVPN might be in tap(4)
+     * mode and not have an IP address.
+     */
+    if (substr($device, 0, 4) != 'ovpn') {
+        log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
+        return;
+    }
+
+    /* force a non-IP value here that makes the problem explicit when debugged */
+    $ip = 'openvpn_xxx';
 }
 
 $cacheip_file = "/tmp/{$device}_oldip";
@@ -79,8 +90,21 @@ log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interfac
 
 interfaces_vips_configure($interface, 4);
 
-$greifs = link_interface_to_gre($interface, true, 4);
-$gififs = link_interface_to_gif($interface, true, 4);
+$gres = link_interface_to_gre($interface);
+foreach ($gres as $gre) {
+    _interfaces_gre_configure($gre);
+}
+
+$gifs = link_interface_to_gif($interface);
+foreach ($gifs as $gif) {
+    _interfaces_gif_configure($gif);
+}
+
+$bridge = link_interface_to_bridge($interface);
+if (!empty($bridge)) {
+    /* XXX _interfaces_bridge_configure() is probably cleaner */
+    interface_bridge_add_member($bridge, $device);
+}
 
 switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
     case '6to4':
@@ -106,7 +130,26 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         break;
 }
 
-interfaces_restart_by_device(false, array_merge($greifs, $gififs));
+$restartifs = [];
+
+foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
+    foreach ($gifs as $gif) {
+        if ($ifparent['if'] == $gif['gifif']) {
+            $restartifs[$ifname] = 1;
+        }
+    }
+
+    foreach ($gres as $gre) {
+        if ($ifparent['if'] == $gre['greif']) {
+            $restartifs[$ifname] = 1;
+        }
+    }
+}
+
+foreach (array_keys($restartifs) as $ifname) {
+    interface_configure(false, $ifname);
+    system_routing_configure(false, $ifname);
+}
 
 /*
  * Interface reconfigure finished here so sync

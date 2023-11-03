@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (count($input_errors) == 0) {
-            if (empty(_interfaces_wlan_clone($clone['cloneif'], $clone))) {
+            if (!_interfaces_wlan_clone($clone['cloneif'], $clone)) {
                 $input_errors[] = sprintf(gettext('Error creating interface with mode %s. The %s interface may not support creating more clones with the selected mode.'), $wlan_modes[$clone['mode']], $clone['if']);
             } else {
                 if (isset($id)) {
@@ -145,14 +145,14 @@ include("head.inc");
                   <td style="width:22%"><strong><?=gettext("Wireless clone configuration");?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     &nbsp;
                   </td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Parent interface");?></td>
+                  <td> <?=gettext("Parent interface");?></td>
                   <td>
                     <select name="if" class="selectpicker">
 <?php foreach (legacy_interface_listget('wlan') as $ifn): ?>
@@ -162,7 +162,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">

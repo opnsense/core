@@ -420,9 +420,11 @@ if (!empty($input_errors)) {
             </field>
         </fields>
         <stepbeforeformdisplay><![CDATA[
-foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gw) {
-    if (empty($config['wizardtemp']['wangateway']) && $gw['name'] == 'WAN_GW') {
-        $config['wizardtemp']['wangateway'] = $gw['gateway'];
+if (isset($config['gateways']['gateway_item'])) {
+    foreach ($config['gateways']['gateway_item'] as $gw) {
+        if (empty($config['wizardtemp']['wangateway']) && $gw['name'] == 'WAN_GW') {
+            $config['wizardtemp']['wangateway'] = $gw['gateway'];
+        }
     }
 }
     ]]></stepbeforeformdisplay>

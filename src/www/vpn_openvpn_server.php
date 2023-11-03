@@ -669,12 +669,12 @@ $( document ).ready(function() {
                       <td style="width:22%"><strong><?=gettext("General information"); ?></strong></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?>
+                        <a id="help_for_disable" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?>
                       </td>
                       <td>
                         <div>
@@ -686,7 +686,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                      <td style="width:22%"><a id="help_for_description" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                       <td>
                         <input name="description" type="text" class="form-control unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
                         <div class="hidden" data-for="help_for_description">
@@ -695,7 +695,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Mode");?></td>
+                      <td> <?=gettext("Server Mode");?></td>
                         <td>
                         <select name='mode' id="mode" class="selectpicker">
 <?php
@@ -717,7 +717,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?></td>
+                      <td> <?=gettext("Backend for authentication");?></td>
                       <td>
                         <select name='authmode[]' id='authmode' class="selectpicker" multiple="multiple" size="5">
 <?php
@@ -739,7 +739,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td><a id="help_for_local_group" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Enforce local group') ?></td>
+                      <td><a id="help_for_local_group" href="#" class="showhelp"></a> <?= gettext('Enforce local group') ?></td>
                       <td>
                         <select name='local_group' id="local_group" class="selectpicker">
                           <option value="" <?= empty($pconfig['local_group']) ? 'selected="selected"' : '' ?>>(<?= gettext('none') ?>)</option>
@@ -757,7 +757,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
+                      <td><a id="help_for_protocol" href="#" class="showhelp"></a> <?=gettext("Protocol");?></td>
                         <td>
                           <select name='protocol' class="selectpicker">
 <?php
@@ -778,7 +778,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Device Mode"); ?></td>
+                      <td> <?=gettext("Device Mode"); ?></td>
                       <td>
                         <select name="dev_mode" id="dev_mode" class="selectpicker">
 <?php
@@ -800,7 +800,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                      <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                       <td>
                         <select name="interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
@@ -829,7 +829,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local port");?></td>
+                      <td> <?=gettext("Local port");?></td>
                       <td>
                         <input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
                       </td>
@@ -846,7 +846,7 @@ $( document ).ready(function() {
                       <td colspan="2"><strong><?=gettext("Cryptographic Settings"); ?></strong></td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Authentication"); ?></td>
+                      <td style="width:22%"> <?=gettext("TLS Authentication"); ?></td>
                       <td style="width:78%">
                         <select name='tlsmode' id='tlsmode' class="selectpicker">
                             <option value="" <?= empty($pconfig['tlsmode']) ? "selected=\"selected\"" : "";?>>
@@ -862,7 +862,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TLS Shared Key"); ?></td>
+                      <td> <?=gettext("TLS Shared Key"); ?></td>
                       <td>
                         <?php if (!$pconfig['tls']) :?>
                         <input name="autotls_enable" id="autotls_enable" class="tls_input_field" type="checkbox" value="yes" <?=!empty($pconfig['autotls_enable']) ? "checked=\"checked\"" : "" ;?>  />
@@ -875,7 +875,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Authority"); ?></td>
+                      <td> <?=gettext("Peer Certificate Authority"); ?></td>
                         <td>
 <?php
                         if (isset($config['ca'])) :?>
@@ -902,7 +902,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer Certificate Revocation List"); ?></td>
+                      <td> <?=gettext("Peer Certificate Revocation List"); ?></td>
                       <td>
 <?php
                         if (isset($config['crl'])) :?>
@@ -930,7 +930,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Certificate"); ?></td>
+                      <td> <?=gettext("Server Certificate"); ?></td>
                       <td>
 <?php
                       if (isset($config['cert'])) :?>
@@ -975,7 +975,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
-                      <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Key"); ?></td>
+                      <td style="width:22%"> <?=gettext("Shared Key"); ?></td>
                       <td>
 <?php
                         if (empty($pconfig['shared_key'])) :?>
@@ -992,7 +992,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
+                      <td><a id="help_for_crypto" href="#" class="showhelp"></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
                       <td>
                         <select name="crypto" class="selectpicker">
 <?php
@@ -1010,7 +1010,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
+                      <td><a id="help_for_digest" href="#" class="showhelp"></a> <?=gettext("Auth Digest Algorithm"); ?></td>
                       <td>
                         <select name="digest" class="selectpicker" data-size="5" data-live-search="true">
 <?php
@@ -1033,7 +1033,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_cert_depth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate Depth"); ?></td>
+                      <td style="width:22%"><a id="help_for_cert_depth" href="#" class="showhelp"></a> <?=gettext("Certificate Depth"); ?></td>
                       <td>
                         <table>
                         <tr><td>
@@ -1071,7 +1071,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_strictusercn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict User/CN Matching"); ?></td>
+                      <td style="width:22%"><a id="help_for_strictusercn" href="#" class="showhelp"></a> <?=gettext("Strict User/CN Matching"); ?></td>
                       <td>
                         <input name="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_strictusercn">
@@ -1093,7 +1093,7 @@ $( document ).ready(function() {
                       <td colspan="2"><strong><?=gettext("Tunnel Settings"); ?></strong></td>
                     </tr>
                     <tr>
-                      <td style="width:22%" id="ipv4_tunnel_network"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
+                      <td style="width:22%" id="ipv4_tunnel_network"><a id="help_for_tunnel_network" href="#" class="showhelp"></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
                       <td style="width:78%">
                         <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                         <div class="hidden" data-for="help_for_tunnel_network">
@@ -1108,7 +1108,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
+                      <td style="width:22%"><a id="help_for_tunnel_networkv6" href="#" class="showhelp"></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
                       <td>
                         <input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
                         <div class="hidden" data-for="help_for_tunnel_networkv6">
@@ -1123,7 +1123,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="dev_mode dev_mode_tap">
-                      <td style="width:22%"><a id="help_for_serverbridge_dhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge DHCP"); ?></td>
+                      <td style="width:22%"><a id="help_for_serverbridge_dhcp" href="#" class="showhelp"></a> <?=gettext("Bridge DHCP"); ?></td>
                       <td>
                               <input id="serverbridge_dhcp" name="serverbridge_dhcp" type="checkbox" value="yes" <?=!empty($pconfig['serverbridge_dhcp']) ? "checked=\"checked\"" : "" ;?>/>
                               <div class="hidden" data-for="help_for_serverbridge_dhcp">
@@ -1134,7 +1134,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="dev_mode dev_mode_tap">
-                      <td style="width:22%"><a id="help_for_serverbridge_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge Interface"); ?></td>
+                      <td style="width:22%"><a id="help_for_serverbridge_interface" href="#" class="showhelp"></a> <?=gettext("Bridge Interface"); ?></td>
                       <td>
                         <select id="serverbridge_interface" name="serverbridge_interface" class="selectpicker" data-size="5" data-live-search="true">
 <?php
@@ -1169,7 +1169,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="dev_mode dev_mode_tap">
-                      <td style="width:22%"><a id="help_for_serverbridge_dhcp_start" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server Bridge DHCP Start"); ?></td>
+                      <td style="width:22%"><a id="help_for_serverbridge_dhcp_start" href="#" class="showhelp"></a> <?=gettext("Server Bridge DHCP Start"); ?></td>
                       <td>
                         <input  id="serverbridge_dhcp_start" name="serverbridge_dhcp_start" type="text" class="form-control unknown" size="20" value="<?=$pconfig['serverbridge_dhcp_start'];?>" />
                         <div class="hidden" data-for="help_for_serverbridge_dhcp_start">
@@ -1183,13 +1183,13 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="dev_mode dev_mode_tap">
-                      <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Server Bridge DHCP End"); ?></td>
+                      <td style="width:22%"> <?=gettext("Server Bridge DHCP End"); ?></td>
                       <td>
                         <input id="serverbridge_dhcp_end" name="serverbridge_dhcp_end" type="text" class="form-control unknown" size="20" value="<?=$pconfig['serverbridge_dhcp_end'];?>" />
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_gwredir" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect Gateway"); ?></td>
+                      <td style="width:22%"><a id="help_for_gwredir" href="#" class="showhelp"></a> <?=gettext("Redirect Gateway"); ?></td>
                       <td>
                         <input name="gwredir" id="gwredir" type="checkbox" value="yes" <?=!empty($pconfig['gwredir']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_gwredir">
@@ -1200,7 +1200,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user opt_gwredir">
-                      <td style="width:22%"><a id="help_local_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Local Network"); ?></td>
+                      <td style="width:22%"><a id="help_local_network" href="#" class="showhelp"></a> <?=gettext("IPv4 Local Network"); ?></td>
                       <td>
                         <input name="local_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_network'];?>" />
                         <div class="hidden" data-for="help_local_network">
@@ -1214,7 +1214,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user opt_gwredir">
-                      <td style="width:22%"><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Local Network"); ?></td>
+                      <td style="width:22%"><a id="help_for_local_networkv6" href="#" class="showhelp"></a> <?=gettext("IPv6 Local Network"); ?></td>
                       <td>
                         <input name="local_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_networkv6'];?>" />
                         <div class="hidden" data-for="help_for_local_networkv6">
@@ -1228,7 +1228,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network"); ?></td>
+                      <td style="width:22%"><a id="help_for_remote_network" href="#" class="showhelp"></a> <?=gettext("IPv4 Remote Network"); ?></td>
                       <td>
                         <input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
                         <div class="hidden" data-for="help_for_remote_network">
@@ -1243,7 +1243,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_tls opt_mode_p2p_shared_key opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network"); ?></td>
+                      <td style="width:22%"><a id="help_for_remote_networkv6" href="#" class="showhelp"></a> <?=gettext("IPv6 Remote Network"); ?></td>
                       <td>
                         <input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
                         <div class="hidden" data-for="help_for_remote_networkv6">
@@ -1258,7 +1258,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_maxclients" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Concurrent connections");?></td>
+                      <td style="width:22%"><a id="help_for_maxclients" href="#" class="showhelp"></a> <?=gettext("Concurrent connections");?></td>
                       <td>
                         <input name="maxclients" type="text" class="form-control unknown" size="5" value="<?=$pconfig['maxclients'];?>" />
                         <div class="hidden" data-for="help_for_maxclients">
@@ -1267,7 +1267,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
+                      <td style="width:22%"><a id="help_for_compression" href="#" class="showhelp"></a> <?=gettext("Compression"); ?></td>
                       <td>
                         <select name="compression" class="selectpicker">
 <?php
@@ -1287,7 +1287,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
+                      <td style="width:22%"><a id="help_for_passtos" href="#" class="showhelp"></a> <?=gettext("Type-of-Service"); ?></td>
                       <td>
                         <input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_passtos">
@@ -1298,7 +1298,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_client2client" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Inter-client communication"); ?></td>
+                      <td style="width:22%"><a id="help_for_client2client" href="#" class="showhelp"></a> <?=gettext("Inter-client communication"); ?></td>
                       <td>
                           <input name="client2client" type="checkbox" value="yes"  <?=!empty($pconfig['client2client']) ? "checked=\"checked\"" : "" ;?> />
                           <div class="hidden" data-for="help_for_client2client">
@@ -1309,7 +1309,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="duplicate_cn">
-                      <td style="width:22%"><a id="help_for_duplicate_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Duplicate Connections"); ?></td>
+                      <td style="width:22%"><a id="help_for_duplicate_cn" href="#" class="showhelp"></a> <?=gettext("Duplicate Connections"); ?></td>
                       <td>
                             <input name="duplicate_cn" type="checkbox" value="yes" <?=!empty($pconfig['duplicate_cn']) ? "checked=\"checked\"" : "" ;?> />
                             <div class="hidden" data-for="help_for_duplicate_cn">
@@ -1331,7 +1331,7 @@ $( document ).ready(function() {
                       <td colspan="2"><strong><?=gettext("Client Settings"); ?></strong></td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_dynamic_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dynamic IP"); ?></td>
+                      <td style="width:22%"><a id="help_for_dynamic_ip" href="#" class="showhelp"></a> <?=gettext("Dynamic IP"); ?></td>
                       <td style="width:78%">
                         <input name="dynamic_ip" type="checkbox" id="dynamic_ip" value="yes" <?=!empty($pconfig['dynamic_ip']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_dynamic_ip">
@@ -1342,7 +1342,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="dev_mode dev_mode_tun" id="topology_subnet_opt">
-                      <td style="width:22%"><a id="help_for_topology_subnet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Topology"); ?></td>
+                      <td style="width:22%"><a id="help_for_topology_subnet" href="#" class="showhelp"></a> <?=gettext("Topology"); ?></td>
                       <td>
                         <input name="topology_subnet" type="checkbox" id="topology_subnet" value="yes"  <?=!empty($pconfig['topology_subnet']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_topology_subnet">
@@ -1355,7 +1355,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_dns_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
+                      <td style="width:22%"><a id="help_for_dns_domain" href="#" class="showhelp"></a> <?=gettext("DNS Default Domain"); ?></td>
                       <td>
                         <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?=!empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "" ;?> />
                         <div id="dns_domain_data">
@@ -1369,7 +1369,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_dns_domain_search" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Domain search list"); ?></td>
+                      <td style="width:22%"><a id="help_for_dns_domain_search" href="#" class="showhelp"></a> <?=gettext("DNS Domain search list"); ?></td>
                       <td>
                         <input name="dns_domain_search_enable" type="checkbox" id="dns_domain_search_enable" value="yes" <?=!empty($pconfig['dns_domain_search']) ? "checked=\"checked\"" : "" ;?> />
                         <div id="dns_domain_search_data">
@@ -1383,7 +1383,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_dns_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
+                      <td style="width:22%"><a id="help_for_dns_server" href="#" class="showhelp"></a> <?=gettext("DNS Servers"); ?></td>
                       <td>
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
                         <div id="dns_server_data">
@@ -1412,7 +1412,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="chkboxPushRegisterDNS" class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_push_register_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Force DNS cache update"); ?></td>
+                      <td style="width:22%"><a id="help_for_push_register_dns" href="#" class="showhelp"></a> <?=gettext("Force DNS cache update"); ?></td>
                       <td>
                         <input name="push_register_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_register_dns']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_push_register_dns">
@@ -1423,7 +1423,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="chkboxBlockOutsideDNS" class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_push_block_outside_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prevent DNS leaks"); ?></td>
+                      <td style="width:22%"><a id="help_for_push_block_outside_dns" href="#" class="showhelp"></a> <?=gettext("Prevent DNS leaks"); ?></td>
                       <td>
                         <input name="push_block_outside_dns" type="checkbox" value="yes" <?=!empty($pconfig['push_block_outside_dns']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_push_block_outside_dns">
@@ -1434,7 +1434,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_ntp_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP Servers"); ?></td>
+                      <td style="width:22%"><a id="help_for_ntp_server_enable" href="#" class="showhelp"></a> <?=gettext("NTP Servers"); ?></td>
                       <td>
                         <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  />
                         <div id="ntp_server_data">
@@ -1455,7 +1455,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls opt_mode_server_user opt_mode_server_tls_user" style="display:none">
-                      <td style="width:22%"><a id="help_for_netbios_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NetBIOS Options"); ?></td>
+                      <td style="width:22%"><a id="help_for_netbios_enable" href="#" class="showhelp"></a> <?=gettext("NetBIOS Options"); ?></td>
                       <td>
                         <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?>  />
                         <div class="hidden" data-for="help_for_netbios_enable">
@@ -1501,7 +1501,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="wins_opts">
-                      <td style="width:22%"><a id="help_for_wins_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
+                      <td style="width:22%"><a id="help_for_wins_server" href="#" class="showhelp"></a> <?=gettext("WINS Servers"); ?></td>
                       <td>
                         <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_wins_server">
@@ -1522,7 +1522,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_client_mgmt_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Client Management Port"); ?></td>
+                      <td style="width:22%"><a id="help_for_client_mgmt_port" href="#" class="showhelp"></a> <?=gettext("Client Management Port"); ?></td>
                       <td>
                         <input name="client_mgmt_port_enable" type="checkbox" id="client_mgmt_port_enable" value="yes" <?=!empty($pconfig['client_mgmt_port']) ? "checked=\"checked\"" : "" ;?> />
                         <div id="client_mgmt_port_data">
@@ -1536,7 +1536,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls_user">
-                      <td style="width:22%"><a id="help_for_use-common-name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use common name"); ?></td>
+                      <td style="width:22%"><a id="help_for_use-common-name" href="#" class="showhelp"></a> <?=gettext("Use common name"); ?></td>
                       <td>
                         <input name="use-common-name" type="checkbox" value="1" <?=!empty($pconfig['use-common-name']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_use-common-name">
@@ -1558,7 +1558,7 @@ $( document ).ready(function() {
                       <td colspan="2"><strong><?=gettext("Advanced configuration"); ?></strong></td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
+                      <td style="width:22%"><a id="help_for_custom_options" href="#" class="showhelp"></a> <?=gettext("Advanced"); ?></td>
                       <td>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea>
                         <?=gettext("This option will be removed in the future due to being insecure by nature. In the mean time only full administrators are allowed to change this setting.");?>
@@ -1568,7 +1568,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="comboboxVerbosityLevel">
-                      <td style="width:22%"><a id="help_for_verbosity_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verbosity level");?></td>
+                      <td style="width:22%"><a id="help_for_verbosity_level" href="#" class="showhelp"></a> <?=gettext("Verbosity level");?></td>
                       <td>
                         <select name="verbosity_level" class="selectpicker">
 <?php
@@ -1594,7 +1594,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_server_tls_user opt_mode_server_user">
-                      <td><a id="help_for_reneg-sec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Renegotiate time"); ?></td>
+                      <td><a id="help_for_reneg-sec" href="#" class="showhelp"></a> <?=gettext("Renegotiate time"); ?></td>
                       <td>
                         <input type="text" name="reneg-sec" value="<?=$pconfig['reneg-sec'];?>">
                         <div class="hidden" data-for="help_for_reneg-sec">
@@ -1606,7 +1606,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr id="chkboxLoginMatching">
-                      <td style="width:22%"><a id="help_for_cso_login_matching" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Force CSO Login Matching"); ?></td>
+                      <td style="width:22%"><a id="help_for_cso_login_matching" href="#" class="showhelp"></a> <?=gettext("Force CSO Login Matching"); ?></td>
                       <td>
                         <input name="cso_login_matching" type="checkbox" value="yes" <?=!empty($pconfig['cso_login_matching']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" data-for="help_for_cso_login_matching">

@@ -43,6 +43,11 @@ class IntegerField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "invalid integer value";
+
+    /**
      * maximum value for this field
      * @var integer
      */
@@ -89,14 +94,6 @@ class IntegerField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Invalid integer value.');
-    }
-
-    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -104,12 +101,11 @@ class IntegerField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new MinMaxValidator([
-                'message' => $this->getValidationMessage(),
-                'min' => $this->minimum_value,
-                'max' => $this->maximum_value,
-            ]);
-            $validators[] = new IntegerValidator(['message' => $this->getValidationMessage()]);
+            $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
+                "min" => $this->minimum_value,
+                "max" => $this->maximum_value
+            ));
+            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }

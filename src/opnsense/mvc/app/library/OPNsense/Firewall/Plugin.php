@@ -357,7 +357,6 @@ class Plugin
      */
     public function iterateFilterRules()
     {
-        ksort($this->filterRules);  /* sort rules by priority */
         foreach ($this->filterRules as $prio => $ruleset) {
             foreach ($ruleset as $rule) {
                  yield $rule;

@@ -140,9 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             write_config();
-
-            header(url_safe('Location: /interfaces_assign.php'));
-            exit;
         }
     } elseif (!empty($_POST['id']) && !empty($_POST['action']) && $_POST['action'] == 'del' & !empty($config['interfaces'][$_POST['id']]) ) {
         // ** Delete interface **
@@ -172,8 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (isset($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $x => $rule) {
-                    /* XXX this doesn't match floating rules with multiple values */
-                    if (isset($rule['interface']) && $rule['interface'] == $id) {
+                    if ($rule['interface'] == $id) {
                         unset($config['filter']['rule'][$x]);
                     }
                 }
@@ -195,39 +191,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } elseif (isset($_POST['Submit'])) { // ** Change interface **
-        /* build a list of the device names so we can see how the interfaces map as submitted */
-        $dev_if_map = [];
-        foreach ($interfaces as $device => $unused) {
-            $dev_if_map[$device] = [];
+        /* Build a list of the port names so we can see how the interfaces map */
+        $portifmap = [];
+        foreach ($interfaces as $portname => $portinfo) {
+            $portifmap[$portname] = [];
         }
-        foreach ($_POST as $ifname => $ifdev) {
+
+        /* Go through the list of ports selected by the user,
+        build a list of port-to-interface mappings in portifmap */
+        foreach ($_POST as $ifname => $ifport) {
             if ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt') {
-                $dev_if_map[$ifdev][] = $ifname;
+                $portifmap[$ifport][] = strtoupper($ifname);
             }
         }
 
-        /* check the requested configuration for consistency */
-        foreach ($dev_if_map as $devname => $ifnames) {
+        /* Deliver error message for any port with more than one assignment */
+        foreach ($portifmap as $portname => $ifnames) {
             if (count($ifnames) > 1) {
-                $input_errors[] = sprintf(gettext('Device %s was assigned to %d interfaces: %s'), $devname, count($ifnames), implode(', ', $dev_if_map[$devname]));
-            } elseif (count($ifnames) == 1 && preg_match('/^bridge[0-9]/', $devname)) {
-                foreach (interface_parent_devices($devname, true) as $member) {
-                    if ($member == $ifnames[0]) {
-                        $input_errors[] = sprintf(gettext('You cannot set device %s to interface %s because it cannot be a member of itself.'), $devname, $member);
-                        break;
+              $errstr = sprintf(gettext('Port %s was assigned to %d interfaces:'), $portname, count($ifnames));
+              foreach ($portifmap[$portname] as $ifn) {
+                  $errstr .= " " . $ifn;
+              }
+              $input_errors[] = $errstr;
+            } elseif (count($ifnames) == 1 && preg_match('/^bridge[0-9]/', $portname) && isset($config['bridges']['bridged'])) {
+                foreach ($config['bridges']['bridged'] as $bridge) {
+                    if ($bridge['bridgeif'] != $portname) {
+                        continue;
+                    }
+
+                    $members = explode(",", strtoupper($bridge['members']));
+                    foreach ($members as $member) {
+                        if ($member == $ifnames[0]) {
+                            $input_errors[] = sprintf(gettext("You cannot set port %s to interface %s because this interface is a member of %s."), $portname, $member, $portname);
+                            break;
+                        }
                     }
                 }
             }
         }
-
         /* prevent save when interface doesn't exist in case the user was pointed here after a config import */
-        foreach ($_POST as $ifname => $ifdev) {
+        foreach ($_POST as $ifname => $ifport) {
             if ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt') {
-                if (!empty($ifdev) && !isset($interfaces[$ifdev])) {
-                    $input_errors[] = sprintf(gettext("Device %s does not exist."), $ifdev);
+                if (!empty($ifport) && !isset($interfaces[$ifport])) {
+                    $input_errors[] = sprintf(gettext("Interface %s does not exist."), $ifport);
                 }
             }
         }
+
 
         if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
@@ -240,19 +250,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (count($input_errors) == 0) {
           $changes = 0;
 
-          foreach ($_POST as $ifname => $ifdev) {
-              if (!is_array($ifdev) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
+          foreach ($_POST as $ifname => $ifport) {
+              if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
                   $reloadif = false;
-                  if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] != $ifdev) {
+                  if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] != $ifport) {
                       interface_bring_down($ifname);
                       /* Mark this to be reconfigured in any case. */
                       $reloadif = true;
                   }
-                  $config['interfaces'][$ifname]['if'] = $ifdev;
+                  $config['interfaces'][$ifname]['if'] = $ifport;
 
-                  switch ($interfaces[$ifdev]['type']) {
+                  switch ($interfaces[$ifport]['type']) {
                       case 'ppp':
-                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifdev]['ipaddr'];
+                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['ipaddr'];
                           break;
                       case 'wlan':
                           if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
@@ -268,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       if (!isset($device['configurable']) || $device['configurable'] == true) {
                           continue;
                       }
-                      if (preg_match('/' . $device['pattern'] . '/', $ifdev)) {
+                      if (preg_match('/' . $device['pattern'] . '/', $ifport)) {
                           unset($config['interfaces'][$ifname]['ipaddr']);
                           unset($config['interfaces'][$ifname]['subnet']);
                           unset($config['interfaces'][$ifname]['ipaddrv6']);
@@ -277,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
 
                   /* set or clear wireless configuration */
-                  if ($interfaces[$ifdev]['type'] == 'wlan') {
+                  if ($interfaces[$ifport]['type'] == 'wlan') {
                       config_read_array('interfaces', $ifname, 'wireless');
                   } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
                       unset($config['interfaces'][$ifname]['wireless']);
@@ -317,24 +327,24 @@ $all_interfaces = legacy_config_get_interfaces();
 $ifdetails = legacy_interfaces_details();
 $intfkeys = array_keys($interfaces);
 natcasesort($intfkeys);
-foreach ($intfkeys as $devname) {
-    $devused = false;
-    if (!empty($ifdetails[$devname]) && !empty($ifdetails[$devname]['status'])) {
-        $interfaces[$devname]['status'] = $ifdetails[$devname]['status'];
-    } elseif (empty($ifdetails[$devname])) {
-        $interfaces[$devname]['status'] = 'no carrier';
+foreach ($intfkeys as $portname) {
+    $portused = false;
+    if (!empty($ifdetails[$portname]) && !empty($ifdetails[$portname]['status'])) {
+        $interfaces[$portname]['status'] = $ifdetails[$portname]['status'];
+    } elseif (empty($ifdetails[$portname])) {
+        $interfaces[$portname]['status'] = 'no carrier';
     } else {
         /* quirky value to populate status key for virtual interfaces */
-        $interfaces[$devname]['status'] = 'likely up';
+        $interfaces[$portname]['status'] = 'likely up';
     }
     foreach ($all_interfaces as $ifname => $ifdata) {
-        if ($ifdata['if'] == $devname) {
-            $devused = true;
+        if ($ifdata['if'] == $portname) {
+            $portused = true;
             break;
         }
     }
-    if (!$devused) {
-        $unused_interfaces[$devname] = $interfaces[$devname];
+    if (!$portused) {
+        $unused_interfaces[$portname] = $interfaces[$portname];
     }
 }
 
@@ -397,112 +407,97 @@ include("head.inc");
           print_input_errors($input_errors);
       }?>
         <section class="col-xs-12">
-          <form method="post" name="iform" id="iform">
-            <div class="tab-content content-box col-xs-12 __mb">
+          <div class="tab-content content-box col-xs-12">
+            <form  method="post" name="iform" id="iform">
               <input type="hidden" id="action" name="action" value="">
               <input type="hidden" id="id" name="id" value="">
+
               <div class="table-responsive">
-                <table class="table table-striped table-condensed table-hover">
+                <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th><?= gettext('Interface') ?></th>
-                      <th><?= gettext('Identifier') ?>
+                      <th><?=gettext("Interface"); ?>
+                          (<?=gettext("ID"); ?>
                           <span data-toggle="tooltip" title="<?=gettext("Technical identifier of the interface, used by hasync for example");?>">
-                            <i style="cursor: pointer;" class="fa fa-question-circle" data-toggle="collapse" ></i>
-                          </span>
+                            <i  style="cursor: pointer;" class="fa fa-question-circle" data-toggle="collapse" ></i>
+                          </span>)
                       </th>
-                      <th><?= gettext('Device') ?></th>
+                      <th><?=gettext("Network port"); ?></th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
-<?php foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $iface): ?>
-                      <?= legacy_html_escape_form_data($iface) ?>
+<?php
+                  foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $iface):?>
+                      <?=legacy_html_escape_form_data($iface);?>
                       <tr>
                         <td>
-                          <a href="/interfaces.php?if=<?= html_safe($ifname) ?>" target="_blank">[<?= $iface['descr'] ?>]</a>
+                          <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
+                          (<?=$ifname;?>)
                         </td>
-                        <td><?= $ifname ?></td>
                         <td>
                           <select name="<?=$ifname;?>" id="<?=$ifname;?>"  class="selectpicker" data-size="10">
-<?php foreach ($interfaces as $device => $info): ?>
-                            <option data-icon="fa fa-plug <?=in_array($info['status'], ['no carrier', 'missing']) ? "text-danger": "text-success";?>"
-                                    value="<?=$device;?>"  <?= $device == $iface['if'] ? " selected=\"selected\"" : "";?>>
-                              <?=$info['descr'];?>
+<?php
+                          foreach ($interfaces as $portname => $portinfo):?>
+                            <option data-icon="fa fa-plug <?=in_array($portinfo['status'], ['no carrier', 'missing']) ? "text-danger": "text-success";?>"
+                                    value="<?=$portname;?>"  <?= $portname == $iface['if'] ? " selected=\"selected\"" : "";?>>
+                              <?=$portinfo['descr'];?>
                             </option>
-<?php endforeach ?>
+<?php
+                          endforeach;?>
                           </select>
                         </td>
                         <td>
-<?php if (empty($iface['lock'])): ?>
+<?php
+                          if (empty($iface['lock'])): ?>
                           <button title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
                             <i class="fa fa-trash fa-fw"></i>
                           </button>
-<?php endif ?>
+<?php
+                          endif ?>
                         </td>
                       </tr>
-<?php endforeach ?>
-                   </tbody>
-                   <tfoot>
+<?php
+                      endforeach;
+                      if (count($unused_interfaces) > 0):?>
                       <tr>
-                        <td colspan="2"></td>
-                        <td><button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button></td>
-                        <td></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              </div>
-            <div class="tab-content content-box col-xs-12">
-                <div class="table-responsive">
-                <table class="table table-striped table-condensed">
-<?php if (count($unused_interfaces)): ?>
-                  <thead>
-                    <tr>
-                      <th colspan="2"><i class="fa fa-plus fa-fw"></i> <?= gettext('Assign a new interface') ?></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                        <th><?= gettext('Device') ?></td>
+                        <td><?= gettext('New interface:') ?></td>
                         <td>
                           <select name="if_add" id="if_add" class="selectpicker" data-size="10">
-<?php foreach ($unused_interfaces as $device => $info): ?>
-                            <option data-icon="fa fa-plug <?=$info['status'] == 'no carrier' ? "text-danger": "text-success";?>"
-                                    data-ifdescr="<?=!empty($info['ifdescr']) ? $info['ifdescr'] : '';?>"
-                                    value="<?=$device;?>">
-                                    <?=$info['descr'];?>
+<?php
+                          foreach ($unused_interfaces as $portname => $portinfo): ?>
+                            <option data-icon="fa fa-plug <?=$portinfo['status'] == 'no carrier' ? "text-danger": "text-success";?>"
+                                    data-ifdescr="<?=!empty($portinfo['ifdescr']) ? $portinfo['ifdescr'] : '';?>"
+                                    value="<?=$portname;?>">
+                                    <?=$portinfo['descr'];?>
                             </option>
-<?php endforeach ?>
+<?php
+                          endforeach; ?>
                           </select>
+                          <div class="form-group">
+                            <label for="new_entry_descr"><?=gettext("Description");?></label>
+                            <input id="new_entry_descr" name="new_entry_descr" type="text" class="form-control">
+                          </form>
                         </td>
-                      </tr>
-                      <tr>
-                        <th><?= gettext('Description') ?></th>
                         <td>
-                          <input id="new_entry_descr" name="new_entry_descr" type="text" class="form-control">
+                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip">
+                            <i class="fa fa-plus fa-fw"></i>
+                          </button>
                         </td>
                       </tr>
-                  </tbody>
-                  <tfoot>
+<?php
+                      endif; ?>
                       <tr>
-                        <td></td>
+                        <td colspan="2"></td>
                         <td>
-                          <button name="add_x" type="submit" class="btn btn-primary"><?= gettext('Add') ?></button>
+                          <button name="Submit" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
                         </td>
                       </tr>
-                  </tfoot>
-<?php else: ?>
-                  <thead>
-                    <tr>
-                      <th colspan="2"><i class="fa fa-minus fa-fw"></i> <?= gettext('No devices available for assignment') ?></th>
-                    </tr>
-                  </thead>
-<?php endif ?>
-                </table>
+                    </tbody>
+                  </table>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </section>
       </div>
     </div>

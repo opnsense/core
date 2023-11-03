@@ -1,11 +1,17 @@
 <menu>
     <Services>
-        <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
+        <NTP VisibleName="Network Time" order="290">
             <General order="10" url="/services_ntpd.php"/>
             <GPS order="20" url="/services_ntpd_gps.php"/>
             <PPS order="30" url="/services_ntpd_pps.php"/>
             <Status order="40" url="/status_ntpd.php"/>
-            <Log order="50" VisibleName="Log File" url="/ui/diagnostics/log/core/ntpd"/>
+            
         </NTP>
     </Services>
+
+    <ReportsandLogs>
+    <LogFiles>
+      <NTPLogFiles order="290" VisibleName="NTP Log File" url="/ui/diagnostics/log/core/ntpd"/>
+    </LogFiles>
+  </ReportsandLogs>
 </menu>

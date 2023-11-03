@@ -1,40 +1,16 @@
 <?php
 
-/*
- * Copyright (C) 2014-2016 Deciso B.V.
- * Copyright (C) 2007 Scott Dale
- * Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
- * Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
- * Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 require_once("guiconfig.inc");
 require_once("system.inc");
 
 ?>
 <script src="<?= cache_safe('/ui/js/moment-with-locales.min.js') ?>"></script>
+<script src="<?=cache_safe('/ui/js/chart.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-plugin-streaming.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-plugin-colorschemes.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/moment-with-locales.min.js');?>"></script>
+<script src="<?=cache_safe('/ui/js/chartjs-adapter-moment.js');?>"></script>
+<link rel="stylesheet" type="text/css" href="<?=cache_safe(get_themed_filename('/css/chart.css'));?>" rel="stylesheet" />
 <script>
   var system_information_widget_cpu_data = []; // reference to measures
   var system_information_widget_cpu_chart = null; // reference to chart object
@@ -98,7 +74,7 @@ require_once("system.inc");
       var mbuf_text = mbuf_perc + " % " + "( " + data['kernel']['mbuf']['total'] + "/" + data['kernel']['mbuf']['max'] + " )";
       $("#system_information_widget_mbuf .state_text").html(mbuf_text);
 
-      $("#system_information_widget_load").html(data['cpu']['load'].join(','));
+      $("#system_information_widget_load").html('Max:' +data['cpu']['load'][0]+ ',Avg:' +data['cpu']['load'][1]+ ',Min:' +data['cpu']['load'][2]);
 
       var mem_perc = parseInt(data['kernel']['memory']['used'] / data['kernel']['memory']['total']*100);
       $("#system_information_widget_memory .progress-bar").css("width",  mem_perc + "%").attr("aria-valuenow", mem_perc + "%");
@@ -109,6 +85,49 @@ require_once("system.inc");
       }
       $("#system_information_widget_memory .state_text").html(mem_text);
 
+      //Memory Usage New
+      
+      var mctx = $("#memory_usage")[0].getContext('2d');
+      var used_mem = parseInt(data['kernel']['memory']['used'] / data['kernel']['memory']['total']*100);
+      var config = {
+           type: "doughnut",
+           data:{
+            labels: ['Used', 'Available'],
+             datasets: [{
+               label: 'Memory Usage',
+               data: [used_mem, 100 - used_mem],
+                backgroundColor: used_mem < 60 ? ['rgb(147,209,80)', ' rgb(217,217,217)'] : (used_mem < 80 ? ['rgb(237,124,48)', ' rgb(217,217,217)'] : ['rgb(255,0,0)', ' rgb(217,217,217)']),
+                borderColor: used_mem < 60 ? ['rgba(0,255,0,0.8)', 'rgba(188,188,188,0.8)'] : (used_mem < 80 ? ['rgba(255,165,0,0.8)', 'rgba(188,188,188,0.8)'] : ['rgba(255, 2, 1, 0.8)', 'rgba(188,188,188,0.8)']),
+               borderWidth: 1,
+             }]
+          },
+            options: {
+              responsive: false,
+              maintainAspectRatio: false,
+              aspectRatio: 1,
+              animation: {},
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  enabled: true,
+                }
+              }
+            }
+          }
+          if (window.memoryUsageChart) {
+            window.memoryUsageChart.data = config.data;
+            window.memoryUsageChart.options = config.options;
+            window.memoryUsageChart.update();
+          } else {
+            window.memoryUsageChart = new Chart(mctx, config);;
+          }
+          window.memoryUsageChart.canvas.parentNode.style.width = '160px'; 
+          window.memoryUsageChart.canvas.parentNode.style.height = '160px'; 
+          window.memoryUsageChart.canvas.style.width = '160px';
+          window.memoryUsageChart.canvas.style.height = '160px';
+          $("#system_memory_display").html('<span style="font-family: SourceSansProSemibold;">'+(((data['kernel']['memory']['used']/1024)/1024)/1024).toFixed(2)+'&nbspGB of&nbsp' +(((data['kernel']['memory']['total']/1024)/1024)/1024).toFixed(2)+'&nbspGB Used</span>');
 
       // swap usage
       let counter = 0;
@@ -133,13 +152,13 @@ require_once("system.inc");
       // disk usage
       counter = 0;
       $("#system_information_widget_disk .disk_devices").html("");
-      data['disk']['devices'].map(function(device) {
+      [data['disk']['devices'][0]].map(function(device) {
           var html = $("#system_information_widget_disk .disk_template").html();
           html = html.replace('disk_id_sequence', 'system_information_widget_disk_'+counter);
           $("#system_information_widget_disk .disk_devices").html($("#system_information_widget_disk .disk_devices").html() + html);
           var disk_perc = device['capacity'].replace('%', '');
           $("#system_information_widget_disk_"+counter+' .progress-bar').css("width",  disk_perc + "%").attr("aria-valuenow", disk_perc + "%");
-          var disk_text =  device['capacity'] + ' ' + device['mountpoint'] + ' ['+device['type']+'] (' + device['used'] +'/' + device['size'] + ')';
+          var disk_text =  device['capacity'] + ' - ' + '(' + device['used'] +'/' + device['size'] + ')';
           $("#system_information_widget_disk_"+counter+" .state_text").html(disk_text);
           counter += 1;
       });
@@ -148,7 +167,56 @@ require_once("system.inc");
       } else {
           $("#system_information_widget_disk_info").hide();
       }
-   }
+      
+      //Disk Usage New
+
+      var device = data['disk']['devices'][0];
+      var used_perc = parseFloat(device['used'])/parseFloat(device['size'])*100;
+      var ctx = $("#disk_usage")[0].getContext('2d');
+       var config = {
+           type: "doughnut",
+           data:{
+              labels: ['Used', 'Available'],
+              datasets: [{
+                label: 'Disk Usage',
+                data: [parseInt(used_perc), 100 - parseInt(used_perc)],   
+                backgroundColor: used_perc < 60 ? ['rgb(147,209,80)', ' rgb(217,217,217)'] : (used_perc < 80 ? ['rgb(237,124,48)', ' rgb(217,217,217)'] : ['rgb(255,0,0)', ' rgb(217,217,217)']),
+                borderColor: used_perc < 60 ? ['rgba(0,255,0,0.8)', 'rgba(188,188,188,0.8)'] : (used_perc < 80 ? ['rgba(255,165,0,0.8)', 'rgba(188,188,188,0.8)'] : ['rgba(255, 2, 1, 0.8)', 'rgba(188,188,188,0.8)']),
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: false,
+              maintainAspectRatio: false,
+              aspectRatio: 1,
+              animation: {},
+              plugins: {
+                legend: {
+                  display: false
+                },
+                tooltip: {
+                  enabled: true,
+                }
+              }
+          }
+      }
+
+      if (window.diskUsageChart) {
+        window.diskUsageChart.data = config.data;
+        window.diskUsageChart.options = config.options;
+        window.diskUsageChart.update();
+      } else {
+        window.diskUsageChart = new Chart(ctx, config);
+      }
+      window.diskUsageChart.canvas.parentNode.style.width = '160px'; 
+      window.diskUsageChart.canvas.parentNode.style.height = '160px'; 
+      window.diskUsageChart.canvas.style.width = '160px';
+      window.diskUsageChart.canvas.style.height = '160px';
+
+      $("#system_disk_display").html('<span style="font-family: SourceSansProSemibold;">'+(parseFloat(device['used']))+' GB of '+(parseFloat(device['size']))+' GB Used');
+
+    }
+
 
   /**
    * page setup
@@ -173,7 +241,8 @@ require_once("system.inc");
   });
 </script>
 
-<table class="table table-striped table-condensed" data-plugin="system" data-callback="system_information_widget_update">
+
+<table class="table table-striped table-condensed h-100" data-plugin="system" data-callback="system_information_widget_update">
   <tbody>
     <tr>
       <td style="width:30%"><?=gettext("Name");?></td>
@@ -285,5 +354,38 @@ require_once("system.inc");
           </div>
       </td>
     </tr>
+    <tr>
+      <td style="height:150px !important; width:150px !important;">
+        <div id="system_disk_usage" style="height:150px !important; width:150px !important;">
+          <canvas id="disk_usage" width="150" height="150"></canvas>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="height:150px; width:150px;">
+        <div id="system_memory_usage" style="height:150px; width:150px;">   
+          <canvas id="memory_usage"  width="150" height="150"></canvas>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td id="system_disk_display"><td>
+    </tr>
+    <tr>
+      <td id="system_memory_display"><td>
+    </tr>
   </tbody>
 </table>
+<script>
+  var canv =  document.createElement("canvas");
+  canv.setAttribute("id","disk_usage");
+  canv.style.height = "150px";
+  canv.style.width = "150px";
+  document.getElementById('system_disk_usage').appendChild(canv);
+  var mCanv =  document.createElement("canvas");
+  mCanv.setAttribute("id","memory_usage");
+  console.log('memory canvas created ', mCanv);
+  mCanv.style.width = "150px";
+  mCanv.style.height = "150px";
+  document.getElementById('system_memory_usage').appendChild(mCanv);
+</script>

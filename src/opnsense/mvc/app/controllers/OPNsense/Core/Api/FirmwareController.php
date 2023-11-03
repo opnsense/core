@@ -1040,7 +1040,7 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $backend = new Backend();
         $backend->configdRun('firmware flush');
-        $backend->configdRun('firmware reload');
+        $backend->configdRun('firmware configure');
 
         return $response;
     }

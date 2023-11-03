@@ -440,14 +440,14 @@ include("head.inc");
                         <td style="width:22%"><strong><?=gettext("PPPs configuration");?></strong></td>
                         <td style="width:78%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
-                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                          <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                           &nbsp;
                         </td>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Link Type"); ?></td>
+                        <td> <?= gettext("Link Type"); ?></td>
                         <td>
                           <select name="type" class="selectpicker" id="type">
 <?php
@@ -460,7 +460,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_ports" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?= gettext("Link interface(s)"); ?></td>
+                        <td><a id="help_for_ports" href="#" class="showhelp"></a>  <?= gettext("Link interface(s)"); ?></td>
                         <td>
                           <select class="selectpicker" multiple="multiple" size="3" name="ports[]" id="ports" >
 <?php
@@ -493,7 +493,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Description"); ?></td>
+                        <td><a id="help_for_descr" href="#" class="showhelp"></a> <?= gettext("Description"); ?></td>
                         <td>
                           <input name="descr" type="text"  value="<?=$pconfig['descr'];?>" />
                           <div class="hidden" data-for="help_for_descr">
@@ -502,7 +502,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr id="ppp_provider">
-                        <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
+                        <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"></a> <?=gettext("Service Provider"); ?></td>
                         <td style="width:78%">
                           <table class="table table-condensed">
                             <tr id="trcountry" class="hidden">
@@ -536,19 +536,19 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Username"); ?></td>
+                        <td> <?= gettext("Username"); ?></td>
                         <td>
                           <input name="username" type="text" id="username" value="<?=$pconfig['username'];?>" />
                         </td>
                       </tr>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Password"); ?></td>
+                        <td> <?= gettext("Password"); ?></td>
                         <td>
                           <input name="password" type="password" autocomplete="new-password" id="password" value="<?=$pconfig['password'];?>" />
                         </td>
                       </tr>
                       <tr style="display:none" id="phone_num">
-                        <td><a id="help_for_phone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Phone Number"); ?></td>
+                        <td><a id="help_for_phone" href="#" class="showhelp"></a> <?= gettext("Phone Number"); ?></td>
                         <td>
                           <input name="phone" type="text" id="phone" value="<?=$pconfig['phone'];?>" />
                           <div class="hidden" data-for="help_for_phone">
@@ -557,13 +557,13 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" id="apn_">
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Access Point Name (APN)"); ?></td>
+                        <td> <?= gettext("Access Point Name (APN)"); ?></td>
                         <td>
                           <input name="apn" type="text" id="apn" value="<?=$pconfig['apn'];?>" />
                         </td>
                       </tr>
                       <tr style="display:none" id="pppoe">
-                        <td><a id="help_for_provider" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Service name"); ?></td>
+                        <td><a id="help_for_provider" href="#" class="showhelp"></a> <?= gettext("Service name"); ?></td>
                         <td>
                           <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />
                           <div class="hidden" data-for="help_for_provider">
@@ -572,7 +572,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" id="hostuniqopt">
-                        <td><a id="help_for_hostuniq" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Host-Uniq"); ?></td>
+                        <td><a id="help_for_hostuniq" href="#" class="showhelp"></a> <?= gettext("Host-Uniq"); ?></td>
                         <td>
                           <input name="hostuniq" type="text" id="hostuniq" value="<?=$pconfig['hostuniq'];?>" />
                           <div class="hidden" data-for="help_for_hostuniq">
@@ -587,7 +587,7 @@ include("head.inc");
 <?php
                       for ($intf_idx=0; $intf_idx <= count($portlist) ; ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:22%"> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
                           <input name="localip[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['localip'][$intf_idx]) ? $pconfig['localip'][$intf_idx] : "";?>" />
                           /
@@ -601,7 +601,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Gateway");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:22%"> <?=gettext("Gateway");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
                           <input name="gateway[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['gateway'][$intf_idx]) ? $pconfig['gateway'][$intf_idx] : "";?>" />
                         </td>
@@ -639,7 +639,7 @@ include("head.inc");
                     </thead>
                     <tbody>
                       <tr style="display:none" class="act_show_advanced">
-                        <td style="width:22%"><a id="help_for_apnum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("APN number (optional)"); ?></td>
+                        <td style="width:22%"><a id="help_for_apnum" href="#" class="showhelp"></a> <?= gettext("APN number (optional)"); ?></td>
                         <td style="width:78%">
                           <input name="apnum" type="text" id="apnum" value="<?=$pconfig['apnum'];?>" />
                           <div class="hidden" data-for="help_for_apnum">
@@ -648,13 +648,13 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("SIM PIN"); ?></td>
+                        <td> <?= gettext("SIM PIN"); ?></td>
                         <td>
                           <input name="simpin" type="text" id="simpin" value="<?=$pconfig['simpin'];?>" />
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_pin-wait" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("SIM PIN wait"); ?></td>
+                        <td><a id="help_for_pin-wait" href="#" class="showhelp"></a> <?= gettext("SIM PIN wait"); ?></td>
                         <td>
                           <input name="pin-wait" type="text" cid="pin-wait"  value="<?=$pconfig['pin-wait'];?>" />
                           <div class="hidden" data-for="help_for_pin-wait">
@@ -663,7 +663,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_initstr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Init String"); ?></td>
+                        <td><a id="help_for_initstr" href="#" class="showhelp"></a> <?= gettext("Init String"); ?></td>
                         <td>
                           <input type="text" id="initstr" name="initstr" value="<?=$pconfig['initstr'];?>" />
                           <div class="hidden" data-for="help_for_initstr">
@@ -673,7 +673,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_connect-timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Connection Timeout"); ?></td>
+                        <td><a id="help_for_connect-timeout" href="#" class="showhelp"></a> <?= gettext("Connection Timeout"); ?></td>
                         <td>
                           <input name="connect-timeout" type="text" id="connect-timeout" value="<?=$pconfig['connect-timeout'];?>" />
                           <div class="hidden" data-for="help_for_connect-timeout">
@@ -682,7 +682,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_uptime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Uptime Logging"); ?></td>
+                        <td><a id="help_for_uptime" href="#" class="showhelp"></a> <?= gettext("Uptime Logging"); ?></td>
                         <td>
                           <input type="checkbox" value="on" id="uptime" name="uptime" <?=!empty($pconfig['uptime']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Enable persistent logging of connection uptime."); ?>
@@ -697,7 +697,7 @@ include("head.inc");
                   <table class="table table-striped" >
                     <tbody>
                       <tr style="display:none" class="act_show_advanced">
-                        <td style="width:22%"><a id="help_for_ondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Dial On Demand"); ?></td>
+                        <td style="width:22%"><a id="help_for_ondemand" href="#" class="showhelp"></a> <?= gettext("Dial On Demand"); ?></td>
                         <td style="width:78%">
                           <input type="checkbox" value="on" id="ondemand" name="ondemand" <?=!empty($pconfig['ondemand']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Enable Dial-on-Demand mode"); ?>
@@ -708,7 +708,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_idletimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Idle Timeout"); ?></td>
+                        <td><a id="help_for_idletimeout" href="#" class="showhelp"></a> <?= gettext("Idle Timeout"); ?></td>
                         <td>
                           <input name="idletimeout" type="text" id="idletimeout" value="<?=$pconfig['idletimeout'];?>" />
                           <div class="hidden" data-for="help_for_idletimeout">
@@ -719,7 +719,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_vjcomp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Compression"); ?></td>
+                        <td><a id="help_for_vjcomp" href="#" class="showhelp"></a> <?= gettext("Compression"); ?></td>
                         <td>
                           <input type="checkbox" value="on" id="vjcomp" name="vjcomp" <?= !empty($pconfig['vjcomp']) ? 'checked="checked"' : '' ?> />
                           <?= gettext("Disable vjcomp(compression) (auto-negotiated by default)."); ?>
@@ -731,7 +731,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_tcpmssfix" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("TCPmssFix"); ?></td>
+                        <td><a id="help_for_tcpmssfix" href="#" class="showhelp"></a> <?= gettext("TCPmssFix"); ?></td>
                         <td>
                           <input type="checkbox" value="on" id="tcpmssfix" name="tcpmssfix" <?=!empty($pconfig['tcpmssfix']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Disable tcpmssfix (enabled by default)."); ?>
@@ -745,7 +745,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_shortseq" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ShortSeq");?></td>
+                        <td><a id="help_for_shortseq" href="#" class="showhelp"></a> <?=gettext("ShortSeq");?></td>
                         <td>
                           <input type="checkbox" value="on" id="shortseq" name="shortseq" <?=!empty($pconfig['shortseq']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Disable shortseq (auto-negotiated by default)."); ?>
@@ -756,7 +756,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_acfcomp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ACFComp"); ?></td>
+                        <td><a id="help_for_acfcomp" href="#" class="showhelp"></a> <?=gettext("ACFComp"); ?></td>
                         <td>
                           <input type="checkbox" value="on" id="acfcomp" name="acfcomp" <?=!empty($pconfig['acfcomp']) ? "checked=\"checked\"" : ""; ?> />
                           <?= gettext("Disable acfcomp (compression) (auto-negotiated by default)."); ?>
@@ -766,7 +766,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_protocomp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ProtoComp"); ?></td>
+                        <td><a id="help_for_protocomp" href="#" class="showhelp"></a> <?=gettext("ProtoComp"); ?></td>
                         <td>
                           <input type="checkbox" value="on" id="protocomp" name="protocomp" <?=!empty($pconfig['protocomp']) ? "checked=\"checked\"" :""; ?> />
                           <?= gettext("Disable protocomp (compression) (auto-negotiated by default)."); ?>
@@ -782,7 +782,7 @@ include("head.inc");
 <?php
                       for ($intf_idx=0; $intf_idx <= count($portlist); ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td style="width:22%"> <a id="help_for_link_<?=$intf_idx;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Link Parameters");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:22%"> <a id="help_for_link_<?=$intf_idx;?>" href="#" class="showhelp"></a>  <?=gettext("Link Parameters");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
                           <table class="table table-striped table-condensed">
                             <tr>

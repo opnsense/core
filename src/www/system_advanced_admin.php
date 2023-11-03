@@ -516,11 +516,11 @@ $(document).ready(function() {
                 <td style="width:22%"><strong><?=gettext('Web GUI');?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                  <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol"); ?></td>
+                <td> <?=gettext("Protocol"); ?></td>
                 <td>
                   <input name="webguiproto" class="proto" id="http_proto" type="radio" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?>/>
                   <?=gettext("HTTP"); ?>
@@ -537,7 +537,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="ssl_opts">
-                <td><a id="help_for_sslcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Certificate"); ?></td>
+                <td><a id="help_for_sslcertref" href="#" class="showhelp"></a> <?=gettext("SSL Certificate"); ?></td>
                 <td>
                   <select name="ssl-certref" class="selectpicker" data-style="btn-default">
 <?php foreach ($a_cert as $cert): ?>
@@ -558,7 +558,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="ssl_opts">
-                <td><a id="help_for_sslciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Ciphers"); ?></td>
+                <td><a id="help_for_sslciphers" href="#" class="showhelp"></a> <?=gettext("SSL Ciphers"); ?></td>
                 <td>
                     <select name="ssl-ciphers[]" class="selectpicker" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php
@@ -580,7 +580,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sslhsts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Strict Transport Security') ?></td>
+                <td><a id="help_for_sslhsts" href="#" class="showhelp"></a> <?=gettext('HTTP Strict Transport Security') ?></td>
                 <td>
                   <input name="ssl-hsts" type="checkbox" value="yes" <?= empty($pconfig['ssl-hsts']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Enable HTTP Strict Transport Security') ?>
@@ -590,7 +590,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_webguiport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP port"); ?></td>
+                <td><a id="help_for_webguiport" href="#" class="showhelp"></a> <?=gettext("TCP port"); ?></td>
                 <td>
                   <input name="webguiport" id="webguiport" type="text" value="<?=$pconfig['webguiport'];?>" placeholder="<?= $pconfig['webguiproto'] == 'https' ? '443' : '80' ?>" />
                   <div class="hidden" data-for="help_for_webguiport">
@@ -601,7 +601,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="ssl_opts">
-                <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('HTTP Redirect'); ?></td>
+                <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"></a> <?=gettext('HTTP Redirect'); ?></td>
                 <td>
                   <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                   <?= gettext('Disable web GUI redirect rule') ?>
@@ -614,7 +614,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Login Messages") ?></td>
+                <td><a id="help_for_quietlogin" href="#" class="showhelp"></a> <?=gettext("Login Messages") ?></td>
                 <td>
                   <input name="quietlogin" type="checkbox" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
                   <?= gettext('Disable logging of web GUI successful logins') ?>
@@ -624,7 +624,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Session Timeout') ?></td>
+                <td><a id="help_for_session_timeout" href="#" class="showhelp"></a> <?= gettext('Session Timeout') ?></td>
                 <td>
                   <input class="form-control" name="session_timeout" id="session_timeout" type="text" placeholder="240" value="<?=$pconfig['session_timeout'];?>" />
                   <div class="hidden" data-for="help_for_session_timeout">
@@ -633,7 +633,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_nodnsrebindcheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Rebind Check"); ?></td>
+                <td><a id="help_for_nodnsrebindcheck" href="#" class="showhelp"></a> <?=gettext("DNS Rebind Check"); ?></td>
                 <td>
                   <input name="nodnsrebindcheck" type="checkbox" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
                   <?=gettext("Disable DNS Rebinding Checks"); ?>
@@ -645,7 +645,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_althostnames" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Alternate Hostnames") ?></td>
+                <td><a id="help_for_althostnames" href="#" class="showhelp"></a> <?= gettext("Alternate Hostnames") ?></td>
                 <td>
                   <input name="althostnames" type="text" value="<?= $pconfig['althostnames'] ?>"/>
                   <?=gettext("Alternate Hostnames for DNS Rebinding and HTTP_REFERER Checks"); ?>
@@ -656,7 +656,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP Compression")?></td>
+                <td><a id="help_for_compression" href="#" class="showhelp"></a> <?=gettext("HTTP Compression")?></td>
                 <td>
                   <select name="compression" class="selectpicker">
                       <option value="" <?=empty($pconfig['compression'])? 'selected="selected"' : '';?>>
@@ -679,7 +679,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_httpaccesslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Access log"); ?></td>
+                <td><a id="help_for_httpaccesslog" href="#" class="showhelp"></a> <?=gettext("Access log"); ?></td>
                 <td>
                   <input name="httpaccesslog" type="checkbox" value="yes" <?= empty($pconfig['httpaccesslog']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable access log"); ?>
@@ -689,7 +689,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
+                <td><a id="help_for_webguiinterfaces" href="#" class="showhelp"></a> <?=gettext('Listen Interfaces') ?></td>
                 <td>
                   <select id="webguiinterface" name="webguiinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
@@ -702,7 +702,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
+                <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
                 <td>
                   <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Disable HTTP_REFERER enforcement check"); ?>
@@ -724,14 +724,14 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Secure Shell Server"); ?></td>
+                <td> <?=gettext("Secure Shell Server"); ?></td>
                 <td>
                   <input name="enablesshd" type="checkbox" value="yes" <?= empty($pconfig['enablesshd']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Enable Secure Shell"); ?>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshlogingroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Login Group') ?></td>
+                <td><a id="help_for_sshlogingroup" href="#" class="showhelp"></a> <?=gettext('Login Group') ?></td>
                 <td>
                   <select name="sshlogingroup" class="selectpicker">
                       <option value=""><!-- do not translate: -->wheel</option>
@@ -745,7 +745,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
+                <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"></a> <?= gettext("Root Login") ?></td>
                 <td>
                   <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Permit root user login"); ?>
@@ -758,7 +758,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
+                <td><a id="help_for_sshpasswordauth" href="#" class="showhelp"></a> <?= gettext("Authentication Method") ?></td>
                 <td>
                   <input name="sshpasswordauth" type="checkbox" value="yes" <?= empty($pconfig['sshpasswordauth']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("Permit password login"); ?>
@@ -769,7 +769,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
+                <td><a id="help_for_sshport" href="#" class="showhelp"></a> <?=gettext("SSH port"); ?></td>
                 <td>
                   <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>" placeholder="22" />
                   <div class="hidden" data-for="help_for_sshport">
@@ -778,7 +778,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sshinterfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Listen Interfaces') ?></td>
+                <td><a id="help_for_sshinterfaces" href="#" class="showhelp"></a> <?=gettext('Listen Interfaces') ?></td>
                 <td>
                   <select name="sshinterfaces[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach ($interfaces as $iface => $ifacename): ?>
@@ -791,13 +791,13 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                <td> <?=gettext("Advanced");?></td>
                 <td>
                   <button id="show-advanced-cryptocryptobtn" class="btn btn-xs btn-default" value="yes"><?= gettext('Show cryptographic overrides') ?></button>
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshkex" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key exchange algorithms"); ?></td>
+                <td><a id="help_for_sshkex" href="#" class="showhelp"></a> <?=gettext("Key exchange algorithms"); ?></td>
                 <td>
                     <select name="ssh-kex[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php foreach ($options = empty($sshoptions['kex']) ? [] : $sshoptions['kex'] as $option): ?>
@@ -812,7 +812,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshciphers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ciphers"); ?></td>
+                <td><a id="help_for_sshciphers" href="#" class="showhelp"></a> <?=gettext("Ciphers"); ?></td>
                 <td>
                     <select name="ssh-ciphers[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php foreach ($options = empty($sshoptions['cipher']) ? [] : $sshoptions['cipher'] as $option): ?>
@@ -827,7 +827,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshmacs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MACs"); ?></td>
+                <td><a id="help_for_sshmacs" href="#" class="showhelp"></a> <?=gettext("MACs"); ?></td>
                 <td>
                     <select name="ssh-macs[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php foreach ($options = empty($sshoptions['mac']) ? [] : $sshoptions['mac'] as $option): ?>
@@ -843,7 +843,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshkeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host key algorithms"); ?></td>
+                <td><a id="help_for_sshkeys" href="#" class="showhelp"></a> <?=gettext("Host key algorithms"); ?></td>
                 <td>
                     <select name="ssh-keys[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php foreach ($options = empty($sshoptions['key']) ? [] : $sshoptions['key'] as $option): ?>
@@ -858,7 +858,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr class="show-advanced-crypto" style="display:none">
-                <td><a id="help_for_sshkeysig" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Public key signature algorithms"); ?></td>
+                <td><a id="help_for_sshkeysig" href="#" class="showhelp"></a> <?=gettext("Public key signature algorithms"); ?></td>
                 <td>
                     <select name="ssh-keysig[]" class="selectpicker advanced-crypto" multiple="multiple" data-live-search="true" title="<?=gettext("System defaults");?>">
 <?php foreach ($options = empty($sshoptions['key-sig']) ? [] : $sshoptions['key-sig'] as $option): ?>
@@ -881,14 +881,14 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Console driver') ?></td>
+                <td> <?= gettext('Console driver') ?></td>
                 <td>
                   <input name="usevirtualterminal" type="checkbox" value="yes" <?= empty($pconfig['usevirtualterminal']) ? '' : 'checked="checked"' ?>  />
                   <?= gettext('Use the virtual terminal driver (vt)') ?>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
+                <td><a id="help_for_primaryconsole" href="#" class="showhelp"></a> <?=gettext("Primary Console")?></td>
                 <td>
                   <select name="primaryconsole" id="primaryconsole" class="selectpicker">
 <?php foreach (system_console_types() as $console_key => $console_type): ?>
@@ -902,7 +902,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
+                <td><a id="help_for_secondaryconsole" href="#" class="showhelp"></a> <?=gettext("Secondary Console")?></td>
                 <td>
                   <select name="secondaryconsole" id="secondaryconsole" class="selectpicker">
                     <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
@@ -917,7 +917,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
+                <td><a id="help_for_serialspeed" href="#" class="showhelp"></a> <?=gettext("Serial Speed")?></td>
                 <td>
                   <select name="serialspeed" id="serialspeed" class="selectpicker">
                     <option value="1500000" <?= $pconfig['serialspeed'] == '1500000' ? 'selected="selected"' : '' ?>>1500000</option>
@@ -934,14 +934,14 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('USB-based serial') ?></td>
+                <td> <?= gettext('USB-based serial') ?></td>
                 <td>
                   <input name="serialusb" type="checkbox" value="yes" <?= empty($pconfig['serialusb']) ? '' : 'checked="checked"' ?>  />
                   <?= gettext('Use USB-based serial ports') ?>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Console menu") ?></td>
+                <td> <?= gettext("Console menu") ?></td>
                 <td>
                   <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                   <?=gettext("Password protect the console menu"); ?>
@@ -956,7 +956,7 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_autologout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Inactivity timeout') ?></td>
+                <td><a id="help_for_autologout" href="#" class="showhelp"></i></a> <?= gettext('Inactivity timeout') ?></td>
                 <td>
                   <input name="autologout" type="text" value="<?= $pconfig['autologout'];?>"/>
                   <small><?=gettext("Minutes"); ?></small>
@@ -975,7 +975,7 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_authmode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Server') ?></td>
+                <td><a id="help_for_authmode" href="#" class="showhelp"></a> <?= gettext('Server') ?></td>
                 <td>
                   <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
 <?php foreach ($a_authmode as $auth_key => $auth_server): ?>
@@ -1002,7 +1002,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sudo_allow_wheel" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Sudo') ?></td>
+                <td><a id="help_for_sudo_allow_wheel" href="#" class="showhelp"></a> <?= gettext('Sudo') ?></td>
                 <td>
                   <select name="sudo_allow_wheel" id="sudo_allow_wheel" class="selectpicker">
                     <option value="" <?= empty($pconfig['sudo_allow_wheel']) ? 'selected="selected"' : '' ?>><?= gettext('Disallow') ?></option>
@@ -1029,7 +1029,7 @@ $(document).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_user_allow_gen_token" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('User OTP seed') ?></td>
+                <td><a id="help_for_user_allow_gen_token" href="#" class="showhelp"></a> <?= gettext('User OTP seed') ?></td>
                 <td>
                   <select name="user_allow_gen_token[]" multiple=multiple class="selectpicker">
 <?php foreach ($a_group as $group): ?>
@@ -1052,7 +1052,7 @@ $(document).ready(function() {
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_deployment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deployment type")?></td>
+                <td><a id="help_for_deployment" href="#" class="showhelp"></a> <?=gettext("Deployment type")?></td>
                 <td>
                   <select name="deployment" class="selectpicker">
                     <option value="" <?= empty($pconfig['deployment']) ? 'selected="selected"' : '' ?>>

@@ -114,26 +114,23 @@ legacy_html_escape_form_data($a_bridges);
                     <tbody>
 <?php
                     $i = 0;
-                    $ifdescrs = [];
-                    foreach (legacy_config_get_interfaces(['virtual' => false]) as $intf => $intfdata) {
-                        if (substr($intfdata['if'], 0, 3) != 'gre' && substr($intfdata['if'], 0, 2) != 'lo') {
-                            $ifdescrs[$intf] = $intfdata['descr'];
-                        }
-                    }
+                    $ifdescrs = get_configured_interface_with_descr();
                     foreach ($a_bridges as $bridge): ?>
                       <tr>
                         <td><?= $bridge['bridgeif'] ?></td>
                         <td>
 <?php
-                        $members = explode(',', $bridge['members'] ?? '');
-                        foreach ($members as $key => $member) {
-                            if (!isset($ifdescrs[$member])) {
-                                unset($members[$key]);
-                            } else {
-                                $members[$key] = $ifdescrs[$member];
+                        $members = explode(',', $bridge['members']);
+                        $j = 0;
+                        foreach ($members as $member) {
+                            if (isset($ifdescrs[$member])) {
+                                echo htmlspecialchars($ifdescrs[$member]);
+                                $j++;
                             }
-                        }
-                        echo implode(', ', $members); ?>
+                            if ($j > 0 && $j < count($members)) {
+                                echo ", ";
+                            }
+                        }?>
                         </td>
                         <td><?=$bridge['descr'];?></td>
                         <td><?= !empty($bridge['linklocal']) ? gettext('On') : gettext('Off') ?></td>

@@ -47,10 +47,10 @@
 
 <div class="content-box" style="padding-bottom: 1.5em;">
 {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_GeneralSettings'])}}
-    <div class="col-md-12 __mt">
+    <div class="col-md-12">
+        <hr/>
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/unbound/service/reconfigureGeneral'
-                data-service-widget="unbound"
                 data-label="{{ lang._('Apply') }}"
                 data-error-title="{{ lang._('Error reconfiguring unbound') }}"
                 type="button">

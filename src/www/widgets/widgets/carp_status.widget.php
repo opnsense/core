@@ -33,7 +33,12 @@ require_once("interfaces.inc");
 config_read_array('virtualip', 'vip');
 
 ?>
-<table class="table table-striped table-condensed">
+<table class="table table-striped h-100">	
+    <thead>	
+        <tr>	
+            <th>CARP</th>	
+        </tr>	
+    </thead>
 <?php
     $interfaces_details = legacy_interfaces_details();
     foreach ($config['virtualip']['vip'] as $carp):

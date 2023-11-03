@@ -535,11 +535,11 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td style="width:22%"><b><?=gettext("General information"); ?></b></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                  <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                   <td style="width:78%" class="vtable">
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
                     <div class="hidden" data-for="help_for_disabled">
@@ -550,7 +550,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Mode"); ?></td>
+                  <td> <?=gettext("Mode"); ?></td>
                   <td>
                     <select name="mode" id="mode">
                         <?php
@@ -571,7 +571,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
@@ -584,13 +584,13 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td colspan="2"><b><?=gettext("Tunnel network");?></b></td>
                 </tr>
                 <tr class="opt_route">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local Address");?> </td>
+                  <td> <?=gettext("Local Address");?> </td>
                   <td>
                     <input name="tunnel_local" type="text" id="tunnel_local" size="28" value="<?=$pconfig['tunnel_local'];?>" />
                   </td>
                 </tr>
                 <tr class="opt_route">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Address");?> </td>
+                  <td> <?=gettext("Remote Address");?> </td>
                   <td>
                     <input name="tunnel_remote" type="text" id="tunnel_remote" size="28" value="<?=$pconfig['tunnel_remote'];?>" />
                   </td>
@@ -600,7 +600,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td colspan="2"><b><?=gettext("Local Network");?></b></td>
                 </tr>
                 <tr class="opt_localid">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?> </td>
+                  <td> <?=gettext("Type"); ?> </td>
                   <td>
                     <select name="localid_type" id="localid_type">
                       <option value="address" <?=$pconfig['localid_type'] == "address" ? "selected=\"selected\"" : ""?> ><?=gettext("Address"); ?></option>
@@ -617,7 +617,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   </td>
                 </tr>
                 <tr class="opt_localid">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
+                  <td> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
                   <td>
                     <table style="max-width: 348px">
                       <tr>
@@ -642,7 +642,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td colspan="2"><b><?=gettext("Remote Network");?></b></td>
                 </tr>
                 <tr class="opt_remoteid">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?>:&nbsp;&nbsp;</td>
+                  <td> <?=gettext("Type"); ?>:&nbsp;&nbsp;</td>
                   <td>
                     <select name="remoteid_type" id="remoteid_type">
                       <option value="address" <?= $pconfig['remoteid_type'] == "address" ? "selected=\"selected\"" : "";?>>
@@ -655,7 +655,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   </td>
                 </tr>
                 <tr class="opt_remoteid">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
+                  <td> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
                   <td>
                     <table style="max-width: 348px">
                       <tr>
@@ -684,7 +684,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
+                  <td><a id="help_for_proto" href="#" class="showhelp"></a> <?=gettext("Protocol"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="protocol" id="proto">
 <?php
@@ -702,7 +702,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr id="opt_enc">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithms"); ?></td>
+                  <td> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
                       <select name="ealgos[]" class="selectpicker" multiple="multiple">
 <?php
@@ -717,7 +717,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_hashalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithms"); ?></td>
+                  <td><a id="help_for_hashalg" href="#" class="showhelp"></a> <?=gettext("Hash algorithms"); ?></td>
                   <td style="width:78%" class="vtable">
                     <select name="hash-algorithm-option[]" class="selectpicker" multiple="multiple">
 <?php foreach (ipsec_p2_halgos() as $algo => $algoname): ?>
@@ -732,7 +732,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("PFS key group"); ?></td>
+                  <td> <?=gettext("PFS key group"); ?></td>
                   <td>
 <?php
                   if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :?>
@@ -779,7 +779,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime"); ?></td>
+                  <td> <?=gettext("Lifetime"); ?></td>
                   <td>
                     <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
                     <?=gettext("seconds"); ?>
@@ -791,7 +791,7 @@ endif; ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_pinghost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatically ping host"); ?></td>
+                  <td><a id="help_for_pinghost" href="#" class="showhelp"></a> <?=gettext("Automatically ping host"); ?></td>
                   <td>
                     <input name="pinghost" type="text" id="pinghost" size="28" value="<?=$pconfig['pinghost'];?>" />
                     <div class="hidden" data-for="help_for_pinghost">
@@ -802,7 +802,7 @@ endif; ?>
 <?php
                 if (!isset($pconfig['mobile'])):?>
                 <tr class="opt_localid">
-                  <td><a id="help_for_spd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Manual SPD entries"); ?></td>
+                  <td><a id="help_for_spd" href="#" class="showhelp"></a> <?=gettext("Manual SPD entries"); ?></td>
                   <td>
                     <input name="spd" type="text" id="spd" value="<?= $pconfig['spd'];?>" />
                     <div class="hidden" data-for="help_for_spd">

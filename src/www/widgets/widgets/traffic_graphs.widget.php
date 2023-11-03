@@ -1,11 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2021 Deciso B.V.
- * Copyright (C) 2007 Scott Dale
- * Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>
- * Copyright (C) 2004-2005 Manuel Kasper <mk@neon1.net>
- * Copyright (C) 2004-2005 Jonathan Watt <jwatt@jwatt.org>
+ * Copyright (C) 2023 Veritawall Technologies Pvt. Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   /**
    * page setup
    */
-  $("#dashboard_container").on("WidgetsReady", function() {
+    $("#dashboard_container").on("WidgetsReady", function() {
         function set_alpha(color, opacity) {
             const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
             return color + op.toString(16).toUpperCase();
@@ -225,13 +221,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         });
         // needed to display the widget settings menu
         $("#traffic_graphs-configure").removeClass("disabled");
-  });
+    });
 </script>
 
 
 <div id="traffic_graphs-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/traffic_graphs.widget.php" method="post" name="iformd">
-    <table class="table table-condensed">
+    <table class="table table-condensed h-100">
       <tr>
         <td>
           <select id="traffic_graphs_interfaces" name="traffic_graphs_interfaces[]" multiple="multiple" class="selectpicker_widget">
@@ -246,10 +242,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   </form>
 </div>
 <!-- traffic graph table -->
-<table class="table table-condensed">
+<table class="table table-condensed h-100">
+    <thead>
+        <tr>
+            <th>Traffic Graphs</th>
+        </tr>
+    </thead>
     <tbody>
       <tr>
-        <td><?=gettext("In (bps)");?></td>
+        <td><?=gettext("Download (bps)");?></td>
       </tr>
       <tr>
         <td>
@@ -259,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         </td>
       </tr>
       <tr>
-        <td><?=gettext("Out (bps)");?></td>
+        <td><?=gettext("Upload (bps)");?></td>
       </tr>
       <tr>
         <td>

@@ -1,12 +1,14 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
     <version>1.0.1</version>
-    <description>Captive portal application model</description>
+    <description>
+        Captive portal application model
+    </description>
     <items>
         <zones>
             <zone type="ArrayField">
                 <enabled type="BooleanField">
-                    <Default>1</Default>
+                    <default>1</default>
                     <Required>Y</Required>
                 </enabled>
                 <zoneid type="AutoNumberField">
@@ -17,8 +19,8 @@
                 </zoneid>
                 <interfaces type="InterfaceField">
                     <Required>Y</Required>
-                    <Multiple>Y</Multiple>
-                    <Default>lan</Default>
+                    <multiple>Y</multiple>
+                    <default>lan</default>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
@@ -26,13 +28,17 @@
                     <ValidationMessage>At least one interface must be selected</ValidationMessage>
                 </interfaces>
                 <authservers type="AuthenticationServerField">
-                    <Multiple>Y</Multiple>
+                    <Required>N</Required>
+                    <multiple>Y</multiple>
+                    <default>Local Database</default>
                 </authservers>
                 <alwaysSendAccountingReqs type="BooleanField">
-                    <Default>0</Default>
+                    <default>0</default>
                     <Required>Y</Required>
                 </alwaysSendAccountingReqs>
-                <authEnforceGroup type="AuthGroupField"/>
+                <authEnforceGroup type="AuthGroupField">
+                    <Required>N</Required>
+                </authEnforceGroup>
                 <idletimeout type="IntegerField">
                     <Required>Y</Required>
                     <Default>0</Default>
@@ -49,34 +55,38 @@
                 </hardtimeout>
                 <concurrentlogins type="BooleanField">
                     <Required>Y</Required>
-                    <Default>1</Default>
+                    <default>1</default>
                 </concurrentlogins>
                 <certificate type="CertificateField">
+                    <Required>N</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </certificate>
                 <servername type="TextField">
-                    <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
+                    <Required>N</Required>
+                    <mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
                 <allowedAddresses type="CSVListField">
-                    <Mask>/^([\/0-9.,])*/u</Mask>
+                    <Required>N</Required>
+                    <mask>/^([\/0-9.,])*/u</mask>
                     <ValidationMessage>Please enter valid addresses</ValidationMessage>
                 </allowedAddresses>
                 <allowedMACAddresses type="CSVListField">
+                    <Required>N</Required>
                     <ChangeCase>lower</ChangeCase>
-                    <Mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</Mask>
+                    <mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</mask>
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
                 <transparentHTTPProxy type="BooleanField">
-                    <Default>0</Default>
+                    <default>0</default>
                     <Required>Y</Required>
                 </transparentHTTPProxy>
                 <transparentHTTPSProxy type="BooleanField">
-                    <Default>0</Default>
+                    <default>0</default>
                     <Required>Y</Required>
                 </transparentHTTPSProxy>
                 <extendedPreAuthData type="BooleanField">
-                    <Default>0</Default>
+                    <default>0</default>
                     <Required>Y</Required>
                 </extendedPreAuthData>
                 <template type="ModelRelationField">
@@ -88,10 +98,11 @@
                         </template>
                     </Model>
                     <ValidationMessage>Related template not found</ValidationMessage>
+                    <Required>N</Required>
                 </template>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </zone>
@@ -100,17 +111,17 @@
             <template type="ArrayField">
                 <fileid type="TextField">
                     <Required>Y</Required>
-                    <Mask>/[0-9a-zA-Z\-]{1,255}/u</Mask>
+                    <mask>/[0-9a-zA-Z\-]{1,255}/u</mask>
                     <ValidationMessage>Fileid should be an internally generated unique number</ValidationMessage>
                 </fileid>
                 <name type="TextField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                     <ValidationMessage>Template name should be a string between 1 and 255 characters</ValidationMessage>
                 </name>
                 <content type="TextField">
                     <Required>Y</Required>
-                    <Mask>/[0-9a-zA-Z\+\=\/]{20,}/u</Mask>
+                    <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
                     <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
                 </content>
             </template>

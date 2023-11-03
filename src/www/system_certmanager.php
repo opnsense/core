@@ -1265,11 +1265,11 @@ $( document ).ready(function() {
                 <td style="width:22%"></td>
                 <td  style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                  <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
+                <td> <?=gettext("Method");?></td>
                 <td>
                   <select name="certmethod" id="certmethod">
 <?php
@@ -1283,7 +1283,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td> <?=gettext("Descriptive name");?></td>
                 <td>
                   <input name="descr" type="text" id="descr" size="20" value="<?=$pconfig['descr'];?>"/>
                 </td>
@@ -1298,7 +1298,7 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
+                  <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"></a> <?=gettext("Certificate data");?></td>
                   <td style="width:78%">
                     <textarea name="cert" id="cert" cols="65" rows="7"><?=$pconfig['cert'];?></textarea>
                     <div class="hidden" data-for="help_for_cert">
@@ -1307,7 +1307,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key data");?></td>
+                  <td><a id="help_for_key" href="#" class="showhelp"></a> <?=gettext("Private key data");?></td>
                   <td>
                     <textarea name="key" id="key" cols="65" rows="7"><?=$pconfig['key'];?></textarea>
                     <div class="hidden" data-for="help_for_key">
@@ -1344,7 +1344,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_alg_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
+                  <td><a id="help_for_digest_alg_sign_csr" href="#" class="showhelp"></a> <?=gettext("Digest Algorithm");?></td>
                   <td>
                     <select name='digest_alg_sign_csr' id='digest_alg_sign_csr'>
   <?php
@@ -1361,13 +1361,13 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
+                  <td> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                   <td>
                     <input name="lifetime_sign_csr" type="text" id="lifetime_sign_csr" size="5" value="<?=$pconfig['lifetime_sign_csr'];?>"/>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_csr_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("CSR file");?></td>
+                  <td><a id="help_for_csr_sign_csr" href="#" class="showhelp"></i></a> <?=gettext("CSR file");?></td>
                   <td>
                     <textarea name="csr" id="csr" cols="65" rows="7"><?=$pconfig['csr'];?></textarea><br/>
                     <a href="#" class="csr_info_for_sign_csr btn btn-secondary"><?=gettext("Show Detail");?></a><br/>
@@ -1393,11 +1393,11 @@ $( document ).ready(function() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Subject');?></td>
+                    <td style="width:22%"> <?=gettext('Subject');?></td>
                     <td id="subject_sign_csr" style="width:78%"></td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('subjectAltName');?></td>
+                    <td> <?=gettext('subjectAltName');?></td>
                     <td>
                       <table class="table table-condensed" id="subject_alt_name_sign_csr_table">
                         <thead>
@@ -1437,7 +1437,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_basic_extensions_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('basicConstraints');?></td>
+                    <td><a id="help_for_basic_extensions_sign_csr" href="#" class="showhelp"></a> <?=gettext('basicConstraints');?></td>
                     <td>
                       <input type="checkbox" name="basic_constraints_is_ca_sign_csr" id="basic_constraints_is_ca_sign_csr" value="true" /> <?= gettext('is CA'); ?><br />
                       <?= gettext('Maximum Path Length'); ?>: <input type="text" name="basic_constraints_path_len_sign_csr" id="basic_constraints_path_len_sign_csr" size="5" value="<?=$pconfig['basic_constraints_sign_csr'];?>"/>
@@ -1447,7 +1447,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('keyUsage');?></td>
+                    <td><a id="help_for_key_usage_sign_csr" href="#" class="showhelp"></a> <?=gettext('keyUsage');?></td>
                     <td>
                       <select name="key_usage_sign_csr[]" title="<?= html_safe(gettext('Select keyUsage')) ?>" multiple="multiple" id="key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
@@ -1470,7 +1470,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_extended_key_usage_sign_csr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('extendedKeyUsage');?></td>
+                    <td><a id="help_for_extended_key_usage_sign_csr" href="#" class="showhelp"></a> <?=gettext('extendedKeyUsage');?></td>
                     <td>
                       <select name="extended_key_usage_sign_csr[]" title="<?= html_safe(gettext('Select extendedKeyUsage')) ?>" multiple="multiple" id="extended_key_usage_sign_csr" class="selectpicker" data-live-search="true" data-size="5" tabindex="2" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
@@ -1522,7 +1522,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_cert_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?> </td>
+                <td><a id="help_for_digest_cert_type" href="#" class="showhelp"></a> <?=gettext("Type");?> </td>
                 <td>
                     <select name="cert_type">
                         <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? 'selected="selected"' : '';?>> <?=gettext("Client Certificate");?> </option>
@@ -1536,7 +1536,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td> <?=gettext("Key Type");?></td>
                   <td style="width:78%">
                     <select name='keytype' id='keytype' class="selectpicker">
                   <option value="RSA" <?=$pconfig['keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
@@ -1549,7 +1549,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
               <tr id='RSA'>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
+                <td> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                 <td>
                   <select name='keylen'>
 <?php
@@ -1562,7 +1562,7 @@ $( document ).ready(function() {
               </tr>
               <tr id='blank'><td></td></tr>
               <tr id='EC'>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td> <?=gettext("Curve");?></td>
                   <td style="width:78%">
                     <select name='curve' id='curve' class="selectpicker">
 <?php
@@ -1574,7 +1574,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
               <tr>
-                <td><a id="help_for_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
+                <td><a id="help_for_digest_alg" href="#" class="showhelp"></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
                   <select name='digest_alg' id='digest_alg'>
 <?php
@@ -1591,13 +1591,13 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
+                <td> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                 <td>
                   <input name="lifetime" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>"/>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_private_key_location" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private key location");?></td>
+                <td><a id="help_for_private_key_location" href="#" class="showhelp"></a> <?=gettext("Private key location");?></td>
                 <td>
                   <select name="private_key_location" id="private_key_location">
                     <option value="firewall" <?= $pconfig['private_key_location'] === 'firewall' ? 'selected="selected"' : ''; ?>><?= gettext('Save on this firewall'); ?></option>
@@ -1613,7 +1613,7 @@ $( document ).ready(function() {
                 <th colspan="2"><?=gettext("Distinguished name");?> </th>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Country Code");?> : &nbsp;</td>
+                <td> <?=gettext("Country Code");?> : &nbsp;</td>
                 <td>
                   <select name="dn_country" id="dn_country" class="selectpicker">
 <?php
@@ -1627,7 +1627,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
+                <td><a id="help_for_digest_dn_state" href="#" class="showhelp"></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="dn_state" id="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
                   <div class="hidden" data-for="help_for_digest_dn_state">
@@ -1638,7 +1638,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
+                <td><a id="help_for_digest_dn_city" href="#" class="showhelp"></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="dn_city" id="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
                   <div class="hidden" data-for="help_for_digest_dn_city">
@@ -1649,7 +1649,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
+                <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="dn_organization" id="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
                   <div class="hidden" data-for="help_for_digest_dn_organization">
@@ -1660,7 +1660,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
+                <td><a id="help_for_digest_dn_email" href="#" class="showhelp"></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="dn_email" id="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
                   <div class="hidden" data-for="help_for_digest_dn_email">
@@ -1671,7 +1671,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
+                <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="dn_commonname" id="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
                   <div class="hidden" data-for="help_for_digest_dn_commonname">
@@ -1682,7 +1682,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr id="altNameTr">
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Alternative Names");?></td>
+                <td> <?=gettext("Alternative Names");?></td>
                 <td>
                   <table class="table table-condensed" id="altNametable">
                     <thead>
@@ -1758,7 +1758,7 @@ $( document ).ready(function() {
               </thead>
               <tbody>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td> <?=gettext("Key Type");?></td>
                   <td style="width:78%">
                     <select name='csr_keytype' id='csr_keytype' class="selectpicker">
                   <option value="RSA" <?=$pconfig['csr_keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
@@ -1771,7 +1771,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr id='csr_RSA'>
-                  <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
+                  <td style="width:22%"> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                   <td style="width:78%">
                     <select name='csr_keylen' class="selectpicker">
 <?php
@@ -1784,7 +1784,7 @@ $( document ).ready(function() {
               </tr>
               <tr id='csr_blank'><td></td></tr>
               <tr id='csr_EC'>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td> <?=gettext("Curve");?></td>
                   <td style="width:78%">
                     <select name='csr_curve' id='csr_curve' class="selectpicker">
 <?php
@@ -1796,7 +1796,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
               <tr>
-                <td><a id="help_for_csr_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
+                <td><a id="help_for_csr_digest_alg" href="#" class="showhelp"></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
                   <select name='csr_digest_alg'>
 <?php
@@ -1816,7 +1816,7 @@ $( document ).ready(function() {
                 <th colspan="2"><?=gettext("Distinguished name");?> </th>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Country Code");?> : &nbsp;</td>
+                <td> <?=gettext("Country Code");?> : &nbsp;</td>
                 <td>
                   <select name="csr_dn_country" id="csr_dn_country" class="selectpicker">
 <?php
@@ -1830,7 +1830,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_state" href="#" class="showhelp"></a> <?=gettext("State or Province");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_state" type="text" size="40" value="<?=$pconfig['csr_dn_state'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_state">
@@ -1841,7 +1841,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_city" href="#" class="showhelp"></a> <?=gettext("City");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_city" type="text" size="40" value="<?=$pconfig['csr_dn_city'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_city">
@@ -1852,7 +1852,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_organization" href="#" class="showhelp"></a> <?=gettext("Organization");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organization" type="text" size="40" value="<?=$pconfig['csr_dn_organization'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_organization">
@@ -1863,7 +1863,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_organizationalunit" type="text" size="40" value="<?=$pconfig['csr_dn_organizationalunit'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_organizationalunit">
@@ -1874,7 +1874,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_email" href="#" class="showhelp"></a> <?=gettext("Email Address");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_email" type="text" size="25" value="<?=$pconfig['csr_dn_email'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_email">
@@ -1885,7 +1885,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_digest_csr_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
+                <td><a id="help_for_digest_csr_dn_commonname" href="#" class="showhelp"></a> <?=gettext("Common Name");?> : &nbsp;</td>
                 <td>
                   <input name="csr_dn_commonname" type="text" size="25" value="<?=$pconfig['csr_dn_commonname'];?>"/>
                   <div class="hidden" data-for="help_for_digest_csr_dn_commonname">
@@ -1906,7 +1906,7 @@ $( document ).ready(function() {
             </thead>
               <tbody>
               <tr>
-                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
+                <td style="width:22%"> <?=gettext("Existing Certificates");?></td>
                 <td style="width:78%">
                   <select name='certref'>
 <?php
@@ -1958,7 +1958,7 @@ $( document ).ready(function() {
             endif;?>
             <table class="table table-striped">
               <tr>
-                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name");?></td>
+                <td style="width:22%"> <?=gettext("Descriptive name");?></td>
                 <td style="width:78%">
                   <input name="descr" type="text" id="descr" readonly="readonly" value="<?=$pconfig['descr'];?>"/>
                 </td>
@@ -2139,7 +2139,7 @@ $( document ).ready(function() {
 
 <?php if (isset($cert['crt'])): ?>
                   <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
-                    <i class="fa fa-info-circle fa-fw"></i>
+                    
                   </a>
 <?php endif ?>
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">

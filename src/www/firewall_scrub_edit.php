@@ -274,11 +274,11 @@ include("head.inc");
                     <td style="width:22%"><strong><?=gettext("Edit Firewall scrub rule");?></strong></td>
                     <td style="width:78%;text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                     <td style="width:78%">
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_disabled">
@@ -288,7 +288,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
+                    <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface");?></td>
                     <td>
                       <select name="interface[]" title="<?=gettext("Select interfaces...");?>" multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
@@ -311,7 +311,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Direction");?></td>
+                    <td> <?=gettext("Direction");?></td>
                     <td>
                       <select name="direction" class="selectpicker" data-live-search="true" data-size="5" >
                         <option value="" <?= empty($pconfig['direction']) ? "selected=\"selected\"" : "" ?>>
@@ -327,7 +327,7 @@ include("head.inc");
                     </td>
                   <tr>
                   <tr>
-                    <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
+                    <td><a id="help_for_protocol" href="#" class="showhelp"></a> <?=gettext("Protocol");?></td>
                     <td>
                       <select name="proto" id="proto" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
@@ -344,7 +344,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
+                    <td> <a id="help_for_src_invert" href="#" class="showhelp"></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_src_invert">
@@ -353,7 +353,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
+                      <td> <?=gettext("Source"); ?></td>
                       <td>
                         <table class="table table-condensed">
                           <tr>
@@ -402,7 +402,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port"); ?></td>
+                    <td><a id="help_for_srcport" href="#" class="showhelp"></a> <?=gettext("Source port"); ?></td>
                     <td>
                       <div>
                         <input type="button" class="btn btn-default" value="<?= html_safe(gettext('Advanced')) ?>" id="show_srcport_adv" />
@@ -444,7 +444,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
+                    <td> <a id="help_for_dst_invert" href="#" class="showhelp"></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_dst_invert">
@@ -453,7 +453,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
+                    <td> <?=gettext("Destination"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -500,7 +500,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_dstport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination port"); ?></td>
+                    <td><a id="help_for_dstport" href="#" class="showhelp"></a> <?=gettext("Destination port"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tbody>
@@ -538,7 +538,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">
@@ -558,16 +558,16 @@ include("head.inc");
                     <td colspan="2"><strong><?=gettext("Normalizations");?></strong></td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><a id="help_for_noscrub" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("No scrub (NOT)"); ?></td>
+                    <td style="width:22%"><a id="help_for_noscrub" href="#" class="showhelp"></a> <?=gettext("No scrub (NOT)"); ?></td>
                     <td style="width:78%">
                       <input type="checkbox" name="noscrub" id="noscrub" <?= !empty($pconfig['noscrub']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_noscrub">
-                        <?=gettext("Enabling this option will disable scrub (normalization) for traffic matching this rule."); ?>
+                        <?=gettext("Enabling this option will disable scub (normalisation) for traffic matching this rule."); ?>
                       </div>
                     </td>
                   </tr>
                   <tr  class="act_noscrub">
-                      <td style="width:22%"><a id="help_for_maxmss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max mss"); ?></td>
+                      <td style="width:22%"><a id="help_for_maxmss" href="#" class="showhelp"></a> <?=gettext("Max mss"); ?></td>
                       <td style="width:78%">
                           <input name="max-mss" type="text" value="<?=$pconfig['max-mss'];?>" />
                           <div class="hidden" data-for="help_for_maxmss">
@@ -576,7 +576,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr  class="act_noscrub">
-                      <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('TOS / DSCP'); ?></td>
+                      <td style="width:22%"> <?=gettext('TOS / DSCP'); ?></td>
                       <td style="width:78%">
                           <select name="set-tos" class="selectpicker" data-size="5" data-width="auto"  data-live-search="true">
 <?php
@@ -590,7 +590,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr  class="act_noscrub">
-                      <td style="width:22%"><a id="help_for_minttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum TTL') ?></td>
+                      <td style="width:22%"><a id="help_for_minttl" href="#" class="showhelp"></a> <?= gettext('Minimum TTL') ?></td>
                       <td style="width:78%">
                           <input name="min-ttl" type="text" value="<?=$pconfig['min-ttl'];?>" />
                           <div class="hidden" data-for="help_for_minttl">
@@ -599,7 +599,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr  class="act_noscrub">
-                      <td style="width:22%"><a id="help_for_nodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not fragment"); ?></td>
+                      <td style="width:22%"><a id="help_for_nodf" href="#" class="showhelp"></a> <?=gettext("Do not fragment"); ?></td>
                       <td style="width:78%">
                           <input name="no-df" type="checkbox" value="1" <?= !empty($pconfig['no-df']) ? "checked=\"checked\"" : ""; ?> />
                           <div class="hidden" data-for="help_for_nodf">
@@ -608,7 +608,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr  class="act_noscrub">
-                      <td style="width:22%"><a id="help_for_randomid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Random ID') ?></td>
+                      <td style="width:22%"><a id="help_for_randomid" href="#" class="showhelp"></a> <?= gettext('Random ID') ?></td>
                       <td style="width:78%">
                           <input name="random-id" type="checkbox" value="1" <?= !empty($pconfig['random-id']) ? "checked=\"checked\"" : ""; ?> />
                           <div class="hidden" data-for="help_for_randomid">

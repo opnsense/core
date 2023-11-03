@@ -42,12 +42,9 @@ class UrlField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * {@inheritdoc}
+     * @var string default validation message string
      */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Invalid URL.');
-    }
+    protected $internalValidationMessage = "invalid url";
 
     /**
      * retrieve field validators for this field type
@@ -57,7 +54,7 @@ class UrlField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new UrlValidator(['message' => $this->getValidationMessage()]);
+            $validators[] = new UrlValidator(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }

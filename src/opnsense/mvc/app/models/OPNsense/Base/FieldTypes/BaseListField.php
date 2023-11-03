@@ -58,13 +58,21 @@ abstract class BaseListField extends BaseField
     protected $internalMultiSelect = false;
 
     /**
-     * {@inheritdoc}
+     * @var string default validation message string
      */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Option not in list.');
-    }
+    protected $internalValidationMessage = null;
 
+    /**
+     * @return string validation message
+     */
+    protected function getValidationMessage()
+    {
+        if ($this->internalValidationMessage == null) {
+            return gettext('option not in list');
+        } else {
+            return $this->internalValidationMessage;
+        }
+    }
     /**
      * select if multiple interfaces may be selected at once
      * @param $value boolean value 0/1
@@ -99,24 +107,18 @@ abstract class BaseListField extends BaseField
         $result = array();
         // if option is not required, add empty placeholder
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = [
-                "value" => $this->internalEmptyDescription,
-                "selected" => empty((string)$this->internalValue) ? 1 : 0
-            ];
+            $result[""] = array("value" => $this->internalEmptyDescription, "selected" => empty((string)$this->internalValue) ? 1 : 0);
         }
 
         // explode options
         $options = explode(',', $this->internalValue);
         foreach ($this->internalOptionList as $optKey => $optValue) {
-            $selected = in_array($optKey, $options) ? 1 : 0;
-            if (is_array($optValue) && isset($optValue['value'])) {
-                // option container (multiple attributes), passthrough.
-                $result[$optKey] = $optValue;
+            if (in_array($optKey, $options)) {
+                $selected = 1;
             } else {
-                // standard (string) option
-                $result[$optKey] = ["value" => $optValue];
+                $selected = 0;
             }
-            $result[$optKey]["selected"] = $selected;
+            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
 
         return $result;
@@ -124,40 +126,22 @@ abstract class BaseListField extends BaseField
 
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getValidators()
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $args = [
-                'domain' => array_map('strval', array_keys($this->internalOptionList)),
-                'message' => $this->getValidationMessage(),
-            ];
+            $domain = array_map('strval', array_keys($this->internalOptionList));
+            $this_message = $this->getValidationMessage();
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
-                $validators[] = new CsvListValidator($args);
+                $validators[] = new CsvListValidator(array('message' => $this_message, 'domain' => $domain));
             } else {
                 // single option selection
-                $validators[] = new InclusionIn($args);
+                $validators[] = new InclusionIn(array('message' => $this_message, 'domain' => $domain));
             }
         }
         return $validators;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function normalizeValue()
-    {
-        $values = [];
-
-        foreach ($this->getNodeData() as $key => $node) {
-            if ($node['selected']) {
-                $values[] = $key;
-            }
-        }
-
-        $this->setValue(implode(',', $values));
     }
 }

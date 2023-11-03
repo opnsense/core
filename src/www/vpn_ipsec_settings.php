@@ -154,18 +154,18 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <td><strong><?=gettext("IPsec Advanced Settings"); ?></strong></td>
                       <td style="text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Disable Auto-added VPN rules') ?></td>
+                      <td> <?=gettext('Disable Auto-added VPN rules') ?></td>
                       <td>
                         <input name="disablevpnrules" type="checkbox" value="yes" <?=!empty($pconfig['disablevpnrules']) ? "checked=\"checked\"" :"";?> />
                         <strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Security Associations"); ?></td>
+                      <td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"></a> <?=gettext("Security Associations"); ?></td>
                       <td style="width:78%" class="vtable">
                         <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
@@ -177,7 +177,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_passthrough_networks" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Passthrough networks"); ?></td>
+                      <td><a id="help_for_passthrough_networks" href="#" class="showhelp"></a> <?=gettext("Passthrough networks"); ?></td>
                       <td>
                         <select name="passthrough_networks[]" multiple="multiple" class="tokenize" data-width="348px" data-allownew="true" data-nbdropdownelements="10">
 <?php
@@ -192,7 +192,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_max_ikev1_exchanges" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum IKEv1 phase 2 exchanges"); ?></td>
+                      <td><a id="help_for_max_ikev1_exchanges" href="#" class="showhelp"></a> <?=gettext("Maximum IKEv1 phase 2 exchanges"); ?></td>
                       <td style="width:78%" class="vtable">
                         <input name="max_ikev1_exchanges" type="text" id="max_ikev1_exchanges" value="<?=$pconfig['max_ikev1_exchanges'];?>" />
                         <div class="hidden" data-for="help_for_max_ikev1_exchanges">
@@ -204,7 +204,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_ipsec_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Debug"); ?></td>
+                      <td><a id="help_for_ipsec_debug" href="#" class="showhelp"></a> <?=gettext("IPsec Debug"); ?></td>
                       <td>
                         <div class="hidden" data-for="help_for_ipsec_debug">
                                       <strong><?=gettext("Start IPsec in debug mode based on sections selected"); ?></strong> <br/>

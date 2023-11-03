@@ -133,17 +133,7 @@ if (isset($_POST['servicestatusfilter'])) {
 </div>
 
 <!-- service table -->
-<table id="service_widget_table" class="table table-striped table-condensed">
-  <thead>
-    <tr>
-      <th><?= gettext('Service') ?></th>
-      <th><?= gettext('Description') ?></th>
-      <th style="width:3em;"></th>
-      <th style="width:5em;"></th>
-    </tr>
-  </thead>
-  <tbody>
-</table>
+
 
 <!-- needed to display the widget settings menu -->
 <script>

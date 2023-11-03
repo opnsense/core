@@ -60,11 +60,11 @@
 
 <div class="content-box" style="padding-bottom: 1.5em;">
 {{ partial("layout_partials/base_form",['fields':advancedForm,'id':'frm_AdvancedSettings'])}}
-    <div class="col-md-12 __mt">
+    <div class="col-md-12">
+        <hr/>
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/unbound/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
-                data-service-widget="unbound"
                 data-error-title="{{ lang._('Error reconfiguring unbound') }}"
                 type="button">
         </button>

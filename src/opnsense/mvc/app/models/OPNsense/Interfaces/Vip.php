@@ -41,33 +41,21 @@ class Vip extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-
-        $unqiue_addrs = [];
-        $carp_vhids = [];
         $vips = [];
+        $carp_vhids = [];
 
-        // collect changed VIP entries
+        // collect chaned VIP entries
         $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
-
             if ($validateFullModel || $node->isFieldChanged()) {
                 if ($parentNode->getInternalXMLTagName() === 'vip' && in_array($tagName, $vip_fields)) {
-                    $vips[$parentNode->__reference] = $parentNode;
+                    $parentKey = $parentNode->__reference;
+                    $vips[$parentKey] = $parentNode;
                 }
             }
-
-            if ($parentNode->getInternalXMLTagName() === 'vip' && $tagName == 'subnet') {
-                $addr = (string)$parentNode->subnet;
-                if (Util::isLinkLocal($addr)) {
-                    $addr .= '@' . (string)$parentNode->interface;
-                }
-                $unique_addrs[$parentNode->__reference] = $addr;
-            }
-
             $vhid_key = sprintf("%s_%s", $parentNode->interface, $parentNode->vhid);
-
             if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[$vhid_key])) {
                 $carp_vhids[$vhid_key] = $parentNode;
             }
@@ -162,17 +150,6 @@ class Vip extends BaseModel
                         $key . ".vhid"
                     )
                 );
-            }
-
-            /* ensure address is unique; for link-local we test with scope attached */
-            $addr = (string)$node->subnet;
-            if (Util::isLinkLocal($addr)) {
-                $addr .= '@' . (string)$node->interface;
-            }
-            foreach ($unique_addrs as $refKey => $refAddr) {
-                if ($refKey != $key && $refAddr === $addr) {
-                    $messages->appendMessage(new Message(gettext('Address already assigned.'), $key . '.subnet'));
-                }
             }
         }
 

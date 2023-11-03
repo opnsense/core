@@ -467,9 +467,7 @@ function core_xmlrpc_sync()
 function core_configure()
 {
     return [
-        /* XXX these are all specialized and try to avoid extra script use */
         'dns_reload' => ['system_resolver_configure'],
-        'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['core_routing_batch:2'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];

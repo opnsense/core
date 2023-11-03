@@ -49,7 +49,7 @@ class BaseContentParser:
             for idx, item in enumerate(net_wildcard_iterator(address.lstrip('!'))):
                 if idx > 65535:
                     # overflow
-                    syslog.syslog(syslog.LOG_ERR, 'alias table overflow for %s' % address)
+                    syslog.syslog(syslog.LOG_ERR, 'alias table %s overflow' % self._name)
                     break
                 yield "!%s" % item if address.startswith('!') else str(item)
             return

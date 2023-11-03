@@ -1,49 +1,56 @@
 <model>
     <mount>//OPNsense/Netflow</mount>
     <version>1.0.1</version>
-    <description>OPNsense Netflow</description>
+    <description>
+        OPNsense Netflow
+    </description>
     <items>
         <capture>
             <interfaces type="InterfaceField">
-                <Multiple>Y</Multiple>
+                <Required>N</Required>
+                <default></default>
+                <multiple>Y</multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
             <egress_only type="InterfaceField">
-                <Multiple>Y</Multiple>
+                <Required>N</Required>
+                <default></default>
+                <multiple>Y</multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </egress_only>
             <version type="OptionField">
                 <Required>Y</Required>
-                <Default>v9</Default>
+                <default>v9</default>
                 <OptionValues>
                     <v5>v5</v5>
                     <v9>v9</v9>
                 </OptionValues>
             </version>
             <targets type="CSVListField">
-                <Mask>/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3})([,]){0,1})*/u</Mask>
+                <Required>N</Required>
+                <mask>/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3})([,]){0,1})*/u</mask>
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.1:2055).</ValidationMessage>
             </targets>
         </capture>
         <collect>
             <enable type="BooleanField">
-                <Default>0</Default>
+                <default>0</default>
                 <Required>Y</Required>
             </enable>
         </collect>
         <activeTimeout type="IntegerField">
-            <Default>1800</Default>
+            <default>1800</default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Active timeout needs to be an integer value between 1 and 86400</ValidationMessage>
          </activeTimeout>
          <inactiveTimeout type="IntegerField">
-            <Default>15</Default>
+            <default>15</default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>

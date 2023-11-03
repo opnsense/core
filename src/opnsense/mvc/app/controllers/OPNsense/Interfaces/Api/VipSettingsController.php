@@ -28,11 +28,10 @@
 
 namespace OPNsense\Interfaces\Api;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Firewall\Util;
+use OPNsense\Base\UserException;
+use OPNsense\Base\ApiMutableModelControllerBase;
 
 class VipSettingsController extends ApiMutableModelControllerBase
 {
@@ -44,12 +43,12 @@ class VipSettingsController extends ApiMutableModelControllerBase
      */
     private function getVipOverlay()
     {
-        $overlay = ['network' => '', 'subnet' => '', 'subnet_bits' => ''];
+        $overlay = ['network' => ''];
         $tmp = $this->request->getPost('vip');
         if (!empty($tmp['network'])) {
             $parts = explode('/', $tmp['network'], 2);
             $overlay['subnet'] = $parts[0];
-            if (count($parts) == 1 || $parts[1] == '') {
+            if (count($parts) < 2) {
                 $overlay['subnet_bits'] = strpos($parts[0], ':') !== false ? 128 : 32;
             } else {
                 $overlay['subnet_bits'] = $parts[1];
@@ -115,13 +114,25 @@ class VipSettingsController extends ApiMutableModelControllerBase
         }
         $result = $this->searchBase(
             'vip',
-            [
-                'interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits',
-                'vhid', 'advbase', 'advskew', 'address', 'vhid_txt'
-            ],
+            ['interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits', 'vhid', 'advbase', 'advskew'],
             'descr',
             $filter_funct
         );
+
+        if (!empty($result['rows'])) {
+            foreach ($result['rows'] as &$row) {
+                $row['address'] = sprintf("%s/%s", $row['subnet'], $row['subnet_bits']);
+                $row['vhid_txt'] = $row['vhid'];
+                if ($row['mode'] == 'CARP') {
+                    $row['vhid_txt'] = sprintf(
+                        gettext('%s (freq. %s/%s)'),
+                        $row['vhid'],
+                        $row['advbase'],
+                        $row['advskew']
+                    );
+                }
+            }
+        }
         return $result;
     }
 
@@ -150,11 +161,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
             }
         }
         if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
-            $addr = (string)$node->subnet;
-            if (Util::isLinkLocal($addr)) {
-                $addr .= "@{$node->interface}";
-            }
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
         }
 
         return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
@@ -181,7 +188,6 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
-        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = $this->getModel()->whereUsed((string)$node->subnet);
         if (!empty($validations)) {
@@ -189,11 +195,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
         }
         $response = $this->delBase("vip", $uuid);
         if (($response['result'] ?? '') == 'deleted') {
-            $addr = (string)$node->subnet;
-            if (Util::isLinkLocal($addr)) {
-                $addr .= "@{$node->interface}";
-            }
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet . "\n", FILE_APPEND);
         }
         return $response;
     }

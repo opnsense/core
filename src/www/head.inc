@@ -76,13 +76,13 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     </style>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>">
+    <link rel="shortcut icon" href="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>">
 
     <!-- legacy browser functions -->
     <script src="<?= cache_safe("/ui/js/polyfills.js") ?>"></script>
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-select.css")) ?>">
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-select-1.13.3.css")) ?>">
 
     <!-- bootstrap dialog -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
@@ -145,16 +145,16 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       });
 
       // link showhelp class behavior
-      $("a[class='showhelp']").click(function (event) {
+      $("a[class='showhelp']").mouseover(function (event) {
         $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
       });
 
       // handle all help messages show/hide
-      $('[id*="show_all_help"]').click(function(event) {
-        $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
+      $('[id*="show_all_help"]').mouseover(function(event) {
+        //$('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
-        if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
+        if ($('[id*="show_all_help"]').hasClass("fa-success")) {
           if (window.sessionStorage) {
             sessionStorage.setItem('all_help_preset', 1);
           }
@@ -171,7 +171,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       });
       if (window.sessionStorage && sessionStorage.getItem('all_help_preset') == 1) {
           // show all help messages when preset was stored
-          $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
+          //$('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
           $('[id*="show_all_help"]').toggleClass("text-success text-danger");
           $('[data-for*="help_for"]').addClass("show");
           $('[data-for*="help_for"]').removeClass("hidden");

@@ -164,27 +164,26 @@ class PortField extends BaseListField
     }
 
     /**
-     * always lowercase known portnames
+     * always lowercase portnames
      * @param string $value
      */
     public function setValue($value)
     {
-        $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && in_array($tmp, ["any"] + self::$wellknownservices)) {
-            return parent::setValue($tmp);
-        } else {
-            return parent::setValue($value);
-        }
+        parent::setValue(trim(strtolower($value)));
     }
 
     /**
-     * {@inheritdoc}
+     * return validation message
      */
-    protected function defaultValidationMessage()
+    protected function getValidationMessage()
     {
-        $msg = gettext('Please specify a valid port number (1-65535).');
-        if ($this->enableWellKnown) {
-            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
+        if ($this->internalValidationMessage == null) {
+            $msg = gettext('Please specify a valid port number (1-65535).');
+            if ($this->enableWellKnown) {
+                $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
+            }
+        } else {
+            $msg = $this->internalValidationMessage;
         }
         return $msg;
     }

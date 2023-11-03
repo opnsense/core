@@ -141,7 +141,7 @@ include("head.inc");
             event.preventDefault();
             $(".acl_item").each(function(){
                 if ($(this).is(':visible')) {
-                    $(this).find('td > input').prop('checked', true).change();
+                    $(this).find('td > input').prop('checked', true);
                 }
             });
         });
@@ -164,7 +164,7 @@ include("head.inc");
             if ($(this).is(':checked')) {
               BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_DANGER,
-                title: "<?= gettext("Privileges - Deny config write");?>",
+                title: "<?= gettext("Privileges");?>",
                 message: "<?=gettext("Please be aware that this option does not cover all areas of the system and will be removed in a future release.");?>",
                 buttons: [{ label: "<?= gettext("Ok");?>", action: function(dialogRef) {
                               dialogRef.close();

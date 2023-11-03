@@ -139,11 +139,11 @@ include("head.inc");
                       <td style="width:22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td style="width:22%"><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
+                      <td style="width:22%"><a id="help_for_domain" href="#" class="showhelp"></a> <?=gettext("Domain");?></td>
                       <td style="width:78%">
                         <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                         <div class="hidden" data-for="help_for_domain">
@@ -153,7 +153,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                      <td><a id="help_for_ip" href="#" class="showhelp"></a> <?=gettext("IP address");?></td>
                       <td>
                         <input name="ip" type="text" value="<?=$pconfig['ip'];?>" />
                         <div class="hidden" data-for="help_for_ip">
@@ -163,7 +163,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Port");?></td>
+                      <td><a id="help_for_port" href="#" class="showhe</i></a> <?=gettext("Port");?></td>
                       <td>
                         <input name="port" type="text" value="<?=$pconfig['port'];?>" />
                         <div class="hidden" data-for="help_for_port">
@@ -172,7 +172,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_dnssrcip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source IP");?></td>
+                      <td><a id="help_for_dnssrcip" href="#" class="showhelp"></a> <?=gettext("Source IP");?></td>
                       <td>
                         <input name="dnssrcip" type="text" value="<?=$pconfig['dnssrcip'];?>" />
                         <div class="hidden" data-for="help_for_dnssrcip">
@@ -182,7 +182,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                      <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                       <td>
                         <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                         <div class="hidden" data-for="help_for_descr">

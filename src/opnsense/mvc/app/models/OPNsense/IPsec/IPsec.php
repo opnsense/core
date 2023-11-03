@@ -50,10 +50,11 @@ class IPsec extends BaseModel
             if ($validateFullModel || $node->isFieldChanged()) {
                 $tagName = $node->getInternalXMLTagName();
                 $parentNode = $node->getParentNode();
+                $parentKey = $parentNode->__reference;
                 $parentTagName = $parentNode->getInternalXMLTagName();
 
                 if ($parentTagName === 'keyPair' && in_array($tagName, ['keyType', 'privateKey', 'publicKey'])) {
-                    $keyPairs[$parentNode->__reference] = $parentNode;
+                    $keyPairs[$parentKey] = $parentNode;
                 }
             }
         }

@@ -81,7 +81,7 @@
     </field>
     <field>
         <id>cso.route_gateway</id>
-        <label>Route gateway</label>
+        <label>Redirect gateway</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>

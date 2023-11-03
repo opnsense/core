@@ -533,11 +533,11 @@ $( document ).ready(function() {
                   <td style="width:22%"><?=gettext("Edit Redirect entry"); ?></td>
                   <td  style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                  <td><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                     <?=gettext("Disable this rule"); ?>
@@ -547,7 +547,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_nordr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("No RDR (NOT)"); ?></td>
+                  <td><a id="help_for_nordr" href="#" class="showhelp"></a> <?=gettext("No RDR (NOT)"); ?></td>
                   <td>
                     <input type="checkbox" name="nordr" id="nordr" <?= !empty($pconfig['nordr']) ? "checked=\"checked\"" : ""; ?> />
                     <div class="hidden" data-for="help_for_nordr">
@@ -557,7 +557,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                  <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <div class="input-group">
                       <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
@@ -576,7 +576,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
+                  <td><a id="help_for_ipv46" href="#" class="showhelp"></a> <?=gettext("TCP/IP Version");?></td>
                   <td>
                     <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
 <?php
@@ -593,7 +593,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
+                  <td><a id="help_for_proto" href="#" class="showhelp"></a> <?=gettext("Protocol"); ?></td>
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
@@ -620,7 +620,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="advanced_opt_src hidden">
-                    <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
+                    <td> <a id="help_for_src_invert" href="#" class="showhelp"></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_src_invert">
@@ -629,7 +629,7 @@ $( document ).ready(function() {
                     </td>
                 </tr>
                 <tr class="advanced_opt_src hidden">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
+                    <td> <?=gettext("Source"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -668,7 +668,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="hidden advanced_opt_src">
-                  <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port range"); ?></td>
+                  <td><a id="help_for_srcport" href="#" class="showhelp"></a> <?=gettext("Source port range"); ?></td>
                   <td>
                     <table class="table table-condensed">
                       <thead>
@@ -734,7 +734,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
+                  <td> <a id="help_for_dst_invert" href="#" class="showhelp"></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                   <td>
                     <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" data-for="help_for_dst_invert">
@@ -743,7 +743,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
+                  <td> <?=gettext("Destination"); ?></td>
                   <td>
                     <table class="table table-condensed">
                       <tr>
@@ -812,7 +812,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_dstport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination port range"); ?></td>
+                  <td><a id="help_for_dstport" href="#" class="showhelp"></a> <?=gettext("Destination port range"); ?></td>
                   <td>
                     <table class="table table-condensed">
                       <thead>
@@ -874,7 +874,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="act_no_rdr">
-                  <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
+                  <td><a id="help_for_localip" href="#" class="showhelp"></a> <?=gettext("Redirect target IP"); ?></td>
                   <td>
                     <table class="table table-condensed">
                       <tr>
@@ -907,7 +907,7 @@ $( document ).ready(function() {
                     </div>
                 </tr>
                 <tr class="act_no_rdr">
-                  <td><a id="help_for_localbeginport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target port"); ?></td>
+                  <td><a id="help_for_localbeginport" href="#" class="showhelp"></a> <?=gettext("Redirect target port"); ?></td>
                   <td>
                     <table class="table table-condensed">
                       <tbody>
@@ -947,7 +947,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr class="act_no_rdr">
-                  <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                  <td><a id="help_for_poolopts" href="#" class="showhelp"></a> <?=gettext("Pool Options:");?></td>
                   <td>
                     <select name="poolopts" class="selectpicker">
                       <option value="" <?=empty($pconfig['poolopts']) ? "selected=\"selected\"" : ""; ?>>
@@ -983,7 +983,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log') ?></td>
+                  <td><a id="help_for_log" href="#" class="showhelp"></a> <?=gettext('Log') ?></td>
                   <td>
                     <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? 'checked="checked"' : '' ?>/>
                     <div class="hidden" data-for="help_for_log">
@@ -993,7 +993,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                  <td><a id="help_for_category" href="#" class="showhelp"></a> <?=gettext("Category"); ?></td>
                   <td>
                     <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
 <?php
@@ -1008,7 +1008,7 @@ $( document ).ready(function() {
                     </div>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
@@ -1016,7 +1016,7 @@ $( document ).ready(function() {
                     </div>
                 </tr>
                 <tr>
-                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
+                    <td><a id="help_for_tag" href="#" class="showhelp"></a>  <?=gettext("Set local tag"); ?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                       <div class="hidden" data-for="help_for_tag">
@@ -1025,7 +1025,7 @@ $( document ).ready(function() {
                     </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
+                    <td><a id="help_for_tagged" href="#" class="showhelp"></a> <?=gettext("Match local tag"); ?>   </td>
                     <td>
                       <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
                       <div class="hidden" data-for="help_for_tagged">
@@ -1034,7 +1034,7 @@ $( document ).ready(function() {
                     </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
+                  <td><a id="help_for_nosync" href="#" class="showhelp"></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                   <td>
                     <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_nosync">
@@ -1043,7 +1043,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NAT reflection"); ?></td>
+                  <td> <?=gettext("NAT reflection"); ?></td>
                   <td>
                     <select name="natreflection" class="selectpicker">
                     <option value="default" <?=$pconfig['natreflection'] != "enable" && $pconfig['natreflection'] != "purenat" && $pconfig['natreflection'] != "disable" ? "selected=\"selected\"" : ""; ?>><?=gettext("Use system default"); ?></option>
@@ -1071,7 +1071,7 @@ $( document ).ready(function() {
 ?>
 
                 <tr class="act_no_rdr">
-                  <td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
+                  <td><a id="help_for_fra" href="#" class="showhelp"></a> <?=gettext("Filter rule association"); ?></td>
                   <td>
                     <select name="associated-rule-id">
                       <option value="" <?= empty($pconfig['associated-rule-id']) ? " selected=\"selected\"" : ""; ?>><?=gettext("None"); ?></option>

@@ -179,7 +179,12 @@ foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
 }
 
 if (empty($openvpn_cfg['openvpn-client']) && empty($openvpn_cfg['openvpn-server'])): ?>
-    <table class="table table-striped table-condensed">
+      <table class="table table-striped table-condensed h-100">	
+      <thead>	
+        <tr>	
+          <th style="text-align:center;">VeritaVPN</th>	
+        </tr>	
+    </thead>
       <tr>
         <td><?= gettext('No OpenVPN instance defined or enabled.') ?></td>
       </tr>

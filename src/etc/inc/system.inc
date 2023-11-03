@@ -178,6 +178,8 @@ function system_resolvconf_host_routes()
 
 function system_resolvconf_generate($verbose = false)
 {
+    global $config;
+
     service_log('Generating /etc/resolv.conf...', $verbose);
 
     $syscfg = config_read_array('system');
@@ -245,7 +247,6 @@ function get_locale_list()
     /* first one is the default */
     $locales['en_US'] = gettext('English');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
-    $locales['zh_TW'] = gettext('Chinese (Traditional)');
     $locales['cs_CZ'] = gettext('Czech');
     $locales['fr_FR'] = gettext('French');
     $locales['de_DE'] = gettext('German');
@@ -262,8 +263,7 @@ function get_locale_list()
     $locales['vi_VN'] = gettext('Vietnamese');
 
     if (!product::getInstance()->development()) {
-        /* below 30% progress or currently unvetted */
-        unset($locales['zh_TW']);
+        unset($locales['pl_PL']);
         unset($locales['vi_VN']);
     }
 
@@ -346,7 +346,7 @@ function get_nameservers($interface = null, $with_gateway = false)
 {
     global $config;
 
-    $gateways = new \OPNsense\Routing\Gateways();
+    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
     $syscfg = config_read_array('system');
     $exclude_interfaces = [];
     $master_list = [];
@@ -545,70 +545,8 @@ function system_host_route($host, $gateway)
     mwexecf('/sbin/route add -host -%s %s %s', [$family, $host, $gateway]);
 }
 
-function system_interface_route($gw, $routes)
+function system_default_route($gateway, $interface, $far = false)
 {
-    $interface = $gw['interface'];
-    $gateway = $gw['gateway'];
-    $far = isset($gw['fargw']);
-    $device = $gw['if'];
-    $family = 'inet';
-
-    if (!is_ipaddrv4($gateway)) {
-        log_msg("ROUTING: not a valid interface gateway address: '{$gateway}'", LOG_ERR);
-        return;
-    }
-
-    if (!$far) {
-        /* special case tries to turn on far gateway when required for dynamic gateway */
-        $dynamicgw = trim(@file_get_contents("/tmp/{$device}_router") ?? '');
-        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
-            list (, $network) = interfaces_primary_address($interface);
-            if (!empty($network) && !ip_in_subnet($gateway, $network)) {
-                /*
-                 * If we do not fail primary network detection and the local address
-                 * is in not the same network as the gateway address set far flag.
-                 */
-                $far = 1;
-
-                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
-            }
-        }
-    }
-
-    if (!$far) {
-        /* nothing to do */
-        return;
-    }
-
-    foreach ($routes as $route) {
-        /* find host routes on the link for the underlying device */
-        if ($route['netif'] != $device) {
-            continue;
-        } elseif ($route['proto'] != 'ipv4') {
-            continue;
-        } elseif (strpos($route['gateway'], 'link#') !== 0) {
-            continue;
-        /* XXX may consider "S" as well for manually assigned */
-        } elseif (strpos($route['flags'], 'H') === false) {
-            continue;
-        }
-
-        /* keeping previous, but do not log this noisy operation */
-        return;
-    }
-
-    log_msg("ROUTING: setting {$family} interface route to {$gateway} via {$device}");
-
-    /* never remove interface routes -- we only try to add if missing */
-    mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $device]);
-}
-
-function system_default_route($gw, $routes)
-{
-    $interface = $gw['interface'];
-    $gateway = $gw['gateway'];
-    $device = $gw['if'];
-
     if (is_ipaddrv4($gateway)) {
         $family = 'inet';
     } elseif (is_ipaddrv6($gateway)) {
@@ -618,28 +556,50 @@ function system_default_route($gw, $routes)
         return;
     }
 
+    $realif = get_real_interface($interface, $family == 'inet' ? 'all' : 'inet6');
+
     if (is_linklocal($gateway)) {
-        /* XXX always inet6 but why not do this elsewhere */
-        $gateway .= "%{$device}";
+        $gateway .= "%{$realif}";
     }
 
-    foreach ($routes as $route) {
-        /* find out if the default route matches what we want to set */
-        if ($route['proto'] != ($family == 'inet6' ? 'ipv6' : 'ipv4')) {
-            continue;
-        } elseif ($route['destination'] != 'default') {
-            continue;
-        } elseif ($route['gateway'] != $gateway) {
-            continue;
-        }
-
-        log_msg("ROUTING: keeping {$family} default route to {$gateway}");
+    /* XXX while this does prevent unnecessary work it cannot detect a flip of far gateway setting */
+    $tmpcmd = "/sbin/route -n get -{$family} default 2>/dev/null | /usr/bin/awk '/gateway:/ {print $2}'";
+    $current = trim(exec($tmpcmd), " \n");
+    if ($current == $gateway) {
+        log_msg("ROUTING: keeping current {$family} default gateway '{$gateway}'");
         return;
+    }
+
+    if ($family == 'inet') {
+        $dynamicgw = trim(@file_get_contents("/tmp/{$realif}_router") ?? '');
+        if (!empty($dynamicgw) && $gateway === $dynamicgw) {
+            /* special case tries to turn on far gateway when required for dynamic gateway */
+            list (, $network) = interfaces_primary_address($interface);
+            if (empty($network) || ip_in_subnet($gateway, $network)) {
+                /*
+                 * If we fail a primary network detection or the local address
+                 * is in the same network as the gateway address do nothing.
+                 */
+                $realif = null;
+            } else {
+                log_msg("ROUTING: treating '{$gateway}' as far gateway for '{$network}'");
+            }
+        } elseif (!$far) {
+            /* standard case disables host routes when not set in a static gateway */
+            $realif = null;
+        }
+    } else {
+        /* IPv6 does not support far gateway notion */
+        $realif = null;
     }
 
     log_msg("ROUTING: setting {$family} default route to {$gateway}");
 
     mwexecf('/sbin/route delete -%s default', [$family], true);
+    if (!empty($realif)) {
+        mwexecf('/sbin/route delete -%s %s -interface %s', [$family, $gateway, $realif], true);
+        mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $realif]);
+    }
     mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
 }
 
@@ -656,20 +616,8 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
     }
 
     $ifdetails = legacy_interfaces_details();
-    $gateways = new \OPNsense\Routing\Gateways();
+    $gateways = new \OPNsense\Routing\Gateways($ifdetails);
     $down_gateways = isset($config['system']['gw_switch_default']) ? return_down_gateways() : [];
-    $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
-
-    foreach ($gateways->gatewaysIndexedByName() as $gateway) {
-        /* check if we need to add a required interface route to the gateway (IPv4 only) */
-        if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
-            continue;
-        } elseif (!empty($interface) && $interface != $gateway['interface']) {
-            continue;
-        }
-
-        system_interface_route($gateway, $routes);
-    }
 
     if (!empty($down_gateways)) {
         log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
@@ -681,7 +629,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         }
 
         $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
-        if (empty($gateway['gateway'])) {
+        if ($gateway == null) {
             continue;
         }
 
@@ -692,8 +640,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             }
 
             log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
-
-            system_default_route($gateway, $routes);
+            system_default_route($gateway['gateway'], $gateway['interface'], isset($gateway['fargw']));
         }
     }
 
@@ -766,7 +713,7 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
         if (!empty($interface)) {
             $reloads = [];
 
-            foreach ($gateways->gatewaysIndexedByName() as $name => $gateway) {
+            foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
                 if ($family !== null && $family !== $gateway['ipprotocol']) {
                     continue;
                 }
@@ -867,101 +814,66 @@ function system_trust_configure($verbose = false)
 
     service_log('Writing trust files...', $verbose);
 
-    /*
-     * Write separate files because certcl will blacklist the whole file
-     * if the first certificate matches.  Unfortunately the blacklisting
-     * can also be harmful because it overrides the user choice given
-     * through our GUI autorities section.
-     *
-     * 1. Clear all files (a subdirectory is not supported)
-     * 2. Write all files
-     * 3. Execute rehash to fill /etc/ssl/certs
-     * 4. Pull all content from /etc/ssl/certs
-     * 5. Write bundle files with all /etc/ssl/certs content
-     */
-
-    $ca_files = '/usr/local/share/certs/ca-root-opnsense-%s';
-
-    foreach (glob(sprintf($ca_files, '*')) as $ca_unlink) {
-        @unlink($ca_unlink);
-    }
-
-    foreach (config_read_array('ca') as $i => $entry) {
-        if (!empty($entry['crt'])) {
-            // Split and cleans ca certificates, one entry could contain multiple certs if a user imported a bundle
-            // avoid expired ca's from being considered as valid alternatives.
-            $certlist = str_replace("\r", '', base64_decode($entry['crt']));
-            $user_cas = [""];
-            foreach (explode("\n", $certlist) as $row) {
-                $user_cas[count($user_cas) - 1] .= $row . "\n";
-                if (strpos($row, '---END') > 0) {
-                    $user_cas[] = "";
-                }
-            }
-            $ca = "# OPNsense trust authority: {$entry['descr']}\n";
-            $ca_count = 0;
-            $include_intermediates = !empty($config['system']['store_intermediate_certs']);
-            foreach ($user_cas as $user_ca) {
-                if (!empty(trim($user_ca))) {
-                    $certinfo = @openssl_x509_parse($user_ca);
-                    $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
-                    $authoritykey = "";
-                    if (!empty($certext['authorityKeyIdentifier'])) {
-                        $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
-                    }
-                    $subjectkey = $certext['subjectKeyIdentifier'];
-                    $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
-
-                    $error_line = "";
-                    if (!empty($certinfo['validTo']) && $certinfo['validTo_time_t'] < time()) {
-                        $error_line = sprintf(
-                            "(system local trust) refusing to import %s from %s (expired @ %s)",
-                            $certinfo['name'],
-                            $entry['descr'],
-                            date('r', $certinfo['validFrom_time_t'])
-                        );
-                    } elseif (!$include_intermediates && !$is_self_signed) {
-                        $error_line = sprintf(
-                            "(system local trust) skip intermediate certificate %s from %s",
-                            $certinfo['name'],
-                            $entry['descr']
-                        );
-                    }
-                    if (!empty($error_line)) {
-                        syslog(LOG_NOTICE, $error_line);
-                        $ca .= "#" .  str_replace("\n", "", $error_line);
-                    } else {
-                        $ca .= $user_ca;
-                        $ca_count += 1;
+    $ca_root_nss = '/usr/local/share/certs/ca-root-nss.crt';
+    $ca_cert_pem = '/usr/local/openssl/cert.pem';
+    if (file_exists($ca_root_nss)) {
+        $ca = file_get_contents($ca_root_nss);
+        foreach (config_read_array('ca') as $entry) {
+            if (!empty($entry['crt'])) {
+                // Split and cleans ca certificates, one entry could contain multiple certs if a user imported a bundle
+                // avoid expired ca's from being considered as valid alternatives.
+                $certlist = str_replace("\r", '', base64_decode($entry['crt']));
+                $user_cas = [""];
+                foreach (explode("\n", $certlist) as $row) {
+                    $user_cas[count($user_cas) - 1] .= $row . "\n";
+                    if (strpos($row, '---END') > 0) {
+                        $user_cas[] = "";
                     }
                 }
-            }
+                $ca .= "\n# {$entry['descr']}\n";
+                $include_intermediates = !empty($config['system']['store_intermediate_certs']);
+                foreach ($user_cas as $user_ca) {
+                    if (!empty(trim($user_ca))) {
+                        $certinfo = @openssl_x509_parse($user_ca);
+                        $certext = !empty($certinfo['extensions']) ? $certinfo['extensions'] : [];
+                        $authoritykey = "";
+                        if (!empty($certext['authorityKeyIdentifier'])) {
+                            $authoritykey = trim(str_replace('keyid:', '', preg_split("/\r\n|\n|\r/", $certext['authorityKeyIdentifier'])[0]));
+                        }
+                        $subjectkey = $certext['subjectKeyIdentifier'];
+                        $is_self_signed = empty($authoritykey) || $subjectkey == $authoritykey;
 
-            if ($ca_count) {
-                $ca_file = sprintf($ca_files, $i . '.crt');
-                file_put_contents(sprintf($ca_file, $i), $ca);
-                chmod(sprintf($ca_file, $i), 0644);
+                        $error_line = "";
+                        if (!empty($certinfo['validTo']) && $certinfo['validTo_time_t'] < time()) {
+                            $error_line = sprintf(
+                                "(system local trust) refusing to import %s from %s (expired @ %s)",
+                                $certinfo['name'],
+                                $entry['descr'],
+                                date('r', $certinfo['validFrom_time_t'])
+                            );
+                        } elseif (!$include_intermediates && !$is_self_signed) {
+                            $error_line = sprintf(
+                                "(system local trust) skip intermediate certificate %s from %s",
+                                $certinfo['name'],
+                                $entry['descr']
+                            );
+                        }
+                        if (!empty($error_line)) {
+                            syslog(LOG_NOTICE, $error_line);
+                            $ca .= "#" .  str_replace("\n", "", $error_line);
+                        } else {
+                            $ca .= $user_ca;
+                        }
+                    }
+                }
             }
         }
-    }
 
-    service_log("done.\n", $verbose);
-
-    /* collects all trusted certificates into /etc/ssl/certs directory */
-    passthru('/usr/sbin/certctl rehash');
-
-    service_log('Writing trust bundles...', $verbose);
-
-    /* collect all the file content and write it to compatibility bundle locations */
-    $ca_bundle = [];
-    foreach (glob('/etc/ssl/certs/*.[0-9]') as $file) {
-        $ca_bundle[] = file_get_contents($file);
-    }
-    $ca_bundle = join("\n", $ca_bundle);
-    foreach (['/etc/ssl/cert.pem', '/usr/local/etc/ssl/cert.pem', '/usr/local/openssl/cert.pem'] as $pem) {
-        @unlink($pem); /* do not clobber symlink target */
-        file_put_contents($pem, $ca_bundle);
-        chmod($pem, 0644);
+        file_put_contents($ca_cert_pem, $ca);
+        copy($ca_cert_pem, '/usr/local/etc/ssl/cert.pem');
+        @unlink('/etc/ssl/cert.pem'); /* do not clobber symlink target */
+        copy($ca_cert_pem, '/etc/ssl/cert.pem');
+        chmod('/etc/ssl/cert.pem', 0644);
     }
 
     service_log("done.\n", $verbose);
@@ -1262,15 +1174,14 @@ function system_login_configure($verbose = false)
 
     foreach ($etc_ttys_lines as $tty) {
         /* virtual terminals */
-        foreach (['ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7'] as $virtualport) {
+        foreach (array('ttyv0', 'ttyv1', 'ttyv2', 'ttyv3', 'ttyv4', 'ttyv5', 'ttyv6', 'ttyv7') as $virtualport) {
             if (strpos($tty, $virtualport) === 0) {
                 fwrite($fd, "{$virtualport}\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
                 continue 2;
             }
         }
-
         /* serial terminals */
-        foreach (['tty%s0', 'tty%s1', 'tty%s2', 'tty%s3'] as $serialport) {
+        foreach (array('tty%s0', 'tty%s1', 'tty%s2', 'tty%s3') as $serialport) {
             $serialport = sprintf($serialport, isset($config['system']['serialusb']) ? 'U' : 'u');
             if (stripos($tty, $serialport) === 0) {
                 fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
@@ -1278,17 +1189,14 @@ function system_login_configure($verbose = false)
             }
         }
 
-        /* xen terminal */
-        if (strpos($tty, 'xc0') === 0) {
-            $on_off_secure_w = $virtual_enabled ? 'onifconsole secure' : 'off secure';
-            fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_w}\n");
-            continue;
-        }
-
-        if (!empty($tty)) {
+        if (!empty($tty) && strpos($tty, 'xc0') === false) {
             /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
+    }
+
+    if (file_exists('/dev/xc0')) {
+        fwrite($fd, "xc0\t\"/usr/libexec/getty {$console_type}\"\t\txterm\t{$on_off_secure_v}\n");
     }
 
     fclose($fd);

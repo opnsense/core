@@ -242,14 +242,14 @@ include("head.inc");
                     </td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       &nbsp;&nbsp;
                     </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a id="help_for_timeservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Time servers') ?></td>
+                    <td><a id="help_for_timeservers" href="#" class="showhelp"></a> <?=gettext('Time servers') ?></td>
                     <td>
                       <table class="table table-striped table-condensed" id="timeservers_table">
                         <thead>
@@ -308,14 +308,14 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Client mode') ?></td>
+                    <td> <?=gettext('Client mode') ?></td>
                     <td>
                       <input name="clientmode" type="checkbox" id="clientmode" <?=!empty($pconfig['clientmode']) ? ' checked="checked"' : '' ?> />
                       <?= gettext('Quit NTP server immediately after time synchronisation') ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Interfaces') ?></td>
+                    <td><a id="help_for_interfaces" href="#" class="showhelp"></a> <?=gettext('Interfaces') ?></td>
                     <td>
 <?php
                     $interfaces = get_configured_interface_with_descr();
@@ -347,7 +347,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_orphan" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Orphan mode') ?></td>
+                    <td><a id="help_for_orphan" href="#" class="showhelp"></a> <?=gettext('Orphan mode') ?></td>
                     <td>
                       <input name="orphan" type="text" value="<?=$pconfig['orphan']?>" placeholder="12" />
                       <div class="hidden" data-for="help_for_orphan">
@@ -357,7 +357,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_maxclock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Maxclock') ?></td>
+                    <td><a id="help_for_maxclock" href="#" class="showhelp"></a> <?=gettext('Maxclock') ?></td>
                     <td>
                       <input name="maxclock" type="text" value="<?=$pconfig['maxclock']?>" placeholder="10" />
                       <div class="hidden" data-for="help_for_maxclock">
@@ -367,14 +367,14 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('NTP graphs') ?></td>
+                    <td> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
                       <?= gettext('Enable RRD graphs of NTP statistics') ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_syslog" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Syslog logging') ?></td>
+                    <td><a id="help_for_syslog" href="#" class="showhelp"></a> <?=gettext('Syslog logging') ?></td>
                     <td>
                       <input name="logpeer" type="checkbox" <?=!empty($pconfig['logpeer']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable logging of peer messages"); ?>
@@ -387,7 +387,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Statistics logging') ?></td>
+                    <td> <?=gettext('Statistics logging') ?></td>
                     <td>
                       <div>
                         <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show statistics logging options");?>
@@ -407,7 +407,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Access restrictions') ?></td>
+                    <td> <?=gettext('Access restrictions') ?></td>
                     <td>
                       <div>
                       <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show access restriction options");?>
@@ -439,13 +439,13 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Leap seconds') ?></td>
+                    <td> <?=gettext('Leap seconds') ?></td>
                     <td>
                       <div>
                         <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
-                        <?=gettext("A leap second file allows NTP to advertise an upcoming leap second addition or subtraction.");?>
+                        <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
                         <?=gettext("Normally this is only useful if this server is a stratum 1 time server.");?>
                         <br /><br />
                         <?=gettext("Enter Leap second configuration as text:");?><br />
@@ -456,7 +456,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                    <td> <?=gettext("Advanced");?></td>
                     <td>
                       <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                         <input type="button" class="btn btn-default btn-xs" id="show_advanced_ntpd" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show advanced option");?>

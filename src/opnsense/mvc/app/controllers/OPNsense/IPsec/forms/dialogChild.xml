@@ -93,7 +93,6 @@
         <id>child.esp_proposals</id>
         <label>ESP proposals</label>
         <type>select_multiple</type>
-        <size>10</size>
     </field>
     <field>
         <id>child.local_ts</id>

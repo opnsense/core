@@ -251,18 +251,18 @@ $( document ).ready(function() {
                   <td style="width:22%"><strong><?=gettext("General options");?></strong></td>
                   <td style="width:78%;text-align:right">
                     <small><?=gettext("full help");?> </small>
-                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
+                  <td style="width:22%"> <?=gettext("Enable");?></td>
                   <td style="width:78%">
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Enable Dnsmasq') ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Listen Port");?></td>
+                  <td><a id="help_for_port" href="#" class="showhelp"></a> <?=gettext("Listen Port");?></td>
                   <td>
                     <input name="port" type="text" id="port" size="6" placeholder="53" <?=!empty($pconfig['port']) ? "value=\"{$pconfig['port']}\"" : "";?> />
                     <div class="hidden" data-for="help_for_port">
@@ -271,7 +271,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Network Interfaces') ?></td>
+                  <td><a id="help_for_interfaces" href="#" class="showhelp"></a> <?= gettext('Network Interfaces') ?></td>
                   <td>
                     <select id="interface" name="interface[]" multiple="multiple" class="selectpicker" title="<?= html_safe(gettext('All (recommended)')) ?>">
 <?php foreach (get_configured_interface_with_descr() as  $iface => $ifacename): ?>
@@ -286,7 +286,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_strictbind" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Bind Mode') ?></td>
+                  <td><a id="help_for_strictbind" href="#" class="showhelp"></a> <?=gettext('Bind Mode') ?></td>
                   <td>
                     <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Strict Interface Binding') ?>
@@ -297,14 +297,14 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('DNSSEC') ?></td>
+                  <td> <?=gettext('DNSSEC') ?></td>
                   <td>
                     <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? 'checked="checked"' : '' ?> />
                     <?= gettext('Enable DNSSEC Support') ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_regdhcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Registration");?></td>
+                  <td><a id="help_for_regdhcp" href="#" class="showhelp"></a> <?=gettext("DHCP Registration");?></td>
                   <td>
                     <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Register DHCP leases') ?>
@@ -316,7 +316,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Domain Override");?></td>
+                  <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"></a> <?=gettext("DHCP Domain Override");?></td>
                   <td>
                     <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
                     <div class="hidden" data-for="help_for_regdhcpdomain">
@@ -328,7 +328,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static DHCP");?></td>
+                  <td><a id="help_for_regdhcpstatic" href="#" class="showhelp"></a> <?=gettext("Static DHCP");?></td>
                   <td>
                     <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Register DHCP static mappings') ?>
@@ -341,7 +341,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_dhcpfirst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer DHCP");?></td>
+                  <td><a id="help_for_dhcpfirst" href="#" class="showhelp"></a> <?=gettext("Prefer DHCP");?></td>
                   <td>
                     <input name="dhcpfirst" type="checkbox" id="dhcpfirst" value="yes" <?=!empty($pconfig['dhcpfirst']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Resolve DHCP mappings first') ?>
@@ -353,7 +353,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_strict_order" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
+                  <td><a id="help_for_strict_order" href="#" class="showhelp"></a> <?=gettext("DNS Query Forwarding");?></td>
                   <td>
                     <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
                     <?= gettext('Query DNS servers sequentially') ?>
@@ -394,21 +394,21 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('No Hosts Lookup') ?></td>
+                  <td><?=gettext('No Hosts Lookup') ?></td>
                   <td>
                     <input name="no_hosts" type="checkbox" id="no_hosts" value="yes" <?= !empty($pconfig['no_hosts']) ? 'checked="checked"' : '' ?> />
                     <?= gettext('Do not read hostnames in /etc/hosts') ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Log Queries') ?></td>
+                  <td> <?=gettext('Log Queries') ?></td>
                   <td>
                     <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= !empty($pconfig['log_queries']) ? 'checked="checked"' : '' ?> />
                     <?= gettext('Log the results of DNS queries') ?>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_dns_forward_max" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Maximum concurrent queries') ?></td>
+                  <td><a id="help_for_dns_forward_max" href="#" class="showhelp"></a> <?= gettext('Maximum concurrent queries') ?></td>
                   <td>
                     <input name="dns_forward_max" type="text" id="dns_forward_max" size="6" placeholder="5000" <?= !empty($pconfig['dns_forward_max']) ? 'value="' . html_safe($pconfig['dns_forward_max']) . '"' : '' ?> />
                     <div class="hidden" data-for="help_for_dns_forward_max">
@@ -417,7 +417,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_cache_size" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Cache size') ?></td>
+                  <td><a id="help_for_cache_size" href="#" class="showhelp"></a> <?= gettext('Cache size') ?></td>
                   <td>
                     <input name="cache_size" type="text" id="cache_size" size="8" placeholder="10000" value="<?= html_safe($pconfig['cache_size']) ?>" />
                     <div class="hidden" data-for="help_for_cache_size">
@@ -426,7 +426,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_local_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Local DNS entry TTL') ?></td>
+                  <td><a id="help_for_local_ttl" href="#" class="showhelp"></a> <?= gettext('Local DNS entry TTL') ?></td>
                   <td>
                     <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" value="<?= html_safe($pconfig['local_ttl']) ?>"/>
                     <div class="hidden" data-for="help_for_local_ttl">

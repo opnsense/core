@@ -1,6 +1,6 @@
 <menu>
     <Services>
-        <Unbound VisibleName="Unbound DNS" cssClass="fa fa-tags fa-fw">
+        <Unbound VisibleName="DNS (Unbound DNS)" order="110">
             <General order="10" url="/ui/unbound/general"/>
             <Overrides order="20" url="/ui/unbound/overrides"/>
             <Advanced order="30" url="/ui/unbound/advanced"/>
@@ -9,7 +9,12 @@
             <Forward VisibleName="Query Forwarding" order="60" url="/ui/unbound/forward"/>
             <Dot VisibleName="DNS over TLS" order="70" url="/ui/unbound/dot"/>
             <Statistics order="90" url="/ui/unbound/stats"/>
-            <LogFile VisibleName="Log File" order="100" url="/ui/diagnostics/log/core/resolver"/>
+            
         </Unbound>
     </Services>
+      <ReportsandLogs>
+    <LogFiles>
+      <UnboundDNSLogFiles VisibleName="Unbound DNS Log File" order="160" url="/ui/diagnostics/log/core/resolver"/>
+    </LogFiles>
+  </ReportsandLogs>
 </menu>

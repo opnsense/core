@@ -117,18 +117,18 @@ include("head.inc");
                       <td style="width:22%"><strong><?=gettext("DHCPv6 Relay configuration"); ?></strong></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Enable') ?></td>
+                      <td> <?= gettext('Enable') ?></td>
                       <td>
                         <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?>/>
                         <strong><?=gettext("Enable DHCPv6 relay on interface");?></strong>
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Interface(s)') ?></td>
+                      <td>< id="help_for_interface" href="#" class="showhelp"><?= gettext('Interface(s)') ?></td>
                       <td>
                         <select name="interface[]" multiple="multiple" class="selectpicker">
 <?php
@@ -150,7 +150,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_agentoption" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Append circuit ID");?></td>
+                      <td><a id="help_for_agentoption" href="#" class="showhelp"></a> <?=gettext("Append circuit ID");?></td>
                       <td>
                         <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_agentoption">
@@ -159,7 +159,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination server");?></td>
+                      <td><a id="help_for_server" href="#" class="showhelp"></a> <?=gettext("Destination server");?></td>
                       <td>
                         <input name="server" type="text" value="<?=!empty($pconfig['server']) ? htmlspecialchars($pconfig['server']):"";?>" />
                         <div class="hidden" data-for="help_for_server">

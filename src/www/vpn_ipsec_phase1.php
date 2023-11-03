@@ -632,13 +632,13 @@ include("head.inc");
                     <td style="width:22%"><b><?=gettext("General information"); ?></b></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
 <?php
                   if (!empty($_GET['dup'])):?>
                   <tr>
-                    <td><a id="help_for_clone_phase2" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Clone phase2"); ?></td>
+                    <td><a id="help_for_clone_ph</a> <?=gettext("Clone phase2"); ?></td>
                     <td>
                       <input name="clone_phase2" type="checkbox" id="clone_phase2" value="yes" <?=!empty($pconfig['clone_phase2'])?"checked=\"checked\"":"";?> />
                       <div class="hidden" data-for="help_for_clone_phase2">
@@ -649,7 +649,7 @@ include("head.inc");
 <?php
                   endif;?>
                   <tr>
-                    <td style="width:22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td style="width:22%"><a id="help_for_disa</a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?=!empty($pconfig['disabled'])?"checked=\"checked\"":"";?> />
                       <?= gettext('Disable this phase1 entry') ?>
@@ -659,7 +659,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_auto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Connection method"); ?></td>
+                    <td><a id="help_for_</a> <?=gettext("Connection method"); ?></td>
                     <td>
 
                       <select name="auto">
@@ -674,7 +674,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_iketype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Key Exchange version"); ?></td>
+                    <td><a id="help_for_iketype" href="#" class="showhelp"></a> <?=gettext("Key Exchange version"); ?></td>
                     <td>
 
                       <select name="iketype" id="iketype">
@@ -694,7 +694,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Internet Protocol"); ?></td>
+                    <td><a id="help_for_protocol" href="#" class="showhelp"></a> <?=gettext("Internet Protocol"); ?></td>
                     <td>
                       <select name="protocol">
                       <?php
@@ -716,7 +716,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                    <td><a id="help_for_inte</a> <?=gettext("Interface"); ?></td>
                     <td>
                       <select name="interface">
 <?php
@@ -748,7 +748,7 @@ include("head.inc");
                   </tr>
 <?php if (empty($pconfig['mobile'])): ?>
                   <tr>
-                    <td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote gateway"); ?></td>
+                    <td><a id="help_for_remotegw" href="#" class="showhelp"></a> <?=gettext("Remote gateway"); ?></td>
                     <td>
                       <input name="remote-gateway" type="text" id="remotegw" size="28" value="<?=$pconfig['remote-gateway'];?>" />
                       <div class="hidden" data-for="help_for_remotegw">
@@ -757,7 +757,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rightallowany" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Dynamic gateway') ?></td>
+                    <td><a id="help_for_rightallowany" href="#" class="showhelp"></a> <?=gettext('Dynamic gateway') ?></td>
                     <td>
                       <input name="rightallowany" type="checkbox" id="rightallowany" value="yes" <?= !empty($pconfig['rightallowany']) ? 'checked="checked"' : '' ?>/>
                       <?= gettext('Allow any remote gateway to connect') ?>
@@ -768,7 +768,7 @@ include("head.inc");
                   </tr>
 <?php endif ?>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">
@@ -783,7 +783,7 @@ include("head.inc");
                     <td colspan="2"><b><?=gettext("Phase 1 proposal (Authentication)"); ?></b></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_authmethod" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication method"); ?></td>
+                    <td><a id="help_for_authmethod" href="#" class="showhelp"></a> <?=gettext("Authentication method"); ?></td>
                     <td>
                       <select name="authentication_method" id="authentication_method">
 <?php
@@ -805,7 +805,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr id="mode_tr">
-                    <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Negotiation mode"); ?></td>
+                    <td><a id="help_for_mode" href="#" class="showhelp"></a> <?=gettext("Negotiation mode"); ?></td>
                     <td>
                       <select id="mode" name="mode">
                       <?php
@@ -824,7 +824,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("My identifier"); ?></td>
+                    <td> <?=gettext("My identifier"); ?></td>
                     <td>
                       <select name="myid_type" id="myid_type">
 <?php
@@ -855,7 +855,7 @@ endforeach; ?>
 <?php
                   if (empty($pconfig['mobile'])):?>
                   <tr class="auth_opt auth_eap_tls auth_psk auth_pubkey">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
+                    <td> <?=gettext("Peer identifier"); ?></td>
                     <td>
                       <select name="peerid_type" id="peerid_type">
 <?php
@@ -889,7 +889,7 @@ endforeach; ?>
 <?php
                   endif;?>
                   <tr class="auth_opt auth_psk">
-                    <td><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
+                    <td><a id="help_for_psk" href="#" class="showhelp"></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
                       <input name="pre-shared-key" type="text" id="pskey" size="40"
                              value="<?= $pconfig['authentication_method'] == "pre_shared_key" || $pconfig['authentication_method'] == "xauth_psk_server" ? $pconfig['pre-shared-key'] : "";?>" />
@@ -899,7 +899,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_eap_tls">
-                    <td><a id="help_for_certref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate"); ?></td>
+                    <td><a id="help_for_certref" href="#" class="showhelp"></a> <?=gettext("My Certificate"); ?></td>
                     <td>
                       <select name="certref">
 <?php
@@ -919,7 +919,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_eap_tls_caref">
-                    <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote Certificate Authority"); ?></td>
+                    <td><a id="help_for_caref" href="#" class="showhelp"></a> <?=gettext("Remote Certificate Authority"); ?></td>
                     <td>
                       <select name="caref">
                           <option value=""><?=gettext("none");?></option>
@@ -943,7 +943,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr class="auth_opt auth_pubkey">
-                      <td><a id="help_for_pubkey_local" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local Key Pair"); ?></td>
+                      <td><a id="help_for_pubkey_local" href="#" class="showhelp"></a> <?=gettext("Local Key Pair"); ?></td>
                       <td>
                           <select name="local-kpref">
                               <?php
@@ -966,7 +966,7 @@ endforeach; ?>
                       </td>
                   </tr>
                   <tr class="auth_opt auth_pubkey">
-                      <td><a id="help_for_pubkey_peer" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Key Pair"); ?></td>
+                      <td><a id="help_for_pubkey_peer" href="#" class="showhelp"></a> <?=gettext("Peer Key Pair"); ?></td>
                       <td>
                           <select name="peer-kpref">
                               <?php
@@ -989,7 +989,7 @@ endforeach; ?>
                       </td>
                   </tr>
                   <tr class="auth_opt auth_eap_radius">
-                    <td><a id="help_for_authservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Radius servers"); ?></td>
+                    <td><a id="help_for_authservers" href="#" class="showhelp"></a> <?=gettext("Radius servers"); ?></td>
                     <td>
                       <select name="authservers[]"  multiple="multiple" size="3" class="selectpicker" data-live-search="true">
 <?php
@@ -1011,7 +1011,7 @@ endforeach; ?>
                     <td colspan="2"><b><?=gettext("Phase 1 proposal (Algorithms)"); ?></b></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm"); ?></td>
+                    <td><a id="help_for_encalg" href="#" class="showhelp"></a> <?=gettext("Encryption algorithm"); ?></td>
                     <td>
                       <select name="ealgo" id="ealgo" data-default-keylen="<?=$pconfig['encryption-algorithm']['keylen'];?>">
 <?php
@@ -1037,7 +1037,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_halgo" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithm"); ?></td>
+                    <td><a id="help_for_halgo" href="#" class="showhelp"></a> <?=gettext("Hash algorithm"); ?></td>
                     <td>
                       <select name="hash-algorithm[]" class="selectpicker" multiple="multiple">
                       <?php
@@ -1063,7 +1063,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_dhgroup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DH key group"); ?></td>
+                    <td><a id="help_for_dhgroup" href="#" class="showhelp"></a> <?=gettext("DH key group"); ?></td>
                     <td>
                       <select name="dhgroup[]" class="selectpicker" multiple="multiple">
 <?php
@@ -1104,7 +1104,7 @@ endforeach; ?>
                     <td colspan="2"><b><?=gettext("Advanced Options"); ?></b></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_installpolicy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Install policy");?></td>
+                    <td><a id="help_for_installpolicy" href="#" class="showhelp"></a>  <?=gettext("Install policy");?></td>
                     <td>
                       <input name="installpolicy" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['installpolicy']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_installpolicy">
@@ -1114,7 +1114,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rekey_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable Rekey");?></td>
+                    <td><a id="help_for_rekey_enable" href="#" class="showhelp"></a>  <?=gettext("Disable Rekey");?></td>
                     <td>
                       <input name="rekey_enable" type="checkbox" id="rekey_enable" value="yes" <?= !empty($pconfig['rekey_enable']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_rekey_enable">
@@ -1123,7 +1123,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_reauth_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable Reauth");?></td>
+                    <td><a id="help_for_reauth_enable" href="#" class="showhelp"></a>  <?=gettext("Disable Reauth");?></td>
                     <td>
                       <input name="reauth_enable" type="checkbox" id="reauth_enable" value="yes" <?= !empty($pconfig['reauth_enable']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_reauth_enable">
@@ -1132,7 +1132,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel_isolation" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Tunnel Isolation') ?></td>
+                    <td><a id="help_for_tunnel_isolation" href="#" class="showhelp"></a> <?=gettext('Tunnel Isolation') ?></td>
                     <td>
                       <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
                       <div class="hidden" data-for="help_for_tunnel_isolation">
@@ -1141,7 +1141,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_sha256_96" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('SHA256 96 Bit Truncation') ?></td>
+                    <td><a id="help_for_sha256_96" href="#" class="showhelp"></a> <?=gettext('SHA256 96 Bit Truncation') ?></td>
                     <td>
                       <input name="sha256_96" type="checkbox" id="sha256_96" value="yes" <?= !empty($pconfig['sha256_96']) ? 'checked="checked"' : '' ?>/>
                       <div class="hidden" data-for="help_for_sha256_96">
@@ -1154,7 +1154,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_nat_traversal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("NAT Traversal"); ?></td>
+                    <td><a id="help_for_nat_traversal" href="#" class="showhelp"></a>  <?=gettext("NAT Traversal"); ?></td>
                     <td>
                       <select name="nat_traversal" class="selectpicker">
                         <option value="off" <?= isset($pconfig['nat_traversal']) && $pconfig['nat_traversal'] == "off" ? "selected=\"selected\"" :"" ;?> >
@@ -1174,7 +1174,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_mobike" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable MOBIKE"); ?></td>
+                    <td><a id="help_for_mobike" href="#" class="showhelp"></a>  <?=gettext("Disable MOBIKE"); ?></td>
                     <td>
                       <input name="mobike" type="checkbox" id="mobike"  <?=!empty($pconfig['mobike']) ? "checked=\"checked\"":"";?> />
                       <div class="hidden" data-for="help_for_mobike">
@@ -1183,7 +1183,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_closeaction" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Close Action"); ?></td>
+                    <td><a id="help_for_closeaction" href="#" class="showhelp"></a>  <?=gettext("Close Action"); ?></td>
                     <td>
                       <select name="closeaction" class="selectpicker">
                         <option value="" <?= empty($pconfig['closeaction']) ? "selected=\"selected\"" :"" ;?> >
@@ -1216,7 +1216,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_unique" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Unique"); ?></td>
+                    <td><a id="help_for_unique" href="#" class="showhelp"></a>  <?=gettext("Unique"); ?></td>
                     <td>
                       <select name="unique" class="selectpicker">
                         <option value="" <?= empty($pconfig['unique']) ? "selected=\"selected\"" :"" ;?> >
@@ -1239,7 +1239,7 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>                  <tr>
-                    <td><a id="help_for_dpd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Dead Peer Detection"); ?></td>
+                    <td><a id="help_for_dpd_enable" href="#" class="showhelp"></a>  <?=gettext("Dead Peer Detection"); ?></td>
                     <td>
                       <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
                       <div class="hidden" data-for="help_for_dpd_enable">
@@ -1272,7 +1272,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_inactivity_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Inactivity timeout"); ?></td>
+                    <td><a id="help_for_inactivity_timeout" href="#" class="showhelp"></a>  <?=gettext("Inactivity timeout"); ?></td>
                     <td>
                       <input name="inactivity_timeout" type="text" id="inactivity_timeout" value="<?=$pconfig['inactivity_timeout'];?>" />
                       <div class="hidden" data-for="help_for_inactivity_timeout">
@@ -1281,7 +1281,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_keyingtries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Keyingtries"); ?></td>
+                    <td><a id="help_for_keyingtries" href="#" class="showhelp"></a>  <?=gettext("Keyingtries"); ?></td>
                     <td>
                       <input name="keyingtries" type="text" id="keyingtries" value="<?=$pconfig['keyingtries'];?>" />
                       <div class="hidden" data-for="help_for_keyingtries">
@@ -1293,7 +1293,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_lifetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Lifetime"); ?></td>
+                    <td><a id="help_for_lifetime" href="#" class="showhelp"></a>  <?=gettext("Lifetime"); ?></td>
                     <td>
                       <input name="lifetime" type="text" id="lifetime" size="20" value="<?=$pconfig['lifetime'];?>" />
                       <div class="hidden" data-for="help_for_lifetime">
@@ -1302,7 +1302,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_margintime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Margintime"); ?></td>
+                    <td><a id="help_for_margintime" href="#" class="showhelp"></a>  <?=gettext("Margintime"); ?></td>
                     <td>
                       <input name="margintime" type="text" id="margintime" value="<?=$pconfig['margintime'];?>" />
                       <div class="hidden" data-for="help_for_margintime">
@@ -1311,7 +1311,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rekeyfuzz" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Rekeyfuzz"); ?></td>
+                    <td><a id="help_for_rekeyfuzz" href="#" class="showhelp"></a>  <?=gettext("Rekeyfuzz"); ?></td>
                     <td>
                       <input name="rekeyfuzz" type="text" id="rekeyfuzz" value="<?=$pconfig['rekeyfuzz'];?>" />
                       <div class="hidden" data-for="help_for_rekeyfuzz">

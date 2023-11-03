@@ -581,7 +581,7 @@ $( document ).ready(function() {
                     <td style="width:22%"></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
@@ -592,13 +592,13 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Disabled");?></td>
+                    <td> <?=gettext("Disabled");?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" <?= $pconfig['disabled'] ? "checked=\"checked\"" : "" ?> />
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username");?></td>
+                    <td> <?=gettext("Username");?></td>
                     <td>
                       <input name="usernamefld" type="text" id="usernamefld" size="20" maxlength="32" value="<?=$pconfig['usernamefld'];?>" <?= $pconfig['scope'] == "system" || !empty($pconfig['user_dn']) ? "readonly=\"readonly\"" : "";?> />
                       <input name="oldusername" type="hidden" id="oldusername" value="<?=$pconfig['usernamefld'];?>" />
@@ -607,7 +607,7 @@ $( document ).ready(function() {
 <?php
                   if (!empty($pconfig['user_dn'])):?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User distinguished name");?></td>
+                    <td> <?=gettext("User distinguished name");?></td>
                     <td>
                       <input name="user_dn" type="text" id="user_dn" size="20" value="<?=$pconfig['user_dn'];?>" readonly="readonly" />
                     </td>
@@ -615,7 +615,7 @@ $( document ).ready(function() {
 <?php
                   endif;?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
+                    <td> <?=gettext("Password");?></td>
                     <td>
                       <input name="passwordfld1" type="password" autocomplete="new-password" id="passwordfld1" size="20" value="" /><br/>
                       <input name="passwordfld2" type="password" autocomplete="new-password" id="passwordfld2" size="20" value="" />
@@ -625,7 +625,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_fullname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Full name");?></td>
+                    <td><a id="help_for_fullname" href="#" class="showhelp"></a> <?=gettext("Full name");?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" <?= $pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
                       <div class="hidden" data-for="help_for_fullname">
@@ -634,7 +634,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail");?></td>
+                    <td><a id="help_for_email" href="#" class="showhelp"></a> <?=gettext("E-Mail");?></td>
                     <td>
                       <input name="email" type="text" value="<?= $pconfig['email'] ?>" />
                       <div class="hidden" data-for="help_for_email">
@@ -643,7 +643,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_comment" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Comment");?></td>
+                    <td><a id="help_for_comment" href="#" class="showhelp"></a> <?=gettext("Comment");?></td>
                     <td>
                       <textarea name="comment" id="comment" class="form-control" cols="65" rows="3"><?= $pconfig['comment'] ?></textarea>
                       <div class="hidden" data-for="help_for_comment">
@@ -652,7 +652,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_landing_page" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Preferred landing page");?></td>
+                    <td><a id="help_for_landing_page" href="#" class="showhelp"></a> <?=gettext("Preferred landing page");?></td>
                     <td>
                       <input name="landing_page" type="text" value="<?=$pconfig['landing_page'];?>">
                       <div class="hidden" data-for="help_for_landing_page">
@@ -661,14 +661,14 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Language");?></td>
+                    <td> <?=gettext("Language");?></td>
                     <td>
                       <input name="language" type="hidden" value="<?= $pconfig['language'] ?>" />
                       <?= $pconfig['language'] ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Login shell') ?></td>
+                    <td> <?= gettext('Login shell') ?></td>
                     <td>
                       <select name="shell" class="selectpicker" data-style="btn-default">
 <?php
@@ -680,7 +680,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_expires" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expiration date"); ?></td>
+                    <td><a id="help_for_expires" href="#" class="showhelp"></a> <?=gettext("Expiration date"); ?></td>
                     <td>
                       <input name="expires" type="text" id="expires" class="datepicker" data-date-format="mm/dd/yyyy" value="<?=$pconfig['expires'];?>" />
                       <div class="hidden" data-for="help_for_expires">
@@ -689,7 +689,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
+                    <td><a id="help_for_groups" href="#" class="showhelp"></a> <?=gettext("Group Memberships");?></td>
                     <td>
                       <table class="table" style="width:100%; border:0;">
                         <thead>
@@ -754,7 +754,7 @@ $( document ).ready(function() {
 <?php
                   if ($pconfig['uid'] != "") :?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Effective Privileges");?></td>
+                    <td> <?=gettext("Effective Privileges");?></td>
                     <td>
                       <table class="table table-hover table-condensed">
                         <tr>
@@ -796,7 +796,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Certificates");?></td>
+                    <td> <?=gettext("User Certificates");?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -856,7 +856,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                      <td><a id="help_for_apikeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("API keys");?> </td>
+                      <td><a id="help_for_apikeys" href="#" class="showhelp"></a> <?=gettext("API keys");?> </td>
                       <td>
                           <table class="table table-condensed">
                               <thead>
@@ -911,7 +911,7 @@ $( document ).ready(function() {
 <?php
                 else :?>
                   <tr id="usercertchck">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate");?></td>
+                    <td> <?=gettext("Certificate");?></td>
                     <td>
                       <input type="checkbox" id="chkNewCert" name="chkNewCert" /> <?= gettext('Click to create a user certificate.') ?>
                     </td>
@@ -919,7 +919,7 @@ $( document ).ready(function() {
 <?php
                 endif;?>
                   <tr>
-                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP seed') ?></td>
+                    <td><a id="help_for_otp_seed" href="#" class="showhelp"></a> <?= gettext('OTP seed') ?></td>
                     <td>
                       <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
                       <input type="checkbox" name="gen_otp_seed"/>
@@ -937,7 +937,7 @@ $( document ).ready(function() {
                             $otp_url .= $pconfig['otp_seed'];
                         ?>
                   <tr>
-                    <td><a id="help_for_otp_code" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP QR code') ?></td>
+                    <td><a id="help_for_otp_code" href="#" class="showhelp"></a> <?= gettext('OTP QR code') ?></td>
                     <td>
                       <label class="btn btn-primary" id="otp_unhide"><?= gettext('Click to unhide') ?></label>
                       <div style="display:none;" id="otp_qrcode"></div>
@@ -952,7 +952,7 @@ $( document ).ready(function() {
 <?php
                         endif;?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
+                    <td> <?=gettext("Authorized keys");?></td>
                     <td>
                       <textarea name="authorizedkeys" id="authorizedkeys" style="max-width: inherit;" class="form-control" cols="65" rows="1" placeholder="<?=gettext("Paste an authorized keys file here.");?>" wrap='off'><?=$pconfig['authorizedkeys'];?></textarea>
                     </td>

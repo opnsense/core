@@ -255,11 +255,11 @@ include("head.inc");
                     <td style="width:22%"><strong><?= gettext('Edit NAT 1:1 entry') ?></strong></td>
                     <td style="width:78%;text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_disabled">
@@ -269,7 +269,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                    <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                     <td>
                       <div class="input-group">
                         <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
@@ -288,7 +288,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
+                    <td><a id="help_for_type" href="#" class="showhelp"></a> <?=gettext("Type"); ?></td>
                     <td>
                       <select name="type" class="selectpicker" data-width="auto" id="nattype">
                           <option value="binat" <?=$pconfig['type'] == 'binat' || empty($pconfig['type']) ? "selected=\"selected\"" : ""; ?>>
@@ -306,7 +306,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_external" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("External network"); ?></td>
+                    <td><a id="help_for_external" href="#" class="showhelp"></a> <?=gettext("External network"); ?></td>
                     <td>
                       <input name="external" type="text" value="<?=$pconfig['external'];?>" />
                       <div class="hidden" data-for="help_for_external">
@@ -317,7 +317,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                      <td><a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
+                      <td><a id="help_for_src_invert" href="#" class="showhelp"></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                       <td>
                         <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" data-for="help_for_src_invert">
@@ -326,7 +326,7 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr>
-                      <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source"); ?></td>
+                      <td><a id="help_for_src" href="#" class="showhelp"></a> <?=gettext("Source"); ?></td>
                       <td>
                         <table class="table table-condensed">
                           <tr>
@@ -368,7 +368,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
+                    <td> <a id="help_for_dst_invert" href="#" class="showhelp"></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" data-for="help_for_dst_invert">
@@ -377,7 +377,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination"); ?></td>
+                    <td><a id="help_for_dst" href="#" class="showhelp"></a> <?=gettext("Destination"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -420,7 +420,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                    <td><a id="help_for_category" href="#" class="showhelp"></a> <?=gettext("Category"); ?></td>
                     <td>
                       <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
   <?php
@@ -435,7 +435,7 @@ include("head.inc");
                       </div>
                   </tr>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?= $pconfig['descr'] ?>" />
                       <div class="hidden" data-for="help_for_descr">
@@ -443,7 +443,7 @@ include("head.inc");
                       </div>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NAT reflection"); ?></td>
+                    <td><?=gettext("NAT reflection"); ?></td>
                     <td>
                       <select name="natreflection" class="selectpicker">
                       <option value="default" <?=$pconfig['natreflection'] != "enable" && $pconfig['natreflection'] != "disable" ? "selected=\"selected\"" : ""; ?>><?=gettext("Use system default"); ?></option>

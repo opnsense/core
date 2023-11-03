@@ -291,7 +291,7 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td style="width:22%"><a id="help_for_ramode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Router Advertisements");?></td>
+                    <td style="width:22%"><a id="help_for_ramode" href="#" class="showhelp"></a> <?=gettext("Router Advertisements");?></td>
                     <td style="width:78%">
                       <select name="ramode">
                         <option value="disabled" <?=$pconfig['ramode'] == "disabled" ? "selected=\"selected\"" : ""; ?> >
@@ -322,7 +322,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rapriority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Router Priority");?></td>
+                    <td><a id="help_for_rapriority" href="#" class="showhelp"></a> <?=gettext("Router Priority");?></td>
                     <td>
                       <select name="rapriority" id="rapriority">
                         <option value="low" <?= $pconfig['rapriority'] == "low" ? "selected=\"selected\"" : ""; ?> >
@@ -353,7 +353,7 @@ include("head.inc");
                         $aliaslist[$vip] = get_vip_descr($vip) . ' (' . $vip . ')';
                     } ?>
                   <tr>
-                    <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Source Address') ?></td>
+                    <td><a id="help_for_rainterface" href="#" class="showhelp"></a> <?=gettext('Source Address') ?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
                         <option value="" <?= empty($pconfig['rainterface']) ? 'selected="selected"' : '' ?>><?= gettext('Automatic') ?></option>
@@ -370,13 +370,13 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Advertise Default Gateway') ?></td>
+                    <td><?= gettext('Advertise Default Gateway') ?></td>
                     <td>
                       <input id="radefault" name="radefault" type="checkbox" value="yes" <?= !empty($pconfig['radefault']) ? 'checked="checked"' : '' ?>/>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_raroutes" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Advertise Routes') ?></td>
+                    <td><a id="help_for_raroutes" href="#" class="showhelp"></a> <?= gettext('Advertise Routes') ?></td>
                     <td>
                       <table class="table table-striped table-condensed" id="maintable">
                         <thead>
@@ -433,7 +433,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_radisablerdnss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('DNS options') ?></td>
+                    <td><a id="help_for_radisablerdnss" href="#" class="showhelp"></a> <?= gettext('DNS options') ?></td>
                     <td>
                       <input name="rasamednsasdhcp6" id="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
                       <?= gettext('Use the DNS configuration of the DHCPv6 server') ?>
@@ -446,7 +446,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr class="opt_dns" style="display:none">
-                    <td><a id="help_for_radns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
+                    <td><a id="help_for_radns" href="#" class="showhelp"></a> <?=gettext("DNS servers");?></td>
                     <td>
                       <input name="radns1" type="text" value="<?=$pconfig['radns1'];?>" /><br />
                       <input name="radns2" type="text" value="<?=$pconfig['radns2'];?>" />
@@ -456,7 +456,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr class="opt_dns" style="display:none">
-                    <td><a id="help_for_radomainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
+                    <td><a id="help_for_radomainsearchlist" href="#" class="showhelp"></a> <?=gettext("Domain search list");?></td>
                     <td>
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_radomainsearchlist">
@@ -465,7 +465,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_ramininterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum Interval') ?></td>
+                    <td><a id="help_for_ramininterval" href="#" class="showhelp"></a> <?= gettext('Minimum Interval') ?></td>
                     <td>
                       <input name="ramininterval" type="text" id="ramininterval" size="28" value="<?=$pconfig['ramininterval'];?>" />
                       <div class="hidden" data-for="help_for_ramininterval">
@@ -474,7 +474,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_ramaxinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Maximum Interval') ?></td>
+                    <td><a id="help_for_ramaxinterval" href="#" class="showhelp"></a> <?= gettext('Maximum Interval') ?></td>
                     <td>
                       <input name="ramaxinterval" type="text" id="ramaxinterval" size="28" value="<?=$pconfig['ramaxinterval'];?>" />
                       <div class="hidden" data-for="help_for_ramaxinterval">
@@ -487,7 +487,7 @@ include("head.inc");
                   foreach ($advanced_options as $advopt):
                       $has_advanced = ($has_advanced || !empty($pconfig[$advopt]));?>
                   <tr style="display:none;" class="advanced_opt">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=$advopt;?></td>
+                    <td> <?=$advopt;?></td>
                     <td>
                       <input name="<?=$advopt;?>" type="text" id="<?=$advopt;?>" value="<?=!empty($pconfig[$advopt]) ? $pconfig[$advopt] :"" ;?>" />
                     </td>
@@ -496,7 +496,7 @@ include("head.inc");
                   endforeach;
                   if (!$has_advanced):?>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                    <td> <?=gettext("Advanced");?></td>
                     <td>
                       <button id="show_advanced_opt" class="btn btn-xs btn-default"><?= gettext('Show advanced options') ?></button>
                     </td>

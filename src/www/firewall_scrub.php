@@ -238,13 +238,13 @@ $( document ).ready(function() {
                       <td style="width:22%"><strong><?=gettext("General settings");?></strong></td>
                       <td style="width:78%; text-align:right">
                            <small><?=gettext("full help"); ?> </small>
-                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page">&nbsp;</i>
+                           <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page">&nbsp;</i>
                       </td>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable interface scrub");?></td>
+                      <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"></a> <?=gettext("Disable interface scrub");?></td>
                       <td>
                         <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" data-for="help_for_scrub_interface_disable">
@@ -255,7 +255,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="scrub_settings">
-                      <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
+                      <td><a id="help_for_scrubnodf" href="#" class="showhelp"></a> <?=gettext("IP Do-Not-Fragment");?></td>
                       <td>
                         <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
                         <div class="hidden" data-for="help_for_scrubnodf">
@@ -267,7 +267,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr class="scrub_settings">
-                      <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
+                      <td><a id="help_for_scrubrnid" href="#" class="showhelp"></a> <?=gettext("IP Random id");?></td>
                       <td>
                         <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" data-for="help_for_scrubrnid">

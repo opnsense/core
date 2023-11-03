@@ -146,7 +146,7 @@ class LeasesController extends ApiControllerBase
             $done = false;
             /* We infer the MAC from NDP data if available, otherwise we extract it out
              * of the DUID. However, RFC8415 section 11 states that an attempt to parse
-             * a DUID to obtain a client's link-layer address is unreliable, as there is no
+             * a DUID to obtain a client's link-layer addresss is unreliable, as there is no
              * guarantee that the client is still using the same link-layer address as when
              * it generated its DUID. Therefore, if we can link it to a manufacturer, chances
              * are fairly high that this is a valid MAC address, otherwise we omit the MAC

@@ -123,8 +123,9 @@ $gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 <div id="gateways-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/gateways.widget.php" method="post" name="iformd">
-    <table class="table table-condensed">
-      <tr>
+  <table class="table table-striped h-100">	
+    <tbody>
+       <tr>
         <td>
           <select id="gatewaysinvert" name="gatewaysinvert" class="selectpicker_widget">
             <option value="" <?= empty($pconfig['gatewaysinvert']) ? 'selected="selected"' : '' ?>><?= gettext('Hide') ?></option>
@@ -138,19 +139,27 @@ $gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
           <button id="submitd" name="submitd" type="submit" class="btn btn-primary" value="yes"><?= gettext('Save') ?></button>
         </td>
       </tr>
+     </tbody>	
     </table>
   </form>
 </div>
 
 <!-- gateway table -->
-<table id="gateway_widget_table" class="table table-striped table-condensed">
-  <tr>
-    <th><?=gettext('Name')?></th>
-    <th><?=gettext('RTT')?></th>
-    <th><?=gettext('RTTd')?></th>
-    <th><?=gettext('Loss')?></th>
-    <th><?=gettext('Status')?></th>
-  </tr>
+<table id="gateway_widget_table" class="table table-striped h-100">
+  <thead>
+   <tr>
+     <th style="text-align:center;" colspan="5">Gateways</th>
+   </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th><?=gettext('Name')?></th>
+      <th><?=gettext('RTT')?></th>
+      <th><?=gettext('RTTd')?></th>
+      <th><?=gettext('Loss')?></th>
+      <th><?=gettext('Status')?></th>
+    </tr>
+  </tbody>
 </table>
 
 <!-- needed to display the widget settings menu -->

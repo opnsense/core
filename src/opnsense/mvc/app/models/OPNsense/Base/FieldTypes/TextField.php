@@ -43,6 +43,11 @@ class TextField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "text validation error";
+
+    /**
      * @var null|string validation mask (regex)
      */
     protected $internalMask = null;
@@ -57,14 +62,6 @@ class TextField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Text does not validate.');
-    }
-
-    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -73,10 +70,8 @@ class TextField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             if ($this->internalValue != null && $this->internalMask != null) {
-                $validators[] = new Regex([
-                    'message' => $this->getValidationMessage(),
-                    'pattern' => trim($this->internalMask),
-                ]);
+                $validators[] = new Regex(array('message' => $this->internalValidationMessage,
+                    'pattern' => trim($this->internalMask)));
             }
         }
         return $validators;

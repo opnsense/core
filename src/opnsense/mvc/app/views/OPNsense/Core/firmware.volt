@@ -449,7 +449,7 @@
                     '<td style="white-space:nowrap;vertical-align:middle;"><div class="input-group">' +
                     '<button class="btn btn-default btn-xs act_details" data-package="' + row['name'] + '" ' +
                         ' data-toggle="tooltip" title="{{ lang._('Info') }}">' +
-                        '<i class="fa fa-info-circle fa-fw"></i></button>' +
+                        '</button>' +
                         (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="{{ lang._('Remove') }}">' +
@@ -714,7 +714,7 @@
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
                     if (firmwareconfig['flavour'] !== '') {
-                        $("i.fa-toggle-off#show_advanced_firmware").click();
+                        $("i.fa-info-circle#show_advanced_firmware").click();
                     }
 
                     $.each(firmwareoptions.families, function(key, value) {
@@ -970,13 +970,13 @@
                     <table class="table table-striped table-condensed">
                         <tbody>
                             <tr>
-                                <td style="text-align:left"><i class="fa fa-toggle-off text-danger" id="show_advanced_firmware"></i></a> <small>{{ lang._('advanced mode') }}</small></td>
+                                <td style="text-align:left"><i class="fa fa-info-circle text-danger" id="show_advanced_firmware"></i></a> <small>{{ lang._('advanced mode') }}</small></td>
                                 <td colspan="2" style="text-align:right">
-                                    <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_firmware"></i></a>
+                                    <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-info-circle text-danger" id="show_all_help_firmware"></i></a>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Mirror') }}</td>
+                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"></a> {{ lang._('Mirror') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
                                     </select>
@@ -990,7 +990,7 @@
                                 <td></td>
                             </tr>
                             <tr data-advanced="true">
-                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Flavour') }}</td>
+                                <td><a id="help_for_flavour" href="#" class="showhelp"></a> {{ lang._('Flavour') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
@@ -1004,7 +1004,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Type') }}</td>
+                                <td><a id="help_for_type" href="#" class="showhelp"></a> {{ lang._('Type') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_type">
                                     </select>
@@ -1015,7 +1015,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
+                                <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"></a> {{ lang._('Subscription') }}</td>
                                 <td>
                                     <input type="text" id="firmware_subscription">
                                     <div class="hidden" data-for="help_for_subscription">
@@ -1025,7 +1025,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Usage') }}</td>
+                                <td style="width: 150px;"> {{ lang._('Usage') }}</td>
                                 <td>
                                     {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
                                 </td>

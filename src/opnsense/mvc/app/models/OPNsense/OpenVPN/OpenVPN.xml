@@ -10,6 +10,7 @@
                     <Required>Y</Required>
                 </enabled>
                 <servers type=".\OpenVPNServerField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </servers>
                 <common_name type="TextField">
@@ -25,24 +26,30 @@
                 </push_reset>
                 <tunnel_network type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
+                    <Required>N</Required>
                     <AddressFamily>ipv4</AddressFamily>
                 </tunnel_network>
                 <tunnel_networkv6 type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
+                    <Required>N</Required>
                     <AddressFamily>ipv6</AddressFamily>
                 </tunnel_networkv6>
                 <local_networks type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
                     <asList>Y</asList>
                 </local_networks>
                 <remote_networks type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
                     <asList>Y</asList>
                 </remote_networks>
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                 </route_gateway>
                 <redirect_gateway type="OptionField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <local value="local">local</local>
@@ -59,27 +66,35 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <Required>N</Required>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </ntp_servers>
                 <wins_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </wins_servers>
-                <description type="TextField"/>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
             </Overwrite>
         </Overwrites>
         <Instances>
@@ -132,6 +147,7 @@
                 <port type="PortField">
                 </port>
                 <local type="NetworkField">
+                    <Required>N</Required>
                     <WildcardEnabled>N</WildcardEnabled>
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </local>
@@ -155,34 +171,42 @@
                     </OptionValues>
                 </role>
                 <server type="NetworkField">
+                    <Required>N</Required>
                     <WildcardEnabled>N</WildcardEnabled>
                 </server>
                 <server_ipv6 type="NetworkField">
+                    <Required>N</Required>
                     <WildcardEnabled>N</WildcardEnabled>
                 </server_ipv6>
                 <route type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
                     <asList>Y</asList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </route>
                 <push_route type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
+                    <Required>N</Required>
                     <asList>Y</asList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
                 <cert type="CertificateField">
+                    <Required>Y</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </cert>
                 <crl type="CertificateField">
+                    <Required>N</Required>
                     <type>crl</type>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </crl>
                 <ca type="CertificateField">
+                    <Required>N</Required>
                     <type>ca</type>
                     <BlankDesc> - Use from certificate</BlankDesc>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
                 </ca>
                 <cert_depth type="OptionField">
+                    <Required>N</Required>
                     <BlankDesc>Do Not Check</BlankDesc>
                     <OptionValues>
                         <item1 value="1">One (Client+Server)</item1>
@@ -201,6 +225,7 @@
                     </OptionValues>
                 </verify_client_cert>
                 <auth type="OptionField">
+                    <Required>N</Required>
                     <BlankDesc>OpenVPN default</BlankDesc>
                     <OptionValues>
                         <BLAKE2b512>BLAKE2b512 (512-bit)</BLAKE2b512>
@@ -227,6 +252,7 @@
                     </OptionValues>
                 </auth>
                 <data-ciphers type="OptionField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
@@ -235,6 +261,7 @@
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
@@ -251,12 +278,15 @@
                             <display_format>[%s] %s</display_format>
                         </host>
                     </Model>
+                    <Required>N</Required>
                 </tls_key>
                 <authmode type="AuthenticationServerField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                 </authmode>
                 <local_group type="AuthGroupField"/>
                 <various_flags type="OptionField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <client-to-client>client-to-client</client-to-client>
@@ -280,20 +310,26 @@
                 <password type="TextField"/>
                 <maxclients type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <Required>N</Required>
                 </maxclients>
                 <keepalive_interval type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </keepalive_interval>
                 <keepalive_timeout type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </keepalive_timeout>
                 <reneg-sec type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </reneg-sec>
                 <auth-gen-token type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <Required>N</Required>
                 </auth-gen-token>
                 <redirect_gateway type="OptionField">
+                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <local value="local">local</local>
@@ -310,35 +346,47 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <Required>N</Required>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <AsList>Y</AsList>
                 </dns_domain_search>
                 <dns_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </dns_servers>
                 <ntp_servers type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Required>N</Required>
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </ntp_servers>
                 <tun_mtu type="IntegerField">
+                    <Required>N</Required>
                     <MinimumValue>60</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </tun_mtu>
                 <fragment type="IntegerField">
+                    <Required>N</Required>
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>65528</MaximumValue>
                 </fragment>
-                <mssfix type="BooleanField"/>
+                <mssfix type="BooleanField">
+                    <Required>N</Required>
+                </mssfix>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>
+                    <Required>N</Required>
                     <key>mvc</key>
                 </carp_depend_on>
-                <description type="TextField"/>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -355,7 +403,9 @@
                     <Required>Y</Required>
                     <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
                 </key>
-                <description type="TextField"/>
+                <description type="TextField">
+                    <Required>N</Required>
+                </description>
             </StaticKey>
         </StaticKeys>
     </items>

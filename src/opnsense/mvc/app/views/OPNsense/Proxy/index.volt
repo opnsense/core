@@ -439,12 +439,12 @@
             <tbody>
             <tr>
                 <td colspan="2" style="text-align:right">
-                    <small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_show_all_help_frm_proxy-forward-acl-remoteACLS"></i></a>
+                    <small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-info-circle text-danger" id="show_all_help_show_all_help_frm_proxy-forward-acl-remoteACLS"></i></a>
                 </td>
             </tr>
             <tr>
                 <td><div class="control-label">
-                    <a id="help_for_proxy.forward.acl.remoteACLs.blacklist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                    <a id="help_for_proxy.forward.acl.remoteACLs.blacklist" href="#" class="showhelp"></a>
                     <b>{{ lang._('Remote Blacklist') }}</b>
                 </div>
                 </td>

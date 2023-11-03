@@ -223,7 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_bridge_configure($bridge['bridgeif']);
             ifgroup_setup();
-            interfaces_restart_by_device(false, [$bridge['bridgeif']]);
+            $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
+            if ($confif != '') {
+                interface_configure(false, $confif);
+            }
             header(url_safe('Location: /interfaces_bridge.php'));
             exit;
         }
@@ -260,14 +263,14 @@ $(document).ready(function() {
                       <td style="width:22%"><strong><?=gettext("Bridge configuration");?></strong></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                         &nbsp;
                       </td>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a id="help_for_members" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Member interfaces"); ?></td>
+                      <td><a id="help_for_members" href="#" class="showhelp"></a> <?=gettext("Member interfaces"); ?></td>
                       <td>
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
@@ -292,7 +295,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                      <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                       <td>
                         <input type="text" name="descr" value="<?=$pconfig['descr'];?>" />
                         <div class="hidden" data-for="help_for_descr">
@@ -301,7 +304,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_linklocal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Link-local address') ?></td>
+                      <td><a id="help_for_linklocal" href="#" class="showhelp"></a> <?= gettext('Link-local address') ?></td>
                       <td>
                         <input type="checkbox" name="linklocal" <?= !empty($pconfig['linklocal']) ? 'checked="checked"' : '' ?> />
                         <?= gettext('Enable link-local address') ?>
@@ -333,7 +336,7 @@ $(document).ready(function() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td style="width:22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
+                      <td style="width:22%"><a id="help_for_enablestp" href="#" class="showhelp"></a> <?=gettext("Enable");?></td>
                       <td style="width:78%">
                         <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
                         <div class="hidden" data-for="help_for_enablestp">
@@ -342,7 +345,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
+                      <td><a id="help_for_proto" href="#" class="showhelp"></a> <?=gettext("Protocol"); ?></td>
                       <td>
                         <select name="proto" id="proto" class="selectpicker">
                           <option value="rstp" <?=$pconfig['proto'] == "rstp" ? "selected=\"selected\"" : "";?> >
@@ -358,7 +361,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_stp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("STP interfaces"); ?></td>
+                      <td><a id="help_for_stp" href="#" class="showhelp"></a> <?=gettext("STP interfaces"); ?></td>
                       <td>
                         <select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -378,7 +381,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_maxage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Valid time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td><a id="help_for_maxage" href="#" class="showhelp"></a> <?=gettext("Valid time"); ?> (<?=gettext("seconds"); ?>)</td>
                       <td>
                         <input name="maxage" type="text" value="<?=$pconfig['maxage'];?>" />
                         <div class="hidden" data-for="help_for_maxage">
@@ -389,7 +392,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_fwdelay" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Forward time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td><a id="help_for_fwdelay" href="#" class="showhelp"></a> <?=gettext("Forward time"); ?> (<?=gettext("seconds"); ?>)</td>
                       <td>
                         <input name="fwdelay" type="text" value="<?=$pconfig['fwdelay'];?>" />
                         <div class="hidden" data-for="help_for_fwdelay">
@@ -399,7 +402,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_hellotime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hello time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td><a id="help_for_hellotime" href="#" class="showhelp"></a> <?=gettext("Hello time"); ?> (<?=gettext("seconds"); ?>)</td>
                       <td>
                         <input name="hellotime" type="text" value="<?=$pconfig['hellotime'];?>" />
                         <div class="hidden" data-for="help_for_hellotime">
@@ -409,7 +412,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                      <td><a id="help_for_priority" href="#" class="showhelp"></a> <?=gettext("Priority"); ?></td>
                       <td>
                         <input name="priority" type="text" value="<?=$pconfig['priority'];?>" />
                         <div class="hidden" data-for="help_for_priority">
@@ -419,7 +422,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_holdcnt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hold count"); ?></td>
+                      <td><a id="help_for_holdcnt" href="#" class="showhelp"></a> <?=gettext("Hold count"); ?></td>
                       <td>
                         <input name="holdcnt" type="text" value="<?=$pconfig['holdcnt'];?>" />
                         <div class="hidden" data-for="help_for_holdcnt">
@@ -430,7 +433,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_intf_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                      <td><a id="help_for_intf_priority" href="#" class="showhelp"></a> <?=gettext("Priority"); ?></td>
                       <td>
                         <table class="table table-striped table-condensed">
 <?php
@@ -451,7 +454,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_intf_pathcost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Path cost"); ?></td>
+                      <td><a id="help_for_intf_pathcost" href="#" class="showhelp"></a> <?=gettext("Path cost"); ?></td>
                       <td>
                         <table class="table table-striped table-condensed">
 <?php
@@ -487,7 +490,7 @@ $(document).ready(function() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td style="width:22%"><a id="help_for_maxaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache size"); ?> (<?=gettext("entries"); ?>)</td>
+                      <td style="width:22%"><a id="help_for_maxaddr" href="#" class="showhelp"></a> <?=gettext("Cache size"); ?> (<?=gettext("entries"); ?>)</td>
                       <td style="width:78%">
                         <input name="maxaddr" type="text" value="<?=$pconfig['maxaddr'];?>" />
                       <div class="hidden" data-for="help_for_maxaddr">
@@ -496,7 +499,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache entry expire time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td><a id="help_for_timeout" href="#" class="showhelp"></a> <?=gettext("Cache entry expire time"); ?> (<?=gettext("seconds"); ?>)</td>
                       <td>
                         <input name="timeout" type="text" value="<?=$pconfig['timeout'];?>" />
                         <div class="hidden" data-for="help_for_timeout">
@@ -507,7 +510,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_span" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Span port"); ?></td>
+                      <td><a id="help_for_span" href="#" class="showhelp"></a> <?=gettext("Span port"); ?></td>
                       <td>
                         <select name="span" class="selectpicker" data-live-search="true">
                           <option value="none"><?=gettext("None"); ?></option>
@@ -531,7 +534,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_edge" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Edge ports"); ?></td>
+                      <td><a id="help_for_edge" href="#" class="showhelp"></a> <?=gettext("Edge ports"); ?></td>
                       <td>
                         <select name="edge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -550,7 +553,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_autoedge" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auto Edge ports"); ?></td>
+                      <td><a id="help_for_autoedge" href="#" class="showhelp"></a> <?=gettext("Auto Edge ports"); ?></td>
                       <td>
                         <select name="autoedge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -570,7 +573,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_ptp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("PTP ports"); ?></td>
+                      <td><a id="help_for_ptp" href="#" class="showhelp"></a> <?=gettext("PTP ports"); ?></td>
                       <td>
                         <select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -589,7 +592,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_autoptp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auto PTP ports"); ?></td>
+                      <td><a id="help_for_autoptp" href="#" class="showhelp"></a> <?=gettext("Auto PTP ports"); ?></td>
                       <td>
                         <select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -610,7 +613,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_static" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky ports"); ?></td>
+                      <td><a id="help_for_static" href="#" class="showhelp"></a> <?=gettext("Sticky ports"); ?></td>
                       <td>
                         <select name="static[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
@@ -630,7 +633,7 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_private" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private ports"); ?></td>
+                      <td><a id="help_for_private" href="#" class="showhelp"></a> <?=gettext("Private ports"); ?></td>
                       <td>
                         <select name="private[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php

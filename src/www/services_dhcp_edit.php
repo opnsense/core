@@ -292,11 +292,11 @@ include("head.inc");
                   <td style="width:22%"><strong><?=gettext("Static DHCP Mapping");?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_mac" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MAC address");?></td>
+                  <td><a id="help_for_mac" href="#" class="showhelp"></a> <?=gettext("MAC address");?></td>
                   <td>
                     <input name="mac" id="mac" type="text" value="<?=$pconfig['mac'];?>" />
 <?php
@@ -310,13 +310,13 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Client identifier");?></td>
+                  <td> <?=gettext("Client identifier");?></td>
                   <td>
                     <input name="cid" type="text" value="<?=$pconfig['cid'];?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ipaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                  <td><a id="help_for_ipaddr" href="#" class="showhelp"></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ipaddr" type="text" value="<?=$pconfig['ipaddr'];?>" />
                     <div class="hidden" data-for="help_for_ipaddr">
@@ -327,7 +327,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
+                  <td><a id="help_for_hostname" href="#" class="showhelp"></a> <?=gettext("Hostname");?></td>
                   <td>
                     <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                     <div class="hidden" data-for="help_for_hostname">
@@ -338,7 +338,7 @@ include("head.inc");
 <?php
                 if (isset($config['dhcpd'][$if]['netboot'])):?>
                 <tr>
-                  <td><a id="help_for_filename" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Netboot Filename') ?></td>
+                  <td><a id="help_for_filename" href="#" class="showhelp"></a> <?= gettext('Netboot Filename') ?></td>
                   <td>
                     <input name="filename" type="text" id="filename" size="20" value="<?=$pconfig['filename'];?>" />
                     <div class="hidden" data-for="help_for_filename">
@@ -347,7 +347,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_rootpath" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Root Path') ?></td>
+                  <td><a id="help_for_rootpath" href="#" class="showhelp"></a> <?= gettext('Root Path') ?></td>
                   <td>
                     <input name="rootpath" type="text" value="<?=$pconfig['rootpath'];?>" />
                     <div class="hidden" data-for="help_for_rootpath">
@@ -358,7 +358,7 @@ include("head.inc");
 <?php
                 endif;?>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
@@ -367,7 +367,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_arp_table_static_entry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Table Static Entry");?></td>
+                  <td><a id="help_for_arp_table_static_entry" href="#" class="showhelp"></a> <?=gettext("ARP Table Static Entry");?></td>
                   <td>
                     <input name="arp_table_static_entry" id="arp_table_static_entry" type="checkbox" value="yes" <?=!empty($pconfig['arp_table_static_entry']) ? "checked=\"checked\"" : ""; ?> />
                     <div class="hidden" data-for="help_for_arp_table_static_entry">
@@ -376,14 +376,14 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WINS servers");?></td>
+                  <td> <?=gettext("WINS servers");?></td>
                   <td>
                     <input name="wins1" type="text" value="<?=$pconfig['wins1'];?>" /><br />
                     <input name="wins2" type="text" value="<?=$pconfig['wins2'];?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
+                  <td><a id="help_for_dns" href="#" class="showhelp"></a> <?=gettext("DNS servers");?></td>
                   <td>
                     <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br/>
                     <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
@@ -393,7 +393,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
+                  <td><a id="help_for_gateway" href="#" class="showhelp"></a> <?=gettext("Gateway");?></td>
                   <td>
                     <input name="gateway" type="text" value="<?=$pconfig['gateway'];?>" />
                     <div class="hidden" data-for="help_for_gateway">
@@ -404,7 +404,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
+                  <td><a id="help_for_domain" href="#" class="showhelp"></a> <?=gettext("Domain name");?></td>
                   <td>
                     <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                     <div class="hidden" data-for="help_for_domain">
@@ -413,7 +413,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
+                  <td><a id="help_for_domainsearchlist" href="#" class="showhelp"></a> <?=gettext("Domain search list");?></td>
                   <td>
                     <input name="domainsearchlist" type="text" id="domainsearchlist" size="20" value="<?=$pconfig['domainsearchlist'];?>" />
                     <div class="hidden" data-for="help_for_domainsearchlist">
@@ -422,7 +422,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
+                  <td><a id="help_for_defaultleasetime" href="#" class="showhelp"></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
                   <td>
                     <input name="defaultleasetime" type="text" id="deftime" size="10" value="<?=$pconfig['defaultleasetime'];?>" />
                     <div class="hidden" data-for="help_for_defaultleasetime">
@@ -432,7 +432,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
+                  <td><a id="help_for_maxleasetime" href="#" class="showhelp"></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                   <td>
                     <input name="maxleasetime" type="text" value="<?=$pconfig['maxleasetime'];?>" />
                     <div class="hidden" data-for="help_for_maxleasetime">
@@ -442,7 +442,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ddnsdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic DNS domain') ?></td>
+                  <td><a id="help_for_ddnsdomain" href="#" class="showhelp"></a> <?= gettext('Dynamic DNS domain') ?></td>
                   <td>
                     <input name="ddnsdomain" type="text" id="ddnsdomain" size="20" value="<?= html_safe($pconfig['ddnsdomain']) ?>" />
                     <div class="hidden" data-for="help_for_ddnsdomain">
@@ -451,7 +451,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
+                  <td> <?=gettext("NTP servers");?></td>
                   <td>
                     <div id="showntpbox">
                       <input type="button" onclick="show_ntp_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show NTP configuration");?>
@@ -463,7 +463,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TFTP server");?></td>
+                  <td> <?=gettext("TFTP server");?></td>
                   <td>
                     <div id="showtftpbox">
                       <input type="button" onclick="show_tftp_config()" class="btn btn-xs btn-default" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show TFTP configuration");?>

@@ -1,6 +1,6 @@
 <menu>
     <Services>
-      <WebProxy order="10" VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
+      <WebProxy order="230" VisibleName="Web Proxy">
           <Administration url="/ui/proxy">
             <ACL VisibleName="ACL" url="/ui/proxy#subtab_proxy-forward-acl"/>
             <Authentication VisibleName="Auth" url="/ui/proxy#subtab_proxy-general-authentication"/>

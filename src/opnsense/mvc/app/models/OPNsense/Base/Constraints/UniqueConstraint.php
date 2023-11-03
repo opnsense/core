@@ -48,9 +48,6 @@ class UniqueConstraint extends BaseConstraint
         $node = $this->getOption('node');
         $fieldSeparator = chr(10) . chr(0);
         if ($node) {
-            if (!$node->isRequired() && empty((string)$node)) {
-                return true;
-            }
             $containerNode = $node;
             $nodeName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();

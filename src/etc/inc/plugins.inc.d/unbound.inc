@@ -348,49 +348,10 @@ function unbound_cache_flush()
     configd_run('unbound cache flush');
 }
 
-function unbound_match_interface($interface)
-{
-    $general = config_read_array('OPNsense', 'unboundplus', 'general');
-
-    if (empty($interface)) {
-        /* emulate non-interface reload */
-        return true;
-    }
-
-    if (!empty($general['active_interface'])) {
-        foreach (explode(',', $general['active_interface']) as $used) {
-            if ($used == $interface) {
-                return true;
-            }
-        }
-    }
-
-    if (!empty($general['outgoing_interface'])) {
-        foreach (explode(',', $general['outgoing_interface']) as $used) {
-            if ($used == $interface) {
-                return true;
-            }
-        }
-    }
-
-    /*
-     * We can ignore this request as we don't listen here
-     * or always listen on :: / 0.0.0.0 so that a reload
-     * is not necessary.
-     */
-    return false;
-}
-
-function unbound_configure_do($verbose = false, $interface = null)
+function unbound_configure_do($verbose = false, $unused = '')
 {
     global $config;
-
     $mdl = new \OPNsense\Unbound\Unbound();
-
-    /* try to avoid restarting, but make sure to let it start if it is not running */
-    if (!unbound_match_interface($interface) && isvalidpid('/var/run/unbound.pid')) {
-        return;
-    }
 
     unbound_service_stop();
 

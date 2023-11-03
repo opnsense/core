@@ -740,7 +740,7 @@ POSSIBILITY OF SUCH DAMAGE.
           <tbody>
             <tr>
                 <td><div class="control-label">
-                    <i class="fa fa-info-circle text-muted"></i>
+                    
                     <b>{{ lang._('Rulesets') }}</b>
                     </div>
                 </td>
@@ -785,7 +785,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </tr>
             <tr style="display:none">
                 <td><div class="control-label">
-                    <i class="fa fa-info-circle text-muted"></i>
+                    
                     <b>{{ lang._('Settings') }}</b>
                     </div>
                 </td>

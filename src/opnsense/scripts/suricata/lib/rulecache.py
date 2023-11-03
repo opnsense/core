@@ -243,13 +243,9 @@ class RuleCache(object):
             fcntl.flock(lock, fcntl.LOCK_UN)
             return
 
-        # remove (truncate) existing DB
+        # remove existing DB
         if os.path.exists(self.cachefile):
-            fhandle = open(self.cachefile, 'a+')
-            fhandle.seek(0)
-            fhandle.truncate()
-            fhandle.close()
-
+            os.remove(self.cachefile)
 
         db = sqlite3.connect(self.cachefile)
         db.text_factory = lambda x: str(x, 'utf-8', 'ignore')

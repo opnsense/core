@@ -89,7 +89,7 @@ include("head.inc");
                       </td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         &nbsp;&nbsp;
                       </td>
                     </tr>
@@ -99,7 +99,7 @@ include("head.inc");
                     $serialports = glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE);
                     if (!empty($serialports)):?>
                     <tr>
-                      <td><a id="help_for_gpsport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Serial port') ?></td>
+                      <td><a id="help_for_gpsport" href="#" class="showhelp"></a> <?=gettext('Serial port') ?></td>
                       <td>
                         <select name="port" class="selectpicker">
                           <option value=""><?=gettext("none");?></option>
@@ -119,7 +119,7 @@ include("head.inc");
 <?php
                     endif;?>
                     <tr>
-                      <td><a id="help_for_fudge1" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Fudge time') ?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_fudge1" href="#" class="showhelp"></a> <?=gettext('Fudge time') ?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="fudge1" type="text" value="<?=$pconfig['fudge1'];?>" />
                         <div class="hidden" data-for="help_for_fudge1">
@@ -128,7 +128,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_stratum" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Stratum') ?></td>
+                      <td><a id="help_for_stratum" href="#" class="showhelp"></a> <?=gettext('Stratum') ?></td>
                       <td>
                         <input name="stratum" type="text" value="<?=$pconfig['stratum'];?>" />
                         <div class="hidden" data-for="help_for_stratum">
@@ -138,7 +138,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_flags" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Flags') ?></td>
+                      <td><a id="help_for_flags" href="#" class="showhelp"></a> <?=gettext('Flags') ?></td>
                       <td>
                         <table class="table table-condensed">
                           <tr>
@@ -172,7 +172,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_refid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Clock ID') ?></td>
+                      <td><a id="help_for_refid" href="#" class="showhelp"></a> <?=gettext('Clock ID') ?></td>
                       <td>
                         <input name="refid" type="text" value="<?=$pconfig['refid'];?>" />
                         <div class="hidden" data-for="help_for_refid">

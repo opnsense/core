@@ -306,19 +306,19 @@ $( document ).ready(function() {
                   <td style="width:78%"></td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Tunable"); ?></td>
+                  <td><?=gettext("Tunable"); ?></td>
                   <td>
                     <input type="text" name="tunable" value="<?=$pconfig['tunable']; ?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Description"); ?></td>
+                  <td> <?=gettext("Description"); ?></td>
                   <td>
                     <textarea name="descr"><?=$pconfig['descr']; ?></textarea>
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Value"); ?></td>
+                  <td> <?=gettext("Value"); ?></td>
                   <td>
                     <input name="value" type="text" value="<?=$pconfig['value']; ?>" />
                   </td>

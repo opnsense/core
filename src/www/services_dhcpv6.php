@@ -441,26 +441,26 @@ include("head.inc");
                       <td style="width:22%"></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Enable");?></td>
+                      <td> <?=gettext("Enable");?></td>
                       <td>
                         <input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> />
                         <strong><?= sprintf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet");?></td>
+                      <td><?=gettext("Subnet");?></td>
                       <td><?= $subnet_start ?></td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet mask");?></td>
+                      <td><?=gettext("Subnet mask");?></td>
                       <td><?= htmlspecialchars($ifcfgsn) ?> <?= gettext('bits') ?></td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Available range') ?></td>
+                      <td><?= gettext('Available range') ?></td>
                       <td>
 <?php if ($subnet_start == $subnet_end): ?>
                         <span class="text-danger"><?= gettext('No available address range for configured interface subnet size.') ?></span>
@@ -470,7 +470,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_range" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Range");?></td>
+                      <td><a id="help_for_range" href="#" class="showhelp"></a> <?=gettext("Range");?></td>
                       <td>
                         <table class="table table-condensed">
                           <thead>
@@ -497,13 +497,13 @@ include("head.inc");
                     </tr>
 <?php if ($pdlen >= 0): ?>
                      <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available prefix delegation size");?></td>
+                      <td> <?=gettext("Available prefix delegation size");?></td>
                       <td><?= 64 - $pdlen ?> <?= gettext('bits') ?></td>
                     </tr>
 <?php endif ?>
                     <tr>
-                      <td><a id="help_for_prefixrange" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefix Delegation Range");?></td>
-                      <td>
+                      <td><a id="help_for_prefixrange" href="#" class="showhelp"></a> <?=gettext("Prefix Delegation Range");?></td>
+        
                         <table class="table table-condensed">
                           <thead>
                             <tr>
@@ -545,7 +545,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
+                      <td><a id="help_for_dns" href="#" class="showhelp"></a> <?=gettext("DNS servers");?></td>
                       <td>
                         <input name="dns1" type="text" id="dns1" value="<?=$pconfig['dns1'];?>" /><br />
                         <input name="dns2" type="text" id="dns2" value="<?=$pconfig['dns2'];?>" />
@@ -555,7 +555,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
+                      <td><a id="help_for_domainsearchlist" href="#" class="showhelp"></a> <?=gettext("Domain search list");?></td>
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
                         <div class="hidden" data-for="help_for_domainsearchlist">
@@ -564,7 +564,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="defaultleasetime" type="text" value="<?=$pconfig['defaultleasetime'];?>" />
                         <div class="hidden" data-for="help_for_defaultleasetime">
@@ -574,7 +574,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_maxleasetime" href="#" class="showhelp"></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="maxleasetime" type="text" id="maxleasetime" size="10" value="<?=$pconfig['maxleasetime'];?>" />
                         <div class="hidden" data-for="help_for_maxleasetime">
@@ -584,7 +584,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_minsecs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Response delay");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_minsecs" href="#" class="showhelp"></a> <?=gettext("Response delay");?> (<?=gettext("seconds");?>)</td>
                       <td>
                        <input name="minsecs" type="text" value="<?=$pconfig['minsecs'];?>" />
                         <div class="hidden" data-for="help_for_minsecs">
@@ -594,7 +594,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_dhcpv6leaseinlocaltime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time format change"); ?></td>
+                      <td><a id="help_for_dhcpv6leaseinlocaltime" href="#" class="showhelp"></a> <?=gettext("Time format change"); ?></td>
                       <td>
                         <input name="dhcpv6leaseinlocaltime" type="checkbox" id="dhcpv6leaseinlocaltime" value="yes" <?=!empty($pconfig['dhcpv6leaseinlocaltime']) ? "checked=\"checked\"" : ""; ?> />
                         <strong>
@@ -606,7 +606,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
+                      <td> <?=gettext("Dynamic DNS");?></td>
                       <td>
                         <div id="showddnsbox">
                           <input type="button" onclick="show_ddns_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Dynamic DNS");?>
@@ -637,7 +637,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
+                      <td> <?=gettext("NTP servers");?></td>
                       <td>
                         <div id="showntpbox">
                           <input type="button" onclick="show_ntp_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show NTP configuration");?>
@@ -649,7 +649,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable network booting");?></td>
+                      <td><?=gettext("Enable network booting");?></td>
                       <td>
                         <div id="shownetbootbox">
                           <input type="button" onclick="show_netboot_config()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Network booting");?>
@@ -664,7 +664,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Additional BOOTP/DHCP Options");?></td>
+                      <td><?=gettext("Additional BOOTP/DHCP Options");?></td>
                       <td>
                         <div id="shownumbervaluebox">
                           <input type="button" onclick="show_shownumbervalue()" value="<?= html_safe(gettext('Advanced')) ?>" class="btn btn-xs btn-default"/> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
@@ -743,7 +743,7 @@ include("head.inc");
                             </tfoot>
                           </table>
                           <div class="hidden" data-for="help_for_numberoptions">
-                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml#dhcpv6-parameters-2" target="_blank">','</a>') ?>
+                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="https://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">','</a>') ?>
                           </div>
                         </div>
                       </td>

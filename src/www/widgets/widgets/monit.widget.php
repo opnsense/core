@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2019 EURO-LOG AG
+ * Copyright (C) 2023 Veritawall Technologies Pvt. Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -173,7 +173,7 @@ $( document ).ready(function() {
 <div id="monit-settings" class="widgetconfigdiv" style="display:none;">
    <form class="form-inline" action="/widgets/widgets/monit.widget.php" method="post" name="iformd">
       <div class="table-responsive">
-         <table class="table table-striped table-condensed">
+         <table class="table table-striped h-100">
             <tr>
                <td>
                   <div class="control-label" id="control_label_monitheight">
@@ -207,15 +207,20 @@ $( document ).ready(function() {
    </form>
 </div>
 
-<table id="grid-monit" class="table table-condensed table-hove table-striped table-responsive bootgrid-table monit-widget-table">
-   <thead>
+<table id="grid-monit" class="table table-striped bootgrid-table monit-widget-table h-100">
+    <thead>
+        <tr>
+            <th style="text-align: center; width: 100%;" colspan="3"> <!-- Add text-align: center; and width: 100%; -->
+                Veritawall Monitor
+         </th>
+      </tr>
+   </thead>
+   <tbody>
       <tr>
          <th data-column-id="name"><?= gettext('Name') ?></th>
          <th data-column-id="type"><?= gettext('Type') ?></th>
          <th data-column-id="status"><?= gettext('Status') ?></th>
       </tr>
-   </thead>
-   <tbody>
    </tbody>
    <tfoot>
    </tfoot>

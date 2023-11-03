@@ -212,7 +212,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function hasChild($name)
     {
@@ -224,7 +224,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getChild($name)
     {
@@ -236,7 +236,7 @@ class ArrayField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function iterateItems()
     {
@@ -246,18 +246,5 @@ class ArrayField extends BaseField
         foreach (static::$internalStaticChildren as $key => $node) {
             yield $key => $node;
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFieldChanged()
-    {
-        foreach (parent::iterateItems() as $child) {
-            if ($child->isFieldChanged()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

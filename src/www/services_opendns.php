@@ -131,14 +131,14 @@ include 'head.inc';
                   <td style="width:22%"><strong><?=gettext('OpenDNS Setup'); ?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     &nbsp;
                   </td>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Enable'); ?></td>
+                  <td><a id="help_for_enable" href="#" class="showhelp"></a> <?=gettext('Enable'); ?></td>
                   <td>
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
                     <?= gettext('Filter DNS requests using OpenDNS') ?>
@@ -153,7 +153,7 @@ include 'head.inc';
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_standalone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Standalone'); ?></td>
+                  <td><a id="help_for_standalone" href="#" class="showhelp"></a> <?=gettext('Standalone'); ?></td>
                   <td>
                     <input name="standalone" type="checkbox" id="standalone" value="yes" <?=!empty($pconfig['standalone']) ? 'checked="checked"' : "";?> />
                     <?= gettext('Do not alter system DNS server settings') ?>
@@ -166,7 +166,7 @@ include 'head.inc';
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Username'); ?></td>
+                  <td><a id="help_for_username" href="#" class="showhelp"></a> <?=gettext('Username'); ?></td>
                   <td>
                     <input name="username" type="text" id="username" size="20" value="<?=$pconfig['username'];?>" />
                     <div class="hidden" data-for="help_for_username">
@@ -179,13 +179,13 @@ include 'head.inc';
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Password'); ?></td>
+                  <td> <?=gettext('Password'); ?></td>
                   <td>
                     <input name="password" type="password" autocomplete="new-password" id="password" size="20" value="<?=$pconfig['password'];?>" />
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Network'); ?></td>
+                  <td><a id="help_for_host" href="#" class="showhelp"></a> <?=gettext('Network'); ?></td>
                   <td>
                     <input name="host" type="text" id="host" size="30" value="<?=$pconfig['host'];?>" />
                     <div class="hidden" data-for="help_for_host">
@@ -202,7 +202,7 @@ include 'head.inc';
 <?php
                 if (isset($test_results) && is_array($test_results)): ?>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Test result');?></td>
+                  <td><?=gettext('Test result');?></td>
                   <td>
 <?php
                     foreach ($test_results as $result) {

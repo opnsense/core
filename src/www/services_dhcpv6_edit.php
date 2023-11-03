@@ -173,11 +173,11 @@ include("head.inc");
                     <td style="width:22%"><strong><?=gettext("Static DHCPv6 Mapping");?></strong></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DUID Identifier");?></td>
+                    <td><a id="help_for_duid" href="#" class="showhelp"></a> <?=gettext("DUID Identifier");?></td>
                     <td>
                       <input name="duid" type="text" value="<?=$pconfig['duid'];?>" />
                       <div class="hidden" data-for="help_for_duid">
@@ -188,7 +188,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_ipaddrv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 address");?></td>
+                    <td><a id="help_for_ipaddrv6" href="#" class="showhelp"></a> <?=gettext("IPv6 address");?></td>
                     <td>
                       <input name="ipaddrv6" type="text" value="<?=$pconfig['ipaddrv6'];?>" />
                       <div class="hidden" data-for="help_for_ipaddrv6">
@@ -202,7 +202,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_hostname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
+                    <td><a id="help_for_hostname" href="#" class="showhelp"></a> <?=gettext("Hostname");?></td>
                     <td>
                       <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                       <div class="hidden" data-for="help_for_hostname">
@@ -212,7 +212,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
+                    <td><a id="help_for_domainsearchlist" href="#" class="showhelp"></a> <?=gettext("Domain search list");?></td>
                     <td>
                       <input name="domainsearchlist" type="text" value="<?=$pconfig['domainsearchlist'];?>" />
                       <div class="hidden" data-for="help_for_domainsearchlist">
@@ -224,7 +224,7 @@ include("head.inc");
                   </tr>
 <?php if (isset($config['dhcpdv6'][$if]['netboot'])): ?>
                   <tr>
-                    <td><a id="help_for_filename" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Netboot filename') ?></td>
+                    <td><a id="help_for_filename" href="#" class="showhelp"></a> <?= gettext('Netboot filename') ?></td>
                     <td>
                       <input name="filename" type="text" value="<?=$pconfig['filename'];?>" />
                       <div class="hidden" data-for="help_for_filename">
@@ -233,7 +233,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rootpath" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Root Path') ?></td>
+                    <td><a id="help_for_rootpath" href="#" class="showhelp"></a> <?= gettext('Root Path') ?></td>
                     <td>
                       <input name="rootpath" type="text" value="<?=$pconfig['rootpath'];?>" />
                       <div class="hidden" data-for="help_for_rootpath">
@@ -244,7 +244,7 @@ include("head.inc");
 <?php
               endif;?>
                   <tr>
-                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" data-for="help_for_descr">

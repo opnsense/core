@@ -43,6 +43,11 @@ class NumericField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "invalid numeric value";
+
+    /**
      * maximum value for this field
      * @var integer
      */
@@ -55,14 +60,6 @@ class NumericField extends BaseField
     private $minimum_value;
 
     /**
-     * {@inheritdoc}
-     */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Invalid numeric value.');
-    }
-
-    /**
      * constructor, set absolute min and max values
      * @param null|string $ref direct reference to this object
      * @param null|string $tagname xml tagname to use
@@ -70,9 +67,8 @@ class NumericField extends BaseField
     public function __construct($ref = null, $tagname = null)
     {
         parent:: __construct($ref, $tagname);
-
-        $this->minimum_value = PHP_FLOAT_MIN;
-        $this->maximum_value = PHP_FLOAT_MAX;
+        $this->minimum_value = -1.0e200; // XXX replace with - PHP_FLOAT_MAX when available
+        $this->maximum_value = 1.0e200; // PHP_FLOAT_MAX
     }
 
     /**
@@ -105,12 +101,11 @@ class NumericField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new MinMaxValidator([
-                'message' => $this->getValidationMessage(),
-                'min' => $this->minimum_value,
-                'max' => $this->maximum_value,
-            ]);
-            $validators[] = new Numericality(['message' => $this->getValidationMessage()]);
+            $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
+                "min" => $this->minimum_value,
+                "max" => $this->maximum_value
+            ));
+            $validators[] = new Numericality(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }

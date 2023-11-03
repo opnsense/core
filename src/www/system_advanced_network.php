@@ -278,11 +278,11 @@ include("head.inc");
                 <td style="width:22%"><strong><?= gettext('Network Interfaces') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                  <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
+                <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"></a> <?=gettext("Hardware CRC"); ?></td>
                 <td>
                   <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
                   <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
@@ -292,7 +292,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
+                <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"></a> <?=gettext("Hardware TSO"); ?></td>
                 <td>
                   <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
                   <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
@@ -302,7 +302,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
+                <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"></a> <?=gettext("Hardware LRO"); ?></td>
                 <td>
                   <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
                   <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
@@ -312,7 +312,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Filtering"); ?></td>
+                <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"></a> <?=gettext("VLAN Hardware Filtering"); ?></td>
                 <td>
                   <select name="disablevlanhwfilter" class="selectpicker">
                       <option value="0" <?=$pconfig['disablevlanhwfilter'] == "0" ? "selected=\"selected\"" : "";?> >
@@ -331,7 +331,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Handling"); ?></td>
+                <td><a id="help_for_sharednet" href="#" class="showhelp"></a> <?=gettext("ARP Handling"); ?></td>
                 <td>
                   <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "checked=\"checked\"" :"";?>/>
                   <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
@@ -349,7 +349,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_dhcp6_norelease" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Prevent release') ?></td>
+                <td><a id="help_for_dhcp6_norelease" href="#" class="showhelp"></a> <?= gettext('Prevent release') ?></td>
                 <td>
                   <input name="dhcp6_norelease" type="checkbox" id="dhcp6_norelease" value="yes" <?= !empty($pconfig['dhcp6_norelease']) ? 'checked="checked"' : '' ?> />
                   <div class="hidden" data-for="help_for_dhcp6_norelease">
@@ -358,7 +358,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Log level') ?></td>
+                <td><a id="help_for_dhcp6_debug" href="#" class="showhelp"></a> <?= gettext('Log level') ?></td>
                 <td>
                   <select name="dhcp6_debug" size="3" class="selectpicker" data-style="btn-default" id="dhcp6_debug">
 <?php foreach(['0' => gettext('Standard'), '1' => gettext('Info'), '2' => gettext('Debug')] as $dhcp6cdebuglevel => $dhcp6cdebugvalue): ?>
@@ -373,7 +373,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_persistent_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Unique Identifier"); ?></td>
+                <td><a id="help_for_persistent_duid" href="#" class="showhelp"></a> <?=gettext("DHCP Unique Identifier"); ?></td>
                 <td>
                   <textarea name="ipv6duid" id="ipv6duid" rows="2" ><?=$pconfig['ipv6duid'];?></textarea>
                   <input name="ipv6_duid_llt_value" type="hidden" value="<?= html_safe($pconfig['ipv6_duid_llt_value']) ?>">

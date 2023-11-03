@@ -11,7 +11,7 @@
     <meta name="copyright" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 
-    <title>{{headTitle|default("OPNsense") }} | {{system_hostname}}.{{system_domain}}</title>
+    <title>{{headTitle|default("muro") }} | {{system_hostname}}.{{system_domain}}</title>
     {% set theme_name = ui_theme|default('opnsense') %}
 
     <!-- Favicon -->
@@ -228,22 +228,69 @@
         <button class="toggle-sidebar" data-toggle="tooltip right" title="{{ lang._('Toggle sidebar') }}" style="display:none;"><i class="fa fa-chevron-left"></i></button>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li id="menu_messages">
+            <!-- <li id="menu_messages">
               <span class="navbar-text">{{session_username}}@{{system_hostname}}.{{system_domain}}</span>
-            </li>
+            </li> -->
             <li>
-              <span class="navbar-text" style="margin-left: 0">
-                <i id="system_status" data-toggle="tooltip left" title="{{ lang._('Show system status') }}" style="cursor:pointer" class="fa fa-circle text-muted"></i>
+              <span class="navbar-text">
+                <i id="system_status" data-toggle="tooltip left" title="{{ lang._('Show system status') }}" style="cursor:pointer" class="fa fa-bell text-muted"></i>
               </span>
+              <span style="color:black; margin-top: -5px;">Notification</span>
             </li>
-            <li>
+            <!-- <li>
               <form class="navbar-form" role="search">
                 <div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-search"></i></div>
                   <input type="text" style="width: 250px;" class="form-control" tabindex="1" data-provide="typeahead" id="menu_search_box" autocomplete="off">
                 </div>
               </form>
-            </li>
+            </li> -->
+            <li>	
+              <a href="/wizard.php?xml=system" title="Wizard">	
+              <span class="fa fa-magic fa-fw"></span>	
+              </a>	
+              <span style="color:black;">Wizard</span>	
+          </li>
+          <li class="dropdown">	
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Network Diagnostics" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-medkit fa-fw" aria-hidden="true"></i></a>	
+            <span style="color:black;">Diagnostics</span>	
+            <ul class="dropdown-menu">	
+              <li><a href="/ui/diagnostics/interface/arp">ARP Table</a></li>	
+              <li><a href="/ui/diagnostics/dns_diagnostics">DNS Lookup</a></li>	
+              <li><a href="/ui/diagnostics/interface/ndp">NDP Table</a></li>	
+              <li><a href="/ui/diagnostics/interface/netstat">Netstat</a></li>	
+              <li><a href="/ui/diagnostics/packet_capture">Packet Capture</a></li>	
+              <li><a href="/diag_testport.php">Port Probe</a></li>	
+              <li><a href="/diag_traceroute.php">Trace Route</a></li>	
+              <li><a href="/ui/iperf">Iperf</a></li>	
+              <li><a href="/ui/diagnostics/ping">Ping</a></li>	
+            </ul>	
+          </li>
+          <li class="dropdown">	
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user" aria-hidden="tru    e"></i></a>	
+            <span style="color:black;">User</span>	
+            <ul class="dropdown-menu">	
+              <li><a href="/system_usermanager_passwordmg.php">Password<i class="fa fa-key fa-fw documentation-menu-icon"></i></a></li>	
+              <li><a href="/index.php?logout">Logout<i class="fa fa-sign-out documentation-menu-icon"></i></a></li>	
+            </ul>	
+          </li>
+          <li class="dropdown">	
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"  aria-expanded="false"><i Class="fa fa-support" order="80" ></i></a>	
+            <span style="color:black;">Help</span>	
+            <ul class="dropdown-menu">	
+              <li><a IsExternal="Y" href="https://www.veritawall.com/" class="documentation-menu">Documentation<i Class="fa fa-book documentation-menu-icon"></i></a></li>	
+              <li><a href="https://www.veritawall.com/" class="documentation-menu">User Forum<i Class="fa fa-ticket documentation-menu-icon"></i></a></li>	
+              <li><a href="https://www.veritawall.com/" class="documentation-menu">Commercial Support<i Class="fa fa-phone documentation-menu-icon"></i></a></li>	
+            </ul>	
+          </li>
+          <li class="dropdown">	
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-power-off fa-fw" aria-hidden="tru    e"></i></a>	
+            <span style="color:black;">Power</span>	
+            <ul class="dropdown-menu">	
+              <li><a  href="/ui/core/reboot" >Reboot<i class="fa fa-repeat fa-fw documentation-menu-icon"></i></a></li>	
+              <li><a  href="/ui/core/halt">Power Off<i class="fa fa-power-off fa-fw documentation-menu-icon"></i></a></li>	
+            </ul>	
+          </li>
           </ul>
         </div>
       </div>
@@ -277,8 +324,7 @@
         <!-- page footer -->
         <footer class="page-foot">
           <div class="container-fluid">
-            <a target="_blank" href="{{ product_website }}">{{ product_name }}</a> (c) {{ product_copyright_years }}
-            <a target="_blank" href="{{ product_copyright_url }}">{{ product_copyright_owner }}</a>
+            <span>Muro (c) 2023 Veritawall Technologies<span>
           </div>
         </footer>
       </div>

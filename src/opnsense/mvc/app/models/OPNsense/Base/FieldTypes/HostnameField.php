@@ -42,6 +42,11 @@ class HostnameField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "please specify a valid address (IPv4/IPv6) or hostname";
+
+    /**
      * @var null when multiple values could be provided at once, specify the split character
      */
     protected $internalFieldSeparator = null;
@@ -154,14 +159,6 @@ class HostnameField extends BaseField
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Please specify a valid IP address or hostname.');
-    }
-
-    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -169,14 +166,14 @@ class HostnameField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new HostValidator([
-                'message' => $this->getValidationMessage(),
+            $validators[] = new HostValidator(array(
+                'message' => $this->internalValidationMessage,
                 'split' => $this->internalFieldSeparator,
                 'allowip' => $this->internalIpAllowed,
                 'hostwildcard' => $this->internalHostWildcardAllowed,
                 'fqdnwildcard' => $this->internalFqdnWildcardAllowed,
-                'zoneroot' => $this->internalZoneRootAllowed,
-            ]);
+                'zoneroot' => $this->internalZoneRootAllowed
+            ));
         }
         return $validators;
     }

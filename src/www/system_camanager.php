@@ -521,7 +521,7 @@ include("head.inc");
               <td style="width:22%"></td>
               <td style="width:78%; text-align:right">
                 <small><?=gettext("full help"); ?> </small>
-                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
               </td>
             </tr>
             <tr>
@@ -531,7 +531,7 @@ include("head.inc");
               </td>
             </tr>
             <tr class="<?=isset($id) ? "hidden" : "";?>">
-              <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Method");?></td>
+              <td><?=gettext("Method");?></td>
               <td>
                 <select name='camethod' id='camethod' class="selectpicker" data-style="btn-default">
                   <option value="existing" <?=$pconfig['camethod'] == "existing" ? "selected=\"selected\"" : "";?>>
@@ -556,7 +556,7 @@ include("head.inc");
             </thead>
             <tbody>
               <tr>
-                <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate data");?></td>
+                <td style="width:22%"><a id="help_for_cert" href="#" class="showhelp"></a> <?=gettext("Certificate data");?></td>
                 <td style="width:78%">
                   <textarea name="cert" cols="65" rows="7" id="cert"><?=isset($pconfig['cert']) ? $pconfig['cert'] : "";?></textarea>
                   <div class="hidden" data-for="help_for_cert">
@@ -566,7 +566,7 @@ include("head.inc");
               </tr>
               <tr>
                 <td>
-                  <a id="help_for_key" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Certificate Private Key");?><br />
+                  <a id="help_for_key" href="#" class="showhelp"></a> <?=gettext("Certificate Private Key");?><br />
                   <?=gettext("(optional)");?>
                 </td>
                 <td style="width:78%">
@@ -577,7 +577,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_serial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial for next certificate");?></td>
+                <td><a id="help_for_serial" href="#" class="showhelp"></a> <?=gettext("Serial for next certificate");?></td>
                 <td>
                   <input name="serial" type="text" id="serial" size="20" value="<?=$pconfig['serial'];?>"/>
                   <div class="hidden" data-for="help_for_serial">
@@ -596,7 +596,7 @@ include("head.inc");
               </thead>
               <tbody>
                 <tr id='intermediate'>
-                  <td style="width:22%"> <i class="fa fa-info-circle text-muted"></i>  <?=gettext("Signing Certificate Authority");?></td>
+                  <td style="width:22%"> <?=gettext("Signing Certificate Authority");?></td>
                   <td style="width:78%">
                     <select name='caref' id='caref' class="selectpicker" onchange='internalca_change()'>
 <?php
@@ -611,7 +611,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key Type");?></td>
+                  <td> <?=gettext("Key Type");?></td>
                   <td style="width:78%">
                     <select name='keytype' id='keytype' class="selectpicker">
                   <option value="RSA" <?=$pconfig['keytype'] == "RSA" ? "selected=\"selected\"" : "";?>>
@@ -624,7 +624,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr id='RSA'>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
+                  <td> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                   <td style="width:78%">
                     <select name='keylen' id='keylen' class="selectpicker">
 <?php
@@ -637,7 +637,7 @@ include("head.inc");
                 </tr>
                 <tr id='blank'><td></td></tr>
                 <tr id='EC'>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Curve");?></td>
+                  <td> <?=gettext("Curve");?></td>
                   <td style="width:78%">
                     <select name='curve' id='curve' class="selectpicker">
 <?php
@@ -649,7 +649,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
+                  <td><a id="help_for_digest_alg" href="#" class="showhelp"></a> <?=gettext("Digest Algorithm");?></td>
                   <td>
                     <select name='digest_alg' id='digest_alg' class="selectpicker">
 <?php
@@ -664,7 +664,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
+                  <td> <?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
                   <td>
                     <input name="lifetime" type="text" id="lifetime"  value="<?=$pconfig['lifetime'];?>"/>
                   </td>
@@ -673,7 +673,7 @@ include("head.inc");
                   <th colspan="2"><?=gettext("Distinguished name");?></th>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Country Code");?> : &nbsp;</td>
+                  <td> <?=gettext("Country Code");?> : &nbsp;</td>
                   <td>
                       <select name="dn_country" class="selectpicker">
 <?php
@@ -687,7 +687,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_dn_state" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State or Province");?> : &nbsp;</td>
+                  <td><a id="help_for_digest_dn_state" href="#" class="showhelp"></a> <?=gettext("State or Province");?> : &nbsp;</td>
                   <td>
                     <input name="dn_state" type="text" size="40" value="<?=$pconfig['dn_state'];?>"/>
                     <div class="hidden" data-for="help_for_digest_dn_state">
@@ -698,7 +698,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_dn_city" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("City");?> : &nbsp;</td>
+                  <td><a id="help_for_digest_dn_city" href="#" class="showhelp"></a> <?=gettext("City");?> : &nbsp;</td>
                   <td>
                     <input name="dn_city" type="text" size="40" value="<?=$pconfig['dn_city'];?>"/>
                     <div class="hidden" data-for="help_for_digest_dn_city">
@@ -709,7 +709,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organization");?> : &nbsp;</td>
+                  <td><a id="help_for_digest_dn_organization" href="#" class="showhelp"></a> <?=gettext("Organization");?> : &nbsp;</td>
                   <td>
                     <input name="dn_organization" type="text" size="40" value="<?=$pconfig['dn_organization'];?>"/>
                     <div class="hidden" data-for="help_for_digest_dn_organization">
@@ -720,7 +720,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_dn_email" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email Address");?> : &nbsp;</td>
+                  <td><a id="help_for_digest_dn_email" href="#" class="showhelp"></a> <?=gettext("Email Address");?> : &nbsp;</td>
                   <td>
                     <input name="dn_email" type="text" size="25" value="<?=$pconfig['dn_email'];?>"/>
                     <div class="hidden" data-for="help_for_digest_dn_email">
@@ -731,7 +731,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Common Name");?> : &nbsp;</td>
+                  <td><a id="help_for_digest_dn_commonname" href="#" class="showhelp"></a> <?=gettext("Common Name");?> : &nbsp;</td>
                   <td>
                     <input name="dn_commonname" type="text" size="25" value="<?=$pconfig['dn_commonname'];?>"/>
                     <div class="hidden" data-for="help_for_digest_dn_commonname">

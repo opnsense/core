@@ -59,20 +59,67 @@ $aclObj = new \OPNsense\Core\ACL();
       <button class="toggle-sidebar" data-toggle="tooltip right" title="<?= html_safe(gettext('Toggle sidebar')) ?>" style="display:none"><i class="fa fa-chevron-left"></i></button>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
-          <li id="menu_messages"><?= get_menu_user() ?></li>
-          <li>
-            <span class="navbar-text" style="margin-left: 0">
-              <i id="system_status" data-toggle="tooltip left" title="<?= html_safe(gettext('Show system status')) ?>" style="cursor:pointer" class="fa fa-circle text-muted"></i>
+          <!-- <li id="menu_messages"><?= get_menu_user() ?></li> -->
+          <li style="display: flex; flex-direction: column; align-items: center;">
+            <span class="navbar-text">
+              <i id="system_status" data-toggle="tooltip left" title="<?= html_safe(gettext('Show system status')) ?>" style="cursor:pointer" class="fa fa-bell text-muted"></i>
             </span>
+            <span style="color:black; margin-top: -5px;">Notification</span>
           </li>
-          <li>
+          <!-- <li> 
             <form class="navbar-form" role="search">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                 <input type="text" style="width: 250px;" class="form-control" tabindex="1" data-provide="typeahead" id="menu_search_box" autocomplete="off">
               </div>
             </form>
+          </li> -->
+          <li>	
+              <a href="/wizard.php?xml=system" title="Wizard">	
+              <span class="fa fa-magic fa-fw"></span>	
+              </a>	
+              <span style="color:black;">Wizard</span>	
           </li>
+          <li class="dropdown">	
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-medkit fa-fw" aria-hidden="true"></i></a>	
+              <span style="color:black;">Diagnostics</span>	
+              <ul class="dropdown-menu">	
+                <li><a href="/ui/diagnostics/interface/arp">ARP Table</a></li>	
+                <li><a href="/ui/diagnostics/dns_diagnostics">DNS Lookup</a></li>	
+                <li><a href="/ui/diagnostics/interface/ndp">NDP Table</a></li>	
+                <li><a href="/ui/diagnostics/interface/netstat">Netstat</a></li>	
+                <li><a href="/ui/diagnostics/packet_capture">Packet Capture</a></li>	
+                <li><a href="/diag_testport.php">Port Probe</a></li>	
+                <li><a href="/diag_traceroute.php">Trace Route</a></li>	
+                <li><a href="/ui/iperf">Iperf</a></li>
+                <li><a href="/ui/diagnostics/ping">Ping</a></li>	
+              </ul>	
+            </li>
+            <li class="dropdown">	
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user" aria-hidden="true"></i></a>	
+              <span style="color:black;">User</span>	
+              <ul class="dropdown-menu">	
+                <li><a href="/system_usermanager_passwordmg.php">Password<i class="fa fa-key fa-fw documentation-menu-icon">`</i>`</i></a></li>	
+                <li><a href="/index.php?logout">Logout<i class="fa fa-sign-out documentation-menu-icon"></i></a></li>	
+              </ul>
+              <li class="dropdown">	
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"  aria-expanded="false"><i Class="fa fa-support" order="80" ></i></a>	
+              <span style="color:black;">Help</span>	
+              <ul class="dropdown-menu">	
+                <li><a IsExternal="Y" href="https://www.veritawall.com/" class="documentation-menu">Documentation<i order="10" Class="fa fa-book documentation-menu-icon"></i></a></li>	
+                <li><a href="https://www.veritawall.com/" class="documentation-menu">User Forum<i order="20" Class="fa fa-ticket documentation-menu-icon"></i>	
+                </a></li>	
+                <li><a href="https://www.veritawall.com/" class="documentation-menu">Commercial Support<i order="30" Class="fa fa-phone documentation-menu-icon"></i></a></li>	
+              </ul>	
+            </li>
+            <li class="dropdown">	
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-power-off fa-fw" aria-hidden="true"></i></a>	
+              <span style="color:black;">Power</span>	
+              <ul class="dropdown-menu">	
+                <li><a  href="/ui/core/reboot" >Reboot<i class="fa fa-repeat fa-fw documentation-menu-icon"></i></a></li>	
+                <li><a  href="/ui/core/halt">Power Off<i order="20" url="/ui/core/halt" class="fa fa-power-off fa-fw documentation-menu-icon"></i></a></li>	
+              </ul>	
+            </li>
         </ul>
       </div>
     </div>
@@ -81,9 +128,9 @@ $aclObj = new \OPNsense\Core\ACL();
 
 <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
     <aside id="navigation" class="page-side col-xs-12 col-sm-3 col-lg-2 hidden-xs">
-        <div class="row">
+        <div class="row" style="background-color: #e7e7e7f5; height: auto;" > 
             <nav class="page-side-nav">
-                <div id="mainmenu" class="panel" style="border:0px" >
+                <div id="mainmenu" class="panel" style="border:0px"  >
                     <div class="panel list-group" style="border:0px">
 <?php
                           foreach($menuSystem as $topMenuItem): ?>
@@ -171,7 +218,7 @@ $aclObj = new \OPNsense\Core\ACL();
       <div class="container-fluid">
         <ul class="list-inline">
           <li><h1><?= html_safe(gentitle($menuBreadcrumbs)) ?></h1></li>
-          <li class="btn-group-container">
+          <li class="btn-group-container" style="display:none" >
             <form method="post">
               <?php
               if (isset($service_hook)) {
@@ -184,17 +231,17 @@ $aclObj = new \OPNsense\Core\ACL();
 
               <?php if (isset($widgetCollection)): ?>
                 <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
-                <button id="add_widget_btn" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><i class="fa fa-plus-circle fa-fw"></i> <?= gettext('Add widget') ?></button>
-                <select class="selectpicker" data-width="120px" id="column_count">
-                    <option value="1" <?=$pconfig['column_count'] == "1" ? 'selected="selected"' : '';?>><?= gettext('1 column');?></option>
-                    <option value="2" <?=$pconfig['column_count'] == "2" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '2') ?></option>
-                    <option value="3" <?=$pconfig['column_count'] == "3" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '3') ?></option>
-                    <option value="4" <?=$pconfig['column_count'] == "4" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '4') ?></option>
-                    <option value="6" <?=$pconfig['column_count'] == "6" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '6') ?></option>
+                <button id="add_widget_btn" type="button" class="btn btn-default" style="display:none" data-toggle="modal" data-target="#modal_widgets"><i class="fa fa-plus-circle fa-fw"></i> <?= gettext('Add widget') ?></button>
+                <select class="selectpicker" data-width="120px" id="column_count" style="display:none">
+                    <option style="display:none" value="1" <?=$pconfig['column_count'] == "1" ? 'selected="selected"' : '';?>><?= gettext('1 column');?></option>
+                    <option style="display:none"  value="2" <?=$pconfig['column_count'] == "2" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '2') ?></option>
+                    <option style="display:none" value="3" <?=$pconfig['column_count'] == "3" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '3') ?></option>
+                    <option style="display:none" value="4" <?=$pconfig['column_count'] == "4" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '4') ?></option>
+                    <option style="display:none" value="6" <?=$pconfig['column_count'] == "6" ? 'selected="selected"' : '';?>><?= sprintf(gettext('%s columns'), '6') ?></option>
                 </select>
               <?php endif; ?>
              </form>
           </li>
-        </ul>
+                  </ul>
       </div>
     </header>

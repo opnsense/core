@@ -254,20 +254,20 @@ $( document ).ready(function() {
             <input type="hidden" id="privid" name="privid" value="" />
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Defined by");?></td>
+                <td> <?=gettext("Defined by");?></td>
                 <td>
                   <strong><?=strtoupper($pconfig['scope']);?></strong>
                   <input name="scope" type="hidden" value="<?=$pconfig['scope']?>"/>
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group name");?></td>
+                <td> <?=gettext("Group name");?></td>
                 <td>
                   <input name="name" type="text" maxlength="32" value="<?=$pconfig['name'];?>" <?=$pconfig['scope'] == "system" ? "readonly=\"readonly\"" : "";?> />
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_desc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                <td><a id="help_for_desc" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                 <td>
                   <input name="description" type="text" value="<?=$pconfig['description'];?>" />
                   <div class="hidden" data-for="help_for_desc">
@@ -276,7 +276,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
+                <td><a id="help_for_groups" href="#" class="showhelp"></a> <?=gettext("Group Memberships");?></td>
                 <td>
                   <table class="table" style="width:100%; border:0;">
                     <thead>

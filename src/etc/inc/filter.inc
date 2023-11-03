@@ -200,7 +200,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         empty($config['nat']['outbound']['mode']) ||
           in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))
     ) {
-        // generate standard outbound rules when mode is automatic or hybrid
+        // generate standard outbound rules when mode is automatic ot hybrid
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
@@ -640,7 +640,7 @@ function filter_rules_legacy(&$FilterIflist)
     $bridge_interfaces = [];
     if (!empty($config['bridges']['bridged'])) {
         foreach ($config['bridges']['bridged'] as $bridge) {
-            $bridge_interfaces = array_merge(explode(',', $bridge['members'] ?? ''), $bridge_interfaces);
+            $bridge_interfaces = array_merge(explode(',', $bridge['members']), $bridge_interfaces);
         }
     }
     foreach ($FilterIflist as $on => $oc) {

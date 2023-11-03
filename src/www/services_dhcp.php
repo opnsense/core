@@ -619,13 +619,13 @@ include("head.inc");
                       <td style="width:22%"></td>
                       <td style="width:78%; text-align:right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                        <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                       </td>
                     </tr>
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
+                      <td> <?=gettext("Enable");?> </td>
                       <td>
                         <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
                         <strong><?= sprintf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
@@ -637,7 +637,7 @@ include("head.inc");
                       <td colspan="2"><?= gettext('Editing Pool-Specific Options. To return to the Interface, click its tab above.') ?></td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pool Description");?></td>
+                      <td> <?=gettext("Pool Description");?></td>
                       <td>
                         <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
                       </td>
@@ -645,7 +645,7 @@ include("head.inc");
 <?php
                     endif; ?>
                     <tr>
-                      <td><a id="help_for_denyunknown" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Deny unknown clients");?></td>
+                      <td><a id="help_for_denyunknown" href="#" class="showhelp"></a> <?=gettext("Deny unknown clients");?></td>
                       <td>
                         <input name="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_denyunknown">
@@ -654,7 +654,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_ignoreuids" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Ignore Client UIDs");?></td>
+                      <td><a id="help_for_ignoreuids" href="#" class="showhelp"></a> <?=gettext("Ignore Client UIDs");?></td>
                       <td>
                         <input name="ignoreuids" type="checkbox" value="yes" <?=!empty($pconfig['ignoreuids']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" data-for="help_for_ignoreuids">
@@ -663,19 +663,19 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet");?></td>
+                      <td> <?=gettext("Subnet");?></td>
                       <td>
                         <?=gen_subnet($config['interfaces'][$if]['ipaddr'], $config['interfaces'][$if]['subnet']);?>
                       </td>
                     </tr>
                     <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Subnet mask");?></td>
+                        <td> <?=gettext("Subnet mask");?></td>
                         <td>
                           <?=gen_subnet_mask($config['interfaces'][$if]['subnet']);?>
                         </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Available range");?></td>
+                      <td> <?=gettext("Available range");?></td>
                       <td>
 <?php if ($range_to <= $range_from): ?>
                         <span class="text-danger"><?= gettext('No available address range for configured interface subnet size.') ?></span>
@@ -692,7 +692,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Range");?></td>
+                      <td> <?=gettext("Range");?></td>
                       <td>
                         <table class="table table-condensed">
                             <thead>
@@ -713,7 +713,7 @@ include("head.inc");
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
-                      <td><a id="help_for_additionalpools" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional Pools");?></td>
+                      <td><a id="help_for_additionalpools" href="#" class="showhelp"></a> <?=gettext("Additional Pools");?></td>
                       <td>
                         <table class="table table-condensed">
                             <thead>
@@ -752,14 +752,14 @@ include("head.inc");
 <?php
                     endif; ?>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WINS servers");?></td>
+                      <td> <?=gettext("WINS servers");?></td>
                       <td>
                         <input name="wins1" type="text" value="<?=$pconfig['wins1'];?>" /><br />
                         <input name="wins2" type="text" value="<?=$pconfig['wins2'];?>" />
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_dns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("DNS servers");?></td>
+                      <td><a id="help_for_dns" href="#" class="showhelp"></a>  <?=gettext("DNS servers");?></td>
                       <td>
                         <input name="dns1" type="text" value="<?=$pconfig['dns1'];?>" /><br />
                         <input name="dns2" type="text" value="<?=$pconfig['dns2'];?>" />
@@ -769,7 +769,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway");?></td>
+                      <td><a id="help_for_gateway" href="#" class="showhelp"></a> <?=gettext("Gateway");?></td>
                       <td>
                         <input name="gateway" type="text" class="form-control host" value="<?=$pconfig['gateway'];?>" />
                         <div class="hidden" data-for="help_for_gateway">
@@ -779,7 +779,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
+                      <td><a id="help_for_domain" href="#" class="showhelp"></a> <?=gettext("Domain name");?></td>
                       <td>
                         <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
                         <div class="hidden" data-for="help_for_domain">
@@ -788,7 +788,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_domainsearchlist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain search list");?></td>
+                      <td><a id="help_for_domainsearchlist" href="#" class="showhelp"></a> <?=gettext("Domain search list");?></td>
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
                         <div class="hidden" data-for="help_for_domainsearchlist">
@@ -797,7 +797,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time (seconds)")?></td>
+                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"></a> <?=gettext("Default lease time (seconds)")?></td>
                       <td>
                         <input name="defaultleasetime" type="text" id="defaultleasetime" value="<?=$pconfig['defaultleasetime'];?>" />
                         <div class="hidden" data-for="help_for_defaultleasetime">
@@ -807,7 +807,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_maxleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_maxleasetime" href="#" class="showhelp"></a> <?=gettext("Maximum lease time");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="maxleasetime" type="text" id="maxleasetime" value="<?=$pconfig['maxleasetime'];?>" />
                         <div class="hidden" data-for="help_for_maxleasetime">
@@ -817,7 +817,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_minsecs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Response delay");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_minsecs" href="#" class="showhelp"></a> <?=gettext("Response delay");?> (<?=gettext("seconds");?>)</td>
                       <td>
                         <input name="minsecs" type="text" id="minsecs" value="<?=$pconfig['minsecs'];?>" />
                         <div class="hidden" data-for="help_for_minsecs">
@@ -827,7 +827,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_interface_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface MTU");?></td>
+                      <td><a id="help_for_interface_mtu" href="#" class="showhelp"></a> <?=gettext("Interface MTU");?></td>
                       <td>
                         <input name="interface_mtu"  type="text" value="<?=$pconfig['interface_mtu']?>" />
                         <div class="hidden" data-for="help_for_interface_mtu">
@@ -838,7 +838,7 @@ include("head.inc");
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
-                      <td><a id="help_for_failover_peerip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Failover peer IP:");?></td>
+                      <td><a id="help_for_failover_peerip" href="#" class="showhelp"></a> <?=gettext("Failover peer IP:");?></td>
                       <td>
                         <input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" value="<?=$pconfig['failover_peerip'];?>" />
                         <div class="hidden" data-for="help_for_failover_peerip">
@@ -846,7 +846,7 @@ include("head.inc");
                         </div>
                       </td>
                     </tr>
-                    <td><a id="help_for_failover_split" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Failover split:");?></td>
+                    <td><a id="help_for_failover_split" href="#" class="showhelp"></a> <?=gettext("Failover split:");?></td>
                       <td>
                         <input name="failover_split" type="text" class="form-control host" id="failover_split" value="<?=$pconfig['failover_split'];?>" />
                         <div class="hidden" data-for="help_for_failover_split">
@@ -860,7 +860,7 @@ include("head.inc");
                     </tr>
 
                     <tr>
-                      <td><a id="help_for_failover_staticarp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Static ARP");?></td>
+                      <td><a id="help_for_failover_staticarp" href="#" class="showhelp"></a> <?=gettext("Static ARP");?></td>
                       <td>
                         <input type="checkbox" value="yes" name="staticarp" <?=!empty($pconfig['staticarp']) ? " checked=\"checked\"" : ""; ?> />&nbsp;
                         <strong><?=gettext("Enable Static ARP entries");?></strong>
@@ -872,7 +872,7 @@ include("head.inc");
 <?php
                     endif; ?>
                     <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Dynamic DNS");?></td>
+                    <td><?=gettext("Dynamic DNS");?></td>
                     <td>
                       <div id="showddnsbox">
                         <input type="button" onclick="show_ddns_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Dynamic DNS");?>
@@ -907,7 +907,7 @@ include("head.inc");
                     </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("MAC Address Control");?></td>
+                      <td> <?=gettext("MAC Address Control");?></td>
                       <td>
                         <div id="showmaccontrolbox">
                           <input type="button" onclick="show_maccontrol_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show MAC Address Control");?>
@@ -921,7 +921,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("NTP servers");?></td>
+                      <td> <?=gettext("NTP servers");?></td>
                       <td>
                         <div id="showntpbox">
                           <input type="button" onclick="show_ntp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show NTP configuration");?>
@@ -933,7 +933,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("TFTP server");?></td>
+                      <td> <?=gettext("TFTP server");?></td>
                       <td>
                         <div id="showtftpbox">
                           <input type="button" onclick="show_tftp_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show TFTP configuration");?>
@@ -948,7 +948,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("LDAP URI");?></td>
+                      <td> <?=gettext("LDAP URI");?></td>
                       <td>
                         <div id="showldapbox">
                           <input type="button" onclick="show_ldap_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show LDAP configuration");?>
@@ -960,7 +960,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Network booting') ?></td>
+                      <td> <?= gettext('Network booting') ?></td>
                       <td>
                         <div id="shownetbootbox">
                           <input type="button" onclick="show_netboot_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Network booting");?>
@@ -992,7 +992,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("WPAD");?> </td>
+                      <td> <?=gettext("WPAD");?> </td>
                       <td>
                         <div id="showwpadbox">
                           <input type="button" onclick="show_wpad_config()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show WPAD");?>
@@ -1004,7 +1004,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable OMAPI");?></td>
+                      <td> <?=gettext("Enable OMAPI");?></td>
                       <td>
                         <div id="showomapibox">
                           <input type="button" onclick="show_omapi_config()" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show OMAPI configuration");?>
@@ -1025,7 +1025,7 @@ include("head.inc");
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
-                      <td><a id="help_for_numberoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Additional Options");?></td>
+                      <td><a id="help_for_numberoptions" href="#" class="showhelp"></a>  <?=gettext("Additional Options");?></td>
                       <td>
                         <div id="shownumbervaluebox">
                           <input type="button" onclick="show_shownumbervalue()" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Additional BOOTP/DHCP Options");?>
@@ -1162,7 +1162,7 @@ include("head.inc");
                       <td>
 <?php
                           if (isset($mapent['arp_table_static_entry'])): ?>
-                            <i class="fa fa-info-circle fa-fw"></i>
+                            
 <?php
                           endif; ?>
                       </td>

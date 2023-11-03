@@ -377,17 +377,17 @@ function addMultiSelectClearUI() {
  */
 function initFormHelpUI() {
     // handle help messages show/hide
-    $("a.showhelp").click(function (event) {
+    $("a.showhelp").mouseover(function (event) {
         $("*[data-for='" + $(this).attr('id') + "']").toggleClass("hidden show");
         event.preventDefault();
     });
 
     // handle all help messages show/hide
     let elements = $('[id*="show_all_help"]');
-    elements.click(function(event) {
-        $(this).toggleClass("fa-toggle-on fa-toggle-off");
+    elements.mouseover(function(event) {
+        //$(this).toggleClass("fa-toggle-on fa-toggle-off");
         $(this).toggleClass("text-success text-danger");
-        if ($(this).hasClass("fa-toggle-on")) {
+        if ($(this).hasClass("fa-success")) {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
@@ -404,6 +404,7 @@ function initFormHelpUI() {
     if (window.sessionStorage && sessionStorage.getItem('all_help_preset') === "1") {
         // show all help messages when preset was stored
         elements.toggleClass("fa-toggle-on fa-toggle-off").toggleClass("text-success text-danger");
+        elements.toggleClass("text-success text-danger");
         $('[data-for*="help_for"]').addClass("show").removeClass("hidden");
     }
 }

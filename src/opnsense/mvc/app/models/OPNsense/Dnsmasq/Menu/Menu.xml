@@ -1,11 +1,17 @@
 <menu>
     <Services>
-        <Dnsmasq VisibleName="Dnsmasq DNS" cssClass="fa fa-tags fa-fw">
+        <Dnsmasq VisibleName="DNS (Dnsmasq)" order="116">
           <Settings order="10" url="/services_dnsmasq.php">
             <Hosts url="/services_dnsmasq_edit.php*" visibility="hidden"/>
             <Domains url="/services_dnsmasq_domainoverride_edit.php*" visibility="hidden"/>
           </Settings>
-          <LogFile VisibleName="Log File" order="50" url="/ui/diagnostics/log/core/dnsmasq"/>
         </Dnsmasq>
     </Services>
+
+    <ReportsandLogs>
+    <LogFiles>
+      <DNSmasqLogFiles VisibleName="Dnsmasq Log File" order="260" url="/ui/diagnostics/log/core/dnsmasq"/>
+    </LogFiles>
+   </ReportsandLogs>
+
 </menu>

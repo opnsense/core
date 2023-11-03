@@ -257,11 +257,11 @@ include("head.inc");
                 <td style="width:22%"><strong><?= gettext('Cryptography settings') ?></strong></td>
                 <td style="width:78%; text-align:right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                  <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Hardware acceleration') ?></td>
+                <td><a id="help_for_crypto_hardware" href="#" class="showhelp"></a> <?= gettext('Hardware acceleration') ?></td>
                 <td>
                   <select name="crypto_hardware[]" id="crypto_hardware" class="selectpicker" multiple="multiple" data-style="btn-default" title="<?= html_safe(gettext('None')) ?>">
 <?php foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr): ?>
@@ -291,7 +291,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_thermal_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?> </td>
+                <td><a id="help_for_thermal_hardware" href="#" class="showhelp"></a> <?=gettext("Hardware");?> </td>
                 <td>
                   <select name="thermal_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None/ACPI"); ?></option>
@@ -320,7 +320,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
+                <td><a id="help_for_rrdbackup" href="#" class="showhelp"></a> <?=gettext("Periodic RRD Backup");?></td>
                 <td>
                   <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
                     <option value='0' <?= $pconfig['rrdbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
@@ -338,7 +338,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
+                <td><a id="help_for_dhcpbackup" href="#" class="showhelp"></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
                   <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
                     <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : '' ?>><?= gettext('Power off') ?></option>
@@ -355,7 +355,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_netflowbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic NetFlow Backup");?></td>
+                <td><a id="help_for_netflowbackup" href="#" class="showhelp"></a> <?=gettext("Periodic NetFlow Backup");?></td>
                 <td>
                   <select name="netflowbackup" class="selectpicker" data-style="btn-default" id="netflowbackup">
                     <option value='0' <?= $pconfig['netflowbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
@@ -372,7 +372,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_captiveportalbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic Captive Portal Backup");?></td>
+                <td><a id="help_for_captiveportalbackup" href="#" class="showhelp"></a> <?=gettext("Periodic Captive Portal Backup");?></td>
                 <td>
                   <select name="captiveportalbackup" class="selectpicker" data-style="btn-default" id="captiveportalbackup">
                     <option value='0' <?= $pconfig['captiveportalbackup'] == 0 ? 'selected="selected"' : '' ?>><?= gettext('Power off') ?></option>
@@ -397,7 +397,7 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
+                <td><a id="help_for_powerd_enable" href="#" class="showhelp"></a> <?=gettext("Use PowerD"); ?></td>
                 <td>
                   <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
                   <div class="hidden" data-for="help_for_powerd_enable">
@@ -418,7 +418,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On AC Power Mode') ?></td>
+                <td> <?=gettext('On AC Power Mode') ?></td>
                 <td>
                   <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -436,7 +436,7 @@ include("head.inc");
                   </select>
                 </td>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('On Battery Power Mode') ?></td>
+                <td> <?=gettext('On Battery Power Mode') ?></td>
                 <td>
                   <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -455,7 +455,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"><i class="fa fa-info-circle text-circle"></i></a> <?=gettext('On Normal Power Mode'); ?></td>
+                <td><a id="help_for_powerd_normal_mode" href="#" class="showhelp"></a> <?=gettext('On Normal Power Mode'); ?></td>
                 <td>
                   <select name="powerd_normal_mode" class="selectpicker" data-style="btn-default">
                     <option value="hadp"<?=$pconfig['powerd_normal_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
@@ -484,14 +484,14 @@ include("head.inc");
                 <td colspan="2"><strong><?= gettext('Disk / Memory Settings (reboot to apply changes)') ?></strong></td>
               </tr>
               <tr>
-                <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Swap file'); ?></td>
+                <td style="width:22%"> <?=gettext('Swap file'); ?></td>
                 <td style="width=78%">
                   <input name="use_swap_file" type="checkbox" id="use_swap_file" value="yes" <?=!empty($pconfig['use_swap_file']) ? 'checked="checked"' : '';?>/>
                   <?= gettext('Add a 2 GB swap file to the system') ?>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var/log RAM disk'); ?></td>
+                <td><a id="help_for_use_mfs_var" href="#" class="showhelp"></a> <?=gettext('/var/log RAM disk'); ?></td>
                 <td>
                   <input name="use_mfs_var" type="checkbox" id="use_mfs_var" value="yes" <?= !empty($pconfig['use_mfs_var']) ? 'checked="checked"' : '' ?>/>
                   <?= gettext('Use memory file system for /var/log') ?>
@@ -502,7 +502,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_max_mfs_var" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/var/log RAM usage'); ?></td>
+                <td><a id="help_for_max_mfs_var" href="#" class="showhelp"></a> <?=gettext('/var/log RAM usage'); ?></td>
                 <td>
                   <input name="max_mfs_var" type="text" id="max_mfs_var" placeholder="50" value="<?= html_safe($pconfig['max_mfs_var']) ?>"/>
                   <div class="hidden" data-for="help_for_max_mfs_var">
@@ -511,7 +511,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM disk'); ?></td>
+                <td><a id="help_for_use_mfs_tmp" href="#" class="showhelp"></a> <?=gettext('/tmp RAM disk'); ?></td>
                 <td>
                   <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
                   <?=gettext('Use memory file system for /tmp'); ?>
@@ -521,7 +521,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_max_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM usage'); ?></td>
+                <td><a id="help_for_max_mfs_tmp" href="#" class="showhelp"></a> <?=gettext('/tmp RAM usage'); ?></td>
                 <td>
                   <input name="max_mfs_tmp" type="text" id="max_mfs_tmp" placeholder="50" value="<?= html_safe($pconfig['max_mfs_tmp']) ?>"/>
                   <div class="hidden" data-for="help_for_max_mfs_tmp">
@@ -538,7 +538,7 @@ include("head.inc");
                     <td style="width:78%"></td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_disablebeep" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
+                    <td><a id="help_for_disablebeep" href="#" class="showhelp"></a> <?=gettext("Startup/Shutdown Sound"); ?></td>
                     <td>
                         <input name="disablebeep" type="checkbox" id="disablebeep" value="yes" <?=!empty($pconfig['disablebeep']) ? 'checked="checked"' : '';?>/>
                         <?=gettext("Disable the startup/shutdown beep"); ?>

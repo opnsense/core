@@ -332,7 +332,7 @@ function display_error_form($text)
     <title><?= gettext('Error') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
-    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" rel="shortcut icon">
 
     <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
@@ -363,7 +363,7 @@ function display_login_form($Login_Error)
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
@@ -372,63 +372,73 @@ function display_login_form($Login_Error)
     <title><?= gettext('Login') ?> | <?= $product->name() ?></title>
 
     <link href="<?= cache_safe("/ui/themes/{$themename}/build/css/main.css") ?>" rel="stylesheet">
-    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/favicon.png") ?>" rel="shortcut icon">
+    <link href="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" rel="shortcut icon">
 
     <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
-    <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/js/theme.js")) : ?>
+    <?php if (file_exists("/usr/local/applications/www/themes/{$themename}/build/js/theme.js")) : ?>
     <script src="<?= cache_safe("/ui/themes/{$themename}/build/js/theme.js") ?>"></script>
     <?php endif ?>
 
   </head>
-  <body class="page-login">
+  <body class="page-login" style="height: 100vh; overflow: hidden;">
+
+  <div class="loginHead" style="position: relative; padding: 20px 20px 40px 20px; background-color: #fff; font-size: 26px; border: 0; height: 70px; box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);">
+        <?php if (file_exists("/usr/local/applications/www/themes/{$themename}/build/images/default-logo.svg")) : ?>
+          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="40" alt="logo" />
+        <?php else : ?>
+          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="40" alt="logo" />
+        <?php endif ?>
+        <span class="text-primary">Veritawall</span>
+    </div>
 
   <div class="container">
-    <main class="login-modal-container">
-      <header class="login-modal-head" style="height:50px;">
-        <div class="navbar-brand">
-    <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")) : ?>
-          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="30" alt="logo" />
-    <?php else : ?>
-          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" height="30" alt="logo" />
-    <?php endif ?>
-        </div>
-      </header>
-
-      <div class="login-modal-content">
-        <div id="inputerrors" class="text-danger"><?= !empty($Login_Error) ? $Login_Error : '&nbsp;' ?></div><br />
-
-            <form class="clearfix" id="iform" name="iform" method="post" autocomplete="off">
-
-        <div class="form-group">
-          <label for="usernamefld"><?=gettext("Username:"); ?></label>
-          <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" autofocus="autofocus" autocapitalize="off" autocorrect="off" />
-        </div>
-
-        <div class="form-group">
-          <label for="passwordfld"><?=gettext("Password:"); ?></label>
-          <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
-        </div>
-
-        <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
-
-      </form>
-
-      <?php if (!$have_cookies && isset($_POST['login'])) : ?>
-        <br /><br />
-        <span class="text-danger">
-            <?= gettext("Your browser must support cookies to login."); ?>
-        </span>
-      <?php endif; ?>
-
-          </div>
-
-      </main>
-      <div class="login-foot text-center">
-        <a target="_blank" href="<?= $product->website() ?>"><?= $product->name() ?></a> (c) <?= $product->copyright_years() ?>
-        <a target="_blank" href="<?= $product->copyright_url() ?>"><?= $product->copyright_owner() ?></a>
+    
+    <div>
+      <div class="navbar-brand">
+        <?php if (file_exists("/usr/local/applications/www/themes/{$themename}/build/images/default-logo.svg")) : ?>
+          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="100" alt="logo" />
+        <?php else : ?>
+          <img src="<?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" height="100" alt="logo" />
+        <?php endif ?>
+        <h1 class="text-primary" style="font-size:90px">Veritawall</h1>
       </div>
+    </div>
+      <div>
+        <main class="login-modal-container">
 
+        <div class="login-modal-content">
+            <div id="inputerrors" class="text-danger"><?= !empty($Login_Error) ? $Login_Error : '&nbsp;' ?></div><br />
+
+                <form class="clearfix" id="iform" name="iform" method="post" autocomplete="off">
+
+            <div class="form-group">
+            <label for="usernamefld"><?=gettext("Username:"); ?></label>
+            <input id="usernamefld" type="text" name="usernamefld" class="form-control user" tabindex="1" autofocus="autofocus" autocapitalize="off" autocorrect="off" />
+            </div>
+
+            <div class="form-group">
+            <label for="passwordfld"><?=gettext("Password:"); ?></label>
+            <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
+            </div>
+           
+
+
+            <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
+
+        </form>
+
+        <?php if (!$have_cookies && isset($_POST['login'])) : ?>
+            <br /><br />
+            <span class="text-danger">
+                <?= gettext("Your browser must support cookies to login."); ?>
+            </span>
+        <?php endif; ?>
+
+            </div>
+
+        </main>
+      </div>
     </div>
 
     </body>

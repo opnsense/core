@@ -359,7 +359,7 @@
         });
 
         /**
-         * update expiration (updatefreq is split into days and hours on the form)
+         * update expiration (updatefreq is splitted into days and hours on the form)
          */
         $("#alias\\.updatefreq").change(function(){
             if ($(this).val() !== "") {
@@ -693,7 +693,7 @@
                                     <td colspan="2" style="text-align:right;">
                                         <small>{{ lang._('full help') }} </small>
                                         <a href="#">
-                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogformDialogAlias">
+                                            <i class="fa fa-info-circle text-danger" id="show_all_help_formDialogformDialogAlias">
                                             </i>
                                         </a>
                                     </td>
@@ -701,7 +701,7 @@
                                 <tr id="row_alias.enabled">
                                     <td>
                                         <div class="control-label" id="control_label_alias.enabled">
-                                            <a id="help_for_alias.enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.enabled" href="#" class="showhelp"></a>
                                             <b>{{lang._('Enabled')}}</b>
                                         </div>
                                     </td>
@@ -718,7 +718,7 @@
                                 <tr id="row_alias.name">
                                     <td>
                                         <div class="control-label" id="control_label_alias.name">
-                                            <a id="help_for_alias.name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.name" href="#" class="showhelp"></a>
                                             <b>{{lang._('Name')}}</b>
                                         </div>
                                     </td>
@@ -737,7 +737,7 @@
                                 <tr id="row_alias.type">
                                     <td>
                                         <div class="control-label" id="control_label_alias.type">
-                                            <i class="fa fa-info-circle text-muted"></i>
+                                            
                                             <b>{{lang._('Type')}}</b>
                                         </div>
                                     </td>
@@ -752,24 +752,23 @@
                                 <tr id="row_alias.categories">
                                     <td>
                                         <div class="control-label" id="control_label_alias.type">
-                                            <a id="help_for_alias.categories" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.categories" href="#" class="showhelp"></a>
                                             <b>{{lang._('Categories')}}</b>
                                         </div>
                                     </td>
                                     <td>
                                         <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
-                                        <span class="hidden" data-for="help_for_alias.categories">
-                                            {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
-                                        </span>
                                     </td>
                                     <td>
-                                        <span class="help-block" id="help_block_alias.categories"></span>
+                                        <span class="help-block" id="help_block_alias.categories">
+                                            {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.updatefreq">
                                     <td>
                                         <div class="control-label" id="control_label_alias.updatefreq">
-                                            <a id="help_for_alias.frequency" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.frequency" href="#" class="showhelp"></a>
                                             <b>{{lang._('Refresh Frequency')}}</b>
                                         </div>
                                     </td>
@@ -802,7 +801,7 @@
                                 <tr id="row_alias.content">
                                     <td>
                                         <div class="control-label" id="control_label_alias.content">
-                                            <i class="fa fa-info-circle text-muted"></i>
+                                            
                                             <b>{{lang._('Content')}}</b>
                                         </div>
                                     </td>
@@ -851,7 +850,7 @@
                                 <tr id="row_alias.interface">
                                     <td>
                                         <div class="alias interface" id="alias_interface">
-                                            <a id="help_for_alias.interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.interface" href="#" class="showhelp"></a>
                                             <b>{{lang._('Interface')}}</b>
                                         </div>
                                     </td>
@@ -868,7 +867,7 @@
                                 <tr id="row_alias.counters">
                                     <td>
                                         <div class="control-label" id="control_label_alias.counters">
-                                            <a id="help_for_alias.counters" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.counters" href="#" class="showhelp"></a>
                                             <b>{{lang._('Statistics')}}</b>
                                         </div>
                                     </td>
@@ -885,7 +884,7 @@
                                 <tr id="row_alias.description">
                                     <td>
                                         <div class="control-label" id="control_label_alias.description">
-                                            <a id="help_for_alias.description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                                            <a id="help_for_alias.description" href="#" class="showhelp"></a>
                                             <b>{{lang._('Description')}}</b>
                                         </div>
                                     </td>

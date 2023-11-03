@@ -226,7 +226,7 @@ $(document).ready(function() {
                     <td colspan="2"><strong><?=gettext('Unbound DNS reporting');?></strong></td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Statistics");?></td>
+                    <td style="width:22%"> <?=gettext("Statistics");?></td>
                     <td>
                         <input name="unboundenable" type="checkbox" id="unboundenable" value="yes" <?=!empty($pconfig['unboundenable']) ? "checked=\"checked\"" : ""?> />
                         &nbsp;<strong><?=gettext("Enables local gathering of statistics.");?></strong>
@@ -251,7 +251,7 @@ $(document).ready(function() {
                     <td colspan="2"><strong><?=gettext('Reporting Database Options');?></strong></td>
                   </tr>
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Round-Robin-Database");?></td>
+                    <td style="width:22%"> <?=gettext("Round-Robin-Database");?></td>
                     <td>
                       <input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?=!empty($pconfig['rrdenable']) ? "checked=\"checked\"" : ""?> />
                       &nbsp;<strong><?=gettext("Enables the RRD graphing backend.");?></strong>
@@ -279,7 +279,7 @@ $(document).ready(function() {
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
-                    <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Collected Reports");?> </td>
+                    <td style="width:22%"> <?=gettext("Collected Reports");?> </td>
                     <td>
                       <table class="table table-condensed">
 <?php

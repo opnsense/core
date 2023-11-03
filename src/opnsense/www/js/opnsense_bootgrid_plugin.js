@@ -322,7 +322,7 @@ $.fn.UIBootgrid = function (params) {
         if (editAlert !== undefined) {
             $("#"+editAlert).slideDown(1000, function(){
                 setTimeout(function(){
-                    $("#"+editAlert).not(":animated").slideUp(2000);
+                    $("#"+editAlert).slideUp(2000);
                 }, 2000);
             });
         }
@@ -366,7 +366,6 @@ $.fn.UIBootgrid = function (params) {
             ajaxCall(params['del'] + uuid, {},function(data,status){
                 // reload grid after delete
                 std_bootgrid_reload(this_grid.attr('id'));
-                this_grid.showSaveAlert(event);
             });
         });
     };
@@ -386,7 +385,6 @@ $.fn.UIBootgrid = function (params) {
                 // refresh after load
                 $.when.apply(null, deferreds).done(function(){
                     std_bootgrid_reload(this_grid.attr('id'));
-                    this_grid.showSaveAlert(event);
                 });
             }
         });
@@ -461,7 +459,6 @@ $.fn.UIBootgrid = function (params) {
         ajaxCall(params['toggle'] + uuid, {},function(data,status){
             // reload grid after delete
             std_bootgrid_reload(this_grid.attr('id'));
-            this_grid.showSaveAlert(event);
         });
     };
 

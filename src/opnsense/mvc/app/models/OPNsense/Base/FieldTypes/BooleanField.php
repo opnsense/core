@@ -42,12 +42,9 @@ class BooleanField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * {@inheritdoc}
+     * @var string default validation message string
      */
-    protected function defaultValidationMessage()
-    {
-        return gettext('Value should be a boolean (0,1).');
-    }
+    protected $internalValidationMessage = "value should be a boolean (0,1)";
 
     /**
      * retrieve field validators for this field type
@@ -55,12 +52,13 @@ class BooleanField extends BaseField
      */
     public function getValidators()
     {
+        // regexp for validating boolean values.
+        $regex_mask = "/^([0,1]){1}$/";
+
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new Regex([
-                'message' => $this->getValidationMessage(),
-                'pattern' => '/^[01]$/',
-            ]);
+            $validators[] = new Regex(array('message' => $this->internalValidationMessage,
+                'pattern' => trim($regex_mask)));
         }
         return $validators;
     }

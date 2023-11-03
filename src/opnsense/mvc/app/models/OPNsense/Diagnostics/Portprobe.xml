@@ -1,7 +1,9 @@
 <model>
     <mount>:memory:</mount>
     <version>1.0.0</version>
-    <description>OPNsense Port probe</description>
+    <description>
+        OPNsense Port probe
+    </description>
     <items>
         <settings>
             <hostname type="HostnameField">
@@ -13,19 +15,22 @@
             </port>
             <ipproto type="OptionField">
                 <Required>Y</Required>
-                <Default>inet</Default>
+                <default>inet</default>
                 <OptionValues>
                     <inet>IPv4</inet>
                     <inet6>IPv6</inet6>
                 </OptionValues>
             </ipproto>
             <source_address type="NetworkField">
+              <Required>N</Required>
               <NetMaskAllowed>N</NetMaskAllowed>
               <ValidationMessage>Provide a valid source address</ValidationMessage>
             </source_address>
-            <source_port type="PortField"/>
+            <source_port type="PortField">
+                <Required>N</Required>
+            </source_port>
             <showtext type="BooleanField">
-                <Default>0</Default>
+                <default>0</default>
                 <Required>Y</Required>
             </showtext>
         </settings>

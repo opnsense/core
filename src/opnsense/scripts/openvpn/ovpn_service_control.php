@@ -41,8 +41,6 @@ function setup_interface($instance)
         mwexecf('/sbin/ifconfig %s name %s', [$instance->__devnode, $instance->__devname]);
         mwexecf('/sbin/ifconfig %s group openvpn', [$instance->__devname]);
     }
-    /* Make sure the interface is down before handing it over to OpenVPN to prevent locking issues */
-    mwexecf('/sbin/ifconfig %s down', [$instance->__devname]);
 }
 
 function ovpn_start($instance, $fhandle)
@@ -182,7 +180,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
     }
 
     /**
-     * When -a is specified, cleanup up old or disabled instances
+     * When -a is specified, cleaup up old or disabled instances
      */
     if ($instance_id == null) {
         $to_clean = [];

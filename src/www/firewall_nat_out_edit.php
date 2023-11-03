@@ -418,14 +418,14 @@ include("head.inc");
                             <td><?=gettext("Edit Advanced Outbound NAT entry");?></td>
                             <td colspan="2" style="text-align:right">
                                 <small><?=gettext("full help"); ?> </small>
-                                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                                <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                             </td>
                         </tr>
                     </table>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                  <td><a id="help_for_disabled" href="#" class="showhelp"></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
                     <strong><?=gettext("Disable this rule"); ?></strong>
@@ -435,7 +435,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_do_not_nat" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Do not NAT");?></td>
+                  <td><a id="help_for_do_not_nat" href="#" class="showhelp"></a> <?=gettext("Do not NAT");?></td>
                   <td style="width:78%" class="vtable">
                     <input type="checkbox" name="nonat" <?=!empty($pconfig['nonat']) ? " checked=\"checked\"" : ""; ?> />
                     <div class="hidden" data-for="help_for_do_not_nat">
@@ -445,7 +445,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                  <td><a id="help_for_interface" href="#" class="showhelp"></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <div class="input-group">
                       <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
@@ -464,7 +464,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
+                  <td><a id="help_for_ipv46" href="#" class="showhelp"></a> <?=gettext("TCP/IP Version");?></td>
                   <td>
                     <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
 <?php
@@ -481,7 +481,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
+                  <td><a id="help_for_proto" href="#" class="showhelp"></a> <?=gettext("Protocol"); ?></td>
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
@@ -498,7 +498,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source invert') ?></td>
+                  <td> <a id="help_for_src_invert" href="#" class="showhelp"></a> <?= gettext('Source invert') ?></td>
                   <td>
                     <input name="source_not" type="checkbox" value="yes" <?= !empty($pconfig['source_not']) ? 'checked="checked"' : '' ?> />
                     <div class="hidden" data-for="help_for_src_invert">
@@ -507,7 +507,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_source" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source address') ?></td>
+                    <td><a id="help_for_source" href="#" class="showhelp"></a> <?= gettext('Source address') ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -549,7 +549,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_src_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source port') ?></td>
+                  <td><a id="help_for_src_port" href="#" class="showhelp"></a> <?= gettext('Source port') ?></td>
                   <td>
                     <table class="table table-condensed">
                       <tbody>
@@ -585,7 +585,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination invert') ?></td>
+                  <td> <a id="help_for_dst_invert" href="#" class="showhelp"></a> <?= gettext('Destination invert') ?></td>
                   <td>
                     <input name="destination_not" type="checkbox" value="yes" <?= !empty($pconfig['destination_not']) ? 'checked="checked"' : '' ?> />
                     <div class="hidden" data-for="help_for_dst_invert">
@@ -594,7 +594,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_destination" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination address') ?></td>
+                    <td><a id="help_for_destination" href="#" class="showhelp"></a> <?= gettext('Destination address') ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -636,7 +636,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_dstport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination port') ?></td>
+                  <td><a id="help_for_dstport" href="#" class="showhelp"></a> <?= gettext('Destination port') ?></td>
                   <td>
                     <table class="table table-condensed">
                       <tbody>
@@ -672,7 +672,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_target" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation / target"); ?></td>
+                    <td><a id="help_for_target" href="#" class="showhelp"></a> <?=gettext("Translation / target"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -705,12 +705,12 @@ include("head.inc");
                       <div class="hidden" data-for="help_for_target">
                         <?=gettext("Packets matching this rule will be mapped to the IP address given here.");?><br />
                         <?=sprintf(gettext("If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
-                                "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="ui/interfaces/vip">','</a>')?>
+                                "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="firewall_virtual_ip.php">','</a>')?>
                       </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
+                  <td><a id="help_for_log" href="#" class="showhelp"></a> <?=gettext("Log");?></td>
                   <td>
                     <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
                     <strong><?=gettext("Log packets that are handled by this rule");?></strong>
@@ -720,7 +720,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_natport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation") . " / " .gettext("port:");?></td>
+                  <td><a id="help_for_natport" href="#" class="showhelp"></a> <?=gettext("Translation") . " / " .gettext("port:");?></td>
                   <td>
                     <input name="natport" type="text" value="<?=$pconfig['natport'];?>" />
                     <div class="hidden" data-for="help_for_natport">
@@ -729,13 +729,13 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Static-port:");?></td>
+                  <td><?=gettext("Static-port:");?></td>
                   <td>
                     <input name="staticnatport" type="checkbox" <?=!empty($pconfig['staticnatport']) ? " checked=\"checked\"" : "";?> >
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_poolopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pool Options:");?></td>
+                  <td><a id="help_for_poolopts" href="#" class="showhelp"></a> <?=gettext("Pool Options:");?></td>
                   <td>
                   <table class="table table-condensed">
                     <tbody>
@@ -786,7 +786,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Set local tag"); ?></td>
+                    <td><a id="help_for_tag" href="#" class="showhelp"></a>  <?=gettext("Set local tag"); ?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                       <div class="hidden" data-for="help_for_tag">
@@ -795,7 +795,7 @@ include("head.inc");
                     </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_tagged" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Match local tag"); ?>   </td>
+                    <td><a id="help_for_tagged" href="#" class="showhelp"></a> <?=gettext("Match local tag"); ?>   </td>
                     <td>
                       <input name="tagged" type="text" value="<?=$pconfig['tagged'];?>" />
                       <div class="hidden" data-for="help_for_tagged">
@@ -804,7 +804,7 @@ include("head.inc");
                     </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
+                  <td><a id="help_for_nosync" href="#" class="showhelp"></a>  <?=gettext("No XMLRPC Sync"); ?></td>
                   <td>
                     <input type="checkbox" value="yes" name="nosync" <?=!empty($pconfig['nosync']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" data-for="help_for_nosync">
@@ -813,7 +813,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                  <td><a id="help_for_category" href="#" class="showhelp"></a> <?=gettext("Category"); ?></td>
                   <td>
                     <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
 <?php
@@ -828,7 +828,7 @@ include("head.inc");
                     </div>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description"); ?></td>
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">

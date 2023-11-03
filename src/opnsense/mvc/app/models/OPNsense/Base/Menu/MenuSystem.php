@@ -253,14 +253,12 @@ class MenuSystem
             if (array_key_exists($key, $iftargets['gr'])) {
                 $this->appendItem('Interfaces', $key, array(
                     'visiblename' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
                     'order' => $ordid++,
                 ));
             } elseif (!array_key_exists($key, $ifgroups)) {
                 $this->appendItem('Interfaces', $key, array(
                     'url' => '/interfaces.php?if=' . $key,
                     'visiblename' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
                     'order' => $ordid++,
                 ));
             }

@@ -37,7 +37,6 @@ $widgetCollection = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $config['widgets'];
-    legacy_html_escape_form_data($pconfig);
     // set default dashboard view
     $pconfig['sequence'] = !empty($pconfig['sequence']) ? $pconfig['sequence'] : '';
     $pconfig['column_count'] = !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
@@ -71,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($config['widgets']['sequence']);
     }
     if (!empty($_POST['column_count'])) {
-        $config['widgets']['column_count'] = filter_var($_POST['column_count'], FILTER_SANITIZE_NUMBER_INT);
+        $config['widgets']['column_count'] = $_POST['column_count'];
     } elseif(isset($config['widgets']['column_count'])) {
         unset($config['widgets']['column_count']);
     }
@@ -123,7 +122,7 @@ include("fbegin.inc");?>
 <?php if (file_exists("/usr/local/opnsense/www/themes/{$themename}/build/images/default-logo.svg")): ?>
               <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
 <?php else: ?>
-              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.png") ?>" border="0" alt="logo" style="max-width:380px;" />
+              <img src=" <?= cache_safe("/ui/themes/{$themename}/build/images/default-logo.svg") ?>" border="0" alt="logo" style="max-width:380px;" />
 <?php endif ?>
               <br />
               <div class="content-box-main" style="padding-bottom:0px;">
@@ -157,6 +156,270 @@ include("fbegin.inc");?>
 <?php
   // normal dashboard
   else:?>
+
+
+<style>
+/* Center the table horizontally */
+.table-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Style the table */
+    table {
+      width: 100%;
+      max-width: 600px;
+      border-collapse: collapse;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add shadow */
+    }
+
+    th, td {
+      padding: 8px 16px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffff;
+    }
+
+    /* Make table responsive on smaller screens */
+    @media (max-width: 600px) {
+      th, td {
+        display: block;
+        width: 100%;
+      }
+
+      th {
+        text-align: center;
+      }
+    }
+    .padding-0{
+      padding-left:5px;
+      padding-right:5px;
+    }
+    .p-relative{
+      position: relative;
+    }
+    .h-100{
+      height:100%;
+    }
+</style>
+
+<div class="container dashboard-width-82" id="dashboard_container" style="height: auto; padding-bottom: 100px; box-sizing: border-box;">
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-6 padding-0 p-relative">
+      <table class="table table-striped h-100">
+        <thead>
+	        <tr>
+            <th style="text-align:center;" colspan="2">System Information</th>
+          <tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align:left; font-weight:bold;"><?=gettext("Name");?></td>
+            <td style="text-align:left;"><?=$config['system']['hostname'] . "." . $config['system']['domain']; ?></td> 
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;">
+              <?=gettext("Versions");?>
+            </td>
+	    <!--td style="text-align:left;" id="system_information_widget_versions"></td-->
+            <td style="text-align:left;"><?=$version;?></td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;">
+              <?=gettext("CPU type");?>
+            </td>
+            <td style="text-align:left;" id="system_information_widget_cpu_type"></td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;"><?=gettext("Load Average")?></td>
+            <td style="text-align:left;" id="system_information_widget_load"></td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;"><?=gettext("Uptime")?></td>
+            <td style="text-align:left;" id="system_information_widget_uptime"></td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;"><?=gettext("Current date/time");?></td>
+            <td style="text-align:left;" id="system_information_widget_datetime"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6 padding-0 p-relative">
+      <table class="table table-striped h-100">
+        <tbody>
+          <tr style="background-color: #FBFBFB;">
+              <th>
+                <div>CPU Usage</div>
+              </th>
+              <th>
+                <div>Memory Usage</div>
+              </th>
+              <th>
+                <div>Disk Usage</div>                
+              </th>
+            </tr>  
+              <tr>
+            <td id="system_cpu_usage"></td>
+            <td id="system_memory_usage"></td>
+            <td id="system_disk_usage"></td>
+          </tr>
+          <tr>
+            <td id="cpu_usage_display"></td>
+            <td id="system_memory_display"></td>
+            <td id="system_disk_display"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-6 padding-0 p-relative">
+      <table class="table table-striped h-100">
+        <thead>
+          <tr>
+            <th style="text-align:center;" colspan="3">Interfaces</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th style="text-align:left;">
+              <?=gettext("Interface Name");?>
+            </th>
+            <th style="text-align:left;">
+              <?=gettext("MAC Address");?>
+            </th>
+            <th style="text-align:left;">
+              <?=gettext("Status");?>
+            </th>
+          </tr>
+        <tbody>
+          <?php
+            $mac_man = json_decode(configd_run('interface list macdb json'), true);
+            $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
+            $vmstat_interrupts = json_decode(configd_run('system list interrupts json'), true);
+            foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):
+              if ($ifinfo['if'] == 'pfsync0') {
+                continue;
+              } 
+              elseif ($ifinfo['if'] == 'pflog0') {
+                continue;
+              }
+              elseif ($ifinfo['if'] == 'enc0') {
+                continue;
+              }
+              elseif ($ifinfo['if'] == 'lo0') {
+                continue;
+              }
+              $ifpfcounters = $pfctl_counters[$ifinfo['if']];
+                    legacy_html_escape_form_data($ifinfo);
+              $ifdescr = htmlspecialchars($ifdescr);
+              $ifname = htmlspecialchars($ifinfo['descr']);
+              $ifname_len = strlen($ifname);
+          ?>
+          <tr>
+            <td style="text-align:left">
+              <?= $ifname ?>
+            </td>
+            <td style="text-align:left">
+              <?= $ifinfo['macaddr']; ?>
+            </td>
+            <td style="text-align:left">
+            <?php if ($ifinfo['status'] == 'up'): ?>
+              <span class="label-default label label-success">Online</span>
+            <?php else: ?>
+              <span class="label-default label label-danger">Offline</span>
+            <?php endif; ?>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/gateways.widget.php'); ?>
+    </div>
+  </div>
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-12 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/traffic_graphs.widget.php'); ?>
+    </div>
+  </div>
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-12 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/cpu_usage.widget.php'); ?>
+    </div>
+  </div>
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-6 padding-0 p-relative">
+      <table class="table table-striped h-100">
+        <thead>   
+          <tr>
+            <th style="text-align:center;" colspan="2">License</th>
+          </tr>
+	</thead>
+        <tbody>
+          <tr>
+            <th style="text-align:left;">License Type</th>
+            <th style="text-align:center;">Status</th>
+          </tr>        
+          <tr>
+        <?php
+	  $Lic_names = ['Anti Virus', 'IDS/IPS', 'SDWAN', 'DLP', 'Appliance License', 'WAF', 'ZTNA', 'Sandboxing (ATP Protection)', 'Antispam', 'Application Filter', 'URLFilter'];
+          $command = "/usr/local/bin/python /usr/local/applications/service/service_status.py lic_status";
+	  $output = shell_exec($command);
+	  $listdata = eval("return $output;");
+	  $listdatas = $listdata[1];
+	  foreach ($Lic_names as $Lic_name):
+         ?>
+	  <tr>
+	    <td style="text-align:left;"><?= $Lic_name; ?></td>
+	    <td style="text-align:center">
+            <?php if ($listdata[0] == 'Appliance_License' && array_search($Lic_name, $listdata[1])!== false): ?>
+	      <p style="color:green;"><?= $listdata[2]; ?></p>
+	    <?php elseif ($listdata[0] == 'Demo'): ?>
+	      <p style="color:green;"><?= $listdata[2]; ?></p>
+            <?php else: ?>
+                <p>
+                    <span style="color: white; background-color:#e91f1f; padding: 5px; border-radius: 5px; font-size: 12px;">Expired</span>
+                    <span style="color: dark black;">/</span>
+                    <span style="color: white; background-color:#e8e822; padding: 5px; border-radius: 5px; font-size: 12px;">Not Subscribed</span>
+                </p>
+
+	    <?php endif; ?>
+	    </td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/monit.widget.php'); ?>
+    </div>
+  </div>
+  <div class="row" style="margin-top:30px; display:flex;">
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/openvpn.widget.php'); ?>
+    </div>
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/carp_status.widget.php'); ?>
+    </div>
+  </div>        
+  <div class="row" style="margin-top:30px; display:flex;">     
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/wireguard.widget.php'); ?>
+    </div>
+    <div class="col-md-6 padding-0 p-relative">
+      <?php include('/usr/local/www/widgets/widgets/ipsec.widget.php'); ?>
+    </div>
+  </div>
+</div>
 
 <script src="<?= cache_safe('/ui/js/jquery-sortable.js') ?>"></script>
 <script>
@@ -326,7 +589,7 @@ include("fbegin.inc");?>
   });
 </script>
 
-<section class="page-content-main">
+<section class="page-content-main" style="display:none;>
   <form method="post" id="iform">
     <input type="hidden" value="dashboard" name="origin" id="origin" />
     <input type="hidden" value="" name="sequence" id="sequence" />
@@ -391,10 +654,10 @@ include("fbegin.inc");?>
                   </h3></li>
                   <li class="pull-right">
                     <div class="btn-group">
-                      <button type="button" class="btn btn-default btn-xs disabled" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="cursor:pointer"><i class="fa fa-pencil fa-fw"></i></button>
-                      <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetItem['name'] ?>-min" onclick='return minimizeWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv ?>;"><i class="fa fa-minus fa-fw"></i></button>
-                      <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?= $widgetItem['name'] ?>-max" onclick='return showWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><i class="fa fa-plus fa-fw"></i></button>
-                      <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?= $widgetItem['name'] ?>",true)'><i class="fa fa-remove fa-fw"></i></button>
+                      <button type="button" class="btn btn-default btn-xs disabled" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="cursor:pointer"><i></i></button>
+                      <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetItem['name'] ?>-min" onclick='return minimizeWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv ?>;"><i></i></button>
+                      <button type="button" class="btn btn-default btn-xs"  id="<?= $widgetItem['name'] ?>-max" onclick='return showWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><i></i></button>
+                      <button type="button" class="btn btn-default btn-xs"  onclick='return closeWidget("<?= $widgetItem['name'] ?>",true)'><i></i></button>
                     </div>
                   </li>
                 </ul>

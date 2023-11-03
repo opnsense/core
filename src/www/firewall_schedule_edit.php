@@ -738,11 +738,11 @@ $(function() {
                         <td style="width:15%"><strong><?=gettext("Schedule information");?></strong></td>
                         <td style="width:85%; text-align:right">
                           <small><?=gettext("full help"); ?> </small>
-                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                          <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                         </td>
                       </tr>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Name') ?></td>
+                        <td> <?= gettext('Name') ?></td>
                         <td>
 <?php
                             if (is_schedule_inuse($pconfig['name']) && isset($id)): ?>
@@ -759,7 +759,7 @@ $(function() {
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                        <td><a id="help_for_description" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                         <td>
                           <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" /><br />
                           <div class="hidden" data-for="help_for_name">
@@ -768,7 +768,7 @@ $(function() {
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_month" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Month");?></td>
+                        <td><a id="help_for_month" href="#" class="showhelp"></a> <?=gettext("Month");?></td>
                         <td>
                           <select name="monthsel" class="selectpicker" data-width="auto" data-live-search="true" id="monthsel" onchange="update_month();">
 <?php
@@ -869,7 +869,7 @@ $(function() {
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_time" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time");?></td>
+                        <td><a id="help_for_time" href="#" class="showhelp"></a> <?=gettext("Time");?></td>
                         <td>
                           <table class="tabcont">
                             <tr>
@@ -922,7 +922,7 @@ $(function() {
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_timerange_desc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time Range Description")?></td>
+                        <td><a id="help_for_timerange_desc" href="#" class="showhelp"></a> <?=gettext("Time Range Description")?></td>
                         <td>
                           <input name="timerangedescr" type="text" id="timerangedescr"/>
                           <div class="hidden" data-for="help_for_timerange_desc">

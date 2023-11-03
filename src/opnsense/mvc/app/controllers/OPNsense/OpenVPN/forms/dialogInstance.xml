@@ -131,8 +131,8 @@
         <id>instance.carp_depend_on</id>
         <label>Depend on (CARP)</label>
         <type>dropdown</type>
-        <style>role role_client selectpicker</style>
-        <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+        <style>role role_client</style>
+        <help>The CARP VHID to depend on. When this virtual address is not in master state, the instance will be shutdown.</help>
     </field>
     <field>
         <type>header</type>
@@ -162,7 +162,6 @@
         <id>instance.verify_client_cert</id>
         <label>Verify Client Certificate</label>
         <type>dropdown</type>
-        <style>selectpicker role role_server</style>
         <help>Specify if the client is required to offer a certificate.</help>
     </field>
     <field>

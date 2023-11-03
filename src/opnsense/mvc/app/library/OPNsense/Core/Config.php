@@ -69,10 +69,6 @@ class Config extends Singleton
      */
     private $statusIsValid = false;
 
-    /**
-     * @var float current modification time of our known config
-     */
-    private $mtime = 0;
 
     /**
      * return last known status of this configuration (valid or not)
@@ -434,7 +430,6 @@ class Config extends Singleton
         }
 
         $this->simplexml = $this->loadFromStream($this->config_file_handle);
-        $this->mtime = fstat($this->config_file_handle)['mtime'];
         $this->statusIsValid = true;
     }
 
@@ -664,14 +659,6 @@ class Config extends Singleton
     }
 
     /**
-     * @return bool when config file underneath has changed without our instance being aware of it
-     */
-    public function hasChanged()
-    {
-        return $this->mtime != fstat($this->config_file_handle)['mtime'];
-    }
-
-    /**
      * return backup file path if revision exists
      * @param $revision revision timestamp (e.g. 1583766095.9337)
      * @return bool|string filename when available or false when not found
@@ -740,7 +727,6 @@ class Config extends Singleton
                     $logger->info("config-event: new_config " . $backup_filename);
                 }
                 flock($this->config_file_handle, LOCK_UN);
-                $this->mtime = fstat($this->config_file_handle)['mtime'];
             } else {
                 throw new ConfigException("Unable to lock config");
             }

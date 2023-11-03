@@ -53,10 +53,6 @@ class M1_0_5 extends BaseModelMigration
         $new['enabled'] = isset($config->unbound->enable) ? '1' : '0';
 
         $model->general->setNodes($new);
-
-        /* discard missing interfaces to pass validation */
-        $model->general->active_interface->normalizeValue();
-        $model->general->outgoing_interface->normalizeValue();
     }
 
     public function post($model)

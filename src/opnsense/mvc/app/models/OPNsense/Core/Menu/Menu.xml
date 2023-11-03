@@ -1,23 +1,48 @@
 <menu>
-    <Lobby order="10" cssClass="fa fa-laptop">
-        <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard fa-fw">
+    <Lobby VisibleName="Dashboard" order="0" cssClass="fa fa-laptop">
+        <Dashboard VisibleName="Firewall" order="0" url="/index.php">
             <Args url="/index.php*" visibility="hidden"/>
             <Root url="/" visibility="hidden"/>
             <RootArgs url="/?*" visibility="hidden"/>
         </Dashboard>
-        <License order="1" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
+        <!-- 
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
             <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
-        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
+        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/> -->
     </Lobby>
-    <Reporting order="15" cssClass="fa fa-area-chart">
-        <Settings order="10" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
-        <Traffic order="20" url="/ui/diagnostics/traffic" cssClass="fa fa-line-chart fa-fw"/>
-        <DNS order="30" VisibleName="Unbound DNS" url="/ui/unbound/overview" cssClass="fa fa-bar-chart fa-fw"/>
-    </Reporting>
-    <System order="20" cssClass="fa fa-server">
-        <Access cssClass="fa fa-users fa-fw">
+    <ReportsandLogs VisibleName="Reports and Logs" order="100" cssClass="fa fa-area-chart">
+
+        <Reports VisibleName="Reports" order="10"> 
+
+        <Settings order="10" url="/reporting_settings.php" />
+        <Traffic order="20" url="/ui/diagnostics/traffic"/>
+        <!-- <DNS order="30" VisibleName="Unbound DNS" url="/ui/unbound/overview" /> -->
+        <Overview VisibleName=" Firewall Overview" order="30" url="/ui/diagnostics/firewall/stats"/>
+        </Reports>
+
+        <LogFiles VisibleName="Log Files" order="20">
+
+            <GatewaysLogFile VisibleName="Gateway Log File" order="10" url="/ui/diagnostics/log/core/gateways"/>
+            <!-- System Logs -->
+            <Audit VisibleName="System Audit Log File" order="20" url="/ui/diagnostics/log/core/audit"/>
+            <Backend VisibleName="System Backend Log File" order="30" url="/ui/diagnostics/log/core/configd"/>
+            <Boot VisibleName=" System Boot Log File" order="50" url="/ui/diagnostics/log/core/boot"/>
+            <General VisibleName="System General Log File" order="50" url="/ui/diagnostics/log/core/system"/>
+            <WebGUI VisibleName=" System Web GUI Log File" order="60" url="/ui/diagnostics/log/core/lighttpd"/>
+            <!-- Firewall Logs -->
+            <General VisibleName="Firewall General Log File" order="70" url="/ui/diagnostics/log/core/firewall"/>
+            <Live VisibleName=" Firewall Live View" order="80" url="/ui/diagnostics/firewall/log"/>
+            <Plain VisibleName=" Firewall Plain View" order="100" url="/ui/diagnostics/log/core/filter"/>
+            <!-- DHCP6c -->
+            <DHCPv4LogFile VisibleName="DHCPv4 Log File" order="220" url="/ui/diagnostics/log/core/dhcpd"/>
+
+        </LogFiles>
+
+    </ReportsandLogs>
+
+    <System VisibleName="Settings"  order="20" cssClass="fa fa-server">
+        <Access >
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*" visibility="hidden"/>
                 <Privileges url="/system_usermanager_addprivs.php?user*" visibility="hidden"/>
@@ -29,14 +54,16 @@
             <Servers order="30" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*" visibility="hidden"/>
             </Servers>
-            <Tester order="40" url="/diag_authentication.php"/>
+            <!-- <Tester order="40" url="/diag_authentication.php"/> -->
         </Access>
-        <Configuration cssClass="fa fa-history fa-fw">
+        <Configuration >
             <Backups url="/diag_backup.php"/>
             <Defaults url="/diag_defaults.php"/>
-            <History url="/ui/core/backup/history/this"/>
+            <History url="/diag_confbak.php">
+                <none url="/diag_confbak.php*" visibility="hidden"/>
+            </History>
         </Configuration>
-        <Firmware cssClass="fa fa-building-o fa-fw">
+        <!-- <Firmware >
             <Status order="10" url="/ui/core/firmware#status"/>
             <Settings order="20" url="/ui/core/firmware#settings"/>
             <Changelog order="30" url="/ui/core/firmware#changelog"/>
@@ -45,8 +72,8 @@
             <Packages order="60" url="/ui/core/firmware#packages"/>
             <Reporter order="70" url="/crash_reporter.php"/>
             <LogFile order="80" VisibleName="Log File" url="/ui/diagnostics/log/core/pkg"/>
-        </Firmware>
-        <Gateways cssClass="fa fa-location-arrow fa-fw">
+        </Firmware> -->
+        <Gateways>
             <Single order="10" url="/system_gateways.php">
                 <List url="/system_gateways.php*" visibility="hidden"/>
                 <Edit url="/system_gateways_edit.php*" visibility="hidden"/>
@@ -55,17 +82,16 @@
                 <List url="/system_gateway_groups.php*" visibility="hidden"/>
                 <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
             </Group>
-            <LogFile VisibleName="Log File" order="30" url="/ui/diagnostics/log/core/gateways"/>
         </Gateways>
-        <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
+        <HighAvailability VisibleName="High Availability" >
             <Settings order="100" url="/system_hasync.php"/>
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
-        <Routes cssClass="fa fa-map-signs fa-fw">
+        <Routes >
             <Configuration order="10" url="/ui/routes" />
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/routing"/>
         </Routes>
-        <Settings cssClass="fa fa-cogs fa-fw">
+        <Settings>
             <Administration url="/system_advanced_admin.php"/>
             <General url="/system_general.php">
                 <Edit url="/system_general.php*" visibility="hidden"/>
@@ -76,7 +102,7 @@
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
-        <Trust cssClass="fa fa-certificate fa-fw">
+        <Trust >
             <Authorities url="/system_camanager.php">
                 <Edit url="/system_camanager.php*" visibility="hidden"/>
             </Authorities>
@@ -87,35 +113,30 @@
                 <Edit url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>
         </Trust>
-        <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
-        <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <Audit url="/ui/diagnostics/log/core/audit"/>
-            <Backend url="/ui/diagnostics/log/core/configd"/>
-            <Boot url="/ui/diagnostics/log/core/boot"/>
-            <General url="/ui/diagnostics/log/core/system"/>
-            <WebGUI VisibleName="Web GUI" url="/ui/diagnostics/log/core/lighttpd"/>
-        </LogFiles>
-        <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
+        <!-- <Wizard url="/wizard.php?xml=system"/> -->
+
+        <Diagnostics order="160">
             <Services url="/ui/core/service"/>
         </Diagnostics>
+        <License order="170" url="/license_upload.php"/>
     </System>
-    <Interfaces order="30" cssClass="fa fa-sitemap">
-        <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
-        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Wireless order="940" cssClass="fa fa-wifi fa-fw">
+    <Interfaces VisibleName="Networks" order="20" cssClass="fa fa-sitemap">
+        <Assignments order="900" url="/interfaces_assign.php" />
+        <Overview order="910" url="/status_interfaces.php"/>
+        <Settings order="920" url="/system_advanced_network.php" />
+        <Wireless order="940" >
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/wireless"/>
         </Wireless>
-        <PPP order="950" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
+        <PPP order="950" VisibleName="Point-to-Point" >
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File" url="/ui/diagnostics/log/core/ppps"/>
         </PPP>
-        <Types VisibleName="Other Types" order="960" cssClass="fa fa-archive fa-fw">
+        <Types VisibleName="Other Types" order="960" >
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
@@ -126,21 +147,21 @@
                 <Edit url="/interfaces_gre_edit.php*" visibility="hidden"/>
             </GRE>
         </Types>
-        <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
+        <!-- <Diagnostics order="970" >
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>
             <PacketCapture VisibleName="Packet Capture" url="/ui/diagnostics/packet_capture"/>
             <Ping url="/ui/diagnostics/ping"/>
             <TestPort VisibleName="Port Probe" url="/ui/diagnostics/portprobe"/>
             <Traceroute VisibleName="Trace Route" url="/ui/diagnostics/traceroute"/>
-        </Diagnostics>
+        </Diagnostics> -->
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
-        <Aliases url="/ui/firewall/alias" cssClass="fa fa-list-alt fa-fw">
+        <Aliases url="/ui/firewall/alias">
             <Edit url="/ui/firewall/alias/*" visibility="hidden"/>
         </Aliases>
-        <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
-        <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
-        <NAT cssClass="fa fa-exchange fa-fw">
+        <Categories url="/ui/firewall/category" />
+        <Groups url="/ui/firewall/group" />
+        <NAT >
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
@@ -154,8 +175,8 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPTv6>
         </NAT>
-        <Rules cssClass="fa fa-check fa-fw" />
-        <Settings order="200" cssClass="fa fa-cogs fa-fw">
+        <Rules  />
+        <Settings order="200" >
             <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
             </Schedules>
@@ -165,34 +186,28 @@
             </Normalization>
             <Advanced url="/system_advanced_firewall.php"/>
         </Settings>
-        <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
+        <Diagnostics order="500" >
             <Aliases url="/ui/firewall/alias_util/"/>
             <States url="/ui/diagnostics/firewall/states"/>
             <Sessions url="/ui/diagnostics/firewall/pf_top"/>
             <Statistics url="/ui/diagnostics/firewall/statistics"/>
         </Diagnostics>
-        <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
-            <General VisibleName="General" url="/ui/diagnostics/log/core/firewall"/>
-            <Live VisibleName="Live View" url="/ui/diagnostics/firewall/log"/>
-            <Overview url="/ui/diagnostics/firewall/stats"/>
-            <Plain VisibleName="Plain View" url="/ui/diagnostics/log/core/filter"/>
-        </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
-        <DHCPv4 cssClass="fa fa-bullseye fa-fw">
+        <DHCPv4 order="180">
             <Relay order="200" url="/services_dhcp_relay.php"/>
             <Leases order="300" url="/ui/dhcpv4/leases"/>
-            <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
+            
         </DHCPv4>
-        <DHCPv6 cssClass="fa fa-bullseye fa-fw">
+        <DHCPv6 order="190">
             <Relay order="300" url="/services_dhcpv6_relay.php"/>
             <Leases order="400" url="/ui/dhcpv6/leases"/>
         </DHCPv6>
-        <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
-        <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw" />
+        <OpenDNS VisibleName="DNS (OpenDNS)" url="/services_opendns.php" order="117" />
+        <RouterAdv VisibleName="Router Advertisements" />
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
-        <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
+        <OpenVPN order="20">
             <Instances VisibleName="Instances [new]" order="5" url="/ui/openvpn/instances"/>
             <Servers order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
@@ -206,10 +221,10 @@
                 <Edit url="/ui/openvpn/export?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/ui/openvpn/status"/>
-            <LogFile order="70" VisibleName="Log File" url="/ui/diagnostics/log/core/openvpn"/>
+
         </OpenVPN>
     </VPN>
-    <Power order="70" cssClass="fa fa-plug">
+    <!-- <Power order="70" cssClass="fa fa-plug">
         <Reboot order="10" url="/ui/core/reboot" cssClass="fa fa-repeat fa-fw"/>
         <PowerOff VisibleName="Power Off" order="20" url="/ui/core/halt" cssClass="fa fa-power-off fa-fw"/>
     </Power>
@@ -217,5 +232,5 @@
         <Documentation order="10" url="https://docs.opnsense.org/" cssClass="fa fa-book" IsExternal="Y"/>
         <Forum VisibleName="User Forum" order="20" url="https://forum.opnsense.org/" cssClass="fa fa-ticket" IsExternal="Y"/>
         <Support VisibleName="Commercial Support" order="30" url="https://opnsense.org/support-overview/commercial-support/" cssClass="fa fa-phone" IsExternal="Y"/>
-    </Help>
+    </Help> -->
 </menu>

@@ -180,11 +180,11 @@ include("head.inc");
                   <td style="width:22%"><strong><?= gettext('Edit entry') ?></strong></td>
                   <td style="width:78%; text-align:right">
                     <small><?=gettext("full help"); ?> </small>
-                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    <i class="fa fa-info-circle text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host");?></td>
+                  <td><a id="help_for_host" href="#" class="showhelp"></a> <?=gettext("Host");?></td>
                   <td>
                     <input name="host" type="text" id="host" value="<?=$pconfig['host'];?>" />
                     <div class="hidden" data-for="help_for_host">
@@ -194,7 +194,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
+                  <td><a id="help_for_domain" href="#" class="showhelp"></a> <?=gettext("Domain");?></td>
                   <td>
                     <input name="domain" type="text" id="domain" value="<?=$pconfig['domain'];?>" />
                     <div class="hidden" data-for="help_for_domain">
@@ -204,7 +204,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                  <td><a id="help_for_ip" href="#" class="showhelp"></a> <?=gettext("IP address");?></td>
                   <td>
                     <input name="ip" type="text" id="ip" value="<?=$pconfig['ip'];?>" />
                     <div class="hidden" data-for="help_for_ip">
@@ -214,7 +214,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                  <td><a id="help_for_descr" href="#" class="showhelp"></a> <?=gettext("Description");?></td>
                   <td>
                     <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" data-for="help_for_descr">
@@ -223,7 +223,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases"); ?></td>
+                  <td><a id="help_for_alias" href="#" class="showhelp"></a> <?=gettext("Aliases"); ?></td>
                   <td>
                     <table class="table table-striped table-condensed" id="aliases_table">
                       <thead>

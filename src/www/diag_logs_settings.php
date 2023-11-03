@@ -184,11 +184,11 @@ $(document).ready(function() {
                     <td style="width:22%"><strong><?=gettext("Local Logging Options");?></strong></td>
                     <td style="width:78%; text-align:right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
+                      <i class="fa fa-info-circle text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_preservelogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Preserve logs (Days)') ?></td>
+                    <td><a id="help_for_preservelogs" href="#" class="showhelp"></a> <?=gettext('Preserve logs (Days)') ?></td>
                     <td>
                       <input name="preservelogs" id="preservelogs" type="text" value="<?=$pconfig['preservelogs'];?>" />
                       <div class="hidden" data-for="help_for_preservelogs">
@@ -197,7 +197,7 @@ $(document).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log Firewall Default Blocks') ?></td>
+                    <td><a id="help_for_logdefaultblock" href="#" class="showhelp"></a> <?=gettext('Log Firewall Default Blocks') ?></td>
                     <td>
                       <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
                       <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
@@ -238,7 +238,7 @@ $(document).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_loglighttpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Web Server Log') ?></td>
+                    <td><a id="help_for_loglighttpd" href="#" class="showhelp"></a> <?=gettext('Web Server Log') ?></td>
                     <td>
                       <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
                       <?=gettext("Log errors from the web server process.");?>
@@ -248,12 +248,12 @@ $(document).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Local Logging') ?></td>
+                    <td><?=gettext('Local Logging') ?></td>
                     <td> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?=!empty($pconfig['disablelocallogging']) ? "checked=\"checked\"" :""; ?>  />
                       <?=gettext("Disable writing log files to the local disk");?></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_resetlogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reset Logs') ?></td>
+                    <td><a id="help_for_resetlogs" href="#" class="showhelp"></a> <?=gettext('Reset Logs') ?></td>
                     <td>
                       <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?= html_safe(gettext('Reset Log Files')) ?>"/>
                       <div class="hidden" data-for="help_for_resetlogs">
