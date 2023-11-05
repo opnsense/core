@@ -12,6 +12,12 @@
         <help>List of pools, one per line in range or subnet format (e.g. 192.168.0.100 - 192.168.0.200 , 192.0.2.64/26</help>
     </field>
     <field>
+        <id>subnet4.option_data_autocollect</id>
+        <label>Auto collect option data</label>
+        <type>checkbox</type>
+        <help>Automatically update option data for relevant attributes as routers, dns servers and ntp servers when applying settings from the gui.</help>
+    </field>
+    <field>
         <id>subnet4.option_data.routers</id>
         <label>Routers (gateway)</label>
         <type>select_multiple</type>

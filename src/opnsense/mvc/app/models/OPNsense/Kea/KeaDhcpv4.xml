@@ -23,6 +23,10 @@
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
                 </subnet>
+                <option_data_autocollect type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </option_data_autocollect>
                 <option_data>
                     <domain_name_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
