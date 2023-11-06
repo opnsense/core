@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -158,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
+        $sync_trust = !empty($pconfig['store_intermediate_certs']) !== isset($config['system']['store_intermediate_certs']);
         $config['system']['store_intermediate_certs'] = !empty($pconfig['store_intermediate_certs']);
 
         if (!empty($pconfig['dnsallowoverride'])) {
@@ -226,7 +227,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* time zone change first */
         system_timezone_configure();
-        system_trust_configure();
+
+        if ($sync_trust) {
+            /*
+             * FreeBSD trust store integration is slow so we need
+             * to avoid processing when setting is unchanged.
+             */
+            system_trust_configure();
+        }
+
         system_hostname_configure();
         system_resolver_configure();
         plugins_configure('dns');
