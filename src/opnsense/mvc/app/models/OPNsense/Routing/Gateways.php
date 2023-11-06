@@ -58,11 +58,11 @@ class Gateways extends BaseModel
             $this->validateNameChange($gateway, $messages, $ref);
             $this->validateDynamicMatch($gateway, $messages, $ref);
             foreach (['gateway', 'monitor'] as $key) {
-                if (empty((string)$node->$key) || (string)$node->$key == 'dynamic') {
+                if (empty((string)$gateway->$key) || (string)$gateway->$key == 'dynamic') {
                     continue;
-                } elseif ((string)$node->ipprotocol === 'inet' && !Util::isIpv4Address((string)$node->$key)) {
+                } elseif ((string)$gateway->ipprotocol === 'inet' && !Util::isIpv4Address((string)$gateway->$key)) {
                     $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $tag));
-                } elseif ((string)$node->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$node->$key)) {
+                } elseif ((string)$gateway->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$gateway->$key)) {
                     $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $tag));
                 }
             }
