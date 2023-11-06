@@ -84,7 +84,6 @@ class Gateways extends BaseModel
                 );
                 $messages->appendMessage(new Message($msg, $ref . ".time_period"));
             }
-
         }
         return $messages;
     }

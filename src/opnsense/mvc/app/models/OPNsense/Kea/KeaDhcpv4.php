@@ -33,7 +33,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Firewall\Util;
 
-
 class KeaDhcpv4 extends BaseModel
 {
     /**
