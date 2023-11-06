@@ -99,6 +99,7 @@
     <Interfaces order="30" cssClass="fa fa-sitemap">
         <Assignments order="900" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
         <Overview order="910" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
+        <Overview_new VisibleName="Overview (new)" order="915" url="/ui/interfaces/overview" cssClass="fa fa-flask fa-fw"/>
         <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
         <Neighbors order="930" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
         <Wireless order="940" cssClass="fa fa-wifi fa-fw">
