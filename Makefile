@@ -143,6 +143,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			iftop \
 			isc-dhcp44-relay \
 			isc-dhcp44-server \
+			kea \
 			lighttpd \
 			monit \
 			mpd5 \
