@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -117,12 +117,18 @@ class Local extends Base implements IAuthConnector
     {
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->system->webgui->enable_password_policy_constraints)) {
-            if (!empty($configObj->system->webgui->password_policy_duration)) {
-                $userObject = $this->getUser($username);
-                if ($userObject != null) {
+            $userObject = $this->getUser($username);
+            if ($userObject != null) {
+                if (!empty($configObj->system->webgui->password_policy_duration)) {
                     $now = microtime(true);
                     $pwdChangedAt = empty($userObject->pwd_changed_at) ? 0 : $userObject->pwd_changed_at;
                     if (abs($now - $pwdChangedAt) / 60 / 60 / 24 >= $configObj->system->webgui->password_policy_duration) {
+                        return true;
+                    }
+                }
+                if (!empty($configObj->system->webgui->password_policy_compliance)) {
+                    /* if compliance is required make sure the user has a SHA-512 hash as password */
+                    if (strpos((string)$userObject->password, '$6$') !== 0) {
                         return true;
                     }
                 }

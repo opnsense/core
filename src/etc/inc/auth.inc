@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2016 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2005-2006 Bill Marquette <bill.marquette@gmail.com>
@@ -33,6 +33,14 @@
 
 require_once("interfaces.inc");
 require_once("util.inc");
+
+function auth_log($message, $prio = LOG_ERR)
+{
+    openlog('audit', LOG_ODELAY, LOG_AUTH);
+    log_msg($message, $prio);
+    closelog();
+    reopenlog();
+}
 
 $groupindex = index_groups();
 $userindex = index_users();
@@ -301,10 +309,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     global $config;
 
     if (empty($user['password'])) {
-        log_msg(sprintf(
-            gettext('There is something wrong in your config because user %s password is missing!'),
-            $user['name']
-        ), LOG_ERR);
+        auth_log("Cannot set user {$user['name']}: password is missing");
         return;
     }
 
@@ -437,14 +442,38 @@ function local_user_del($user)
 
 function local_user_set_password(&$user, $password = null)
 {
+    $local = config_read_array('system', 'webgui');
+    $hash = false;
+
     if ($password == null) {
         /* generate a random password */
         $password = random_bytes(50);
     }
 
-    $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 10 ]);
-    if ($hash !== false) {
+    if (
+        !empty($local['enable_password_policy_constraints']) &&
+        !empty($local['password_policy_compliance'])
+    ) {
+          $process = proc_open(
+              '/usr/local/bin/openssl passwd -6 -stdin',
+              [['pipe', 'r'], ['pipe', 'w']],
+              $pipes
+          );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $password);
+            fclose($pipes[0]);
+            $hash = trim(stream_get_contents($pipes[1]));
+            fclose($pipes[1]);
+            proc_close($process);
+        }
+    } else {
+        $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 11 ]);
+    }
+
+    if ($hash !== false && strpos($hash, '$') === 0) {
         $user['password'] = $hash;
+    } else {
+        auth_log("Failed to hash password for user {$user['name']}");
     }
 }
 
