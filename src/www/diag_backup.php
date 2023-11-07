@@ -299,19 +299,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-            if ($do_reboot) {
-                if (is_interface_mismatch()) {
+            if (is_interface_mismatch(false)) {
+                $savemsg .= ' ' . sprintf(
+                    gettext(
+                        "Interfaces do not seem to match, please check the %sassignments%s now for missing devices."
+                    ),
+                    '<a href="/interfaces_assign.php">',
+                    '</a>'
+                );
+                if ($do_reboot) {
+                    $savemsg .= ' ' . gettext('Postponing reboot.');
                     $do_reboot = false;
-                    $savemsg .= ' ' . sprintf(
-                        gettext(
-                            "Postponing reboot as interfaces do not seem to match, please check %s assignments %s first and reboot manually."
-                        ),
-                        '<a href="/interfaces_assign.php">',
-                        '</a>'
-                    );
-                } else {
-                    $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
                 }
+            }
+
+            if ($do_reboot) {
+                $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
             }
         }
     } elseif (!empty($mode)){

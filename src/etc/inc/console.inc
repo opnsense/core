@@ -51,9 +51,9 @@ function timeout($timer = 5)
     return $key;
 }
 
-function is_interface_mismatch()
+function is_interface_mismatch($locked = true)
 {
-    $patterns = array('^impossiblecontrolmatch$'); /* XXX */
+    $patterns = ['^impossiblecontrolmatch$'];
     $mismatch = false;
 
     foreach (plugins_devices() as $device) {
@@ -62,11 +62,10 @@ function is_interface_mismatch()
         }
     }
 
-    /* XXX we can match known devices names, much easier as soon as it is provided */
     $regex = '/' . implode('|', $patterns) . '/';
 
     foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
-        if (!empty($ifcfg['lock'])) {
+        if ($locked && !empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
