@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,15 +30,15 @@
  * scan plugins for legacy system
  * @return array
  */
-function plugins_scan()
+function plugins_scan($glob = '*')
 {
     $path = '/usr/local/etc/inc/plugins.inc.d/';
     $clash = '/usr/local/etc/inc/';
     $ext = '.inc';
 
-    $ret = array();
+    $ret = [];
 
-    $plugins = glob($path . '*' . $ext);
+    $plugins = glob($path . preg_replace('/[.\/]/', '', $glob) . $ext);
     if (!is_array($plugins)) {
         return $ret;
     }
@@ -251,6 +251,7 @@ function plugins_firewall($fw)
 function plugins_configure($hook, $verbose = false, $args = [])
 {
     $logargs = [];
+    $glob = '*';
 
     array_unshift($args, $verbose);
 
@@ -266,7 +267,11 @@ function plugins_configure($hook, $verbose = false, $args = [])
 
     log_msg(sprintf('plugins_configure %s (%s)', $hook, implode(',', $logargs)), LOG_INFO);
 
-    foreach (plugins_scan() as $name => $path) {
+    if (substr_count($hook, ':')) {
+        list($hook, $glob) = explode(':', $hook);
+    }
+
+    foreach (plugins_scan($glob) as $name => $path) {
         try {
             include_once $path;
         } catch (\Error $e) {
