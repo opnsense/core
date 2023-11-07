@@ -28,16 +28,20 @@
 
 function kea_services()
 {
-    $services[] = [
-        'description' => gettext('KEA DHCPv4 server'),
-        'pidfile' => '/var/run/kea/kea-dhcp4.kea-dhcp4.pid',
-        'configd' => [
-            'restart' => ['kea restart'],
-            'start' => ['kea start'],
-            'stop' => ['kea stop'],
-        ],
-        'name' => 'kea-dhcpv4',
-    ];
+
+    $services = [];
+    if (!empty((string)(new \OPNsense\Kea\KeaDhcpv4())->general->enabled)) {
+        $services[] = [
+            'description' => gettext('KEA DHCPv4 server'),
+            'pidfile' => '/var/run/kea/kea-dhcp4.kea-dhcp4.pid',
+            'configd' => [
+                'restart' => ['kea restart'],
+                'start' => ['kea start'],
+                'stop' => ['kea stop'],
+            ],
+            'name' => 'kea-dhcpv4',
+        ];
+    }
     return $services;
 }
 
