@@ -64,6 +64,7 @@ function restore_config_section($section_sets, $new_contents)
     }
 
     $restored = [];
+    $failed = [];
 
     foreach ($section_sets as $section_set) {
         $sections = explode(',', $section_set);
@@ -88,8 +89,9 @@ function restore_config_section($section_sets, $new_contents)
             }
         }
 
-        /* keep current config and skip to next one considering this set failed */
+        /* keep current config and skip to next one considering this set (and subsequently the import) failed */
         if (!count($found)) {
+            $failed[] = $section_set;
             continue;
         }
 
@@ -109,6 +111,7 @@ function restore_config_section($section_sets, $new_contents)
 
             if (isset($old[$target])) {
                 unset($old[$target]);
+                $restored[] = $section;
             }
         }
 
@@ -138,13 +141,13 @@ function restore_config_section($section_sets, $new_contents)
         }
     }
 
-    if (count($restored)) {
+    if (count($restored) && !count($failed)) {
         /* restored but may not have been modified at all */
         write_config(sprintf('Restored sections (%s) of config file', join(',', $restored)));
         convert_config();
     }
 
-    return count($restored);
+    return $failed;
 }
 
 /* config areas that are not suitable for config sync live here */
@@ -275,8 +278,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $ret = restore_config_section($pconfig['restorearea'], $data);
                 if ($ret === false) {
                     $input_errors[] = gettext('The selected config file could not be parsed.');
-                } elseif ($ret === 0) {
-                    $input_errors[] = gettext('No requested restore area could not be found.');
+                } elseif (count($ret)) {
+                    $descr = [];
+                    foreach ($ret as $area) {
+                        $descr[] = $areas[$area];
+                    }
+                    $input_errors[] = sprintf(gettext('At least one requested restore area could not be found: %s.'), join(', ', $descr));
                 } else {
                     if (!empty($config['rrddata'])) {
                         /* XXX we should point to the data... */
