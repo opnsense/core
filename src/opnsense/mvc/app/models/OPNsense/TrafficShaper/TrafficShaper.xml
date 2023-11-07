@@ -107,7 +107,7 @@
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_flows>
                 <origin type="TextField">
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
                 <delay type="IntegerField">
@@ -117,7 +117,7 @@
                 </delay>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </pipe>
@@ -202,11 +202,11 @@
                 </pie_enable>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
                 <origin type="TextField">
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
             </queue>
@@ -350,10 +350,10 @@
                     <Required>Y</Required>
                 </target>
                 <description type="TextField">
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                 </description>
                 <origin type="TextField">
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
             </rule>
