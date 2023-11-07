@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
@@ -120,7 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         } elseif ($pconfig['type'] == 'local') {
             foreach (['password_policy_duration', 'enable_password_policy_constraints',
-                'password_policy_complexity', 'password_policy_length'] as $fieldname) {
+                'password_policy_complexity', 'password_policy_compliance',
+                'password_policy_length'] as $fieldname) {
                 if (!empty($config['system']['webgui'][$fieldname])) {
                     $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
                 } else {
@@ -279,8 +280,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == 'local') {
-              foreach (array('password_policy_duration', 'enable_password_policy_constraints',
-                  'password_policy_complexity', 'password_policy_length') as $fieldname) {
+              foreach (['password_policy_duration', 'enable_password_policy_constraints',
+                  'password_policy_complexity', 'password_policy_compliance',
+                  'password_policy_length'] as $fieldname) {
                   if (!empty($pconfig[$fieldname])) {
                       $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
                   } elseif (isset($config['system']['webgui'][$fieldname])) {
@@ -323,14 +325,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // list of all possible fields for auth item (used for form init)
-$all_authfields = array(
-    'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
-    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'sync_memberof', 'sync_memberof_constraint', 'sync_create_local_users', 'radius_host',
-    'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs',
-    'password_policy_duration', 'enable_password_policy_constraints',
-    'password_policy_complexity', 'password_policy_length'
-);
+$all_authfields = [
+    'enable_password_policy_constraints',
+    'ldap_attr_user',
+    'ldap_authcn',
+    'ldap_basedn',
+    'ldap_binddn',
+    'ldap_bindpw',
+    'ldap_extended_query',
+    'ldap_host',
+    'ldap_port',
+    'ldap_protver',
+    'ldap_read_properties',
+    'ldap_scope',
+    'ldap_urltype',
+    'name',
+    'password_policy_complexity',
+    'password_policy_compliance',
+    'password_policy_duration',
+    'password_policy_length',
+    'radius_acct_port',
+    'radius_auth_port',
+    'radius_host',
+    'radius_secret',
+    'radius_srvcs',
+    'radius_timeout',
+    'sync_create_local_users',
+    'sync_memberof',
+    'sync_memberof_constraint',
+    'type',
+];
 
 foreach ($all_authfields as $fieldname) {
     if (!isset($pconfig[$fieldname])) {
@@ -627,6 +651,16 @@ endif; ?>
                     <?= gettext('Enable complexity requirements') ?>
                     <div class="hidden" data-for="help_for_password_policy_complexity">
                       <?= gettext("Require passwords to meet complexity rules");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_local auth_options password_policy_constraints hidden">
+                  <td><a id="help_for_password_policy_compliance" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Compliance'); ?></td>
+                  <td>
+                    <input id="password_policy_compliance" name="password_policy_compliance" type="checkbox" <?= empty($pconfig['password_policy_compliance']) ? '' : 'checked="checked"';?> />
+                    <?= gettext('Require SHA-512 password hashing') ?>
+                    <div class="hidden" data-for="help_for_password_policy_compliance">
+                      <?= gettext('Require passwords to meet compliance by using the hashing algorithm SHA-512. Otherwise, the more secure Bcrypt hash is used.') ?>
                     </div>
                   </td>
                 </tr>
