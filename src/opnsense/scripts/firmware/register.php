@@ -166,9 +166,6 @@ switch ($action) {
             echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
             $config->system->firmware->type = $type;
         }
-        if (empty($config->system->firmware->type)) {
-            unset($config->system->firmware->type);
-        }
         /* FALLTHROUGH */
     case 'resync':
         foreach (array_keys($plugins) as $name) {
