@@ -127,14 +127,6 @@ function session_auth()
 {
     global $config;
 
-    function auth_log($message, $prio = LOG_ERR)
-    {
-        openlog("audit", LOG_ODELAY, LOG_AUTH);
-        log_msg($message, $prio);
-        closelog();
-        reopenlog();
-    }
-
     if (session_status() == PHP_SESSION_NONE) {
         // Handle HTTPS httponly and secure flags
         $currentCookieParams = session_get_cookie_params();
