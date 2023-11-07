@@ -1,8 +1,8 @@
 <menu>
     <Services>
-        <DHCP VisibleName="Kea DHCP [new]" cssClass="fa fa-bullseye fa-fw">
+        <KeaDHCP VisibleName="Kea DHCP [new]" cssClass="fa fa-bullseye fa-fw">
             <Keav4 order="5" VisibleName="Kea DHCPv4" url="/ui/kea/dhcp/v4"/>
             <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/kea"/>
-        </DHCP>
+        </KeaDHCP>
     </Services>
 </menu>
