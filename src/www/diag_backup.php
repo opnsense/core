@@ -271,6 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $do_reboot = true;
                     }
                     $config = parse_config();
+                    $flush = false;
                     if (!empty($pconfig['keepconsole'])) {
                         // restore existing console settings
                         foreach ($csettings as $fieldname => $fieldcontent) {
@@ -280,14 +281,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                 $config['system'][$fieldname] = $fieldcontent;
                             }
                         }
+                        $flush = true;
                     }
-                    if (!empty($config['rrddata']) || !empty($pconfig['keepconsole'])){
-                        /* extract out rrd items, unset from $config when done */
-                        if (!empty($config['rrddata'])) {
-                            /* XXX we should point to the data... */
-                            rrd_import();
-                            unset($config['rrddata']);
-                        }
+                    if (!empty($config['rrddata'])) {
+                        /* XXX we should point to the data... */
+                        rrd_import();
+                        unset($config['rrddata']);
+                        $flush = true;
+                    }
+                    if ($flush) {
                         write_config();
                         convert_config();
                     }
