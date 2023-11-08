@@ -183,14 +183,14 @@ class BackupController extends ApiControllerBase
     }
 
     /**
-     * download specified backup
+     * download specified backup, when left empty the latest is offered
      */
-    public function downloadAction($host, $backup)
+    public function downloadAction($host, $backup = null)
     {
         $providers = $this->providers();
         if (!empty($providers[$host])) {
-            foreach (glob($providers[$host]['dirname'] . "/config-*.xml") as $filename) {
-                if ($backup == basename($filename)) {
+            foreach (array_reverse(glob($providers[$host]['dirname'] . "/config-*.xml")) as $filename) {
+                if (empty($backup) || $backup == basename($filename)) {
                     $payload = @simplexml_load_file($filename);
                     $hostname = '';
                     if ($payload !== false && isset($payload->system) && isset($payload->system->hostname)) {
