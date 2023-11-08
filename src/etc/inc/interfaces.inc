@@ -895,8 +895,8 @@ function interfaces_ptpid_used($ptpid)
 
 function interfaces_ptpid_next()
 {
-
     $ptpid = 0;
+
     while (interfaces_ptpid_used($ptpid)) {
         $ptpid++;
     }
