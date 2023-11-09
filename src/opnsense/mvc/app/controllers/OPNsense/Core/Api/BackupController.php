@@ -185,7 +185,7 @@ class BackupController extends ApiControllerBase
     /**
      * download specified backup, when left empty the latest is offered
      */
-    public function downloadAction($host, $backup=null)
+    public function downloadAction($host, $backup = null)
     {
         $providers = $this->providers();
         if (!empty($providers[$host])) {
