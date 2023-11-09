@@ -603,6 +603,7 @@ function interfaces_virtual_patterns()
         'tun',
         'vlan',
         'vxlan',
+        'wg',
     ];
 }
 
