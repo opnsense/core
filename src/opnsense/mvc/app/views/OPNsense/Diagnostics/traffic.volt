@@ -392,8 +392,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (selected_interfaces.includes(intf)) {
                     option.prop("selected", true);
                 }
-                option.data(
-                    'content',
+                option.attr(
+                    'data-content',
                     $("<span class='badge' style='background:"+data.interfaces[intf].color+"'/>").text(data.interfaces[intf].name).prop('outerHTML')
                 );
                 i++;
