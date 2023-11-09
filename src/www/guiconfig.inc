@@ -340,7 +340,7 @@ function pprint_port($port) {
 
     $pport = "";
 
-    if (!$port) {
+    if ($port == '') {
         return "*";
     } else {
         $srcport = explode("-", $port);
