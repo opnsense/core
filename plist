@@ -43,6 +43,7 @@
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
+/usr/local/etc/inc/plugins.inc.d/wireguard.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/system.inc
 /usr/local/etc/inc/util.inc
@@ -127,6 +128,7 @@
 /usr/local/etc/rc.syshook.d/carp/20-openvpn
 /usr/local/etc/rc.syshook.d/carp/20-openvpn-instances
 /usr/local/etc/rc.syshook.d/carp/20-ppp
+/usr/local/etc/rc.syshook.d/carp/20-wireguard
 /usr/local/etc/rc.syshook.d/early/05-upgrade
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
@@ -383,16 +385,19 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -464,6 +469,15 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/general.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ClientController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/GeneralController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ServerController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/DiagnosticsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/GeneralController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardClient.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardServer.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/general.xml
 /usr/local/opnsense/mvc/app/library/Google/API/Drive.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/API.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/AuthenticationFactory.php
@@ -492,6 +506,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Routing.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
@@ -559,6 +574,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/LegacyLinkField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/MacAddressField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ModelRelationField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkAliasField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/NetworkField.php
@@ -664,6 +680,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IPsec/Swanctl.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipNetworkField.php
@@ -673,6 +690,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/dhcpd.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -730,6 +750,15 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Migrations/M1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/Unbound.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Client.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Client.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/FieldTypes/ServerField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Server.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Server.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
@@ -780,6 +809,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -802,6 +832,8 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overrides.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/stats.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Wireguard/diagnostics.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Wireguard/general.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_form.volt
@@ -881,6 +913,10 @@
 /usr/local/opnsense/scripts/OPNsense/Monit/carp_status
 /usr/local/opnsense/scripts/OPNsense/Monit/gateway_alert
 /usr/local/opnsense/scripts/OPNsense/Monit/setup.sh
+/usr/local/opnsense/scripts/Wireguard/gen_keypair.py
+/usr/local/opnsense/scripts/Wireguard/reresolve-dns.py
+/usr/local/opnsense/scripts/Wireguard/wg-service-control.php
+/usr/local/opnsense/scripts/Wireguard/wg_show.py
 /usr/local/opnsense/scripts/auth/add_user.php
 /usr/local/opnsense/scripts/auth/list_group_members.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
@@ -976,6 +1012,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
@@ -1112,6 +1149,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
 /usr/local/opnsense/service/conf/actions.d/actions_unbound.conf
 /usr/local/opnsense/service/conf/actions.d/actions_webgui.conf
+/usr/local/opnsense/service/conf/actions.d/actions_wireguard.conf
 /usr/local/opnsense/service/conf/actions.d/actions_zfs.conf
 /usr/local/opnsense/service/conf/actions_service.conf
 /usr/local/opnsense/service/conf/configd.conf
@@ -1224,6 +1262,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/squid_access.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/suricata.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/vpn.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/wireguard.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/wireless.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/newsyslog.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/rc.conf.d
@@ -1248,6 +1287,9 @@
 /usr/local/opnsense/service/templates/OPNsense/WebGui/etc.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/lib.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini
+/usr/local/opnsense/service/templates/OPNsense/Wireguard/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Wireguard/wireguard
+/usr/local/opnsense/service/templates/OPNsense/Wireguard/wireguard-server.conf
 /usr/local/opnsense/service/tests/__init__.py
 /usr/local/opnsense/service/tests/config/config.xml
 /usr/local/opnsense/service/tests/core.py
@@ -1847,6 +1889,18 @@
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
+/usr/local/opnsense/www/license/Makefile
+/usr/local/opnsense/www/license/pkg-descr
+/usr/local/opnsense/www/license/src/opnsense/scripts/OPNsense/license/testConnection.py
+/usr/local/opnsense/www/license/src/opnsense/service/conf/actions.d/actions_license.conf
+/usr/local/opnsense/www/license/src/opnsense/service/decrypt_data.py
+/usr/local/opnsense/www/license/src/opnsense/service/service_set.py
+/usr/local/opnsense/www/license/src/opnsense/service/service_status.py
+/usr/local/opnsense/www/license/src/opnsense/service/templates/OPNsense/license/+TARGETS
+/usr/local/opnsense/www/license/src/opnsense/service/templates/OPNsense/license/license.conf
+/usr/local/opnsense/www/license/src/opnsense/service/upload_data.py
+/usr/local/opnsense/www/license/src/www/license_block.php
+/usr/local/opnsense/www/license/src/www/license_upload.php
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf
@@ -2092,6 +2146,7 @@
 /usr/local/www/widgets/include/system_log.inc
 /usr/local/www/widgets/include/thermal_sensors.inc
 /usr/local/www/widgets/include/traffic_graph.inc
+/usr/local/www/widgets/include/wireguard.inc
 /usr/local/www/widgets/widgets/carp_status.widget.php
 /usr/local/www/widgets/widgets/cpu_usage.widget.php
 /usr/local/www/widgets/widgets/gateways.widget.php
@@ -2109,6 +2164,7 @@
 /usr/local/www/widgets/widgets/system_log.widget.php
 /usr/local/www/widgets/widgets/thermal_sensors.widget.php
 /usr/local/www/widgets/widgets/traffic_graphs.widget.php
+/usr/local/www/widgets/widgets/wireguard.widget.php
 /usr/local/www/wizard.php
 /usr/local/www/xmlrpc.php
 @sample /usr/local/etc/bogons.sample
