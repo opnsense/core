@@ -329,7 +329,7 @@ class FilterRule extends Rule
     }
     public function getUIFromPort()
     {
-        if (!empty($this->rule['from_port'])) {
+        if (isset($this->rule['from_port']) && $this->rule['from_port'] != '') {
             return $this->rule['from_port'];
         } elseif (isset($this->rule['source']['port'])) {
             return $this->rule['source']['port'];
@@ -355,7 +355,7 @@ class FilterRule extends Rule
     }
     public function getUIToPort()
     {
-        if (!empty($this->rule['to_port'])) {
+        if (isset($this->rule['to_port']) && $this->rule['to_port'] != '') {
             return $this->rule['to_port'];
         } elseif (isset($this->rule['destination']['port'])) {
             return $this->rule['destination']['port'];
