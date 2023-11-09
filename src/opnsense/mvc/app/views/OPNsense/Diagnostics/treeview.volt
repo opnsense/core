@@ -26,101 +26,15 @@
 
 <script>
     $( document ).ready(function() {
-
-      /**
-       * jqtree expects a list + dict type structure, transform key value store into expected output
-       * https://mbraak.github.io/jqTree/#general
-       */
-      function dict_to_tree(node, path) {
-          // some entries are lists, try use a name for the nodes in that case
-          let node_name_keys = ['name', 'interface-name'];
-          let result = [];
-          if ( path === undefined) {
-              path = "";
-          } else {
-              path = path + ".";
-          }
-          for (key in node) {
-              if (typeof node[key] === "function") {
-                  continue;
-              }
-              let item_path = path + key;
-              if (node[key] instanceof Object) {
-                  let node_name = key;
-                  for (idx=0; idx < node_name_keys.length; ++idx) {
-                      if (/^(0|[1-9]\d*)$/.test(node_name) && node[key][node_name_keys[idx]] !== undefined) {
-                          node_name = node[key][node_name_keys[idx]];
-                          break;
-                      }
-                  }
-                  result.push({
-                      name: node_name,
-                      id: item_path,
-                      children: dict_to_tree(node[key], item_path)
-                  });
-              } else {
-                  result.push({
-                      name: key,
-                      value: node[key],
-                      id: item_path
-                  });
-              }
-          }
-          return result;
-      }
-
-      function update_tree(endpoint, target)
-      {
-          ajaxGet(endpoint, {}, function (data, status) {
-              if (status == "success") {
-                  let $tree = $(target);
-                  if ($(target + ' > ul').length == 0) {
-                      $tree.tree({
-                          data: dict_to_tree(data),
-                          autoOpen: false,
-                          dragAndDrop: false,
-                          selectable: false,
-                          closedIcon: $('<i class="fa fa-plus-square-o"></i>'),
-                          openedIcon: $('<i class="fa fa-minus-square-o"></i>'),
-                          onCreateLi: function(node, $li) {
-                              let n_title = $li.find('.jqtree-title');
-                              n_title.text(n_title.text().replace('&gt;','\>').replace('&lt;','\<'));
-                              if (node.value !== undefined) {
-                                  $li.find('.jqtree-element').append(
-                                      '&nbsp; <strong>:</strong> &nbsp;' + node.value
-                                  );
-                              }
-                              if (node.selected) {
-                                  $li.addClass("node-selected");
-                              } else {
-                                  $li.removeClass("node-selected");
-                              }
-                          }
-                      });
-                      // initial view, collapse first level if there's only one node
-                      if (Object.keys(data).length == 1) {
-                          for (key in data) {
-                              $tree.tree('openNode', $tree.tree('getNodeById', key));
-                          }
-                      }
-                      //open node on label click
-                      $tree.bind('tree.click', function(e) {
-                          $tree.tree('toggle', e.node);
-                      });
-                  } else {
-                      let curent_state = $tree.tree('getState');
-                      $tree.tree('loadData', dict_to_tree(data));
-                      $tree.tree('setState', curent_state);
-                  }
-              }
-          });
-      }
-
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
           $(".tab-icon").removeClass("fa-refresh");
           if ($("#"+e.target.id).data('tree-target') !== undefined) {
               $("#"+e.target.id).unbind('click').click(function(){
-                  update_tree($("#"+e.target.id).data('tree-endpoint'), "#" + $("#"+e.target.id).data('tree-target'));
+                ajaxGet($("#"+e.target.id).data('tree-endpoint'), {}, function (data, status) {
+                    if (status == "success") {
+                        update_tree(data, "#" + $("#"+e.target.id).data('tree-target'));
+                    }
+                });
               });
               if (!$("#"+e.target.id).hasClass("event-hooked")) {
                   $("#"+e.target.id).addClass("event-hooked")
@@ -144,51 +58,9 @@
 
 
       /**
-       * delayed live-search tree view
+       * hook delayed live-search tree view
        */
-      let apply_tree_search_timer = null;
-      $(".tree_search").keyup(function(){
-          let sender = $(this);
-          clearTimeout(apply_tree_search_timer);
-          apply_tree_search_timer = setTimeout(function(){
-              let searchTerm = sender.val().toLowerCase();
-              let target = $("#"+sender.attr('for'));
-              let tree = target.tree("getTree");
-              let selected = [];
-              if (tree !== null) {
-                  tree.iterate((node) => {
-                      let matched = false;
-                      if (searchTerm !== "") {
-                          matched = node.name.toLowerCase().includes(searchTerm);
-                          if (!matched && typeof node.value === 'string') {
-                              matched = node.value.toLowerCase().includes(searchTerm);
-                          }
-                      }
-                      node["selected"] = matched;
-
-                      if (matched) {
-                          selected.push(node);
-                          if (node.isFolder()) {
-                              node.is_open = true;
-                          }
-                          let parent = node.parent;
-                          while (parent) {
-                              parent.is_open = true;
-                              parent = parent.parent;
-                          }
-                      } else if (node.isFolder()) {
-                          node.is_open = false;
-                      }
-
-                      return true;
-                  });
-                  target.tree("refresh");
-                  if (selected.length > 0) {
-                      target.tree('scrollToNode', selected[0]);
-                  }
-              }
-          }, 500);
-      });
+      $(".tree_search").keyup(tree_delayed_live_search);
 
       // update history on tab state and implement navigation
       let selected_tab = window.location.hash != "" ? window.location.hash : "#{{default_tab}}";
@@ -211,8 +83,7 @@
       font-weight: bolder;
   }
 </style>
-<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/jqtree.css', ui_theme|default('opnsense'))) }}">
-<script src="{{ cache_safe('/ui/js/tree.jquery.min.js') }}"></script>
+
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
 {% for tab in tabs %}
