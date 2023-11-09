@@ -1832,6 +1832,7 @@
 /usr/local/opnsense/www/js/moment-with-locales.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js
 /usr/local/opnsense/www/js/nv.d3.min.js.LICENSE.md
+/usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid_plugin.js
 /usr/local/opnsense/www/js/opnsense_status.js

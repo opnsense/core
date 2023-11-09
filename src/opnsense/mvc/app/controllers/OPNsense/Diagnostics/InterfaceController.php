@@ -39,6 +39,25 @@ use OPNsense\Base\IndexController;
 class InterfaceController extends IndexController
 {
     /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/tree.jquery.min.js',
+            '/ui/js/opnsense-treeview.js'
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateCSSIncludes()
+    {
+        return array_merge(parent::templateCSSIncludes(), ['/css/jqtree.css']);
+    }
+
+    /**
      * system arp table
      */
     public function arpAction()

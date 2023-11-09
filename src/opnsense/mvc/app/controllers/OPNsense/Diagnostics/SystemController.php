@@ -36,6 +36,25 @@
   */
 class SystemController extends IndexController
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/tree.jquery.min.js',
+            '/ui/js/opnsense-treeview.js'
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateCSSIncludes()
+    {
+        return array_merge(parent::templateCSSIncludes(), ['/css/jqtree.css']);
+    }
+
     public function memoryAction()
     {
         $this->view->tabs = [
