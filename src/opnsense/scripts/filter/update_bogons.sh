@@ -11,7 +11,14 @@ CORE_ABI=$(opnsense-version -a)
 SYS_ABI=$(opnsense-verify -a)
 
 # force amd64 here since bogons are not published elsewhere
-URL="https://pkg.opnsense.org/${SYS_ABI%:*}:amd64/${CORE_ABI}/sets/bogons.txz"
+URLPREFIX="https://pkg.opnsense.org/${SYS_ABI%:*}:amd64/${CORE_ABI}"
+
+if [ -n "$(opnsense-update -x)" ]; then
+	# fix ABI mismatch for business mirror by using it directly
+	URLPREFIX=$(opnsense-update -M)
+fi
+
+URL="${URLPREFIX}/sets/bogons.txz"
 
 echo "bogons update starting" | logger
 
