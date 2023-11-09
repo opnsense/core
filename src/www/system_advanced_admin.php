@@ -39,15 +39,15 @@ $a_group = &config_read_array('system', 'group');
 $a_authmode = auth_get_authserver_list();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
-    $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : array();
-    $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : array();
+    $pconfig = [];
+    $pconfig['webguiinterfaces'] = !empty($config['system']['webgui']['interfaces']) ? explode(',', $config['system']['webgui']['interfaces']) : [];
+    $pconfig['authmode'] = !empty($config['system']['webgui']['authmode']) ? explode(',', $config['system']['webgui']['authmode']) : [];
     $pconfig['session_timeout'] = !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : null;
     $pconfig['webguiproto'] = $config['system']['webgui']['protocol'];
     $pconfig['webguiport'] = $config['system']['webgui']['port'];
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['compression'] = isset($config['system']['webgui']['compression']) ? $config['system']['webgui']['compression'] : null;
-    $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : array();
+    $pconfig['ssl-ciphers'] = !empty($config['system']['webgui']['ssl-ciphers']) ? explode(':', $config['system']['webgui']['ssl-ciphers']) : [];
     $pconfig['ssl-hsts'] = isset($config['system']['webgui']['ssl-hsts']);
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['httpaccesslog'] = isset($config['system']['webgui']['httpaccesslog']);
@@ -59,36 +59,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['user_allow_gen_token'] = isset($config['system']['user_allow_gen_token']) ? explode(",", $config['system']['user_allow_gen_token']) : [];
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
-    $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
+    $pconfig['althostnames'] = $config['system']['webgui']['althostnames'] ?? null;
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['serialusb'] = isset($config['system']['serialusb']);
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
-    $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
-    $pconfig['autologout'] = $config['system']['autologout'];
+    $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'] ?? null;
+    $pconfig['autologout'] = $config['system']['autologout'] ?? null;
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'] ?? null;
-    $pconfig['sshport'] = $config['system']['ssh']['port'];
-    $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : array();
-    $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : array();
-    $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : array();
-    $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : array();
-    $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : array();
-    $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : array();
+    $pconfig['sshport'] = $config['system']['ssh']['port'] ?? null;
+    $pconfig['sshinterfaces'] = !empty($config['system']['ssh']['interfaces']) ? explode(',', $config['system']['ssh']['interfaces']) : [];
+    $pconfig['ssh-kex'] = !empty($config['system']['ssh']['kex']) ? explode(',', $config['system']['ssh']['kex']) : [];
+    $pconfig['ssh-ciphers'] = !empty($config['system']['ssh']['ciphers']) ? explode(',', $config['system']['ssh']['ciphers']) : [];
+    $pconfig['ssh-macs'] = !empty($config['system']['ssh']['macs']) ? explode(',', $config['system']['ssh']['macs']) : [];
+    $pconfig['ssh-keys'] = !empty($config['system']['ssh']['keys']) ? explode(',', $config['system']['ssh']['keys']) : [];
+    $pconfig['ssh-keysig'] = !empty($config['system']['ssh']['keysig']) ? explode(',', $config['system']['ssh']['keysig']) : [];
+    $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
+    $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
+    $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
     $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
-    $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
-    $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
-    $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     if (!empty($pconfig['webguiport']) && !is_port($pconfig['webguiport'])) {
         $input_errors[] = gettext('You must specify a valid web GUI port number.');
     }
 
-    if (empty($pconfig['webguiproto']) || !in_array($pconfig['webguiproto'], array('http', 'https'))) {
+    if (empty($pconfig['webguiproto']) || !in_array($pconfig['webguiproto'], ['http', 'https'])) {
         $input_errors[] = gettext('You must specify a valid web GUI protocol.');
     }
 
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
 
         $restart_webgui = $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
-            $config['system']['webgui']['session_timeout'] != $pconfig['session_timeout'] ||
+            ($config['system']['webgui']['session_timeout'] ?? '') != $pconfig['session_timeout'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
             (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
             (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
-            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect']) ||
+            !empty($pconfig['disablehttpredirect']) != !empty($config['system']['webgui']['disablehttpredirect']) ||
             ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['session_timeout']);
         }
 
-        if ($pconfig['disablehttpredirect'] == "yes") {
+        if (!empty($pconfig['disablehttpredirect'])) {
             $config['system']['webgui']['disablehttpredirect'] = true;
         } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
             unset($config['system']['webgui']['disablehttpredirect']);
@@ -199,13 +199,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['webgui']['httpaccesslog']);
         }
 
-        if ($pconfig['quietlogin'] == "yes") {
+        if (!empty($pconfig['quietlogin'])) {
             $config['system']['webgui']['quietlogin'] = true;
         } elseif (isset($config['system']['webgui']['quietlogin'])) {
             unset($config['system']['webgui']['quietlogin']);
         }
 
-        if ($pconfig['disableconsolemenu'] == "yes") {
+        if (!empty($pconfig['disableconsolemenu'])) {
             $config['system']['disableconsolemenu'] = true;
         } elseif (isset($config['system']['disableconsolemenu'])) {
             unset($config['system']['disableconsolemenu']);
@@ -252,13 +252,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['secondaryconsole'])) {
             unset($config['system']['secondaryconsole']);
         }
-        if ($pconfig['nodnsrebindcheck'] == "yes") {
+
+        if (!empty($pconfig['nodnsrebindcheck'])) {
             $config['system']['webgui']['nodnsrebindcheck'] = true;
         } elseif (isset($config['system']['webgui']['nodnsrebindcheck'])) {
             unset($config['system']['webgui']['nodnsrebindcheck']);
         }
 
-        if ($pconfig['nohttpreferercheck'] == "yes") {
+        if (!empty($pconfig['nohttpreferercheck'])) {
             $config['system']['webgui']['nohttpreferercheck'] = true;
         } elseif (isset($config['system']['webgui']['nohttpreferercheck'])) {
             unset($config['system']['webgui']['nohttpreferercheck']);
@@ -280,6 +281,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['autologout'] = $pconfig['autologout'];
         } elseif (isset($config['system']['autologout'])) {
             unset($config['system']['autologout']);
+        }
+
+        if (empty($config['system']['ssh'])) {
+            $config['system']['ssh'] = [];
         }
 
         /* always store setting to prevent installer auto-start */
@@ -323,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['sshport'])) {
-            $config['system']['ssh']['port'] = $_POST['sshport'];
+            $config['system']['ssh']['port'] = $pconfig['sshport'];
         } elseif (isset($config['system']['ssh']['port'])) {
             unset($config['system']['ssh']['port']);
         }
@@ -340,10 +345,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (strstr($_SERVER['HTTP_HOST'], "]")) {
                 if (count($http_host_port) > 1) {
                     array_pop($http_host_port);
-                    $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
+                    $host = str_replace(['[', ']'], '', implode(':', $http_host_port));
                     $host = "[{$host}]";
                 } else {
-                    $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
+                    $host = str_replace(['[', ']'], '', implode(':', $http_host_port));
                     $host = "[{$host}]";
                 }
             } else {
@@ -375,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$a_cert = isset($config['cert']) ? $config['cert'] : array();
+$a_cert = isset($config['cert']) ? $config['cert'] : [];
 $interfaces = get_configured_interface_with_descr();
 
 $certs_available = false;
@@ -564,7 +569,7 @@ $(document).ready(function() {
 <?php
                     $ciphers = json_decode(configd_run("system ssl ciphers"), true);
                     if ($ciphers == null) {
-                        $ciphers = array();
+                        $ciphers = [];
                     }
                     ksort($ciphers);
                     foreach ($ciphers as $cipher => $cipher_data):?>
