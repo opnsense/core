@@ -96,7 +96,7 @@ $crash_report_header = sprintf(
     $product->hash(),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
-    shell_safe('/usr/local/bin/openssl version'),
+    shell_safe('/usr/local/bin/openssl version | cut -f -2 -d \' \''),
     shell_safe('/usr/local/bin/python3 -V'),
     PHP_VERSION
 );
