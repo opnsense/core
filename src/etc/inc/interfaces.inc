@@ -4357,6 +4357,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'key' => $key,
                     'name' => $realif,
                     'scope' => !empty($address['link-local']),
+                    'unique' => ($proto == 'ipv4' || !empty($address['link-local'])) ? false : is_uniquelocal($address['ipaddr']),
                 ];
             }
         }
@@ -4396,6 +4397,11 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
             }
         }
     }
+
+    /* move ULAs to the bottom to prefer GUA addresses */
+    usort($result, function ($a, $b) {
+        return $a['unique'] - $b['unique'];
+    });
 
     return $result;
 }
@@ -4462,7 +4468,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
 
         if ($link_local && !$addr['scope']) {
             continue;
-        } elseif (!$link_local && ($addr['scope'] || is_uniquelocal($addr['address']))) {
+        } elseif (!$link_local && $addr['scope']) {
             continue;
         }
 
