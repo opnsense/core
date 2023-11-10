@@ -75,7 +75,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 
     public function searchReservationAction()
     {
-        return $this->searchBase("reservations.reservation", ['subnet', 'hw_address', 'description'], "hw_address");
+        return $this->searchBase("reservations.reservation", ['subnet', 'ip_address', 'hw_address', 'description'], "hw_address");
     }
 
     public function setReservationAction($uuid)
