@@ -107,6 +107,7 @@
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                   <th data-column-id="subnet" data-type="string">{{ lang._('Subnet') }}</th>
+                  <th data-column-id="ip_address" data-type="string">{{ lang._('IP Address') }}</th>
                   <th data-column-id="hw_address" data-type="string">{{ lang._('MAC') }}</th>
                   <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                   <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
