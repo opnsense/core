@@ -101,6 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
+    /* Also convert cisco-style MAC address to colon-separated form */
+    f (preg_match("/^(..)(..)\.(..)(..)\.(..)(..)$/", $pconfig['mac'],
+	    $_macmatches)) {
+	    $pconfig['mac'] = sprintf("%02s:%02s:%02s:%02s:%02s:%02s",
+		    $_macmatches[1],
+		    $_macmatches[2],
+		    $_macmatches[3],
+		    $_macmatches[4],
+		    $_macmatches[5],
+		    $_macmatches[6]);
+    }
     $pconfig['mac'] = strtolower(str_replace("-", ":", $pconfig['mac']));
 
     if (!empty($pconfig['hostname'])) {
@@ -305,7 +316,8 @@ include("head.inc");
                     $mac = str_replace("\n","",$mac);?>
                     <a onclick="$('#mac').val('<?=$mac?>');" href="#"><?=gettext("Copy my MAC address");?></a>
                     <div class="hidden" data-for="help_for_mac">
-                      <?=gettext("Enter a MAC address in the following format: "."xx:xx:xx:xx:xx:xx");?>
+                      <?=gettext("Enter a MAC address in the following format: "."xx:xx:xx:xx:xx:xx or xxxx.xxxx.xxxx");?>
+
                     </div>
                   </td>
                 </tr>
