@@ -94,8 +94,16 @@ class ApiControllerBase extends ControllerRoot
                     foreach ($records[$key] as $itemkey => $itemval) {
                         if (!empty($fields) && !in_array($itemkey, $fields)) {
                             continue;
-                        } if (!is_array($itemval) && stripos((string)$itemval, $clause) !== false) {
+                        }
+                        if (!is_array($itemval) && stripos((string)$itemval, $clause) !== false) {
                             $matches = true;
+                        } else if (is_array($itemval)) {
+                            // allow flat array to be searched
+                            foreach ($itemval as $subitem) {
+                                if (!is_array($subitem) && stripos((string)$subitem, $clause) !== false) {
+                                    $matches = true;
+                                }
+                            }
                         }
                     }
                     if (!$matches) {
