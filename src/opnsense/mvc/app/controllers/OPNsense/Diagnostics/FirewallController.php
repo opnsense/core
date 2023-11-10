@@ -54,7 +54,7 @@ class FirewallController extends IndexController
      */
     protected function templateCSSIncludes()
     {
-        return array_merge(parent::templateJSIncludes(), ['/css/jqtree.css']);
+        return array_merge(parent::templateCSSIncludes(), ['/css/jqtree.css']);
     }
 
     /**
