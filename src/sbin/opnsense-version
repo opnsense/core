@@ -193,6 +193,11 @@ core)
 			product_arch=$(cat ${VERSION}.arch)
 		fi
 	fi
+	if [ -z "${OUTPUT%%*product_hash*}" ]; then
+		if [ -z "${product_hash}" -a -f ${VERSION}.hash ]; then
+			product_hash=$(cat ${VERSION}.hash)
+		fi
+	fi
 	if [ -z "${OUTPUT%%*product_id*}" ]; then
 		if [ -z "${product_id}" ]; then
 			# mock ID target, there is no .name file
