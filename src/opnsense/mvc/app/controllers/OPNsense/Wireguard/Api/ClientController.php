@@ -73,6 +73,7 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function setClientAction($uuid)
     {
+        $add_uuid = null;
         if (!empty($this->request->getPost(static::$internalModelName)) && $this->request->isPost()) {
             $servers = [];
             if (!empty($this->request->getPost(static::$internalModelName)['servers'])) {
@@ -83,6 +84,7 @@ class ClientController extends ApiMutableModelControllerBase
             if (empty($uuid)) {
                 // add new client, generate uuid
                 $uuid = $mdl->servers->generateUUID();
+                $add_uuid = $uuid;
             }
             foreach ($mdl->servers->server->iterateItems() as $key => $node) {
                 $peers = array_filter(explode(',', (string)$node->peers));
@@ -99,7 +101,11 @@ class ClientController extends ApiMutableModelControllerBase
              */
             $mdl->serializeToConfig(false, true);
         }
-        return $this->setBase('client', 'clients.client', $uuid);
+        $result = $this->setBase('client', 'clients.client', $uuid);
+        if (!empty($add_uuid) && $result['result'] == 'saved') {
+            $result['uuid'] = $add_uuid;
+        }
+        return $result;
     }
 
     public function toggleClientAction($uuid)
