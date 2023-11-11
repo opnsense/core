@@ -4399,7 +4399,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     }
 
     /* move ULAs to the bottom to prefer GUA addresses */
-    usort($result, function ($a, $b) {
+    uasort($result, function ($a, $b) {
         return $a['unique'] - $b['unique'];
     });
 
