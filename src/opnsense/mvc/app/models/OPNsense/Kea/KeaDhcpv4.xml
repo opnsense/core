@@ -77,6 +77,8 @@
                 <hw_address type="MacAddressField">
                     <Required>Y</Required>
                 </hw_address>
+                <hostname type="HostnameField">
+                </hostname>
                 <description type="TextField">
                 </description>
             </reservation>

@@ -18,6 +18,12 @@
         <help>MAC/Ether address of the client in question</help>
     </field>
     <field>
+        <id>reservation.hostname</id>
+        <label>Hostname</label>
+        <type>text</type>
+        <help>Offer a hostname to the client</help>
+    </field>
+    <field>
         <id>reservation.description</id>
         <label>Description</label>
         <type>text</type>
