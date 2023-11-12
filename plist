@@ -403,6 +403,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation.xml
@@ -831,6 +832,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
@@ -941,6 +943,7 @@
 /usr/local/opnsense/scripts/dhcp/cleanup_leases4.php
 /usr/local/opnsense/scripts/dhcp/cleanup_leases6.php
 /usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py
+/usr/local/opnsense/scripts/dhcp/get_kea_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases.py
 /usr/local/opnsense/scripts/dhcp/get_leases6.py
 /usr/local/opnsense/scripts/dhcp/prefixes.php
