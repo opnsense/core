@@ -30,11 +30,26 @@ namespace OPNsense\Kea;
 
 class DhcpController extends \OPNsense\Base\IndexController
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/moment-with-locales.min.js'
+        ]);
+    }
+
     public function v4Action()
     {
         $this->view->pick('OPNsense/Kea/dhcpv4');
         $this->view->formGeneralSettings = $this->getForm("generalSettings");
         $this->view->formDialogSubnet = $this->getForm("dialogSubnet");
         $this->view->formDialogReservation = $this->getForm("dialogReservation");
+    }
+
+    public function leases4Action()
+    {
+        $this->view->pick('OPNsense/Kea/leases4');
     }
 }
