@@ -97,7 +97,6 @@ class MenuController extends ApiControllerBase
      * request user context sensitive menu (items)
      * @param string $selected_uri selected uri
      * @return array menu items
-     * @throws Menu\MenuInitException when unable to construct menu
      */
     private function getMenu($selected_uri)
     {
@@ -166,7 +165,6 @@ class MenuController extends ApiControllerBase
     /**
      * return menu items for this user
      * @return array
-     * @throws Menu\MenuInitException when unable to construct menu
      */
     public function treeAction()
     {
@@ -178,7 +176,6 @@ class MenuController extends ApiControllerBase
     /**
      * search menu items
      * @return array
-     * @throws Menu\MenuInitException when unable to construct menu
      */
     public function searchAction()
     {

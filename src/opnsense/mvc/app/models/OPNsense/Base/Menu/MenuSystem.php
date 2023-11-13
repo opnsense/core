@@ -108,7 +108,6 @@ class MenuSystem
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
-     * @throws MenuInitException
      */
     public function persist($nowait = true)
     {
@@ -133,9 +132,13 @@ class MenuSystem
                 foreach (glob($vendor . '/*') as $module) {
                     $menu_cfg_xml = $module . '/Menu/Menu.xml';
                     if (file_exists($menu_cfg_xml)) {
-                        $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
-                        $domNode = $root->ownerDocument->importNode($domNode, true);
-                        $root->appendChild($domNode);
+                        try {
+                            $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
+                            $domNode = $root->ownerDocument->importNode($domNode, true);
+                            $root->appendChild($domNode);
+                        } catch (MenuInitException $e) {
+                            error_log($e);
+                        }
                     }
                 }
             }
