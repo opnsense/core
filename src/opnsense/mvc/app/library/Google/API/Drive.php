@@ -97,7 +97,7 @@ class Drive
         if ($filename != null) {
             $query .= " and title in '" . $filename . "'";
         }
-        return $this->service->files->listFiles(array('q' => $query));
+        return $this->service->files->listFiles(array('q' => $query), 'supportsAllDrives' => true);
     }
 
 
@@ -108,7 +108,7 @@ class Drive
      */
     public function download($fileHandle)
     {
-        $response = $this->service->files->get($fileHandle->id, array('alt' => 'media'));
+        $response = $this->service->files->get($fileHandle->id, array('alt' => 'media', 'supportsAllDrives' => true));
         return $response->getBody()->getContents();
     }
 
@@ -133,6 +133,7 @@ class Drive
             'data' => $content,
             'mimeType' => $mimetype,
             'uploadType' => 'media',
+            'supportsAllDrives' => true
         ));
 
         return $createdFile;
@@ -144,6 +145,6 @@ class Drive
      */
     public function delete($fileHandle)
     {
-        $this->service->files->delete($fileHandle['id']);
+        $this->service->files->delete($fileHandle['id'], array('supportsAllDrives' => true));
     }
 }
