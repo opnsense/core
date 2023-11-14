@@ -158,7 +158,7 @@ class CSVListField extends BaseField
                 $regex_match = function ($value, $pattern) {
                     $matches = [];
                     preg_match(trim($pattern), $value, $matches);
-                    return $matches[0] == $value;
+                    return isset($matches[0]) ? $matches[0] == $value : false;
                 };
 
                 if ($this->internalMaskPerItem) {
