@@ -138,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
     $pconfig = $_POST;
+
     if (isset($pconfig['id']) && isset($a_server[$pconfig['id']])) {
         $id = $pconfig['id'];
     }
@@ -145,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $pconfig['act'];
     }
     if (isset($pconfig['save'])) {
-      /* input validation */
       if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
           $reqdfields = explode(" ", "name type ldap_host ldap_port ".
                           "ldap_urltype ldap_protver ldap_scope ".
@@ -167,6 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfieldsn[] = gettext("Bind user DN");
               $reqdfieldsn[] = gettext("Bind Password");
           }
+
+          do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
       } elseif ($pconfig['type'] == "radius") {
           $reqdfields = explode(" ", "name type radius_host radius_srvcs");
           $reqdfieldsn = array(
@@ -185,7 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfields[] = "radius_secret";
               $reqdfieldsn[] = gettext("Shared Secret");
           }
+
+          do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
       }
+
       if (!empty($authCNFOptions[$pconfig['type']])) {
           foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
               if (!empty($field['validate'])) {
@@ -195,8 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
           }
       }
-
-      do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
       if (!empty($pconfig['ldap_host']) && !(is_hostname($pconfig['ldap_host']) || is_ipaddr($pconfig['ldap_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
@@ -899,46 +902,36 @@ endif; ?>
                 foreach ($authCNFOptions as $typename => $authtype):
                   if (!empty($authtype['additionalFields'])):
                     foreach ($authtype['additionalFields'] as $fieldname => $field):?>
-
                     <tr class="auth_options auth_<?=$typename;?> hidden">
                       <td>
-<?php
-                        if (!empty($field['help'])):?>
+<?php if (!empty($field['help'])): ?>
                         <a id="help_for_field_<?=$typename;?>_<?=$fieldname;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-<?php
-                        else:?>
+<?php else: ?>
                         <i class="fa fa-info-circle text-muted"></i>
-<?php
-                        endif;?>
+<?php endif ?>
                         <?=$field['name']; ?>
                       </td>
                       <td>
-<?php
-                        if ($field['type'] == 'text'):?>
+<?php if ($field['type'] == 'text'): ?>
                         <input name="<?=$fieldname;?>" type="text" value="<?=$pconfig[$fieldname] ?? '';?>"/>
-<?php
-                        elseif ($field['type'] == 'dropdown'):?>
+<?php elseif ($field['type'] == 'dropdown'): ?>
                         <select name="<?=$fieldname;?>" class="selectpicker" data-style="btn-default">
-<?php
-                          foreach ($field['options'] as $option => $optiontext):?>
+<?php foreach ($field['options'] as $option => $optiontext): ?>
                           <option value="<?=$option;?>" <?=(empty($pconfig[$fieldname]) && $field['default'] == $option) || ($pconfig[$fieldname] ?? '') == $option ? "selected=\"selected\"" : "";?> >
                             <?=$optiontext;?>
                           </option>
-<?php
-                          endforeach;?>
+<?php endforeach ?>
                         </select>
-<?php
-                        elseif ($field['type'] == 'checkbox'):?>
+<?php elseif ($field['type'] == 'checkbox'): ?>
                         <input name="<?=$fieldname;?>" type="checkbox" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
-<?php
-                        endif;?>
+<?php endif ?>
+<?php if (!empty($field['help'])): ?>
                         <div class="hidden" data-for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
                           <?=$field['help'];?>
                         </div>
+<?php endif ?>
                       </td>
                     </tr>
-
-
 <?php
                     endforeach;
                   endif;
