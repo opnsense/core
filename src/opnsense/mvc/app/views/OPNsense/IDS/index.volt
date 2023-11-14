@@ -588,9 +588,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
-                saveFormToEndpoint("/api/ids/settings/set", 'frm_GeneralSettings', function(){
-                    dfObj.resolve();
-                });
+                saveFormToEndpoint("/api/ids/settings/set", 'frm_GeneralSettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
             }
         });
@@ -721,8 +719,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <div class="tab-content content-box">
     <div id="settings" class="tab-pane fade in">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_GeneralSettings'])}}
-        <div class="col-md-12">
-            <hr/>
+        <div class="col-md-12 __mt">
             <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint='/api/ids/service/reconfigure'
                     data-label="{{ lang._('Apply') }}"

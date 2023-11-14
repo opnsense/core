@@ -30,7 +30,6 @@
             $parent_row = $('.serveexpired_child').closest('tr');
             $parent_row.find('div:first').css('padding-left', '20px');
             $('.serveexpired_parent').is(':checked') ? $parent_row.removeClass("hidden") : $parent_row.addClass("hidden");
-
         }
 
         var data_get_map = {'frm_AdvancedSettings':"/api/unbound/settings/get"};
@@ -43,9 +42,7 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
               const dfObj = new $.Deferred();
-              saveFormToEndpoint("/api/unbound/settings/set", 'frm_AdvancedSettings', function(){
-                  dfObj.resolve();
-              });
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_AdvancedSettings', function () { dfObj.resolve(); }, true , function () { dfObj.reject(); });
               return dfObj;
             }
         });

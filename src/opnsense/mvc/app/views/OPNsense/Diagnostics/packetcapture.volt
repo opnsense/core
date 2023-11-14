@@ -189,7 +189,7 @@
                         });
                     }
                 }
-                saveFormToEndpoint("/api/diagnostics/packet_capture/set", 'frm_CaptureSettings', callb, false, callb);
+                saveFormToEndpoint("/api/diagnostics/packet_capture/set", 'frm_CaptureSettings', callb, true, callb);
             }
         });
 

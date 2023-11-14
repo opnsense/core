@@ -80,8 +80,6 @@
             });
         });
 
-
-
         $("#btn_start_new").click(function () {
             if (!$("#frm_PingSettings_progress").hasClass("fa-spinner")) {
                 $("#frm_PingSettings_progress").addClass("fa fa-spinner fa-pulse");
@@ -94,7 +92,7 @@
                         });
                     }
                 }
-                saveFormToEndpoint("/api/diagnostics/ping/set", 'frm_PingSettings', callb, false, callb);
+                saveFormToEndpoint("/api/diagnostics/ping/set", 'frm_PingSettings', callb, true, callb);
             }
         });
     });

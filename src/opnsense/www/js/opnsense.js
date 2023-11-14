@@ -207,14 +207,14 @@ function setFormData(parent,data) {
     });
 }
 
-
 /**
  * handle form validations
  * @param parent
  * @param validationErrors
  */
-function handleFormValidation(parent,validationErrors) {
-    $( "#"+parent).find("[id]").each(function() {
+function handleFormValidation(parent, validationErrors)
+{
+    $("#" + parent).find("[id]").each(function () {
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             let message = validationErrors[$(this).prop('id')];
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
@@ -231,6 +231,11 @@ function handleFormValidation(parent,validationErrors) {
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
+
+    let tab = $("#" + parent).parent().attr('id') + '_tab';
+    if (validationErrors !== undefined) {
+        $('#' + tab).click();
+    }
 }
 
 /**

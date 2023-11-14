@@ -36,7 +36,7 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function () {
               const dfObj = new $.Deferred();
-              saveFormToEndpoint("/api/unbound/settings/set", 'frm_GeneralSettings', function () { dfObj.resolve(); }, false, function () { dfObj.reject(); });
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_GeneralSettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
               return dfObj;
             }
         });
