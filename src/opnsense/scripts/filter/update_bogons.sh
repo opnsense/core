@@ -1,24 +1,12 @@
 #!/bin/sh
 
+URL="$(opnsense-update -X)/sets/bogons.txz"
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
 FETCH="fetch -qT 30"
 RETRIES=3
 
 COMMAND=${1}
-
-CORE_ABI=$(opnsense-version -a)
-SYS_ABI=$(opnsense-verify -a)
-
-# force amd64 here since bogons are not published elsewhere
-URLPREFIX="https://pkg.opnsense.org/${SYS_ABI%:*}:amd64/${CORE_ABI}"
-
-if [ -n "$(opnsense-update -x)" ]; then
-	# fix ABI mismatch for business mirror by using it directly
-	URLPREFIX=$(opnsense-update -M)
-fi
-
-URL="${URLPREFIX}/sets/bogons.txz"
 
 echo "bogons update starting" | logger
 
