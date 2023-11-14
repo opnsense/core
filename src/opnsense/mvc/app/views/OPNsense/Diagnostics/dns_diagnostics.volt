@@ -66,7 +66,7 @@
                       }
                     }
                 }
-                saveFormToEndpoint("/api/diagnostics/dns_diagnostics/set", 'frm_DNSSettings', callb, false, callb);
+                saveFormToEndpoint("/api/diagnostics/dns_diagnostics/set", 'frm_DNSSettings', callb, true, callb);
             }
         });
 

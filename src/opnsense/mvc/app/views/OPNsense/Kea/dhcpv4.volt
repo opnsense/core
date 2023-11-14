@@ -57,9 +57,7 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
-                saveFormToEndpoint("/api/kea/dhcpv4/set", 'frm_generalsettings', function(){
-                    dfObj.resolve();
-                });
+                saveFormToEndpoint("/api/kea/dhcpv4/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
             },
             onAction: function(data, status) {

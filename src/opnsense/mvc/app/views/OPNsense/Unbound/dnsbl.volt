@@ -49,7 +49,7 @@
                   } else {
                       dfObj.resolve();
                   }
-              });
+              }, true, function () { dfObj.reject(); });
               return dfObj;
           }
       });

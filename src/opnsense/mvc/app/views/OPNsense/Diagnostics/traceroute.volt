@@ -64,7 +64,7 @@
                           }
                     }
                 }
-                saveFormToEndpoint("/api/diagnostics/traceroute/set", 'frm_TracerouteSettings', callb, false, callb);
+                saveFormToEndpoint("/api/diagnostics/traceroute/set", 'frm_TracerouteSettings', callb, true, callb);
             }
         });
 

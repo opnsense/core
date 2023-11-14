@@ -51,7 +51,7 @@
                           }
                     }
                 }
-                saveFormToEndpoint("/api/diagnostics/portprobe/set", 'frm_PortprobeSettings', callb, false, callb);
+                saveFormToEndpoint("/api/diagnostics/portprobe/set", 'frm_PortprobeSettings', callb, true, callb);
             }
         });
 
