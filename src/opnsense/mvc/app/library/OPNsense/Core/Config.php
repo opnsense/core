@@ -609,6 +609,7 @@ class Config extends Singleton
         $fhandle = fopen($this->config_file, "r+");
         if (flock($fhandle, LOCK_EX)) {
             fseek($fhandle, 0);
+            chmod($this->config_file, 0640);
             ftruncate($fhandle, 0);
             fwrite($fhandle, file_get_contents($filename));
             fclose($fhandle);
@@ -720,6 +721,7 @@ class Config extends Singleton
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
                 fseek($this->config_file_handle, 0);
+                chmod($this->config_file, 0640);
                 ftruncate($this->config_file_handle, 0);
                 fwrite($this->config_file_handle, (string)$this);
                 // flush, unlock, but keep the handle open
