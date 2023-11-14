@@ -32,7 +32,6 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-
 class Leases4Controller extends ApiControllerBase
 {
     public function searchAction()
