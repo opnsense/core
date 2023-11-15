@@ -441,7 +441,7 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
-  // link move buttons
+  // link apply button
   $("#btn_apply").click(function(event){
     event.preventDefault();
     $("#action").val("apply");
@@ -580,21 +580,20 @@ $( document ).ready(function() {
               $("#"+tmp+"-rule-count").text($("tr."+tmp+"-rule").length);
           }
           if ($(this).hasClass('is_collapsed')) {
-              $("."+tmp+"-rule").hide();
+              $("tr."+tmp+"-rule").hide();
           }
       });
   });
 
-
-
   $(".expand_type").each(function(){
-      $("#expand-"+$(this).data('type')+"-rules").click(function(event){
+      $("#expand-"+$(this).data('type')).click(function(event){
           event.preventDefault();
-          $(this).toggleClass('is_collapsed');
+          $(this).parent().parent().toggleClass('is_collapsed');
           // trigger category change as this will show/hide all "rule" rows (and fires an event on .opnsense-rules )
           $("#fw_category").change();
       });
   });
+
   // tooltip interface list
   $(".interface_tooltip").tooltip({
       html: true,
@@ -751,6 +750,7 @@ $( document ).ready(function() {
                     'internal' => gettext('Automatically generated rules'),
                     'floating' => gettext('Floating rules'),
                     'group' => gettext('Group rules'),
+                    'internal2' => gettext('Automatically generated rules (end of ruleset)'),
                 ];
                 foreach ($fw->iterateFilterRules() as $rule):
                     $is_selected = false;
