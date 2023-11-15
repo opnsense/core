@@ -1305,10 +1305,16 @@ function ipsec_configure_do($verbose = false, $interface = '')
 
     service_log('Configuring IPsec VPN...', $verbose);
 
-    /* cleanup legacy ipsec.conf files */
+    /* cleanup legacy ipsec.conf bits but then recreate structure to mute charon complaints */
     mwexec('rm -rf /usr/local/etc/ipsec.d');
-    @unlink('/usr/local/etc/ipsec.conf');
-    @unlink('/usr/local/etc/ipsec.secrets');
+    foreach (['aacerts', 'acerts', 'cacerts', 'certs', 'crls', 'ocspcerts', 'private', 'reqs'] as $dir) {
+        mkdir("/usr/local/etc/ipsec.d/{$dir}", 0664, true);
+    }
+    foreach (['/usr/local/etc/ipsec.conf', '/usr/local/etc/ipsec.secrets'] as $file) {
+        /* unlink AND copy in case the sample files are not available */
+        @unlink($file);
+        @copy("{$file}.sample", $file);
+    }
 
     ipsec_write_strongswan_conf();
     ipsec_write_cas();
