@@ -29,6 +29,7 @@
 namespace OPNsense\Kea\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Config;
 
 class Dhcpv4Controller extends ApiMutableModelControllerBase
 {
@@ -43,7 +44,9 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
         $data = parent::getAction();
         return [
             self::$internalModelName => [
-                'general' => $data[self::$internalModelName]['general']
+                'general' => $data[self::$internalModelName]['general'],
+                'ha' => $data[self::$internalModelName]['ha'],
+                'this_hostname' => (string)Config::getInstance()->object()->system->hostname
             ]
         ];
     }
@@ -101,4 +104,30 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
     {
         return $this->delBase("reservations.reservation", $uuid);
     }
+
+    public function searchPeerAction()
+    {
+        return $this->searchBase("ha_peers.peer", ['name', 'role'], "name");
+    }
+
+    public function setPeerAction($uuid)
+    {
+        return $this->setBase("peer", "ha_peers.peer", $uuid);
+    }
+
+    public function addPeerAction()
+    {
+        return $this->addBase("peer", "ha_peers.peer");
+    }
+
+    public function getPeerAction($uuid = null)
+    {
+        return $this->getBase("peer", "ha_peers.peer", $uuid);
+    }
+
+    public function delPeerAction($uuid)
+    {
+        return $this->delBase("ha_peers.peer", $uuid);
+    }
+
 }

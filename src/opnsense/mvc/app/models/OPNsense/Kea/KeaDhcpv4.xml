@@ -16,6 +16,15 @@
                 <Required>Y</Required>
             </valid_lifetime>
         </general>
+        <ha>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <this_server_name  type="TextField">
+                <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+            </this_server_name>
+        </ha>
         <subnets>
             <subnet4 type="ArrayField">
                 <subnet type="NetworkField">
@@ -61,11 +70,11 @@
             <reservation type="ArrayField">
                 <subnet type="ModelRelationField">
                     <Model>
-                        <pipes>
+                        <subnets>
                             <source>OPNsense.Kea.KeaDhcpv4</source>
                             <items>subnets.subnet4</items>
                             <display>subnet</display>
-                        </pipes>
+                        </subnets>
                     </Model>
                     <ValidationMessage>Related subnet not found</ValidationMessage>
                     <Required>Y</Required>
@@ -83,5 +92,35 @@
                 </description>
             </reservation>
         </reservations>
+        <ha_peers>
+            <peer type="ArrayField">
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </name>
+                <role type="OptionField">
+                    <Default>primary</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <primary>primary</primary>
+                        <standby>standby</standby>
+                    </OptionValues>
+                </role>
+                <url type="UrlField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </url>
+            </peer>
+        </ha_peers>
     </items>
 </model>

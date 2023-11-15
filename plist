@@ -402,13 +402,16 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/CtrlAgentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/generalSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/generalSettings4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/Api/StatusController.php
@@ -712,6 +715,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/Menu/Menu.xml
@@ -831,6 +836,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/ctrl_agent.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt

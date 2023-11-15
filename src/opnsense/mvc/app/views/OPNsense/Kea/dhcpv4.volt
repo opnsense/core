@@ -29,7 +29,15 @@
 <script>
     $( document ).ready(function() {
         let data_get_map = {'frm_generalsettings':"/api/kea/dhcpv4/get"};
-        mapDataToFormUI(data_get_map).done(function(){
+        mapDataToFormUI(data_get_map).done(function(data){
+            try {
+                $("#dhcpv4\\.ha\\.this_server_name").attr(
+                    "placeholder",
+                    data.frm_generalsettings.dhcpv4.this_hostname
+                );
+            } catch (e) {
+                null;
+            }
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
             updateServiceControlUI('kea');
@@ -54,6 +62,15 @@
             }
         );
 
+        $("#grid-ha-peers").UIBootgrid(
+            {   search:'/api/kea/dhcpv4/search_peer',
+                get:'/api/kea/dhcpv4/get_peer/',
+                set:'/api/kea/dhcpv4/set_peer/',
+                add:'/api/kea/dhcpv4/add_peer/',
+                del:'/api/kea/dhcpv4/del_peer/'
+            }
+        );
+
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
@@ -68,15 +85,17 @@
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#settings" id="tab_settings">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#subnets" id="tab_pools"> {{ lang._('Subnets') }} </a></li>
-    <li><a data-toggle="tab" href="#reservations" id="tab_pools"> {{ lang._('Reservations') }} </a></li>
+    <li><a data-toggle="tab" href="#reservations" id="tab_reservations"> {{ lang._('Reservations') }} </a></li>
+    <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers"> {{ lang._('HA Peers') }} </a></li>
 </ul>
 <div class="tab-content content-box">
+    <!-- general settings  -->
     <div id="settings"  class="tab-pane fade in active">
         {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_generalsettings'])}}
     </div>
-    <!--  -->
+    <!-- subnets / pools  -->
     <div id="subnets" class="tab-pane fade in">
         <table id="grid-subnets" class="table table-condensed table-hover table-striped" data-editDialog="DialogSubnet">
             <thead>
@@ -98,7 +117,7 @@
             </tfoot>
         </table>
     </div>
-    <!--  -->
+    <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
         <table id="grid-reservations" class="table table-condensed table-hover table-striped" data-editDialog="DialogReservation">
             <thead>
@@ -124,6 +143,30 @@
             </tfoot>
         </table>
     </div>
+    <!-- HA - peers -->
+    <div id="ha-peers" class="tab-pane fade in">
+        <table id="grid-ha-peers" class="table table-condensed table-hover table-striped" data-editDialog="DialogPeer">
+            <thead>
+                <tr>
+                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+                  <th data-column-id="role" data-type="string">{{ lang._('Role') }}</th>
+                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
 </div>
 
 <section class="page-content-main">
@@ -143,3 +186,4 @@
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':'DialogSubnet','label':lang._('Edit Subnet')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':'DialogReservation','label':lang._('Edit Reservation')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogPeer,'id':'DialogPeer','label':lang._('Edit Peer')])}}

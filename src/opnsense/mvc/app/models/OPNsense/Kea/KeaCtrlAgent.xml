@@ -1,0 +1,23 @@
+<model>
+    <mount>//OPNsense/Kea/ctrl_agent</mount>
+    <version>0.0.1</version>
+    <description>Kea Control Agent configuration</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <http_host type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+                <Default>127.0.0.1</Default>
+                <Required>Y</Required>
+            </http_host>
+            <http_port type="PortField">
+                <Required>Y</Required>
+                <Default>8000</Default>
+            </http_port>
+        </general>
+    </items>
+</model>
