@@ -123,7 +123,7 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                 $common_name = empty($a_server['cso_login_matching']) ? $common_name : $username;
                 syslog(
                     LOG_NOTICE,
-                    "Locate overwrite for '{$common_name}' using server '{$serverid}' (vpnid : {$a_server['vpnid']}"
+                    "Locate overwrite for '{$common_name}' using server '{$serverid}' (vpnid: {$a_server['vpnid']})"
                 );
                 $cso = (new OPNsense\OpenVPN\OpenVPN())->getOverwrite($serverid, $common_name);
                 if (empty($cso)) {
