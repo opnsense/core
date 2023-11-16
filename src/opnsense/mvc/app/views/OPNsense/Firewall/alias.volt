@@ -773,7 +773,7 @@
                                     </td>
                                     <td>
                                         <select id="alias.type" class="selectpicker" data-width="245px"></select>
-                                        <select id="alias.proto" multiple="multiple" title="{{lang._('None')}}" class="selectpicker" data-width="100px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="IPv4, IPv6" class="selectpicker" data-width="100px"></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
