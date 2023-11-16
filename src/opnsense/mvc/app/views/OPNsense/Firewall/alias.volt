@@ -33,6 +33,10 @@
         }
     }
 
+    .dropdown-fixup {
+        overflow-x: hidden !important;
+    }
+
     .alias_table {
         background-color: transparent !important;
     }
@@ -333,6 +337,8 @@
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
+                    /* work around JS injection of nasty overflow scroll bar being injected */
+                    $("#row_alias\\.type > td > .dropdown:last > .dropdown-menu > .inner").addClass('dropdown-fixup');
                     break;
                 case 'asn':
                     $("#alias_type_default").show();
@@ -766,8 +772,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.type" class="selectpicker" data-width="200px"></select>
-                                        <select id="alias.proto" multiple="multiple" title="" class="selectpicker" data-width="110px"></select>
+                                        <select id="alias.type" class="selectpicker" data-width="245px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="{{lang._('None')}}" class="selectpicker" data-width="100px"></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
@@ -781,7 +787,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
+                                        <select id="alias.categories" multiple="multiple" class="tokenize" data-width="348px"></select>
                                         <span class="hidden" data-for="help_for_alias.categories">
                                             {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
                                         </span>
@@ -835,7 +841,7 @@
                                             <select multiple="multiple"
                                                     id="alias.content"
                                                     class="tokenize"
-                                                    data-width="334px"
+                                                    data-width="348px"
                                                     data-allownew="true"
                                                     data-nbdropdownelements="10"
                                                     data-live-search="true"
