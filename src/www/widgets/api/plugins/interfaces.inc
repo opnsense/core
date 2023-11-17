@@ -30,37 +30,31 @@
  */
 function interfaces_api()
 {
-    $result = array();
-    $ifsinfo = get_interfaces_info();
-    foreach (get_configured_interface_with_descr() as $ifdescr => $ifname) {
-        $ifinfo = $ifsinfo[$ifdescr];
-        $interfaceItem = array();
-        $interfaceItem['inpkts'] = $ifinfo['inpkts'];
-        $interfaceItem['outpkts'] = $ifinfo['outpkts'];
-        $interfaceItem['inbytes'] = $ifinfo['inbytes'];
-        $interfaceItem['outbytes'] = $ifinfo['outbytes'];
-        $interfaceItem['inbytes_frmt'] = format_bytes($ifinfo['inbytes']);
-        $interfaceItem['outbytes_frmt'] = format_bytes($ifinfo['outbytes']);
-        $interfaceItem['inerrs'] = isset($ifinfo['inerrs']) ? $ifinfo['inerrs'] : "0";
-        $interfaceItem['outerrs'] = isset($ifinfo['outerrs']) ? $ifinfo['outerrs'] : "0";
-        $interfaceItem['collisions'] = isset($ifinfo['collisions']) ? $ifinfo['collisions'] : "0";
-        $interfaceItem['descr'] = $ifdescr;
-        $interfaceItem['name'] = $ifname;
-        switch ($ifinfo['status']) {
-            case 'down':
-            case 'no carrier':
-            case 'up':
-                $interfaceItem['status'] = $ifinfo['status'];
-                break;
-            case 'associated':
-                $interfaceItem['status'] = 'up';
-                break;
-            default:
-                $interfaceItem['status'] = '';
-                break;
+    $result = [];
+    $ifsinfo = json_decode((new OPNsense\Core\Backend())->configdpRun('interface list info', [null, true]), true);
+    foreach ($ifsinfo as $if => $ifinfo) {
+        if (empty($ifinfo['config']) || (!empty($ifinfo['config']['virtual']))) {
+            /* not configured */
+            continue;
         }
-        $interfaceItem['ipaddr'] = empty($ifinfo['ipaddr']) ? "" : $ifinfo['ipaddr'];
-        $interfaceItem['media'] = empty($ifinfo['media']) ? "" : $ifinfo['media'];
+        $config = $ifinfo['config'];
+        $stats = $ifinfo['statistics'];
+        $interfaceItem = [
+            'inpkts' => $stats['packets received'],
+            'outpkts' => $stats['packets transmitted'],
+            'inbytes' => $stats['bytes received'],
+            'outbytes' => $stats['bytes transmitted'],
+            'inbytes_frmt' => format_bytes($stats['bytes received']),
+            'outbytes_frmt' => format_bytes($stats['bytes transmitted']),
+            'inerrs' => $stats['input errors'],
+            'outerrs' => $stats['output errors'],
+            'collisions' => $stats['collisions'],
+            'descr' => $config['identifier'],
+            'name' => !empty($config['descr']) ? $config['descr'] : strtoupper($config['identifier']),
+            'status' => (!empty($ifinfo['flags']) && in_array('up', $ifinfo['flags'])) ? 'up' : 'down',
+            'media' => !empty($ifinfo['media']) ? $ifinfo['media'] : '',
+            'ipaddr' => $ifinfo['ipaddr']
+        ];
         $result[] = $interfaceItem;
     }
     return $result;
