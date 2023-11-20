@@ -156,8 +156,11 @@
                     let device = $(this).data("device-id");
                     $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
                     ajaxCall('/api/interfaces/overview/reloadInterface/' + device, {}, function (data, status) {
-                        $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
-                        $("#grid-overview").bootgrid('reload');
+                        /* delay slightly to allow the interface to come up */
+                        setTimeout(function() {
+                            $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
+                            $("#grid-overview").bootgrid('reload');
+                        }, 1000);
                     });
                 });
             });
