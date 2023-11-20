@@ -49,9 +49,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
         if (!empty($tmp['network'])) {
             $parts = explode('/', $tmp['network'], 2);
             $overlay['subnet'] = $parts[0];
-            if (count($parts) == 1 || $parts[1] == '') {
-                $overlay['subnet_bits'] = strpos($parts[0], ':') !== false ? 128 : 32;
-            } else {
+            if (count($parts) == 2 && $parts[1] != '') {
                 $overlay['subnet_bits'] = $parts[1];
             }
         }
