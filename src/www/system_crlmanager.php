@@ -355,6 +355,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext("Descriptive name"),
                     gettext("Certificate Authority"));
         }
+        if (!isset($id)) {
+            // prevent adding already CRL's for existing CA's
+            foreach ($a_crl as $cid => $acrl) {
+              if ($acrl['caref'] == $pconfig['caref']) {
+                  $input_errors[] = sprintf(
+                      gettext("The selected CA already has a CRL defined (%s), duplicate entries are no longer supported."),
+                      $acrl['descr'] ?? ''
+                  );
+                  break;
+              }
+          }
+        }
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
