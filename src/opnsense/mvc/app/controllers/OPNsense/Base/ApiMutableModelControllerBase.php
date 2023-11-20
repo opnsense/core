@@ -100,7 +100,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         if (static::$internalModelUseSafeDelete) {
             $configObj = Config::getInstance()->object();
-            $usages = array();
+            $usages = [];
             // find uuid's in our config.xml
             foreach ($configObj->xpath("//text()[contains(.,'{$uuid}')]") as $node) {
                 $referring_node = $node->xpath("..")[0];
@@ -158,7 +158,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     public function getAction()
     {
         // define list of configurable settings
-        $result = array();
+        $result = [];
         if ($this->request->isGet()) {
             $result[static::$internalModelName] = $this->getModelNodes();
         }
@@ -217,27 +217,32 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
 
     /**
      * Validate this model
-     * @param $node reference node, to use as relative offset
+     * @param $node reference node, to use as relative offset, ignore validation issues outside this scope
      * @param $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
+     * @param bool $validateFullModel by default we only validate the fields we have changed
      * @return array result / validation output
      * @throws \ReflectionException when binding to the model class fails
      */
-    protected function validate($node = null, $prefix = null)
+    protected function validate($node = null, $prefix = null, $validateFullModel = false)
     {
-        $result = array("result" => "");
+        $result = ["result" => ""];
         $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
         // perform validation
-        $valMsgs = $this->getModel()->performValidation();
+        $valMsgs = $this->getModel()->performValidation($validateFullModel);
         foreach ($valMsgs as $field => $msg) {
-            if (!array_key_exists("validations", $result)) {
-                $result["validations"] = array();
-                $result["result"] = "failed";
-            }
-            // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
+                /* replace absolute path with attribute for relative one at uuid,
+                   ignore validation issues when triggered outside the node scope. */
+               if (strpos($msg->getField(), $node->__reference) === false) {
+                    continue;
+                }
                 $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
             } else {
                 $fieldnm = $resultPrefix . "." . $msg->getField();
+            }
+            if (!array_key_exists("validations", $result)) {
+                $result["validations"] = [];
+                $result["result"] = "failed";
             }
             $msgText = $msg->getMessage();
             if (empty($result["validations"][$fieldnm])) {
@@ -257,15 +262,17 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
 
     /**
      * Save model after update or insertion, validate() first to avoid raising exceptions
+     * @param bool $validateFullModel by default we only validate the fields we have changed
+     * @param bool $disable_validation skip validation, be careful to use this!
      * @return array result / validation output
      * @throws \Phalcon\Filter\Validation\Exception on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws \OPNsense\Base\UserException when denied write access
      */
-    protected function save()
+    protected function save($validateFullModel = false, $disable_validation = false)
     {
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-            if ($this->getModel()->serializeToConfig()) {
+            if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
                 Config::getInstance()->save();
             }
             return array("result" => "saved");
@@ -308,7 +315,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 if (!empty($hookErrorMessage)) {
                     $result['error'] = $hookErrorMessage;
                 } else {
-                    return $this->save();
+                    return $this->save(false, true);
                 }
             }
         }
@@ -371,7 +378,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $node = $mdl->Add();
             return array($key_name => $node->getNodes());
         }
-        return array();
+        return [];
     }
 
     /**
@@ -402,7 +409,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
 
             if (empty($result['validations'])) {
                 // save config if validated correctly
-                $this->save();
+                $this->save(false, true);
                 $result = array(
                     "result" => "saved",
                     "uuid" => $node->getAttribute('uuid')
@@ -437,7 +444,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $tmp = $tmp->{$step};
                 }
                 if ($tmp->del($uuid)) {
-                    $this->save();
+                    $this->save(false, true);
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
@@ -482,10 +489,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 if (is_array($overlay)) {
                     $node->setNodes($overlay);
                 }
-                $result = $this->validate($node, $post_field);
+                $result = $this->validate($node, $post_field, true);
                 if (empty($result['validations'])) {
                     // save config if validated correctly
-                    $this->save();
+                    $this->save(false, true);
                     $result = ["result" => "saved"];
                 } else {
                     $result["result"] = "failed";
@@ -531,7 +538,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     }
                     // if item has toggled, serialize to config and save
                     if ($result['changed']) {
-                        $this->save();
+                        $this->save(false, true);
                     }
                 }
             }
