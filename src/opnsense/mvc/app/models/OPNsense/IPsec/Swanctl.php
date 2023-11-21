@@ -231,7 +231,7 @@ class Swanctl extends BaseModel
         $result = [];
         foreach ($this->VTIs->VTI->iterateItems() as $node_uuid => $node) {
             if ((string)$node->origin != 'legacy' && (string)$node->enabled == '1') {
-                $inet = strpos((string)$node->local_tunnel, ':') > 0 ? 'inet6' : 'inet';
+                $inet = strpos((string)$node->tunnel_local, ':') > 0 ? 'inet6' : 'inet';
                 $result['ipsec' . (string)$node->reqid] = [
                     'reqid' => (string)$node->reqid,
                     'local' => (string)$node->local,
