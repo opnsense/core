@@ -182,10 +182,10 @@ class Helpers(object):
         :return: bool
         """
         if pathname.startswith('/'):
-            return os.path.isfile(pathname)
+            return os.path.exists(pathname)
         else:
             template_path = os.path.realpath("%s/../../templates/" % os.path.dirname(__file__))
-            return os.path.isfile("%s/%s" % (template_path, pathname))
+            return os.path.exists("%s/%s" % (template_path, pathname))
 
     @staticmethod
     def glob(pathname):
