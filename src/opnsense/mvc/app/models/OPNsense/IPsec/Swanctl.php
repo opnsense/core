@@ -62,8 +62,12 @@ class Swanctl extends BaseModel
         }
         foreach ($vtis as $key => $node) {
             $vti_inets = [];
-            foreach (['local', 'remote', 'tunnel_local', 'tunnel_remote'] as $prop) {
-                $vti_inets[$prop] = strpos((string)$node->$prop, ':') > 0 ? 'inet6' : 'inet';
+            foreach (['local', 'remote', 'tunnel_local', 'tunnel_remote', 'tunnel_local2', 'tunnel_remote2'] as $prop) {
+                if (empty((string)$node->$prop)) {
+                    $vti_inets[$prop] = '-';
+                } else {
+                    $vti_inets[$prop] = strpos((string)$node->$prop, ':') > 0 ? 'inet6' : 'inet';
+                }
             }
 
             if ($vti_inets['local'] != $vti_inets['remote']) {
@@ -71,6 +75,14 @@ class Swanctl extends BaseModel
             }
             if ($vti_inets['tunnel_local'] != $vti_inets['tunnel_remote']) {
                 $messages->appendMessage(new Message(gettext("Protocol families should match"), $key . ".tunnel_local"));
+            }
+            if ($vti_inets['tunnel_local2'] != $vti_inets['tunnel_remote2']) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("Protocol families should match"),
+                        $key . ".tunnel_local2"
+                    )
+                );
             }
         }
 
@@ -249,6 +261,19 @@ class Swanctl extends BaseModel
                         ]
                     ]
                 ];
+                if (!empty((string)$node->tunnel_local2)) {
+                    // add optional secondary address
+                    $inet = strpos((string)$node->tunnel_local2, ':') > 0 ? 'inet6' : 'inet';
+                    $result['ipsec' . (string)$node->reqid]['networks'][] = [
+                        'inet' => $inet,
+                        'tunnel_local' => (string)$node->tunnel_local2,
+                        'tunnel_remote' => (string)$node->tunnel_remote2,
+                        'mask' => Util::smallestCIDR(
+                            [(string)$node->tunnel_local2, (string)$node->tunnel_remote2],
+                            $inet
+                        )
+                    ];
+                }
             }
         }
         return $result;

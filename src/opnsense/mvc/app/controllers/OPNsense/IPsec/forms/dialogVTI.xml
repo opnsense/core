@@ -38,6 +38,21 @@
         </help>
     </field>
     <field>
+        <id>vti.tunnel_local2</id>
+        <label>Tunnel secondary local address</label>
+        <type>text</type>
+        <help>Inner tunnel local address to be used for routing purposes.</help>
+    </field>
+    <field>
+        <id>vti.tunnel_remote2</id>
+        <label>Tunnel secondary remote address</label>
+        <type>text</type>
+        <help>
+          Inner tunnel remote address to be used for routing purposes.
+          The size of the subnet containing local and remote will be calculated automatically
+        </help>
+    </field>
+    <field>
         <id>vti.description</id>
         <label>Name</label>
         <type>text</type>

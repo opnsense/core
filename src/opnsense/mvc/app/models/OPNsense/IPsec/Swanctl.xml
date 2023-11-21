@@ -381,6 +381,16 @@
                     <Required>Y</Required>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote>
+                <tunnel_local2 type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </tunnel_local2>
+                <tunnel_remote2 type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <ValidationMessage>Please specify a valid address.</ValidationMessage>
+                </tunnel_remote2>
                 <description type="TextField"/>
             </VTI>
         </VTIs>
