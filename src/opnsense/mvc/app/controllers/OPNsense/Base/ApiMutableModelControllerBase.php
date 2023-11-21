@@ -227,13 +227,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         $result = ["result" => ""];
         $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
-        // perform validation
         $valMsgs = $this->getModel()->performValidation($validateFullModel);
         foreach ($valMsgs as $field => $msg) {
             if ($node != null) {
-                /* replace absolute path with attribute for relative one at uuid,
-                   ignore validation issues when triggered outside the node scope. */
-               if (strpos($msg->getField(), $node->__reference) === false) {
+                /*
+                 * Replace absolute path with attribute for relative one at 'uuid',
+                 * ignore validation issues when triggered outside the node scope.
+                 */
+                if (strpos($msg->getField(), $node->__reference) === false) {
                     continue;
                 }
                 $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
