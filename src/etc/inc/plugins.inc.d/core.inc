@@ -400,7 +400,7 @@ function core_xmlrpc_sync()
     );
     $result[] = array(
         'description' => gettext('DHCPv4: Relay'),
-        'section' => 'dhcrelay',
+        'section' => 'dhcrelay,OPNsense.DHCRelay',
         'id' => 'dhcrelay',
         'services' => ["dhcrelay"],
     );
