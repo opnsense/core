@@ -176,6 +176,18 @@ class Helpers(object):
         return lst
 
     @staticmethod
+    def file_exists(pathname):
+        """
+        :param pathname: absolute or relative path name depending if it starts with a /
+        :return: bool
+        """
+        if pathname.startswith('/'):
+            return os.path.isfile(pathname)
+        else:
+            template_path = os.path.realpath("%s/../../templates/" % os.path.dirname(__file__))
+            return os.path.isfile("%s/%s" % (template_path, pathname))
+
+    @staticmethod
     def glob(pathname):
         """
         :param pathname: relative path name
