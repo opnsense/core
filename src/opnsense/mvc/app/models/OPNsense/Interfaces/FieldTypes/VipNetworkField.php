@@ -47,10 +47,10 @@ class VipNetworkField extends TextField
             $parent = $this->getParentNode();
             $messages = [];
             $network = implode('/', [(string)$parent->subnet, (string)$parent->subnet_bits]);
-            if (empty((string)$parent->subnet)) {
-                $messages[] = gettext('A network address is required.');
-            } elseif (!Util::isIpAddress((string)$parent->subnet) || !Util::isSubnet($network)) {
-                $messages[] = sprintf(gettext('Entry "%s" is not a valid network address.'), $network);
+            if (!strlen((string)$parent->subnet) || !Util::isIpAddress((string)$parent->subnet)) {
+                $messages[] = gettext('A valid network address is required.');
+            } elseif (!strlen((string)$parent->subnet_bits) || !Util::isSubnet($network)) {
+                $messages[] = gettext('A valid network subnet is required.');
             }
             return $messages;
         }
