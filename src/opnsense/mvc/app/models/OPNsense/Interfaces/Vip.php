@@ -78,30 +78,31 @@ class Vip extends BaseModel
             $subnet_bits = (string)$node->subnet_bits;
             $subnet = (string)$node->subnet;
             if (in_array((string)$node->mode, ['carp', 'ipalias'])) {
-                if (Util::isSubnet($subnet . "/" . $subnet_bits) && strpos($subnet, ':') === false) {
+                if (Util::isSubnet($subnet . "/" . $subnet_bits) && strpos($subnet, ':') === false && $subnet_bits <= 30) {
                     $sm = 0;
                     for ($i = 0; $i < $subnet_bits; $i++) {
                         $sm >>= 1;
                         $sm |= 0x80000000;
                     }
                     $network_addr = long2ip(ip2long($subnet) & $sm);
-                    $broadcast_addr = long2ip((ip2long($subnet) & 0xFFFFFFFF) | $sm);
-                    if ($subnet == $network_addr && $subnet_bits != '32') {
+                    $broadcast_addr = long2ip((ip2long($subnet) & $sm) | (0xFFFFFFFF ^ $sm));
+                    if ($subnet == $network_addr) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("You cannot use the network address for this VIP"),
+                                gettext('You cannot use the network address.'),
                                 $key . ".subnet"
                             )
                         );
-                    } elseif ($subnet == $broadcast_addr && $subnet_bits != '32') {
+                    } elseif ($subnet == $broadcast_addr) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("You cannot use the broadcast address for this VIP"),
+                                gettext('You cannot use the broadcast address.'),
                                 $key . ".subnet"
                             )
                         );
                     }
                 }
+
                 $configHandle = Config::getInstance()->object();
                 if (!empty($configHandle->interfaces) && !empty((string)$node->vhid)) {
                     foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
