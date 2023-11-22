@@ -14,9 +14,7 @@
         <id>instance.role</id>
         <label>Role</label>
         <type>dropdown</type>
-        <help>
-            Define the role of this instance
-        </help>
+        <help>Define the role of this instance.</help>
     </field>
     <field>
         <id>instance.description</id>
@@ -39,10 +37,7 @@
         <id>instance.port</id>
         <label>Port number</label>
         <type>text</type>
-        <help>
-            Portnumber to use, defaults to 1194 when in server role or when client mode specifies a bind address,
-            nobind when client without specific bind address.
-        </help>
+        <help>Port number to use. Defaults to 1194 when in server role or when client mode specifies a bind address, or nobind when client does not have a specific bind address.</help>
     </field>
     <field>
         <id>instance.local</id>
