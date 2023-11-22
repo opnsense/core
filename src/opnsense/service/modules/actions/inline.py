@@ -36,8 +36,8 @@ class Action(BaseAction):
         self.root_dir = action_parameters.get('root_dir', None)
         self.config = action_parameters.get('config', None)
 
-    def execute(self, parameters, message_uuid):
-        super().execute(parameters, message_uuid)
+    def execute(self, parameters, message_uuid, *args, **kwargs):
+        super().execute(parameters, message_uuid, *args, **kwargs)
         try:
             # match parameters, serialize to parameter string defined by action template
             if len(parameters) > 0:
