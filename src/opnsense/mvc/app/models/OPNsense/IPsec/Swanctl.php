@@ -301,4 +301,25 @@ class Swanctl extends BaseModel
         }
         return $certrefs;
     }
+
+    /**
+     * @return bool is there at least one connection using radius groups?
+     */
+    public function radiusUsesGroups()
+    {
+        foreach ($this->remotes->iterateRecursiveItems() as $node) {
+            if ($node->getInternalXMLTagName() == 'auth' && (string)$node == 'eap-radius') {
+                $auth = $node->getParentNode();
+                $connid = (string)$auth->connection;
+                if (
+                    !empty((string)$auth->groups) &&
+                    isset($this->Connections->Connection->$connid) &&
+                    !empty((string)$this->Connections->Connection->$connid->enabled)
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

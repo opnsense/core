@@ -42,6 +42,13 @@
         <style>remote_auth remote_auth_eap-mschapv2 remote_auth_eap-tls remote_auth_eap-radius</style>
     </field>
     <field>
+        <id>remote.groups</id>
+        <label>Groups</label>
+        <type>select_multiple</type>
+        <help>List of group memberships to require. The client must prove membership to at least one of the specified groups.</help>
+        <style>selectpicker remote_auth remote_auth_eap-radius</style>
+    </field>
+    <field>
       <id>remote.certs</id>
       <label>Certificates</label>
       <type>select_multiple</type>
