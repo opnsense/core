@@ -78,8 +78,10 @@ class Swanctl extends BaseModel
             }
             if ($vti_inets['tunnel_local2'] != $vti_inets['tunnel_remote2']) {
                 $messages->appendMessage(
-                    new Message(gettext("Protocol families should match"),
-                    $key . ".tunnel_local2")
+                    new Message(
+                        gettext("Protocol families should match"),
+                        $key . ".tunnel_local2"
+                    )
                 );
             }
         }

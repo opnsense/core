@@ -129,5 +129,4 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
     {
         return $this->delBase("ha_peers.peer", $uuid);
     }
-
 }
