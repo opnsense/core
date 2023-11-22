@@ -70,6 +70,7 @@ class IPsecProposalField extends BaseListField
                 'aes256-sha1-modp4096' => 'aes256-sha1-modp4096 [DH16]',
                 'aes256-sha1-ecp521' => 'aes256-sha1-ecp521 [DH21, NIST EC]',
                 'aes256-sha512-modp1024' => 'aes256-sha512-modp1024 [DH2]',
+                'aes256-sha256' => 'aes256-sha256',
                 'null-sha256-x25519' => gettext('null-sha256-x25519 (testing only, no encryption!)')
             ]
         ];
