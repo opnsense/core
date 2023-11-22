@@ -3,9 +3,6 @@
 # refresh relevant configuration files
 /usr/local/etc/rc.configure_firmware
 
-# create a unique timestamp for our asset caching
-touch /usr/local/opnsense/www/index.php
-
 daemon /bin/sh -s << EOF
 # remove our stale pyc files not handled by pkg
 find /usr/local/opnsense -type f -name "*.pyc" -delete
