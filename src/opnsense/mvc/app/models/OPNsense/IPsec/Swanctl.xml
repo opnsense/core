@@ -200,6 +200,9 @@
                 <eap_id type="TextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
                 </eap_id>
+                <groups type="AuthGroupField">
+                    <Multiple>Y</Multiple>
+                </groups>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>

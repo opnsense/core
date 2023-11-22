@@ -1061,7 +1061,8 @@ function ipsec_write_strongswan_conf()
     if (empty($radius_auth_servers) && !empty($a_client['radius_source'])) {
         $radius_auth_servers = $a_client['radius_source'];
     }
-    if ((isset($a_client['enable']) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) && !empty($radius_auth_servers)) {
+    $mdl = new \OPNsense\IPsec\Swanctl();
+    if ((isset($a_client['enable']) || $mdl->isEnabled()) && !empty($radius_auth_servers)) {
         $disable_xauth = true; // disable Xauth when radius is used.
         $strongswanTree['charon']['plugins']['eap-radius'] = [];
         $strongswanTree['charon']['plugins']['eap-radius']['servers'] = [];
@@ -1089,6 +1090,9 @@ function ipsec_write_strongswan_conf()
         }
         if ($radius_accounting_enabled) {
             $strongswanTree['charon']['plugins']['eap-radius']['accounting'] = 'yes';
+        }
+        if ($mdl->radiusUsesGroups()) {
+            $strongswanTree['charon']['plugins']['eap-radius']['class_group'] = 'yes';
         }
     }
     if ((isset($a_client['enable']) && !$disable_xauth) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) {

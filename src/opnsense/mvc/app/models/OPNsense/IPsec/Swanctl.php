@@ -30,6 +30,7 @@ namespace OPNsense\IPsec;
 
 use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
 /**
@@ -38,6 +39,27 @@ use OPNsense\Firewall\Util;
  */
 class Swanctl extends BaseModel
 {
+    /**
+     * convert group ids to group (class) names
+     */
+    private function gidToNames($gids)
+    {
+        $result = [];
+        $cnf = Config::getInstance()->object();
+        $mapping = [];
+        if (isset($cnf->system->group)) {
+            foreach ($cnf->system->group as $group) {
+                $mapping[(string)$group->gid] = (string)$group->name;
+            }
+        }
+        foreach (explode(',', $gids) as $gid) {
+            if (!empty($mapping[$gid])) {
+                $result[] = $mapping[$gid];
+            }
+        }
+        return implode(',', $result);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -175,6 +197,8 @@ class Swanctl extends BaseModel
                             $pool_names[$node_uuid] = (string)$attr;
                         }
                         continue;
+                    } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\AuthGroupField')) {
+                        $thisnode[$attr_name] = $this->gidToNames((string)$attr);
                     } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\BooleanField')) {
                         $thisnode[$attr_name] = (string)$attr == '1' ? 'yes' : 'no';
                     } elseif (is_a($attr, 'OPNsense\Base\FieldTypes\CertificateField')) {
@@ -300,5 +324,26 @@ class Swanctl extends BaseModel
             }
         }
         return $certrefs;
+    }
+
+    /**
+     * @return bool is there at least one connection using radius groups?
+     */
+    public function radiusUsesGroups()
+    {
+        foreach ($this->remotes->iterateRecursiveItems() as $node) {
+            if ($node->getInternalXMLTagName() == 'auth' && (string)$node == 'eap-radius') {
+                $auth = $node->getParentNode();
+                $connid = (string)$auth->connection;
+                if (
+                    !empty((string)$auth->groups) &&
+                    isset($this->Connections->Connection->$connid) &&
+                    !empty((string)$this->Connections->Connection->$connid->enabled)
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
