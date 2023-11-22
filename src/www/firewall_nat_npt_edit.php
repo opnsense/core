@@ -177,8 +177,7 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                     <td>
-                      <div class="input-group">
-                        <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
+                        <select name="interface" class="selectpicker" data-width="348px" data-live-search="true">
   <?php
                           foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                           <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
@@ -186,7 +185,6 @@ $( document ).ready(function() {
                           </option>
                           <?php endforeach; ?>
                         </select>
-                      </div>
                       <div class="hidden" data-for="help_for_interface">
                         <?=gettext("Choose which interface this rule applies to"); ?>.<br />
                         <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
@@ -196,13 +194,13 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Internal IPv6 Prefix"); ?></td>
                     <td>
-                      <table style="border:0;">
+                      <table style="max-width:348px;">
                         <tr>
-                          <td style="width:348px">
+                          <td style="width:285px">
                             <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Internal IPv6 Prefix");?>"/>
                           </td>
                           <td>
-                            <select name="srcmask" class="selectpicker" data-size="5"  data-width="auto">
+                            <select name="srcmask" class="selectpicker" data-size="5"  data-width="70px">
                               <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                               <?php endfor; ?>

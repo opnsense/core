@@ -559,8 +559,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
+                      <select name="interface[]" class="selectpicker" data-width="348px" data-live-search="true" multiple="multiple">
 <?php
                         foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
@@ -568,7 +567,6 @@ $( document ).ready(function() {
                         </option>
                         <?php endforeach; ?>
                       </select>
-                    </div>
                     <div class="hidden" data-for="help_for_interface">
                       <?=gettext("Choose which interface this rule applies to."); ?><br />
                       <?=gettext("Hint: in most cases, you'll want to use WAN here."); ?>
@@ -578,7 +576,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
                   <td>
-                    <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
+                    <select name="ipprotocol" class="selectpicker" data-width="348px" data-live-search="true" data-size="5" >
 <?php
                     foreach (array('inet' => 'IPv4','inet6' => 'IPv6', 'inet46' => 'IPv4+IPv6') as $proto => $name): ?>
                     <option value="<?=$proto;?>" <?= $proto == $pconfig['ipprotocol'] ? "selected=\"selected\"" : "";?>>
@@ -595,15 +593,13 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
 <?php foreach (get_protocols() as $proto): ?>
                         <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
                           <?= $proto ?>
                         </option>
 <?php endforeach ?>
               </select>
-                    </div>
                     <div class="hidden" data-for="help_for_proto">
                       <?=gettext("Choose which IP protocol " ."this rule should match."); ?><br/>
                       <?=gettext("Hint: in most cases, you should specify"); ?> <em><?=gettext("TCP"); ?></em> &nbsp;<?=gettext("here."); ?>
@@ -631,10 +627,10 @@ $( document ).ready(function() {
                 <tr class="advanced_opt_src hidden">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) && !is_alias($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -651,17 +647,19 @@ $( document ).ready(function() {
                           </select>
                         </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <div class="input-group">
+                      </table>
+                      <table style="max-width: 348px">
+                        <tr>
+                          <td style="width:285px">
                           <!-- updates to "other" option in  src -->
                           <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="src" >
+                        </td>
+                        <td>
+                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="70px" for="src" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -745,10 +743,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
                   <td>
-                    <table class="table table-condensed">
+                    <table style="max-width: 348px">
                       <tr>
                         <td>
-                          <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                          <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                             <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) && !is_alias($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -795,17 +793,19 @@ $( document ).ready(function() {
                           </select>
                         </td>
                       </tr>
+                    </table>
+                    <!-- updates to "other" option in dst -->
+                    <table style="max-width: 348px">
                       <tr>
-                        <td>
-                          <div class="input-group">
-                          <!-- updates to "other" option in dst -->
+                        <td style="width: 285px">
                           <input type="text" id="dst_address" for="dst" value="<?= !is_specialnet($pconfig['dst']) ? $pconfig['dst'] : "";?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="dstmask"  data-width="auto" for="dst" >
+                        </td>
+                        <td>
+                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask" data-width="70px" for="dst">
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -876,10 +876,10 @@ $( document ).ready(function() {
                 <tr class="act_no_rdr">
                   <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
                   <td>
-                    <table class="table table-condensed">
+                    <table style="max-width: 348px">
                       <tr>
                         <td>
-                          <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                          <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                             <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php
@@ -893,10 +893,8 @@ $( document ).ready(function() {
                       </tr>
                       <tr>
                         <td>
-                          <div class="input-group">
                           <!-- updates to "other" option in target -->
                           <input type="text" id="target_address" for="target" value="<?=$pconfig['target'];?>" aria-label="<?=gettext("Redirect target IP");?>"/>
-                        </div>
                         </td>
                       </tr>
                     </table>
