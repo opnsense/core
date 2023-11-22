@@ -52,7 +52,7 @@ class Swanctl extends BaseModel
                 $mapping[(string)$group->gid] = (string)$group->name;
             }
         }
-        foreach (explode(',',  $gids) as $gid) {
+        foreach (explode(',', $gids) as $gid) {
             if (!empty($mapping[$gid])) {
                 $result[] = $mapping[$gid];
             }
