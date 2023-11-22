@@ -180,11 +180,16 @@ class HandlerClient(threading.Thread):
                     self.action_handler.show_action(data_parts, self.message_uuid)
                     result = 'OK'
                 else:
-                    result = self.action_handler.execute(data_parts, self.message_uuid)
+                    result = self.action_handler.execute(data_parts, self.message_uuid, self.connection)
 
                 if not exec_in_background:
-                    # send response back to client( including trailing enter )
-                    self.connection.sendall(('%s\n' % result).encode())
+                    # send response back to client (including trailing enters)
+                    # ignore when result is None, in which case the content was streamed via the pipe
+                    if type(result) is bytes:
+                        self.connection.sendall(result)
+                        self.connection.sendall(b'\n\n')
+                    elif result is not None:
+                        self.connection.sendall(('%s\n\n' % result).encode())
                 else:
                     # log response
                     syslog_info("message %s [%s] returned %s " % (
@@ -316,7 +321,7 @@ class ActionHandler(object):
 
         return None, []
 
-    def execute(self, action, message_uuid):
+    def execute(self, action, message_uuid, connection=None):
         """ execute configuration defined action
         :param action: list of commands and parameters
         :param message_uuid: message unique id
@@ -325,7 +330,7 @@ class ActionHandler(object):
         action_obj, action_params = self.find_action(action)
 
         if action_obj is not None:
-            return '%s\n' % action_obj.execute(action_params, message_uuid)
+            return action_obj.execute(action_params, message_uuid, connection)
 
         return 'Action not found\n'
 

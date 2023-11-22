@@ -23,37 +23,56 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
-import tempfile
+
 import traceback
+import selectors
 import subprocess
 from .. import syslog_error
 from .base import BaseAction
 
 
 class Action(BaseAction):
-    def execute(self, parameters, message_uuid, *args, **kwargs):
-        super().execute(parameters, message_uuid, *args, **kwargs)
+    def execute(self, parameters, message_uuid, connection, *args, **kwargs):
+        super().execute(parameters, message_uuid, connection, *args, **kwargs)
         try:
             script_command = self._cmd_builder(parameters)
         except TypeError as e:
             return str(e)
 
+        self.stdout_read = 0
+        def stdout_reader(stream, mask):
+            data = stream.read(1024)
+            self.stdout_read += len(data)
+            connection.send(data)
+
+        process = subprocess.Popen(
+            script_command,
+            env=self.config_environment,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        selector = selectors.DefaultSelector()
+        selector.register(process.stdout, selectors.EVENT_READ, stdout_reader)
+
         try:
-            with tempfile.NamedTemporaryFile() as error_stream:
-                with tempfile.NamedTemporaryFile() as output_stream:
-                    subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                          stdout=output_stream, stderr=error_stream)
-                    output_stream.seek(0)
-                    error_stream.seek(0)
-                    script_output = output_stream.read()
-                    script_error_output = error_stream.read()
-                    if len(script_error_output) > 0:
-                        syslog_error('[%s] Script action stderr returned "%s"' % (
-                            message_uuid, script_error_output.strip()[:255]
-                        ))
-                    return script_output
+            while process.poll() is None:
+                for key, mask in selector.select():
+                    callback = key.data
+                    callback(key.fileobj, mask)
+
+            return_code = process.wait()
+            script_error_output = process.stderr.read().decode()
+            if len(script_error_output) > 0:
+                syslog_error('[%s] Script action stderr returned "%s" (%d)' % (
+                    message_uuid, script_error_output.strip()[:255], return_code
+                ))
+            selector.close()
         except Exception as script_exception:
-            syslog_error('[%s] Script action failed with %s at %s' % (
-                message_uuid, script_exception, traceback.format_exc()
+            syslog_error('[%s] Script action failed with %s at %s (bytes processed %d)' % (
+                message_uuid, script_exception, traceback.format_exc(), self.stdout_read
             ))
             return 'Execute error'
+
+        return None

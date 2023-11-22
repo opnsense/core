@@ -27,6 +27,6 @@ from .base import BaseAction
 
 
 class Action(BaseAction):
-    def execute(self, parameters, message_uuid):
-        super().execute(parameters, message_uuid)
+    def execute(self, parameters, message_uuid, *args, **kwargs):
+        super().execute(parameters, message_uuid, *args, **kwargs)
         return 'Unknown action type'

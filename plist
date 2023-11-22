@@ -1132,6 +1132,7 @@
 /usr/local/opnsense/service/modules/actions/none.py
 /usr/local/opnsense/service/modules/actions/script.py
 /usr/local/opnsense/service/modules/actions/script_output.py
+/usr/local/opnsense/service/modules/actions/stream_output.py
 /usr/local/opnsense/service/modules/addons/__init__.py
 /usr/local/opnsense/service/modules/addons/template_helpers.py
 /usr/local/opnsense/service/modules/config.py

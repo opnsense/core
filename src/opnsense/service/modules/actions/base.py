@@ -72,10 +72,11 @@ class BaseAction:
 
         return script_command
 
-    def execute(self, parameters, message_uuid):
+    def execute(self, parameters, message_uuid, connection):
         """ execute an action
         :param parameters: list of parameters
         :param message_uuid: unique message id
+        :param connection: response socket
         :return:
         """
         # send-out syslog message
