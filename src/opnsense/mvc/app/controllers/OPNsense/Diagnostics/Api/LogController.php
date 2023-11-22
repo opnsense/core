@@ -52,8 +52,8 @@ class LogController extends ApiControllerBase
         ]);
 
         $backend = new Backend();
+        $this->sessionClose();
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
-            $this->sessionClose();
             if ($action == "clear") {
                 $backend->configdpRun("system clear log", array($module, $scope));
                 return ["status" => "ok"];
@@ -98,17 +98,20 @@ class LogController extends ApiControllerBase
                     $severities = is_array($severities) ? implode(",", $severities) : $severities;
                     $severities = $filter->sanitize($severities, "query");
                 }
-                $response = $backend->configdpRun("system diag log", [
+                $response = $backend->configdpStream("system diag log_stream", [
                     0, 0, $searchPhrase, $module, $scope, $severities
                 ]);
-                $this->response->setRawHeader("Content-Type: text/csv");
-                $this->response->setRawHeader("Content-Disposition: attachment; filename=" . $scope . ".log");
-                foreach (json_decode($response, true)['rows'] as $row) {
-                    printf("%s\t%s\t%s\t%s\n", $row['timestamp'], $row['severity'], $row['process_name'], $row['line']);
-                }
+                header('Content-Type: text/csv');
+                header("Content-Disposition: attachment; filename=" . $scope . ".log");
+                header("Content-Transfer-Encoding: binary");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+                ob_end_flush();
+                rewind($response);
+                fpassthru($response);
                 return;
             }
         }
-        return array();
+        return [];
     }
 }
