@@ -1140,18 +1140,20 @@ function get_sysctl($names)
 /*
  * get_single_sysctl($name)
  * Wrapper for get_sysctl() to simplify read of a single sysctl value
- * return the value for sysctl $name or empty string if it doesn't exist
+ * return the value for sysctl $name or null if it does not exist
  */
 function get_single_sysctl($name)
 {
-    if (empty($name)) {
-        return '';
+    $ret = null;
+
+    if (!empty($name)) {
+        $value = get_sysctl($name);
+        if (isset($value[$name])) {
+            $ret = $value[$name];
+        }
     }
-    $value = get_sysctl($name);
-    if (!isset($value[$name])) {
-        return '';
-    }
-    return $value[$name];
+
+    return $ret;
 }
 
 /*
