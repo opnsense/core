@@ -332,36 +332,36 @@ class MenuSystem
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
-            $this->appendItem('Services.DHCPv4', $key, array(
+            $this->appendItem('Services.ISC_DHCPv4', $key, array(
                 'url' => '/services_dhcp.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'Edit' . $key, array(
                 'url' => '/services_dhcp.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'AddStatic' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'AddStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'EditStatic' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'EditStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
-            $this->appendItem('Services.DHCPv6', $key, array(
+            $this->appendItem('Services.ISC_DHCPv6', $key, array(
                 'url' => '/services_dhcpv6.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv6.' . $key, 'Add' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Add' . $key, array(
                 'url' => '/services_dhcpv6_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv6.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Edit' . $key, array(
                 'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
