@@ -1020,7 +1020,6 @@
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
 /usr/local/opnsense/scripts/interfaces/dhclient-script
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
-/usr/local/opnsense/scripts/interfaces/ifinfo.php
 /usr/local/opnsense/scripts/interfaces/list_arp.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
@@ -2144,7 +2143,6 @@
 /usr/local/www/vpn_openvpn_client.php
 /usr/local/www/vpn_openvpn_server.php
 /usr/local/www/widgets/api/get.php
-/usr/local/www/widgets/api/plugins/interfaces.inc
 /usr/local/www/widgets/api/plugins/system.inc
 /usr/local/www/widgets/api/plugins/temperature.inc
 /usr/local/www/widgets/include/carp_status.inc

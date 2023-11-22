@@ -30,6 +30,7 @@ namespace OPNsense\Interfaces\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
 
@@ -93,17 +94,47 @@ class OverviewController extends ApiControllerBase
     {
         $backend = new Backend();
         $gateways = new Gateways();
+        $cfg = Config::getInstance()->object();
         $result = [];
 
-        $ifinfo = json_decode($backend->configdpRun('interface list info', [$interface, $detailed]), true);
+        /* quick information */
+        $ifinfo = json_decode($backend->configdpRun('interface list ifconfig', [$interface]), true);
         $routes = json_decode($backend->configdRun('interface routes list -n json'), true);
 
+        /* detailed information */
+        if ($detailed) {
+            $stats = json_decode($backend->configdpRun('interface list stats', [$interface]), true);
+            if (!$interface) {
+                foreach ($ifinfo as $if => $info) {
+                    if (array_key_exists($if, $stats)) {
+                        $ifinfo[$if]['statistics'] = $stats[$if];
+                    }
+                }
+            } else {
+                $ifinfo[$interface]['statistics'] = $stats;
+            }
+        }
+
+        /* map routes to interfaces */
         foreach($routes as $route) {
             if (!empty($route['netif']) && !empty($ifinfo[$route['netif']])) {
                 $ifinfo[$route['netif']]['routes'][] = $route['destination'];
             }
         }
 
+        /* combine interfaces details with config */
+        foreach ($cfg->interfaces->children() as $key => $node) {
+            if (!empty((string)$node->if) && !empty($ifinfo[(string)$node->if])) {
+                $props = [];
+                foreach ($node->children() as $property) {
+                    $props[$property->getName()] = (string)$property;
+                }
+                $ifinfo[(string)$node->if]['config'] = $props;
+                $ifinfo[(string)$node->if]['config']['identifier'] = $key;
+            }
+        }
+
+        /* format information */
         foreach ($ifinfo as $if => $details) {
             $tmp = $details;
 
@@ -112,6 +143,12 @@ class OverviewController extends ApiControllerBase
             }
 
             $tmp['status'] = (!empty($details['flags']) && in_array('up', $details['flags'])) ? 'up' : 'down';
+            if (!empty($details['status'])) {
+                if (!(in_array($details['status'] , ['active', 'running']))) {
+                    /* reflect current ifconfig status, such as 'no carrier' */
+                    $tmp['status'] = $details['status'];
+                }
+            }
 
             if (empty($details['config'])) {
                 $tmp['identifier'] = '';
@@ -171,9 +208,9 @@ class OverviewController extends ApiControllerBase
         return $result;
     }
 
-    public function interfacesInfoAction()
+    public function interfacesInfoAction($details = false)
     {
-        $result = $this->parseIfInfo();
+        $result = $this->parseIfInfo(null, $details);
         return $this->searchRecordsetBase($result);
     }
 

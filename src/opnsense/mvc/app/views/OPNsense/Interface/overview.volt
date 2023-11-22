@@ -179,14 +179,15 @@
                         for (let key in data) {
                             let $row = $('<tr/>');
                             let value = data[key]['value'];
-                            if (['ipaddr', 'ipaddrv6', 'subnet', 'subnetv6', 'linklocal'].includes(key)) {
-                                continue;
-                            }
                             if (key === 'line rate') {
                                 value = format_linerate(value.split(" ")[0]);
                             }
                             if (key === 'ipv4' || key === 'ipv6') {
                                 value = iterate_ips(value);
+                            }
+
+                            if (!'translation' in data[key]) {
+                                continue;
                             }
                             key = data[key]['translation'];
                             if (typeof value === 'string' || Array.isArray(value)) {
