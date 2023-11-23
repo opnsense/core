@@ -1,6 +1,6 @@
 <menu>
     <Services>
-      <WebProxy order="10" VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
+      <SquidWebProxy VisibleName="Squid Web Proxy" cssClass="fa fa-bolt fa-fw">
           <Administration url="/ui/proxy">
             <ACL VisibleName="ACL" url="/ui/proxy#subtab_proxy-forward-acl"/>
             <Authentication VisibleName="Auth" url="/ui/proxy#subtab_proxy-general-authentication"/>
@@ -18,6 +18,6 @@
           <Cache order="20" VisibleName="Cache Log" url="/ui/diagnostics/log/squid/cache"/>
           <Access order="30" VisibleName="Access Log" url="/ui/diagnostics/log/squid/access"/>
           <Store order="40" VisibleName="Store Log" url="/ui/diagnostics/log/squid/store"/>
-      </WebProxy>
+      </SquidiWebProxy>
     </Services>
 </menu>
