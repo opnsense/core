@@ -271,9 +271,8 @@ class OverviewController extends ApiControllerBase
     public function exportAction()
     {
         $this->sessionClose();
-        $result = (new Backend())->configdRun('interface list ifconfig');
         $this->response->setRawHeader('Content-Type: application/json');
         $this->response->setRawHeader('Content-Disposition: attachment; filename=ifconfig.json');
-        echo $result;
+        echo (new Backend())->configdRun('interface list ifconfig');
     }
 }
