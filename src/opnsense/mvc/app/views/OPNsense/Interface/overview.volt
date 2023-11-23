@@ -241,6 +241,12 @@
                 });
             });
         });
+
+        $("#export-wrapper").detach().appendTo('#grid-overview-header > .row > .actionBar > .btn-group');
+
+        $("#export").click(function () {
+            $('<a></a>').attr('href', '/api/interfaces/overview/export').get(0).click();
+        });
     });
 </script>
 
@@ -285,6 +291,11 @@
 </style>
 
 <div class="tab-content content-box">
+    <div id="export-wrapper" class="btn-group">
+        <button id="export" class="btn btn-default" data-toggle="tooltip" title="" type="button" data-original-title="Download raw ifconfig output">
+            <span class="fa fa-cloud-download"></span>
+        </button>
+    </div>
     <table id="grid-overview" class="table table-bordered table-condensed table-hover table-striped">
         <thead>
             <tr>

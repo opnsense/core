@@ -210,12 +210,14 @@ class OverviewController extends ApiControllerBase
 
     public function interfacesInfoAction($details = false)
     {
+        $this->sessionClose();
         $result = $this->parseIfInfo(null, $details);
         return $this->searchRecordsetBase($result);
     }
 
     public function getInterfaceAction($if = null)
     {
+        $this->sessionClose();
         $result = ["message" => "failed"];
         if ($if != null) {
             $ifinfo = $this->parseIfInfo($if, true)[0] ?? [];
@@ -255,6 +257,7 @@ class OverviewController extends ApiControllerBase
 
     public function reloadInterfaceAction($identifier = null)
     {
+        $this->sessionClose();
         $result = ["message" => "failed"];
 
         if ($identifier != null) {
@@ -263,5 +266,14 @@ class OverviewController extends ApiControllerBase
         }
 
         return $result;
+    }
+
+    public function exportAction()
+    {
+        $this->sessionClose();
+        $result = (new Backend())->configdRun('interface list ifconfig');
+        $this->response->setRawHeader('Content-Type: application/json');
+        $this->response->setRawHeader('Content-Disposition: attachment; filename=ifconfig.json');
+        echo $result;
     }
 }
