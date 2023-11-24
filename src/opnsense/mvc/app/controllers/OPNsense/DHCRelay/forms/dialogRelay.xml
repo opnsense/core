@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>relay.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable or disable this relay.</help>
+    </field>
+    <field>
+        <id>relay.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>The interface to relay DHCP requests from.</help>
+    </field>
+    <field>
+        <id>relay.destination</id>
+        <label>Destination</label>
+        <type>dropdown</type>
+        <help>The destination server group to relay DHCP requests to.</help>
+    </field>
+    <field>
+        <id>relay.agent_info</id>
+        <label>Agent Information</label>
+        <type>checkbox</type>
+        <help>Add the relay agent information option.</help>
+    </field>
+</form>

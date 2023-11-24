@@ -52,8 +52,8 @@ class M1_0_0 extends BaseModelMigration
 
         $node = $model->destinations->add();
         $node->setNodes([
+            'name' => 'Migrated server entry',
             'server' => (string)$legacy->server,
-            'description' => 'Migrated server entry',
         ]);
         $dest_uuid = $node->getAttribute('uuid');
 

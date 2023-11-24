@@ -253,6 +253,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/LeasesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/RelayController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/forms/dialogDest.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/forms/dialogRelay.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
@@ -769,6 +773,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv4/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/DHCPv6/leases.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/DHCRelay/relay.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/dns_diagnostics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/fw_log.volt

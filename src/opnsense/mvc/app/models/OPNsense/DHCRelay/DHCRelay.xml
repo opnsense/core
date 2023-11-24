@@ -9,13 +9,19 @@
             </enabled>
             <interface type="InterfaceField">
                 <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A relay for this interface already exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
             </interface>
             <destination type="ModelRelationField">
                 <Model>
                     <template>
                         <source>OPNsense.DHCRelay.DHCRelay</source>
                         <items>destinations</items>
-                        <display>description</display>
+                        <display>name</display>
                     </template>
                 </Model>
                 <Required>Y</Required>
@@ -25,6 +31,15 @@
             </agent_info>
         </relays>
         <destinations type="ArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A destination with this name already exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </name>
             <server type="NetworkField">
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
@@ -32,9 +47,6 @@
                 <AsList>Y</AsList>
                 <FieldSeparator>,</FieldSeparator>
             </server>
-            <description type="TextField">
-                <Required>Y</Required>
-            </description>
         </destinations>
     </items>
 </model>
