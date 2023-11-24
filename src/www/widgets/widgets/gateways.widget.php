@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-$gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
+$gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 ?>
 
 <script>
@@ -89,6 +89,7 @@ $gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatew
                             break;
                           case 'loss':
                           case 'delay':
+                          case 'delay+loss':
                             status_color = 'warning';
                             break;
                           case 'none':

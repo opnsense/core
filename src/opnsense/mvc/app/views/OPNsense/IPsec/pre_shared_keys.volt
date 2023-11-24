@@ -8,6 +8,7 @@
                 del:'/api/ipsec/pre_shared_keys/delItem/'
             }
         );
+        updateServiceControlUI('ipsec');
         $("#reconfigureAct").SimpleActionButton();
     });
 </script>
@@ -16,7 +17,8 @@
       <thead>
           <tr>
               <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="ident" data-type="string">{{ lang._('Identifier') }}</th>
+              <th data-column-id="ident" data-type="string">{{ lang._('Local Identifier') }}</th>
+              <th data-column-id="remote_ident" data-type="string">{{ lang._('Remote Identifier') }}</th>
               <th data-column-id="keyType" data-width="20em" data-type="string">{{ lang._('Key Type') }}</th>
               <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
           </tr>
@@ -39,7 +41,7 @@
       </div>
       <hr/>
       <button class="btn btn-primary" id="reconfigureAct"
-              data-endpoint='/api/ipsec/legacy-subsystem/applyConfig'
+              data-endpoint="/api/ipsec/service/reconfigure"
               data-label="{{ lang._('Apply') }}"
               data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
               type="button"

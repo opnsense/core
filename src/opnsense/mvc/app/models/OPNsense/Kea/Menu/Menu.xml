@@ -1,0 +1,10 @@
+<menu>
+    <Services>
+        <KeaDHCP VisibleName="Kea DHCP [new]" cssClass="fa fa-bullseye fa-fw">
+            <ControlAgent order="5" VisibleName="Control Agent" url="/ui/kea/dhcp/ctrl_agent"/>
+            <Keav4 order="10" VisibleName="Kea DHCPv4" url="/ui/kea/dhcp/v4"/>
+            <Leases4 order="50" VisibleName="Leases DHCPv4" url="/ui/kea/dhcp/leases4"/>
+            <LogFile order="100" VisibleName="Log File" url="/ui/diagnostics/log/core/kea"/>
+        </KeaDHCP>
+    </Services>
+</menu>

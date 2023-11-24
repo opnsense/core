@@ -1,56 +1,80 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.4</version>
+    <version>1.0.8</version>
     <items>
-        <service_enabled type="LegacyLinkField">
-            <Source>unbound.enable</Source>
-        </service_enabled>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <port type="PortField">
+                <Default>53</Default>
+                <Required>Y</Required>
+            </port>
+            <stats type="BooleanField"/>
+            <active_interface type=".\UnboundInterfaceField">
+                <Multiple>Y</Multiple>
+            </active_interface>
+            <dnssec type="BooleanField"/>
+            <dns64 type="BooleanField"/>
+            <dns64prefix type="NetworkField">
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
+            </dns64prefix>
+            <noarecords type="BooleanField"/>
+            <regdhcp type="BooleanField"/>
+            <regdhcpdomain type="TextField">
+                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            </regdhcpdomain>
+            <regdhcpstatic type="BooleanField"/>
+            <noreglladdr6 type="BooleanField"/>
+            <noregrecords type="BooleanField"/>
+            <txtsupport type="BooleanField"/>
+            <cacheflush type="BooleanField"/>
+            <local_zone_type type="OptionField">
+                <Default>transparent</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="transparent">transparent</opt1>
+                    <opt2 value="always_nxdomain">always_nxdomain</opt2>
+                    <opt3 value="always_refuse">always_refuse</opt3>
+                    <opt4 value="always_transparent">always_transparent</opt4>
+                    <opt5 value="deny">deny</opt5>
+                    <opt6 value="inform">inform</opt6>
+                    <opt7 value="inform_deny">inform_deny</opt7>
+                    <opt8 value="nodefault">nodefault</opt8>
+                    <opt9 value="refuse">refuse</opt9>
+                    <opt10 value="static">static</opt10>
+                    <opt11 value="typetransparent">typetransparent</opt11>
+                </OptionValues>
+            </local_zone_type>
+            <outgoing_interface type=".\UnboundInterfaceField">
+                <Multiple>Y</Multiple>
+            </outgoing_interface>
+            <enable_wpad type="BooleanField"/>
+        </general>
         <advanced>
-            <hideidentity type="BooleanField">
-                <default>0</default>
-            </hideidentity>
-            <hideversion type="BooleanField">
-                <default>0</default>
-            </hideversion>
-            <prefetch type="BooleanField">
-                <default>0</default>
-            </prefetch>
-            <prefetchkey type="BooleanField">
-                <default>0</default>
-            </prefetchkey>
-            <dnssecstripped type="BooleanField">
-                <default>0</default>
-            </dnssecstripped>
-            <serveexpired type="BooleanField">
-                <default>0</default>
-            </serveexpired>
-            <serveexpiredreplyttl type="NumericField">
-            </serveexpiredreplyttl>
-            <serveexpiredttl type="NumericField">
-            </serveexpiredttl>
-            <serveexpiredttlreset type="BooleanField">
-                <default>0</default>
-            </serveexpiredttlreset>
-            <serveexpiredclienttimeout type="NumericField">
-            </serveexpiredclienttimeout>
-            <qnameminstrict type="BooleanField">
-                <default>0</default>
-            </qnameminstrict>
-            <extendedstatistics type="BooleanField">
-                <default>0</default>
-            </extendedstatistics>
-            <logqueries type="BooleanField">
-                <default>0</default>
-            </logqueries>
-            <logreplies type="BooleanField">
-                <default>0</default>
-            </logreplies>
-            <logtagqueryreply type="BooleanField">
-                <default>0</default>
-            </logtagqueryreply>
+            <hideidentity type="BooleanField"/>
+            <hideversion type="BooleanField"/>
+            <prefetch type="BooleanField"/>
+            <prefetchkey type="BooleanField"/>
+            <dnssecstripped type="BooleanField"/>
+            <serveexpired type="BooleanField"/>
+            <serveexpiredreplyttl type="NumericField"/>
+            <serveexpiredttl type="NumericField"/>
+            <serveexpiredttlreset type="BooleanField"/>
+            <serveexpiredclienttimeout type="NumericField"/>
+            <qnameminstrict type="BooleanField"/>
+            <extendedstatistics type="BooleanField"/>
+            <logqueries type="BooleanField"/>
+            <logreplies type="BooleanField"/>
+            <logtagqueryreply type="BooleanField"/>
+            <logservfail type="BooleanField"/>
+            <loglocalactions type="BooleanField"/>
             <logverbosity type="OptionField">
-                <default>1</default>
+                <Default>1</Default>
                 <Required>Y</Required>
                 <OptionValues>
                     <opt1 value="0">Level 0</opt1>
@@ -61,19 +85,24 @@
                     <opt6 value="5">Level 5</opt6>
                 </OptionValues>
             </logverbosity>
-            <privatedomain type="CSVListField">
-                <Required>N</Required>
-            </privatedomain>
+            <valloglevel  type="OptionField">
+                <Default>0</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="0">Level 0 (Default)</opt1>
+                    <opt2 value="1">Level 1</opt2>
+                    <opt3 value="2">Level 2</opt3>
+                </OptionValues>
+            </valloglevel>
+            <privatedomain type="CSVListField"/>
             <privateaddress type="NetworkField">
-                <Required>N</Required>
+                <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
                 <WildcardEnabled>N</WildcardEnabled>
-                <default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</default>
+                <Default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</Default>
                 <asList>Y</asList>
             </privateaddress>
-            <insecuredomain type="CSVListField">
-                <Required>N</Required>
-            </insecuredomain>
+            <insecuredomain type="CSVListField"/>
             <msgcachesize type="TextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
@@ -82,37 +111,78 @@
                 <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'</ValidationMessage>
             </rrsetcachesize>
-            <outgoingnumtcp type="NumericField">
-            </outgoingnumtcp>
-            <incomingnumtcp type="NumericField">
-            </incomingnumtcp>
-            <numqueriesperthread type="NumericField">
-            </numqueriesperthread>
-            <outgoingrange type="NumericField">
-            </outgoingrange>
-            <jostletimeout type="NumericField">
-            </jostletimeout>
-            <cachemaxttl type="NumericField">
-            </cachemaxttl>
-            <cacheminttl type="NumericField">
-            </cacheminttl>
-            <infrahostttl type="NumericField">
-            </infrahostttl>
-            <infracachenumhosts type="NumericField">
-            </infracachenumhosts>
-            <unwantedreplythreshold type="NumericField">
-            </unwantedreplythreshold>
+            <outgoingnumtcp type="NumericField"/>
+            <incomingnumtcp type="NumericField"/>
+            <numqueriesperthread type="NumericField"/>
+            <outgoingrange type="NumericField"/>
+            <jostletimeout type="NumericField"/>
+            <cachemaxttl type="NumericField"/>
+            <cachemaxnegativettl type="NumericField"/>
+            <cacheminttl type="NumericField"/>
+            <infrahostttl type="NumericField"/>
+            <infrakeepprobing type="BooleanField"/>
+            <infracachenumhosts type="NumericField"/>
+            <unwantedreplythreshold type="NumericField"/>
         </advanced>
+        <acls>
+            <default_action type="OptionField">
+                <Default>allow</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="allow">Allow</opt1>
+                    <opt2 value="deny">Deny</opt2>
+                    <opt3 value="refuse">Refuse</opt3>
+                </OptionValues>
+            </default_action>
+            <acl type="ArrayField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <ValidationMessage>An Access list name is required</ValidationMessage>
+                </name>
+                <action type="OptionField">
+                    <Default>allow</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <opt1 value="allow">Allow</opt1>
+                        <opt2 value="deny">Deny</opt2>
+                        <opt3 value="refuse">Refuse</opt3>
+                        <opt4 value="allow_snoop">Allow Snoop</opt4>
+                        <opt5 value="deny_non_local">Deny Non-local</opt5>
+                        <opt6 value="refuse_non_local">Refuse Non-local</opt6>
+                    </OptionValues>
+                </action>
+                <networks type="NetworkField">
+                    <Multiple>Y</Multiple>
+                    <Required>Y</Required>
+                    <ValidationMessage>Please specify a one or more valid network segment in CIDR notation (Ipv4/IPv6).</ValidationMessage>
+                    <WildcardEnabled>N</WildcardEnabled>
+                    <FieldSeparator>,</FieldSeparator>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <asList>Y</asList>
+                </networks>
+                <description type="TextField">
+                    <Mask>/^(.){1,255}$/u</Mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </acl>
+        </acls>
         <dnsbl>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
+            <safesearch type="BooleanField"/>
             <type type="OptionField">
-                <Required>N</Required>
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <atf>Abuse.ch - ThreatFox IOC database</atf>
+                    <oisd0>OISD - Domain Blocklist Ads</oisd0>
+                    <oisd1>OISD - Domain Blocklist Big</oisd1>
+                    <oisd2>OISD - Domain Blocklist NSFW</oisd2>
                     <aa>AdAway List</aa>
                     <ag>AdGuard List</ag>
                     <bla0>Blocklist.site Abuse</bla0>
@@ -136,6 +206,7 @@
                     <el>EasyList</el>
                     <ep>EasyPrivacy</ep>
                     <nc>NoCoin List</nc>
+                    <pa>All Porn List</pa>
                     <pt>PornTop1M List</pt>
                     <sa>Simple Ad List</sa>
                     <st>Simple Tracker List</st>
@@ -146,76 +217,65 @@
                     <yy>YoYo List</yy>
                 </OptionValues>
             </type>
-            <lists type="CSVListField">
-                <Required>N</Required>
-            </lists>
-            <whitelists type="CSVListField">
-                <Required>N</Required>
-            </whitelists>
+            <lists type="CSVListField"/>
+            <whitelists type="CSVListField"/>
+            <blocklists type="CSVListField"/>
+            <wildcards type="CSVListField">
+                <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+                <MaskPerItem>Y</MaskPerItem>
+            </wildcards>
             <address type="NetworkField">
-                <Required>N</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
             </address>
-            <nxdomain type="BooleanField">
-                <Required>N</Required>
-                <default>0</default>
-            </nxdomain>
+            <nxdomain type="BooleanField"/>
         </dnsbl>
         <forwarding>
-            <enabled type="BooleanField">
-                <default>0</default>
-                <Required>N</Required>
-            </enabled>
+            <enabled type="BooleanField"/>
         </forwarding>
         <dots>
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </enabled>
                 <type type="OptionField">
                     <Required>Y</Required>
-                    <default>dot</default>
+                    <Default>dot</Default>
                     <OptionValues>
                         <dot>DNS over TLS</dot>
                         <forward>Forward</forward>
                     </OptionValues>
                 </type>
                 <domain type="TextField">
-                    <Required>N</Required>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <server type="NetworkField">
                     <Required>Y</Required>
                 </server>
-                <port type="PortField">
-                    <Required>N</Required>
-                </port>
-                <verify type="HostnameField">
-                    <Required>N</Required>
-                </verify>
+                <port type="PortField"/>
+                <verify type="HostnameField"/>
             </dot>
         </dots>
         <hosts>
             <host type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <hostname type="HostnameField">
-                    <Required>N</Required>
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <rr type="OptionField">
                     <Required>Y</Required>
-                    <default>A</default>
+                    <Default>A</Default>
                     <OptionValues>
                         <A>A (IPv4 address)</A>
                         <AAAA>AAAA (IPv6 address)</AAAA>
@@ -273,8 +333,7 @@
                     </Constraints>
                 </server>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </host>
@@ -282,7 +341,7 @@
         <aliases>
             <alias type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <host type="ModelRelationField">
@@ -316,12 +375,11 @@
                             <check></check>
                         </check001>
                     </Constraints>
-                    <mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</mask>
+                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </alias>
@@ -329,7 +387,7 @@
         <domains>
             <domain type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <domain type=".\UnboundDomainField">
@@ -340,9 +398,12 @@
                     <Required>Y</Required>
                     <ValidationMessage>A valid IP must be specified.</ValidationMessage>
                 </server>
+                <forward_tcp_upstream type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </forward_tcp_upstream>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </domain>

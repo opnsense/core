@@ -1,0 +1,382 @@
+<fields>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>instance.vpnid</id>
+        <label>vpnid</label>
+        <!-- hide id, but push to server-->
+        <style>role</style>
+        <type>text</type>
+    </field>
+    <field>
+        <id>instance.role</id>
+        <label>Role</label>
+        <type>dropdown</type>
+        <help>Define the role of this instance.</help>
+    </field>
+    <field>
+        <id>instance.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <id>instance.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>instance.proto</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+        <help>Use protocol for communicating with remote host.</help>
+    </field>
+    <field>
+        <id>instance.port</id>
+        <label>Port number</label>
+        <type>text</type>
+        <help>Port number to use. Defaults to 1194 when in server role or when client mode specifies a bind address, or nobind when client does not have a specific bind address.</help>
+    </field>
+    <field>
+        <id>instance.local</id>
+        <label>Bind address</label>
+        <type>text</type>
+        <help>
+            Optional IP address for bind. If specified, OpenVPN will bind to this address only.
+            If unspecified, OpenVPN will bind to all interfaces.
+        </help>
+    </field>
+    <field>
+        <id>instance.dev_type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>
+            Choose the type of tunnel, OSI Layer 3 [tun] is the most common option to route IPv4 or IPv6 traffic,
+            [tap] offers Ethernet 802.3 (OSI Layer 2) connectivity between hosts and is usually combined with a bridge.
+        </help>
+    </field>
+    <field>
+        <id>instance.verb</id>
+        <label>Verbosity</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Output verbosity level (0..9)</help>
+    </field>
+    <field>
+        <id>instance.maxclients</id>
+        <label>Concurrent connections</label>
+        <advanced>true</advanced>
+        <style>role role_server</style>
+        <type>text</type>
+        <help>Specify the maximum number of clients allowed to concurrently connect to this server.</help>
+    </field>
+    <field>
+        <id>instance.keepalive_interval</id>
+        <label>Keep alive interval</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Ping interval in seconds. 0 to disable keep alive</help>
+    </field>
+    <field>
+        <id>instance.keepalive_timeout</id>
+        <label>Keep alive timeout</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Causes OpenVPN to restart after n seconds pass without reception of a ping or other packet from remote.</help>
+    </field>
+    <field>
+        <id>instance.server</id>
+        <label>Server (IPv4)</label>
+        <type>text</type>
+        <style>role role_server</style>
+        <help>
+            This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
+            The server itself will take the .1 address of the given network for use as the server-side endpoint of the local TUN/TAP interface
+        </help>
+    </field>
+    <field>
+        <id>instance.server_ipv6</id>
+        <label>Server (IPv6)</label>
+        <type>text</type>
+        <style>role role_server</style>
+        <help>
+            This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
+            The server itself will take the next base address (+1) of the given network for use as the server-side endpoint of the local TUN/TAP interface
+        </help>
+    </field>
+    <field>
+        <id>instance.topology</id>
+        <label>Topology</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>
+            Configure virtual addressing topology when running in --dev tun mode.
+            This directive has no meaning in --dev tap mode, which always uses a subnet topology.
+        </help>
+    </field>
+    <field>
+        <id>instance.remote</id>
+        <label>Remote</label>
+        <type>select_multiple</type>
+        <allownew>true</allownew>
+        <style>tokenize role role_client</style>
+        <help>Remote host name or IP address with optional port, examples: my.remote.local dead:beaf:: my.remote.local:1494 [dead:beaf::]:1494 192.168.1.1:1494</help>
+    </field>
+    <field>
+        <id>instance.carp_depend_on</id>
+        <label>Depend on (CARP)</label>
+        <type>dropdown</type>
+        <style>role role_client selectpicker</style>
+        <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Trust</label>
+    </field>
+    <field>
+        <id>instance.cert</id>
+        <label>Certificate</label>
+        <type>dropdown</type>
+        <help>Select a certificate to use for this service.</help>
+    </field>
+    <field>
+        <id>instance.ca</id>
+        <label>Certificate Authority</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select a certificate authority when it differs from the attached certificate.</help>
+    </field>
+    <field>
+        <id>instance.crl</id>
+        <label>Certificate Revocation List</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>Select a certificate revocation list to use for this service.</help>
+    </field>
+    <field>
+        <id>instance.verify_client_cert</id>
+        <label>Verify Client Certificate</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>Specify if the client is required to offer a certificate.</help>
+    </field>
+    <field>
+        <id>instance.cert_depth</id>
+        <label>Certificate Depth</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>When a certificate-based client logs in, do not accept certificates below this depth. Useful for denying certificates made with intermediate CAs generated from the same CA as the server.</help>
+    </field>
+    <field>
+        <id>instance.tls_key</id>
+        <label>TLS static key</label>
+        <type>dropdown</type>
+        <help>
+            Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack.
+            The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt).
+        </help>
+    </field>
+    <field>
+        <id>instance.auth</id>
+        <label>Auth</label>
+        <advanced>true</advanced>
+        <type>dropdown</type>
+        <help>
+            Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg.
+        </help>
+    </field>
+    <field>
+        <id>instance.data-ciphers</id>
+        <label>Data Ciphers</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <style>selectpicker role role_server</style>
+        <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
+    </field>
+    <field>
+        <id>instance.data-ciphers-fallback</id>
+        <label>Data Ciphers Fallback</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <style>selectpicker role role_server</style>
+        <help>
+            Configure a cipher that is used to fall back to if we could not determine which cipher the peer is willing to use.
+            This option should only be needed to connect to peers that are running OpenVPN 2.3 or older versions,
+            and have been configured with --enable-small (typically used on routers or other embedded devices).
+        </help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Authentication</label>
+    </field>
+    <field>
+        <id>instance.authmode</id>
+        <label>Authentication</label>
+        <type>select_multiple</type>
+        <style>selectpicker role role_server</style>
+        <help>Select authentication methods to use, leave empty if no challenge response authentication is needed.</help>
+    </field>
+    <field>
+        <id>instance.local_group</id>
+        <label>Enforce local group</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option.</help>
+    </field>
+    <field>
+        <id>instance.username_as_common_name</id>
+        <label>Username as CN</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <style>role role_server</style>
+        <help>Use the authenticated username as the common-name, rather than the common-name from the client certificate.</help>
+    </field>
+    <field>
+        <id>instance.strictusercn</id>
+        <label>Strict User/CN Matching</label>
+        <type>checkbox</type>
+        <style>role role_server</style>
+        <help>When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login.</help>
+    </field>
+    <field>
+        <id>instance.username</id>
+        <label>Username</label>
+        <type>text</type>
+        <style>role role_client</style>
+        <help>(optional) Username to send to the server for authentication when required.</help>
+    </field>
+    <field>
+        <id>instance.password</id>
+        <label>Password</label>
+        <type>password</type>
+        <style>role role_client</style>
+        <help>Password belonging to the user specified above</help>
+    </field>
+    <field>
+        <id>instance.reneg-sec</id>
+        <label>Renegotiate time</label>
+        <type>text</type>
+        <help>Renegotiate data channel key after n seconds (default=3600).
+When using a one time password, be advised that your connection will automatically drop because your password is not valid anymore.
+Set to 0 to disable, remember to change your client as well.
+        </help>
+    </field>
+    <field>
+        <id>instance.auth-gen-token</id>
+        <label>Auth Token Lifetime</label>
+        <type>text</type>
+        <style>role role_server</style>
+        <help>After successful user/password authentication,
+        the OpenVPN server will with this option generate a temporary authentication token and push that to the client.
+        On the following renegotiations, the OpenVPN client will pass this token instead of the users password.
+        On the server side the server will do the token authentication internally and it will
+        NOT do any additional authentications against configured external user/password authentication mechanisms.
+        When set to 0, the token will never expire, any other value specifies the lifetime in seconds.
+        </help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Routing</label>
+    </field>
+    <field>
+        <id>instance.push_route</id>
+        <label>Local Network</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>These are the networks accessible on this host, these are pushed via route{-ipv6} clauses in OpenVPN to the client.</help>
+    </field>
+    <field>
+        <id>instance.route</id>
+        <label>Remote Network</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Remote networks for the server, add route to routing table after connection is established</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Miscellaneous</label>
+    </field>
+    <field>
+        <id>instance.various_flags</id>
+        <label>Options</label>
+        <type>select_multiple</type>
+        <help>Various less frequently used yes/no options which can be set for this instance.</help>
+    </field>
+    <field>
+        <id>instance.redirect_gateway</id>
+        <label>Redirect gateway</label>
+        <type>select_multiple</type>
+        <style>selectpicker role role_server</style>
+        <help>Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.</help>
+    </field>
+    <field>
+        <id>instance.register_dns</id>
+        <label>Register DNS</label>
+        <type>checkbox</type>
+        <style>role role_server</style>
+        <help>Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.</help>
+    </field>
+    <field>
+        <id>instance.dns_domain</id>
+        <label>DNS Default Domain</label>
+        <type>text</type>
+        <style>role role_server</style>
+        <help>Set Connection-specific DNS Suffix.</help>
+    </field>
+    <field>
+        <id>instance.dns_domain_search</id>
+        <label>DNS Domain search list</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>
+            Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_servers</id>
+        <label>DNS Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>
+            Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.
+        </help>
+    </field>
+    <field>
+        <id>instance.ntp_servers</id>
+        <label>NTP Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>
+            Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.
+        </help>
+    </field>
+    <field>
+        <id>instance.tun_mtu</id>
+        <label>TUN device MTU</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Take the TUN device MTU to be tun-mtu and derive the link MTU from it.</help>
+    </field>
+    <field>
+        <id>instance.fragment</id>
+        <label>Fragment size</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size.</help>
+    </field>
+    <field>
+        <id>instance.mssfix</id>
+        <label>MSS fix</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size.</help>
+    </field>
+</fields>

@@ -68,6 +68,7 @@ function core_services()
             'stop' => array('/usr/local/etc/rc.d/configd stop'),
         ),
         'name' => 'configd',
+        'locked' => true,
     );
 
     $services[] = array(
@@ -116,16 +117,6 @@ function core_services()
         ),
         'pidfile' => '/var/run/syslog-ng.pid',
         'name' => 'syslog-ng',
-    );
-
-    $services[] = array(
-        'pidfile' => '/var/run/lighty-webConfigurator.pid',
-        'description' => gettext('Web GUI'),
-        'php' => array(
-            'restart' => array('webgui_configure_delayed')
-        ),
-        'locked' => true,
-        'name' => 'webgui',
     );
 
     return $services;
@@ -213,8 +204,8 @@ function core_devices()
 
     foreach (config_read_array('ppps', 'ppp') as $dev) {
         $ppp_names[$dev['if']] = [
-            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'], $dev['username']),
-            'ifdescr' => sprintf('%s', $dev['descr']),
+            'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'] ?? '', $dev['username']),
+            'ifdescr' => sprintf('%s', $dev['descr'] ?? ''),
             'ipaddr' => $dev['type'],
             'name' => $dev['if'],
         ];
@@ -435,7 +426,7 @@ function core_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('Static Routes'),
         'help' => gettext('Synchronize the Static Route configuration and Gateways to the other HA host.'),
-        'section' => 'staticroutes,gateways',
+        'section' => 'staticroutes,gateways,OPNsense.Gateways',
         'id' => 'staticroutes',
         'services' => ["routing", "dpinger"],
     );
@@ -476,7 +467,10 @@ function core_xmlrpc_sync()
 function core_configure()
 {
     return [
-        'dns_reload' => ['system_resolvconf_generate', 'system_hosts_generate'],
+        /* XXX these are all specialized and try to avoid extra script use */
+        'dns_reload' => ['system_resolver_configure'],
+        'firmware_reload' => ['system_firmware_configure'],
+        'route_reload' => ['core_routing_batch:2'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];
 }
@@ -486,6 +480,17 @@ function core_run()
     return [
         'host_routes' => 'system_resolvconf_host_routes',
     ];
+}
+
+function core_routing_batch($verbose, $interfaces = [null])
+{
+    if (!is_array($interfaces)) {
+        $interfaces = [$interfaces];
+    }
+
+    foreach ($interfaces as $interface) {
+        system_routing_configure($verbose, $interface);
+    }
 }
 
 /**

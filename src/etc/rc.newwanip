@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2006 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -38,6 +38,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $argument = isset($argv[1]) ? trim($argv[1]) : '';
+$force = !empty($argv[2]) ? 'yes' : 'no';
 
 exit_on_bootup(function ($argument) {
     log_msg("IP renewal deferred during boot on '{$argument}'");
@@ -57,101 +58,55 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
-$interface_descr = convert_friendly_interface_to_friendly_descr($interface);
-$ip = get_interface_ip($interface);
-
-$cacheip_file = "/tmp/{$device}_oldip";
-
-if (!is_ipaddr($ip)) {
-    /* remove previously cached IP since it is gone */
-    @unlink($cacheip_file);
-
-    /*
-     * Take care of OpenVPN and similar if you generate the event
-     * to reconfigure an interface.  OpenVPN might be in tap(4)
-     * mode and not have an IP address.
-     */
-    if (substr($device, 0, 4) != 'ovpn') {
-        log_msg("Failed to detect IP for {$interface_descr}[{$interface}]", LOG_WARNING);
-        return;
-    }
-}
-
 /* this may be required to cleanse the DNS information no longer available */
-system_resolvconf_generate();
-system_hosts_generate();
+system_resolver_configure();
 
-$cacheip = trim(@file_get_contents($cacheip_file));
-if ($ip == $cacheip) {
-    log_msg("No IP change detected for {$interface_descr}[{$interface}]", LOG_INFO);
+list ($ip) = interfaces_primary_address($interface);
+if (!is_ipaddr($ip)) {
+    log_msg("Failed to detect IP for interface {$interface}", LOG_INFO);
     return;
 }
 
-log_msg("IP renwal starting (new: {$ip}, old: ${cacheip}, interface: {$interface_descr}[{$interface}], device: {$device})");
+$cacheip_file = "/tmp/{$device}_oldip";
+$cacheip = trim(@file_get_contents($cacheip_file));
+
+if ($force == 'no' && $ip == $cacheip) {
+    log_msg("No IP change detected (current: {$ip}, interface: {$interface})", LOG_INFO);
+    return;
+}
+
+log_msg("IP renewal starting (new: {$ip}, old: {$cacheip}, interface: {$interface}, device: {$device}, force: {$force})");
 
 interfaces_vips_configure($interface, 4);
 
-$gres = link_interface_to_gre($interface);
-foreach ($gres as $gre) {
-    _interfaces_gre_configure($gre);
-}
+$greifs = link_interface_to_gre($interface, true, 4);
+$gififs = link_interface_to_gif($interface, true, 4);
 
-$gifs = link_interface_to_gif($interface);
-foreach ($gifs as $gif) {
-    _interfaces_gif_configure($gif);
-}
-
-$bridge = link_interface_to_bridge($interface);
-if (!empty($bridge)) {
-    /* XXX _interfaces_bridge_configure() is probably cleaner */
-    interface_bridge_add_member($bridge, $device);
-}
-
-if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
-    switch ($config['interfaces'][$interface]['ipaddrv6']) {
-        case '6to4':
-            interface_6to4_configure($interface, $config['interfaces'][$interface], true);
-            system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
-            break;
-        case '6rd':
-            interface_6rd_configure($interface, $config['interfaces'][$interface], true);
-            system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
-            break;
-        case 'dhcp6':
-        case 'slaac':
-            if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-                interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
-                interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
-            }
-            break;
-       default:
-            if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
-                interface_static6_configure($interface, $config['interfaces'][$interface]);
-            }
-            break;
-    }
-}
-
-$restartifs = [];
-
-foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifname => $ifparent) {
-    foreach ($gifs as $gif) {
-        if ($ifparent['if'] == $gif['gifif']) {
-            $restartifs[$ifname] = 1;
+switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+    case '6to4':
+        interface_6to4_configure($interface, $config['interfaces'][$interface], true);
+        system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
+        break;
+    case '6rd':
+        interface_6rd_configure($interface, $config['interfaces'][$interface], true);
+        system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
+        break;
+    case 'dhcp6':
+    case 'slaac':
+        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+            interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
+            interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
         }
-    }
-
-    foreach ($gres as $gre) {
-        if ($ifparent['if'] == $gre['greif']) {
-            $restartifs[$ifname] = 1;
+        break;
+   default:
+        if (isset($config['interfaces'][$interface]['dhcp6usev4iface'])) {
+            interface_static6_configure($interface, $config['interfaces'][$interface]);
+            system_routing_configure(false, $interface, true, 'inet6');
         }
-    }
+        break;
 }
 
-foreach (array_keys($restartifs) as $ifname) {
-    interface_configure(false, $ifname);
-    system_routing_configure(false, $ifname);
-}
+interfaces_restart_by_device(false, array_merge($greifs, $gififs));
 
 /*
  * Interface reconfigure finished here so sync
@@ -159,23 +114,18 @@ foreach (array_keys($restartifs) as $ifname) {
  */
 ifgroup_setup();
 
-$cacheip_file = "/tmp/{$device}_oldip";
-$cacheip = trim(@file_get_contents($cacheip_file));
-$intf_ipaddr = $config['interfaces'][$interface]['ipaddr'];
+system_routing_configure(false, $interface, true, 'inet');
+filter_configure_sync();
 
-if ($ip != $cacheip || (!is_ipaddr($intf_ipaddr) && $intf_ipaddr != 'dhcp')) {
-    system_routing_configure(false, $interface);
-    filter_configure_sync();
-
-    if (is_ipaddr($cacheip) && $ip != $cacheip) {
-        log_msg("IP address change detected, killing states of old ip $cacheip");
-        mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
-        mwexecf('/sbin/pfctl -k %s', $cacheip);
-    }
-
-    @file_put_contents($cacheip_file, $ip . PHP_EOL);
-
-    plugins_configure('vpn', false, array($interface));
-    plugins_configure('newwanip', false, array($interface));
-    rrd_configure();
+if (is_ipaddr($cacheip) && $ip != $cacheip) {
+    log_msg("IP address change detected, killing states of old ip $cacheip");
+    mwexecf('/sbin/pfctl -k 0.0.0.0/0 -k %s', $cacheip);
+    mwexecf('/sbin/pfctl -k %s', $cacheip);
 }
+
+/* register IP change not before this point as basic connectivity is needed */
+@file_put_contents($cacheip_file, $ip . PHP_EOL);
+
+plugins_configure('vpn', false, [$interface]);
+plugins_configure('newwanip', false, [$interface]);
+rrd_configure();

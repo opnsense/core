@@ -32,6 +32,8 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\Trust\Store;
+use OPNsense\OpenVPN\OpenVPN;
 use OPNsense\OpenVPN\Export;
 use OPNsense\OpenVPN\ExportFactory;
 
@@ -93,13 +95,31 @@ class ExportController extends ApiControllerBase
      */
     private function openvpnServers($active = true)
     {
-        if (isset(Config::getInstance()->object()->openvpn)) {
-            foreach (Config::getInstance()->object()->openvpn->children() as $key => $value) {
-                if ($key == 'openvpn-server') {
-                    if (empty($value->disable) || !$active) {
-                        yield $value;
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->openvpn)) {
+            foreach ($cfg->openvpn->children() as $key => $server) {
+                if ($key == 'openvpn-server' && !empty($server)) {
+                    if (empty($server->disable) || !$active) {
+                        $name = empty($server->description) ? "server" : (string)$server->description;
+                        $name .= " " . $server->protocol . ":" . $server->local_port;
+                        yield [
+                            'name' => $name,
+                            'mode' => (string)$server->mode,
+                            'vpnid' => (string)$server->vpnid
+                        ];
                     }
                 }
+            }
+        }
+        foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
+            if (!empty((string)$node->enabled) && $node->role == 'server') {
+                $name = empty($node->description) ? "server" : (string)$node->description;
+                $name .= " " . $node->proto . ":" . $node->port;
+                yield [
+                    'name' => $name,
+                    'mode' => !empty((string)$node->authmode) ? 'server_tls_user' : '',
+                    'vpnid' => $node_uuid
+                ];
             }
         }
     }
@@ -131,19 +151,19 @@ class ExportController extends ApiControllerBase
     {
         $result = array();
         $serverModel = $this->getModel()->getServer($vpnid);
-        $server = $this->findServer($vpnid);
+        $server = (new OpenVPN())->getInstanceById($vpnid);
         // hostname
         if (!empty((string)$serverModel->hostname)) {
             $result["hostname"] = (string)$serverModel->hostname;
-        } else {
+        } elseif (!empty($server['interface'])) {
             $allInterfaces = $this->getInterfaces();
-            if (!empty($allInterfaces[(string)$server->interface])) {
-                if (strstr((string)$server->protocol, "6") !== false) {
-                    if (!empty($allInterfaces[(string)$server->interface]['ipv6'])) {
-                        $result["hostname"] = $allInterfaces[(string)$server->interface]['ipv6'][0]['ipaddr'];
+            if (!empty($allInterfaces[$server['interface']])) {
+                if (strstr($server['protocol'], "6") !== false) {
+                    if (!empty($allInterfaces[$server['interface']]['ipv6'])) {
+                        $result["hostname"] = $allInterfaces[$server['interface']]['ipv6'][0]['ipaddr'];
                     }
-                } elseif (!empty($allInterfaces[(string)$server->interface]['ipv4'])) {
-                    $result["hostname"] = $allInterfaces[(string)$server->interface]['ipv4'][0]['ipaddr'];
+                } elseif (!empty($allInterfaces[$server['interface']]['ipv4'])) {
+                    $result["hostname"] = $allInterfaces[$server['interface']]['ipv4'][0]['ipaddr'];
                 }
             }
         }
@@ -151,28 +171,12 @@ class ExportController extends ApiControllerBase
         foreach ($serverModel->iterateItems() as $field => $value) {
             if (!empty((string)$value)) {
                 $result[$field] = (string)$value;
-            } elseif (!empty((string)$server->$field) || !isset($result[$field])) {
-                $result[$field] = (string)$server->$field;
+            } elseif (!empty($server[$field]) || !isset($result[$field])) {
+                $result[$field] = $server[$field] ?? null;
             }
         }
         return $result;
     }
-
-    /**
-     * find server by vpnid
-     * @param string $vpnid reference
-     * @return mixed|null
-     */
-    private function findServer($vpnid)
-    {
-        foreach ($this->openvpnServers() as $server) {
-            if ((string)$server->vpnid == $vpnid) {
-                return $server;
-            }
-        }
-        return null;
-    }
-
 
     /**
      * list providers
@@ -183,15 +187,8 @@ class ExportController extends ApiControllerBase
     {
         $result = array();
         foreach ($this->openvpnServers() as $server) {
-            $vpnid = (string)$server->vpnid;
-            $result[$vpnid] = array();
-            // visible name
-            $result[$vpnid]["name"] = empty($server->description) ? "server" : (string)$server->description;
-            $result[$vpnid]["name"] .= " " . $server->protocol . ":" . $server->local_port;
-            // relevant properties
-            $result[$vpnid]["mode"] = (string)$server->mode;
-            $result[$vpnid]["vpnid"] = $vpnid;
-            $result[$vpnid] = array_merge($result[$vpnid], $this->configuredSettings($vpnid));
+            $vpnid = $server['vpnid'];
+            $result[$vpnid] = array_merge($server, $this->configuredSettings($vpnid));
         }
         return $result;
     }
@@ -209,12 +206,12 @@ class ExportController extends ApiControllerBase
                 "users" => []
             ]
         ];
-        $server = $this->findServer($vpnid);
+        $server = (new OpenVPN())->getInstanceById($vpnid);
         if ($server !== null) {
             // collect certificates for this server's ca
             if (isset(Config::getInstance()->object()->cert)) {
                 foreach (Config::getInstance()->object()->cert as $cert) {
-                    if (isset($cert->refid) && isset($cert->caref) && (string)$server->caref == $cert->caref) {
+                    if (isset($cert->refid) && isset($cert->caref) && $server['caref'] == $cert->caref) {
                         $result[(string)$cert->refid] = array(
                             "description" => (string)$cert->descr,
                             "users" => array()
@@ -309,7 +306,6 @@ class ExportController extends ApiControllerBase
      * download configuration
      * @param string $vpnid server handle
      * @param string $certref certificate to export if applicable
-     * @param null $config
      * @return array
      * @throws \OPNsense\Base\ModelException
      * @throws UserException when invalid user input
@@ -318,66 +314,32 @@ class ExportController extends ApiControllerBase
     {
         $response = array("result" => "failed");
         if ($this->request->isPost()) {
-            $server = $this->findServer($vpnid);
+            $server = (new OpenVPN())->getInstanceById($vpnid);
             if ($server !== null) {
                 // fetch server config data
-                $config = array();
-                foreach (
-                    array('disable', 'description', 'local_port', 'protocol', 'crypto', 'digest',
-                             'tunnel_networkv6', 'reneg-sec', 'local_network', 'local_networkv6',
-                             'tunnel_network', 'compression', 'passtos', 'shared_key', 'mode',
-                             'dev_mode', 'tls', 'tlsmode', 'client_mgmt_port') as $field
-                ) {
-                    if (isset($server->$field) && $server->$field !== "") {
-                        $config[$field] = (string)$server->$field;
-                    } else {
-                        $config[$field] = null;
-                    }
-                }
+                $config = $server;
                 // fetch associated certificate data, add to config
-                $config['server_ca_chain'] = array();
+                $config['server_ca_chain'] = '';
                 $config['server_subject_name'] = null;
                 $config['server_cert_is_srv'] = null;
-                if (!empty($server->certref)) {
-                    if (isset(Config::getInstance()->object()->cert)) {
-                        foreach (Config::getInstance()->object()->cert as $cert) {
-                            if (isset($cert->refid) && (string)$server->certref == $cert->refid) {
-                                // extract ca_chain
-                                $item = $cert;
-                                while (($item = $this->getCA($item->caref)) != null) {
-                                    $config['server_ca_chain'][] = base64_decode((string)$item->crt);
-                                }
-                                // certificate CN
-                                $str_crt = base64_decode((string)$cert->crt);
-                                $inf_crt = openssl_x509_parse($str_crt);
-
-                                $config['server_subject_name'] = !empty($inf_crt['name']) ? $inf_crt['name'] : null;
-                                $config['server_subject'] = !empty($inf_crt['subject']) ? $inf_crt['subject'] : null;
-                                // Is server type cert
-                                $config['server_cert_is_srv'] = (
-                                    isset($inf_crt['extensions']['extendedKeyUsage']) &&
-                                    strstr($inf_crt['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
-                                    isset($inf_crt['extensions']['keyUsage']) &&
-                                    strpos($inf_crt['extensions']['keyUsage'], 'Digital Signature') !== false &&
-                                    (strpos($inf_crt['extensions']['keyUsage'], 'Key Encipherment') !== false ||
-                                        strpos($inf_crt['extensions']['keyUsage'], 'Key Agreement') !== false)
-                                );
-                            }
+                if (!empty($server['certref'])) {
+                    $cert = (new Store())->getCertificate($server['certref']);
+                    if ($cert) {
+                        $config['server_cert_is_srv'] = $cert['is_server'];
+                        $config['server_subject_name'] = $cert['name'] ?? '';
+                        $config['server_subject'] = $cert['subject'] ?? '';
+                        if (!empty($cert['ca'])) {
+                            $config['server_ca_chain'] = $cert['ca']['crt'];
                         }
                     }
                 }
                 if ($certref !== null) {
-                    if (isset(Config::getInstance()->object()->cert)) {
-                        foreach (Config::getInstance()->object()->cert as $cert) {
-                            if (isset($cert->refid) && (string)$certref == $cert->refid) {
-                                // certificate CN
-                                $str_crt = base64_decode((string)$cert->crt);
-                                $inf_crt = openssl_x509_parse($str_crt);
-                                $config['client_cn'] = $inf_crt['subject']['CN'];
-                                $config['client_crt'] = base64_decode((string)$cert->crt);
-                                $config['client_prv'] = base64_decode((string)$cert->prv);
-                                break;
-                            }
+                    $cert = (new Store())->getCertificate($certref);
+                    if ($cert) {
+                        if (!empty($cert['subject']) && !empty($cert['subject']['CN'])) {
+                            $config['client_cn'] = $cert['subject']['CN'];
+                            $config['client_crt'] = $cert['crt'];
+                            $config['client_prv'] = $cert['prv'];
                         }
                     }
                     if (empty($config['client_cn'])) {

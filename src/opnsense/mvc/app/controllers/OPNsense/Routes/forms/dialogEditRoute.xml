@@ -15,7 +15,7 @@
     <id>route.gateway</id>
     <label>Gateway</label>
     <type>dropdown</type>
-    <help><![CDATA[Choose which gateway this route applies to or <a href="/system_gateways_edit.php">add a new one</a>.]]></help>
+    <help>Choose which gateway this route applies to.</help>
   </field>
   <field>
     <id>route.descr</id>

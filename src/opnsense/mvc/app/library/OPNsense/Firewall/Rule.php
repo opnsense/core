@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Deciso B.V.
+ * Copyright (C) 2017-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,9 @@ abstract class Rule
     protected $interfaceMapping = array();
     protected $ruleDebugInfo = array();
 
+    /* ease the reuse of parsing for pf keywords by using class constants */
+    const PARSE_PROTO = 'parseReplaceSimple,tcp/udp:{tcp udp}|a/n:"a/n",proto ';
+
     /**
      * init Rule
      * @param array $interfaceMapping internal interface mapping
@@ -51,7 +54,7 @@ abstract class Rule
 
     /**
      * send text to debug log
-     * @param string debug log info
+     * @param string $line debug log info
      */
     protected function log($line)
     {
@@ -130,7 +133,7 @@ abstract class Rule
      */
     protected function parsePlainCurly($value, $prefix = "", $suffix = "")
     {
-        if (strpos($value, '$') === false) {
+        if ($value !== null && strpos($value, '$') === false) {
             // don't wrap aliases in curly brackets
             $prefix = $prefix . "{";
             $suffix = "}" . $suffix;
@@ -142,6 +145,8 @@ abstract class Rule
      * parse data, use replace map
      * @param string $value field value
      * @param string $map
+     * @param string $prefix
+     * @param string $suffix
      * @return string
      */
     protected function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
@@ -163,8 +168,8 @@ abstract class Rule
 
     /**
      * rule reader, applies standard rule patterns
-     * @param string type of rule to be read
-     * @return iterator rules to generate
+     * @param string $type type of rule to be read
+     * @return \Iterator rules to generate
      */
     protected function reader($type = null)
     {
@@ -201,8 +206,8 @@ abstract class Rule
 
     /**
      * parse rule to text using processing parameters in $procorder
-     * @param array conversion properties (rule keys and methods to execute)
-     * @param array rule to parse
+     * @param array $procorder conversion properties (rule keys and methods to execute)
+     * @param array $rule rule to parse
      * @return string
      */
     protected function ruleToText(&$procorder, &$rule)
@@ -281,11 +286,11 @@ abstract class Rule
                 }
                 if (isset($rule['protocol']) && in_array(strtolower($rule['protocol']), array("tcp","udp","tcp/udp"))) {
                     $port = !empty($rule[$tag]['port']) ? str_replace('-', ':', $rule[$tag]['port']) : null;
-                    if (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
+                    if ($port == null || $port == 'any') {
+                        $port = null;
+                    } elseif (strpos($port, ':any') !== false xor strpos($port, 'any:') !== false) {
                         // convert 'any' to upper or lower bound when provided in range. e.g. 80:any --> 80:65535
                         $port = str_replace('any', strpos($port, ':any') !== false ? '65535' : '1', $port);
-                    } elseif ($port == 'any') {
-                        $port = null;
                     }
                     if (Util::isPort($port)) {
                         $rule[$target . "_port"] = $port;
@@ -316,10 +321,14 @@ abstract class Rule
      * parse interface (name to interface)
      * @param string|array $value field value
      * @param string $prefix prefix interface tag
+     * @param string $suffix suffix interface tag
      * @return string
      */
     protected function parseInterface($value, $prefix = "on ", $suffix = "")
     {
+        if (!empty($this->rule['interfacenot'])) {
+            $prefix = "{$prefix} ! ";
+        }
         if (empty($value)) {
             return "";
         } elseif (empty($this->interfaceMapping[$value]['if'])) {
@@ -395,6 +404,20 @@ abstract class Rule
     public function isEnabled()
     {
         return empty($this->rule['disabled']);
+    }
+
+    public function ruleOrigin()
+    {
+        if ($this->rule['#priority'] < 200000) {
+            return 'internal';  // early
+        } elseif ($this->rule['#priority'] >= 200000 && $this->rule['#priority'] < 300000) {
+            return 'floating';
+        } elseif ($this->rule['#priority'] >= 300000 && $this->rule['#priority'] < 400000) {
+            return 'group';
+        } elseif ($this->rule['#priority'] >= 400000 && $this->rule['#priority'] < 500000) {
+            return 'interface';
+        }
+        return 'internal2'; // late
     }
 
     /**

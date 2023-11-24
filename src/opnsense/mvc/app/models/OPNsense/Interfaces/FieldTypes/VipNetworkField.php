@@ -45,15 +45,12 @@ class VipNetworkField extends TextField
         }
         $validators[] = new CallbackValidator(["callback" => function ($data) {
             $parent = $this->getParentNode();
-            $subnet_bits = (string)$parent->subnet_bits;
-            $subnet = (string)$parent->subnet;
             $messages = [];
-            if (!Util::isSubnet($subnet . "/" . $subnet_bits)) {
-                $messages[] = sprintf(
-                    gettext('Entry "%s/%s" is not a valid network address.'),
-                    $subnet,
-                    $subnet_bits
-                );
+            $network = implode('/', [(string)$parent->subnet, (string)$parent->subnet_bits]);
+            if (!strlen((string)$parent->subnet) || !Util::isIpAddress((string)$parent->subnet)) {
+                $messages[] = gettext('A valid network address is required.');
+            } elseif (!strlen((string)$parent->subnet_bits) || !Util::isSubnet($network)) {
+                $messages[] = gettext('A valid network subnet is required.');
             }
             return $messages;
         }

@@ -1,0 +1,87 @@
+<form>
+    <field>
+        <id>server.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>This will enable or disable the instance.</help>
+    </field>
+    <field>
+        <id>server.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Set the name for this instance.</help>
+    </field>
+    <field>
+        <id>server.instance</id>
+        <label>Instance</label>
+        <type>info</type>
+        <help>This is the instance number to give the WireGuard device a unique name (wgX).</help>
+    </field>
+    <field>
+        <id>server.pubkey</id>
+        <label>Public key</label>
+        <type>text</type>
+        <help>Public key of this instance. You can specify your own one, or a key will be generated after saving.</help>
+    </field>
+    <field>
+        <id>server.privkey</id>
+        <label>Private key</label>
+        <type>text</type>
+        <help>Private key of this instance. You can specify your own one, or a key will be generated after saving. Please keep this key safe.</help>
+    </field>
+    <field>
+        <id>server.port</id>
+        <label>Listen port</label>
+        <type>text</type>
+        <help>Optionally set a fixed port for this instance to listen on. The standard port range starts at 51820.</help>
+    </field>
+    <field>
+        <id>server.mtu</id>
+        <label>MTU</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Set a specific device MTU for this instance.</help>
+    </field>
+    <field>
+        <id>server.dns</id>
+        <label>DNS servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <advanced>true</advanced>
+        <help>Set specific DNS servers for this instance. Use with care.</help>
+    </field>
+    <field>
+        <id>server.tunneladdress</id>
+        <label>Tunnel address</label>
+        <style>tokenize</style>
+        <type>select_multiple</type>
+        <allownew>true</allownew>
+        <help>List of addresses to configure on the device. Please use CIDR notation like 10.0.0.1/24.</help>
+    </field>
+    <field>
+        <id>server.carp_depend_on</id>
+        <label>Depend on (CARP)</label>
+        <type>dropdown</type>
+        <help>The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown.</help>
+    </field>
+    <field>
+        <id>server.peers</id>
+        <label>Peers</label>
+        <type>select_multiple</type>
+        <help>List of peers for this instance.</help>
+    </field>
+    <field>
+        <id>server.disableroutes</id>
+        <label>Disable routes</label>
+        <type>checkbox</type>
+        <help>This will prevent installing routes. Usually you only enable this to do own routing decisions via a local gateway and gateway rules.</help>
+    </field>
+    <field>
+        <id>server.gateway</id>
+        <label>Gateway</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Set the gateway IP here when using "Disable routes" feature. You also have to add this as a system gateway.</help>
+    </field>
+</form>

@@ -27,6 +27,7 @@
 <script>
 
     $( document ).ready(function() {
+        let this_page = window.location.href.replace(/[/]/g, '').toLowerCase().endsWith('forward') ? 'Forward' : 'Dot';
         $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
         /* Handle retrieval and saving of the single system forwarding checkbox */
         let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
@@ -70,52 +71,17 @@
         }
 
 
-        /**
-         * inline open dialog, go back to previous page on exit
-         */
-        function openDialog(uuid) {
-            var editDlg = "DialogEdit";
-            var setUrl = "/api/unbound/settings/setDot/";
-            var getUrl = "/api/unbound/settings/getDot/";
-            var urlMap = {};
-            urlMap['frm_' + editDlg] = getUrl + uuid;
-            mapDataToFormUI(urlMap).done(function () {
-                // update selectors
-                $('.selectpicker').selectpicker('refresh');
-                // clear validation errors (if any)
-                clearFormValidation('frm_' + editDlg);
-                // show
-                $('#'+editDlg).modal({backdrop: 'static', keyboard: false});
-                $('#'+editDlg).on('hidden.bs.modal', function () {
-                    // go back to previous page on exit
-                    parent.history.back();
-                });
-            });
-
-
-            // define save action
-            $("#btn_"+editDlg+"_save").unbind('click').click(function(){
-                saveFormToEndpoint(setUrl+uuid, 'frm_' + editDlg, function(){
-                    // do reconfigure of unbound after save (because we're leaving back to the sender)
-                    ajaxCall("/api/unbound/service/reconfigure", {}, function(data,status) {
-                        $("#"+editDlg).modal('hide');
-                    });
-                }, true);
-            });
-
-        }
-
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
 
         $("#grid-dot").UIBootgrid(
-                {   'search':'/api/unbound/settings/searchDot/',
-                    'get':'/api/unbound/settings/getDot/',
-                    'set':'/api/unbound/settings/setDot/',
-                    'add':'/api/unbound/settings/addDot/',
-                    'del':'/api/unbound/settings/delDot/',
-                    'toggle':'/api/unbound/settings/toggleDot/'
+                {   'search':'/api/unbound/settings/search'+this_page+'/',
+                    'get':'/api/unbound/settings/get'+this_page+'/',
+                    'set':'/api/unbound/settings/set'+this_page+'/',
+                    'add':'/api/unbound/settings/add'+this_page+'/',
+                    'del':'/api/unbound/settings/del'+this_page+'/',
+                    'toggle':'/api/unbound/settings/toggle'+this_page+'/'
                 }
         );
 
@@ -127,10 +93,6 @@
         } else {
             $('tr[id="row_dot.verify"]').removeClass('hidden');
         }
-
-        {% if (selected_uuid|default("") != "") %}
-            openDialog('{{selected_uuid}}');
-        {% endif %}
 
         /*************************************************************************************************************
          * Commands
@@ -199,6 +161,7 @@
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/unbound/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
+                data-service-widget="unbound"
                 data-error-title="{{ lang._('Error reconfiguring unbound') }}"
                 type="button"
         ></button>

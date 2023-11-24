@@ -55,10 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dstbeginport'] = 80 ;
     $pconfig['dstendport'] = 80 ;
     $pconfig['local-port'] = 80;
-    $pconfig['filter-rule-association'] = "add-associated";
+    $pconfig['associated-rule-id'] = "add-associated";
     if (isset($configId)) {
         // copy 1-on-1
-        foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync','log',
+        foreach (array('protocol','target','local-port','descr','interface','nosync','log',
                       'natreflection','created','updated','ipprotocol','tag','tagged','poolopts', 'category') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
@@ -67,6 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // fields with some kind of logic.
+        if (!isset($_GET['dup']) && isset($a_nat[$configId]['associated-rule-id'])) {
+            $pconfig['associated-rule-id'] = $a_nat[$configId]['associated-rule-id'];
+        }
         $pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
         $pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
         $pconfig['interface'] = explode(",", $pconfig['interface']);
@@ -223,9 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (!empty($natent['nordr'])) {
             $natent['associated-rule-id'] = '';
-        } elseif (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] == "pass") {
+        } elseif (!empty($pconfig['associated-rule-id']) && $pconfig['associated-rule-id'] == "pass") {
             $natent['associated-rule-id'] = "pass";
-        } elseif (!empty($pconfig['associated-rule-id'])) {
+        } elseif (!empty($pconfig['associated-rule-id']) && !in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             $natent['associated-rule-id'] = $pconfig['associated-rule-id'];
         } else {
             $natent['associated-rule-id'] = null;
@@ -266,23 +269,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // Updating a rule with a filter rule associated
-        if (!empty($natent['associated-rule-id']) || !empty($pconfig['filter-rule-association'])) {
+        if (!empty($natent['associated-rule-id']) || in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
             /* auto-generate a matching firewall rule */
-            $filterent = array();
-            // If a rule already exists, load it
-            if (!empty($natent['associated-rule-id'])) {
-                // search rule by associated-rule-id
-                $filterentid = false;
-                foreach ($config['filter']['rule'] as $key => $item){
+            $filterent = [];
+            if (in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])) {
+                $filterent['associated-rule-id'] = $natent['associated-rule-id'];
+            } else {
+                $filterent['associated-rule-id'] = $natent['associated-rule-id'];
+                foreach ($config['filter']['rule'] as $key => &$item){
                     if (isset($item['associated-rule-id']) && $item['associated-rule-id']==$natent['associated-rule-id']) {
-                        $filterentid = $key;
-                        break;
+                          $filterent = &config_read_array('filter', 'rule', $key);
+                          break;
                     }
-                }
-                if ($filterentid === false) {
-                    $filterent['associated-rule-id'] = $natent['associated-rule-id'];
-                } else {
-                    $filterent = &config_read_array('filter', 'rule', $filterentid);
                 }
             }
             pconfig_to_address($filterent['source'], $pconfig['src'],
@@ -339,8 +337,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent['category'] = $natent['category'];
 
             // If this is a new rule, create an ID and add the rule
-            if (!empty($pconfig['filter-rule-association']) && $pconfig['filter-rule-association'] != 'pass') {
-                if ($pconfig['filter-rule-association'] == 'add-associated') {
+            if (
+              !empty($pconfig['associated-rule-id']) &&
+              in_array($pconfig['associated-rule-id'], ['add-associated', 'add-unassociated'])
+            ) {
+                if ($pconfig['associated-rule-id'] == 'add-associated') {
                     $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
                 }
                 $filterent['created'] = make_config_revision_entry();
@@ -459,6 +460,7 @@ $( document ).ready(function() {
                     } else {
                       $(this).removeClass("hidden");
                     }
+                    $(this).prop("disabled", false);
                   });
               } else {
                   // hide related controls
@@ -468,6 +470,7 @@ $( document ).ready(function() {
                     } else {
                       $(this).addClass("hidden");
                     }
+                    $(this).prop("disabled", true);
                   });
               }
             });
@@ -556,8 +559,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select name="interface[]" class="selectpicker" data-width="auto" data-live-search="true" multiple="multiple">
+                      <select name="interface[]" class="selectpicker" data-width="348px" data-live-search="true" multiple="multiple">
 <?php
                         foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= in_array($iface, $pconfig['interface'] ?? []) ? "selected=\"selected\"" : ""; ?>>
@@ -565,7 +567,6 @@ $( document ).ready(function() {
                         </option>
                         <?php endforeach; ?>
                       </select>
-                    </div>
                     <div class="hidden" data-for="help_for_interface">
                       <?=gettext("Choose which interface this rule applies to."); ?><br />
                       <?=gettext("Hint: in most cases, you'll want to use WAN here."); ?>
@@ -575,7 +576,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
                   <td>
-                    <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
+                    <select name="ipprotocol" class="selectpicker" data-width="348px" data-live-search="true" data-size="5" >
 <?php
                     foreach (array('inet' => 'IPv4','inet6' => 'IPv6', 'inet46' => 'IPv4+IPv6') as $proto => $name): ?>
                     <option value="<?=$proto;?>" <?= $proto == $pconfig['ipprotocol'] ? "selected=\"selected\"" : "";?>>
@@ -592,15 +593,13 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
 <?php foreach (get_protocols() as $proto): ?>
                         <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
                           <?= $proto ?>
                         </option>
 <?php endforeach ?>
               </select>
-                    </div>
                     <div class="hidden" data-for="help_for_proto">
                       <?=gettext("Choose which IP protocol " ."this rule should match."); ?><br/>
                       <?=gettext("Hint: in most cases, you should specify"); ?> <em><?=gettext("TCP"); ?></em> &nbsp;<?=gettext("here."); ?>
@@ -628,10 +627,10 @@ $( document ).ready(function() {
                 <tr class="advanced_opt_src hidden">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) && !is_alias($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -648,17 +647,19 @@ $( document ).ready(function() {
                           </select>
                         </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <div class="input-group">
+                      </table>
+                      <table style="max-width: 348px">
+                        <tr>
+                          <td style="width:285px">
                           <!-- updates to "other" option in  src -->
                           <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="src" >
+                        </td>
+                        <td>
+                          <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="70px" for="src" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -742,10 +743,10 @@ $( document ).ready(function() {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
                   <td>
-                    <table class="table table-condensed">
+                    <table style="max-width: 348px">
                       <tr>
                         <td>
-                          <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                          <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                             <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) && !is_alias($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -764,7 +765,7 @@ $( document ).ready(function() {
 <?php
                               if (isset($config['virtualip']['vip'])):
                                 foreach ($config['virtualip']['vip'] as $sn):
-                                  if (isset($sn['noexpand']))
+                                  if (!empty($sn['noexpand']))
                                     continue;
                                   if ($sn['mode'] == "proxyarp"):
                                     $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
@@ -792,17 +793,19 @@ $( document ).ready(function() {
                           </select>
                         </td>
                       </tr>
+                    </table>
+                    <!-- updates to "other" option in dst -->
+                    <table style="max-width: 348px">
                       <tr>
-                        <td>
-                          <div class="input-group">
-                          <!-- updates to "other" option in dst -->
+                        <td style="width: 285px">
                           <input type="text" id="dst_address" for="dst" value="<?= !is_specialnet($pconfig['dst']) ? $pconfig['dst'] : "";?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="dstmask"  data-width="auto" for="dst" >
+                        </td>
+                        <td>
+                          <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask" data-width="70px" for="dst">
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -873,10 +876,10 @@ $( document ).ready(function() {
                 <tr class="act_no_rdr">
                   <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
                   <td>
-                    <table class="table table-condensed">
+                    <table style="max-width: 348px">
                       <tr>
                         <td>
-                          <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                          <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                             <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php
@@ -890,10 +893,8 @@ $( document ).ready(function() {
                       </tr>
                       <tr>
                         <td>
-                          <div class="input-group">
                           <!-- updates to "other" option in target -->
                           <input type="text" id="target_address" for="target" value="<?=$pconfig['target'];?>" aria-label="<?=gettext("Redirect target IP");?>"/>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -992,7 +993,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                   <td>
-                    <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
+                    <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="348px" data-live-search="true">
 <?php
                     foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
                       $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
@@ -1049,52 +1050,43 @@ $( document ).ready(function() {
                     </select>
                   </td>
                 </tr>
-<?php            if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
-                <tr class="act_no_rdr">
-                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Filter rule association"); ?></td>
-                  <td>
-                    <select name="associated-rule-id" class="selectpicker" >
-                      <option value=""><?=gettext("None"); ?></option>
-                      <!-- maybe we should remove this in the future, multi purpose id field might not be the best thing in the world -->
-                      <option value="pass" <?= $pconfig['associated-rule-id'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
-                      <?php
-                      $linkedrule = "";
-                      if (isset($config['filter']['rule'])):
-                        filter_rules_sort();
-                        foreach ($config['filter']['rule'] as $filter_id => $filter_rule):
-                          if (isset($filter_rule['associated-rule-id'])):
-                            $is_selected = $filter_rule['associated-rule-id']==$pconfig['associated-rule-id'];
-                            if ($is_selected) $linkedrule = $filter_id;
-?>
-                            <option value="<?=$filter_rule['associated-rule-id']?>" <?= $is_selected ?  " selected=\"selected\"" : "";?> >
-                                <?=htmlspecialchars('Rule ' . $filter_rule['descr']);?>
-                            </option>
-
 <?php
-                          endif;
-                        endforeach;
-                      endif;
+                // check if a filter rule is associated and return it.
+                $linkedrule = "";
+                $linkedrule_descr = "";
+                if (!empty($pconfig['associated-rule-id'])) {
+                    filter_rules_sort(); // XXX: needed?
+                    foreach ($config['filter']['rule'] as $filter_id => $filter_rule) {
+                        if (
+                            isset($filter_rule['associated-rule-id']) &&
+                            $filter_rule['associated-rule-id'] == $pconfig['associated-rule-id']
+                        ) {
+                            $linkedrule = $filter_rule['associated-rule-id'];
+                            $linkedrule_descr = htmlspecialchars('Rule ' . $filter_rule['descr']);
+                        }
+                    }
+                }
 ?>
-                    </select>
-                  </td>
-                </tr>
-<?php         elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
-?>
+
                 <tr class="act_no_rdr">
                   <td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
                   <td>
-                    <select name="filter-rule-association">
-                      <option value="" <?= empty($pconfig['filter-rule-association']) ? " selected=\"selected\"" : ""; ?>><?=gettext("None"); ?></option>
-                      <option value="add-associated" <?= $pconfig['filter-rule-association'] == "add-associated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add associated filter rule"); ?></option>
-                      <option value="add-unassociated" <?= $pconfig['filter-rule-association'] == "add-unassociated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add unassociated filter rule"); ?></option>
-                      <option value="pass" <?= $pconfig['filter-rule-association'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
+                    <select name="associated-rule-id">
+                      <option value="" <?= empty($pconfig['associated-rule-id']) ? " selected=\"selected\"" : ""; ?>><?=gettext("None"); ?></option>
+<?php              if ($linkedrule !== ""):?>
+                      <option value="<?=$linkedrule;?>" selected="selected"><?=$linkedrule_descr;?></option>
+<?php              else:?>
+                      <option value="add-associated" <?= $pconfig['associated-rule-id'] == "add-associated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add associated filter rule"); ?></option>
+                      <option value="add-unassociated" <?= $pconfig['associated-rule-id'] == "add-unassociated" ? " selected=\"selected\"" : ""; ?>><?=gettext("Add unassociated filter rule"); ?></option>
+<?php              endif;?>
+                      <option value="pass" <?= $pconfig['associated-rule-id'] == "pass" ? " selected=\"selected\"" : ""; ?>><?=gettext("Pass"); ?></option>
                     </select>
                     <div class="hidden" data-for="help_for_fra">
                       <?=gettext("NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will only work on an interface containing the default gateway.")?>
                     </div>
                   </td>
                 </tr>
-<?php          endif;
+<?php
 
                 $has_created_time = (isset($pconfig['created']) && is_array($pconfig['created']));
                 $has_updated_time = (isset($pconfig['updated']) && is_array($pconfig['updated']));

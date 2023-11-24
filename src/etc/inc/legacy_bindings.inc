@@ -75,6 +75,8 @@ function legacy_html_escape_form_data(&$settings)
         foreach ($settings as $dataKey => &$dataValue) {
             if (is_array($dataValue)) {
                 legacy_html_escape_form_data($dataValue);
+            } elseif ($dataValue === null) {
+                $settings[$dataKey] = '';
             } else {
                 $settings[$dataKey] = htmlspecialchars($dataValue, ENT_QUOTES | ENT_HTML401);
             }
@@ -164,9 +166,9 @@ function get_alias_description($name)
     return OPNsense\Firewall\Util::aliasDescription($name);
 }
 
+/* XXX deprecated */
 function return_gateways_status()
 {
-    /* XXX quick and dirty compat layer */
     $result = plugins_run('return_gateways_status');
 
     if (!empty($result['dpinger'])) {
@@ -176,23 +178,17 @@ function return_gateways_status()
     return [];
 }
 
+/* XXX deprecated */
 function return_down_gateways()
 {
-    $result = array();
+    $result = [];
+
     foreach (return_gateways_status() as $gwname => $stat) {
+        /* for clarity: this also matches 'force_down' */
         if (strpos($stat['status'], 'down') !== false) {
             $result[] = $gwname;
         }
     }
-    return $result;
-}
 
-/*
- * Return an array with all gateway groups with name as key
- * All gateway groups will be processed before returning the array.
- */
-function return_gateway_groups_array()
-{
-    $gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
-    return $gateways->getGroups(return_gateways_status());
+    return $result;
 }

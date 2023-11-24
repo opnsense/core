@@ -62,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
     $pconfig['syncookies_adaptend'] = isset($config['system']['syncookies_adaptend']) ? $config['system']['syncookies_adaptend'] : null;
+    $pconfig['keepcounters'] = !empty($config['system']['keepcounters']);
+    $pconfig['pfdebug'] = !empty($config['system']['pfdebug']) ?  $config['system']['pfdebug'] : 'urgent';
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -104,6 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['syncookies_adaptend']) && !empty($pconfig['syncookies_adaptstart']) && $pconfig['syncookies_adaptstart'] < $pconfig['syncookies_adaptend']) {
             $input_errors[] = gettext("Syncookie Adaptive Start must be a higher value than End.");
+        }
+    }
+    if (!empty($pconfig['pfdebug'])) {
+        if (!in_array($pconfig['pfdebug'], ['none', 'urgent', 'misc', 'loud'])) {
+            $input_errors[] = sprintf(gettext("Unknown debug type %s.", $pconfig['pfdebug']));
         }
     }
     if (count($input_errors) == 0) {
@@ -234,6 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['syncookies_adaptstart']);
             unset($config['system']['syncookies_adaptend']);
         }
+        $config['system']['keepcounters'] = !empty($pconfig['keepcounters']);
+        $config['system']['pfdebug'] = !empty($pconfig['pfdebug']) ? $pconfig['pfdebug'] : '';
 
         write_config();
 
@@ -428,7 +437,7 @@ include("head.inc");
                     <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
                                 'processing for the traffic shaper and captive portal tasks. ' .
                                 'Using this option enables the sharing of such forwarding decisions ' .
-                                'between all components to accomodate complex setups.') ?>
+                                'between all components to accommodate complex setups.') ?>
                   </div>
                 </td>
               </tr>
@@ -469,6 +478,38 @@ include("head.inc");
               <tr>
                 <td style="width:22%"><strong><?= gettext('Miscellaneous') ?></strong></td>
                 <td style="width:78%"></td>
+              </tr>
+              <tr>
+                <td><a id="help_keepcounters" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Keep counters");?></td>
+                <td>
+                  <input name="keepcounters" type="checkbox" <?= !empty($pconfig['keepcounters']) ? "checked=\"checked\"" : "";?>/>
+                  <div class="hidden" data-for="help_keepcounters">
+                    <?= gettext('Preserve rule counters across rule updates.  Usually rule counters are reset to zero on every update of the ruleset.') ?><br />
+                    <?= gettext('When this is set the system will try to match the counters to the still existing rules on filter reloads.') ?><br />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_pfdebug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Debug");?></td>
+                <td>
+                  <select onchange="update_description(this.selectedIndex);" name="pfdebug" id="pfdebug" class="selectpicker" data-style="btn-default">
+                    <option value="none"<?=$pconfig['pfdebug']=="none" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Don't generate debug messages");?>
+                    </option>
+                    <option value="urgent"<?=$pconfig['pfdebug']=="urgent" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Generate debug messages only for serious errors.");?>
+                    </option>
+                    <option value="misc"<?=$pconfig['pfdebug']=="misc" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Generate debug messages for various errors.");?>
+                    </option>
+                    <option value="loud"<?=$pconfig['pfdebug']=="loud" ? " selected=\"selected\"" : ""; ?>>
+                      <?=gettext("Generate debug messages for common conditions.");?>
+                    </option>
+                  </select>
+                  <div class="hidden" data-for="help_for_pfdebug">
+                    <?=gettext("Set the level of verbosity for various conditions");?><br/><br/>
+                  </div>
+                </td>
               </tr>
               <tr>
                 <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>

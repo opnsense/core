@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@ import os.path
 import glob
 import re
 import stat
-import syslog
 import shlex
 import collections
 import traceback
@@ -49,13 +48,10 @@ __author__ = 'Ad Schellevis'
 
 class Template(object):
     def __init__(self, target_root_directory="/"):
-        """ constructor
-        :return:
-        """
         # init config (config.xml) data
         self._config = {}
 
-        # set target root
+        # set target root (location to write output files)
         self._target_root_directory = target_root_directory
 
         # setup jinja2 environment
@@ -76,6 +72,8 @@ class Template(object):
     def _encode_idna(x):
         """ encode string to idna, preserve leading dots
         """
+        if type(x) != str:
+            return x
         try:
             tmp = b''.join([b''.join([b'.' for x in range(len(x) - len(x.lstrip('.')))]), x.lstrip('.').encode('idna')])
             return tmp.decode()
@@ -131,13 +129,8 @@ class Template(object):
     def set_config(self, config_data):
         """ set config data
         :param config_data: config data as dictionary/list structure
-        :return: None
         """
-        if type(config_data) in (dict, collections.OrderedDict):
-            self._config = config_data
-        else:
-            # no data given, reset
-            self._config = {}
+        self._config = config_data if type(config_data) in (dict, collections.OrderedDict) else {}
 
     @staticmethod
     def __find_string_tags(instr):
@@ -210,7 +203,6 @@ class Template(object):
     def _create_directory(filename):
         """ create directory
         :param filename: create path for filename ( if not existing )
-        :return: None
         """
         fparts = []
         for fpart in filename.strip().split('/')[:-1]:
@@ -328,23 +320,22 @@ class Template(object):
         :param create_directory: automatically create directories to place template output in ( if not existing )
         :return: list of generated output files or None if template not found
         """
-        result = None
+        result = list()
+        failed = False
         for template_name in self.iter_modules(module_name):
-            wildcard_pos = module_name.find('*')
-            if result is None:
-                result = list()
             syslog_notice("generate template container %s" % template_name)
             try:
                 for filename in self._generate(template_name, create_directory):
                     result.append(filename)
             except Exception as render_exception:
-                if wildcard_pos > -1:
-                    # log failure, but proceed processing when doing a wildcard search
-                    syslog_error('error generating template %s : %s' % (
-                        template_name, traceback.format_exc()
-                    ))
-                else:
-                    raise render_exception
+                # log failure, but proceed processing for possible wildcard search
+                syslog_error('error generating template %s : %s' % (
+                    template_name, traceback.format_exc()
+                ))
+                failed = True
+
+        if not result or failed:
+            return None
 
         return result
 

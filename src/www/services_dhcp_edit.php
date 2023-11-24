@@ -125,32 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* check for overlaps */
-    if (!empty($pconfig['domain'])) {
-        $this_fqdn = $pconfig['hostname'] . "." . $pconfig['domain'];
-    } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
-        $this_fqdn = $pconfig['hostname'] . "." . $config['dhcpd'][$if]['domain'];
-    } else {
-        $this_fqdn = $pconfig['hostname'] . "." . $config['system']['domain'];
-    }
     foreach ($a_maps as $mapent) {
         if (isset($id) && ($a_maps[$id] === $mapent)) {
             continue;
         }
-        if (empty($mapent['hostname'])) {
-            $fqdn = "";
-        } elseif (!empty($mapent['domain'])) {
-            $fqdn = $mapent['hostname'] . "." . $mapent['domain'];
-        } elseif (!empty($if) && !empty($config['dhcpd'][$if]['domain'])) {
-            $fqdn = $mapent['hostname'] . "." . $config['dhcpd'][$if]['domain'];
-        } else {
-            $fqdn = $mapent['hostname'] . "." . $config['system']['domain'];
+        if (!empty($mapent['mac']) && $pconfig['mac'] == $mapent['mac']) {
+            $input_errors[] = gettext('This MAC address already exists.');
+            break;
         }
-
-        if (($fqdn == $this_fqdn)  ||
-            (($mapent['mac'] == $pconfig['mac']) && $mapent['mac']) ||
-            (($mapent['ipaddr'] == $pconfig['ipaddr']) && $mapent['ipaddr'] ) ||
-            (($mapent['cid'] == $pconfig['cid']) && $mapent['cid'])) {
-            $input_errors[] = gettext("This Hostname, IP, MAC address or Client identifier already exists.");
+        if (!empty($mapent['cid']) && $pconfig['cid'] == $mapent['cid']) {
+            $input_errors[] = gettext('This client identifier already exists.');
             break;
         }
     }

@@ -1,16 +1,12 @@
 #!/bin/sh
 
+URL="$(opnsense-update -X)/sets/bogons.txz"
 DESTDIR="/usr/local/etc"
 WORKDIR="/tmp/bogons"
 FETCH="fetch -qT 30"
 RETRIES=3
 
 COMMAND=${1}
-
-CORE_ABI=$(opnsense-version -a)
-SYS_ABI=$(opnsense-verify -a)
-
-URL="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}/sets/bogons.txz"
 
 echo "bogons update starting" | logger
 

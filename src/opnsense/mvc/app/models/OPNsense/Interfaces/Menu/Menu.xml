@@ -5,9 +5,10 @@
             <Status url="/ui/diagnostics/interface/vip"/>
         </VIP>
         <Types>
-            <VXLAN url="/ui/interfaces/vxlan"/>
+            <LAGG url="/ui/interfaces/lagg"/>
             <Loopback url="/ui/interfaces/loopback"/>
             <VLAN url="/ui/interfaces/vlan"/>
+            <VXLAN url="/ui/interfaces/vxlan"/>
         </Types>
     </Interfaces>
 </menu>

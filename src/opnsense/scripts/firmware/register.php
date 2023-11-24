@@ -72,15 +72,9 @@ function plugins_config_get($config)
 
 function plugins_config_set($config, $plugins)
 {
+    ksort($plugins);
+
     $config->system->firmware->plugins = implode(',', array_keys($plugins));
-
-    if (empty($config->system->firmware->plugins)) {
-        unset($config->system->firmware->plugins);
-    }
-
-    if (!@count($config->system->firmware->children())) {
-        unset($config->system->firmware);
-    }
 
     Config::getInstance()->save();
 }
@@ -171,9 +165,6 @@ switch ($action) {
         if ($config->system->firmware->type != $type) {
             echo "Registering release type: " . (!empty($type) ? $type : 'community') . PHP_EOL;
             $config->system->firmware->type = $type;
-        }
-        if (empty($config->system->firmware->type)) {
-            unset($config->system->firmware->type);
         }
         /* FALLTHROUGH */
     case 'resync':

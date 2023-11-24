@@ -38,7 +38,7 @@ function cert_get_subject_hash($crt)
 
 function has_special_chars($text)
 {
-    return preg_match('/[^A-Za-z0-9 _-]/', $text);
+    return !!preg_match('/[^A-Za-z0-9 _-]/', $text);
 }
 
 function step1_submitphpaction()
@@ -714,9 +714,6 @@ function step12_submitphpaction()
     }
     if (isset($pconfig['step10']['dynip'])) {
         $server['dynamic_ip'] = $pconfig['step10']['dynip'];
-    }
-    if (isset($pconfig['step10']['addrpool'])) {
-        $server['pool_enable'] = $pconfig['step10']['addrpool'];
     }
     if (isset($pconfig['step10']['defaultdomain'])) {
         $server['dns_domain'] = $pconfig['step10']['defaultdomain'];

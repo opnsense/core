@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2019 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
@@ -83,15 +83,13 @@ system_timezone_configure(true);
 system_firmware_configure(true);
 system_trust_configure(true);
 system_hostname_configure(true);
-system_resolvconf_generate(true);
-system_hosts_generate(true);
+system_resolver_configure(true);
 system_syslog_start(true);
 
 filter_configure_sync(true, false); /* apply default policy before interface setup */
 interfaces_hardware(true);
 interfaces_configure(true);
-system_resolvconf_generate(true); /* requires runtime interface configuration */
-system_hosts_generate(true); /* requires runtime interface configuration */
+system_resolver_configure(true); /* adapts to runtime interface configuration */
 filter_configure_sync(true);
 plugins_configure('early', true);
 system_routing_configure(true, null, false);
@@ -100,8 +98,8 @@ plugins_configure('dhcp', true);
 plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
-plugins_configure('monitor', true, [null, true]);
 filter_configure_sync(true);
+plugins_configure('monitor', true, [null, true]);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 rrd_configure(true, true);

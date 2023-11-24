@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2021 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ namespace OPNsense\Core;
 use Phalcon\Di\FactoryDefault;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
 
 /**
  * Class Config provides access to systems config xml
@@ -57,11 +58,21 @@ class Config extends Singleton
     private $simplexml = null;
 
     /**
+     * status field: file is locked (Exclusive)
+     * @var bool
+     */
+    private $statusIsLocked = false;
+
+    /**
      * status field: valid config loaded
      * @var bool
      */
     private $statusIsValid = false;
 
+    /**
+     * @var float current modification time of our known config
+     */
+    private $mtime = 0;
 
     /**
      * return last known status of this configuration (valid or not)
@@ -148,10 +159,10 @@ class Config extends Singleton
                     }
                     // copy attributes to xzy@attribute key item
                     foreach ($xmlNode->attributes() as $AttrKey => $AttrValue) {
-                        if (!isset($result["${xmlNodeName}@attributes"])) {
-                            $result["${xmlNodeName}@attributes"] = [];
+                        if (!isset($result["{$xmlNodeName}@attributes"])) {
+                            $result["{$xmlNodeName}@attributes"] = [];
                         }
-                        $result["${xmlNodeName}@attributes"][$AttrKey] = (string)$AttrValue;
+                        $result["{$xmlNodeName}@attributes"][$AttrKey] = (string)$AttrValue;
                     }
                 }
             }
@@ -309,6 +320,7 @@ class Config extends Singleton
      */
     protected function init()
     {
+        $this->statusIsLocked = false;
         $this->config_file = FactoryDefault::getDefault()->get('config')->globals->config_path . "config.xml";
         try {
             $this->load();
@@ -316,13 +328,12 @@ class Config extends Singleton
             $this->simplexml = null;
             // there was an issue with loading the config, try to restore the last backup
             $backups = $this->getBackups();
+            $adapter = new Syslog('audit', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
+            $adapter->setFormatter(new Line('%message%'));
             $logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog("config", array(
-                        'option' => LOG_PID,
-                        'facility' => LOG_LOCAL4
-                    ))
+                    'main' => $adapter
                 ]
             );
             if (count($backups) > 0) {
@@ -331,6 +342,7 @@ class Config extends Singleton
                 foreach ($backups as $backup) {
                     try {
                         $this->restoreBackup($backup);
+                        $logger->error("restored " . $backup);
                         return;
                     } catch (ConfigException $e) {
                         $logger->error("failed restoring " . $backup);
@@ -363,23 +375,35 @@ class Config extends Singleton
      */
     private function loadFromStream($fp)
     {
-        fseek($fp, 0);
-        $xml = stream_get_contents($fp);
-        if (trim($xml) == '') {
-            throw new ConfigException('empty file');
+        /**
+         * load data from stream in shared mode unless no valid xml data is returned
+         * (in which case the writer holds a lock and we should wait for it [LOCK_SH])
+         */
+        foreach ([LOCK_SH | LOCK_NB, LOCK_SH] as $idx => $mode) {
+            flock($fp, $mode);
+            fseek($fp, 0);
+            $xml = trim(stream_get_contents($fp));
+            set_error_handler(
+                function () {
+                    // reset simplexml pointer on parse error.
+                    $result = null;
+                }
+            );
+
+            $result = simplexml_load_string($xml);
+            restore_error_handler();
+            if (!$this->statusIsLocked) {
+                flock($fp, LOCK_UN);
+            }
+            if ($result != null) {
+                break; // successful load
+            }
         }
 
-        set_error_handler(
-            function () {
-                // reset simplexml pointer on parse error.
-                $result = null;
-            }
-        );
-
-        $result = simplexml_load_string($xml);
-
-        restore_error_handler();
         if ($result == null) {
+            if (empty($xml)) {
+                throw new ConfigException('empty file');
+            }
             throw new ConfigException("invalid config xml");
         } else {
             return $result;
@@ -410,6 +434,7 @@ class Config extends Singleton
         }
 
         $this->simplexml = $this->loadFromStream($this->config_file_handle);
+        $this->mtime = fstat($this->config_file_handle)['mtime'];
         $this->statusIsValid = true;
     }
 
@@ -526,6 +551,7 @@ class Config extends Singleton
         if (!file_exists($target_dir)) {
             // create backup directory if it is missing
             mkdir($target_dir);
+            chmod($target_dir, 0750);
         }
         if (file_exists($target_dir . "config-" . $timestamp . ".xml")) {
             // The new target backup filename shouldn't exists, because of the use of microtime.
@@ -535,7 +561,7 @@ class Config extends Singleton
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
         }
-        copy($this->config_file, $target_dir . $target_filename);
+        File::file_put_contents($target_dir . $target_filename, file_get_contents($this->config_file), 0640);
 
         return $target_dir . $target_filename;
     }
@@ -575,6 +601,22 @@ class Config extends Singleton
     }
 
     /**
+     * Overwrite current config with contents of new file
+     * @param $filename
+     */
+    private function overwrite($filename)
+    {
+        $fhandle = fopen($this->config_file, "r+");
+        if (flock($fhandle, LOCK_EX)) {
+            fseek($fhandle, 0);
+            chmod($this->config_file, 0640);
+            ftruncate($fhandle, 0);
+            fwrite($fhandle, file_get_contents($filename));
+            fclose($fhandle);
+        }
+    }
+
+    /**
      * restore and load backup config
      * @param $filename
      * @return bool  restored, valid config loaded
@@ -589,7 +631,7 @@ class Config extends Singleton
             $config_file_handle = $this->config_file_handle;
             try {
                 // try to restore config
-                copy($filename, $this->config_file);
+                $this->overwrite($filename);
                 $this->load();
                 return true;
             } catch (ConfigException $e) {
@@ -602,7 +644,7 @@ class Config extends Singleton
             }
         } else {
             // we don't have a valid config loaded, just copy and load the requested one
-            copy($filename, $this->config_file);
+            $this->overwrite($filename);
             $this->load();
             return true;
         }
@@ -621,6 +663,14 @@ class Config extends Singleton
         } else {
             return 100;
         }
+    }
+
+    /**
+     * @return bool when config file underneath has changed without our instance being aware of it
+     */
+    public function hasChanged()
+    {
+        return $this->mtime != fstat($this->config_file_handle)['mtime'];
     }
 
     /**
@@ -671,6 +721,7 @@ class Config extends Singleton
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
                 fseek($this->config_file_handle, 0);
+                chmod($this->config_file, 0640);
                 ftruncate($this->config_file_handle, 0);
                 fwrite($this->config_file_handle, (string)$this);
                 // flush, unlock, but keep the handle open
@@ -681,18 +732,18 @@ class Config extends Singleton
                     // use syslog to trigger a new configd event, which should signal a syshook config (in batch).
                     // Although we include the backup filename, the event handler is responsible to determine the
                     // last processed event itself. (it's merely added for debug purposes)
+                    $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL5]);
+                    $adapter->setFormatter(new Line('%message%'));
                     $logger = new Logger(
                         'messages',
                         [
-                            'main' => new Syslog("config", array(
-                                'option' => LOG_PID,
-                                'facility' => LOG_LOCAL5
-                            ))
+                            'main' => $adapter
                         ]
                     );
                     $logger->info("config-event: new_config " . $backup_filename);
                 }
                 flock($this->config_file_handle, LOCK_UN);
+                $this->mtime = fstat($this->config_file_handle)['mtime'];
             } else {
                 throw new ConfigException("Unable to lock config");
             }
@@ -721,6 +772,7 @@ class Config extends Singleton
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);
+            $this->statusIsLocked = true;
             if ($reload) {
                 $this->load();
             }
@@ -735,6 +787,7 @@ class Config extends Singleton
     {
         if (is_resource($this->config_file_handle)) {
             flock($this->config_file_handle, LOCK_UN);
+            $this->statusIsLocked = false;
         }
         return $this;
     }

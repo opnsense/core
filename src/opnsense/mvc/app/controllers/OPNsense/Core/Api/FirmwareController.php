@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (c) 2015-2018 Deciso B.V.
  * All rights reserved.
  *
@@ -29,16 +29,20 @@
 
 namespace OPNsense\Core\Api;
 
-use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Firmware;
 
 /**
  * Class FirmwareController
  * @package OPNsense\Core
  */
-class FirmwareController extends ApiControllerBase
+class FirmwareController extends ApiMutableModelControllerBase
 {
+    protected static $internalModelName = 'firmware';
+    protected static $internalModelClass = 'OPNsense\Core\Firmware';
+
     /**
      * return bytes in human-readable form
      * @param integer $bytes bytes to convert
@@ -265,6 +269,8 @@ class FirmwareController extends ApiControllerBase
                 $active_status = 'upgrade';
             }
 
+            $subscription = strpos($response['product']['product_mirror'], '${SUBSCRIPTION}') !== false;
+
             if (array_key_exists('connection', $response) && $response['connection'] == 'unresolved') {
                 $response['status_msg'] = gettext('No address record found for the selected mirror.');
                 $response['status'] = 'error';
@@ -281,7 +287,7 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('Could not verify the repository fingerprint.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'forbidden') {
-                $response['status_msg'] = gettext('The repository did not grant access.');
+                $response['status_msg'] = $subscription ? gettext('The provided subscription is either invalid or expired. Please make sure the input is correct. Otherwise contact sales or visit the online shop to obtain a valid one.') : gettext('The repository did not grant access.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'revoked') {
                 $response['status_msg'] = gettext('The repository fingerprint has been revoked.');
@@ -293,7 +299,7 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = sprintf(gettext('The release type "%s" is not available on this repository.'), $response['product_target']);
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] != 'ok') {
-                $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
+                $response['status_msg'] = $subscription ? sprintf(gettext('The matching %s %s series does not yet exist. Images are available to switch this installation to the latest business edition.'), $response['product']['product_name'], $response['product_abi']) : gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif ($active_count) {
                 if ($active_count == 1) {
@@ -841,7 +847,7 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
-        $version = explode(' ', trim(shell_exec('opnsense-version -nv')));
+        $version = explode(' ', trim(shell_exec('opnsense-version -nv') ?? ''));
         foreach (array('product_id' => 0, 'product_version' => 1) as $result => $index) {
             $response[$result] = !empty($version[$index]) ? $version[$index] : 'unknown';
         }
@@ -851,13 +857,24 @@ class FirmwareController extends ApiControllerBase
         $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
 
         /* need both remote and local, create array earlier */
-        $packages = array();
-        $plugins = array();
+        $packages = [];
+        $plugins = [];
+        $tiers = [];
+
+        $current = $backend->configdRun('firmware tiers');
+        $current = explode("\n", trim($current ?? ''));
+
+        foreach ($current as $line) {
+            $expanded = explode('|||', $line);
+            if (count($expanded) == 3) {
+                $tiers[$expanded[0]] = $expanded[2];
+            }
+        }
 
         /* package infos are flat lists with 3 pipes as delimiter */
         foreach (array('remote', 'local') as $type) {
-            $current = $backend->configdRun("firmware ${type}");
-            $current = explode("\n", trim($current));
+            $current = $backend->configdRun("firmware {$type}");
+            $current = explode("\n", trim($current ?? ''));
 
             foreach ($current as $line) {
                 $expanded = explode('|||', $line);
@@ -933,6 +950,7 @@ class FirmwareController extends ApiControllerBase
 
         $response['plugin'] = array();
         foreach ($plugins as $plugin) {
+            $plugin['tier'] = isset($tiers[$plugin['name']]) ? $tiers[$plugin['name']] : gettext('N/A');
             $response['plugin'][] = $plugin;
         }
 
@@ -977,216 +995,52 @@ class FirmwareController extends ApiControllerBase
      * list firmware mirror and flavour options
      * @return array
      */
-    public function getFirmwareOptionsAction()
+    public function getOptionsAction()
     {
-        $families = [];
-        $families_has_subscription = [];
-        $flavours = [];
-        $flavours_allow_custom = false;
-        $flavours_has_subscription = [];
-        $mirrors = [];
-        $mirrors_allow_custom = false;
-        $mirrors_has_subscription = [];
-
         $this->sessionClose(); // long running action, close session
-
-        foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
-            $repositoryXml = simplexml_load_file($xml);
-            if ($repositoryXml === false || $repositoryXml->getName() != 'firmware') {
-                syslog(LOG_ERR, 'unable to parse firmware file ' . $xml);
-            } else {
-                if (isset($repositoryXml->mirrors->mirror)) {
-                    if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
-                        $mirrors_allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
-                    }
-                    foreach ($repositoryXml->mirrors->mirror as $mirror) {
-                        $mirrors[(string)$mirror->url] = (string)$mirror->description;
-                        $attr = $mirror->attributes();
-                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
-                            $mirrors_has_subscription[] = (string)$mirror->url;
-                        }
-                    }
-                }
-                if (isset($repositoryXml->flavours->flavour)) {
-                    if (isset($repositoryXml->flavours->attributes()->allow_custom)) {
-                        $flavours_allow_custom = (strtolower($repositoryXml->flavours->attributes()->allow_custom) == "true");
-                    }
-                    foreach ($repositoryXml->flavours->flavour as $flavour) {
-                        $flavours[(string)$flavour->name] = (string)$flavour->description;
-                        $attr = $flavour->attributes();
-                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
-                            $flavours_has_subscription[] = (string)$flavour->name;
-                        }
-                    }
-                }
-                if (isset($repositoryXml->families->family)) {
-                    foreach ($repositoryXml->families->family as $family) {
-                        $families[(string)$family->name] = (string)$family->description;
-                        $attr = $family->attributes();
-                        if (isset($attr->has_subscription) && strtolower($attr->has_subscription) == "true") {
-                            $families_has_subscription[] = (string)$family->name;
-                        }
-                    }
-                }
-            }
-        }
-        return [
-            /* provide a full set of data even though the frontend does not use it */
-            'families' => $families,
-            'families_allow_custom' => 0,
-            'families_has_subscription' => $families_has_subscription,
-            'flavours' => $flavours,
-            'flavours_allow_custom' => $flavours_allow_custom,
-            'flavours_has_subscription' => $flavours_has_subscription,
-            'mirrors' => $mirrors,
-            'mirrors_allow_custom' => $mirrors_allow_custom,
-            'mirrors_has_subscription' => $mirrors_has_subscription,
-        ];
-    }
-
-    /**
-     * Validate firmware options
-     * @param $selectedMirror selected mirror url
-     * @param $selectedFlavour selected flavour
-     * @param $selectedType selected family type
-     * @param $selSubscription selected subscription id
-     * @return array with validation failure messages
-     */
-    private function validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription)
-    {
-        $validOptions = $this->getFirmwareOptionsAction();
-        $invalid_msgs = [];
-
-        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][$selectedMirror])) {
-            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware mirror: %s'), $selectedMirror);
-        }
-
-        if (!$validOptions['flavours_allow_custom'] && !isset($validOptions['flavours'][$selectedFlavour])) {
-            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware flavour: %s'), $selectedFlavour);
-        }
-
-        if (!isset($validOptions['families'][$selectedType])) {
-            $invalid_msgs[] = sprintf(gettext('Unable to set invalid firmware release type: %s'), $validOptions['families'][$selectedType]);
-        }
-
-        if (in_array($selectedMirror, $validOptions['mirrors_has_subscription'])) {
-            if (!preg_match('/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/i', $selSubscription)) {
-                $invalid_msgs[] = gettext('A valid subscription is required for this firmware mirror.');
-            }
-            if (!preg_match('/\//', $selectedFlavour)) {
-                /* error when flat flavour is used, but not when directory location was selected */
-                if (!in_array($selectedFlavour, $validOptions['flavours_has_subscription'])) {
-                    $invalid_msgs[] = sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]);
-                }
-                if (!in_array($selectedType, $validOptions['families_has_subscription'])) {
-                    $invalid_msgs[] = sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]);
-                }
-            }
-        } else {
-            if (!empty($selSubscription)) {
-                $invalid_msgs[] = gettext('Subscription cannot be set for non-subscription firmware mirror.');
-            }
-        }
-
-        return $invalid_msgs;
-    }
-
-    /**
-     * retrieve current firmware configuration options
-     * @return array
-     */
-    public function getFirmwareConfigAction()
-    {
-        $config = Config::getInstance()->object();
-        $result = array();
-
-        $result['flavour'] = '';
-        $result['mirror'] = '';
-        $result['type'] = '';
-
-        if (!empty($config->system->firmware->flavour)) {
-            $result['flavour'] = (string)$config->system->firmware->flavour;
-        }
-
-        if (!empty($config->system->firmware->type)) {
-            $result['type'] = (string)$config->system->firmware->type;
-        }
-
-        if (!empty($config->system->firmware->mirror)) {
-            $result['mirror'] = (string)$config->system->firmware->mirror;
-        }
-
-        return $result;
+        return $this->getModel()->getRepositoryOptions();
     }
 
     /**
      * set firmware configuration options
      * @return array status
      */
-    public function setFirmwareConfigAction()
+    public function setAction()
     {
         $response = ['status' => 'failure'];
 
-        if ($this->request->isPost()) {
-            $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
-            $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
-            $selectedType = filter_var($this->request->getPost("type", null, ""), FILTER_SANITIZE_URL);
-            $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
+        if (!$this->request->isPost()) {
+            return $response;
+        }
 
-            $ret = $this->validateFirmwareOptions($selectedMirror, $selectedFlavour, $selectedType, $selSubscription);
-            if (count($ret)) {
-                $response['status_msgs'] = $ret;
+        $values = $this->request->getPost(static::$internalModelName);
+
+        foreach ($values as $key => &$value) {
+            if ($key == 'plugins') {
+                /* discards plugins on purpose for the time being */
+                unset($values[$key]);
             } else {
-                $config = Config::getInstance()->object();
-                $response['status'] = 'ok';
-
-                // config data without model, prepare xml structure and write data
-                if (!isset($config->system->firmware)) {
-                    $config->system->addChild('firmware');
-                }
-
-                if (!isset($config->system->firmware->mirror)) {
-                    $config->system->firmware->addChild('mirror');
-                }
-                if (empty($selSubscription)) {
-                    $config->system->firmware->mirror = $selectedMirror;
-                } else {
-                    // prepend subscription
-                    $config->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
-                }
-                if (empty($config->system->firmware->mirror)) {
-                    unset($config->system->firmware->mirror);
-                }
-
-                if (!isset($config->system->firmware->flavour)) {
-                    $config->system->firmware->addChild('flavour');
-                }
-                $config->system->firmware->flavour = $selectedFlavour;
-                if (empty($config->system->firmware->flavour)) {
-                    unset($config->system->firmware->flavour);
-                }
-
-                if (!isset($config->system->firmware->type)) {
-                    $config->system->firmware->addChild('type');
-                }
-                $config->system->firmware->type = $selectedType;
-                if (empty($config->system->firmware->type)) {
-                    unset($config->system->firmware->type);
-                }
-
-                if (!@count($config->system->firmware->children())) {
-                    unset($config->system->firmware);
-                }
-
-                Config::getInstance()->save();
-
-                $this->sessionClose(); // long running action, close session
-
-                $backend = new Backend();
-                $backend->configdRun('firmware flush');
-                $backend->configdRun("firmware configure");
+                $value = filter_var($value, FILTER_SANITIZE_URL);
             }
         }
+
+        $mdl = $this->getModel();
+        $mdl->setNodes($values);
+
+        $ret = $this->validate();
+        if (!empty($ret['result'])) {
+            $response['status_msg'] = array_values($ret['validations'] ?? [gettext('Unkown firmware validation error')]);
+            return $response;
+        }
+
+        $response['status'] = 'ok';
+        $this->save();
+
+        $this->sessionClose(); // long running action, close session
+
+        $backend = new Backend();
+        $backend->configdRun('firmware flush');
+        $backend->configdRun('firmware reload');
 
         return $response;
     }

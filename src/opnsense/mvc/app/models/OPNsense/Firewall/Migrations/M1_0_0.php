@@ -34,6 +34,7 @@ use OPNsense\Core\Config;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
+use OPNsense\Firewall\Group;
 
 class M1_0_0 extends BaseModelMigration
 {
@@ -91,8 +92,14 @@ class M1_0_0 extends BaseModelMigration
                     }
                 }
             }
+            \OPNsense\Firewall\Util::attachAliasObject($model);
         } elseif ($model instanceof Category) {
             $model->sync();
+        } elseif ($model instanceof Group) {
+            foreach ($model->ifgroupentry->iterateItems() as $new_group) {
+                // space delimited --> comma delimited
+                $new_group->members = str_replace(' ', ',', (string)$new_group->members);
+            }
         }
     }
 

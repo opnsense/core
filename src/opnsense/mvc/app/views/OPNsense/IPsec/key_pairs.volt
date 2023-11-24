@@ -25,50 +25,8 @@
  #}
 
 <script>
-  $(function () {
-    const $applyLegacyConfig = $('#applyLegacyConfig');
-    const $applyLegacyConfigProgress = $('#applyLegacyConfigProgress');
-    const $responseMsg = $('#responseMsg');
-    const $dirtySubsystemMsg = $('#dirtySubsystemMsg');
-
-    // Helper method to fetch the current status of the legacy subsystem for viewing/hiding the "pending changes" alert
-    function updateLegacyStatus() {
-      ajaxCall('/api/ipsec/legacy-subsystem/status', {}, function (data, status) {
-        if (data['isDirty']) {
-          $responseMsg.addClass('hidden');
-          $dirtySubsystemMsg.removeClass('hidden');
-        } else {
-          $dirtySubsystemMsg.addClass('hidden');
-        }
-      });
-    }
-
-    // Apply config in legacy subsystem
-    $applyLegacyConfig.on('click', function (e) {
-      e.preventDefault();
-
-      $applyLegacyConfig.prop('disabled', true);
-      $applyLegacyConfigProgress.addClass('fa fa-spinner fa-pulse');
-
-      ajaxCall('/api/ipsec/legacy-subsystem/applyConfig', {}, function (data, status) {
-        // Preliminarily hide the "pending changes" alert and display the response message if available
-        if (data['message']) {
-          $dirtySubsystemMsg.addClass('hidden');
-          $responseMsg.removeClass('hidden').text(data['message']);
-        }
-
-        // Reset the state of the "apply changes" button
-        $applyLegacyConfig.prop('disabled', false);
-        $applyLegacyConfigProgress.removeClass('fa fa-spinner fa-pulse');
-
-        // Fetch the current legacy subsystem status to ensure changes have been processed
-        updateLegacyStatus();
-        updateServiceControlUI('ipsec');
-      });
-    });
-
-    // Initialize grid for displaying and manipulating key pairs
-    const $grid = $('#grid-key-pairs').UIBootgrid({
+  $( document ).ready(function() {
+    $('#grid-key-pairs').UIBootgrid({
       search: '/api/ipsec/key-pairs/searchItem',
       get: '/api/ipsec/key-pairs/getItem/',
       set: '/api/ipsec/key-pairs/setItem/',
@@ -76,9 +34,6 @@
       del: '/api/ipsec/key-pairs/delItem/',
     });
 
-    // Refresh status of legacy subsystem when grid has changed
-    $grid.on('loaded.rs.jquery.bootgrid', updateLegacyStatus);
-    updateServiceControlUI('ipsec');
     // move "generate key" inside form dialog
     $("#row_keyPair\\.keyType > td:eq(1) > div:last").before($("#keygen_div").detach().show());
     // hook key generation option selection and action
@@ -103,20 +58,12 @@
             }
         });
     })
+
+    $("#reconfigureAct").SimpleActionButton();
+    updateServiceControlUI('ipsec');
   });
 </script>
 
-<div class="alert alert-info alert-dismissible hidden" role="alert" id="responseMsg"></div>
-<div class="alert alert-info hidden" role="alert" id="dirtySubsystemMsg">
-    <button class="btn btn-primary pull-right" type="button" id="applyLegacyConfig">
-        <i id="applyLegacyConfigProgress" class=""></i>
-        {{ lang._('Apply changes') }}
-    </button>
-    <div>
-        {{ lang._('The IPsec tunnel configuration has been changed.') }}<br/>
-        {{ lang._('You must apply the changes in order for them to take effect.') }}
-    </div>
-</div>
 <div class="content-box">
     <span id="keygen_div" style="display:none" class="pull-right">
           <select id="keysize" class="selectpicker" data-width="100px">
@@ -125,15 +72,15 @@
               <option data-type='rsa' value="3072">3072</option>
               <option data-type='rsa' value="4096">4096</option>
               <option data-type='rsa' value="8192">8192</option>
-              <option data-type='ecdsa' value="256">256</option>
-              <option data-type='ecdsa' value="384">384</option>
-              <option data-type='ecdsa' value="521">521</option>
+              <option data-type='ecdsa' value="256">NIST P-256</option>
+              <option data-type='ecdsa' value="384">NIST P-384</option>
+              <option data-type='ecdsa' value="521">NIST P-521</option>
           </select>
           <button id="keygen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new.') }}" data-toggle="tooltip">
             <i class="fa fa-fw fa-gear"></i>
           </button>
     </span>
-    <table id="grid-key-pairs" class="table table-condensed table-hover table-striped" data-editDialog="DialogKeyPair">
+    <table id="grid-key-pairs" class="table table-condensed table-hover table-striped" data-editDialog="DialogKeyPair" data-editAlert="KPChangeMessage">
         <thead>
         <tr>
             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -160,6 +107,19 @@
         </tr>
         </tfoot>
     </table>
+    <div class="col-md-12">
+        <div id="KPChangeMessage" class="alert alert-info" style="display: none" role="alert">
+            {{ lang._('After changing settings, please remember to apply them with the button below') }}
+        </div>
+        <hr/>
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint="/api/ipsec/service/reconfigure"
+                data-label="{{ lang._('Apply') }}"
+                data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
+                type="button"
+        ></button>
+        <br/><br/>
+    </div>
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogKeyPair,'id':'DialogKeyPair','label':lang._('Edit key pair')]) }}

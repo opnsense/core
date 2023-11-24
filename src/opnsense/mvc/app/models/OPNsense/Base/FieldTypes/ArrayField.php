@@ -40,6 +40,19 @@ class ArrayField extends BaseField
     private $internalTemplateNode = null;
 
     /**
+     * @var list statically defined children, key value store for static defined model entries
+     */
+    protected static $internalStaticChildren = [];
+
+    /**
+     * @return key value store of static model items, overwrite when needed
+     */
+    protected static function getStaticChildren()
+    {
+        return [];
+    }
+
+    /**
      * Copy first node pointer as template node to make sure we always have a template to create new nodes from.
      * If the first node is virtual (no source data), remove that from the list.
      */
@@ -55,6 +68,22 @@ class ArrayField extends BaseField
             if ($this->internalChildnodes[$firstKey]->getInternalIsVirtual()) {
                 unset($this->internalChildnodes[$firstKey]);
             }
+        }
+        // init static entries when returned by getStaticChildren()
+        foreach (static::getStaticChildren() as $skey => $payload) {
+            $container_node = $this->newContainerField($this->__reference . "." . $skey, $this->internalXMLTagName);
+            $container_node->setAttributeValue("uuid", $skey);
+            $container_node->setInternalIsVirtual();
+            foreach ($this->getTemplateNode()->iterateItems() as $key => $value) {
+                $node = clone $value;
+                $node->setInternalReference($container_node->__reference . "." . $key);
+                if (isset($payload[$key])) {
+                    $node->setValue($payload[$key]);
+                }
+                $node->markUnchanged();
+                $container_node->addChildNode($key, $node);
+            }
+            static::$internalStaticChildren[$skey] = $container_node;
         }
     }
 
@@ -92,8 +121,12 @@ class ArrayField extends BaseField
         $new_record = array();
         foreach ($this->internalTemplateNode->iterateItems() as $key => $node) {
             if ($node->isContainer()) {
-                // validate child nodes, nesting not supported in this version.
-                throw new \Exception("Unsupported copy, Array doesn't support nesting.");
+                foreach ($node->iterateRecursiveItems() as $subnode) {
+                    if (is_a($subnode, "OPNsense\\Base\\FieldTypes\\ArrayField")) {
+                        // validate child nodes, nesting not supported in this version.
+                        throw new \Exception("Unsupported copy, Array doesn't support nesting.");
+                    }
+                }
             }
             $new_record[$key] = clone $node;
         }
@@ -180,5 +213,55 @@ class ArrayField extends BaseField
         }
 
         return array_values($sortedData);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasChild($name)
+    {
+        if (isset(static::$internalStaticChildren[$name])) {
+            return true;
+        } else {
+            return parent::hasChild($name);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getChild($name)
+    {
+        if (isset(static::$internalStaticChildren[$name])) {
+            return static::$internalStaticChildren[$name];
+        } else {
+            return parent::getChild($name);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function iterateItems()
+    {
+        foreach (parent::iterateItems() as $key => $value) {
+            yield $key => $value;
+        }
+        foreach (static::$internalStaticChildren as $key => $node) {
+            yield $key => $node;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isFieldChanged()
+    {
+        foreach (parent::iterateItems() as $child) {
+            if ($child->isFieldChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

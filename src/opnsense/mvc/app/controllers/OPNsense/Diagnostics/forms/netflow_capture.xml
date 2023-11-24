@@ -4,14 +4,12 @@
         <label>Listening interfaces</label>
         <type>select_multiple</type>
         <help><![CDATA[Select all the interfaces to enable NetFlow on.]]></help>
-        <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>netflow.capture.egress_only</id>
         <label>WAN interfaces</label>
         <type>select_multiple</type>
         <help><![CDATA[Select interfaces used for WAN traffic to avoid counting NAT traffic twice.]]></help>
-        <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>netflow.collect.enable</id>
@@ -31,7 +29,6 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Select destinations to send NetFlow data to (ip address:port, eg 192.168.0.1:2550).]]></help>
-        <hint>Type or select destinations.</hint>
         <allownew>true</allownew>
     </field>
     <field>

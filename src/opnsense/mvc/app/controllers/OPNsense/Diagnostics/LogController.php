@@ -38,8 +38,8 @@ class LogController extends IndexController
     public function renderPage($module, $scope)
     {
         $this->view->pick('OPNsense/Diagnostics/log');
-        $this->view->module = $module;
-        $this->view->scope = $scope;
+        $this->view->module = htmlspecialchars($module, ENT_QUOTES | ENT_HTML401);
+        $this->view->scope = htmlspecialchars($scope, ENT_QUOTES | ENT_HTML401);
         $this->view->service = '';
         $this->view->default_log_severity = 'Warning';
 
@@ -61,6 +61,9 @@ class LogController extends IndexController
                 break;
             case 'squid':
                 $this->view->service = 'proxy';
+                break;
+            case 'dhcpd':
+                $this->view->service = 'dhcpv4';
                 break;
             case 'system':
                 $this->view->default_log_severity = 'Notice';

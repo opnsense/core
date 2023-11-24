@@ -38,7 +38,59 @@ class SettingsController extends ApiMutableModelControllerBase
     protected static $internalModelClass = '\OPNsense\Unbound\Unbound';
     protected static $internalModelName = 'unbound';
 
-    private $type = 'dot';
+    private $type = 'forward';
+
+    public function updateBlocklistAction()
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type')) {
+            Config::getInstance()->lock();
+            $domain = $this->request->getPost('domain');
+            $type = $this->request->getPost('type');
+            $mdl = $this->getModel();
+            $item = $mdl->getNodeByReference('dnsbl.' . $type);
+
+            if ($item != null) {
+                $remove = function ($csv, $part) {
+                    while (($i = array_search($part, $csv)) !== false) {
+                        unset($csv[$i]);
+                    }
+                    return implode(',', $csv);
+                };
+
+                // strip off any trailing dot
+                $value = rtrim($domain, '.');
+                $wl = explode(',', (string)$mdl->dnsbl->whitelists);
+                $bl = explode(',', (string)$mdl->dnsbl->blocklists);
+
+                $existing_domains = explode(',', (string)$item);
+                if (in_array($value, $existing_domains)) {
+                    // value already in model, no need to re-run a potentially
+                    // expensive dnsbl action
+                    return ["status" => "OK"];
+                }
+
+                // Check if domains should be switched around in the model
+                if ($type == 'whitelists' && in_array($value, $bl)) {
+                    $mdl->dnsbl->blocklists = $remove($bl, $value);
+                } elseif ($type == 'blocklists' && in_array($value, $wl)) {
+                    $mdl->dnsbl->whitelists = $remove($wl, $value);
+                }
+
+                // update the model
+                $list = array_filter($existing_domains); // removes all empty entries
+                $list[] = $value;
+                $mdl->dnsbl->$type = implode(',', $list);
+
+                $mdl->serializeToConfig();
+                Config::getInstance()->save();
+
+                $service = new \OPNsense\Unbound\Api\ServiceController();
+                $result = $service->dnsblAction();
+            }
+        }
+        return $result;
+    }
 
     public function getNameserversAction()
     {
@@ -56,17 +108,14 @@ class SettingsController extends ApiMutableModelControllerBase
     /*
      * Catch all Dot API endpoints and redirect them to Forward for
      * backwards compatibility and infer the type from the request.
-     * If no type is provided, default to dot.
+     * If no type is provided, default to forward (__call only triggers on non-existing methods).
      */
     public function __call($method, $args)
     {
         if (substr($method, -6) == 'Action') {
             $fn = preg_replace('/Dot/', 'Forward', $method);
-            if (method_exists(get_class($this), $fn)) {
-                // set the type to forward if the request came from the corresponding gui page or is explicitly set in the API call
-                if (preg_match("/forward/i", $this->request->getHTTPReferer()) || ($this->request->getPost('dot') && $this->request->getPost('dot')['type'] == 'forward')) {
-                    $this->type = "forward";
-                }
+            if (method_exists(get_class($this), $fn) && preg_match("/.*dot/i", $method)) {
+                $this->type = "dot";
                 return $this->$fn(...$args);
             }
         }
@@ -258,5 +307,43 @@ class SettingsController extends ApiMutableModelControllerBase
     public function toggleDomainOverrideAction($uuid, $enabled = null)
     {
         return $this->toggleBase('domains.domain', $uuid, $enabled);
+    }
+
+    /* ACLs */
+
+    public function searchAclAction()
+    {
+        return $this->searchBase(
+            'acls.acl',
+            ['enabled', 'name', 'action', 'description'],
+            'acl.action',
+            null,
+            SORT_NATURAL | SORT_FLAG_CASE
+        );
+    }
+
+    public function getAclAction($uuid = null)
+    {
+        return $this->getBase('acl', 'acls.acl', $uuid);
+    }
+
+    public function addAclAction()
+    {
+        return $this->addBase('acl', 'acls.acl');
+    }
+
+    public function delAclAction($uuid)
+    {
+        return $this->delBase('acls.acl', $uuid);
+    }
+
+    public function setAclAction($uuid)
+    {
+        return $this->setBase('acl', 'acls.acl', $uuid);
+    }
+
+    public function toggleAclAction($uuid, $enabled = null)
+    {
+        return $this->toggleBase('acls.acl', $uuid, $enabled);
     }
 }

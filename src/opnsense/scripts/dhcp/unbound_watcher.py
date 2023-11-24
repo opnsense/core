@@ -36,6 +36,7 @@ import time
 import tempfile
 import argparse
 import syslog
+import re
 from configparser import ConfigParser
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from daemonize import Daemonize
@@ -61,7 +62,6 @@ def unbound_control(commands, input=None, output_stream=None):
 
     if output_stream:
         output_stream.seek(0)
-
 
 class UnboundLocalData:
     def __init__(self):
@@ -136,6 +136,7 @@ def run_watcher(target_filename, default_domain, watch_file, config):
     dhcpdleases = watchers.dhcpd.DHCPDLease(watch_file)
     cached_leases = dict()
     unbound_local_data = UnboundLocalData()
+    hostname_pattern = re.compile("(?!-)[A-Z0-9-_]*(?<!-)$", re.IGNORECASE)
 
     # start watching dhcp leases
     last_cleanup = time.time()
@@ -144,13 +145,19 @@ def run_watcher(target_filename, default_domain, watch_file, config):
         for lease in dhcpdleases.watch():
             if 'ends' in lease and lease['ends'] > time.time() \
                     and 'client-hostname' in lease and 'address' in lease and lease['client-hostname']:
-                address = ipaddress.ip_address(lease['address'])
-                lease['domain'] = default_domain
-                for lease_config in lease_configs:
-                    if lease_config['start'] <= address <= lease_config['end']:
-                        lease['domain'] = lease_config['domain']
-                cached_leases[lease['address']] = lease
-                dhcpd_changed = True
+                if all(hostname_pattern.match(part) for part in lease['client-hostname'].strip('.').split('.')):
+                    address = ipaddress.ip_address(lease['address'])
+                    lease['domain'] = default_domain
+                    for lease_config in lease_configs:
+                        if lease_config['start'] <= address <= lease_config['end']:
+                            lease['domain'] = lease_config['domain']
+                    cached_leases[lease['address']] = lease
+                    dhcpd_changed = True
+                else:
+                    syslog.syslog(
+                        syslog.LOG_WARNING,
+                        "dhcpd leases: %s not a valid hostname, ignoring" % lease['client-hostname']
+                    )
 
         remove_rr = list()
         add_rr = list()
@@ -222,7 +229,7 @@ if __name__ == '__main__':
 
     inputargs = parser.parse_args()
 
-    syslog.openlog('unbound', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+    syslog.openlog('unbound', facility=syslog.LOG_LOCAL4)
 
     if inputargs.foreground:
         run_watcher(

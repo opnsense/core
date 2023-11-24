@@ -123,12 +123,16 @@ if __name__ == '__main__':
                         if len(severity) == 0 or record['severity'] is None or record['severity'] in severity:
                             result['total_rows'] += 1
                             if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                                result['rows'].append(record)
+                                if inputargs.output == 'json':
+                                    result['rows'].append(record)
+                                else:
+                                    print("%(timestamp)s\t%(severity)s\t%(process_name)s\t%(line)s" % record)
                             elif limit > 0 and result['total_rows'] > offset + limit:
                                 # do not fetch data until end of file...
                                 break
             if limit > 0 and result['total_rows'] > offset + limit:
                 break
 
-    # output results
-    print(ujson.dumps(result))
+    # output results (when json)
+    if inputargs.output == 'json':
+        print(ujson.dumps(result))

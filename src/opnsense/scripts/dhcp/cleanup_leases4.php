@@ -55,8 +55,8 @@ if (isset($opts['m'])) {
     foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (!empty($dhcpifconf['staticmap']) && !empty($dhcpifconf['enable'])) {
             foreach ($dhcpifconf['staticmap'] as $static) {
-                if (!empty($static['mac'])) {
-                    $addresses[$static['mac']] = !empty($static['ipaddr']) ? $static['ipaddr'] : "";
+                if (!empty($static['mac']) && !empty($static['ipaddr'])) {
+                    $addresses[$static['mac']] = $static['ipaddr'];
                 }
             }
         }
@@ -67,7 +67,7 @@ if (!empty($opts['d'])) {
 }
 
 if (isset($opts['s'])) {
-    killbypid('/var/dhcpd/var/run/dhcpd.pid', 'TERM', true);
+    killbypid('/var/dhcpd/var/run/dhcpd.pid');
 } elseif (isvalidpid('/var/dhcpd/var/run/dhcpd.pid')) {
     echo "dhcpd active, can't update lease file";
     exit(1);

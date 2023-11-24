@@ -27,10 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-// use legacy code to generate certs and ca's
+/* XXX use legacy code to generate certs and CAs */
+
 require_once("config.inc");
 require_once("certs.inc");
-require_once("legacy_bindings.inc");
 
 use OPNsense\Core\Config;
 

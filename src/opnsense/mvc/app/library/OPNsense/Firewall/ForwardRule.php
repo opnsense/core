@@ -42,7 +42,7 @@ class ForwardRule extends Rule
             'log' => 'parseBool,log ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
-            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+            'protocol' => self::PARSE_PROTO,
             'from' => 'parsePlainCurly,from ',
             'from_port' => 'parsePlainCurly, port ',
             'to' => 'parsePlainCurly,to ',
@@ -59,7 +59,7 @@ class ForwardRule extends Rule
             'nat' => 'parseStaticText,nat ',
             'interface' => 'parseInterface',
             'ipprotocol' => 'parsePlain',
-            'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+            'protocol' => self::PARSE_PROTO,
             'interface.from' => 'parseInterface, from (,:network)',
             'target.to' => 'parsePlainCurly,to ',
             'localport' => 'parsePlainCurly,port ',
@@ -104,13 +104,16 @@ class ForwardRule extends Rule
                 $tmp['pass'] = empty($tmp['nordr']);
             }
             // target address, when invalid, disable rule
-            if (!empty($tmp['target'])) {
-                if (Util::isAlias($tmp['target'])) {
-                    $tmp['target'] = "\${$tmp['target']}";
-                } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
+            if (empty($tmp['target'])) {
+                if (empty($tmp['nordr'])) {
                     $tmp['disabled'] = true;
-                    $this->log("Invalid target");
+                    $this->log("Missing target");
                 }
+            } elseif (Util::isAlias($tmp['target'])) {
+                $tmp['target'] = "\${$tmp['target']}";
+            } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
+                $tmp['disabled'] = true;
+                $this->log("Invalid target");
             }
             // parse our local port
             if (

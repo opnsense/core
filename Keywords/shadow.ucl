@@ -1,5 +1,3 @@
-# $FreeBSD$
-#
 # MAINTAINER: franco@opnsense.org
 #
 # @shadow etc/somefile.conf.sample

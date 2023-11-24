@@ -1,9 +1,7 @@
 <model>
     <mount>/vlans</mount>
     <version>1.0.0</version>
-    <description>
-        VLAN configuration
-    </description>
+    <description>VLAN configuration</description>
     <items>
         <vlan type="ArrayField">
             <if type=".\VlanInterfaceField">
@@ -30,7 +28,7 @@
             </tag>
             <pcp type="OptionField">
                 <Required>Y</Required>
-                <default>0</default>
+                <Default>0</Default>
                 <OptionValues>
                     <pcp1 value="1">Background (1, lowest)</pcp1>
                     <pcp0 value="0">Best Effort (0, default)</pcp0>
@@ -42,9 +40,14 @@
                     <pcp7 value="7">Network Control (7, highest)</pcp7>
                 </OptionValues>
             </pcp>
-            <descr type="TextField">
-              <Required>N</Required>
-            </descr>
+            <proto type="OptionField">
+                <BlankDesc>Auto</BlankDesc>
+                <OptionValues>
+                    <opt1 value="802.1q">802.1Q</opt1>
+                    <opt2 value="802.1ad">802.1ad</opt2>
+                </OptionValues>
+            </proto>
+            <descr type="TextField"/>
             <vlanif type="TextField">
               <Required>Y</Required>
               <Constraints>

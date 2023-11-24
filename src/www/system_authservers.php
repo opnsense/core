@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['radius_auth_port'] = "1812";
         $pconfig['radius_acct_port'] = "1813";
         $pconfig['type'] = 'ldap';
+        $pconfig['sync_memberof_constraint'] = true;
         // gather auth plugin defaults
         // the hotplug properties should be different per type, if not the default won't function correctly
         foreach ($authCNFOptions as $authType) {
@@ -90,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            $pconfig['sync_memberof_constraint'] = !empty($a_server[$id]['ldap_sync_memberof_constraint']);
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['ldap_sync_memberof_groups']);
@@ -118,7 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         } elseif ($pconfig['type'] == 'local') {
             foreach (['password_policy_duration', 'enable_password_policy_constraints',
-                'password_policy_complexity', 'password_policy_length'] as $fieldname) {
+                'password_policy_complexity', 'password_policy_compliance',
+                'password_policy_length'] as $fieldname) {
                 if (!empty($config['system']['webgui'][$fieldname])) {
                     $pconfig[$fieldname] = $config['system']['webgui'][$fieldname];
                 } else {
@@ -135,6 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = [];
     $pconfig = $_POST;
+
     if (isset($pconfig['id']) && isset($a_server[$pconfig['id']])) {
         $id = $pconfig['id'];
     }
@@ -142,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = $pconfig['act'];
     }
     if (isset($pconfig['save'])) {
-      /* input validation */
       if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
           $reqdfields = explode(" ", "name type ldap_host ldap_port ".
                           "ldap_urltype ldap_protver ldap_scope ".
@@ -164,6 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfieldsn[] = gettext("Bind user DN");
               $reqdfieldsn[] = gettext("Bind Password");
           }
+
+          do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
       } elseif ($pconfig['type'] == "radius") {
           $reqdfields = explode(" ", "name type radius_host radius_srvcs");
           $reqdfieldsn = array(
@@ -182,7 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfields[] = "radius_secret";
               $reqdfieldsn[] = gettext("Shared Secret");
           }
+
+          do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
       }
+
       if (!empty($authCNFOptions[$pconfig['type']])) {
           foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
               if (!empty($field['validate'])) {
@@ -192,8 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
           }
       }
-
-      do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
       if (!empty($pconfig['ldap_host']) && !(is_hostname($pconfig['ldap_host']) || is_ipaddr($pconfig['ldap_host']))) {
           $input_errors[] = gettext("The host name contains invalid characters.");
@@ -248,6 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
               $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
+              $server['ldap_sync_memberof_constraint'] = !empty($pconfig['sync_memberof_constraint']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['ldap_sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == "radius") {
@@ -276,8 +283,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
           } elseif ($server['type'] == 'local') {
-              foreach (array('password_policy_duration', 'enable_password_policy_constraints',
-                  'password_policy_complexity', 'password_policy_length') as $fieldname) {
+              foreach (['password_policy_duration', 'enable_password_policy_constraints',
+                  'password_policy_complexity', 'password_policy_compliance',
+                  'password_policy_length'] as $fieldname) {
                   if (!empty($pconfig[$fieldname])) {
                       $config['system']['webgui'][$fieldname] = $pconfig[$fieldname];
                   } elseif (isset($config['system']['webgui'][$fieldname])) {
@@ -320,14 +328,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 // list of all possible fields for auth item (used for form init)
-$all_authfields = array(
-    'type','name','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
-    'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user',
-    'ldap_read_properties', 'sync_memberof', 'sync_create_local_users', 'radius_host',
-    'radius_auth_port','radius_acct_port','radius_secret','radius_timeout','radius_srvcs',
-    'password_policy_duration', 'enable_password_policy_constraints',
-    'password_policy_complexity', 'password_policy_length'
-);
+$all_authfields = [
+    'enable_password_policy_constraints',
+    'ldap_attr_user',
+    'ldap_authcn',
+    'ldap_basedn',
+    'ldap_binddn',
+    'ldap_bindpw',
+    'ldap_extended_query',
+    'ldap_host',
+    'ldap_port',
+    'ldap_protver',
+    'ldap_read_properties',
+    'ldap_scope',
+    'ldap_urltype',
+    'name',
+    'password_policy_complexity',
+    'password_policy_compliance',
+    'password_policy_duration',
+    'password_policy_length',
+    'radius_acct_port',
+    'radius_auth_port',
+    'radius_host',
+    'radius_secret',
+    'radius_srvcs',
+    'radius_timeout',
+    'sync_create_local_users',
+    'sync_memberof',
+    'sync_memberof_constraint',
+    'type',
+];
 
 foreach ($all_authfields as $fieldname) {
     if (!isset($pconfig[$fieldname])) {
@@ -496,10 +526,16 @@ $( document ).ready(function() {
     $("#ldap_read_properties, #type").change(function(){
         if ($(this).is(":checked") || $("#type").val() == 'radius' ) {
             $("#sync_memberof").prop('disabled', false);
+            if ($("#type").val() !== 'radius') {
+                $("#sync_memberof_constraint").prop('disabled', false);
+            }
             $("#sync_memberof_groups").prop('disabled', false);
             $("#sync_create_local_users").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
+            if ($("#type").val() !== 'radius') {
+              $("#sync_memberof_constraint").prop('disabled', true);
+            }
             $("#sync_memberof_groups").prop('disabled', true);
             $("#sync_create_local_users").prop('disabled', true);
         }
@@ -618,6 +654,16 @@ endif; ?>
                     <?= gettext('Enable complexity requirements') ?>
                     <div class="hidden" data-for="help_for_password_policy_complexity">
                       <?= gettext("Require passwords to meet complexity rules");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_local auth_options password_policy_constraints hidden">
+                  <td><a id="help_for_password_policy_compliance" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Compliance'); ?></td>
+                  <td>
+                    <input id="password_policy_compliance" name="password_policy_compliance" type="checkbox" <?= empty($pconfig['password_policy_compliance']) ? '' : 'checked="checked"';?> />
+                    <?= gettext('Require SHA-512 password hashing') ?>
+                    <div class="hidden" data-for="help_for_password_policy_compliance">
+                      <?= gettext('Require passwords to meet compliance by using the hashing algorithm SHA-512. Otherwise, the more secure Bcrypt hash is used.') ?>
                     </div>
                   </td>
                 </tr>
@@ -813,6 +859,15 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_sync_memberof_constraint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Constraint groups'); ?></td>
+                  <td>
+                    <input id="sync_memberof_constraint" name="sync_memberof_constraint" type="checkbox" <?= empty($pconfig['sync_memberof_constraint']) ? '' : 'checked="checked"';?> />
+                    <div class="hidden" data-for="help_for_sync_memberof_constraint">
+                      <?= gettext("Constraint allowed groups to those selected in the container section. This may offer additional security in cases where users are able to inject memberOf attributes in different trees.");?>
+                    </div>
+                  </td>
+                </tr>
                 <tr class="auth_ldap auth_radius auth_ldap-totp auth_options hidden">
                   <td><a id="help_for_sync_memberof_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Limit groups'); ?></td>
                   <td>
@@ -847,46 +902,36 @@ endif; ?>
                 foreach ($authCNFOptions as $typename => $authtype):
                   if (!empty($authtype['additionalFields'])):
                     foreach ($authtype['additionalFields'] as $fieldname => $field):?>
-
                     <tr class="auth_options auth_<?=$typename;?> hidden">
                       <td>
-<?php
-                        if (!empty($field['help'])):?>
+<?php if (!empty($field['help'])): ?>
                         <a id="help_for_field_<?=$typename;?>_<?=$fieldname;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-<?php
-                        else:?>
+<?php else: ?>
                         <i class="fa fa-info-circle text-muted"></i>
-<?php
-                        endif;?>
+<?php endif ?>
                         <?=$field['name']; ?>
                       </td>
                       <td>
-<?php
-                        if ($field['type'] == 'text'):?>
+<?php if ($field['type'] == 'text'): ?>
                         <input name="<?=$fieldname;?>" type="text" value="<?=$pconfig[$fieldname] ?? '';?>"/>
-<?php
-                        elseif ($field['type'] == 'dropdown'):?>
+<?php elseif ($field['type'] == 'dropdown'): ?>
                         <select name="<?=$fieldname;?>" class="selectpicker" data-style="btn-default">
-<?php
-                          foreach ($field['options'] as $option => $optiontext):?>
+<?php foreach ($field['options'] as $option => $optiontext): ?>
                           <option value="<?=$option;?>" <?=(empty($pconfig[$fieldname]) && $field['default'] == $option) || ($pconfig[$fieldname] ?? '') == $option ? "selected=\"selected\"" : "";?> >
                             <?=$optiontext;?>
                           </option>
-<?php
-                          endforeach;?>
+<?php endforeach ?>
                         </select>
-<?php
-                        elseif ($field['type'] == 'checkbox'):?>
+<?php elseif ($field['type'] == 'checkbox'): ?>
                         <input name="<?=$fieldname;?>" type="checkbox" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
-<?php
-                        endif;?>
+<?php endif ?>
+<?php if (!empty($field['help'])): ?>
                         <div class="hidden" data-for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
                           <?=$field['help'];?>
                         </div>
+<?php endif ?>
                       </td>
                     </tr>
-
-
 <?php
                     endforeach;
                   endif;

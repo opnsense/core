@@ -38,7 +38,11 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
     foreach (['ipv4', 'ipv6'] as $proto) {
         if (!empty($ifcnf[$proto])) {
             foreach ($ifcnf[$proto] as $address) {
-                $addresses[$address['ipaddr']] = [
+                $key = $address['ipaddr'];
+                if ($proto == 'ipv6' && $address['link-local']) {
+                    $key .= '%' . $ifname;
+                }
+                $addresses[$key] = [
                     'subnetbits' => $address['subnetbits'],
                     'if' => $ifname,
                     'vhid' => $address['vhid'] ?? '',
@@ -48,8 +52,8 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
                 if (!empty($address['vhid'])) {
                     foreach ($ifcnf['carp'] as $vhid) {
                         if ($vhid['vhid'] == $address['vhid']) {
-                            $addresses[$address['ipaddr']]['advbase'] = $vhid['advbase'];
-                            $addresses[$address['ipaddr']]['advskew'] = $vhid['advskew'];
+                            $addresses[$key]['advbase'] = $vhid['advbase'];
+                            $addresses[$key]['advskew'] = $vhid['advskew'];
                         }
                     }
                 }
@@ -60,12 +64,19 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
 
 // remove deleted vips
 foreach (glob("/tmp/delete_vip_*.todo") as $filename) {
-    $address = trim(file_get_contents($filename));
-    if (isset($addresses[$address])) {
-        legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
-    } else {
-        // not found, likely proxy arp
-        $anyproxyarp = true;
+    foreach (array_unique(explode("\n", trim(file_get_contents($filename)))) as $address) {
+        /* '@' designates an IPv6 link-local scope, but not on network device */
+        if (strpos($address, '@') !== false) {
+             list($address, $interface) = explode('@', $address);
+             /* translate to what ifconfig will understand */
+             $address .= '%' . get_real_interface($interface, 'inet6');
+        }
+        if (isset($addresses[$address])) {
+            legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
+        } else {
+            // not found, likely proxy arp
+            $anyproxyarp = true;
+        }
     }
     unlink($filename);
 }
@@ -82,6 +93,9 @@ if (!empty($config['virtualip']['vip'])) {
         if (!empty($vipent['interface']) && !empty($interfaces[$vipent['interface']])) {
             $if = $interfaces[$vipent['interface']];
             $subnet = $vipent['subnet'];
+            if (is_linklocal($subnet)) {
+                $subnet .= '%' . get_real_interface($if, 'inet6');
+            }
             $subnet_bits = $vipent['subnet_bits'];
             $vhid = $vipent['vhid'] ?? '';
             $advbase = !empty($vipent['vhid']) ? $vipent['advbase'] : '';

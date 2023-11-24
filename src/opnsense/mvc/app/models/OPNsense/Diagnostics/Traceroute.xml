@@ -1,0 +1,33 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>OPNsense Traceroute Diagnostics</description>
+    <items>
+        <settings>
+            <hostname type="HostnameField">
+               <Required>Y</Required>
+               <ValidationMessage>Provide a valid hostname or address</ValidationMessage>
+            </hostname>
+            <ipproto type="OptionField">
+                <Required>Y</Required>
+                <Default>inet</Default>
+                <OptionValues>
+                    <inet>IPv4</inet>
+                    <inet6>IPv6</inet6>
+                </OptionValues>
+            </ipproto>
+            <protocol type="OptionField">
+                <Required>Y</Required>
+                <Default>udp</Default>
+                <OptionValues>
+                    <udp>UDP</udp>
+                    <icmp>ICMP</icmp>
+                </OptionValues>
+            </protocol>
+            <source_address type="NetworkField">
+              <NetMaskAllowed>N</NetMaskAllowed>
+              <ValidationMessage>Provide a valid source address</ValidationMessage>
+            </source_address>
+        </settings>
+    </items>
+</model>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -38,27 +38,29 @@ function dnsmasq_enabled()
 
 function dnsmasq_configure()
 {
-    return array(
-        'dns' => array('dnsmasq_configure_do'),
-        'hosts' => array('dnsmasq_hosts_generate:0'),
-        'local' => array('dnsmasq_configure_do'),
-        'newwanip' => array('dnsmasq_configure_do'),
-    );
+    return [
+        'dns' => ['dnsmasq_configure_do'],
+        'local' => ['dnsmasq_configure_do'],
+        'newwanip' => ['dnsmasq_configure_do'],
+    ];
 }
 
 function dnsmasq_services()
 {
-    $services = array();
+    global $config;
+
+    $services = [];
 
     if (!dnsmasq_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['name'] = 'dnsmasq';
+    $pconfig['dns_ports'] = [$config['dnsmasq']['port'] ?? '53'];
     $pconfig['description'] = gettext('Dnsmasq DNS');
-    $pconfig['php']['restart'] = array('dnsmasq_configure_do');
-    $pconfig['php']['start'] = array('dnsmasq_configure_do');
+    $pconfig['php']['restart'] = ['dnsmasq_configure_do'];
+    $pconfig['php']['start'] = ['dnsmasq_configure_do'];
     $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
     $services[] = $pconfig;
 
@@ -67,23 +69,23 @@ function dnsmasq_services()
 
 function dnsmasq_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['dnsmasq'] = array('facility' => array('dnsmasq'));
+    $logfacilities['dnsmasq'] = ['facility' => ['dnsmasq']];
 
     return $logfacilities;
 }
 
 function dnsmasq_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
+    $result[] = [
         'description' => gettext('Dnsmasq DNS'),
         'section' => 'dnsmasq',
         'id' => 'dnsforwarder',
-        'services' => ["dnsmasq"],
-    );
+        'services' => ['dnsmasq'],
+    ];
 
     return $result;
 }
@@ -92,9 +94,8 @@ function dnsmasq_configure_do($verbose = false)
 {
     global $config;
 
-    _dnsmasq_dhcpleases_stop();
-
-    killbypid('/var/run/dnsmasq.pid', 'TERM', true);
+    killbypid('/var/run/dnsmasq_dhcpd.pid');
+    killbypid('/var/run/dnsmasq.pid');
 
     if (!dnsmasq_enabled()) {
         return;
@@ -118,7 +119,7 @@ function dnsmasq_configure_do($verbose = false)
     if (!empty($config['dnsmasq']['interface'])) {
         $interfaces = explode(',', $config['dnsmasq']['interface']);
         $interfaces[] = 'lo0';
-        $addresses = array();
+        $addresses = [];
 
         foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
             if ($info['name'] == 'lo0' && $info['family'] == 'inet' && $tmpaddr != '127.0.0.1') {
@@ -186,16 +187,37 @@ function dnsmasq_configure_do($verbose = false)
         $args .= ' --no-hosts ';
     }
 
-    $args .= ' --dns-forward-max=5000 ';
-    $args .= ' --cache-size=10000 ';
-    $args .= ' --local-ttl=1 ';
+    if (isset($config['dnsmasq']['dns_forward_max'])) {
+        $args .= " --dns-forward-max={$config['dnsmasq']['dns_forward_max']} ";
+    } else {
+        $args .= ' --dns-forward-max=5000 ';
+    }
+
+    if (isset($config['dnsmasq']['cache_size'])) {
+        $args .= " --cache-size={$config['dnsmasq']['cache_size']} ";
+    } else {
+        $args .= ' --cache-size=10000 ';
+    }
+
+    if (isset($config['dnsmasq']['local_ttl'])) {
+        $args .= " --local-ttl={$config['dnsmasq']['local_ttl']} ";
+    } else {
+        $args .= ' --local-ttl=1 ';
+    }
+
     $args .= ' --conf-dir=/usr/local/etc/dnsmasq.conf.d,\*.conf ';
 
     _dnsmasq_add_host_entries();
 
     mwexec("/usr/local/sbin/dnsmasq {$args}");
 
-    _dnsmasq_dhcpleases_start();
+    if (isset($config['dnsmasq']['regdhcp'])) {
+        $domain = $config['system']['domain'];
+        if (isset($config['dnsmasq']['regdhcpdomain'])) {
+            $domain = $config['dnsmasq']['regdhcpdomain'];
+        }
+        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
+    }
 
     service_log("done.\n", $verbose);
 }
@@ -209,7 +231,7 @@ function _dnsmasq_add_host_entries()
     $dhosts = '';
 
     if (!isset($dnsmasqcfg['hosts']) || !is_array($dnsmasqcfg['hosts'])) {
-        $dnsmasqcfg['hosts'] = array();
+        $dnsmasqcfg['hosts'] = [];
     }
 
     foreach ($dnsmasqcfg['hosts'] as $host) {
@@ -231,22 +253,22 @@ function _dnsmasq_add_host_entries()
     }
 
     if (isset($dnsmasqcfg['regdhcpstatic'])) {
-        require_once 'plugins.inc.d/dhcpd.inc';  /* XXX */
-
         $domain = $config['system']['domain'];
         if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
 
-        foreach (dhcpd_staticmap($domain, legacy_interfaces_details()) as $host) {
-            if (empty($host['hostname'])) {
-                /* cannot register without a hostname */
-                continue;
-            }
-            if (isset($host['ipaddr'])) {
-                $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-            } else {
-                $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+        foreach (plugins_run('static_mapping', [null, true, $domain, legacy_interfaces_details()]) as $map) {
+            foreach ($map as $host) {
+                if (empty($host['hostname'])) {
+                    /* cannot register without a hostname */
+                    continue;
+                }
+                if (isset($host['ipaddr'])) {
+                    $dhosts .= "{$host['ipaddr']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+                } else {
+                    $dhosts .= "{$host['ipaddrv6']}\t{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+                }
             }
         }
     }
@@ -267,36 +289,4 @@ function _dnsmasq_add_host_entries()
     @unlink('/var/etc/dnsmasq-leases');
     touch('/var/etc/dnsmasq-leases');
     chmod('/var/etc/dnsmasq-leases', 0644);
-}
-
-function _dnsmasq_dhcpleases_start()
-{
-    global $config;
-
-    if (isset($config['dnsmasq']['regdhcp'])) {
-        $domain = $config['system']['domain'];
-        if (isset($config['dnsmasq']['regdhcpdomain'])) {
-            $domain = $config['dnsmasq']['regdhcpdomain'];
-        }
-        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
-    }
-}
-
-function _dnsmasq_dhcpleases_stop()
-{
-    killbypid('/var/run/dnsmasq_dhcpd.pid', 'TERM', true);
-}
-
-function dnsmasq_hosts_generate()
-{
-    _dnsmasq_dhcpleases_stop();
-
-    if (!dnsmasq_enabled()) {
-        return;
-    }
-
-    _dnsmasq_add_host_entries();
-    _dnsmasq_dhcpleases_start();
-
-    killbypid('/var/run/dnsmasq.pid', 'HUP');
 }

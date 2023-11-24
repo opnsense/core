@@ -110,7 +110,9 @@ function vxlan_configure_do($verbose = false, $device = null)
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
             $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
             $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
-            $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            if (!empty($interfaces_details[$device_name]['vxlan']['group'])) {
+                $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+            }
         }
         // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
@@ -152,13 +154,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         service_log("done.\n", $verbose);
     }
 
-    // configure interface when device has changed
-    foreach ($changed_devices as $device_name) {
-        $friendly_if = convert_real_interface_to_friendly_interface_name($device_name);
-        if (!empty($friendly_if)) {
-            interface_configure($verbose, $friendly_if);
-        }
-    }
+    // configure attached interface when devices have changed
+    interfaces_restart_by_device($verbose, $changed_devices);
 }
 
 function vxlan_configure_device($device)

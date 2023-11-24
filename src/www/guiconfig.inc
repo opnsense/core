@@ -31,6 +31,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* check before 'product' class is known to catch all errors */
 if (file_exists('/var/run/development')) {
     ini_set('display_errors', 0);
 }
@@ -64,7 +65,7 @@ function get_current_theme()
 function html_safe($text)
 {
     /* gettext() embedded in JavaScript can cause syntax errors */
-    return str_replace("\n", '&#10;', htmlspecialchars($text, ENT_QUOTES | ENT_HTML401));
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
 }
 
 /**
@@ -339,7 +340,7 @@ function pprint_port($port) {
 
     $pport = "";
 
-    if (!$port) {
+    if ($port == '') {
         return "*";
     } else {
         $srcport = explode("-", $port);
@@ -421,11 +422,11 @@ function pconfig_to_address(&$adr, $padr, $pmask, $pnot = false, $pbeginport = 0
     } else {
         $adr['address'] = $padr;
         if (is_ipaddrv6($padr)) {
-            if ($pmask != 128) {
+            if ($pmask != '' && $pmask != 128) {
                 $adr['address'] .= "/" . $pmask;
             }
         } else {
-            if ($pmask != 32) {
+            if ($pmask != '' && $pmask != 32) {
                 $adr['address'] .= "/" . $pmask;
             }
         }
@@ -468,45 +469,6 @@ if (!$timezone) {
 }
 
 date_default_timezone_set($timezone);
-
-function get_crash_report()
-{
-    if (!userIsAdmin($_SESSION['Username'])) {
-        return;
-    }
-
-    $savemsg = sprintf(
-        gettext('A problem was detected. Click %shere%s for more information.'),
-        '<a href="/crash_reporter.php">',
-        '</a>'
-    );
-    $skip_files = array('.', '..', 'minfree', 'bounds', '');
-    $PHP_errors_log = '/tmp/PHP_errors.log';
-    $count = 0;
-
-    if (file_exists($PHP_errors_log)) {
-        $total = shell_exec(sprintf(
-            '/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-            $PHP_errors_log
-        ));
-        if ($total > 0) {
-            $count++;
-        }
-    }
-
-    $crashes = glob('/var/crash/*');
-    foreach ($crashes as $crash) {
-        if (!in_array(basename($crash), $skip_files)) {
-            $count++;
-        }
-    }
-
-    if (!$count) {
-        $savemsg = '';
-    }
-
-    return $savemsg;
-}
 
 function get_menu_user()
 {

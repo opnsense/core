@@ -1,15 +1,13 @@
 <model>
     <mount>//tests/OPNsense/TestModel</mount>
     <version>1.0.0</version>
-    <description>
-        OPNsense RecursiveModel test
-    </description>
+    <description>OPNsense RecursiveModel test</description>
     <items>
         <!-- container -->
         <general>
             <!-- fields -->
             <FromEmail type="EmailField">
-                <default>sample@example.com</default>
+                <Default>sample@example.com</Default>
                 <Required>Y</Required>
             </FromEmail>
         </general>
@@ -92,7 +90,7 @@
         </SingleSelect>
         <DependConstraint>
             <value1 type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
                 <Constraints>
                     <check001>

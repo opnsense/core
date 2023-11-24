@@ -69,8 +69,5 @@ elif [ "${1}" = "-d" ]; then
 	/usr/local/sbin/ifctl -i ${ifname} -6rd
 fi
 
-# wait for DAD to complete to avoid tentative address
-sleep "$(($(sysctl -n net.inet6.ip6.dad_count) + 1))"
-
 # remove slaac suffix here to reload correct interface
 /usr/local/sbin/configctl -d interface newipv6 ${ifname%%:slaac}

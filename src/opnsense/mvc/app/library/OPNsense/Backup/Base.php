@@ -56,7 +56,7 @@ abstract class Base
         file_put_contents("{$file}.dec", $data);
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s',
+                '/usr/local/bin/openssl enc -e -%s -md %s -pbkdf2 -iter %s -in %s -out %s -pass file:%s 2> /dev/null',
                 escapeshellarg($cipher),
                 escapeshellarg($hash),
                 escapeshellarg($pbkdf2),
@@ -71,7 +71,7 @@ abstract class Base
         @unlink($file);
 
         if (file_exists("{$file}.enc") && !$retval) {
-            $version = trim(shell_exec('opnsense-version -Nv'));
+            $version = trim(shell_exec('opnsense-version -Nv') ?? '');
             $result = "---- BEGIN {$tag} ----\n";
             $result .= "Version: {$version}\n";
             $result .= "Cipher: " . strtoupper($cipher) . "\n";
@@ -139,7 +139,7 @@ abstract class Base
         file_put_contents("{$file}.enc", base64_decode($data));
         exec(
             sprintf(
-                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass file:%s',
+                '/usr/local/bin/openssl enc -d -%s -md %s %s -in %s -out %s -pass file:%s 2> /dev/null',
                 escapeshellarg($cipher),
                 escapeshellarg($hash),
                 $pbkdf2 === null ? '' : '-pbkdf2 -iter=' . escapeshellarg($pbkdf2),

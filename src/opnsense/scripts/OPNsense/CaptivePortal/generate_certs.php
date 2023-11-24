@@ -27,52 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-// use legacy code to generate certs and ca's
-// eventually we need to replace this.
+/* XXX use legacy code to generate certs and CAs */
+
 require_once("config.inc");
 require_once("certs.inc");
-require_once("legacy_bindings.inc");
 
 use OPNsense\Core\Config;
 
+$store = new OPNsense\Trust\Store();
 // traverse captive portal zones
 $configObj = Config::getInstance()->object();
 if (isset($configObj->OPNsense->captiveportal->zones)) {
     foreach ($configObj->OPNsense->captiveportal->zones->children() as $zone) {
-        $cert_refid = (string)$zone->certificate;
-        $zone_id = (string)$zone->zoneid;
+        $cert = $store->getCertificate((string)$zone->certificate);
         // if the zone has a certificate attached, search for its contents
-        if ($cert_refid != "") {
-            foreach ($configObj->cert as $cert) {
-                if ($cert_refid == (string)$cert->refid) {
-                    // generate cert pem file
-                    $pem_content = trim(str_replace("\n\n", "\n", str_replace(
-                        "\r",
-                        "",
-                        base64_decode((string)$cert->crt)
-                    )));
-
-                    $pem_content .= "\n";
-                    $pem_content .= trim(str_replace(
-                        "\n\n",
-                        "\n",
-                        str_replace("\r", "", base64_decode((string)$cert->prv))
-                    ));
-                    $pem_content .= "\n";
-                    $output_pem_filename = "/var/etc/cert-cp-zone" . $zone_id . ".pem";
-                    file_put_contents($output_pem_filename, $pem_content);
-                    chmod($output_pem_filename, 0600);
-                    echo "certificate generated " . $output_pem_filename . "\n";
-                    // generate ca pem file
-                    if (!empty($cert->caref)) {
-                        $output_pem_filename = "/var/etc/ca-cp-zone" . $zone_id . ".pem";
-                        $cert = (array)$cert;
-                        $ca = ca_chain($cert);
-                        file_put_contents($output_pem_filename, $ca);
-                        chmod($output_pem_filename, 0600);
-                        echo "certificate generated " . $output_pem_filename  . "\n";
-                    }
-                }
+        if ($cert && !empty($cert['prv'])) {
+            $output_pem_filename = "/var/etc/cert-cp-zone{$zone->zoneid}.pem";
+            touch($output_pem_filename);
+            chmod($output_pem_filename, 0600);
+            file_put_contents($output_pem_filename, $cert['crt'] . $cert['prv']);
+            echo "certificate generated " . $output_pem_filename . "\n";
+            if (!empty($cert['ca'])) {
+                $output_pem_filename = "/var/etc/ca-cp-zone{$zone->zoneid}.pem";
+                touch($output_pem_filename);
+                chmod($output_pem_filename, 0600);
+                file_put_contents($output_pem_filename, $cert['ca']['crt']);
+                echo "certificate generated " . $output_pem_filename  . "\n";
             }
         }
     }

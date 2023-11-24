@@ -42,6 +42,11 @@ class VirtualIPField extends BaseListField
     private $vipType = "*";
 
     /**
+     * @var boolean legacy key usage
+     */
+    private $isLegacyKey = true;
+
+    /**
      * @var array cached collected certs
      */
     private static $internalStaticOptionList = array();
@@ -53,6 +58,18 @@ class VirtualIPField extends BaseListField
     public function setType($value)
     {
         $this->vipType = $value;
+    }
+
+    /**
+     * as this field type is used to hook legacy fields and MVC ones, specify a key here.
+     * default it uses a legacy (subnet) key.
+     * @param $value string vip type
+     */
+    public function setKey($value)
+    {
+        if (strtolower($value) == 'mvc') {
+            $this->isLegacyKey = false;
+        }
     }
 
     /**
@@ -83,7 +100,12 @@ class VirtualIPField extends BaseListField
                         } else {
                             $caption = sprintf(gettext("[%s] %s on %s"), $vip->subnet, $vip->descr, $intf_name);
                         }
-                        self::$internalStaticOptionList[$this->vipType][(string)$vip->subnet] = $caption;
+                        if ($this->isLegacyKey) {
+                            $key = (string)$vip->subnet;
+                        } else {
+                            $key = (string)$vip->attributes()['uuid'];
+                        }
+                        self::$internalStaticOptionList[$this->vipType][$key] = $caption;
                     }
                 }
                 natcasesort(self::$internalStaticOptionList[$this->vipType]);

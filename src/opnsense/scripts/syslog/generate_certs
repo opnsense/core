@@ -27,25 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* XXX use legacy code to generate certs and CAs */
+
 require_once("config.inc");
 require_once("certs.inc");
-require_once("legacy_bindings.inc");
 
-use OPNsense\Core\Config;
-
+$store = new OPNsense\Trust\Store();
 $instances = [];
-$configObj = Config::getInstance()->object();
 @mkdir("/usr/local/etc/syslog-ng/cert.d", 0700, true);
 foreach ((new OPNsense\Syslog\Syslog())->destinations->destination->iterateItems() as $id => $item) {
-    if (in_array($item->transport, ['tls4', 'tls6']) && !empty($configObj->cert) && (string)$item->enabled == "1"){
+    if (in_array($item->transport, ['tls4', 'tls6']) && (string)$item->enabled == "1"){
         $dest_key = str_replace("-", "", $id);
         $instances[] = $dest_key;
-        $cert_refid = (string)$item->certificate;
-        foreach ($configObj->cert as $cert) {
-            if ($cert_refid == (string)$cert->refid) {
-                file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.key", base64_decode((string)$cert->prv));
-                file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.crt", base64_decode((string)$cert->crt));
-            }
+        $cert = $store->getCertificate((string)$item->certificate);
+        if ($cert && isset($cert['prv'])) {
+            file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.key", $cert['prv']);
+            file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.crt", $cert['crt']);
         }
     }
 }

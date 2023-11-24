@@ -159,6 +159,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $children = 0;

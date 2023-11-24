@@ -29,10 +29,10 @@
     download maxmind GeoLite2 Free database into easy to use alias files [<COUNTRY>-<PROTO>] located
     in /usr/local/share/GeoIP/alias
 """
-from lib.geoip import download_geolite
+from lib.alias.geoip import GEOIP
 
 # output files and lines processed
-data = download_geolite()
+data = GEOIP().download()
 print ("%(file_count)d files written, with a total number of %(address_count)d lines" % data)
 print ("locations filename : %(locations_filename)s" % data)
 print ("IPv4 filename : %(IPv4)s" % data['address_sources'])

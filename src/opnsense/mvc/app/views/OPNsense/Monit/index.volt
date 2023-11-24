@@ -111,7 +111,7 @@
          saveFormToEndpoint("/api/monit/settings/set/", frm_id, function(){
             isSubsystemDirty();
             updateServiceControlUI('monit');
-         });
+         }, true);
          $("#btnSaveGeneralProgress").removeClass("fa fa-spinner fa-pulse");
          $("#btnSaveGeneral").blur();
       });

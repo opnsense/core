@@ -2,19 +2,28 @@
     <page-services-dnsresolver>
         <name>Services: Unbound DNS: General</name>
         <patterns>
-            <pattern>services_unbound.php*</pattern>
+            <pattern>ui/unbound/general</pattern>
+            <pattern>api/unbound/general/*</pattern>
         </patterns>
     </page-services-dnsresolver>
     <page-services-dnsresolver-acls>
         <name>Services: Unbound DNS: Access Lists</name>
         <patterns>
-            <pattern>services_unbound_acls.php*</pattern>
+            <pattern>ui/unbound/acl</pattern>
+            <pattern>api/unbound/acl/*</pattern>
         </patterns>
     </page-services-dnsresolver-acls>
+    <page-services-dnsresolver-advanced>
+        <name>Services: Unbound DNS: Advanced</name>
+        <patterns>
+            <pattern>ui/unbound/advanced</pattern>
+            <pattern>api/unbound/advanced/*</pattern>
+        </patterns>
+    </page-services-dnsresolver-advanced>
     <page-services-dnsresolver-overrides>
         <name>Services: Unbound DNS: Edit Host and Domain Override</name>
         <patterns>
-            <pattern>ui/unbound/overrides/*</pattern>
+            <pattern>ui/unbound/overrides</pattern>
             <pattern>api/unbound/settings/searchHostOverride/*</pattern>
             <pattern>api/unbound/settings/getHostOverride/*</pattern>
             <pattern>api/unbound/settings/setHostOverride/*</pattern>

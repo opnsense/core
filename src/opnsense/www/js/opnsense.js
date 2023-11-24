@@ -77,14 +77,15 @@ function getFormData(parent) {
                         }
                     }
                     // selectbox, collect selected items
-                    var tmp_str = "";
-                    sourceNode.children().each(function(index){
-                        if ($(this).prop("selected")){
-                            if (tmp_str !== "") tmp_str = tmp_str + separator;
-                            tmp_str = tmp_str + $(this).val();
-                        }
-                    });
-                    node[keypart] = tmp_str;
+                    if (!Array.isArray(sourceNode.val())) {
+                        node[keypart] = sourceNode.val();
+                    } else {
+                        node[keypart] = "";
+                        $.each(sourceNode.val(), function(idx, value){
+                            if (node[keypart] !== "") node[keypart] = node[keypart] + separator;
+                            node[keypart] = node[keypart] + value;
+                        });
+                    }
                 } else if (sourceNode.prop("type") === "checkbox") {
                     // checkbox input type
                     if (sourceNode.prop("checked")) {
@@ -147,6 +148,7 @@ function setFormData(parent,data) {
                             targetNode.tokenize2().trigger('tokenize:clear');
                         }
                         targetNode.empty(); // flush
+                        let optgroups = [];
                         if (Array.isArray(node[keypart]) && node[keypart][0] !== undefined && node[keypart][0].key !== undefined) {
                             // key value (sorted) list
                             // (eg node[keypart][0] = {selected: 0, value: 'my item', key: 'item'})
@@ -155,18 +157,33 @@ function setFormData(parent,data) {
                                 if (String(node[keypart][i].selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
-                                targetNode.append(opt);
+                                let optgroup = node[keypart][i].optgroup ?? '';
+                                if (optgroups[optgroup] === undefined) {
+                                    optgroups[optgroup] = [];
+                                }
+                                optgroups[optgroup].push(opt);
                             }
                         } else{
                             // default "dictionary" type select items
                             // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
                             $.each(node[keypart],function(indxItem, keyItem){
                                 let opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                                let optgroup = keyItem.optgroup ?? '';
                                 if (String(keyItem["selected"]) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
-                                targetNode.append(opt);
+                                if (optgroups[optgroup] === undefined) {
+                                    optgroups[optgroup] = [];
+                                }
+                                optgroups[optgroup].push(opt);
                             });
+                        }
+                        for (const [group, items] of Object.entries(optgroups)) {
+                            if (group == '' && optgroups.length <= 1) {
+                                targetNode.append(items);
+                            } else {
+                                targetNode.append($("<optgroup/>").attr('label', group).append(items));
+                            }
                         }
                     } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type
@@ -190,14 +207,14 @@ function setFormData(parent,data) {
     });
 }
 
-
 /**
  * handle form validations
  * @param parent
  * @param validationErrors
  */
-function handleFormValidation(parent,validationErrors) {
-    $( "#"+parent).find("[id]").each(function() {
+function handleFormValidation(parent, validationErrors)
+{
+    $("#" + parent).find("[id]").each(function () {
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             let message = validationErrors[$(this).prop('id')];
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
@@ -214,6 +231,11 @@ function handleFormValidation(parent,validationErrors) {
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
+
+    let tab = $("#" + parent).parent().attr('id') + '_tab';
+    if (validationErrors !== undefined) {
+        $('#' + tab).click();
+    }
 }
 
 /**

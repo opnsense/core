@@ -126,16 +126,16 @@
         <thead>
           <tr>
               <th data-column-id="name" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-              <th data-column-id="connected" data-width="6em" data-type="string" data-formatter="status">{{ lang._('Status') }}</th>
+              <th data-column-id="connected" data-width="6em" data-type="string" data-width="3em"  data-formatter="status">{{ lang._('Status') }}</th>
               <th data-column-id="phase1desc" data-type="string">{{ lang._('Connection') }}</th>
-              <th data-column-id="version" data-type="string">{{ lang._('Version') }}</th>
+              <th data-column-id="version" data-width="6em"  data-type="string">{{ lang._('Version') }}</th>
               <th data-column-id="local-id" data-type="string">{{ lang._('Local ID') }}</th>
               <th data-column-id="local-addrs" data-type="string">{{ lang._('Local IP') }}</th>
               <th data-column-id="remote-id" data-type="string">{{ lang._('Remote ID') }}</th>
               <th data-column-id="remote-addrs" data-type="string">{{ lang._('Remote IP') }}</th>
-              <th data-column-id="local-class" data-type="string">{{ lang._('Local Auth') }}</th>
-              <th data-column-id="remote-class" data-type="string">{{ lang._('Remote Auth') }}</th>
-              <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false"></th>
+              <th data-column-id="local-class"  data-visible="false" data-type="string">{{ lang._('Local Auth') }}</th>
+              <th data-column-id="remote-class"  data-visible="false" data-type="string">{{ lang._('Remote Auth') }}</th>
+              <th data-column-id="commands" data-width="4em" data-formatter="commands" data-sortable="false"></th>
           </tr>
         </thead>
         <tbody>
@@ -154,8 +154,8 @@
             <th data-column-id="remote-ts" data-type="string" data-formatter="addresses">{{ lang._('Remote subnets') }}</th>
             <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
             <th data-column-id="install-time" data-type="string">{{ lang._('Time') }}</th>
-            <th data-column-id="bytes-in" data-type="string">{{ lang._('Bytes in') }}</th>
-            <th data-column-id="bytes-out" data-type="string">{{ lang._('Bytes out') }}</th>
+            <th data-column-id="bytes-in" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes in') }}</th>
+            <th data-column-id="bytes-out" data-type="numeric"  data-formatter="bytes">{{ lang._('Bytes out') }}</th>
         </tr>
       </thead>
       <tbody>

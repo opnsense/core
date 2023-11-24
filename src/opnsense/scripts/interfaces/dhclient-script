@@ -1,8 +1,6 @@
 #!/bin/sh
 #
-# $OpenBSD: dhclient-script,v 1.6 2004/05/06 18:22:41 claudio Exp $
-# $FreeBSD: src/sbin/dhclient/dhclient-script,v 1.4 2005/06/10 03:41:18 brooks Exp $
-#
+# Copyright (c) 2021-2023 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2003 Kenneth R Westerback <krw@openbsd.org>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -16,49 +14,21 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-#
-#
 
-ARP=/usr/sbin/arp
-HOSTNAME=/bin/hostname
-IFCONFIG='/sbin/ifconfig -n'
-
-LOCALHOST=127.0.0.1
-
-if [ -x /usr/bin/logger ]; then
-	LOGGER="/usr/bin/logger -s -p user.notice -t dhclient"
-else
-	LOGGER=echo
-fi
+IFCONFIG="/sbin/ifconfig -n"
+LOGGER="/usr/bin/logger -s -p user.notice -t dhclient dhclient-script:"
 
 #
 # Helper functions that implement common actions.
 #
 
-check_hostname() {
-	current_hostname=`$HOSTNAME`
-	if [ -z "$current_hostname" ]; then
-		$LOGGER "New Hostname ($interface): $new_host_name"
-		$HOSTNAME $new_host_name
-	elif [ "$current_hostname" = "$old_host_name" -a \
-	       "$new_host_name" != "$old_host_name" ]; then
-		$LOGGER "New Hostname ($interface): $new_host_name"
-		$HOSTNAME $new_host_name
-	fi
-}
-
-arp_flush() {
-	arp -an -i $interface | \
-		sed -n -e 's/^.*(\(.*\)) at .*$/arp -d \1/p' | \
-		sh >/dev/null 2>&1
-}
-
-
-delete_old_address() {
+delete_old_address()
+{
 	eval "$IFCONFIG $interface inet -alias $old_ip_address $medium"
 }
 
-add_new_address() {
+add_new_address()
+{
 	eval "$IFCONFIG $interface \
 		inet $new_ip_address \
 		netmask $new_subnet_mask \
@@ -75,22 +45,23 @@ add_new_address() {
 	fi
 }
 
-delete_old_alias() {
+delete_old_alias()
+{
 	if [ -n "$alias_ip_address" ]; then
 		$IFCONFIG $interface inet -alias $alias_ip_address > /dev/null 2>&1
-		#route delete $alias_ip_address $LOCALHOST > /dev/null 2>&1
 	fi
 }
 
-add_new_alias() {
+add_new_alias()
+{
 	if [ -n "$alias_ip_address" ]; then
 		$IFCONFIG $interface inet alias $alias_ip_address netmask \
 		    $alias_subnet_mask
-		#route add $alias_ip_address $LOCALHOST
 	fi
 }
 
-fill_classless_routes() {
+fill_classless_routes()
+{
 	set $1
 	while [ $# -ge 5 ]; do
 		if [ $1 -eq 0 ]; then
@@ -115,8 +86,8 @@ fill_classless_routes() {
 	done
 }
 
-delete_old_routes() {
-	#route delete "$old_ip_address" $LOCALHOST >/dev/null 2>&1
+delete_old_routes()
+{
 	if [ -n "$old_classless_routes" ]; then
 		fill_classless_routes "$old_classless_routes"
 		set $classless_routes
@@ -125,13 +96,6 @@ delete_old_routes() {
 			shift; shift
 		done
 		return 0;
-	fi
-
-	# If we supported multiple default routes, we'd be removing each
-	# one here.  We don't so just delete the default route if it's
-	# through our interface.
-	if is_default_interface; then
-		#route delete default >/dev/null 2>&1
 	fi
 
 	if [ -n "$old_static_routes" ]; then
@@ -144,12 +108,13 @@ delete_old_routes() {
 
 	/usr/local/sbin/ifctl -i ${interface} -4rd
 
-	arp_flush
+	arp -an -i $interface | \
+	    sed -n -e 's/^.*(\(.*\)) at .*$/arp -d \1/p' | \
+	    sh >/dev/null 2>&1
 }
 
-add_new_routes() {
-	#route add $new_ip_address $LOCALHOST >/dev/null 2>&1
-
+add_new_routes()
+{
 	# RFC 3442: If the DHCP server returns both a Classless Static
 	# Routes option and a Router option, the DHCP client MUST ignore
 	# the Router option.
@@ -195,7 +160,8 @@ add_new_routes() {
 	fi
 }
 
-add_new_resolv_conf() {
+add_new_resolv_conf()
+{
 	$LOGGER "Creating resolv.conf"
 
 	ARGS="-i ${interface} -4nd"
@@ -209,57 +175,11 @@ add_new_resolv_conf() {
 	return 0
 }
 
-# Must be used on exit.   Invokes the local dhcp client exit hooks, if any.
-exit_with_hooks() {
-	exit_status=$1
-	if [ -f /etc/dhclient-exit-hooks ]; then
-		. /etc/dhclient-exit-hooks
-	fi
-	# probably should do something with exit status of the local script
-	exit $exit_status
-}
-
-# Get the interface with the current ipv4 default route on it using only
-# commands that are available prior to /usr being mounted.
-is_default_interface()
-{
-	routeget="`route -n get -inet default`"
-	oldifs="$IFS"
-	IFS="
-"
-	defif=
-	for line in $routeget ; do
-		case $line in
-		*interface:*)
-			defif=${line##*: }
-			;;
-		esac
-	done
-	IFS=${oldifs}
-
-	if [ -z "$defif" -o "$defif" = "$interface" ]; then
-		return 0
-	else
-		return 1
-	fi
-}
-
 #
 # Start of active code.
 #
 
-# Invoke the local dhcp client enter hooks, if they exist.
-if [ -f /etc/dhclient-enter-hooks ]; then
-	exit_status=0
-	. /etc/dhclient-enter-hooks
-	# allow the local script to abort processing of this state
-	# local script must set exit_status variable to nonzero.
-	if [ $exit_status -ne 0 ]; then
-		exit $exit_status
-	fi
-fi
-
-: ${resolvconf_enable="NO"}
+$LOGGER "Reason $reason on $interface executing"
 
 case $reason in
 MEDIUM)
@@ -278,7 +198,10 @@ ARPCHECK|ARPSEND)
 	;;
 
 BOUND|RENEW|REBIND|REBOOT)
-	check_hostname
+	if [ -n "$new_host_name" ]; then
+		$LOGGER "New Hostname ($interface): $new_host_name"
+	fi
+
 	changes="no"
 	if [ -n "$old_ip_address" ]; then
 		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
@@ -303,11 +226,9 @@ BOUND|RENEW|REBIND|REBOOT)
 		add_new_alias
 		changes="yes"
 	fi
-	#if is_default_interface; then
-		add_new_resolv_conf
-	#fi
+	add_new_resolv_conf
 	if [ "$changes" = "yes" ] ; then
-		/usr/local/sbin/configctl -d interface newip $interface
+		/usr/local/sbin/configctl -d interface newip $interface force
 	fi
 	;;
 
@@ -317,24 +238,7 @@ EXPIRE|FAIL)
 		delete_old_address
 		delete_old_routes
 	fi
-	if [ -x $ARP ]; then
-		$ARP -d -a -i $interface
-	fi
-	# XXX Why add alias we just deleted above?
 	add_new_alias
-	if is_default_interface; then
-		case $resolvconf_enable in
-		# "no", "false", "off", or "0"
-		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|0)
-			if [ -f /etc/resolv.conf.save ]; then
-				cat /etc/resolv.conf.save > /etc/resolv.conf
-			fi
-			;;
-		*)
-			/sbin/resolvconf -d ${interface}
-			;;
-		esac
-	fi
 	;;
 
 TIMEOUT)
@@ -349,20 +253,16 @@ TIMEOUT)
 				add_new_alias
 			fi
 			add_new_routes
-			if ! is_default_interface; then
-				/usr/local/sbin/configctl -d interface newip $interface
-				exit_with_hooks 0
-			fi
-			if add_new_resolv_conf; then
-				/usr/local/sbin/configctl -d interface newip $interface
-				exit_with_hooks 0
-			fi
+			add_new_resolv_conf
+			/usr/local/sbin/configctl -d interface newip $interface force
+			exit 0
 		fi
 	fi
 	eval "$IFCONFIG $interface inet -alias $new_ip_address $medium"
 	delete_old_routes
-	exit_with_hooks 1
+	/usr/local/sbin/configctl -d interface newip $interface
+	exit 1
 	;;
 esac
 
-exit_with_hooks 0
+exit 0

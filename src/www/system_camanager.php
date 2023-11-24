@@ -432,6 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
+$act = htmlspecialchars($act, ENT_QUOTES | ENT_HTML401);
 
 include("head.inc");
 

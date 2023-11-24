@@ -264,39 +264,37 @@ function get_wireless_modes($interface)
 
     $cloned_interface = get_real_interface($interface);
     if ($cloned_interface) {
-        $chan_list = "/sbin/ifconfig {$cloned_interface} list chan";
-        $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
-        $format_list = "/usr/bin/awk '{print \$5 \" \" \$6 \",\" \$1}'";
+        $chan_list = shell_safe('/sbin/ifconfig -v %s list chan', $cloned_interface);
+        $matches = [];
+
+        preg_match_all('/Channel\s+([^\s]+)\s+:\s+[^\s]+\s+[^\s]+\s+([^\s]+(?:\sht(?:\/[^\s]+)?)?)/', $chan_list, $matches);
 
         $interface_channels = [];
-        exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
 
-        foreach ($interface_channels as $c => $interface_channel) {
-            $channel_line = explode(",", $interface_channel);
-            $wireless_mode = trim($channel_line[0]);
-            $wireless_channel = trim($channel_line[1]);
-            if (trim($wireless_mode) != "") {
-                /* if we only have 11g also set 11b channels */
-                if ($wireless_mode == "11g") {
-                    if (!isset($wireless_modes["11b"])) {
-                        $wireless_modes["11b"] = array();
-                    }
-                } elseif ($wireless_mode == "11g ht") {
-                    if (!isset($wireless_modes["11b"])) {
-                        $wireless_modes["11b"] = array();
-                    } elseif (!isset($wireless_modes["11g"])) {
-                        $wireless_modes["11g"] = array();
-                    }
-                    $wireless_mode = "11ng";
-                } elseif ($wireless_mode == "11a ht") {
-                    if (!isset($wireless_modes["11a"])) {
-                        $wireless_modes["11a"] = array();
-                    }
-                    $wireless_mode = "11na";
-                }
-                $wireless_modes[$wireless_mode][$c] = $wireless_channel;
-            }
+        foreach (array_keys($matches[0]) as $i) {
+            $interface_channels[] = [$matches[1][$i], $matches[2][$i]];
         }
+
+        array_multisort($interface_channels);
+
+        foreach ($interface_channels as $wireless_info) {
+            /* XXX discard possible channel width for now */
+            $wireless_mode = explode('/', $wireless_info[1])[0];
+            $wireless_channel = (string)$wireless_info[0];
+            switch ($wireless_mode) {
+                case '11g ht':
+                    $wireless_mode = '11ng';
+                    break;
+                case '11a ht':
+                    $wireless_mode = '11na';
+                    break;
+                default:
+                    break;
+            }
+            $wireless_modes[$wireless_mode][] = $wireless_channel;
+        }
+
+        ksort($wireless_modes);
     }
 
     return $wireless_modes;
@@ -309,19 +307,16 @@ function get_wireless_channel_info($interface)
 
     $cloned_interface = get_real_interface($interface);
     if ($cloned_interface) {
-        $chan_list = "/sbin/ifconfig {$cloned_interface} list txpower";
-        $stack_list = "/usr/bin/awk -F\"Channel \" '{ gsub(/\\*/, \" \"); print \$2 \"\\\n\" \$3 }'";
-        $format_list = "/usr/bin/awk '{print \$1 \",\" \$3 \" \" \$4 \",\" \$5 \",\" \$7}'";
+        $chan_list = shell_safe('/sbin/ifconfig %s list txpower', $cloned_interface);
+        $matches = [];
 
-        $interface_channels = [];
-        exec("$chan_list | $stack_list | sort -u | $format_list 2>&1", $interface_channels);
+        preg_match_all('/Channel\s+([^\s]+)\s+:\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+[^\s]+\s+([^\s]+)/', $chan_list, $matches);
 
-        foreach ($interface_channels as $channel_line) {
-            $channel_line = explode(",", $channel_line);
-            if (!isset($wireless_channels[$channel_line[0]])) {
-                $wireless_channels[$channel_line[0]] = $channel_line;
-            }
+        foreach (array_keys($matches[0]) as $i) {
+            $wireless_channels[$matches[1][$i]] = "{$matches[2][$i]} {$matches[3][$i]}@{$matches[4][$i]}/{$matches[5][$i]}";
         }
+
+        ksort($wireless_channels);
     }
 
     return $wireless_channels;
@@ -395,6 +390,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
+        'dhcpvlanprio',
         'disablechecksumoffloading',
         'disablelargereceiveoffloading',
         'disablesegmentationoffloading',
@@ -779,6 +775,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
                 break;
+            case 'pppoev6':
+                if ($pconfig['type'] != 'pppoe') {
+                    $input_errors[] = gettext('IPv6 PPPoE mode requires PPPoE IPv4 mode.');
+                }
+                break;
         }
 
         /* normalize MAC addresses - lowercase and convert Windows-ized hyphenated MACs to colon delimited */
@@ -839,22 +840,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['alias-subnet']) && !is_numeric($pconfig['alias-subnet'])) {
             $input_errors[] = gettext("A valid alias subnet bit count must be specified.");
         }
-        if (!empty($pconfig['dhcprejectfrom']) && !is_ipaddrv4($pconfig['dhcprejectfrom'])) {
-            $input_errors[] = gettext("A valid alias IP address must be specified to reject DHCP Leases from.");
+
+        if (!empty($pconfig['dhcprejectfrom'])) {
+            foreach (explode(',', $pconfig['dhcprejectfrom']) as $addr) {
+                if (!is_ipaddrv4($addr)) {
+                    $input_errors[] = gettext('A valid IP address list must be specified to reject DHCP leases from.');
+                    break;
+                }
+            }
         }
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
             $match = false;
-            if (!empty($config['gateways']['gateway_item'])) {
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gateway'], $gateway)) {
-                        $match = true;
-                    }
-                }
-                foreach($config['gateways']['gateway_item'] as $gateway) {
-                    if (in_array($pconfig['gatewayv6'], $gateway)) {
-                        $match = true;
-                    }
+            foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
+                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
+                    $match = true;
                 }
             }
             if (!$match) {
@@ -891,7 +891,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             if (strstr($a_interfaces[$if]['if'], 'vlan') || strstr($a_interfaces[$if]['if'], 'qinq')) {
-                list ($parentif) = interface_parent_devices($if);
+                list ($parentif) = interface_parent_devices($a_interfaces[$if]['if']);
                 $intf_details = legacy_interface_details($parentif);
                 if ($intf_details['mtu'] < $pconfig['mtu']) {
                     $input_errors[] = gettext("MTU of a VLAN should not be bigger than parent interface.");
@@ -902,7 +902,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         continue;
                     }
 
-                    list ($parentif) = interface_parent_devices($idx);
+                    list ($parentif) = interface_parent_devices($ifdata['if']);
                     if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
@@ -946,7 +946,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($clone_count > 1) {
                     $wlanif = get_real_interface($if);
                     $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
-                    if (!_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if])) {
+                    if (empty(_interfaces_wlan_clone("{$wlanif}_", $a_interfaces[$if]))) {
                         $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
                     } else {
                         legacy_interface_destroy("{$wlanif}_");
@@ -1068,6 +1068,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (empty($pconfig['dhcpoverridemtu'])) {
                         $new_config['dhcphonourmtu'] = true;
                     }
+                    if (isset($pconfig['dhcpvlanprio']) && $pconfig['dhcpvlanprio'] !== '') {
+                        $new_config['dhcpvlanprio'] = $pconfig['dhcpvlanprio'];
+                    }
                     break;
                 case "ppp":
                     $new_config['if'] = $pconfig['type'] . $pconfig['ptpid'];
@@ -1094,9 +1097,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     $new_ppp_config['username'] = $pconfig['pppoe_username'];
                     $new_ppp_config['password'] = base64_encode($pconfig['pppoe_password']);
-                    if (!empty($pconfig['provider'])) {
-                        $new_ppp_config['provider'] = $pconfig['provider'];
-                    }
+                    $new_ppp_config['provider'] = $pconfig['provider'];
                     if (!empty($pconfig['pppoe_hostuniq'])) {
                         $new_ppp_config['hostuniq'] = $pconfig['pppoe_hostuniq'];
                     }
@@ -1199,6 +1200,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     break;
                 case '6to4':
                     $new_config['ipaddrv6'] = '6to4';
+                    break;
+                case 'pppoev6':
+                    $new_config['ipaddrv6'] = 'pppoev6';
                     break;
                 case 'track6':
                     $new_config['ipaddrv6'] = 'track6';
@@ -1534,86 +1538,6 @@ include("head.inc");
           $("#addgatewayv6").toggleClass("hidden visible");
       });
 
-      //
-      // new gateway action
-      //
-      $("#gwsave").click(function(){
-          var iface = $('#if').val();
-          var name = $('#name').val();
-          var descr = $('#gatewaydescr').val();
-          var gatewayip = $('#gatewayip').val();
-          var ajaxhelper = "&ajaxip=" + escape($('#ipaddr').val()) + "&ajaxnet=" + escape($('#subnet').val());
-          var defaultgw = "";
-          if ($("#defaultgw").prop('checked')) {
-              defaultgw = "&defaultgw=on";
-          }
-          var fargw = "";
-          if ($("#fargw").prop('checked')) {
-              fargw = "&fargw=on";
-          }
-          jQuery.ajax( "system_gateways_edit.php", {
-            type: 'post',
-            data: 'isAjax=true&ipprotocol=inet' + defaultgw + fargw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
-            error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
-                    alert(request.responseText);
-                } else {
-                    alert("Sorry, we could not create your IPv4 gateway at this time.");
-                }
-            },
-            success: function(response) {
-                $("#addgateway").toggleClass("hidden visible");
-                var selected = "selected=selected";
-                if (!$("#multiwangw").prop('checked')) {
-                    selected = "";
-                }
-                $('#gateway').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
-                $('#gateway').selectpicker('refresh');
-            }
-          });
-      });
-      $("#gwcancel").click(function(){
-          $("#addgateway").toggleClass("hidden visible");
-      });
-
-      //
-      // new gateway v6 action
-      //
-      $("#gwsavev6").click(function(){
-          var iface = $('#if').val();
-          var name = $('#namev6').val();
-          var descr = $('#gatewaydescrv6').val();
-          var gatewayip = $('#gatewayipv6').val();
-          var ajaxhelper = "&ajaxip=" + escape($('#ipaddrv6').val()) + "&ajaxnet=" + escape($('#subnetv6').val());
-          var defaultgw = "";
-          if ($("#defaultgwv6").prop('checked')) {
-              defaultgw = "&defaultgw=on";
-          }
-          jQuery.ajax( "system_gateways_edit.php", {
-            type: 'post',
-            data: 'isAjax=true&ipprotocol=inet6' + defaultgw + ajaxhelper + '&interface=' + escape(iface) + '&name=' + escape(name) + '&descr=' + escape(descr) + '&gateway=' + escape(gatewayip),
-            error: function(request, textStatus, errorThrown){
-                if (textStatus === "error" && request.getResponseHeader("Content-Type").indexOf("text/plain") === 0) {
-                    alert(request.responseText);
-                } else {
-                    alert("Sorry, we could not create your IPv6 gateway at this time.");
-                }
-            },
-            success: function(response) {
-                $("#addgatewayv6").toggleClass("hidden visible");
-                var selected = "selected=selected";
-                if (!$("#multiwangwv6").prop('checked')) {
-                    selected = "";
-                }
-                $('#gatewayv6').append($("<option " + selected + "></option>").attr("value",name).text(escape(name) + " - " + gatewayip));
-                $('#gatewayv6').selectpicker('refresh');
-            }
-          });
-      });
-      $("#gwcancelv6").click(function(){
-          $("#addgatewayv6").toggleClass("hidden visible");
-      });
-
       // handle dhcp advanced/basic or custom file select
       $("#dhcp_mode :input").change(function(){
           $(".dhcp_basic").addClass("hidden");
@@ -1771,10 +1695,10 @@ include("head.inc");
         // ppp uses an mtu
         if (!isNaN($("#mtu").val()) && $("#mtu").val() > 8) {
             // display mtu used for the ppp(oe) connection
-            $("#mtu_calc > label").html($("#mtu").val() - 8 );
+            $("#mtu_calc > small > label").html($("#mtu").val() - 8 );
         } else {
             // default ppp mtu is 1500 - 8 (header)
-            $("#mtu_calc > label").html("1492");
+            $("#mtu_calc > small > label").html("1492");
         }
       });
       $("#mtu").change();
@@ -1827,22 +1751,31 @@ include("head.inc");
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Enable') ?></td>
                         <td>
                           <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : '' ?>/>
-                          <strong><?= gettext('Enable Interface') ?></strong>
+                          <?= gettext('Enable Interface') ?>
                         </td>
                       </tr>
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Lock') ?></td>
                         <td>
                           <input id="lock" name="lock" type="checkbox" value="yes" <?=!empty($pconfig['lock']) ? 'checked="checked"' : '' ?>/>
-                          <strong><?= gettext('Prevent interface removal') ?></strong>
+                          <?= gettext('Prevent interface removal') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="width:22%"><a id="help_for_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Identifier"); ?></td>
+                        <td style="width:78%">
+                          <?= $if ?>
+                          <div class="hidden" data-for="help_for_ifid">
+                            <?= gettext("The internal configuration identifier of this interface."); ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td style="width:22%"><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Device"); ?></td>
                         <td style="width:78%">
-                          <strong><?=$pconfig['if'];?></strong>
+                          <?= $pconfig['if'] ?>
                           <div class="hidden" data-for="help_for_ifname">
-                            <?= gettext("The real device name of this interface."); ?>
+                            <?= gettext("The assigned network device name of this interface."); ?>
                           </div>
                         </td>
                       </tr>
@@ -1912,7 +1845,7 @@ include("head.inc");
                           <td>
                             <select name="type6" class="selectpicker" data-style="btn-default" id="type6">
 <?php
-                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
+                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "pppoev6" => gettext("PPPoEv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
                             foreach ($types6 as $key => $opt):?>
                               <option value="<?=$key;?>" <?=$key == $pconfig['type6'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
 <?php
@@ -1928,6 +1861,8 @@ include("head.inc");
                               <?= gettext('This field can be used to spoof the MAC address of the interface. Enter a ' .
                                   'MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank if unsure. ' .
                                   'This may only be required e.g. with certain cable connections on a WAN interface.') ?><br />
+                              <?= gettext('When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. ' .
+                                  'Alternatively, the parent interface MAC can be spoofed applying the MAC address to all attached VLAN children automatically.') ?><br />
 <?php
                               $ip = getenv('REMOTE_ADDR');
                               $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
@@ -1941,11 +1876,24 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
+                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
+                          <td>
+                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_promisc">
+                              <?=gettext(
+                                  "Put interface into permanently promiscuous mode. ".
+                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
+                                  "When unsure, leave this disabled."
+                              ); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
                           <td>
                             <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
                             <div id="mtu_calc" style="display:none">
-                              <?= gettext('Calculated PPP MTU') ?>: <label></label>
+                              <small><?= gettext('Calculated PPP MTU') ?>: <label></label></small>
                             </div>
                             <div class="hidden" data-for="help_for_mtu">
                               <?= gettext("If you leave this field blank, the adapter's default MTU will " .
@@ -1987,23 +1935,10 @@ include("head.inc");
 <?php
                         endif;?>
                         <tr>
-                          <td><a id="help_for_promisc" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Promiscuous mode') ?></td>
-                          <td>
-                            <input id="promisc" name="promisc" type="checkbox" value="yes" <?=!empty($pconfig['promisc']) ? 'checked="checked"' : '' ?>/>
-                            <div class="hidden" data-for="help_for_promisc">
-                              <?=gettext(
-                                  "Put interface into permanently promiscuous mode. ".
-                                  "Only to be used for specific usecases requiring the interface to receive all packets being received. ".
-                                  "When unsure, leave this disabled."
-                              ); ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
                           <td><a id="help_for_gateway_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Dynamic gateway policy') ?></td>
                           <td>
                             <input id="gateway_interface" name="gateway_interface" type="checkbox" value="yes" <?=!empty($pconfig['gateway_interface']) ? 'checked="checked"' : '' ?>/>
-                            <strong><?= gettext('This interface does not require an intermediate system to act as a gateway') ?></strong>
+                            <?= gettext('This interface does not require an intermediate system to act as a gateway') ?>
                             <div class="hidden" data-for="help_for_gateway_interface">
                               <?=gettext("If the destination is directly reachable via an interface requiring no " .
                               "intermediary system to act as a gateway, you can select this option which allows dynamic gateways " .
@@ -2039,7 +1974,7 @@ include("head.inc");
                           <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
                           <td>
                             <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
-                            <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                            <?=gettext("Disable hardware checksum offload"); ?>
                             <div class="hidden" data-for="help_for_disablechecksumoffloading">
                               <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
                             </div>
@@ -2049,7 +1984,7 @@ include("head.inc");
                           <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
                           <td>
                             <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
-                            <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                            <?=gettext("Disable hardware TCP segmentation offload"); ?>
                             <div class="hidden" data-for="help_for_disablesegmentationoffloading">
                               <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                             </div>
@@ -2059,7 +1994,7 @@ include("head.inc");
                           <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
                           <td>
                             <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
-                            <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                            <?=gettext("Disable hardware large receive offload"); ?>
                             <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
                               <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                             </div>
@@ -2127,65 +2062,19 @@ include("head.inc");
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gateway'] ? "selected=\"selected\"" : ""; ?>>
+                                  <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
-                            <div class="hidden" id="addgateway">
-                              <br/>
-                              <table class="table table-striped table-condensed">
-                                <tbody>
-                                  <tr>
-                                    <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Default gateway') ?></td>
-                                    <td><input type="checkbox" id="defaultgw" name="defaultgw" <?= strtolower($if) == 'wan' ? 'checked="checked"' : '' ?> /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Far gateway') ?></td>
-                                    <td><input type="checkbox" id="fargw" name="fargw" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Multi-WAN gateway') ?></td>
-                                    <td><input type="checkbox" id="multiwangw" name="multiwangw" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway Name') ?></td>
-                                    <td><input type="text" id="name" name="name" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv4') ?>" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway IPv4') ?></td>
-                                    <td><input type="text" id="gatewayip" name="gatewayip" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Description') ?></td>
-                                    <td><input type="text" id="gatewaydescr" name="gatewaydescr" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td></td>
-                                    <td>
-                                      <div id='savebuttondiv'>
-                                        <input class="btn btn-primary" id="gwsave" type="button" value="<?= html_safe(gettext('Save')) ?>" />
-                                        <input class="btn btn-default" id="gwcancel" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
@@ -2260,7 +2149,7 @@ include("head.inc");
                           <td>
                             <input name="dhcprejectfrom" type="text" id="dhcprejectfrom" value="<?=htmlspecialchars($pconfig['dhcprejectfrom']);?>" />
                             <div class="hidden" data-for="help_for_dhcprejectfrom">
-                              <?=gettext("If there is a certain upstream DHCP server that should be ignored, place the IP address or subnet of the DHCP server to be ignored here."); ?>
+                              <?=gettext("If there are certain upstream DHCP servers that should be ignored, place the comma separated list of IP addresses of the DHCP servers to be ignored here."); ?>
                               <?=gettext("This is useful for rejecting leases from cable modems that offer private IPs when they lose upstream sync."); ?>
                             </div>
                           </td>
@@ -2286,6 +2175,22 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
+                        <tr class="dhcp_basic dhcp_advanced">
+                          <td><a id="help_for_dhcpvlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
+                          <td>
+                            <select name="dhcpvlanprio">
+                              <option value="" <?= "{$pconfig['dhcpvlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
+<?php
+                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcpvlanprio']}" === "$pcp" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
+<?php
+                              endforeach ?>
+                            </select>
+                            <div class="hidden" data-for="help_for_dhcpvlanprio">
+                              <?= gettext('Certain ISPs may require that DHCPv4 requests are sent with a specific VLAN priority.') ?>
+                            </div>
+                          </td>
+                        </tr>
                         <tr class="dhcp_advanced">
                           <td><a id="help_for_dhcpprotocol_timing" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol Timing"); ?></td>
                           <td>
@@ -2296,7 +2201,7 @@ include("head.inc");
                             <?=gettext("Backoff Cutoff");?>:   <input name="adv_dhcp_pt_backoff_cutoff"   type="text" id="adv_dhcp_pt_backoff_cutoff"   value="<?=$pconfig['adv_dhcp_pt_backoff_cutoff'];?>"   />
                             <?=gettext("Initial Interval");?>: <input name="adv_dhcp_pt_initial_interval" type="text" id="adv_dhcp_pt_initial_interval" value="<?=$pconfig['adv_dhcp_pt_initial_interval'];?>" />
                             <hr/>
-                            <strong><?=gettext("Presets:");?></strong><br/>
+                            <?=gettext("Presets:");?><br/>
                             <div id="customdhcp" class="btn-group" data-toggle="buttons">
                               <label class="btn btn-default">
                                 <input name="adv_dhcp_pt_values" type="radio" value="DHCP"/><?=gettext("FreeBSD Default");?>
@@ -2378,6 +2283,26 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Modem Port"); ?></td>
+                          <td>
+                            <select name="ports" id="ports" data-size="10" class="selectpicker" data-style="btn-default">
+<?php
+                            $portlist = glob("/dev/cua*");
+                            $modems = glob("/dev/modem*");
+                            $portlist = array_merge($portlist, $modems);
+                            foreach ($portlist as $port):
+                              if (preg_match("/\.(lock|init)$/", $port)) {
+                                  continue;
+                              }?>
+                              <option value="<?=trim($port);?>" <?=$pconfig['ports'] == $port ? "selected=\"selected\"" : "" ;?>>
+                                <?=$port;?>
+                              </option>
+<?php
+                            endforeach;?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
                           <td style="width:22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
                           <td style="width:78%">
                             <table class="table table-condensed">
@@ -2436,26 +2361,6 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Modem Port"); ?></td>
-                          <td>
-                            <select name="ports" id="ports" data-size="10" class="selectpicker" data-style="btn-default">
-<?php
-                            $portlist = glob("/dev/cua*");
-                            $modems = glob("/dev/modem*");
-                            $portlist = array_merge($portlist, $modems);
-                            foreach ($portlist as $port):
-                              if (preg_match("/\.(lock|init)$/", $port)) {
-                                  continue;
-                              }?>
-                              <option value="<?=trim($port);?>" <?=$pconfig['ports'] == $port ? "selected=\"selected\"" : "" ;?>>
-                                <?=$port;?>
-                              </option>
-<?php
-                            endforeach;?>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr>
                           <td><?=gettext("Advanced PPP"); ?></td>
                           <td>
                             <?php if (!empty($a_ppps[$pppid])): ?>
@@ -2480,6 +2385,12 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Modem Port') ?></td>
+                          <td style="width:78%">
+                            <?= $pconfig['ports'] ?>
+                          </td>
+                        </tr>
+                        <tr>
                           <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
                           <td style="width:78%">
                               <input name="pppoe_username" type="text" id="pppoe_username" value="<?=$pconfig['pppoe_username'];?>" />
@@ -2496,7 +2407,7 @@ include("head.inc");
                           <td>
                             <input name="provider" type="text" id="provider" value="<?=$pconfig['provider'];?>" />
                             <div class="hidden" data-for="help_for_provider">
-                              <?=gettext("Hint: this field can usually be left empty"); ?>
+                              <?= gettext('This field can usually be left empty unless specified by the provider.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2513,7 +2424,7 @@ include("head.inc");
                           <td><a id="help_for_pppoe_dialondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dial on demand"); ?></td>
                           <td>
                             <input name="pppoe_dialondemand" type="checkbox" id="pppoe_dialondemand" value="enable" <?= !empty($pconfig['pppoe_dialondemand']) ? "checked=\"checked\"" : ""; ?> />
-                            <strong><?=gettext("Enable Dial-On-Demand mode"); ?></strong><br />
+                            <?=gettext("Enable Dial-On-Demand mode"); ?>
                             <div class="hidden" data-for="help_for_pppoe_dialondemand">
                               <?=gettext("This option causes the interface to operate in dial-on-demand mode, allowing you to have a 'virtual full time' connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
                             </div>
@@ -2554,6 +2465,12 @@ include("head.inc");
                         </tr>
                       </thead>
                       <tbody>
+                        <tr>
+                          <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Modem Port') ?></td>
+                          <td style="width:78%">
+                            <?= $pconfig['ports'] ?>
+                          </td>
+                        </tr>
                         <tr>
                           <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username"); ?></td>
                           <td style="width:78%">
@@ -2597,7 +2514,7 @@ include("head.inc");
                           <td><a id="help_for_pptp_dialondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dial on demand"); ?></td>
                           <td>
                             <input name="pptp_dialondemand" type="checkbox" id="pptp_dialondemand" value="enable" <?=!empty($pconfig['pptp_dialondemand']) ? 'checked="checked"' : '' ?> />
-                            <strong><?=gettext("Enable Dial-On-Demand mode"); ?></strong><br />
+                            <?=gettext("Enable Dial-On-Demand mode"); ?>
                             <div class="hidden" data-for="help_for_pptp_dialondemand">
                               <?=gettext("This option causes the interface to operate in dial-on-demand mode, allowing you to have a 'virtual full time' connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
                             </div>
@@ -2660,59 +2577,19 @@ include("head.inc");
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none"><?= gettext('Auto-detect') ?></option>
 <?php
-                              if (!empty($config['gateways']['gateway_item'])):
-                                foreach ($config['gateways']['gateway_item'] as $gateway):
-                                  if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
+                              foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
+                                if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
 ?>
-                                  <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
-                                    <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
-                                  </option>
+                                <option value="<?=$gateway['name'];?>" <?= $gateway['name'] == $pconfig['gatewayv6'] ? "selected=\"selected\"" : ""; ?>>
+                                <?=htmlspecialchars($gateway['name']. " - " . $gateway['gateway']);?>
+                                </option>
 <?php
-                                  endif;
-                                endforeach;
-                              endif;?>
+                                endif;
+                              endforeach;
+?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?= html_safe(gettext('Add')) ?>" data-toggle="tooltip"><i class="fa fa-plus fa-fw"></i></button>
-                            <div class="hidden" id="addgatewayv6">
-                              <br/>
-                              <table class="table table-striped table-condensed">
-                                <tbody>
-                                  <tr>
-                                    <td colspan="2"><b><?=gettext("Add new gateway"); ?></b></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Default gateway') ?></td>
-                                    <td><input type="checkbox" id="defaultgwv6" name="defaultgwv6" <?= strtolower($if) == 'wan' ?  'checked="checked"' : '' ?> /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Multi-WAN gateway') ?></td>
-                                    <td><input type="checkbox" id="multiwangwv6" name="multiwangwv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?= gettext('Gateway Name') ?></td>
-                                    <td><input id="namev6" type="text" name="namev6" value="<?= html_safe((empty($pconfig['descr']) ? strtoupper($if) : $pconfig['descr']) . '_GWv6') ?>" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?=gettext("Gateway IPv6"); ?></td>
-                                    <td><input id="gatewayipv6" type="text" name="gatewayipv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td><?=gettext("Description"); ?></td>
-                                    <td><input id="gatewaydescrv6" type="text" name="gatewaydescrv6" /></td>
-                                  </tr>
-                                  <tr>
-                                    <td></td>
-                                    <td>
-                                      <input class="btn btn-primary" id="gwsavev6" type="button" value="<?= html_safe(gettext('Save')) ?>" />
-                                      <input class="btn btn-default" id="gwcancelv6" type="button" value="<?= html_safe(gettext('Cancel')) ?>" />
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list ' .
-                                          'or add a new one using the button above. For single WAN interfaces a gateway must be ' .
+                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
                                           'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
                             </div>
                           </td>
@@ -2805,7 +2682,7 @@ include("head.inc");
                             endforeach;?>
                             </select>
                             <div class="hidden" data-for="help_for_dhcp6-ia-pd-len">
-                              <?=gettext("The value in this field is the delegated prefix length provided by the DHCPv6 server. Normally specified by the ISP."); ?>
+                              <?=gettext("The value in this field is the delegated prefix length provided by the DHCPv6 server."); ?>
                             </div>
                           </td>
                         </tr>
@@ -2846,19 +2723,7 @@ include("head.inc");
                         <tr class="dhcpv6_advanced">
                           <td><a id="help_for_dhcp6_intf_stmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface Statement");?></td>
                           <td>
-                            <input name="adv_dhcp6_interface_statement_information_only_enable" type="checkbox" id="adv_dhcp6_interface_statement_information_only_enable" <?=!empty($pconfig['adv_dhcp6_interface_statement_information_only_enable']) ? "checked=\"checked\"" : "";?> />
-                            <strong><?=gettext("Information Only"); ?></strong><br/>
-                            <div class="hidden" data-for="help_for_dhcp6_intf_stmt">
-                              <?=gettext("This statement specifies dhcp6c to only exchange informational configuration parameters with servers. ".
-                              "A list of DNS server addresses is an example of such parameters. ".
-                              "This statement is useful when the client does not need ".
-                              "stateful configuration parameters such as IPv6 addresses or prefixes.");?><br/>
-                              <small>
-                                <?=gettext("Source: FreeBSD man page");?>
-                              </small>
-                            </div>
-                            <br/>
-                            <strong><?=gettext("Send Options"); ?></strong><br />
+                            <?=gettext("Send Options"); ?>
                             <input name="adv_dhcp6_interface_statement_send_options" type="text" id="adv_dhcp6_interface_statement_send_options" value="<?=$pconfig['adv_dhcp6_interface_statement_send_options'];?>" />
                             <div class="hidden" data-for="help_for_dhcp6_intf_stmt">
                               <?=gettext("The values in this field are DHCP send options to be sent when requesting a DHCP lease. [option declaration [, ...]] <br />" .
@@ -2866,18 +2731,25 @@ include("head.inc");
                               "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none).") ?>
                             </div>
                             <br />
-                            <br />
-                            <strong><?=gettext("Request Options"); ?></strong><br />
+                            <?=gettext("Request Options"); ?>
                             <input name="adv_dhcp6_interface_statement_request_options" type="text" id="adv_dhcp6_interface_statement_request_options" value="<?=$pconfig['adv_dhcp6_interface_statement_request_options'];?>" />
                             <div class="hidden" data-for="help_for_dhcp6_intf_stmt">
                               <?=gettext('The values in this field are DHCP request options to be sent when requesting a DHCP lease. [option [, ...]]') ?>
                             </div>
                             <br />
-                            <br />
-                            <strong><?=gettext("Script"); ?></strong><br />
+                            <?=gettext("Script"); ?>
                             <input name="adv_dhcp6_interface_statement_script" type="text" id="adv_dhcp6_interface_statement_script" value="<?=htmlspecialchars($pconfig['adv_dhcp6_interface_statement_script']);?>" />
                             <div class="hidden" data-for="help_for_dhcp6_intf_stmt">
                               <?= gettext('The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received.') ?>
+                            </div>
+                            <br />
+                            <input name="adv_dhcp6_interface_statement_information_only_enable" type="checkbox" id="adv_dhcp6_interface_statement_information_only_enable" <?=!empty($pconfig['adv_dhcp6_interface_statement_information_only_enable']) ? "checked=\"checked\"" : "";?> />
+                            <?=gettext("Information Only"); ?>
+                            <div class="hidden" data-for="help_for_dhcp6_intf_stmt">
+                              <?=gettext("This statement specifies dhcp6c to only exchange informational configuration parameters with servers. ".
+                              "A list of DNS server addresses is an example of such parameters. ".
+                              "This statement is useful when the client does not need ".
+                              "stateful configuration parameters such as IPv6 addresses or prefixes.");?>
                             </div>
                           </td>
                         </tr>
@@ -2885,7 +2757,7 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Identity Association");?></td>
                           <td>
                             <input name="adv_dhcp6_id_assoc_statement_address_enable" type="checkbox" id="adv_dhcp6_id_assoc_statement_address_enable" <?=!empty($pconfig['adv_dhcp6_id_assoc_statement_address_enable']) ? "checked=\"checked\"" : "";?>  />
-                            <strong><?=gettext("Non-Temporary Address Allocation"); ?></strong>
+                            <?=gettext("Non-Temporary Address Allocation"); ?>
                             <div class="hidden" id="show_adv_dhcp6_id_assoc_statement_address">
                               <?=gettext("id-assoc na"); ?>
                               <i><?=gettext("ID"); ?></i>
@@ -2901,7 +2773,7 @@ include("head.inc");
                             </div>
                             <hr/>
                             <input name="adv_dhcp6_id_assoc_statement_prefix_enable" type="checkbox" id="adv_dhcp6_id_assoc_statement_prefix_enable" <?=!empty($pconfig['adv_dhcp6_id_assoc_statement_prefix_enable']) ? "checked=\"checked\"" : "";?> />
-                            <strong><?=gettext("Prefix Delegation"); ?></strong>
+                            <?=gettext("Prefix Delegation"); ?>
                             <div class="hidden" id="show_adv_dhcp6_id_assoc_statement_prefix">
                               <?=gettext("id-assoc pd"); ?>
                               <i><?=gettext("ID"); ?></i>
@@ -3031,7 +2903,7 @@ include("head.inc");
                               endfor;?>
                             </select>
                             <div class="hidden" data-for="help_for_prefix-6rd-v4plen">
-                              <?=gettext("The value in this field is the 6RD IPv4 prefix length. Normally specified by the ISP. A value of 0 means we embed the entire IPv4 address in the 6RD prefix."); ?>
+                              <?=gettext("The value in this field is the 6RD IPv4 prefix length. A value of 0 means we embed the entire IPv4 address in the 6RD prefix."); ?>
                             </div>
                           </td>
                         </tr>
@@ -3141,18 +3013,15 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Standard"); ?></td>
                           <td>
                             <select name="standard" class="selectpicker" data-size="10" data-style="btn-default" id="standard">
-<?php
-                              foreach($wl_modes as $wl_standard => $wl_channels):?>
+<?php foreach (array_keys($wl_modes) as $wl_standard): ?>
                               <option value="<?=$wl_standard;?>" <?=$pconfig['standard'] == $wl_standard ? "selected=\"selected\"" : "";?>>
                                 802.<?=$wl_standard;?>
                               </option>
-<?php
-                              endforeach;?>
+<?php endforeach ?>
                             </select>
                           </td>
                         </tr>
-<?php
-                        if (isset($wl_modes['11g'])): ?>
+<?php if (isset($wl_modes['11g'])): ?>
                         <tr>
                           <td><a id="help_for_protmode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> 802.11g OFDM <?=gettext("Protection Mode"); ?></td>
                           <td>
@@ -3166,11 +3035,9 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        else: ?>
+<?php else: ?>
                           <input name="protmode" type="hidden" id="protmode" value="off" />
-<?php
-                        endif; ?>
+<?php endif ?>
                         <tr>
                           <td><a id="help_for_txpower" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transmit power"); ?></td>
                           <td>
@@ -3194,15 +3061,19 @@ include("head.inc");
                               <option <?= $pconfig['channel'] == 0 ? "selected=\"selected\"" : ""; ?> value="0"><?=gettext("Auto"); ?></option>
 <?php
                               $wl_chaninfo = get_wireless_channel_info($if);
-                              foreach($wl_modes as $wl_standard => $wl_channels):
-                                foreach($wl_channels as $wl_channel):?>
-                              <option value="<?=$wl_channel;?>" <?=$pconfig['channel'] == $wl_channel ? "selected=\"selected\" " : "";?>>
-                                  <?=$wl_standard;?> - <?=$wl_channel;?>
-                                  <?=isset($wl_chaninfo[$wl_channel]) ?  "( " . $wl_chaninfo[$wl_channel][1] . "@" . $wl_chaninfo[$wl_channel][2] . "/" . $wl_chaninfo[$wl_channel][3] . ")" : "";?>
+                              $wl_chanlist = [];
+                              foreach ($wl_modes as $wl_standard => $wl_channels) {
+                                  foreach ($wl_channels as $wl_channel) {
+                                      $wl_chanlist[$wl_channel][$wl_standard] = 1;
+                                  }
+                              }
+                              ksort($wl_chanlist);
+                              foreach($wl_chanlist as $wl_channel => $wl_standards): ?>
+                              <option value="<?= html_safe($wl_channel) ?>" <?=$pconfig['channel'] == $wl_channel ? 'selected="selected"' : '' ?>>
+                                  <?=$wl_channel ?> - <?= join(', ', array_keys($wl_standards)) ?>
+                                  <?= isset($wl_chaninfo[$wl_channel]) ? "({$wl_chaninfo[$wl_channel]})" : '' ?>
                               </option>
-<?php
-                                endforeach;
-                              endforeach;?>
+<?php endforeach ?>
                             </select>
                             <div class="hidden" data-for="help_for_channel">
                               <?=gettext("Legend: wireless standards - channel # (frequency @ max TX power / TX power allowed in reg. domain)"); ?>
@@ -3351,18 +3222,15 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        if (isset($wl_modes['11ng']) || isset($wl_modes['11na'])): ?>
+<?php if (isset($wl_modes['11ng']) || isset($wl_modes['11na'])): ?>
                         <tr>
                           <td><a id="help_for_puremode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Minimum standard"); ?></td>
                           <td>
                             <select name="puremode" class="selectpicker" data-style="btn-default" id="puremode">
                               <option <?=$pconfig['puremode'] == 'any' ? "selected=\"selected\"" : "";?> value="any"><?=gettext("Any"); ?></option>
-<?php
-                              if (isset($wl_modes['11g'])): ?>
+<?php if (isset($wl_modes['11g'])): ?>
                               <option <?=$pconfig['puremode'] == '11g' ? "selected=\"selected\"" : "";?> value="11g"><?=gettext("802.11g"); ?></option>
-<?php
-                              endif; ?>
+<?php endif ?>
                               <option <?=$pconfig['puremode'] == '11n' ? "selected=\"selected\"" : "";?> value="11n"><?=gettext("802.11n"); ?></option>
                             </select>
                             <div class="hidden" data-for="help_for_puremode">
@@ -3370,8 +3238,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        elseif (isset($wl_modes['11g'])): ?>
+<?php elseif (isset($wl_modes['11g'])): ?>
                         <tr>
                           <td><a id="help_for_puremode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("802.11g only"); ?></td>
                           <td>
@@ -3381,8 +3248,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-<?php
-                        endif; ?>
+<?php endif ?>
                         <tr class="cfg-wireless-ap">
                           <td><a id="help_for_apbridge_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow intra-BSS communication"); ?></td>
                           <td>
@@ -3636,7 +3502,7 @@ include("head.inc");
                             <input name="ieee8021x" type="checkbox" value="yes"  id="ieee8021x" <?=!empty($pconfig['ieee8021x']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_ieee8021x">
                               <?=gettext("Setting this option will enable 802.1x authentication."); ?><br/>
-                              <span class="text-danger"><strong><?=gettext("NOTE"); ?>:</strong></span> <?=gettext("this option requires checking the \"Enable WPA box\"."); ?>
+                              <span class="text-danger"><?=gettext("This option requires checking the \"Enable WPA box\"."); ?>
                             </div>
                           </td>
                         </tr>
@@ -3716,11 +3582,9 @@ include("head.inc");
                           <input id="save" name="Submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                           <input id="cancel" type="button" class="btn btn-default" value="<?=html_safe(gettext('Cancel'));?>" onclick="window.location.href='/interfaces.php'" />
                           <input name="if" type="hidden" id="if" value="<?=$if;?>" />
-<?php
-                          if ($pconfig['if'] == $a_ppps[$pppid]['if']) : ?>
+<?php if ($pconfig['if'] == $a_ppps[$pppid]['if']): ?>
                             <input name="ppp_port" type="hidden" value="<?=$pconfig['ports'];?>" />
-<?php
-                          endif; ?>
+<?php endif ?>
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                         </td>
                       </tr>

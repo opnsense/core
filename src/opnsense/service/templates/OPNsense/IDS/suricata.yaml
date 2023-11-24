@@ -1,5 +1,3 @@
-{# Macro import #}
-{% from 'OPNsense/Macros/interface.macro' import physical_interface %}
 %YAML 1.1
 ---
 
@@ -14,7 +12,7 @@
 vars:
   # more specific is better for alert accuracy and performance
   address-groups:
-    HOME_NET: "[{{OPNsense.IDS.general.homenet|default('192.168.0.0/16,10.0.0.0/8,172.16.0.0/12')}}]"
+    HOME_NET: "[{{OPNsense.IDS.general.homenet}}]"
     EXTERNAL_NET: "!$HOME_NET"
     HTTP_SERVERS: "$HOME_NET"
     SMTP_SERVERS: "$HOME_NET"
@@ -784,7 +782,7 @@ app-layer:
       mime:
         # Decode MIME messages from SMTP transactions
         # (may be resource intensive)
-        # This field supercedes all others because it turns the entire
+        # This field supersedes all others because it turns the entire
         # process on or off
         decode-mime: yes
 
@@ -899,8 +897,8 @@ app-layer:
              decompress-depth: 0
 
            # Take a random value for inspection sizes around the specified value.
-           # This lower the risk of some evasion technics but could lead
-           # detection change between runs. It is set to 'yes' by default.
+           # This lowers the risk of some evasion techniques but could lead
+           # to detection change between runs. It is set to 'yes' by default.
            #randomize-inspection-sizes: yes
            # If randomize-inspection-sizes is active, the value of various
            # inspection size will be chosen in the [1 - range%, 1 + range%]
@@ -1308,8 +1306,8 @@ flow-timeouts:
 #                               # this size.  Can be specified in kb, mb,
 #                               # gb.  Just a number indicates it's in bytes.
 #     randomize-chunk-size: yes # Take a random value for chunk size around the specified value.
-#                               # This lower the risk of some evasion technics but could lead
-#                               # detection change between runs. It is set to 'yes' by default.
+#                               # This lowers the risk of some evasion techniques but could lead
+#                               # to detection change between runs. It is set to 'yes' by default.
 #     randomize-chunk-range: 10 # If randomize-chunk-size is active, the value of chunk-size is
 #                               # a random value between (1 - randomize-chunk-range/100)*toserver-chunk-size
 #                               # and (1 + randomize-chunk-range/100)*toserver-chunk-size and the same
@@ -1710,11 +1708,11 @@ netmap:
   {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 
-  - interface: {{physical_interface(intfName)}}
-    copy-iface: {{physical_interface(intfName)}}^
+  - interface: {{helpers.physical_interface(intfName)}}
+    copy-iface: {{helpers.physical_interface(intfName)}}^
 
-  - interface: {{physical_interface(intfName)}}^
-    copy-iface: {{physical_interface(intfName)}}
+  - interface: {{helpers.physical_interface(intfName)}}^
+    copy-iface: {{helpers.physical_interface(intfName)}}
     {% endfor %}
   {% endif %}
 

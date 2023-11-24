@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -36,46 +36,144 @@ require_once 'interfaces.inc';
 require_once 'filter.inc';
 require_once 'auth.inc';
 
-/**
- * retrieve config property by path (e.g. system.firmware), return simple type or json
- */
-function get_config_prop($path, $cnf = null)
+/* normalize the config path */
+function strip_config_path($path)
 {
-    global $config;
+   $path = preg_replace('/\.\.*/', '.', $path);
+   $path = preg_replace('/^\./', '', $path);
+   return preg_replace('/\.*$/', '', $path);
+}
+/* return simple type or json for config property */
+function read_config_prop($content)
+{
+    if (is_array($content)) {
+        return json_encode($content, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+    } elseif ($content != '') {
+        return $content . PHP_EOL;
+    }
 
-    $cnf = $cnf === null ? $config : $cnf;
+    return null;
+}
+
+/* retrieve config property by path (e.g. system.firmware) */
+function get_config_prop($path, $cnf)
+{
     $path = !is_array($path) ? explode('.', $path) : $path;
     $node_name = array_shift($path);
 
-    if (isset($cnf[$node_name])) {
-        if (!empty($path)) {
-            return get_config_prop($path, $cnf[$node_name]);
-        } else {
-            $content = $cnf[$node_name];
-            if (is_array($content)) {
-                return json_encode($content, true);
-            } else {
-                return $content;
-            }
-        }
-    } else {
-        return null;
+    if ($node_name != '') {
+        $cnf = isset($cnf[$node_name]) ? $cnf[$node_name] : '';
     }
+
+    if (!empty($path)) {
+        return get_config_prop($path, $cnf);
+    }
+
+    return read_config_prop($cnf);
 }
 
-$opts = getopt('cdghirs', [], $optind);
+/* flush config property by path (but prevent dropping the root node) */
+function flush_config_prop($path)
+{
+    global $config;
+
+    if ($path == '') {
+        echo "Cannot flush root node." . PHP_EOL;
+        return;
+    }
+
+    $nodes = explode('.', $path);
+    $final = array_pop($nodes);
+    $cnf = &$config;
+
+    foreach ($nodes as $node_name) {
+        if (!isset($cnf[$node_name])) {
+            echo "Cannot find $path" . PHP_EOL;
+            return;
+        }
+        $cnf = &$cnf[$node_name];
+    }
+
+    if (!isset($cnf[$final])) {
+        echo "Cannot find $path" . PHP_EOL;
+        return;
+    }
+
+    echo "======= $path:" . PHP_EOL;
+    echo read_config_prop($cnf[$final]);
+    echo "=======" . PHP_EOL;
+
+    echo "Do you want to flush this config property? [y/N]: ";
+
+    $fp = fopen('php://stdin', 'r');
+    $key = chop(fgets($fp));
+    fclose($fp);
+
+    if (!in_array($key, ['y', 'Y'])) {
+        return;
+    }
+
+    unset($cnf[$final]);
+    write_config("Flushed {$path} via pluginctl");
+
+    echo "Done. A backup was created and can be restored if needed." . PHP_EOL;
+}
+
+function get_all_services($name = '', $id = '')
+{
+    $services = [];
+
+    foreach (plugins_services() as $service) {
+        /* fail if name filter does not match */
+        if ($name != '' && $service['name'] != $name) {
+            continue;
+        }
+
+        /* fail if ID lookup is not possible or does not match */
+        if ($id !== '' && (!array_key_exists('id', $service) || $service['id'] != $id)) {
+            continue;
+        }
+
+        /* fetch status so the caller does not have to */
+        $service['status'] = service_message($service);
+
+        /* collect all matches contrary to what service_by_name() is doing */
+        $services[] = $service;
+    }
+
+    return $services;
+}
+
+$opts = getopt('46cDdfghIirSs', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-c | -d | -g | -h | -i | -r | -s] ...\n\n";
+    echo "Usage: pluginctl [-4|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s] ...\n\n";
+    echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
+    echo "\t-D ifconfig mode, lists available devices\n";
     echo "\t-d device mode, lists registered devices\n";
+    echo "\t-f flush config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-g get config property (raw, e.g. system.firmware.plugins)\n";
     echo "\t-h show this help text and exit\n";
+    echo "\t-I information mode, lists registered device statistics\n";
     echo "\t-i invoke dynamic interface registration\n";
     echo "\t-r run mode (e.g. command)\n";
-    echo "\t-s service mode (e.g. myservice restart)\n\n";
-    echo "Without arguments, a list of plugins of the requested type is shown.\n";
+    echo "\t-S service metadata dump\n";
+    echo "\t-s service mode (e.g. myservice restart)\n";
+} elseif (isset($opts['4'])) {
+    $int = $args[0] ?? null;
+    $raw = interfaces_primary_address($int);
+    $ret = [
+        'address' => $raw[0],
+        'network' => $raw[1],
+        'bits' => $raw[2],
+        'device' => $raw[3],
+        'interface' => $int,
+    ];
+    echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+} elseif (isset($opts['D'])) {
+    echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['d'])) {
     foreach (plugins_devices() as $device) {
         if (empty($device['type'])) {
@@ -99,68 +197,91 @@ if (isset($opts['h'])) {
             }
         }
     }
-} elseif (isset($opts['s'])) {
-    $name = !empty($args[0]) ? $args[0] : '';
-    $act = !empty($args[1]) ? $args[1] : '';
-    $filter = [];
-    if (!empty($args[2])) {
-        $filter['id'] = $args[2];
-    }
-    switch ($act) {
-        case 'start':
-            echo service_control_start($name, $filter) . PHP_EOL;
-            break;
-        case 'stop':
-            echo service_control_stop($name, $filter) . PHP_EOL;
-            break;
-        case 'restart':
-            echo service_control_restart($name, $filter) . PHP_EOL;
-            break;
-        default:
-            echo "Unknown command `$act'\n";
-            break;
-    }
-} elseif (isset($opts['r'])) {
-   $cmd = array_shift($args);
-   $result = plugins_run($cmd, $args);
-   if (!empty($result)) {
-      $response = json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
-      echo $response;
-   }
+} elseif (isset($opts['f'])) {
+   flush_config_prop(strip_config_path($args[0] ?? ''));
 } elseif (isset($opts['g'])) {
-   echo get_config_prop($args[0]) . PHP_EOL;
+   echo get_config_prop(strip_config_path($args[0] ?? ''), $config);
 } elseif (isset($opts['i'])) {
     if (plugins_interfaces()) {
         write_config('Updated plugin interface configuration');
     }
+} elseif (isset($opts['I'])) {
+    echo json_encode(legacy_interface_stats($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+} elseif (isset($opts['r'])) {
+   $cmd = array_shift($args);
+   $result = plugins_run($cmd, $args);
+   if (!empty($result)) {
+      echo json_encode($result, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+   }
+} elseif (isset($opts['S'])) {
+    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '');
+    echo json_encode($services, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
+} elseif (isset($opts['s'])) {
+    $results = [];
+    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
+    foreach ($services as $service) {
+        if (empty($args[0])) {
+            $results[$service['name']] = 1;
+            continue;
+        }
+
+        $filter = isset($service['id']) ? ['id' => $service['id']] : [];
+        $act = isset($args[1]) ? $args[1] : '';
+        $name = $service['name'];
+
+        switch ($act) {
+            case 'start':
+                echo service_control_start($name, $filter) . PHP_EOL;
+                break;
+            case 'stop':
+                echo service_control_stop($name, $filter) . PHP_EOL;
+                break;
+            case 'restart':
+                echo service_control_restart($name, $filter) . PHP_EOL;
+                break;
+            case 'status':
+                echo htmlspecialchars($service['status']) . PHP_EOL;
+                break;
+            case 'status':
+                echo "Missing command\n";
+                break;
+            default:
+                echo "Unknown command `$act'\n";
+                break;
+        }
+    }
+
+    if (empty($args[0])) {
+        ksort($results);
+
+        foreach ($results as $key => $value) {
+            echo "$key\n";
+        }
+    }
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];
-    if (isset($opts['s'])) {
-        foreach (plugins_services() as $service) {
-            $results[$service['name']] = 1;
+    foreach (plugins_scan() as $name => $path) {
+        try {
+            include_once $path;
+        } catch (\Error $e) {
+            error_log($e);
         }
-    } else {
-        foreach (plugins_scan() as $name => $path) {
-            try {
-                include_once $path;
-            } catch (\Error $e) {
-                error_log($e);
-            }
-            $func = sprintf('%s_configure', $name);
-            if (function_exists($func)) {
-                foreach ($func() as $when => $worker) {
-                    $results[$when] = 1;
+        $func = sprintf('%s_configure', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $when => $worker) {
+                if (empty($results[$when])) {
+                    $results[$when] = [];
                 }
+                $results[$when][] = $name;
             }
         }
     }
 
-    $results = array_keys($results);
-    sort($results);
+    ksort($results);
 
-    foreach ($results as $result) {
-        echo "$result\n";
+    foreach ($results as $key => $value) {
+        echo "$key => " . implode(', ', $value) . "\n";
     }
 } else {
     /* second argument is hook */

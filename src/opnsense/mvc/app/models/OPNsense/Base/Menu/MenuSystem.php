@@ -108,7 +108,6 @@ class MenuSystem
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
      * @return SimpleXMLElement
-     * @throws MenuInitException
      */
     public function persist($nowait = true)
     {
@@ -133,9 +132,13 @@ class MenuSystem
                 foreach (glob($vendor . '/*') as $module) {
                     $menu_cfg_xml = $module . '/Menu/Menu.xml';
                     if (file_exists($menu_cfg_xml)) {
-                        $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
-                        $domNode = $root->ownerDocument->importNode($domNode, true);
-                        $root->appendChild($domNode);
+                        try {
+                            $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
+                            $domNode = $root->ownerDocument->importNode($domNode, true);
+                            $root->appendChild($domNode);
+                        } catch (MenuInitException $e) {
+                            error_log($e);
+                        }
                     }
                 }
             }
@@ -203,13 +206,13 @@ class MenuSystem
         if ($config->interfaces->count() > 0) {
             if ($config->ifgroups->count() > 0) {
                 foreach ($config->ifgroups->children() as $key => $node) {
-                    if (empty($node->members)) {
+                    if (empty($node->members) || !empty($node->nogroup)) {
                         continue;
                     }
                     /* we need both if and gr reference */
                     $iftargets['if'][(string)$node->ifname] = (string)$node->ifname;
                     $iftargets['gr'][(string)$node->ifname] = (string)$node->ifname;
-                    foreach (explode(' ', (string)$node->members) as $member) {
+                    foreach (preg_split('/[ |,]+/', (string)$node->members) as $member) {
                         if (!array_key_exists($member, $ifgroups)) {
                             $ifgroups[$member] = [];
                         }
@@ -329,36 +332,36 @@ class MenuSystem
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
-            $this->appendItem('Services.DHCPv4', $key, array(
+            $this->appendItem('Services.ISC_DHCPv4', $key, array(
                 'url' => '/services_dhcp.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'Edit' . $key, array(
                 'url' => '/services_dhcp.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'AddStatic' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'AddStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv4.' . $key, 'EditStatic' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv4.' . $key, 'EditStatic' . $key, array(
                 'url' => '/services_dhcp_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
-            $this->appendItem('Services.DHCPv6', $key, array(
+            $this->appendItem('Services.ISC_DHCPv6', $key, array(
                 'url' => '/services_dhcpv6.php?if=' . $key,
                 'visiblename' => "[$descr]",
                 'order' => $ordid++,
             ));
-            $this->appendItem('Services.DHCPv6.' . $key, 'Add' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Add' . $key, array(
                 'url' => '/services_dhcpv6_edit.php?if=' . $key,
                 'visibility' => 'hidden',
             ));
-            $this->appendItem('Services.DHCPv6.' . $key, 'Edit' . $key, array(
+            $this->appendItem('Services.ISC_DHCPv6.' . $key, 'Edit' . $key, array(
                 'url' => '/services_dhcpv6_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
             ));

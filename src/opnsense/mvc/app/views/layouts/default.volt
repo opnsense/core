@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
+    <meta name="robots" content="noindex, nofollow" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
@@ -112,6 +112,23 @@
                     });
                 }, 500);
 
+                // Register collapsible table headers
+                $('.table').on('click', 'thead', function(event) {
+                    let collapse = $(event.currentTarget).next();
+                    let id = collapse.attr('class');
+                    if (collapse != undefined && id !== undefined && id === "collapsible") {
+                        let icon = $('> tr > th > div > i', event.currentTarget);
+                        if (collapse.is(':hidden')) {
+                            collapse.toggle(0);
+                            collapse.css('display', '');
+                            icon.toggleClass("fa-angle-right fa-angle-down");
+                            return;
+                        }
+                        icon.toggleClass("fa-angle-down fa-angle-right");
+                        $('> tr > td', collapse).toggle(0);
+                    }
+                });
+
                 // hook in live menu search
                 $.ajax("/api/core/menu/search/", {
                     type: 'get',
@@ -177,6 +194,10 @@
                 $(".list-group-item.active").each(function(){
                     var navbar_center = ($( window ).height() - $(".collapse.navbar-collapse").height())/2;
                     $('html,aside').scrollTop(($(this).offset().top - navbar_center));
+                });
+                // prevent form submits on mvc pages
+                $("form").submit(function() {
+                    return false;
                 });
             });
         </script>

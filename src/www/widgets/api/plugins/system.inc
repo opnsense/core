@@ -107,6 +107,12 @@ function system_api_kernel()
     $result['memory']['total'] = get_single_sysctl('hw.physmem');
     if ($totalMem != 0) {
         $result['memory']['used'] = round(((($totalMem - ($inactiveMem + $cachedMem + $freeMem))) / $totalMem)*$result['memory']['total'], 0);
+        $arcMem = get_single_sysctl('kstat.zfs.misc.arcstats.size');
+        if (!empty($arcMem)) {
+            $result['memory']['arc'] = $arcMem;
+            $result['memory']['arc_txt'] = sprintf(gettext("ARC size %d MB"), $arcMem/1024/1024);
+        }
+
     } else {
         $result['memory']['used'] = gettext('N/A');
     }
@@ -159,7 +165,7 @@ function system_api_versions($product)
 
     $result[] = sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']);
     $result[] = php_uname('s') . ' ' . php_uname('r');
-    $result[] = trim(shell_exec('/usr/local/bin/openssl version'));
+    $result[] = shell_safe('/usr/local/bin/openssl version | cut -f -2 -d \' \'');
 
     if (!empty($product['product_license']['valid_to'])) {
         $result[] = gettext('Licensed until') . ' ' . $product['product_license']['valid_to'];

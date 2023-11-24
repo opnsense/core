@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>ctrlagent.general.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable control agent.</help>
+    </field>
+    <field>
+        <id>ctrlagent.general.http_host</id>
+        <label>Bind address</label>
+        <type>text</type>
+        <help>Address on which the RESTful interface should be available</help>
+    </field>
+    <field>
+        <id>ctrlagent.general.http_port</id>
+        <label>Bind port</label>
+        <type>text</type>
+        <help>Portnumber to use for the RESTful interface</help>
+    </field>
+</form>

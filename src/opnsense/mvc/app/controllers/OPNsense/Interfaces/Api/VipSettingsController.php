@@ -28,10 +28,11 @@
 
 namespace OPNsense\Interfaces\Api;
 
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Base\UserException;
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Firewall\Util;
 
 class VipSettingsController extends ApiMutableModelControllerBase
 {
@@ -43,14 +44,12 @@ class VipSettingsController extends ApiMutableModelControllerBase
      */
     private function getVipOverlay()
     {
-        $overlay = ['network' => ''];
+        $overlay = ['network' => '', 'subnet' => '', 'subnet_bits' => ''];
         $tmp = $this->request->getPost('vip');
         if (!empty($tmp['network'])) {
             $parts = explode('/', $tmp['network'], 2);
             $overlay['subnet'] = $parts[0];
-            if (count($parts) < 2) {
-                $overlay['subnet_bits'] = strpos($parts[0], ':') !== false ? 128 : 32;
-            } else {
+            if (count($parts) == 2 && $parts[1] != '') {
                 $overlay['subnet_bits'] = $parts[1];
             }
         }
@@ -114,25 +113,13 @@ class VipSettingsController extends ApiMutableModelControllerBase
         }
         $result = $this->searchBase(
             'vip',
-            ['interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits', 'vhid', 'advbase', 'advskew'],
+            [
+                'interface', 'mode', 'type', 'descr', 'subnet', 'subnet_bits',
+                'vhid', 'advbase', 'advskew', 'address', 'vhid_txt'
+            ],
             'descr',
             $filter_funct
         );
-
-        if (!empty($result['rows'])) {
-            foreach ($result['rows'] as &$row) {
-                $row['address'] = sprintf("%s/%s", $row['subnet'], $row['subnet_bits']);
-                $row['vhid_txt'] = $row['vhid'];
-                if ($row['mode'] == 'CARP') {
-                    $row['vhid_txt'] = sprintf(
-                        gettext('%s (freq. %s/%s)'),
-                        $row['vhid'],
-                        $row['advbase'],
-                        $row['advskew']
-                    );
-                }
-            }
-        }
         return $result;
     }
 
@@ -140,7 +127,14 @@ class VipSettingsController extends ApiMutableModelControllerBase
     {
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = [];
-        if ($node != null && explode('/', $_POST['vip']['network'])[0] != (string)$node->subnet) {
+        $post_subnet = '';
+        $post_interface = '';
+        if (isset($_POST['vip'])) {
+            $post_subnet = !empty($_POST['vip']['network']) ? explode('/', $_POST['vip']['network'])[0] : '';
+            $post_interface = !empty($_POST['vip']['interface']) ? $_POST['vip']['interface'] : '';
+        }
+
+        if ($node != null && $post_subnet != (string)$node->subnet) {
             $validations = $this->getModel()->whereUsed((string)$node->subnet);
             if (!empty($validations)) {
                 // XXX a bit unpractical, but we can not validate previous values from the model so
@@ -151,9 +145,14 @@ class VipSettingsController extends ApiMutableModelControllerBase
                         'vip.network' => array_slice($validations, 0, 2)
                     ]
                 ];
-            } elseif (!file_exists("/tmp/delete_vip_{$uuid}.todo")) {
-                file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
             }
+        }
+        if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
+            $addr = (string)$node->subnet;
+            if (Util::isLinkLocal($addr)) {
+                $addr .= "@{$node->interface}";
+            }
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
 
         return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
@@ -180,14 +179,19 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = $this->getModel()->whereUsed((string)$node->subnet);
         if (!empty($validations)) {
             throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
         }
         $response = $this->delBase("vip", $uuid);
-        if (($response['result'] ?? '') == 'deleted' && !file_exists("/tmp/delete_vip_{$uuid}.todo")) {
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", (string)$node->subnet);
+        if (($response['result'] ?? '') == 'deleted') {
+            $addr = (string)$node->subnet;
+            if (Util::isLinkLocal($addr)) {
+                $addr .= "@{$node->interface}";
+            }
+            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
         return $response;
     }

@@ -555,23 +555,24 @@ stdDialogRemoveItem.defaults = {
  */
 $.fn.SimpleActionButton = function (params) {
     let this_button = this;
-    this.construct = function() {
+    this.construct = function () {
         let label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress">';
         this_button.html(label_content);
-        this_button.on('click', function(){
+        this_button.on('click', function () {
             this_button.find('.reload_progress').addClass("fa fa-spinner fa-pulse");
-            let pre_action = function() {
+            let pre_action = function () {
                 return (new $.Deferred()).resolve();
             }
             if (params && params.onPreAction) {
                 pre_action = params.onPreAction;
             }
-            pre_action().done(function() {
-                ajaxCall(this_button.data('endpoint'), {}, function(data,status) {
+            pre_action().done(function () {
+                ajaxCall(this_button.data('endpoint'), {}, function (data, status) {
+                    let data_status = typeof data == 'object' && 'status' in data ? data['status'] : '';
                     if (params && params.onAction) {
                         params.onAction(data, status);
                     }
-                    if ((status != "success" || ('status' in data && data['status'].toLowerCase().trim() != 'ok')) && data['status']) {
+                    if ((status != "success" || (data_status.toLowerCase().trim() != 'ok')) && data_status !== '') {
                           BootstrapDialog.show({
                               type: BootstrapDialog.TYPE_WARNING,
                               title: this_button.data('error-title'),
@@ -584,10 +585,13 @@ $.fn.SimpleActionButton = function (params) {
                         updateServiceControlUI(this_button.data('service-widget'));
                     }
                 });
+            }).fail(function () {
+                this_button.find('.reload_progress').removeClass("fa fa-spinner fa-pulse");
             });
         });
     }
-    return this.each(function(){
+
+    return this.each(function () {
         const button = this_button.construct();
         return button;
     });

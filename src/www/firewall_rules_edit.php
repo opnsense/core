@@ -40,7 +40,7 @@ $ostypes = json_decode(configd_run('filter list osfp json'));
 if ($ostypes == null) {
     $ostypes = array();
 }
-$gateways = new \OPNsense\Routing\Gateways(legacy_interfaces_details());
+$gateways = new \OPNsense\Routing\Gateways();
 
 
 /**
@@ -102,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'gateway',
         'icmptype',
         'icmp6-type',
+        'interfacenot',
         'interface',
         'ipprotocol',
         'log',
@@ -214,16 +215,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields = array("ipprotocol","type","protocol","src","dst");
     $reqdfieldsn = array(gettext("TCP/IP Version"),gettext("Type")
                         ,gettext("Protocol"),gettext("Source"),gettext("Destination"));
-    if (!is_specialnet($pconfig['src'])) {
-      $reqdfields[] = "srcmask";
-      $reqdfieldsn[] = gettext("Source bit count");
-    }
-    if (!is_specialnet($pconfig['dst'])) {
-      $reqdfields[] = "dstmask";
-      $reqdfieldsn[] = gettext("Destination bit count");
-    }
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+    if (!empty($pconfig['interfacenot']) && (
+        (is_array($pconfig['interface']) && count($pconfig['interface']) != 1 ) || empty($pconfig['interface']))
+    ) {
+        $input_errors[] = gettext("Inverting interfaces is only allowed for single targets to avoid mis-interpretations");
+    }
 
     if ($pconfig['ipprotocol'] == "inet46" && !empty($pconfig['gateway'])) {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
@@ -272,36 +271,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("%s is only valid if the gateway is set to 'default'."),$pconfig['statetype']);
         }
     }
-    if (!empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any')
+    if (!empty($pconfig['srcbeginport']) && !is_portoralias($pconfig['srcbeginport']) && $pconfig['srcbeginport'] != 'any') {
         $input_errors[] = sprintf(gettext("%s is not a valid start source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcbeginport']);
-    if (!empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any')
+    }
+    if (!empty($pconfig['srcendport']) && !is_portoralias($pconfig['srcendport']) && $pconfig['srcendport'] != 'any') {
         $input_errors[] = sprintf(gettext("%s is not a valid end source port. It must be a port alias or integer between 1 and 65535."),$pconfig['srcendport']);
-    if (!empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any')
+    }
+    if (!empty($pconfig['dstbeginport']) && !is_portoralias($pconfig['dstbeginport']) && $pconfig['dstbeginport'] != 'any') {
         $input_errors[] = sprintf(gettext("%s is not a valid start destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstbeginport']);
-    if (!empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any')
+    }
+    if (!empty($pconfig['dstendport']) && !is_portoralias($pconfig['dstendport']) && $pconfig['dstendport'] != 'any') {
         $input_errors[] = sprintf(gettext("%s is not a valid end destination port. It must be a port alias or integer between 1 and 65535."),$pconfig['dstendport']);
-
-    if ( (is_alias($pconfig['srcbeginport']) || is_alias($pconfig['srcendport']))  && $pconfig['srcbeginport'] != $pconfig['srcendport']) {
-        $input_errors[] = gettext('When selecting aliases for source ports, both from and to fields must be the same');
     }
-    if ( (is_alias($pconfig['dstbeginport']) || is_alias($pconfig['dstendport']))  && $pconfig['dstbeginport'] != $pconfig['dstendport']) {
-        $input_errors[] = gettext('When selecting aliases for destination ports, both from and to fields must be the same');
-    }
-    if (!is_specialnet($pconfig['src'])) {
-        if (!is_ipaddroralias($pconfig['src'])) {
-            $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
-        }
-        if (!is_numericint($pconfig['srcmask'])) {
-            $input_errors[] = gettext("A valid source bit count must be specified.");
+    if (!empty($pconfig['srcbeginport']) && !empty($pconfig['srcendport'])) {
+        if ((is_alias($pconfig['srcbeginport']) || is_alias($pconfig['srcendport'])) && $pconfig['srcbeginport'] != $pconfig['srcendport']) {
+            $input_errors[] = gettext('When selecting aliases for source ports, both from and to fields must be the same');
         }
     }
-    if (!is_specialnet($pconfig['dst'])) {
-        if (!is_ipaddroralias($pconfig['dst'])) {
-            $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."),$pconfig['dst']);
+    if (!empty($pconfig['dstbeginport']) && !empty($pconfig['dstendport'])) {
+        if ((is_alias($pconfig['dstbeginport']) || is_alias($pconfig['dstendport'])) && $pconfig['dstbeginport'] != $pconfig['dstendport']) {
+            $input_errors[] = gettext('When selecting aliases for destination ports, both from and to fields must be the same');
         }
-        if (!is_numericint($pconfig['dstmask'])) {
-            $input_errors[] = gettext("A valid destination bit count must be specified.");
-        }
+    }
+    if (!is_specialnet($pconfig['src']) && !is_ipaddroralias($pconfig['src'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."),$pconfig['src']);
+    }
+    if (!empty($pconfig['srcmask']) && !is_numericint($pconfig['srcmask'])) {
+        $input_errors[] = gettext("A valid source bit count must be specified.");
+    }
+    if (!is_specialnet($pconfig['dst']) && !is_ipaddroralias($pconfig['dst'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."),$pconfig['dst']);
+    }
+    if (!empty($pconfig['dstmask']) && !is_numericint($pconfig['dstmask'])) {
+        $input_errors[] = gettext("A valid destination bit count must be specified.");
     }
 
     if (is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst'])) {
@@ -480,6 +482,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        $filterent['interfacenot'] = !empty($pconfig['interfacenot']);
+
         // allow 0 in adaptive timeouts
         if (is_numericint($pconfig['adaptivestart']) && is_numericint($pconfig['adaptiveend'])) {
             $filterent['adaptivestart'] = $pconfig['adaptivestart'];
@@ -577,13 +581,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         pconfig_to_address($filterent['source'], $pconfig['src'],
-          $pconfig['srcmask'], !empty($pconfig['srcnot']),
+          $pconfig['srcmask'] ?? '', !empty($pconfig['srcnot']),
           $pconfig['srcbeginport'], $pconfig['srcendport']);
-
         pconfig_to_address($filterent['destination'], $pconfig['dst'],
-          $pconfig['dstmask'], !empty($pconfig['dstnot']),
+          $pconfig['dstmask'] ?? '', !empty($pconfig['dstnot']),
           $pconfig['dstbeginport'], $pconfig['dstendport']);
-
 
         $filterent['updated'] = make_config_revision_entry();
 
@@ -661,6 +663,7 @@ include("head.inc");
                       } else {
                         $(this).removeClass("hidden");
                       }
+                      $(this).prop("disabled", false);
                     });
                 } else {
                     // hide related controls
@@ -670,6 +673,7 @@ include("head.inc");
                       } else {
                         $(this).addClass("hidden");
                       }
+                      $(this).prop("disabled", true);
                     });
                 }
               });
@@ -801,7 +805,7 @@ include("head.inc");
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Disable this rule"); ?></strong>
+                      <?= gettext('Disable this rule') ?>
                       <div class="hidden" data-for="help_for_disabled">
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                       </div>
@@ -823,7 +827,7 @@ include("head.inc");
                     </td>
                     <td>
                       <input name="quick" type="checkbox" id="quick" value="yes" <?= !empty($is_quick) ? "checked=\"checked\"" : "";?> />
-                      <strong><?=gettext("Apply the action immediately on match.");?></strong>
+                      <?= gettext('Apply the action immediately on match.') ?>
                       <div class="hidden" data-for="help_for_quick">
                         <?=gettext("If a packet matches a rule specifying quick, ".
                                    "then that rule is considered the last matching rule and the specified action is taken. ".
@@ -837,7 +841,7 @@ include("head.inc");
                     <td><?=gettext("Associated filter rule");?></td>
                     <td>
                       <input name='associated-rule-id' id='associated-rule-id' type='hidden' value='<?=$pconfig['associated-rule-id'];?>' />
-                      <span class="text-danger"><strong><?= gettext('Note:') ?></strong></span> <?= gettext('This is associated to a NAT rule.') ?><br />
+                      <span class="text-danger"><?= gettext('This is associated to a NAT rule.') ?><br />
                       <?=gettext("You cannot edit the interface, protocol, source, or destination of associated filter rules.");?>
                       <br />
 <?php
@@ -856,6 +860,20 @@ include("head.inc");
                   </tr>
 <?php
                   endif; ?>
+<?php
+                  if (!empty($pconfig['floating'])): ?>
+                  <tr>
+                    <td><a id="help_for_interfacenot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface / Invert");?></td>
+                    <td>
+                        <input name="interfacenot" type="checkbox" <?= !empty($pconfig['interfacenot']) ? "checked=\"checked\"" : "";?> />
+                        <?= gettext('Use this option to invert the sense of the match.') ?>
+                        <div class="hidden" data-for="help_for_interfacenot">
+                          <?=gettext('Use all but selected interfaces');?>
+                        </div>
+                    </td>
+                  </tr>
+<?php
+                  endif;?>
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
@@ -1032,21 +1050,19 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td> <a id="help_for_src_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
                     <td>
                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_src_invert">
-                        <?=gettext("Use this option to invert the sense of the match."); ?>
-                      </div>
+                      <?= gettext('Use this option to invert the sense of the match.') ?>
                     </td>
                   </tr>
                   <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
                       <td>
-                        <table class="table table-condensed">
+                        <table style="max-width: 348px">
                           <tr>
                             <td>
-                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                                 <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -1066,18 +1082,18 @@ include("head.inc");
                         <tr>
                           <td>
                             <div>
-                              <table style="border:0;">
+                              <table style="max-width: 348px">
                                 <tbody>
                                   <tr>
-                                      <td style="width:348px">
+                                      <td style="width:285px">
                                         <!-- updates to "other" option in  src -->
                                         <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
                                       </td>
                                       <td>
-                                        <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="src" >
-                                        <?php for ($i = 128; $i > 0; $i--): ?>
+                                        <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask" data-width="70px" for="src">
+<?php for ($i = 128; $i > 0; $i--): ?>
                                           <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                                        <?php endfor; ?>
+<?php endfor ?>
                                         </select>
                                       </td>
                                   </tr>
@@ -1162,21 +1178,19 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                     <td>
-                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
-                      <div class="hidden" data-for="help_for_dst_invert">
-                        <?=gettext("Use this option to invert the sense of the match."); ?>
-                      </div>
+                      <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                      <?= gettext('Use this option to invert the sense of the match.') ?>
                     </td>
                   </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -1195,18 +1209,18 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table style="border:0;">
+                            <table style="max-width: 348px">
                               <tbody>
                                 <tr>
-                                    <td style="width:348px">
+                                    <td style="width:285px">
                                       <!-- updates to "other" option in  src -->
                                       <input <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
                                     <td>
-                                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstmask" class="selectpicker ipv4v6net" data-network-id="dst_address" data-size="5" id="dstmask"  data-width="auto" for="dst" >
-                                      <?php for ($i = 128; $i > 0; $i--): ?>
+                                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dstmask" class="selectpicker ipv4v6net" data-network-id="dst_address" data-size="5" id="dstmask" data-width="70px" for="dst">
+<?php for ($i = 128; $i > 0; $i--): ?>
                                         <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                                      <?php endfor; ?>
+<?php endfor; ?>
                                       </select>
                                     </td>
                                 </tr>
@@ -1283,7 +1297,7 @@ include("head.inc");
                     <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
                     <td>
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                      <?= gettext('Log packets that are handled by this rule') ?>
                       <div class="hidden" data-for="help_for_log">
                         <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
@@ -1292,7 +1306,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                     <td>
-                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-sortable="false" data-width="334px" data-live-search="true">
+                      <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-sortable="false" data-width="348px" data-live-search="true">
 <?php
                       foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
                         $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>
@@ -1311,28 +1325,6 @@ include("head.inc");
                       <div class="hidden" data-for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
-                  </tr>
-                  <tr>
-                    <th colspan="2"><?=gettext("Advanced features");?></th>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_sourceos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source OS");?></td>
-                    <td>
-                        <select name="os" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                        <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>><?= gettext('Any') ?></option>
-<?php
-                          foreach ($ostypes as $ostype): ?>
-                            <option value="<?=$ostype;?>" <?= $ostype == $pconfig['os'] ? "selected=\"selected\"" : ""; ?>>
-                              <?=htmlspecialchars($ostype);?>
-                            </option>
-<?php
-                        endforeach;?>
-                        </select>
-                        <div class="hidden" data-for="help_for_sourceos">
-                          <strong><?=gettext("OS Type:");?></strong><br/>
-                          <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
-                        </div>
-                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
@@ -1393,14 +1385,10 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><?=gettext("Advanced Options");?></td>
-                    <td>
+                    <th><?= gettext('Advanced features') ?></th>
+                    <th>
                       <input id="toggleAdvanced" type="button" class="btn btn-default" value="<?= html_safe(gettext('Show/Hide')) ?>" />
-                    </td>
-                  </tr>
-                  <tr class="opt_advanced hidden">
-                    <td></td>
-                    <td><strong><?=gettext("Note: Leave fields blank to disable the feature.");?></strong></td>
+                    </th>
                   </tr>
                   <tr class="opt_advanced hidden">
                       <td><a id="help_for_allowopts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("allow options");?> </td>
@@ -1667,6 +1655,23 @@ endforeach;?>
                             <?=gettext("Use this to choose TCP flags that must be set or cleared for this rule to match.");?>
                         </div>
                       </td>
+                  </tr>
+                  <tr class="opt_advanced hidden">
+                    <td><a id="help_for_sourceos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source OS') ?></td>
+                    <td>
+                      <select name="os" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                        <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>><?= gettext('Any') ?></option>
+<?php foreach ($ostypes as $ostype): ?>
+                        <option value="<?=$ostype;?>" <?= $ostype == $pconfig['os'] ? "selected=\"selected\"" : ""; ?>>
+                          <?=htmlspecialchars($ostype);?>
+                        </option>
+<?php endforeach ?>
+                      </select>
+                      <div class="hidden" data-for="help_for_sourceos">
+                        <strong><?=gettext("OS Type:");?></strong><br/>
+                        <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
+                      </div>
+                    </td>
                   </tr>
                     <tr class="opt_advanced hidden">
                         <td><a id="help_for_nopfsync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State Type");?> / <?=gettext("NO pfsync");?> </td>

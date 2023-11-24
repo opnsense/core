@@ -211,6 +211,7 @@ class Plugin
      * @param string $type anchor type (fw for filter, other options are nat,rdr,binat)
      * @param string $priority sort order from low to high
      * @param string $placement placement head,tail
+     * @param bool $quick
      * @return null
      */
     public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail", $quick = false)
@@ -263,6 +264,7 @@ class Plugin
             $rule_hash = Util::calcRuleHash($conf);
             $conf['label'] = $rule_hash;
         }
+        $conf['#priority'] = $prio;
         $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = array();
@@ -355,6 +357,7 @@ class Plugin
      */
     public function iterateFilterRules()
     {
+        ksort($this->filterRules);  /* sort rules by priority */
         foreach ($this->filterRules as $prio => $ruleset) {
             foreach ($ruleset as $rule) {
                  yield $rule;

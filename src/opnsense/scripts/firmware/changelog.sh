@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2016-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -48,17 +48,7 @@ changelog_checksum()
 
 changelog_url()
 {
-	CORE_ABI=$(opnsense-version -x)
-	SYS_ABI=$(opnsense-verify -a)
-
-	URLPREFIX="https://pkg.opnsense.org/${SYS_ABI}/${CORE_ABI}"
-
-	if [ -n "$(opnsense-update -K)" ]; then
-		# changelogs differ for business subscriptions
-		URLPREFIX=$(opnsense-update -M)
-	fi
-
-	echo "${URLPREFIX}/sets/changelog.txz"
+	echo "$(opnsense-update -X)/sets/changelog.txz"
 }
 
 changelog_fetch()

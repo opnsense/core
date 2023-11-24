@@ -1,0 +1,21 @@
+<form>
+    <field>
+        <id>peer.name</id>
+        <label>Name</label>
+        <type>text</type>
+        <help>Peer name, there should be one entry matching this machines "This server name"</help>
+    </field>
+    <field>
+        <id>peer.role</id>
+        <label>Role</label>
+        <type>dropdown</type>
+        <help>This peers role</help>
+    </field>
+    <field>
+        <id>peer.url</id>
+        <label>Url</label>
+        <type>text</type>
+        <help>This specifies the URL of our server instance, which should use a different port than the control agent.
+        For example http://192.0.2.1:8001/</help>
+    </field>
+</form>

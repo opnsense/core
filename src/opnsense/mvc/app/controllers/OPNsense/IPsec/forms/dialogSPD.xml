@@ -1,0 +1,44 @@
+<form>
+    <field>
+        <id>spd.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>spd.reqid</id>
+        <label>Reqid</label>
+        <type>text</type>
+        <help>
+            Reqid to register this manual item on. Please note that an established tunnel needs
+            to reconnect in order to add the entry as we use an updown event.
+        </help>
+    </field>
+    <field>
+        <id>spd.connection_child</id>
+        <label>Connection child</label>
+        <type>dropdown</type>
+        <help>
+            Connection child to register this manual item on. Please note that an established tunnel needs
+            to reconnect in order to add the entry as we use an updown event.
+        </help>
+    </field>
+    <field>
+        <id>spd.source</id>
+        <label>Source network</label>
+        <type>text</type>
+        <help>
+            source network, usually the networks you would like to accept using network address translation.
+        </help>
+    </field>
+    <field>
+        <id>spd.destination</id>
+        <label>Destination network</label>
+        <type>text</type>
+        <help>destination network, leave empty to use the networks propagated in the child sa</help>
+    </field>
+    <field>
+        <id>spd.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

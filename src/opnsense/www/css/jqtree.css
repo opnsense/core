@@ -5,6 +5,10 @@ ul.jqtree-tree {
     padding: 0;
 }
 
+    ul.jqtree-tree.jqtree-dnd {
+        touch-action: none;
+    }
+
     ul.jqtree-tree ul.jqtree_common {
         list-style: none outside;
         margin-left: 12px;
@@ -50,17 +54,23 @@ ul.jqtree-tree {
     ul.jqtree-tree .jqtree-element {
         cursor: pointer;
         position: relative;
-        display: -webkit-box;
         display: flex;
     }
 
+    ul.jqtree-tree .jqtree-element:has(.jqtree-title-button-right) {
+            display: block;
+        }
+
     ul.jqtree-tree .jqtree-title {
-        color: #1C4257;
+        color: #1c4257;
         vertical-align: middle;
+    }
+
+    ul.jqtree-tree .jqtree-title-button-left {
         margin-left: 1.5em;
     }
 
-    ul.jqtree-tree .jqtree-title.jqtree-title-folder {
+    ul.jqtree-tree .jqtree-title-button-left.jqtree-title-folder {
             margin-left: 0;
         }
 
@@ -120,9 +130,8 @@ ul.jqtree-tree {
 
     ul.jqtree-tree li.jqtree-selected > .jqtree-element,
     ul.jqtree-tree li.jqtree-selected > .jqtree-element:hover {
-        background-color: #97BDD6;
-        background: -webkit-gradient(linear, left top, left bottom, from(#BEE0F5), to(#89AFCA));
-        background: linear-gradient(#BEE0F5, #89AFCA);
+        background-color: #97bdd6;
+        background: linear-gradient(#bee0f5, #89afca);
         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
     }
 

@@ -48,7 +48,7 @@ class LegacyCSRF
             );
             session_start();
             $secure = $config['system']['webgui']['protocol'] == 'https';
-            setcookie(session_name(), session_id(), null, '/', null, $secure, true);
+            setcookie(session_name(), session_id(), 0, '/', '', $secure, true);
         }
         ob_start(array($this,'csrfRewriteHandler'), 5242880);
     }
@@ -73,6 +73,10 @@ class LegacyCSRF
     {
         $random = new \OPNsense\Phalcon\Encryption\Security\Random();
         // only request new token when session has none
+        if (session_status() == PHP_SESSION_NONE) {
+            // our session is not guaranteed to be started at this point.
+            session_start();
+        }
         if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
             $_SESSION['$PHALCON/CSRF$'] = $random->base64Safe(16);
             $_SESSION['$PHALCON/CSRF/KEY$'] = $random->base64Safe(16);

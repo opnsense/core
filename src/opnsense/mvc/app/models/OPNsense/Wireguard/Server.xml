@@ -1,0 +1,73 @@
+<model>
+    <mount>//OPNsense/wireguard/server</mount>
+    <description>WireGuard instance configuration</description>
+    <version>0.0.4</version>
+    <items>
+        <servers>
+            <server type=".\ServerField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <Mask>/^([0-9a-zA-Z._\-]){1,64}$/u</Mask>
+                    <ValidationMessage>Should be a string between 1 and 64 characters. Allowed characters are alphanumeric characters, dash and underscores.</ValidationMessage>
+                </name>
+                <instance type="AutoNumberField">
+                    <Required>Y</Required>
+                </instance>
+                <pubkey type="TextField">
+                    <Required>Y</Required>
+                    <ValidationMessage>A public key is required</ValidationMessage>
+                </pubkey>
+                <privkey type="TextField">
+                    <Required>Y</Required>
+                    <ValidationMessage>A private key is required</ValidationMessage>
+                </privkey>
+                <port type="PortField"/>
+                <mtu type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>9300</MaximumValue>
+                </mtu>
+                <dns type="CSVListField">
+                    <Mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</Mask>
+                    <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
+                </dns>
+                <tunneladdress type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </tunneladdress>
+                <disableroutes type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>You have to enable Disable Routes option.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>gateway</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </disableroutes>
+                <gateway type="NetworkField"/>
+                <carp_depend_on type="VirtualIPField">
+                    <type>carp</type>
+                    <key>mvc</key>
+                </carp_depend_on>
+                <peers type="ModelRelationField">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Wireguard.Client</source>
+                            <items>clients.client</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Choose an Peer.</ValidationMessage>
+                </peers>
+            </server>
+        </servers>
+    </items>
+</model>

@@ -1,0 +1,60 @@
+<form>
+    <field>
+        <id>vti.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>vti.reqid</id>
+        <label>Reqid</label>
+        <type>text</type>
+        <help>This ID is used to distinguish traffic and security policies between several if_ipsec interfaces.</help>
+    </field>
+    <field>
+        <id>vti.local</id>
+        <label>Local address</label>
+        <type>text</type>
+        <help>Local tunnel address used for the outer IP header of ESP packets</help>
+    </field>
+    <field>
+        <id>vti.remote</id>
+        <label>Remote address</label>
+        <type>text</type>
+        <help>Remote tunnel address used for the outer IP header of ESP packets</help>
+    </field>
+    <field>
+        <id>vti.tunnel_local</id>
+        <label>Tunnel local address</label>
+        <type>text</type>
+        <help>Inner tunnel local address to be used for routing purposes.</help>
+    </field>
+    <field>
+        <id>vti.tunnel_remote</id>
+        <label>Tunnel remote address</label>
+        <type>text</type>
+        <help>
+          Inner tunnel remote address to be used for routing purposes.
+          The size of the subnet containing local and remote will be calculated automatically
+        </help>
+    </field>
+    <field>
+        <id>vti.tunnel_local2</id>
+        <label>Tunnel secondary local address</label>
+        <type>text</type>
+        <help>Inner tunnel local address to be used for routing purposes.</help>
+    </field>
+    <field>
+        <id>vti.tunnel_remote2</id>
+        <label>Tunnel secondary remote address</label>
+        <type>text</type>
+        <help>
+          Inner tunnel remote address to be used for routing purposes.
+          The size of the subnet containing local and remote will be calculated automatically
+        </help>
+    </field>
+    <field>
+        <id>vti.description</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+</form>

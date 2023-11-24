@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
  *
@@ -33,7 +33,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $all_intf_details = legacy_interfaces_details();
-$a_gateways = (new \OPNsense\Routing\Gateways($all_intf_details))->gatewaysIndexedByName();
+$a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['language'] = $config['system']['language'];
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['store_intermediate_certs'] = isset($config['system']['store_intermediate_certs']);
-    $pconfig['theme'] = $config['theme'];
+    $pconfig['theme'] = $config['theme'] ?? '';
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
 
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
         $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
-    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'])) {
+    if (!empty($pconfig['dnssearchdomain']) && !is_domain($pconfig['dnssearchdomain'], true)) {
         $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
     }
 
@@ -158,6 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['prefer_ipv4']);
         }
 
+        $sync_trust = !empty($pconfig['store_intermediate_certs']) !== isset($config['system']['store_intermediate_certs']);
         $config['system']['store_intermediate_certs'] = !empty($pconfig['store_intermediate_certs']);
 
         if (!empty($pconfig['dnsallowoverride'])) {
@@ -226,11 +227,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* time zone change first */
         system_timezone_configure();
-        system_trust_configure();
+
+        if ($sync_trust) {
+            /*
+             * FreeBSD trust store integration is slow so we need
+             * to avoid processing when setting is unchanged.
+             */
+            system_trust_configure();
+        }
 
         system_hostname_configure();
-        system_hosts_generate();
-        system_resolvconf_generate();
+        system_resolver_configure();
         plugins_configure('dns');
         plugins_configure('dhcp');
         filter_configure();
@@ -456,7 +463,7 @@ $( document ).ready(function() {
               <td>
                 <input name="dnssearchdomain" type="text" value="<?= $pconfig['dnssearchdomain'] ?>" />
                 <div class="hidden" data-for="help_for_dnssearchdomain">
-                  <?= gettext('Enter an additional domain to add to the local list of search domains.') ?>
+                  <?= gettext('Enter an additional domain to add to the local list of search domains. Use "." to disable passing any search domain for resolving.') ?>
                 </div>
               </td>
             </tr>

@@ -41,7 +41,7 @@ import socket
 import subprocess
 import syslog
 import modules.processhandler
-import modules.csconfigparser
+from configparser import ConfigParser
 from modules.daemonize import Daemonize
 import cProfile
 
@@ -56,7 +56,8 @@ os.chdir(program_path)
 def get_config():
     """ open configuration
     """
-    cnf = modules.csconfigparser.CSConfigParser()
+    cnf = ConfigParser()
+    cnf.optionxform = str
     cnf.read('conf/configd.conf')
     return cnf
 
@@ -66,7 +67,7 @@ def validate_config(cnf):
         :param cnf: config handle
     """
     for config_item in ['socket_filename', 'pid_filename']:
-        if cnf.has_section('main') == False or cnf.has_option('main', config_item) == False:
+        if not cnf.has_section('main') or not cnf.has_option('main', config_item):
             print('configuration item main/%s not found in %s/conf/configd.conf' % (config_item, program_path))
             sys.exit(0)
 
@@ -118,6 +119,7 @@ def run_watch():
         process.wait()
         # wait a small period of time before trying to restart a new process
         time.sleep(0.5)
+
 
 this_config = get_config()
 validate_config(this_config)

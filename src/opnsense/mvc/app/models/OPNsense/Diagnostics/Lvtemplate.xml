@@ -7,11 +7,11 @@
             <template type="ArrayField">
                 <name type="TextField">
                     <Required>Y</Required>
-                    <mask>/^.{1,255}$/u</mask>
+                    <Mask>/^.{1,255}$/u</Mask>
                     <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
                 </name>
                 <or type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </or>
                 <filters type="CSVListField">

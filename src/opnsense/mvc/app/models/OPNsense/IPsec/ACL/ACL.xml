@@ -10,13 +10,24 @@
         </patterns>
     </page-vpn-ipsec-keypairs>
     <page-vpn-ipsec>
-        <name>VPN: IPsec</name>
+        <name>VPN: IPsec: Tunnels Settings [legacy]</name>
         <patterns>
             <pattern>ui/ipsec/tunnels</pattern>
             <pattern>api/ipsec/tunnel/*</pattern>
             <pattern>api/ipsec/legacy-subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec>
+    <page-vpn-ipsec-connections>
+        <name>VPN: IPsec: Connections</name>
+        <patterns>
+            <pattern>ui/ipsec/connections</pattern>
+            <pattern>ui/ipsec/vti</pattern>
+            <pattern>api/ipsec/connections/*</pattern>
+            <pattern>api/ipsec/pools/*</pattern>
+            <pattern>api/ipsec/vti/*</pattern>
+            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+        </patterns>
+    </page-vpn-ipsec-connections>
 
     <!-- ACLs for legacy code -->
     <page-vpn-ipsec-editphase1>
@@ -70,6 +81,7 @@
         <patterns>
             <pattern>ui/ipsec/spd</pattern>
             <pattern>api/ipsec/spd/*</pattern>
+            <pattern>api/ipsec/manual_spd/*</pattern>
         </patterns>
     </page-status-ipsec-spd>
     <page-status-systemlogs-ipsecvpn>

@@ -1,0 +1,62 @@
+<form>
+    <field>
+        <id>local.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>local.connection</id>
+        <label>Connection</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>local.round</id>
+        <label>Round</label>
+        <type>text</type>
+        <help>Numeric identifier by which authentication rounds are sorted.</help>
+    </field>
+    <field>
+        <id>local.auth</id>
+        <label>Authentication</label>
+        <type>dropdown</type>
+        <help>Authentication to perform for this round, when using Pre-Shared key make sure to define one under "VPN->IPsec->Pre-Shared Keys"</help>
+    </field>
+    <field>
+        <id>local.id</id>
+        <label>Id</label>
+        <type>text</type>
+        <help>IKE identity to use for authentication round.
+          When using certificate authentication
+          the IKE identity must be contained in the certificate;
+          either as the subject DN or as a subjectAltName
+          (the identity will default to the certificate’s subject DN if not specified).
+          Refer to https://docs.strongswan.org/docs/5.9/config/identityParsing.html for details on how
+          identities are parsed and may be configured.
+        </help>
+    </field>
+    <field>
+        <id>local.eap_id</id>
+        <label>EAP Id</label>
+        <type>text</type>
+        <help>Client EAP-Identity to use in EAP-Identity exchange and the EAP method. If set to %any the EAP-Identity method will be used to ask the client for an EAP identity.</help>
+        <style>local_auth local_auth_eap-mschapv2 local_auth_eap-tls local_auth_eap-radius</style>
+    </field>
+    <field>
+      <id>local.certs</id>
+      <label>Certificates</label>
+      <type>select_multiple</type>
+      <help>List of certificate candidates to use for authentication.</help>
+    </field>
+    <field>
+      <id>local.pubkeys</id>
+      <label>Public Keys</label>
+      <type>select_multiple</type>
+      <help>List of raw public key candidates to use for authentication.</help>
+      <style>local_auth selectpicker local_auth_pubkey</style>
+    </field>
+    <field>
+        <id>local.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

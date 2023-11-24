@@ -46,7 +46,7 @@ function formTranslateAddresses() {
     // add VIPs's
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $sn) {
-            if (!isset($sn['noexpand'])) {
+            if (empty($sn['noexpand'])) {
                 if ($sn['mode'] == "proxyarp") {
                     $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
                     $end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
@@ -447,18 +447,15 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
-<?php
-                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
+                      <select name="interface" class="selectpicker" data-width="348px" data-live-search="true">
+<?php foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
                           <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
-                        <?php endforeach; ?>
+<?php endforeach ?>
                       </select>
-                    </div>
                     <div class="hidden" data-for="help_for_interface">
-                      <?=gettext("Choose which interface this rule applies to"); ?>.<br />
+                      <?=gettext('Choose which interface this rule applies to.') ?><br />
                       <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
                     </div>
                   </td>
@@ -466,7 +463,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
                   <td>
-                    <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
+                    <select name="ipprotocol" class="selectpicker" data-width="348px" data-live-search="true" data-size="5" >
 <?php
                     foreach (array('inet' => 'IPv4','inet6' => 'IPv6') as $proto => $name): ?>
                     <option value="<?=$proto;?>" <?= $proto == $pconfig['ipprotocol'] ? "selected=\"selected\"" : "";?>>
@@ -483,16 +480,13 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td>
-                    <div class="input-group">
-                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (get_protocols() as $proto):
-?>
+                      <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
+<?php foreach (get_protocols() as $proto): ?>
               <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>><?=$proto;?></option>
-<?php                endforeach; ?>
+<?php endforeach ?>
               </select>
-                    </div>
                     <div class="hidden" data-for="help_for_proto">
-                      <?=gettext("Choose which IP protocol " ."this rule should match."); ?><br/>
+                      <?=gettext("Choose which IP protocol this rule should match."); ?><br/>
                       <?=gettext("Hint: in most cases, you should specify"); ?> <em><?=gettext("TCP"); ?></em> &nbsp;<?=gettext("here."); ?>
                     </div>
                   </td>
@@ -509,10 +503,10 @@ include("head.inc");
                 <tr>
                     <td><a id="help_for_source" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Source address') ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="source" id="source" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="source" id="source" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['source'];?>" <?=!is_alias($pconfig['source']) && !in_array($pconfig['source'],array('(self)','any'))  ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
 <?php                            foreach (legacy_list_aliases("network") as $alias):
@@ -529,17 +523,19 @@ include("head.inc");
                           </select>
                         </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <div class="input-group">
-                          <!-- updates to "other" option in  source -->
-                          <input type="text" for="source" id="src_address" value="<?=$pconfig['source'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="source_subnet"  data-network-id="src_address" class="selectpicker ipv4v6net input-group-btn" data-size="5" id="srcmask"  data-width="auto" for="source" >
-                          <?php for ($i = 128; $i > 0; $i--): ?>
-                            <option value="<?=$i;?>" <?= $i == $pconfig['source_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                          <?php endfor; ?>
-                          </select>
-                        </div>
+                    </table>
+                    <!-- updates to "other" option in  source -->
+                    <table style="max-width: 348px">
+                        <tr>
+                          <td style="width: 285px">
+                            <input type="text" for="source" id="src_address" value="<?=$pconfig['source'];?>" aria-label="<?=gettext("Source address");?>"/>
+                          </td>
+                          <td>
+                            <select name="source_subnet"  data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask" data-width="70px" for="source">
+                            <?php for ($i = 128; $i > 0; $i--): ?>
+                              <option value="<?=$i;?>" <?= $i == $pconfig['source_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
+                            <?php endfor; ?>
+                            </select>
                         </td>
                       </tr>
                     </table>
@@ -596,10 +592,10 @@ include("head.inc");
                 <tr>
                     <td><a id="help_for_destination" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Destination address') ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="destination" id="destination" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="destination" id="destination" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['destination'];?>" <?=!is_alias($pconfig['destination']) && $pconfig['destination'] != 'any' ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
 <?php                             foreach (legacy_list_aliases("network") as $alias):
@@ -616,17 +612,19 @@ include("head.inc");
                           </select>
                         </td>
                       </tr>
+                    </table>
+                    <!-- updates to "other" option in  source -->
+                    <table style="max-width: 348px">
                       <tr>
-                        <td>
-                          <div class="input-group">
-                          <!-- updates to "other" option in  source -->
+                        <td style="width:285px">
                           <input type="text" id="dst_address" for="destination" value="<?=$pconfig['destination'];?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="destination_subnet" data-network-id="dst_address" class="selectpicker ipv4v6net input-group-btn" id="dstmask" data-size="5" data-width="auto" for="destination" >
+                        </td>
+                        <td>
+                          <select name="destination_subnet" data-network-id="dst_address" class="selectpicker ipv4v6net" id="dstmask" data-size="5" data-width="auto" for="destination" >
                           <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['destination_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
-                        </div>
                         </td>
                       </tr>
                     </table>
@@ -674,10 +672,10 @@ include("head.inc");
                 <tr>
                     <td><a id="help_for_target" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation / target"); ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                                 <option value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
                                 <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['targetip']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 <?php                              foreach (formTranslateAddresses() as $optKey => $optValue): ?>
@@ -688,24 +686,26 @@ include("head.inc");
                             </select>
                           </td>
                         </tr>
+                      </table>
+		      <!-- updates to "other" option in  source -->
+                      <table style="max-width: 348px">
                         <tr>
-                          <td>
-                            <div class="input-group">
-                              <!-- updates to "other" option in  source -->
+                          <td style="width:285px">
                               <input type="text" id="targetip_text" for="targetip" value="<?=$pconfig['targetip'];?>" aria-label="<?=gettext("Translation address");?>"/>
-                              <select name="targetip_subnet" data-network-id="targetip_text" class="selectpicker ipv4v6net input-group-btn" id="targetip_subnet" data-size="5" data-width="auto" for="targetip" >
+                          </td>
+                          <td>
+                              <select name="targetip_subnet" data-network-id="targetip_text" class="selectpicker ipv4v6net" id="targetip_subnet" data-size="5" data-width="70px" for="targetip" >
                               <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['targetip_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                               <?php endfor; ?>
                               </select>
-                            </div>
                           </td>
                         </tr>
                       </table>
                       <div class="hidden" data-for="help_for_target">
                         <?=gettext("Packets matching this rule will be mapped to the IP address given here.");?><br />
                         <?=sprintf(gettext("If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
-                                "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="firewall_virtual_ip.php">','</a>')?>
+                                "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="ui/interfaces/vip">','</a>')?>
                       </div>
                   </td>
                 </tr>
@@ -815,7 +815,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
                   <td>
-                    <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="334px" data-live-search="true">
+                    <select name="category[]" id="category" multiple="multiple" class="tokenize" data-allownew="true" data-width="348px" data-live-search="true">
 <?php
                     foreach ((new OPNsense\Firewall\Category())->iterateCategories() as $category):
                       $catname = htmlspecialchars($category['name'], ENT_QUOTES | ENT_HTML401);?>

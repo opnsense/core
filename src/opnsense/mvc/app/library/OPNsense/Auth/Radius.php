@@ -148,6 +148,31 @@ class Radius extends Base implements IAuthConnector
     }
 
     /**
+     * retrieve configuration options
+     * @return array
+     */
+    public function getConfigurationOptions()
+    {
+        $options = [];
+        $options['radius_protocol'] = [];
+        $options['radius_protocol']['name'] = gettext('Protocol');
+        $options['radius_protocol']['type'] = 'dropdown';
+        $options['radius_protocol']['default'] = 'PAP';
+        $options['radius_protocol']['options'] = [
+            'PAP' => 'PAP',
+            'MSCHAPv2' => 'MSCHAPv2'
+        ];
+        $options['radius_protocol']['validate'] = function ($value) {
+            if (!in_array($value, ['PAP', 'MSCHAPv2'])) {
+                return [gettext('Invalid protocol specified')];
+            } else {
+                return [];
+            }
+        };
+        return $options;
+    }
+
+    /**
      * return session info
      * @return array mixed named list of authentication properties
      */
@@ -420,6 +445,41 @@ class Radius extends Base implements IAuthConnector
                 case 'PAP':
                     // do PAP authentication
                     if (!radius_put_string($radius, RADIUS_USER_PASSWORD, $password)) {
+                        $error = radius_strerror($radius);
+                    }
+                    break;
+                case 'MSCHAPv2':
+                    require_once 'Crypt/CHAP.php';
+                    $crpt = new \Crypt_CHAP_MSv2();
+                    $crpt->username = $username;
+                    $crpt->password = $password;
+
+                    $resp = pack(
+                        'CCa16a8a24',
+                        $crpt->chapid,
+                        1,
+                        $crpt->peerChallenge,
+                        str_repeat("\0", 8),
+                        $crpt->challengeResponse()
+                    );
+
+                    if (
+                        !radius_put_vendor_attr(
+                            $radius,
+                            RADIUS_VENDOR_MICROSOFT,
+                            RADIUS_MICROSOFT_MS_CHAP_CHALLENGE,
+                            $crpt->authChallenge
+                        )
+                    ) {
+                        $error = radius_strerror($radius);
+                    } elseif (
+                        !radius_put_vendor_attr(
+                            $radius,
+                            RADIUS_VENDOR_MICROSOFT,
+                            RADIUS_MICROSOFT_MS_CHAP2_RESPONSE,
+                            $resp
+                        )
+                    ) {
                         $error = radius_strerror($radius);
                     }
                     break;

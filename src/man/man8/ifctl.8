@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2022 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2022-2023 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 25, 2022
+.Dd August 29, 2023
 .Dt IFCTL 8
 .Os
 .Sh NAME
@@ -35,7 +35,7 @@
 .Op Fl i Ar device
 .Op Fl 46
 .Op Fl nprs
-.Op Fl a Ar data | Fl c | Fl d | Fl l
+.Op Fl a Ar data | Fl c | Fl d | Fl l | Fl O
 .Sh DESCRIPTION
 The
 .Nm
@@ -73,7 +73,7 @@ Note that
 .Sq Fl d
 will be executed first when given in the same command invoke.
 .It Fl c
-Clear all registed data of the selected device.
+Clear all registered data of the selected device.
 .It Fl d
 Delete the specified data of the selected device.
 .It Fl i Ar device
@@ -95,6 +95,11 @@ not using the interface option
 .It Fl n
 Use name server mode.
 This is the default.
+.It Fl O
+Dump mode is similar to
+.Sq Fl l ,
+but prints all the available file names and their data for the
+specified interface.
 .It Fl p
 Use prefix delegation mode.
 .It Fl r

@@ -96,10 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             interfaces_gre_configure($gre['greif']);
             ifgroup_setup();
-            $confif = convert_real_interface_to_friendly_interface_name($gre['greif']);
-            if ($confif != '') {
-                interface_configure(false, $confif);
-            }
+            interfaces_restart_by_device(false, [$gre['greif']]);
             header(url_safe('Location: /interfaces_gre.php'));
             exit;
         }
@@ -113,7 +110,7 @@ include("head.inc");
 <body>
 <script>
   $( document ).ready(function() {
-    hook_ipv4v6('ipv4v6net', 'network-id', '128');
+    hook_ipv4v6('ipv4v6net', 'network-id');
   });
 </script>
 <?php include("fbegin.inc"); ?>
@@ -187,20 +184,18 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel remote address");?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table style="max-width:348px">
                         <tr>
                           <td style="width:285px">
                             <input name="tunnel-remote-addr" type="text" id="tunnel-remote-addr" value="<?=$pconfig['tunnel-remote-addr'];?>" />
                           </td>
                           <td>
-                            <select name="tunnel-remote-net" data-network-id="tunnel-remote-addr" class="selectpicker ipv4v6net" id="tunnel-remote-net" data-width="auto">
-<?php
-                            for ($i = 128; $i > 0; $i--):?>
+                            <select name="tunnel-remote-net" data-network-id="tunnel-remote-addr" class="selectpicker ipv4v6net" id="tunnel-remote-net" data-width="70px">
+<?php for ($i = 128; $i > 0; $i--): ?>
                               <option value="<?=$i;?>"  <?=$i == $pconfig['tunnel-remote-net'] ? "selected=\"selected\"" : "";?> >
                                   <?=$i;?>
                               </option>
-<?php
-                            endfor;?>
+<?php endfor ?>
                             </select>
                           </td>
                         </tr>

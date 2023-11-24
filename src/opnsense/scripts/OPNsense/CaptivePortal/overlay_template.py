@@ -40,15 +40,15 @@ if len(sys.argv) > 1:
     cnf = Config()
     zoneid = sys.argv[1]
     target_directory = '/var/captiveportal/zone%s/htdocs/' % zoneid
-    template_data = cnf.fetch_template_data(sys.argv[1])
+    template_data = cnf.fetch_template_data(zoneid)
     if template_data is not None and len(template_data) > 20:
         print ('overlay user template package for zone %s' % zoneid)
         zip_content = base64.b64decode(template_data)
         input_data = BytesIO(zip_content)
         with zipfile.ZipFile(input_data, mode='r', compression=zipfile.ZIP_DEFLATED) as zf_in:
             for zf_info in zf_in.infolist():
-                if zf_info.filename[-1] != '/':
-                    target_filename = '%s%s' % (target_directory, zf_info.filename)
+                target_filename = '%s%s' % (target_directory, zf_info.filename)
+                if os.path.realpath(target_filename).startswith(target_directory):
                     file_target_directory = '/'.join(target_filename.split('/')[:-1])
                     if not os.path.isdir(file_target_directory):
                         os.makedirs(file_target_directory)

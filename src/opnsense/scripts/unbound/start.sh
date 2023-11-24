@@ -35,6 +35,7 @@ for FILE in $(find /var/unbound/etc -depth 1); do
 done
 
 # if the root.key file is missing or damaged, run unbound-anchor
+cd /var/unbound/
 if ! /usr/local/sbin/unbound-checkconf /var/unbound/unbound.conf 2> /dev/null; then
 	# unbound-anchor has undefined behaviour if file is corrupted, start clean
 	rm -f /var/unbound/root.key
@@ -57,9 +58,6 @@ for FILE in $(find /usr/local/etc/unbound.opnsense.d -depth 1 -name '*.conf'); d
 	cp ${FILE} /var/unbound/etc/
 done
 
-# XXX remove obsolete file, last used in 22.7
-rm -f /usr/local/etc/unbound.opnsense.d/dnsbl.conf
-
 chown -R unbound:unbound /var/unbound
 
 /usr/local/sbin/unbound -c /var/unbound/unbound.conf
@@ -70,5 +68,6 @@ if [ -n "${DOMAIN}" ]; then
 fi
 
 if [ -f /var/unbound/data/stats ]; then
-  /usr/local/opnsense/scripts/unbound/logger.py
+    /usr/sbin/daemon -p /var/run/unbound_logger.pid -f -S -m 2 -s err -l local4 \
+        -T unbound /usr/local/opnsense/scripts/unbound/logger.py
 fi

@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 $a_gateway_groups = &config_read_array('gateways', 'gateway_group');
-$a_gateways = (new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName();
+$a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_gateway_groups[$_GET['id']])) {
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Invalid pool option specified");
     }
     if (count($pconfig['item']) == 0) {
-        $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
+        $input_errors[] = gettext('No gateway has been selected to be used in this group.');
     }
 
     if (count($input_errors) == 0) {
@@ -194,7 +194,7 @@ $( document ).ready(function() {
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
-                            <select name="<?=$gwname;?>" class="selectpicker act-tier-change" data-width='auto' data-proto="<?=$gateway['ipprotocol'];?>">
+                            <select name="<?=$gwname;?>" class="selectpicker act-tier-change" data-width="100px" data-proto="<?=$gateway['ipprotocol'];?>">
 <?php
                               for ($tierId = 0 ; $tierId < 6 ; ++$tierId):
                                 $is_selected = false;

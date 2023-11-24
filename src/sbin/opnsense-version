@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2023 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,6 @@
 DEFAULTS="\${product_name} \${product_version}"
 VERSIONDIR="/usr/local/opnsense/version"
 PLUGINCTL="/usr/local/sbin/pluginctl"
-OPENSSL="/usr/local/bin/openssl"
 PKG="/usr/local/sbin/pkg-static"
 TARGET="core"
 OUTPUT=
@@ -34,7 +33,7 @@ OUTPUT=
 DO_CHECK=
 DO_ORIGIN=
 
-while getopts AacefHilNnOsVvwx OPT; do
+while getopts AaceHilNnOstVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -47,9 +46,6 @@ while getopts AacefHilNnOsVvwx OPT; do
 		;;
 	e)
 		OUTPUT="${OUTPUT} \${product_email}"
-		;;
-	f)
-		OUTPUT="${OUTPUT} \${product_flavour}"
 		;;
 	H)
 		OUTPUT="${OUTPUT} \${product_hash}"
@@ -71,6 +67,9 @@ while getopts AacefHilNnOsVvwx OPT; do
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
+		;;
+	t)
+		OUTPUT="${OUTPUT} \${product_tier}"
 		;;
 	V)
 		OUTPUT="${OUTPUT} \${product_series}"
@@ -130,13 +129,9 @@ fi
 case "${TARGET}" in
 core)
 	if [ -z "${OUTPUT}" ]; then
-		OUTPUT="${DEFAULTS} \(\${product_arch}/\${product_flavour}\)"
+		OUTPUT="${DEFAULTS}"
 	fi
 
-	if [ -z "${OUTPUT%%*product_flavour*}" -a -f ${OPENSSL} ]; then
-		RESULT=$(${OPENSSL} version)
-		product_flavour=${RESULT%% *}
-	fi
 	if [ -z "${OUTPUT%%*product_size*}" -a -f ${PKG} ]; then
 		RESULT=$(${PKG} info -s ${product_id})
 		product_size=${RESULT##* }
@@ -146,8 +141,7 @@ core)
 		target_abi_minor=${product_abi#*.}
 
 		IS_BUSINESS=$(echo ${product_id} | grep -c -- '-business')
-		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.mirror | \
-		    grep -c 'opnsense-update\.deciso\.com')
+		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.subscription | grep -c '.')
 
 		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" -o ]; then
 			case ${target_abi_minor} in
@@ -197,6 +191,11 @@ core)
 	if [ -z "${OUTPUT%%*product_arch*}" ]; then
 		if [ -z "${product_arch}" -a -f ${VERSION}.arch ]; then
 			product_arch=$(cat ${VERSION}.arch)
+		fi
+	fi
+	if [ -z "${OUTPUT%%*product_hash*}" ]; then
+		if [ -z "${product_hash}" -a -f ${VERSION}.hash ]; then
+			product_hash=$(cat ${VERSION}.hash)
 		fi
 	fi
 	if [ -z "${OUTPUT%%*product_id*}" ]; then

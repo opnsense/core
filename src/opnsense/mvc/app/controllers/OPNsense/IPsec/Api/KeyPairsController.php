@@ -116,6 +116,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
     /**
      * Generate keypair
      * @param string $type (rsa, ecdsa)
+     * @param string $size The key size in bytes
      * @return array
      */
     public function genKeyPairAction($type, $size = null)
@@ -128,7 +129,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
                 return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
             }
             $attrs['private_key_type'] = OPENSSL_KEYTYPE_RSA;
-            $attrs['private_key_bits'] = !empty($size) ? $size : 2048;
+            $attrs['private_key_bits'] = !empty($size) ? intval($size) : 2048;
         } elseif ($type == 'ecdsa') {
             if (!empty($size) && !in_array($size, ['256', '384', '521'])) {
                 return ['status' => 'failed', 'message' => sprintf('invalid key size %s', $size)];
@@ -136,7 +137,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
             $attrs['private_key_type'] = OPENSSL_KEYTYPE_EC;
             switch ($size ?? '384') {
                 case '256';
-                    $attrs['curve_name'] = "secp256r1";
+                    $attrs['curve_name'] = "prime256v1";
                     break;
                 case '384';
                     $attrs['curve_name'] = "secp384r1";

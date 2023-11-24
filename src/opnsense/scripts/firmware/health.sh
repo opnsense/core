@@ -108,7 +108,7 @@ set_check()
 			echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 		fi
 	else
-		echo "Error ${MTREE_RET} ocurred." | ${TEE} ${LOCKFILE}
+		echo "Error ${MTREE_RET} occurred." | ${TEE} ${LOCKFILE}
 		echo "${MTREE_OUT}" | ${TEE} ${LOCKFILE}
 	fi
 
@@ -119,7 +119,6 @@ core_check()
 {
 	echo ">>> Check for core packages consistency" | ${TEE} ${LOCKFILE}
 
-	CRYPTO=$(opnsense-version -f | tr '[[:upper:]]' '[[:lower:]]')
 	CORE=$(opnsense-version -n)
 	PROGRESS=
 
@@ -130,7 +129,7 @@ core_check()
 
 	echo "Core package \"${CORE}\" has $(pkg query %#d ${CORE}) dependencies to check." | ${TEE} ${LOCKFILE}
 
-	for DEP in $( (echo ${CORE}; echo ${CRYPTO}; pkg query %dn ${CORE}) | sort -u); do
+	for DEP in $( (echo ${CORE}; pkg query %dn ${CORE}) | sort -u); do
 		if [ -z "${PROGRESS}" ]; then
 			echo -n "Checking packages: ." | ${TEE} ${LOCKFILE}
 			PROGRESS=1
@@ -213,6 +212,8 @@ EOF
 
 echo "***GOT REQUEST TO AUDIT HEALTH***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
+
+echo ">>> Root file system: $(mount | awk '$3 == "/" { print $1 }')" | ${TEE} ${LOCKFILE}
 
 set_check kernel
 set_check base

@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.0.7</version>
-    <description>
-        OPNsense IDS
-    </description>
+    <version>1.0.9</version>
+    <description>OPNsense IDS</description>
     <items>
         <rules>
             <rule type="ArrayField">
@@ -12,12 +10,12 @@
                     <Required>Y</Required>
                 </sid>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
@@ -28,16 +26,16 @@
         <policies>
             <policy type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <prio type="IntegerField">
                     <ValidationMessage>Priority should be a number.</ValidationMessage>
                     <Required>Y</Required>
-                    <default>0</default>
+                    <Default>0</Default>
                 </prio>
                 <action type="OptionField">
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <disable>Disabled</disable>
                         <alert>Alert</alert>
@@ -55,28 +53,25 @@
                             </filters>
                         </rulesets>
                     </Model>
-                    <multiple>Y</multiple>
+                    <Multiple>Y</Multiple>
                     <ValidationMessage>Related ruleset not found.</ValidationMessage>
-                    <Required>N</Required>
                 </rulesets>
                 <content type=".\PolicyContentField">
-                    <multiple>Y</multiple>
-                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
                     <ValidationMessage>Policy rule not found.</ValidationMessage>
                 </content>
                 <new_action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
-                        <default>Default</default>
+                        <default value="default">Default</default>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
                         <disable>Disable</disable>
                     </OptionValues>
                 </new_action>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^(.){1,255}$/u</mask>
+                    <Mask>/^(.){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </policy>
@@ -85,44 +80,43 @@
             <rule type="ArrayField">
                 <!--user defined rules -->
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
-                <source type="NetworkField">
-                    <Required>N</Required>
-                </source>
-                <destination type="NetworkField">
-                    <Required>N</Required>
-                </destination>
+                <source type="NetworkField"/>
+                <destination type="NetworkField"/>
                 <fingerprint type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
+                    <Mask>/^([0-9a-fA-F:]){59,59}$/u</Mask>
                     <ValidationMessage>A SSL fingerprint should be a 59 character long hex value.</ValidationMessage>
                 </fingerprint>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters.</ValidationMessage>
                 </description>
                 <action type="OptionField">
                     <Required>Y</Required>
-                    <default>alert</default>
+                    <Default>alert</Default>
                     <OptionValues>
                         <alert>Alert</alert>
                         <drop>Drop</drop>
                         <pass>Pass</pass>
                     </OptionValues>
                 </action>
+                <bypass type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </bypass>
             </rule>
         </userDefinedRules>
         <files>
             <file type="ArrayField">
                 <filename type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                 </filename>
                 <enabled type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </enabled>
             </file>
@@ -131,31 +125,30 @@
             <tag type="ArrayField">
               <property type="TextField">
                   <Required>Y</Required>
-                  <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
               </property>
               <value type="TextField">
-                  <Required>N</Required>
-                  <mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                  <Mask>/^([\t\n\v\f\r\- 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
               </value>
             </tag>
         </fileTags>
         <general>
             <enabled type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
             <ips type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </ips>
             <promisc type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </promisc>
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
-                <default>wan</default>
-                <multiple>Y</multiple>
+                <Default>wan</Default>
+                <Multiple>Y</Multiple>
                 <AddParentDevices>Y</AddParentDevices>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
@@ -163,13 +156,12 @@
                 </filters>
             </interfaces>
             <homenet type="NetworkField">
-                <Required>N</Required>
+                <Required>Y</Required>
                 <FieldSeparator>,</FieldSeparator>
-                <default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</default>
+                <Default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</Default>
                 <asList>Y</asList>
             </homenet>
             <defaultPacketSize type="IntegerField">
-                <Required>N</Required>
                 <MinimumValue>82</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>Enter a valid packet size</ValidationMessage>
@@ -186,12 +178,10 @@
                     </queues>
                 </Model>
                 <ValidationMessage>Related cron not found.</ValidationMessage>
-                <Required>N</Required>
             </UpdateCron>
             <AlertLogrotate type="OptionField">
-              <Required>N</Required>
-              <default>W0D23</default>
-              <BlankDesc>Default</BlankDesc>
+              <Required>Y</Required>
+              <Default>W0D23</Default>
               <OptionValues>
                   <W0D23>Weekly</W0D23>
                   <D0>Daily</D0>
@@ -199,15 +189,13 @@
               <ValidationMessage>Please select a valid rotation</ValidationMessage>
             </AlertLogrotate>
             <AlertSaveLogs type="IntegerField">
-                <Required>N</Required>
-                <default>4</default>
+                <Required>Y</Required>
+                <Default>4</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>1000</MaximumValue>
                 <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
             </AlertSaveLogs>
             <MPMAlgo type="OptionField">
-              <Required>N</Required>
-              <default>ac</default>
               <BlankDesc>Default</BlankDesc>
               <OptionValues>
                   <ac>Aho-Corasick</ac>
@@ -219,8 +207,6 @@
             </MPMAlgo>
             <detect>
               <Profile type="OptionField">
-                <Required>N</Required>
-                <default>medium</default>
                 <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <low>Low</low>
@@ -231,30 +217,37 @@
                 <ValidationMessage>Please select a valid detection profile</ValidationMessage>
               </Profile>
               <toclient_groups type="IntegerField">
-                  <Required>N</Required>
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                   <ValidationMessage>Enter a valid toclient-groups size</ValidationMessage>
               </toclient_groups>
               <toserver_groups type="IntegerField">
-                  <Required>N</Required>
                   <MinimumValue>0</MinimumValue>
                   <MaximumValue>65535</MaximumValue>
                   <ValidationMessage>Enter a valid toserver-groups size</ValidationMessage>
               </toserver_groups>
             </detect>
             <syslog type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </syslog>
             <syslog_eve type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </syslog_eve>
             <LogPayload type="BooleanField">
-                <default>0</default>
+                <Default>0</Default>
                 <Required>Y</Required>
             </LogPayload>
+            <verbosity type="OptionField">
+                <BlankDesc>DEFAULT (0)</BlankDesc>
+                <OptionValues>
+                    <v>INFO (1)</v>
+                    <vv>PERF (2)</vv>
+                    <vvv>CONFIG (3)</vvv>
+                    <vvvv>DEBUG (4)</vvvv>
+                </OptionValues>
+            </verbosity>
         </general>
     </items>
 </model>

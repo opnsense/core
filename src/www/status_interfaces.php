@@ -233,20 +233,14 @@ include("head.inc");
 <?php endif ?>
                 <?php if ($ifinfo['status'] != 'down'):
                   if (($ifinfo['dhcplink'] ?? '') != 'down' && ($ifinfo['pppoelink'] ?? '') != 'down' && ($ifinfo['pptplink'] ?? '') != 'down'):
-                    if (!empty($ifinfo['ipaddr'])):?>
+                    if (!empty($ifinfo['ipaddr']) /* set by get_interfaces_info() if active but not directly used */):?>
                     <tr>
                       <td><?= gettext("IPv4 address") ?></td>
                       <td>
-                        <?=$ifinfo['ipaddr'];?>/<?=$ifinfo['subnet'];?>
-<?php
-                        foreach($ifinfo['ipv4'] as $ipv4):
-                            if ($ipv4['ipaddr'] != $ifinfo['ipaddr']):?>
-                            <br/>
-                            <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+<?php foreach($ifinfo['ipv4'] as $ipv4): ?>
                             <?=$ipv4['ipaddr'];?>/<?=$ipv4['subnetbits'];?> <?= !empty($ipv4['vhid']) ? 'vhid ' . $ipv4['vhid'] : "" ;?>
-<?php
-                            endif;
-                        endforeach;?>
+                            <br/>
+<?php endforeach ?>
                       </td>
                     </tr>
 <?php
@@ -254,7 +248,7 @@ include("head.inc");
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
                       <td><?= gettext('IPv4 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
+                      <td><?= htmlspecialchars(!empty($config['interfaces'][$ifdescr]['gateway']) ? $config['interfaces'][$ifdescr]['gateway'] : gettext('auto-detected')) ?>: <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -265,7 +259,8 @@ include("head.inc");
                     </tr>
 <?php
                     endif;
-                    if (!empty($ifinfo['ipaddrv6'])): ?>
+                    if (!empty($ifinfo['ipaddrv6']) /* set by get_interfaces_info() if active but not directly used */ &&
+                        !empty($ifinfo['ipv6'][0]) && !$ifinfo['ipv6'][0]['link-local']): ?>
                     <tr>
                       <td><?= gettext("IPv6 address") ?></td>
                       <td>
@@ -282,14 +277,14 @@ include("head.inc");
 <?php endif ?>
 <?php if (array_key_exists('prefixv6', $ifinfo)): ?>
                     <tr>
-                      <td><?= gettext('IPv6 delegated prefix') ?></td>
-                      <td><?= $ifinfo['prefixv6'] ?></td>
+                      <td><?= gettext('IPv6 prefix') ?></td>
+                      <td><?= implode('<br />', $ifinfo['prefixv6']) ?></td>
                     </tr>
 <?php endif ?>
 <?php if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
                       <td><?= gettext('IPv6 gateway') ?></td>
-                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6'] ?? gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
+                      <td><?= htmlspecialchars(!empty($config['interfaces'][$ifdescr]['gatewayv6']) ? $config['interfaces'][$ifdescr]['gatewayv6'] : gettext('auto-detected')) ?>: <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -297,10 +292,7 @@ include("head.inc");
                     if (count($dnsall)): ?>
                     <tr>
                       <td><?= gettext("DNS servers") ?></td>
-                      <td>
-<?php
-                          echo implode('<br />', $dnsall); ?>
-                      </td>
+                      <td><?= implode('<br />', $dnsall) ?></td>
                     </tr>
 <?php
                     endif;

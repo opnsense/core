@@ -697,7 +697,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 $cert['descr'] = $pconfig['descr'];
 
-                $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warings directly to a page screwing menu tab */
+                $old_err_level = error_reporting(0); /* otherwise openssl_ functions throw warnings directly to a page screwing menu tab */
                 if ($pconfig['keytype'] == "Elliptic Curve") {
                     $pconfig['keylen_curve'] = $pconfig['curve'];
                 } else {
@@ -812,6 +812,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_ca);
 legacy_html_escape_form_data($a_cert);
+$act = htmlspecialchars($act, ENT_QUOTES | ENT_HTML401);
 
 include("head.inc");
 

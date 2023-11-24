@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2020 Deciso B.V.
+ * Copyright (C) 2016-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,14 @@
 require_once 'config.inc';
 require_once 'util.inc';
 require_once 'interfaces.inc';
+require_once 'plugins.inc.d/dpinger.inc';
 
+$result = [];
+$gateways_status = dpinger_status();
 
-$result = array();
-$gateways_status = return_gateways_status();
-foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gatewaysIndexedByName() as $gname => $gw) {
-    $gatewayItem = array('name' => $gname);
-    $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : "~";
+foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname => $gw) {
+    $gatewayItem = ['name' => $gname];
+    $gatewayItem['address'] = !empty($gw['gateway']) ? $gw['gateway'] : '~';
     if (!empty($gateways_status[$gname])) {
         $gatewayItem['status'] = strtolower($gateways_status[$gname]['status']);
         $gatewayItem['loss'] = $gateways_status[$gname]['loss'];
@@ -58,6 +59,9 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
             case 'loss':
                 $gatewayItem['status_translated'] = gettext('Packetloss');
                 break;
+            case 'delay+loss':
+                $gatewayItem['status_translated'] = join(', ', [gettext('Latency'), gettext('Packetloss')]);
+                break;
             default:
                 $gatewayItem['status_translated'] = gettext('Pending');
                 break;
@@ -69,6 +73,8 @@ foreach ((new \OPNsense\Routing\Gateways(legacy_interfaces_details()))->gateways
         $gatewayItem['stddev'] = '~';
         $gatewayItem['delay'] = '~';
     }
+
     $result[] = $gatewayItem;
 }
+
 echo json_encode($result) . PHP_EOL;

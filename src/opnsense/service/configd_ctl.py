@@ -57,19 +57,16 @@ def exec_config_cmd(exec_command):
     except socket.error:
         syslog_error('unable to connect to configd socket (@%s)'%configd_socket_name)
         print('unable to connect to configd socket (@%s)'%configd_socket_name, file=sys.stderr)
-        return None
+        yield None
 
     try:
         sock.send(exec_command.encode())
-        data = []
         while True:
             line = sock.recv(65536).decode()
             if line:
-                data.append(line)
+                yield line
             else:
                 break
-
-        return ''.join(data)[:-3]
     except:
         syslog_error('error in configd communication \n%s'%traceback.format_exc())
         print ('error in configd communication %s, see syslog for details', file=sys.stderr)
@@ -144,8 +141,12 @@ else:
     for exec_command in exec_commands:
         if args.d:
             exec_command = '&' + exec_command
-        result=exec_config_cmd(exec_command=exec_command)
-        if result is None:
-            sys.exit(-1)
-        if not args.q:
-            print('%s' % (result.strip()))
+        endmarker = (chr(0), chr(0), chr(0))
+        for block in exec_config_cmd(exec_command=exec_command):
+            if block is None:
+                sys.exit(-1)
+            else:
+                if block.endswith(endmarker):
+                    print(block[:-3].rstrip())
+                else:
+                    print(block, end="")

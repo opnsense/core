@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
         <id>unbound.advanced.hideidentity</id>
         <label>Hide Identity</label>
         <type>checkbox</type>
@@ -10,16 +14,6 @@
         <label>Hide Version</label>
         <type>checkbox</type>
         <help>If enabled, version.server and version.bind queries are refused.</help>
-    </field>
-    <field>
-        <id>unbound.advanced.prefetch</id>
-        <label>Prefetch Support</label>
-        <type>checkbox</type>
-        <help>
-            Message cache elements are prefetched before they expire to help keep the cache up to date.
-            When enabled, this option can cause an increase of around 10% more DNS traffic and load
-            on the server, but frequently requested items will not expire from the cache.
-        </help>
     </field>
     <field>
         <id>unbound.advanced.prefetchkey</id>
@@ -38,6 +32,106 @@
             DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus.
             If this is disabled and no DNSSEC data is received, then the zone is made insecure.
         </help>
+    </field>
+    <field>
+        <id>unbound.advanced.qnameminstrict</id>
+        <label>Strict QNAME Minimisation</label>
+        <type>checkbox</type>
+        <help>
+            Send minimum amount of information to upstream servers to enhance privacy.
+            Do not fall-back to sending full QNAME to potentially broken nameservers.
+            A lot of domains will not be resolvable when this option in enabled.
+            Only use if you know what you are doing.
+        </help>
+    </field>
+        <field>
+        <id>unbound.advanced.outgoingnumtcp</id>
+        <label>Outgoing TCP Buffers</label>
+        <type>text</type>
+        <help>
+            The number of outgoing TCP buffers to allocate per thread.
+            If 0 is selected then no TCP queries, to authoritative servers, are done.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.incomingnumtcp</id>
+        <label>Incoming TCP Buffers</label>
+        <type>text</type>
+        <help>
+            The number of incoming TCP buffers to allocate per thread.
+            If 0 is selected then no TCP queries, from clients, are accepted.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.numqueriesperthread</id>
+        <label>Number of queries per thread</label>
+        <type>text</type>
+        <help>
+            The number of queries that every thread will service simultaneously. If more queries arrive that
+            need to be serviced, and no queries can be jostled out (see "Jostle Timeout"),
+            then these queries are dropped. This forces the client to resend after a timeout, allowing the
+            server time to work on the existing queries.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.outgoingrange</id>
+        <label>Outgoing Range</label>
+        <type>text</type>
+        <help>
+            The number of ports to open. This number of file descriptors can be opened per thread. Larger numbers
+            need extra resources from the operating system. For performance a very large value is best.
+            For reference, usually double the amount of queries per thread is used.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.jostletimeout</id>
+        <label>Jostle Timeout</label>
+        <type>text</type>
+        <help>
+            This timeout is used for when the server is very busy. Set to a value that usually results in one
+            round-trip to the authority servers. If too many queries arrive, then 50% of the queries are allowed
+            to run to completion, and the other 50% are replaced with the new incoming query if they have
+            already spent more than their allowed time. This protects against denial of service by
+            slow queries or high query rates.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.privatedomain</id>
+        <label>Private Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of domains to mark as private. These domains and all its subdomains are allowed to contain
+            private addresses.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.privateaddress</id>
+        <label>Rebind protection networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+          These are addresses on your private network, and are not allowed to be returned for public internet names.
+          Any occurrence of such addresses are removed from DNS answers.
+          Additionally, the DNSSEC validator may mark the answers bogus.
+          This protects against so-called DNS Rebinding.
+
+          (Only applicable when DNS rebind check is enabled in System->Settings->Administration)
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.insecuredomain</id>
+        <label>Insecure Domains</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>List of domains to mark as insecure. DNSSEC chain of trust is ignored towards the domain name.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Serve Expired Settings</label>
     </field>
     <field>
         <id>unbound.advanced.serveexpired</id>
@@ -92,15 +186,8 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.qnameminstrict</id>
-        <label>Strict QNAME Minimisation</label>
-        <type>checkbox</type>
-        <help>
-            Send minimum amount of information to upstream servers to enhance privacy.
-            Do not fall-back to sending full QNAME to potentially broken nameservers.
-            A lot of domains will not be resolvable when this option in enabled.
-            Only use if you know what you are doing.
-        </help>
+        <type>header</type>
+        <label>Logging Settings</label>
     </field>
     <field>
         <id>unbound.advanced.extendedstatistics</id>
@@ -139,6 +226,27 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.loglocalactions</id>
+        <label>Log local actions</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, log lines to inform about local zone actions.  These lines
+            are like the local-zone type inform prints  out,  but  they  are
+            also printed for the other types of local zones.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.logservfail</id>
+        <label>Log SERVFAIL</label>
+        <type>checkbox</type>
+        <help>
+            If enabled, log lines that say why queries return SERVFAIL to clients.
+            This is separate from the verbosity debug  logs,  much  smaller,
+            and printed at the error level, not the info level of debug info
+            from verbosity.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.logverbosity</id>
         <label>Log Level Verbosity</label>
         <type>dropdown</type>
@@ -149,38 +257,43 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.privatedomain</id>
-        <label>Private Domains</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
+        <id>unbound.advanced.valloglevel</id>
+        <label>Log validation level</label>
+        <type>dropdown</type>
         <help>
-            List of domains to mark as private. These domains and all its subdomains are allowed to contain
-            private addresses.
+            Have the validator print validation failures to  the  log.
+            Regardless  of  the  verbosity setting.  Default is 0, off.  At 1,
+            for every user query that fails a line is printed to  the  logs.
+            This  way  you  can monitor what happens with validation.  Use a
+            diagnosis tool, such as dig or drill, to find out why validation
+            is  failing  for  these  queries.  At 2, not only the query that
+            failed is printed but also the reason why Unbound thought it was
+            wrong and which server sent the faulty data.
         </help>
     </field>
     <field>
-        <id>unbound.advanced.privateaddress</id>
-        <label>Rebind protection networks</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
+        <type>header</type>
+        <label>Cache Settings</label>
+    </field>
+    <field>
+        <id>unbound.advanced.prefetch</id>
+        <label>Prefetch Support</label>
+        <type>checkbox</type>
         <help>
-          These are addresses on your private network, and are not allowed to be returned for public internet names.
-          Any occurrence of such addresses are removed from DNS answers.
-          Additionally, the DNSSEC validator may mark the answers bogus.
-          This protects against so-called DNS Rebinding.
-
-          (Only applicable when DNS rebind check is enabled in System->Settings->Administration)
+            Message cache elements are prefetched before they expire to help keep the cache up to date.
+            When enabled, this option can cause an increase of around 10% more DNS traffic and load
+            on the server, but frequently requested items will not expire from the cache.
         </help>
     </field>
     <field>
-        <id>unbound.advanced.insecuredomain</id>
-        <label>Insecure Domains</label>
-        <type>select_multiple</type>
-        <style>tokenize</style>
-        <allownew>true</allownew>
-        <help>List of domains to mark as insecure. DNSSEC chain of trust is ignored towards the domain name.</help>
+        <id>unbound.advanced.unwantedreplythreshold</id>
+        <label>Unwanted Reply Threshold</label>
+        <type>text</type>
+        <help>
+            If enabled, a total number of unwanted replies is kept track of in every thread.
+            When it reaches the threshold, a defensive action is taken and a warning is printed to the log file.
+            This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison.
+        </help>
     </field>
     <field>
         <id>unbound.advanced.msgcachesize</id>
@@ -188,7 +301,6 @@
         <type>text</type>
         <help>
             Size of the message cache. The message cache stores DNS rcodes and validation statuses.
-            The RRSet cache will automatically be set to twice this amount. The RRSet cache contains the actual RR data.
             Valid input is plain bytes, optionally appended with 'k', 'm', or 'g' for kilobytes, megabytes
             or gigabytes respectively.
         </help>
@@ -203,57 +315,6 @@
         </help>
     </field>
     <field>
-        <id>unbound.advanced.outgoingnumtcp</id>
-        <label>Outgoing TCP Buffers</label>
-        <type>text</type>
-        <help>
-            The number of outgoing TCP buffers to allocate per thread.
-            If 0 is selected then no TCP queries, to authoritative servers, are done.
-        </help>
-    </field>
-    <field>
-        <id>unbound.advanced.incomingnumtcp</id>
-        <label>Incoming TCP Buffers</label>
-        <type>text</type>
-        <help>
-            The number of incoming TCP buffers to allocate per thread.
-            If 0 is selected then no TCP queries, from clients, are accepted.
-        </help>
-    </field>
-    <field>
-        <id>unbound.advanced.numqueriesperthread</id>
-        <label>Number of queries per thread</label>
-        <type>text</type>
-        <help>
-            The number of queries that every thread will service simultaneously. If more queries arrive that
-            need to be serviced, and no queries can be jostled out (see "Jostle Timeout"),
-            then these queries are dropped. This forces the client to resend after a timeout, allowing the
-            server time to work on the existing queries.
-        </help>
-    </field>
-    <field>
-        <id>unbound.advanced.outgoingrange</id>
-        <label>Outgoing Range</label>
-        <type>text</type>
-        <help>
-            The number of ports to open. This number of file descriptors can be opened per thread. Larger numbers
-            need extra resources from the operating system. For performance a very large value is best.
-            For reference, usually double the amount of queries per thread is used.
-        </help>
-    </field>
-    <field>
-        <id>unbound.advanced.jostletimeout</id>
-        <label>Jostle Timeout</label>
-        <type>text</type>
-        <help>
-            This timeout is used for when the server is very busy. Set to a value that usually results in one
-            round-trip to the authority servers. If too many queries arrive, then 50% of the queries are allowed
-            to run to completion, and the other 50% are replaced with the new incoming query if they have
-            already spent more than their allowed time. This protects against denial of service by
-            slow queries or high query rates.
-        </help>
-    </field>
-    <field>
         <id>unbound.advanced.cachemaxttl</id>
         <label>Maximum TTL for RRsets and messages</label>
         <type>text</type>
@@ -262,6 +323,17 @@
             When the internal TTL expires the cache item is expired.
             This can be configured to force the resolver to query for data more often and
             not trust (very large) TTL values.
+        </help>
+    </field>
+    <field>
+        <id>unbound.advanced.cachemaxnegativettl</id>
+        <label>Maximum Negative TTL for RRsets and messages</label>
+        <type>text</type>
+        <help>
+            Configure a maximum Negative Time to live in seconds for RRsets and messages in the cache.
+            When the internal TTL expires the negative response cache item is expired.
+            This can be configured to force the resolver to query for data more often in case you wont
+            get a valid answer.
         </help>
     </field>
     <field>
@@ -286,21 +358,21 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.infrakeepprobing</id>
+        <label>Keep probing down hosts</label>
+        <type>checkbox</type>
+        <help>
+            Keep probing hosts that are down in the infrastructure host cache. Hosts that are down are probed
+            about every 120 seconds with an exponential backoff. If hosts do not respond within this time period,
+            they are marked as down for the duration of the host cache TTL.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.infracachenumhosts</id>
         <label>Number of Hosts to cache</label>
         <type>text</type>
         <help>
             Number of hosts for which information is cached.
-        </help>
-    </field>
-    <field>
-        <id>unbound.advanced.unwantedreplythreshold</id>
-        <label>Unwanted Reply Threshold</label>
-        <type>text</type>
-        <help>
-            If enabled, a total number of unwanted replies is kept track of in every thread.
-            When it reaches the threshold, a defensive action is taken and a warning is printed to the log file.
-            This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison.
         </help>
     </field>
 </form>

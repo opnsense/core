@@ -1,0 +1,24 @@
+<form>
+    <field>
+       <id>traceroute.settings.hostname</id>
+       <label>Hostname or IP</label>
+       <type>text</type>
+       <help><![CDATA[Hostname or address to trace.]]></help>
+    </field>
+    <field>
+      <id>traceroute.settings.ipproto</id>
+      <label>Address Family</label>
+      <type>dropdown</type>
+    </field>
+    <field>
+      <id>traceroute.settings.protocol</id>
+      <label>Protocol</label>
+      <type>dropdown</type>
+    </field>
+    <field>
+       <id>traceroute.settings.source_address</id>
+       <label>Source address</label>
+       <type>text</type>
+       <help><![CDATA[Optional source address.]]></help>
+    </field>
+</form>

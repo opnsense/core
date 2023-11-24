@@ -114,8 +114,8 @@ class ViscosityVisz extends PlainOpenVPN
                 $p12 = $this->export_pkcs12(
                     $this->config['client_crt'],
                     $this->config['client_prv'],
-                    !empty($this->config['p12_password']) ? $this->config['p12_password'] : null,
-                    !empty($this->config['server_ca_chain']) ? $this->config['server_ca_chain'] : null
+                    $this->config['p12_password'] ?? '',
+                    $this->config['server_ca_chain'] ?? ''
                 );
 
                 file_put_contents("{$content_dir}/pkcs.p12", $p12);
@@ -124,7 +124,7 @@ class ViscosityVisz extends PlainOpenVPN
         } else {
             // use internal Windows store, only flush ca (when available)
             if (!empty($this->config['server_ca_chain'])) {
-                file_put_contents("{$content_dir}/ca.crt", implode("\n", $this->config['server_ca_chain']));
+                file_put_contents("{$content_dir}/ca.crt", $this->config['server_ca_chain']);
                 $conf[] = "ca ca.crt";
             }
         }

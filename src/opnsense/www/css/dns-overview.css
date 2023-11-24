@@ -1,3 +1,8 @@
+.tab-content {
+    padding: 10px;
+    border-top: 1px solid #E5E5E5;
+}
+
 .banner {
     width: 25%;
 }
@@ -22,7 +27,7 @@
     box-shadow: 3px 5px 1px 3px rgba(217,79,0,0.25);
 }
 
-.icon {
+.large-icon {
     position: relative;
     top: 50%;
     left: 50%;
@@ -59,10 +64,14 @@
     margin: 5px;
 }
 
-.list-group {
+.list-group-wrapper {
     margin: 0px;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.list-item-domain {
+    height: 2.5em;
 }
 
 .list-group-item-border {
@@ -87,11 +96,26 @@
     background: #f7f7f7;
 }
 
+.top-item {
+    display: flex;
+    white-space: nowrap;
+}
+
+.group-p {
+    overflow: hidden;
+    height: 20px;
+    margin-right: 5px;
+    text-overflow: ellipsis;
+}
+
 .counter {
-    float: right;
+    position: relative;
+    top: -3px;
     color: #3c3c3b;
     font-size: 14px;
     line-height: 1.4;
+    flex: 1;
+    text-align: right;
 }
 
 .vertical-center {
@@ -100,4 +124,59 @@
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+}
+
+#maintabs > li > a {
+    border: 1px solid #E5E5E5;
+}
+
+.query-success {
+    background-color: #c3e6cb;
+}
+
+.query-info {
+    background-color: #d9edf7;
+}
+
+.query-danger {
+    background-color: #f5c6cb;
+}
+
+.query-warning {
+    background-color: #ffeeba;
+}
+
+.query-error {
+    background-color: #dc3545;
+}
+
+#searchFilter {
+    display: inline-block;
+    margin: 0 20px 0 0;
+    vertical-align: middle;
+}
+
+.tag {
+    font-size: 14px;
+    padding: .3em .4em .4em;
+    margin: 0 .1em;
+}
+
+.tag a {
+  color: #bbb;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.tag a {
+  margin: 0 0 0 .3em;
+}
+
+.tag a fa-times {
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.tooltip-inner {
+  max-width: 1000px !important;
 }

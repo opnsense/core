@@ -155,13 +155,11 @@ if __name__ == '__main__':
                                 update_rule(rule, metadata, rulep, fields_ipv6_carp)
 
                 rule.update(metadata)
+                rule['label'] = ''
                 if rule['rid'] != '0':
                     # rule id in latest record format, don't use rule sequence number in that case
                     if rule['rid'] in running_conf_descr:
                         rule['label'] = running_conf_descr[rule['rid']]
-                    # obsolete md5 in log record
-                    else:
-                        rule['label'] = ''
                 elif rule['action'] not in ['pass', 'block']:
                     # no id for translation rules
                     rule['label'] = "%s rule" % rule['action']

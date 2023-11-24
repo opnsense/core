@@ -32,7 +32,7 @@ PREVIOUS=
 while :; do
 	CURRENT=$(${CHECKSUM} ${LEASES})
 	if [ "${CURRENT}" != "${PREVIOUS}" ]; then
-		configctl dhcpd update prefixes
+		configctl dhcpd6 update prefixes
 		PREVIOUS=${CURRENT}
 	fi
 

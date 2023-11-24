@@ -39,17 +39,18 @@ function ntpd_services()
 {
     global $config;
 
-    $services = array();
+    $services = [];
 
     if (!ntpd_enabled()) {
         return $services;
     }
 
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['name'] = 'ntpd';
     $pconfig['description'] = gettext('Network Time Daemon');
-    $pconfig['php']['restart'] = array('ntpd_configure_do');
-    $pconfig['php']['start'] = array('ntpd_configure_do');
+    $pconfig['php']['restart'] = ['ntpd_configure_do'];
+    $pconfig['php']['start'] = ['ntpd_configure_do'];
+    /* the pidfile for ntpd is unreliable - DO NOT USE IT */
 
     if (!empty($config['ntpd']['clientmode'])) {
         $pconfig['nocheck'] = true;
@@ -62,9 +63,9 @@ function ntpd_services()
 
 function ntpd_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['ntpd'] = array('facility' => array('ntp', 'ntpd', 'ntpdate'));
+    $logfacilities['ntpd'] = ['facility' => ['ntp', 'ntpd', 'ntpdate']];
 
     return $logfacilities;
 }
@@ -73,7 +74,7 @@ function ntpd_cron()
 {
     global $config;
 
-    $jobs = array();
+    $jobs = [];
 
     if (ntpd_enabled() && !empty($config['ntpd']['clientmode'])) {
         $jobs[]['autocron'] = ['/usr/local/sbin/pluginctl -s ntpd restart', '0', '2'];
@@ -83,11 +84,11 @@ function ntpd_cron()
 }
 function ntpd_configure()
 {
-    return array(
-        'bootup' => array('ntpd_configure_do'),
-        'local' => array('ntpd_configure_do'),
-        'newwanip' => array('ntpd_configure_do'),
-    );
+    return [
+        'bootup' => ['ntpd_configure_do'],
+        'local' => ['ntpd_configure_do'],
+        'newwanip' => ['ntpd_configure_do'],
+    ];
 }
 
 function ntpd_configure_gps($serialport)
@@ -171,7 +172,7 @@ function ntpd_configure_do($verbose = false)
 {
     global $config;
 
-    killbyname('ntpd', 'TERM', true);
+    killbyname('ntpd');
 
     if (!ntpd_enabled()) {
         return;
@@ -198,6 +199,16 @@ function ntpd_configure_do($verbose = false)
         $ntpcfg .= $config['ntpd']['orphan'];
     } else {
         $ntpcfg .= '12';
+    }
+    $ntpcfg .= "\n";
+
+    /* Add Max Clock Count */
+    $ntpcfg .= "# Max number of associations\n";
+    $ntpcfg .= 'tos maxclock ';
+    if (!empty($config['ntpd']['maxclock'])) {
+        $ntpcfg .= $config['ntpd']['maxclock'];
+    } else {
+        $ntpcfg .= '10';
     }
     $ntpcfg .= "\n";
 
@@ -316,14 +327,19 @@ function ntpd_configure_do($verbose = false)
     }
     /* End GPS configuration */
 
-    $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : array();
-    $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : array();
-    $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : array();
+    $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
+    $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
+    $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        $ntpcfg .= "server {$ts}";
+        /* Determine if Network Time Server is from the NTP Pool or not */
+        if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
+            $ntpcfg .= "pool {$ts}";
+        } else {
+            $ntpcfg .= "server {$ts}";
+        }
         if (in_array($ts, $iburst)) {
             $ntpcfg .= ' iburst';
         }
@@ -339,9 +355,6 @@ function ntpd_configure_do($verbose = false)
     unset($ts);
 
     $ntpcfg .= "\n\n";
-
-    /* prevent NTP reflection attack, see https://ics-cert.us-cert.gov/advisories/ICSA-14-051-04 */
-    $ntpcfg .= "disable monitor\n";
 
     if (
         !empty($config['ntpd']['clockstats']) ||
@@ -369,65 +382,45 @@ function ntpd_configure_do($verbose = false)
     if (!empty($config['ntpd']['logsys'])) {
         $ntpcfg .= ' +sysall';
     }
-    $ntpcfg .= "\n";
-    $ntpcfg .= "driftfile {$driftfile}\n";
+
+    $ntpcfg .= "\ndriftfile {$driftfile}";
+
     /* Access restrictions */
-    $ntpcfg .= 'restrict default';
+    $ntpaccess = '';
     if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-        $ntpcfg .= ' kod';
+        $ntpaccess .= ' kod';
     }
     if (empty($config['ntpd']['limited'])) { /*note: this one works backwards */
-        $ntpcfg .= ' limited';
+        $ntpaccess .= ' limited';
     }
     if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
-        $ntpcfg .= ' nomodify';
+        $ntpaccess .= ' nomodify';
     }
     if (!empty($config['ntpd']['noquery'])) {
-        $ntpcfg .= ' noquery';
-    }
-    if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
-        $ntpcfg .= ' nopeer';
+        $ntpaccess .= ' noquery';
     }
     if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
-        $ntpcfg .= ' notrap';
+        $ntpaccess .= ' notrap';
     }
     if (!empty($config['ntpd']['noserve'])) {
-        $ntpcfg .= ' noserve';
+        $ntpaccess .= ' noserve';
     }
-    $ntpcfg .= "\nrestrict -6 default";
-    if (empty($config['ntpd']['kod'])) { /*note: this one works backwards */
-        $ntpcfg .= ' kod';
-    }
-    if (empty($config['ntpd']['limited'])) { /*note: this one works backwards */
-        $ntpcfg .= ' limited';
-    }
-    if (empty($config['ntpd']['nomodify'])) { /*note: this one works backwards */
-        $ntpcfg .= ' nomodify';
-    }
-    if (!empty($config['ntpd']['noquery'])) {
-        $ntpcfg .= ' noquery';
-    }
+    $ntpcfg .= "\nrestrict source {$ntpaccess}";
     if (empty($config['ntpd']['nopeer'])) { /*note: this one works backwards */
-        $ntpcfg .= ' nopeer';
+        $ntpaccess .= ' nopeer';
     }
-    if (!empty($config['ntpd']['noserve'])) {
-        $ntpcfg .= ' noserve';
-    }
-    if (empty($config['ntpd']['notrap'])) { /*note: this one works backwards */
-        $ntpcfg .= ' notrap';
-    }
+    $ntpcfg .= "\nrestrict default {$ntpaccess}";
+    $ntpcfg .= "\nrestrict -6 default {$ntpaccess}";
     $ntpcfg .= "\n";
 
     /* A leapseconds file is really only useful if this clock is stratum 1 */
-    $ntpcfg .= "\n";
     if (!empty($config['ntpd']['leapsec'])) {
-        $leapsec .= base64_decode($config['ntpd']['leapsec']);
+        $leapsec = base64_decode($config['ntpd']['leapsec']);
         file_put_contents('/var/db/leap-seconds', $leapsec);
         $ntpcfg .= "leapfile /var/db/leap-seconds\n";
     }
 
-
-    $interfaces = array();
+    $interfaces = [];
     if (isset($config['ntpd']['interface'])) {
         $interfaces = explode(',', $config['ntpd']['interface']);
     }

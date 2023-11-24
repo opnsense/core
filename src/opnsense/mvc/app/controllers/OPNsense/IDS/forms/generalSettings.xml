@@ -15,36 +15,43 @@
         <id>ids.general.promisc</id>
         <label>Promiscuous mode</label>
         <type>checkbox</type>
-        <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.]]></help>
+        <help>Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.</help>
     </field>
     <field>
         <id>ids.general.syslog</id>
         <label>Enable syslog alerts</label>
         <type>checkbox</type>
-        <help><![CDATA[Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.]]></help>
+        <help>Send alerts to system log in fast log format. This will not change the alert logging used by the product itself.</help>
     </field>
     <field>
         <id>ids.general.syslog_eve</id>
         <label>Enable eve syslog output</label>
         <type>checkbox</type>
-        <help><![CDATA[
+        <help>
           Send alerts in eve format to syslog, using log level info.
           This will not change the alert logging used by the product itself.
           Drop logs will only be send to the internal logger, due to restrictions in suricata.
-          ]]></help>
+        </help>
+    </field>
+    <field>
+        <id>ids.general.verbosity</id>
+        <label>Syslog verbosity</label>
+        <type>dropdown</type>
+        <help>Increase the verbosity of the Suricata application logging by increasing the log level from the default.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
-        <help><![CDATA[Select the multi-pattern matcher algorithm to use.]]></help>
+        <help>Select the multi-pattern matcher algorithm to use.</help>
     </field>
         <field>
         <id>ids.general.detect.Profile</id>
         <label>Detect Profile</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help><![CDATA[The detection engine builds internal groups of signatures. The engine allow us to specify the profile to use for them, to manage memory on an efficient way keeping a good performance.]]></help>
+        <help>The detection engine builds internal groups of signatures. The engine allow us to specify the profile to use for them, to manage memory on an efficient way keeping a good performance.</help>
     </field>
     <field>
         <id>ids.general.detect.toclient_groups</id>
@@ -52,7 +59,7 @@
         <style>detect_custom</style>
         <type>text</type>
         <advanced>true</advanced>
-        <help><![CDATA[If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.]]></help>
+        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
     </field>
     <field>
         <id>ids.general.detect.toserver_groups</id>
@@ -60,14 +67,13 @@
         <style>detect_custom</style>
         <type>text</type>
         <advanced>true</advanced>
-        <help><![CDATA[If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.]]></help>
+        <help>If Custom is specified. The detection engine tries to split out separate signatures into groups so that a packet is only inspected against signatures that can actually match. As in large rule set this would result in way too many groups and memory usage similar groups are merged together.</help>
     </field>
     <field>
         <id>ids.general.interfaces</id>
         <label>Interfaces</label>
         <type>select_multiple</type>
-        <help><![CDATA[Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).]]></help>
-        <hint>Type or select interface.</hint>
+        <help>Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).</help>
     </field>
     <field>
         <id>ids.general.homenet</id>
@@ -83,19 +89,19 @@
         <label>default packet size</label>
         <type>text</type>
         <advanced>true</advanced>
-        <help><![CDATA[With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.]]></help>
+        <help>With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.</help>
     </field>
     <field>
         <id>ids.general.AlertLogrotate</id>
         <label>Rotate log</label>
         <type>dropdown</type>
-        <help><![CDATA[Rotate alert logs at provided interval.]]></help>
+        <help>Rotate alert logs at provided interval.</help>
     </field>
     <field>
         <id>ids.general.AlertSaveLogs</id>
         <label>Save logs</label>
         <type>text</type>
-        <help><![CDATA[Number of logs to keep.]]></help>
+        <help>Number of logs to keep.</help>
     </field>
     <field>
         <id>ids.general.LogPayload</id>

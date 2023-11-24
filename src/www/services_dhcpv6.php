@@ -36,8 +36,8 @@ require_once("plugins.inc.d/dhcpd.inc");
 
 function reconfigure_dhcpd()
 {
-    system_hosts_generate();
-    plugins_configure('hosts');
+    system_resolver_configure();
+    plugins_configure('dns');
     clear_subsystem_dirty('hosts');
     dhcpd_dhcp6_configure();
     clear_subsystem_dirty('staticmaps');
@@ -743,7 +743,7 @@ include("head.inc");
                             </tfoot>
                           </table>
                           <div class="hidden" data-for="help_for_numberoptions">
-                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="https://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">','</a>') ?>
+                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."),'<a href="https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml#dhcpv6-parameters-2" target="_blank">','</a>') ?>
                           </div>
                         </div>
                       </td>

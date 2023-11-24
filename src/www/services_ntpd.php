@@ -41,11 +41,12 @@ $copy_fields = [
     'clockstats',
     'interface',
     'kod',
-    'limited',
     'leapsec',
+    'limited',
     'logpeer',
     'logsys',
     'loopstats',
+    'maxclock',
     'nomodify',
     'nopeer',
     'noquery',
@@ -60,9 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     foreach ($copy_fields as $fieldname) {
-        if (isset($a_ntpd[$fieldname])) {
-            $pconfig[$fieldname] = $a_ntpd[$fieldname];
-        }
+        $pconfig[$fieldname] = isset($a_ntpd[$fieldname]) ? $a_ntpd[$fieldname] : '';
     }
 
     // base64 encoded
@@ -90,6 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (!empty($pconfig['orphan']) && ($pconfig['orphan'] < 0 || $pconfig['orphan'] > 15 || !is_numeric($pconfig['orphan']))) {
         $input_errors[] = gettext("Orphan mode must be a value between 0..15");
+    }
+    if (!empty($pconfig['maxclock']) && (!is_numeric($pconfig['maxclock']) || $pconfig['maxclock'] < 2 || $pconfig['maxclock'] > 99)) {
+        $input_errors[] = gettext('Maxclock value must be a value between 2..99');
     }
     $prev_opt = !empty($a_ntpd['custom_options']) ? $a_ntpd['custom_options'] : "";
     if ($prev_opt != str_replace("\r\n", "\n", $pconfig['custom_options']) && !userIsAdmin($_SESSION['Username'])) {
@@ -355,6 +357,16 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><a id="help_for_maxclock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Maxclock') ?></td>
+                    <td>
+                      <input name="maxclock" type="text" value="<?=$pconfig['maxclock']?>" placeholder="10" />
+                      <div class="hidden" data-for="help_for_maxclock">
+                        <?=gettext("(2-99)");?><br />
+                        <?=gettext("Specify the maximum number of servers retained by the server discovery schemes. The default is 10, which should typically be changed. This should be an odd number (to most effectively outvote falsetickers) typically two or three more than minclock (1), plus the number of pool entries. The pool entries must be added as maxclock, but not minclock, which also counts the pool entries themselves. For example, tos maxclock 11 with four pool lines would keep 7 associations."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('NTP graphs') ?></td>
                     <td>
                       <input name="statsgraph" type="checkbox" id="statsgraph" <?=!empty($pconfig['statsgraph']) ? " checked=\"checked\"" : ""; ?> />
@@ -433,7 +445,7 @@ include("head.inc");
                         <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
-                        <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
+                        <?=gettext("A leap second file allows NTP to advertise an upcoming leap second addition or subtraction.");?>
                         <?=gettext("Normally this is only useful if this server is a stratum 1 time server.");?>
                         <br /><br />
                         <?=gettext("Enter Leap second configuration as text:");?><br />

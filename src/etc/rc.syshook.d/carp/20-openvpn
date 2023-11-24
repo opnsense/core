@@ -35,7 +35,7 @@ require_once("plugins.inc.d/openvpn.inc");
 $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
-if ($type != 'MASTER' && $type != 'BACKUP') {
+if (!in_array($type, ['MASTER', 'BACKUP', 'INIT'])) {
     log_msg("Carp '$type' event unknown from source '{$subsystem}'");
     exit(1);
 }

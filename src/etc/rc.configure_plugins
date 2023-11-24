@@ -40,11 +40,11 @@ require_once 'util.inc';
 /* assume standard operation mode as post-install */
 $script = !empty($argv[1]) ? $argv[1] : 'POST_INSTALL';
 
+/* flush user-facing caches */
+(new OPNsense\Core\ACL())->invalidateCache();
+(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();
+
 /* reload subsystem that may have changed */
 if ($script == 'POST_INSTALL') {
     system_syslog_start(true);
 }
-
-/* flush user-facing caches */
-(new OPNsense\Core\ACL())->invalidateCache();
-(new OPNsense\Base\Menu\MenuSystem())->invalidateCache();

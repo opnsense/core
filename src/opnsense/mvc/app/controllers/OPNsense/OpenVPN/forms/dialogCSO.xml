@@ -1,0 +1,149 @@
+<fields>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>cso.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>cso.servers</id>
+        <label>Servers</label>
+        <type>select_multiple</type>
+        <help>Select the OpenVPN servers where this override applies to, leave empty for all</help>
+    </field>
+    <field>
+        <id>cso.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <id>cso.common_name</id>
+        <label>Common name</label>
+        <type>text</type>
+        <help>Enter the client's X.509 common name here.</help>
+    </field>
+    <field>
+        <id>cso.block</id>
+        <label>Connection blocking</label>
+        <type>checkbox</type>
+        <help>
+            Block this client connection based on its common name.
+            Don't use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead.
+        </help>
+    </field>
+    <field>
+        <id>cso.push_reset</id>
+        <label>Push reset</label>
+        <type>checkbox</type>
+        <help>
+            Don't inherit the global push list for a specific client instance.
+            NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options.
+            In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet
+            and --route-gateway will get lost and this will break client configs in many cases.
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Tunnel Settings</label>
+    </field>
+    <field>
+        <id>cso.tunnel_network</id>
+        <label>IPv4 Tunnel Network</label>
+        <type>text</type>
+        <help>Push virtual IP endpoints for client tunnel, overriding dynamic allocation.</help>
+    </field>
+    <field>
+        <id>cso.tunnel_networkv6</id>
+        <label>IPv6 Tunnel Network</label>
+        <type>text</type>
+        <help>Push virtual IP endpoints for client tunnel, overriding dynamic allocation.</help>
+    </field>
+    <field>
+        <id>cso.local_networks</id>
+        <label>Local Network</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>These are the networks accessible by the client, these are pushed via route{-ipv6} clauses in OpenVPN to the client.</help>
+    </field>
+    <field>
+        <id>cso.remote_networks</id>
+        <label>Remote Network</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client.</help>
+    </field>
+    <field>
+        <id>cso.route_gateway</id>
+        <label>Route gateway</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>
+            Specify a default gateway to use for the connected client.
+            Without one set the first address in the netblock is being offered. When segmenting the tunnel (server) network,
+            this one might not be accessible from the client.
+        </help>
+    </field>
+    <field>
+        <id>cso.redirect_gateway</id>
+        <label>Redirect gateway</label>
+        <type>select_multiple</type>
+        <help>Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Client Settings</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>cso.register_dns</id>
+        <label>Register DNS</label>
+        <type>checkbox</type>
+        <help>Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers.</help>
+    </field>
+    <field>
+        <id>cso.dns_domain</id>
+        <label>DNS Default Domain</label>
+        <type>text</type>
+        <help>Set Connection-specific DNS Suffix.</help>
+    </field>
+    <field>
+        <id>cso.dns_domain_search</id>
+        <label>DNS Domain search list</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported.</help>
+    </field>
+    <field>
+        <id>cso.dns_servers</id>
+        <label>DNS Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses.</help>
+    </field>
+    <field>
+        <id>cso.ntp_servers</id>
+        <label>NTP Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses.</help>
+    </field>
+    <field>
+        <id>cso.wins_servers</id>
+        <label>WINS Servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <advanced>true</advanced>
+        <help>Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses.</help>
+    </field>
+</fields>

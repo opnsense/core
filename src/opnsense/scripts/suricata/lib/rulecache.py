@@ -164,12 +164,13 @@ class RuleCache(object):
         with open(filename, 'r') as f_in:
             source_filename = filename.split('/')[-1]
             for rule in f_in:
-                rule_info_record = {'rule': rule.strip(), 'metadata': None}
+                rule = rule.strip()
+                rule_info_record = {'rule': rule, 'metadata': None}
                 msg_pos = rule.find('msg:')
                 if msg_pos != -1:
                     # define basic record
                     record = {
-                        'enabled': rule[0:20].strip()[0] != '#',
+                        'enabled': rule[0] != '#',
                         'source': source_filename,
                         'sid': None,
                         'rev': None,
@@ -181,19 +182,18 @@ class RuleCache(object):
                         'metadata': dict()
                     }
                     rule_metadata = rule[msg_pos:-1]
-                    for section in list(csv.reader([rule_metadata], delimiter=";", escapechar="\\"))[0]:
-                        sep = section.find(':')
-                        if sep > 0:
-                            prop = section[0:sep].strip()
-                            value = section[sep+1:].strip(' "')
+                    scts = list(csv.reader([rule_metadata], delimiter=";", escapechar="\\", skipinitialspace=True))[0]
+                    for section in scts:
+                        tmp = section.split(':', maxsplit=1)
+                        if len(tmp) == 2:
+                            prop = tmp[0]
+                            value = tmp[1].strip(' "')
                             if prop == 'metadata':
                                 for mdtag in list(csv.reader([value], delimiter=","))[0]:
                                     parts = mdtag.split(maxsplit=1)
                                     if parts:
                                         if parts[0] in record['metadata'] and record['metadata'][parts[0]] is not None:
                                             new_content = "%s\n%s" % (record['metadata'][parts[0]], parts[1])
-                                        elif parts[0] in record['metadata']:
-                                            new_content = parts[1]
                                         else:
                                             new_content = parts[1] if len(parts) > 1 else ""
                                         record['metadata'][parts[0]] = new_content
@@ -243,9 +243,13 @@ class RuleCache(object):
             fcntl.flock(lock, fcntl.LOCK_UN)
             return
 
-        # remove existing DB
+        # remove (truncate) existing DB
         if os.path.exists(self.cachefile):
-            os.remove(self.cachefile)
+            fhandle = open(self.cachefile, 'a+')
+            fhandle.seek(0)
+            fhandle.truncate()
+            fhandle.close()
+
 
         db = sqlite3.connect(self.cachefile)
         db.text_factory = lambda x: str(x, 'utf-8', 'ignore')

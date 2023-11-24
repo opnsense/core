@@ -41,11 +41,6 @@ class NetworkField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
-     */
-    protected $internalValidationMessage = "please specify a valid network segment or address (IPv4/IPv6) ";
-
-    /**
      * @var bool marks if net mask is required
      */
     protected $internalNetMaskRequired = false;
@@ -74,6 +69,11 @@ class NetworkField extends BaseField
      * @var bool when set, results are returned as list (with all options enabled)
      */
     private $internalAsList = false;
+
+    /**
+     * @var bool when set, host bits with a value other than zero are not allowed in the notation if a mask is provided
+     */
+    private $internalStrict = false;
 
     /**
      * always lowercase / trim networks
@@ -151,6 +151,19 @@ class NetworkField extends BaseField
     }
 
     /**
+     * select if host bits are allowed in the notation
+     * @param $value
+     */
+    public function setStrict($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalStrict = true;
+        } else {
+            $this->internalStrict = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -170,6 +183,14 @@ class NetworkField extends BaseField
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Please specify a valid network segment or IP address.');
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -179,13 +200,14 @@ class NetworkField extends BaseField
         if ($this->internalValue != null) {
             if ($this->internalValue != "any" || $this->internalWildcardEnabled == false) {
                 // accept any as target
-                $validators[] = new NetworkValidator(array(
-                    'message' => $this->internalValidationMessage,
+                $validators[] = new NetworkValidator([
+                    'message' => $this->getValidationMessage(),
                     'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired,
                     'netMaskAllowed' => $this->internalNetMaskAllowed,
-                    'version' => $this->internalAddressFamily
-                    ));
+                    'version' => $this->internalAddressFamily,
+                    'strict' => $this->internalStrict
+                ]);
             }
         }
         return $validators;

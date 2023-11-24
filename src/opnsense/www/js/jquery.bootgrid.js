@@ -1140,7 +1140,7 @@ Grid.defaults = {
         /**
          * Specifies the HTTP method which shall be used when sending data to the server.
          * Go to http://api.jquery.com/jQuery.ajax/ for more details.
-         * This setting is overriden for backward compatibility.
+         * This setting is overridden for backward compatibility.
          *
          * @property method
          * @type String
@@ -1593,7 +1593,7 @@ Grid.prototype.remove = function(rowIds)
 
 /**
  * Searches in all rows for a specific phrase (but only in visible cells).
- * The search filter will be reseted, if no argument is provided.
+ * The search filter will be reset, if no argument is provided.
  *
  * @method search
  * @param [phrase] {String} The phrase to search for
@@ -1738,7 +1738,7 @@ Grid.prototype.deselect = function(rowIds)
 
 /**
  * Sorts the rows by a given sort descriptor dictionary.
- * The sort filter will be reseted, if no argument is provided.
+ * The sort filter will be reset, if no argument is provided.
  *
  * @method sort
  * @param [dictionary] {Object} A sort descriptor dictionary that contains the sort information

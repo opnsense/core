@@ -1,0 +1,135 @@
+<form>
+    <field>
+        <id>unbound.general.enabled</id>
+        <label>Enable Unbound</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>unbound.general.port</id>
+        <label>Listen Port</label>
+        <type>text</type>
+        <help>The TCP/UDP port used for responding to DNS queries.</help>
+    </field>
+    <field>
+        <id>unbound.general.active_interface</id>
+        <label>Network Interfaces</label>
+        <type>select_multiple</type>
+        <help>
+            Interface IP addresses used for responding to queries from clients.
+            If an interface has both IPv4 and IPv6 IPs, both are used.
+            Queries to other interface IPs not selected below are discarded.
+            The default behavior is to respond to queries on every available IPv4 and IPv6 address.
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.dnssec</id>
+        <label>Enable DNSSEC Support</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>unbound.general.dns64</id>
+        <label>Enable DNS64 Support</label>
+        <type>checkbox</type>
+        <help>If this option is set, Unbound will synthesize AAAA records from A records if no actual AAAA records are present.</help>
+    </field>
+    <field>
+        <id>unbound.general.dns64prefix</id>
+        <label>DNS64 Prefix</label>
+        <type>text</type>
+        <hint>64:ff9b::/96</hint>
+    </field>
+    <field>
+        <id>unbound.general.noarecords</id>
+        <label>Enable AAAA-only mode</label>
+        <type>checkbox</type>
+        <help>If this option is set, Unbound will remove all A records from the answer section of all responses.</help>
+    </field>
+    <field>
+        <id>unbound.general.regdhcp</id>
+        <label>Register DHCP Leases</label>
+        <type>checkbox</type>
+        <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered in Unbound, so that their name can be resolved.</help>
+    </field>
+    <field>
+        <id>unbound.general.regdhcpdomain</id>
+        <label>DHCP Domain Override</label>
+        <type>text</type>
+        <help>The default domain name to use for DHCP lease registration. If empty, the system domain is used.</help>
+    </field>
+    <field>
+        <id>unbound.general.regdhcpstatic</id>
+        <label>Register DHCP Static Mappings</label>
+        <type>checkbox</type>
+        <help>
+            <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
+            You should also set the domain in <a href="/system_general.php">System: General setup</a> to the proper value.]]>
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.noreglladdr6</id>
+        <label>Do not register IPv6 Link-Local addresses</label>
+        <type>checkbox</type>
+        <help>
+            If this option is set, then IPv6 link-local addresses will not be registered in Unbound,
+            preventing return of unreachable address when more than one listen interface is configured.
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.noregrecords</id>
+        <label>Do not register system A/AAAA records</label>
+        <type>checkbox</type>
+        <help>
+            <![CDATA[If this option is set, then no A/AAAA records for the configured listen interfaces will be generated.
+            If desired, you can manually add them in
+            <a href="/ui/unbound/overrides">Unbound DNS: Overrides</a>.
+            Use this to control which interface IP addresses are mapped to the system host/domain name
+            as well as to restrict the amount of information exposed in replies to queries for the system host/domain name.]]>
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.txtsupport</id>
+        <label>TXT Comment Support</label>
+        <type>checkbox</type>
+        <help>If this option is set, then any descriptions associated with Host entries and DHCP Static mappings will create a corresponding TXT record.</help>
+    </field>
+    <field>
+        <id>unbound.general.cacheflush</id>
+        <label>Flush DNS Cache during reload</label>
+        <type>checkbox</type>
+        <help>
+            If this option is set, the DNS cache will be flushed during each daemon reload.
+            This is the default behavior for Unbound, but may be undesired when multiple dynamic interfaces require frequent reloading.
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.local_zone_type</id>
+        <label>Local Zone Type</label>
+        <type>dropdown</type>
+        <help>
+            <![CDATA[The local zone type used for the system domain.
+            Type descriptions are available under "local-zone:" in the
+            <a href="https://nlnetlabs.nl/documentation/unbound/unbound.conf/#local-zone">unbound.conf(5)</a> manual page. The default is 'transparent'.]]>
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.outgoing_interface</id>
+        <label>Outgoing Network Interfaces</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <help>
+            Utilize different network interfaces that Unbound will use to send queries to authoritative servers and receive their replies.
+            By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.
+        </help>
+    </field>
+    <field>
+        <id>unbound.general.enable_wpad</id>
+        <label>WPAD Records</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>
+            If this option is set, CNAME records for the WPAD host of all configured domains will be automatically added
+            as well as overrides for TXT records for domains. This allows automatic proxy configuration in your network
+            but you should not enable it if you are not using WPAD or if you want to configure it by yourself.
+        </help>
+    </field>
+</form>

@@ -61,7 +61,17 @@ Pull requests
 
 When creating pull request, please heed the following:
 
-* Base your code on the latest master branch to avoid manual merges
-* Code review may ensue in order to help shape your proposal
+* Base your code on the latest `master` branch to avoid manual merges
+* Code review by the team may occur to help you shape your proposal
+* Test your proposal operationally to catch mistakes and avoid merge delay
 * Pull request must adhere to 2-Clause BSD licensing
 * Explain the problem and your proposed solution
+* If applicable cite the issue(s) number(s) in your pull-request description,
+    for example `Fixes: #1234`, `Closes: #1234`, or `Ref: #1234`.
+* Read [README.md](./README.md) to learn about the commands to shape your code
+
+Stable release updates
+----------------------
+
+After merging a pull-request into the `master` branch a team member may cherry-pick
+your work to update the current stable version (branches: `stable/<major>.<minor>`).

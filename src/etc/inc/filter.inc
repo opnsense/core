@@ -55,6 +55,30 @@ function is_bogonsv6_used()
     return $usebogonsv6;
 }
 
+/* lock configuration file */
+function filter_lock($lock = 'filter', $op = LOCK_EX)
+{
+    if (!file_exists("{/tmp/{$lock}.lock")) {
+        @touch("/tmp/{$lock}.lock");
+        @chmod("/tmp/{$lock}.lock", 0666);
+    }
+
+    if ($fp = fopen("/tmp/{$lock}.lock", 'a+e')) {
+        if (flock($fp, $op)) {
+            return $fp;
+        } else {
+            fclose($fp);
+        }
+    }
+}
+
+/* unlock configuration file */
+function filter_unlock($fp)
+{
+    flock($fp, LOCK_UN);
+    fclose($fp);
+}
+
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort()
@@ -120,7 +144,7 @@ function ifgroup_setup()
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach ($config['ifgroups']['ifgroupentry'] as $group) {
             $all_ifgroups[$group['ifname']] = array();
-            foreach (explode(" ", $group['members']) as $member) {
+            foreach (preg_split('/[ |,]+/', $group['members']) as $member) {
                 if (!empty($config['interfaces'][$member])) {
                     $if = $config['interfaces'][$member]['if'];
                     if (!isset($all_ifs[$if])) {
@@ -158,7 +182,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('Configuring firewall.', $verbose);
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $filterlck = lock('filter', LOCK_EX);
+    $locked = filter_lock();
 
     ifgroup_setup();
 
@@ -188,7 +212,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         empty($config['nat']['outbound']['mode']) ||
           in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))
     ) {
-        // generate standard outbound rules when mode is automatic ot hybrid
+        // generate standard outbound rules when mode is automatic or hybrid
         $intfv4 = array();
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
@@ -252,27 +276,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (isset($config['system']['gw_switch_default'])) {
-        // When gateway switching is enabled, we might consider a different default gateway.
-        // although this isn't really the right spot for the feature (it's a monitoring/routing decision),
-        // we keep it here for now (historical reasons).
-        $down_gateways = return_down_gateways();
-        foreach (array("inet", "inet6") as $ipprotocol) {
-            if (!empty($down_gateways)) {
-                log_msg(sprintf("Ignore down %s gateways : %s", $ipprotocol, implode(",", $down_gateways)), LOG_DEBUG);
-            }
-            $default_gw = $fw->getGateways()->getDefaultGW($down_gateways, $ipprotocol);
-            if ($default_gw !== null && !empty($default_gw['gateway'])) {
-                system_default_route(
-                    $default_gw['gateway'],
-                    $ipprotocol,
-                    $default_gw['if'],
-                    isset($default_gw['fargw'])
-                );
-            }
-        }
-    }
-
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);
 
     $aliases = filter_generate_aliases();
@@ -294,7 +297,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     } else {
         mwexec("/sbin/pfctl -d", true);
 
-        unlock($filterlck);
+        filter_unlock($locked);
         closelog();
         reopenlog();
 
@@ -369,6 +372,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
+    if (!empty($config['system']['pfdebug'])) {
+        $limitrules .= "set debug {$config['system']['pfdebug']}\n";
+    }
+
+    if (!empty($config['system']['keepcounters'])) {
+        $limitrules .= "set keepcounters\n";
+    }
+
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= filter_setup_logging_interfaces($cnfint);
@@ -394,7 +405,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
         file_put_contents('/tmp/rules.error', gettext('ERROR: Could not write new rules!'));
 
-        unlock($filterlck);
+        filter_unlock($locked);
         closelog();
         reopenlog();
 
@@ -436,7 +447,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             sprintf(gettext('There were error(s) loading the rules: %s%s'), $rules_error[0], $config_line)
         );
 
-        unlock($filterlck);
+        filter_unlock($locked);
         closelog();
         reopenlog();
 
@@ -467,10 +478,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     mwexec('/sbin/ifconfig pflog0 promisc');
 
     /* bring up new instance of filterlog to load new rules */
-    killbypid('/var/run/filterlog.pid', 'TERM', true);
+    killbypid('/var/run/filterlog.pid');
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 
-    unlock($filterlck);
+    filter_unlock($locked);
     closelog();
     reopenlog();
 
@@ -588,12 +599,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 
 function filter_generate_aliases()
 {
-    $aliases = "\n# Lockout tables\n";
-    $aliases .= "table <sshlockout> persist\n";
-    $aliases .= "\n# Other tables\n";
-    $aliases .= "table <virusprot>\n";
-
-    $aliases .= "\n# User Aliases\n";
+    $aliases = "# User Aliases\n";
     $aliasObject = new \OPNsense\Firewall\Alias();
     // list of registered aliases for faster is_alias() lookup
     $all_aliases = [];
@@ -645,8 +651,8 @@ function filter_rules_legacy(&$FilterIflist)
     $ipfrules = "";
     $bridge_interfaces = [];
     if (!empty($config['bridges']['bridged'])) {
-        foreach ($config['bridges']['bridged'] as $oc2) {
-            $bridge_interfaces = array_merge(explode(',', $oc2['members']), $bridge_interfaces);
+        foreach ($config['bridges']['bridged'] as $bridge) {
+            $bridge_interfaces = array_merge(explode(',', $bridge['members'] ?? ''), $bridge_interfaces);
         }
     }
     foreach ($FilterIflist as $on => $oc) {
@@ -823,11 +829,13 @@ function default_state_size()
 function get_current_hostid()
 {
     exec('/sbin/pfctl -si -v 2>/dev/null', $output);
+
     foreach ($output as $line) {
         if (strpos($line, 'Hostid:') !== false) {
-            return preg_split("/(\s+)/", $line)[1];
+            return preg_split('/\s+/', $line)[1];
         }
     }
+
     return null;
 }
 

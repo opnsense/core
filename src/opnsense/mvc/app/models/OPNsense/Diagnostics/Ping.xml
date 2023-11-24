@@ -1,0 +1,34 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>OPNsense Ping Diagnostics</description>
+    <items>
+        <settings>
+            <hostname type="HostnameField">
+               <Required>Y</Required>
+               <ValidationMessage>Provide a valid hostname or address to ping</ValidationMessage>
+            </hostname>
+            <fam type="OptionField">
+                <Required>Y</Required>
+                <Default>ip</Default>
+                <OptionValues>
+                    <ip>IPv4</ip>
+                    <ip6>IPv6</ip6>
+                </OptionValues>
+            </fam>
+            <source_address type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <ValidationMessage>Provide a valid source address</ValidationMessage>
+            </source_address>
+            <packetsize type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+            </packetsize>
+            <disable_frag type="BooleanField"/>
+            <description type="TextField">
+                <Mask>/^(.){1,255}$/u</Mask>
+                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+            </description>
+        </settings>
+    </items>
+</model>

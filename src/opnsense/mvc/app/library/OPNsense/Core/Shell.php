@@ -61,7 +61,7 @@ class Shell
     /**
      * execute command or list of commands
      *
-     * @param string/array $command command to execute
+     * @param string|array $command command to execute
      * @param bool $mute
      * @param array &$output
      */

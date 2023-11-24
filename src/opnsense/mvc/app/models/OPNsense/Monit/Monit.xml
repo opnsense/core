@@ -1,54 +1,50 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.11</version>
+   <version>1.0.12</version>
    <description>Monit settings</description>
    <items>
       <general>
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <interval type="IntegerField">
-            <default>120</default>
+            <Default>120</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400</ValidationMessage>
          </interval>
          <startdelay type="IntegerField">
-            <default>120</default>
+            <Default>120</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
          </startdelay>
          <mailserver type="CSVListField">
-            <default>127.0.0.1</default>
+            <Default>127.0.0.1</Default>
             <Required>Y</Required>
-            <multiple>Y</multiple>
-            <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
+            <Multiple>Y</Multiple>
+            <Mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</Mask>
             <ChangeCase>lower</ChangeCase>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
          <port type="IntegerField">
             <Required>Y</Required>
-            <default>25</default>
+            <Default>25</Default>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>65535</MaximumValue>
             <ValidationMessage>Port needs to be an integer value between 0 and 65535</ValidationMessage>
          </port>
-         <username type="TextField">
-            <Required>N</Required>
-         </username>
-         <password type="TextField">
-            <Required>N</Required>
-         </password>
+         <username type="TextField"/>
+         <password type="TextField"/>
          <ssl type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </ssl>
          <sslversion type="OptionField">
-            <default>auto</default>
+            <Default>auto</Default>
             <Required>Y</Required>
             <OptionValues>
                <auto>AUTO</auto>
@@ -60,76 +56,67 @@
          </sslversion>
          <sslverify type="BooleanField">
             <Required>Y</Required>
-            <default>1</default>
+            <Default>1</Default>
          </sslverify>
          <logfile type="TextField">
-            <Required>N</Required>
-            <default>syslog facility log_daemon</default>
-            <mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
          </logfile>
          <statefile type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
          </statefile>
          <eventqueuePath type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
          </eventqueuePath>
          <eventqueueSlots type="IntegerField">
-            <Required>N</Required>
             <ValidationMessage>Eventqueue Slots must be a numeric value.</ValidationMessage>
          </eventqueueSlots>
          <httpdEnabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </httpdEnabled>
          <httpdUsername type="TextField"/>
          <httpdPassword type="TextField"/>
          <httpdPort type="IntegerField">
-            <default>2812</default>
+            <Default>2812</Default>
             <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>65535</MaximumValue>
             <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535</ValidationMessage>
          </httpdPort>
          <httpdAllow type="CSVListField">
-            <Required>N</Required>
-            <multiple>Y</multiple>
+            <Multiple>Y</Multiple>
          </httpdAllow>
-         <mmonitUrl type="TextField">
-            <Required>N</Required>
-         </mmonitUrl>
+         <mmonitUrl type="TextField"/>
          <mmonitTimeout type="IntegerField">
-            <default>5</default>
+            <Default>5</Default>
             <Required>Y</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400</ValidationMessage>
          </mmonitTimeout>
          <mmonitRegisterCredentials type="BooleanField">
-            <default>1</default>
+            <Default>1</Default>
             <Required>Y</Required>
          </mmonitRegisterCredentials>
       </general>
       <alert type="ArrayField">
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <recipient type="EmailField">
-            <default>root@localhost.local</default>
+            <Default>root@localhost.local</Default>
             <Required>Y</Required>
             <ValidationMessage>Please enter a valid email address.</ValidationMessage>
          </recipient>
          <noton type="BooleanField">
             <Required>Y</Required>
-            <default>0</default>
+            <Default>0</Default>
          </noton>
          <events type="CSVListField">
-            <Required>N</Required>
             <SelectOptions>
                <action>Action done</action>
                <checksum>Checksum failed</checksum>
@@ -162,30 +149,25 @@
                <uptime>Uptime failed</uptime>
             </SelectOptions>
          </events>
-         <format type="TextField">
-            <Required>N</Required>
-         </format>
+         <format type="TextField"/>
          <reminder type="IntegerField">
-            <default>10</default>
-            <Required>N</Required>
             <MinimumValue>0</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
          </reminder>
          <description type="TextField">
-            <Required>N</Required>
-            <mask>/^.{1,255}$/u</mask>
+            <Mask>/^.{1,255}$/u</Mask>
             <ValidationMessage>Enter a description.</ValidationMessage>
          </description>
       </alert>
       <service type="ArrayField">
          <enabled type="BooleanField">
-            <default>0</default>
+            <Default>0</Default>
             <Required>Y</Required>
          </enabled>
          <name type="TextField">
             <Required>Y</Required>
-            <mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
             <Constraints>
                <check001>
@@ -194,9 +176,7 @@
                </check001>
             </Constraints>
          </name>
-         <description type="TextField">
-            <Required>N</Required>
-         </description>
+         <description type="TextField"/>
          <type type="OptionField">
             <Required>Y</Required>
             <OptionValues>
@@ -212,31 +192,30 @@
             </OptionValues>
          </type>
          <pidfile type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/?$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
          </pidfile>
-         <match type="TextField">
-            <Required>N</Required>
-         </match>
+         <match type="TextField"/>
          <path type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
             <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
          </path>
          <timeout type="IntegerField">
-            <default>300</default>
-            <Required>N</Required>
+            <Default>300</Default>
+            <Required>Y</Required>
             <MinimumValue>1</MinimumValue>
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Program Timeout needs to be an integer value between 1 and 86400</ValidationMessage>>
          </timeout>
-         <address type="HostnameField">
-            <Required>N</Required>
-         </address>
+         <starttimeout type="IntegerField">
+            <Default>30</Default>
+            <Required>Y</Required>
+            <MinimumValue>0</MinimumValue>
+            <MaximumValue>86400</MaximumValue>
+            <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
+         </starttimeout>
+         <address type="HostnameField"/>
          <interface type="InterfaceField">
-            <Required>N</Required>
-            <multiple>N</multiple>
             <AddParentDevices>Y</AddParentDevices>
             <filters>
                 <enable>/^(?!0).*$/</enable>
@@ -244,13 +223,11 @@
             </filters>
          </interface>
          <start type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </start>
          <stop type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/? .*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
             <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
          </stop>
          <tests type="ModelRelationField">
@@ -262,8 +239,7 @@
                </template>
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
-            <multiple>Y</multiple>
-            <Required>N</Required>
+            <Multiple>Y</Multiple>
          </tests>
          <depends type="ModelRelationField">
             <Model>
@@ -274,24 +250,22 @@
                </template>
             </Model>
             <ValidationMessage>Related item not found</ValidationMessage>
-            <multiple>Y</multiple>
-            <Required>N</Required>
+            <Multiple>Y</Multiple>
          </depends>
          <polltime type="TextField">
-            <Required>N</Required>
-            <mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
          </polltime>
       </service>
       <test type="ArrayField">
          <name type="TextField">
             <Required>Y</Required>
-            <mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</mask>
+            <Mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
          </name>
          <type type="OptionField">
             <Required>Y</Required>
-            <default>Custom</default>
+            <Default>Custom</Default>
             <OptionValues>
                <Existence>Existence</Existence>
                <SystemResource>System Resource</SystemResource>
@@ -320,7 +294,7 @@
          </type>
          <condition type="TextField">
             <Required>Y</Required>
-            <mask>/^.{1,255}$/u</mask>
+            <Mask>/^.{1,255}$/u</Mask>
             <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
          </condition>
          <action type="OptionField">
@@ -335,8 +309,7 @@
             </OptionValues>
          </action>
          <path type="TextField">
-            <Required>N</Required>
-            <mask>/^(\/[^\/ ]*)+\/?.*$/</mask>
+            <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
             <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
          </path>
       </test>

@@ -115,20 +115,22 @@ function firewall_rule_item_proto($filterent)
       "mtraceresp" => gettext("mtrace response"),
       "mtrace" => gettext("mtrace messages")
     );
-    if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])) {
+    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp' && !empty($filterent['icmptype'])) {
         $result = $record_ipprotocol;
+        $icmplabel = $icmptypes[$filterent['icmptype']] ?? $filterent['icmptype'];
         $result .= sprintf(
-          "<span data-toggle=\"tooltip\" title=\"ICMP type: %s \"> %s </span>",
-          html_safe($icmptypes[$filterent['icmptype']]),
-          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+          '<span data-toggle="tooltip" title="ICMP type: %s">%s</span>',
+          html_safe($icmplabel),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
     } elseif (isset($filterent['protocol']) && !empty($filterent['icmp6-type'])) {
         $result = $record_ipprotocol;
+        $icmplabel = $icmp6types[$filterent['icmp6-type']] ?? $filterent['icmp6-type'];
         $result .= sprintf(
-          "<span data-toggle=\"tooltip\" title=\"ICMP6 type: %s \"> %s </span>",
-          html_safe($icmp6types[$filterent['icmp6-type']]),
-          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*"
+          '<span data-toggle="tooltip" title="ICMP6 type: %s">%s</span>',
+          html_safe($icmplabel),
+          isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
     } else {
@@ -156,9 +158,9 @@ function firewall_rule_item_icons($filterent)
             gettext("any")
         );
     }
-    if (empty($filterent['floating']) && $filterent['quick'] === null){
+    if (empty($filterent['floating']) && !isset($filterent['quick'])){
         $is_quick = true;
-    } elseif (!empty($filterent['floating']) && $filterent['quick'] === null) {
+    } elseif (!empty($filterent['floating']) && !isset($filterent['quick'])) {
         $is_quick = false;
     } else {
         $is_quick = $filterent['quick'];
@@ -181,7 +183,11 @@ function firewall_rule_item_icons($filterent)
 
 function firewall_rule_item_action($filterent)
 {
-    if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
+    if (!isset($filterent['type']) && empty($filterent['disabled'])) {
+        return "fa fa-play fa-fw text-success";
+    } elseif (!isset($filterent['type']) && !empty($filterent['disabled'])) {
+        return "fa fa-play fa-fw text-muted";
+    } elseif ($filterent['type'] == "block" && empty($filterent['disabled'])) {
         return "fa fa-times fa-fw text-danger";
     } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
         return "fa fa-times fa-fw text-muted";
@@ -198,11 +204,25 @@ function firewall_rule_item_action($filterent)
 
 function firewall_rule_item_log($filterent)
 {
-    if ($filterent['log'] == true) {
+    if (!empty($filterent['log'])) {
         return "fa fa-info-circle fa-fw text-info";
     } else {
         return "fa fa-info-circle fa-fw text-muted";
     }
+}
+
+function filter_rule_item_alias_tooltip($alias_name)
+{
+    $alias_descr = htmlspecialchars(get_alias_description($alias_name));
+    $alias_name = htmlspecialchars($alias_name);
+    $result = "<span title=\"{$alias_descr}\" data-toggle=\"tooltip\"  data-html=\"true\">";
+    $result .= $alias_name . "&nbsp;";
+    $result .= "</span>";
+    $result .= "<a href=\"/ui/firewall/alias/index/{$alias_name}\"";
+    $result .= "  title=\"". gettext("edit alias") ."\" data-toggle=\"tooltip\">";
+    $result .= "<i class=\"fa fa-list\"></i>";
+    $result .= "</a>";
+    return $result;
 }
 /***********************************************************************************************************
  *
@@ -421,7 +441,7 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
-  // link move buttons
+  // link apply button
   $("#btn_apply").click(function(event){
     event.preventDefault();
     $("#action").val("apply");
@@ -537,12 +557,6 @@ $( document ).ready(function() {
   // hook category functionality
   hook_firewall_categories();
 
-  // expand internal auto generated rules
-  if ($("tr.internal-rule").length > 0) {
-      $("#expand-internal-rules").show();
-      $("#internal-rule-count").text($("tr.internal-rule").length);
-  }
-
   // our usual zebra striping doesn't respect hidden rows, hook repaint on .opnsense-rules change() and fire initially
   $(".opnsense-rules > tbody > tr").each(function(){
       // save zebra color
@@ -559,13 +573,51 @@ $( document ).ready(function() {
               $(this).css("background-color", $("#fw_category").data('stripe_color'));
           }
       });
+      $(".expand_type").each(function(){
+          let tmp = $(this).data('type');
+          if ($("tr."+tmp+"-rule").length > 0) {
+              $("#expand-"+tmp+"-rules").show();
+              $("#"+tmp+"-rule-count").text($("tr."+tmp+"-rule").length);
+          }
+          if ($(this).hasClass('is_collapsed')) {
+              $("tr."+tmp+"-rule").hide();
+          }
+      });
+  });
+
+  $(".expand_type").each(function(){
+      $("#expand-"+$(this).data('type')).click(function(event){
+          event.preventDefault();
+          $(this).parent().parent().toggleClass('is_collapsed');
+          // trigger category change as this will show/hide all "rule" rows (and fires an event on .opnsense-rules )
+          $("#fw_category").change();
+      });
+  });
+
+  // tooltip interface list
+  $(".interface_tooltip").tooltip({
+      html: true,
+      placement: 'bottom',
+      title: function(){
+<?php
+        $iflist = [];
+        foreach (legacy_config_get_interfaces() as $intf => $payload) {
+          $iflist[$intf] = $payload['descr'];
+        }
+        echo "    let descriptions = JSON.parse('". json_encode($iflist) . "');";?>
+          let this_interfaces = [];
+          $.each($(this).data('interfaces').split(','), function(idx, intf) {
+              if (descriptions[intf]) {
+                  this_interfaces.push(descriptions[intf]);
+              } else {
+                  // strikeout non existing interface (show, but mark)
+                  this_interfaces.push('<s>'+intf+'</s>');
+              }
+          });
+          return this_interfaces.join('<br/>');
+      }
   });
   //
-  $("#expand-internal").click(function(event){
-      event.preventDefault();
-      $(".internal-rule").toggle();
-      $(".opnsense-rules").change();
-  });
 });
 </script>
 <style>
@@ -576,8 +628,12 @@ $( document ).ready(function() {
         width: 150px;
     }
     .opnsense-rules > tbody > tr > td {
-        padding-left:15px;
-        padding-right:15px;
+        padding-left:5px;
+        padding-right:5px;
+    }
+
+    .expand_type {
+        font-style: italic;
     }
 </style>
 
@@ -649,6 +705,9 @@ $( document ).ready(function() {
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Port') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Gateway') ?></strong></td>
                       <td class="view-info hidden-xs hidden-sm"><strong><?= gettext('Schedule') ?></strong></td>
+                      <td class="view-info">
+                          <i class="fa fa-fw fa-sitemap"  data-toggle="tooltip" title="<?= html_safe(gettext('Number of interfaces this rule applies to'));?>"></i>
+                      </td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('Evaluations') ?></strong></td>
                       <td class="view-stats hidden-xs hidden-sm"><strong><?= gettext('States') ?></strong></td>
                       <td class="view-stats"><strong><?= gettext('Packets') ?></strong></td>
@@ -675,36 +734,76 @@ $( document ).ready(function() {
                         </button>
                       </td>
                   </tr>
-                  <tr id="expand-internal-rules" style="display: none;">
-                      <td><i class="fa fa-folder-o text-muted"></i></td>
-                      <td></td>
-                      <td class="view-info" colspan="2"> </td>
-                      <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
-                      <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
-                      <td colspan="2" class="view-stats"></td>
-                      <td><?= gettext('Automatically generated rules') ?></td>
-                      <td>
-                          <button class="btn btn-default btn-xs" id="expand-internal">
-                            <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
-                            <span class="badge">
-                              <span id="internal-rule-count"><span>
-                            </span>
-                          </button>
-                      </td>
-                  </tr>
 <?php
+                $ifgroups = [];
+                foreach (config_read_array('ifgroups', 'ifgroupentry') as $ifgroup) {
+                    if (!empty($ifgroup['members']) && in_array($selected_if, preg_split('/[ |,]+/', $ifgroup['members']))) {
+                        $ifgroups[] = $ifgroup['ifname'];
+                    }
+                }
                 $fw = filter_core_get_initialized_plugin_system();
                 filter_core_bootstrap($fw);
                 plugins_firewall($fw);
+                filter_core_rules_user($fw);
+                $prev_origin = null;
+                $origin_texts = [
+                    'internal' => gettext('Automatically generated rules'),
+                    'floating' => gettext('Floating rules'),
+                    'group' => gettext('Group rules'),
+                    'internal2' => gettext('Automatically generated rules (end of ruleset)'),
+                ];
                 foreach ($fw->iterateFilterRules() as $rule):
-                    $is_selected = $rule->getInterface() == $selected_if || (
-                        ($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules"
-                    );
-                    if ($rule->isEnabled() && $is_selected):
+                    $is_selected = false;
+                    if (empty($ifgroups) && $rule->ruleOrigin() == 'group'){
+                        // group view, skip group section (groups can't be nested)
+                        $is_selected = false;
+                    } elseif ($rule->getInterface() == $selected_if && empty($rule->getRawRule()['interfacenot'])) {
+                        // interface view and this interface is selected
+                        $is_selected = true;
+                    } elseif ($selected_if == "FloatingRules" && $rule->ruleOrigin() == 'floating') {
+                        // floating view, skip floating
+                        $is_selected = false;
+                    } elseif (!empty($rule->getRawRule()['interfacenot'])) {
+                        // inverted interface, all but selected
+                        if (!in_array($selected_if, explode(',', $rule->getInterface()))) {
+                            $is_selected = true;
+                        }
+                    } elseif (($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules") {
+                        // floating type of rule and "floating" view
+                        $is_selected = true;
+                    } elseif ($rule->getInterface() == "" || in_array($selected_if, explode(',', $rule->getInterface())) || in_array($rule->getInterface(), $ifgroups)) {
+                        // rule is floating or of group type and matches this interface
+                        $is_selected = true;
+                    }
+                    if ($rule->isEnabled() && $is_selected && $rule->ruleOrigin() != 'interface'):
+                        $intf_count = empty($rule->getInterface()) ? '*' : count(explode(',', $rule->getInterface()));
                         $filterent = $rule->getRawRule();
                         $filterent['quick'] = !isset($filterent['quick']) || $filterent['quick'];
-                        legacy_html_escape_form_data($filterent);?>
-                    <tr class="internal-rule" style="display: none;">
+                        legacy_html_escape_form_data($filterent);
+?>
+<?php
+                    if ($prev_origin != $rule->ruleOrigin()):?>
+                    <tr id="expand-<?=$rule->ruleOrigin();?>-rules" class="expand_type is_collapsed" data-type="<?=$rule->ruleOrigin();?>" style="display: none;">
+                        <td><i class="fa fa-folder-o text-muted"></i></td>
+                        <td></td>
+                        <td class="view-info" colspan="2"> </td>
+                        <td class="view-info hidden-xs hidden-sm" colspan="5"> </td>
+                        <td colspan="2" class="view-stats hidden-xs hidden-sm"></td>
+                        <td colspan="2" class="view-stats"></td>
+                        <td class="view-info"></td>
+                        <td><?= $origin_texts[$rule->ruleOrigin()] ?></td>
+                        <td>
+                            <button class="btn btn-default btn-xs" id="expand-<?=$rule->ruleOrigin();?>">
+                              <i class="fa fa-chevron-circle-down" aria-hidden="true"></i>
+                              <span class="badge">
+                                <span id="<?=$rule->ruleOrigin();?>-rule-count"><span>
+                              </span>
+                            </button>
+                        </td>
+                    </tr>
+<?php
+                    endif;?>
+                    <tr class="rule <?=$rule->ruleOrigin();?>-rule" style="display: none;" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                       <td><i class="fa fa-magic"></i></td>
                       <td>
                           <span class="<?=firewall_rule_item_action($filterent);?>"></span>
@@ -715,27 +814,46 @@ $( document ).ready(function() {
                           <?=firewall_rule_item_proto($filterent);?>
                       </td>
                       <td class="view-info">
-                          <?=!empty($filterent['from']) ? $filterent['from'] : "*";?>
+                          <?=$rule->isUIFromNot() ? '!' : '';?>
+                          <?= is_alias($rule->getUIFromAddress()) ? filter_rule_item_alias_tooltip($rule->getUIFromAddress()) : htmlspecialchars($rule->getUIFromAddress());?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=!empty($filterent['from_port']) ? $filterent['from_port'] : "*";?>
+                        <?= is_alias($rule->getUIFromPort()) ? filter_rule_item_alias_tooltip($rule->getUIFromPort()) : htmlspecialchars(pprint_port($rule->getUIFromPort()));?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=!empty($filterent['to']) ? $filterent['to'] : "*";?>
+                          <?=$rule->isUIToNot() ? '!' : '';?>
+                          <?= is_alias($rule->getUIToAddress()) ? filter_rule_item_alias_tooltip($rule->getUIToAddress()) : htmlspecialchars($rule->getUIToAddress());?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                          <?=!empty($filterent['to_port']) ? $filterent['to_port'] : "*";?>
+                          <?= is_alias($rule->getUIToPort()) ? filter_rule_item_alias_tooltip($rule->getUIToPort()) : htmlspecialchars(pprint_port($rule->getUIToPort()));?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">
-                        <?= !empty($filterent['gateway']) ? $filterent['gateway'] : "*";?>
+                        <?= $rule->getUIGateway();?>
                       </td>
                       <td class="view-info hidden-xs hidden-sm">*</td>
+                      <td class="view-info">
+                          <?php if ($intf_count == '*'):?>
+                              <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
+                                <?=$intf_count;?>
+                              </a>
+                          <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                            <?= !empty($rule->getRawRule()['interfacenot']) ? '!' : '';?>
+                            <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$rule->getInterface();?>">
+                              <?=$intf_count;?>
+                            </a>
+                          <?php endif; ?>
+                      </td>
                       <td class="view-stats hidden-xs hidden-sm" id="<?=$rule->getLabel();?>_evaluations"><?= gettext('N/A') ?></td>
                       <td class="view-stats hidden-xs hidden-sm">
                           <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule->getLabel());?>" id="<?=$rule->getLabel();?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?=  gettext('N/A');?></a>
                       <td class="view-stats" id="<?=$rule->getLabel();?>_packets"><?= gettext('N/A') ?></td>
                       <td class="view-stats" id="<?=$rule->getLabel();?>_bytes"><?= gettext('N/A') ?></td>
-                      <td><?=$rule->getDescr();?></td>
+                      <td class="rule-description">
+                        <?=$rule->getDescr();?>
+                        <div class="collapse rule_md5_hash">
+                            <small><?=$filterent['label'];?></small>
+                        </div>
+                      </td>
                       <td>
 <?php if (!empty($rule->getRef())): ?>
                           <a href="firewall_rule_lookup.php?rid=<?=html_safe($rule->getLabel());?>" class="btn btn-default btn-xs"><i class="fa fa-fw fa-search"></i></a>
@@ -743,6 +861,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
 <?php
+                    $prev_origin = $rule->ruleOrigin();
                     endif;
                 endforeach;?>
 <?php
@@ -757,6 +876,7 @@ $( document ).ready(function() {
                   // calculate a hash so we can track these records in the ruleset, new style (mvc) code will
                   // automatically provide us with a uuid, this is a workaround to provide some help with tracking issues.
                   $rule_hash = OPNsense\Firewall\Util::calcRuleHash($a_filter_raw[$i]);
+                  $intf_count = empty($filterent['interface']) ? '*' : count(explode(',', $filterent['interface']));
 ?>
                   <tr class="rule  <?=isset($filterent['disabled'])?"text-muted":"";?>" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
@@ -772,13 +892,8 @@ $( document ).ready(function() {
                     </td>
                     <td class="view-info">
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_address($filterent['source']));?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['address']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=!empty($filterent['source']['not']) ? '!' : '';?>
+                        <?=filter_rule_item_alias_tooltip($filterent['source']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['source']));?>
 <?php                 endif; ?>
@@ -786,13 +901,7 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_port($filterent['source']['port'])); ?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['source']['port']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=filter_rule_item_alias_tooltip($filterent['source']['port']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_port(isset($filterent['source']['port']) ? $filterent['source']['port'] : null)); ?>
 <?php                 endif; ?>
@@ -800,13 +909,8 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['address']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=!empty($filterent['destination']['not']) ? '!' : '';?>
+                        <?=filter_rule_item_alias_tooltip($filterent['destination']['address']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
 <?php                 endif; ?>
@@ -814,13 +918,7 @@ $( document ).ready(function() {
 
                     <td class="view-info hidden-xs hidden-sm">
 <?php                 if (isset($filterent['destination']['port']) && is_alias($filterent['destination']['port'])): ?>
-                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip"  data-html="true">
-                          <?=htmlspecialchars(pprint_port($filterent['destination']['port'])); ?>&nbsp;
-                        </span>
-                        <a href="/ui/firewall/alias/index/<?=htmlspecialchars($filterent['destination']['port']);?>"
-                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
-                          <i class="fa fa-list"></i>
-                        </a>
+                        <?=filter_rule_item_alias_tooltip($filterent['destination']['port']);?>
 <?php                 else: ?>
                         <?=htmlspecialchars(pprint_port(isset($filterent['destination']['port']) ? $filterent['destination']['port'] : null)); ?>
 <?php                 endif; ?>
@@ -872,6 +970,18 @@ $( document ).ready(function() {
 <?php
                        endif;?>
                     </td>
+                    <td class="view-info">
+                      <?php if ($intf_count == '*'):?>
+                          <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
+                            <?=$intf_count;?>
+                          </a>
+                      <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                        <?= !empty($filterent['interfacenot']) ? '!' : '';?>
+                        <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$filterent['interface'];?>">
+                          <?=$intf_count;?>
+                        </a>
+                      <?php endif; ?>
+                    </td>
                     <td class="view-stats hidden-xs hidden-sm" id="<?=$rule_hash;?>_evaluations"><?= gettext('N/A') ?></td>
                     <td class="view-stats hidden-xs hidden-sm">
                       <a href="/ui/diagnostics/firewall/states#<?=html_safe($rule_hash);?>" id="<?=$rule_hash;?>_states" data-toggle="tooltip" title="<?=html_safe("open states view");?>" ><?= gettext('N/A') ?></a>
@@ -879,7 +989,7 @@ $( document ).ready(function() {
                     <td class="view-stats" id="<?=$rule_hash;?>_packets"><?= gettext('N/A') ?></td>
                     <td class="view-stats" id="<?=$rule_hash;?>_bytes"><?= gettext('N/A') ?></td>
                     <td  class="rule-description">
-                      <?=$filterent['descr'];?>
+                      <?= $filterent['descr'] ?? '' ?>
                       <div class="collapse rule_md5_hash">
                           <small><?=$rule_hash;?></small>
                       </div>

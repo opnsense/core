@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -66,6 +66,11 @@ repository="error"
 sets_upgraded=
 upgrade_needs_reboot="0"
 
+product_reboot=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
+if [ -n "${product_reboot}" ]; then
+	needs_reboot="1"
+fi
+
 product_suffix="-$(/usr/local/sbin/pluginctl -g system.firmware.type)"
 if [ "${product_suffix}" = "-" ]; then
     product_suffix=
@@ -87,7 +92,7 @@ echo "***GOT REQUEST TO CHECK FOR UPDATES***" >> ${LOCKFILE}
 echo "Currently running $(opnsense-version) at $(date)" >> ${LOCKFILE}
 
 # business subscriptions come with additional license metadata
-if [ -n "$(opnsense-update -K)" ]; then
+if [ -n "$(opnsense-update -x)" ]; then
     echo -n "Fetching subscription information, please wait... " >> ${LOCKFILE}
     if fetch -qT 5 -o ${LICENSEFILE} "$(opnsense-update -M)/subscription" >> ${LOCKFILE} 2>&1; then
         echo "done" >> ${LOCKFILE}
@@ -365,7 +370,10 @@ if [ -n "${packages_is_size}" ]; then
     if [ "${kernel_to_delete}" != "${upgrade_major_version}" ]; then
         kernel_is_size="$(opnsense-update -SRk)"
         if [ -n "${kernel_is_size}" ]; then
-            sets_upgraded="${sets_upgraded},{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            if [ -n "${sets_upgraded}" ]; then
+                sets_upgraded="${sets_upgraded},"
+            fi
+            sets_upgraded="${sets_upgraded}{\"name\":\"kernel\",\"size\":\"${kernel_is_size}\",\"current_version\":\"${kernel_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
             upgrade_needs_reboot="1"
         fi
     fi
@@ -374,7 +382,10 @@ if [ -n "${packages_is_size}" ]; then
     if [ "${base_to_delete}" != "${upgrade_major_version}" ]; then
         base_is_size="$(opnsense-update -SRb)"
         if [ -n "${base_is_size}" ]; then
-            sets_upgraded="${sets_upgraded},{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
+            if [ -n "${sets_upgraded}" ]; then
+                sets_upgraded="${sets_upgraded},"
+            fi
+            sets_upgraded="${sets_upgraded}{\"name\":\"base\",\"size\":\"${base_is_size}\",\"current_version\":\"${base_to_delete}\",\"new_version\":\"${upgrade_major_version}\",\"repository\":\"${product_repo}\"}"
             upgrade_needs_reboot="1"
         fi
     fi
@@ -394,6 +405,7 @@ cat > ${JSONFILE} << EOF
     "product_id":"${product_id}",
     "product_target":"${product_target}",
     "product_version":"${product_version}",
+    "product_abi":"${product_xabi}",
     "reinstall_packages":[${packages_reinstall}],
     "remove_packages":[${packages_removed}],
     "repository":"${repository}",

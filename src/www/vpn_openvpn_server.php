@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $vpnid = 0;
     $pconfig['verbosity_level'] = 1;
     $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
+    $pconfig['crypto'] = "";
     $pconfig['tlsmode'] = "auth";
     $pconfig['autokey_enable'] = "yes";
     $pconfig['autotls_enable'] = "yes";
@@ -991,23 +992,21 @@ $( document ).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
+                      <td><a id="help_for_crypto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithm (deprecated)"); ?></td>
                       <td>
                         <select name="crypto" class="selectpicker">
 <?php
-                        $cipherlist = openvpn_get_cipherlist();
-                        foreach ($cipherlist as $name => $desc) :
-                            $selected = "";
-                            if ($name == $pconfig['crypto']) {
-                                $selected = " selected=\"selected\"";
-                            }
-                        ?>
+                        foreach (openvpn_get_cipherlist() as $name => $desc) :
+                            $selected = $name == $pconfig['crypto'] ? " selected=\"selected\"" : "";?>
                           <option value="<?=$name;?>"<?=$selected?>>
                             <?=htmlspecialchars($desc);?>
                           </option>
 <?php
                         endforeach; ?>
                         </select>
+                        <div class="hidden" data-for="help_for_crypto">
+                          <?= gettext('Cipher selection for older clients. Only preserved for backwards compatibility reasons.') ?>
+                        </div>
                       </td>
                     </tr>
                     <tr>

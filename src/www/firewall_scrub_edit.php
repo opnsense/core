@@ -355,10 +355,10 @@ include("head.inc");
                   <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Source"); ?></td>
                       <td>
-                        <table class="table table-condensed">
+                        <table  style="max-width:348px;">
                           <tr>
                             <td>
-                              <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                              <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                                 <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                                 <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -377,25 +377,23 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <div>
-                              <table style="border:0;">
-                                <tbody>
-                                  <tr>
-                                      <td style="width:348px">
-                                        <!-- updates to "other" option in  src -->
-                                        <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
-                                      </td>
-                                      <td>
-                                        <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="src" >
-                                        <?php for ($i = 128; $i > 0; $i--): ?>
-                                          <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                                        <?php endfor; ?>
-                                        </select>
-                                      </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                          </div>
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td style="width:285px">
+                                    <!-- updates to "other" option in  src -->
+                                    <input type="text" id="src_address" for="src" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
+                                  </td>
+                                  <td>
+                                    <select name="srcmask" data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask" data-width="70px" for="src">
+                                    <?php for ($i = 128; $i > 0; $i--): ?>
+                                      <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
+                                    <?php endfor; ?>
+                                    </select>
+                                  </td>
+                                 </tr>
+                              </tbody>
+                            </table>
                           </td>
                         </tr>
                       </table>
@@ -455,10 +453,10 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Destination"); ?></td>
                     <td>
-                      <table class="table table-condensed">
+                      <table  style="max-width: 348px">
                         <tr>
                           <td>
-                            <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="348px">
                               <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
   <?php                        foreach (legacy_list_aliases("network") as $alias):
@@ -477,18 +475,18 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td>
-                            <table style="border:0;">
+                            <table style="max-width: 348px">
                               <tbody>
                                 <tr>
-                                    <td style="width:348px">
+                                    <td style="width:285px">
                                       <!-- updates to "other" option in  src -->
                                       <input type="text" id="dst_address" for="dst" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Destination address");?>"/>
                                     </td>
                                     <td>
-                                      <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask"  data-width="auto" for="dst" >
-                                      <?php for ($i = 128; $i > 0; $i--): ?>
+                                      <select name="dstmask" data-network-id="dst_address" class="selectpicker ipv4v6net" data-size="5" id="dstmask" data-width="70px" for="dst">
+<?php for ($i = 128; $i > 0; $i--): ?>
                                         <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
-                                      <?php endfor; ?>
+<?php endfor  ?>
                                       </select>
                                     </td>
                                 </tr>
@@ -562,7 +560,7 @@ include("head.inc");
                     <td style="width:78%">
                       <input type="checkbox" name="noscrub" id="noscrub" <?= !empty($pconfig['noscrub']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" data-for="help_for_noscrub">
-                        <?=gettext("Enabling this option will disable scub (normalisation) for traffic matching this rule."); ?>
+                        <?=gettext("Enabling this option will disable scrub (normalization) for traffic matching this rule."); ?>
                       </div>
                     </td>
                   </tr>

@@ -315,6 +315,23 @@ abstract class BaseField
     }
 
     /**
+     * iterate all nodes recursively.
+     * @return Generator
+     */
+    public function iterateRecursiveItems()
+    {
+        if (count($this->getChildren()) == 0) {
+            yield $this;
+        } else {
+            foreach ($this->iterateItems() as $node) {
+                foreach ($node->iterateRecursiveItems() as $child) {
+                    yield $child;
+                }
+            }
+        }
+    }
+
+    /**
      * reflect default setter to internal child nodes
      * @param string $name property name
      * @param string $value property value
@@ -446,6 +463,11 @@ abstract class BaseField
         }
     }
 
+    public function isRequired()
+    {
+        return $this->internalIsRequired;
+    }
+
     /**
      * check if this field is unused and required
      * @return bool
@@ -514,6 +536,7 @@ abstract class BaseField
         }
         return $result;
     }
+
     /**
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
@@ -522,7 +545,7 @@ abstract class BaseField
     {
         $validators = $this->getConstraintValidators();
         if ($this->isEmptyAndRequired()) {
-            $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage));
+            $validators[] = new PresenceOf(['message' => gettext('A value is required.')]);
         }
         return $validators;
     }
@@ -575,7 +598,6 @@ abstract class BaseField
         return $result;
     }
 
-
     /**
      * get nodes as array structure
      * @return array
@@ -602,7 +624,6 @@ abstract class BaseField
     {
         return (string)$this;
     }
-
 
     /**
      * update model with data returning missing repeating tag types.
@@ -636,7 +657,6 @@ abstract class BaseField
             }
         }
     }
-
 
     /**
      * Add this node and its children to the supplied simplexml node pointer.
@@ -687,6 +707,24 @@ abstract class BaseField
     public function applyDefault()
     {
         $this->internalValue = $this->internalDefaultValue;
+    }
+
+    /**
+     * @return string default validation message
+     */
+    protected function defaultValidationMessage()
+    {
+        return gettext('Validation failed.');
+    }
+
+    /**
+     * @return string current validation message
+     */
+    protected function getValidationMessage()
+    {
+        return $this->internalValidationMessage !== null ?
+            gettext($this->internalValidationMessage) :
+            $this->defaultValidationMessage();
     }
 
     /**
@@ -758,5 +796,13 @@ abstract class BaseField
     {
         $parts = explode("\\", get_class($this));
         return $parts[count($parts) - 1];
+    }
+
+    /**
+     * normalize the internal value to allow passing validation
+     */
+    public function normalizeValue()
+    {
+        /* implemented where needed */
     }
 }

@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function timeout($timer = 5)
+function timeout($timer = 7)
 {
     while (!isset($key)) {
         if ($timer >= 9) {
@@ -36,7 +36,7 @@ function timeout($timer = 5)
         } else {
             echo chr(8) . "{$timer}";
         }
-        shell_exec('/bin/stty -icanon min 0 time 25');
+        shell_exec('/bin/stty -icanon min 0 time 10');
         $key = shell_exec('/bin/dd count=1 status=none');
         shell_exec('/bin/stty icanon');
         if ($key == '') {
@@ -51,9 +51,9 @@ function timeout($timer = 5)
     return $key;
 }
 
-function is_interface_mismatch()
+function is_interface_mismatch($locked = true)
 {
-    $patterns = array('^impossiblecontrolmatch$'); /* XXX */
+    $patterns = ['^impossiblecontrolmatch$'];
     $mismatch = false;
 
     foreach (plugins_devices() as $device) {
@@ -62,11 +62,10 @@ function is_interface_mismatch()
         }
     }
 
-    /* XXX we can match known devices names, much easier as soon as it is provided */
     $regex = '/' . implode('|', $patterns) . '/';
 
     foreach (legacy_config_get_interfaces(['virtual' => false]) as $ifname => $ifcfg) {
-        if (!empty($ifcfg['lock'])) {
+        if ($locked && !empty($ifcfg['lock'])) {
             /* Do not mismatch if any lock was issued */
             $mismatch = false;
             break;
@@ -125,7 +124,7 @@ function _set_networking_interfaces_ports($probe = false)
 
     if (!empty($iflist)) {
         echo <<<EOD
-Do you want to configure LAGGs now? ${yes_no_prompt}
+Do you want to configure LAGGs now? {$yes_no_prompt}
 EOD;
         if ($interactive) {
             $key = chop(fgets($fp));
@@ -149,7 +148,7 @@ EOD;
         }
 
         echo <<<EOD
-Do you want to configure VLANs now? ${yes_no_prompt}
+Do you want to configure VLANs now? {$yes_no_prompt}
 EOD;
         if ($interactive) {
             $key = chop(fgets($fp));
@@ -356,7 +355,7 @@ EOD;
 
     echo <<<EOD
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
     if ($interactive) {
         $key = chop(fgets($fp));
@@ -520,7 +519,7 @@ function lagg_setup($iflist, $fp)
 
 WARNING: all existing LAGGs will be cleared if you proceed!
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
 
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {
@@ -538,6 +537,7 @@ EOD;
 
     while (1) {
         $lagg = [];
+        $lagg['@attributes'] = ['uuid' => generate_uuid()];
 
         echo "\nLAGG-capable interfaces:\n\n";
 
@@ -578,7 +578,7 @@ EOD;
         }
 
         if ($lagg['proto'] == "lacp") {
-            echo "Do you want to enable LACP fast timeout? ${yes_no_prompt}";
+            echo "Do you want to enable LACP fast timeout? {$yes_no_prompt}";
 
             if (strcasecmp(chop(fgets($fp)), "y") == 0) {
                 $lagg['lacp_fast_timeout'] = true;
@@ -608,7 +608,7 @@ function vlan_setup($iflist, $fp)
 
 WARNING: all existing VLANs will be cleared if you proceed!
 
-Do you want to proceed? ${yes_no_prompt}
+Do you want to proceed? {$yes_no_prompt}
 EOD;
 
         if (strcasecmp(chop(fgets($fp)), "y") != 0) {

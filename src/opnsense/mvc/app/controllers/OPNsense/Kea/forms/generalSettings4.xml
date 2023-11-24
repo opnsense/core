@@ -1,0 +1,42 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General settings</label>
+    </field>
+    <field>
+        <id>dhcpv4.general.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable DHCPv4 server.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <help>Select interfaces to listen on.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.valid_lifetime</id>
+        <label>Valid lifetime</label>
+        <type>text</type>
+        <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>High Availability</label>
+    </field>
+    <field>
+        <id>dhcpv4.ha.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable High availability hook, requires the Control Agent to be enabled as well.</help>
+    </field>
+    <field>
+        <id>dhcpv4.ha.this_server_name</id>
+        <label>This server name</label>
+        <type>text</type>
+        <help>The name of this server, should match with one of the entries in the HA peers.
+        Leave empty to use this machines hostname
+        </help>
+    </field>
+</form>

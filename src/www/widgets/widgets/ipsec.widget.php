@@ -32,48 +32,66 @@
 
 require_once("guiconfig.inc");
 
-$ipsec_detail_array = array();
-$ipsec_tunnels = array();
-$ipsec_leases = array();
+$ipsec_detail_array = [];
+$ipsec_tunnels = [];
+$ipsec_leases = [];
 
-if (isset($config['ipsec']['phase1'])) {
-    $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
-    if ($ipsec_leases == null) {
-        $ipsec_leases = array();
+$ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
+if (!is_array($ipsec_leases) || empty($ipsec_leases['leases'])) {
+    $ipsec_leases = [];
+} else {
+    $ipsec_leases = $ipsec_leases['leases'];
+}
+$ipsec_status = json_decode(configd_run("ipsec list status"), true) ?? [];
+
+// parse configured tunnels
+foreach ($ipsec_status as $status_key => $status_value) {
+    if (isset($status_value['children']) && is_array($status_value['children'])) {
+      foreach($status_value['children'] as $child_status_key => $child_status_value) {
+          $ipsec_tunnels[$child_status_key] = array('active' => false,
+                                                    'local-addrs' => $status_value['local-addrs'],
+                                                    'remote-addrs' => $status_value['remote-addrs'],
+                                                  );
+          $ipsec_tunnels[$child_status_key]['local-ts'] = implode(', ', $child_status_value['local-ts']);
+          $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(', ', $child_status_value['remote-ts']);
+      }
     }
-
-    $ipsec_status = json_decode(configd_run("ipsec list status"), true);
-    if ($ipsec_status == null) {
-        $ipsec_status = array();
-    }
-
-    // parse configured tunnels
-    foreach ($ipsec_status as $status_key => $status_value) {
-        if (isset($status_value['children']) && is_array($status_value['children'])) {
-          foreach($status_value['children'] as $child_status_key => $child_status_value) {
-              $ipsec_tunnels[$child_status_key] = array('active' => false,
-                                                        'local-addrs' => $status_value['local-addrs'],
-                                                        'remote-addrs' => $status_value['remote-addrs'],
-                                                      );
-              $ipsec_tunnels[$child_status_key]['local-ts'] = implode(', ', $child_status_value['local-ts']);
-              $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(', ', $child_status_value['remote-ts']);
-          }
-        }
-        foreach ($status_value['sas'] as $sas_key => $sas_value) {
-            foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
-                if (!isset($ipsec_tunnels[$child_sa_key])) {
-                    /* XXX bug on strongSwan 5.5.2 appends -3 and -4 here? */
-                    $child_sa_key = preg_replace('/-[^-]+$/', '', $child_sa_key);
-                }
-                if (isset($ipsec_tunnels[$child_sa_key])) {
-                    $ipsec_tunnels[$child_sa_key]['active'] = true;
-                }
+    foreach ($status_value['sas'] as $sas_key => $sas_value) {
+        foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
+            if (!isset($ipsec_tunnels[$child_sa_key])) {
+                /* XXX bug on strongSwan 5.5.2 appends -3 and -4 here? */
+                $child_sa_key = preg_replace('/-[^-]+$/', '', $child_sa_key);
+            }
+            if (isset($ipsec_tunnels[$child_sa_key])) {
+                $ipsec_tunnels[$child_sa_key]['active'] = true;
             }
         }
     }
 }
+// Initialize variable aggregated_data and loop through the ipsec_leases array to fetch the data for user, address and online status. Used later for div ipsec-mobile. Additionally count the unique_users in the same foreach loop, used for mobile_users count.
+$aggregated_data = [];
+$unique_users = [];
 
-if (isset($config['ipsec']['phase2'])) {
+foreach ($ipsec_leases as $lease) {
+    // For each unique user, initialize an empty array
+    if (!isset($aggregated_data[$lease['user']])) {
+        $aggregated_data[$lease['user']] = [];
+    }
+    // Add the lease data to this user's array of leases
+    $aggregated_data[$lease['user']][] = [
+        'address' => $lease['address'],
+        'online' => $lease['online']
+    ];
+
+    // Count unique users in ipsec_leases array if lease is online
+    if ($lease['online']) {
+        $unique_users[$lease['user']] = true;
+    }
+}
+
+// Return the number of unique_users as mobile_users
+$mobile_users = count($unique_users);
+
 ?>
 <script>
     $(document).ready(function() {
@@ -138,18 +156,8 @@ if (isset($config['ipsec']['phase2'])) {
         </td>
         <td><?= (count($ipsec_tunnels) - $activetunnels); ?></td>
         <td>
-<?php
-        // count active mobile users
-        $mobile_users = 0;
-        foreach ($ipsec_leases as $pool => $pool_details) {
-            foreach ($pool_details['items'] as $lease) {
-                if ($lease['status'] == 'online') {
-                    ++$mobile_users;
-                }
-            }
-        }
-?>
-          <?=$mobile_users;?>
+           <!-- mobile_users were counted in the earlier loop where data was aggregated -->
+           <?=$mobile_users;?>
         </td>
       </tr>
     </tbody>
@@ -183,45 +191,45 @@ if (isset($config['ipsec']['phase2'])) {
     </tbody>
   </table>
 </div>
-<div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th><?= gettext('User');?></th>
-        <th><?= gettext('IP');?></th>
-        <th><?= gettext('Status');?></th>
-      </tr>
-    </thead>
-    <tbody>
-<?php
-    foreach ($ipsec_leases as $pool => $pool_details):
-      foreach ($pool_details['items'] as $lease): ?>
-      <tr>
-        <td><?=htmlspecialchars($lease['user']);?></td>
-        <td><?=htmlspecialchars($lease['address']);?></td>
-        <td>
-          <i class="fa fa-exchange fa-fw text-<?= $lease['status'] == 'online' ?  "success" : 'danger' ?>"></i>
-        </td>
-      </tr>
 
-<?php
-      endforeach;
-    endforeach;?>
-    </tbody>
-  </table>
+<div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th><?=gettext('User');?></th>
+            <th><?=gettext('IP');?></th>
+            <th><?=gettext('Status');?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        // Generate the user and IP addresses table rows using the aggregated_data variable that was populated earlier
+        foreach ($aggregated_data as $user => $user_data):?>
+            <tr>
+                <td><?=htmlspecialchars($user);?></td>
+                <td>
+                    <table>
+                        <?php foreach($user_data as $lease): ?>
+                            <tr>
+                                <td><?=htmlspecialchars($lease['address']);?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        <?php foreach($user_data as $lease):?>
+                            <tr>
+                                <td>
+                                    <!-- Show the online and offline status of each lease a user has. -->
+                                    <i class="fa fa-exchange fa-fw text-<?=$lease['online'] ? 'success' : 'danger' ?>"></i>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </td>
+            </tr>
+        <?php endforeach ?>
+        </tbody>
+    </table>
 </div>
-<?php //end ipsec tunnel
-} //end if tunnels are configured, else show code below
-else {
-?>
-<div style="display:block">
-   <table class="table table-striped" style="width:100%; border:0;">
-    <tr>
-      <td>
-        <?= gettext('Note: There are no configured IPsec Tunnels') ?>
-      </td>
-    </tr>
-  </table>
-</div>
-<?php
-}

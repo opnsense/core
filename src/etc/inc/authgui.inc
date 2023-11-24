@@ -127,14 +127,6 @@ function session_auth()
 {
     global $config;
 
-    function auth_log($message, $prio = LOG_ERR)
-    {
-        openlog("audit", LOG_ODELAY, LOG_AUTH);
-        log_msg($message, $prio);
-        closelog();
-        reopenlog();
-    }
-
     if (session_status() == PHP_SESSION_NONE) {
         // Handle HTTPS httponly and secure flags
         $currentCookieParams = session_get_cookie_params();
@@ -187,14 +179,17 @@ function session_auth()
             }
             if (!empty($_GET['url'])) {
                 $tmp_url_parts = parse_url($_GET['url']);
-                if (!empty($tmp_url_parts['host'])) {
-                    $redir_uri = $tmp_url_parts['path'];
+                if ($tmp_url_parts !== false) {
+                    $redir_uri = sprintf(
+                        '%s://%s/%s',
+                        isset($_SERVER['HTTPS']) ? 'https' : 'http',
+                        $_SERVER['HTTP_HOST'],
+                        ltrim($tmp_url_parts['path'], '/')
+                    );
                     $redir_uri .= !empty($tmp_url_parts['query']) ? "?" . $tmp_url_parts['query'] : "";
                     $redir_uri .= !empty($tmp_url_parts['fragment']) ? "#" . $tmp_url_parts['fragment'] : "";
-                } else {
-                    $redir_uri = $_GET['url'];
+                    header(url_safe("Location: {$redir_uri}"));
                 }
-                header(url_safe("Location: {$redir_uri}"));
             } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
                 header("Location: system_usermanager_passwordmg.php");
             } else {
@@ -250,7 +245,7 @@ function session_auth()
 
         if (isset($_COOKIE[session_name()])) {
             $secure = $config['system']['webgui']['protocol'] == "https";
-            setcookie(session_name(), '', time() - 42000, '/', null, $secure, true);
+            setcookie(session_name(), '', time() - 42000, '/', '', $secure, true);
         }
 
         /* and destroy it */
@@ -320,7 +315,7 @@ function display_error_form($text)
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
+    <meta name="robots" content="noindex, nofollow" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
@@ -352,7 +347,7 @@ function display_login_form($Login_Error)
     $themename = htmlspecialchars(get_current_theme());
     $product = product::getInstance();
 
-    setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', null, $config['system']['webgui']['protocol'] == "https", true);
+    setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', '', $config['system']['webgui']['protocol'] == 'https', true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
 <html lang="en" class="no-js">
@@ -360,7 +355,7 @@ function display_login_form($Login_Error)
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
+    <meta name="robots" content="noindex, nofollow" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />

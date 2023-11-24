@@ -1,0 +1,56 @@
+<form>
+    <field>
+        <id>subnet4.subnet</id>
+        <label>Subnet</label>
+        <type>text</type>
+        <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
+    </field>
+    <field>
+        <id>subnet4.pools</id>
+        <label>Pools</label>
+        <type>textbox</type>
+        <help>List of pools, one per line in range or subnet format (e.g. 192.168.0.100 - 192.168.0.200 , 192.0.2.64/26</help>
+    </field>
+    <field>
+        <id>subnet4.option_data_autocollect</id>
+        <label>Auto collect option data</label>
+        <type>checkbox</type>
+        <help>Automatically update option data for relevant attributes as routers, dns servers and ntp servers when applying settings from the gui.</help>
+    </field>
+    <field>
+        <id>subnet4.option_data.routers</id>
+        <label>Routers (gateway)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Default gateways to offer to the clients</help>
+    </field>
+    <field>
+        <id>subnet4.option_data.domain_name_servers</id>
+        <label>DNS servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>DNS servers to offer to the clients</help>
+    </field>
+    <field>
+        <id>subnet4.option_data.ntp_servers</id>
+        <label>NTP servers</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>NTP servers to offer to the clients</help>
+    </field>
+    <field>
+        <id>subnet4.option_data.tftp_server_name</id>
+        <label>TFTP server</label>
+        <type>text</type>
+        <help>TFTP server address or fqdn</help>
+    </field>
+    <field>
+        <id>subnet4.option_data.boot_file_name</id>
+        <label>TFTP bootfile name</label>
+        <type>text</type>
+        <help>Boot filename to request</help>
+    </field>
+</form>

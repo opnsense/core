@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (count($input_errors) == 0) {
-            if (!_interfaces_wlan_clone($clone['cloneif'], $clone)) {
+            if (empty(_interfaces_wlan_clone($clone['cloneif'], $clone))) {
                 $input_errors[] = sprintf(gettext('Error creating interface with mode %s. The %s interface may not support creating more clones with the selected mode.'), $wlan_modes[$clone['mode']], $clone['if']);
             } else {
                 if (isset($id)) {

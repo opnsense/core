@@ -1,9 +1,7 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
     <version>1.0.3</version>
-    <description>
-        OPNsense traffic shaper
-    </description>
+    <description>OPNsense traffic shaper</description>
     <items>
         <pipes>
             <pipe type="ArrayField">
@@ -14,7 +12,7 @@
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <bandwidth type="IntegerField">
@@ -24,7 +22,7 @@
                 </bandwidth>
                 <bandwidthMetric type="OptionField">
                     <Required>Y</Required>
-                    <default>Kbit</default>
+                    <Default>Kbit</Default>
                     <OptionValues>
                         <bit>bit/s</bit>
                         <Kbit>kbit/s</Kbit>
@@ -34,14 +32,13 @@
                     <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s, Mbit/s or Gbit/s</ValidationMessage>
                 </bandwidthMetric>
                 <queue type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>100</MaximumValue>
                     <ValidationMessage>queue size should be between 2...100</ValidationMessage>
                 </queue>
                 <mask type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>(none)</none>
                         <src-ip>source</src-ip>
@@ -49,14 +46,11 @@
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
                 </buckets>
                 <scheduler type="OptionField">
-                    <Required>N</Required>
-                    <default></default>
                     <BlankDesc>Weighted Fair Queueing</BlankDesc>
                     <OptionValues>
                         <fifo>FIFO</fifo>
@@ -67,7 +61,7 @@
                     </OptionValues>
                 </scheduler>
                 <codel_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -80,21 +74,19 @@
                     </Constraints>
                 </codel_enable>
                 <codel_target type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_target>
                 <codel_interval type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
                 <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </codel_ecn_enable>
                 <pie_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -103,34 +95,29 @@
                     </Constraints>
                 </pie_enable>
                 <fqcodel_quantum type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_quantum>
                 <fqcodel_limit type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_limit>
                 <fqcodel_flows type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                 </fqcodel_flows>
                 <origin type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>Origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
                 <delay type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>3000</MaximumValue>
                     <ValidationMessage>Please choose a value between 1 and 3000</ValidationMessage>
                 </delay>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </pipe>
@@ -144,7 +131,7 @@
                     <Required>Y</Required>
                 </number>
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <pipe type="ModelRelationField">
@@ -167,7 +154,7 @@
                 </weight>
                 <mask type="OptionField">
                     <Required>Y</Required>
-                    <default>none</default>
+                    <Default>none</Default>
                     <OptionValues>
                         <none>(none)</none>
                         <src-ip>source</src-ip>
@@ -175,13 +162,12 @@
                     </OptionValues>
                 </mask>
                 <buckets type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
                     <ValidationMessage>bucket size should be between 1...65535</ValidationMessage>
                 </buckets>
                 <codel_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -194,21 +180,19 @@
                     </Constraints>
                 </codel_enable>
                 <codel_target type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_target>
                 <codel_interval type="IntegerField">
-                    <Required>N</Required>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>10000</MaximumValue>
                 </codel_interval>
                 <codel_ecn_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </codel_ecn_enable>
                 <pie_enable type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
@@ -218,12 +202,11 @@
                 </pie_enable>
                 <description type="TextField">
                     <Required>Y</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
                 <origin type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
             </queue>
@@ -231,7 +214,7 @@
         <rules>
             <rule type="ArrayField">
                 <enabled type="BooleanField">
-                    <default>1</default>
+                    <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
                 <sequence type="IntegerField">
@@ -239,19 +222,17 @@
                     <MaximumValue>1000000</MaximumValue>
                     <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
                     <Required>Y</Required>
-                    <default>1</default>
+                    <Default>1</Default>
                 </sequence>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
-                    <default>wan</default>
+                    <Default>wan</Default>
                     <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
                     </filters>
                 </interface>
                 <interface2 type="InterfaceField">
-                    <Required>N</Required>
-                    <default></default>
                     <AllowDynamic>Y</AllowDynamic>
                     <filters>
                         <enable>/^(?!0).*$/</enable>
@@ -259,7 +240,7 @@
                 </interface2>
                 <proto type="OptionField">
                     <Required>Y</Required>
-                    <default>ip</default>
+                    <Default>ip</Default>
                     <OptionValues>
                         <ip>ip</ip>
                         <ip4>ipv4</ip4>
@@ -269,6 +250,7 @@
                         <tcp_ack>tcp (ACK packets only)</tcp_ack>
                         <tcp_ack_not>tcp (non-ACK packets)</tcp_ack_not>
                         <icmp>icmp</icmp>
+                        <ipv6_icmp value="ipv6-icmp">ipv6-icmp</ipv6_icmp>
                         <igmp>igmp</igmp>
                         <esp>esp</esp>
                         <ah>ah</ah>
@@ -278,43 +260,41 @@
                 <iplen type="IntegerField">
                     <MinimumValue>2</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
-                    <Required>N</Required>
                     <ValidationMessage>The absolute limitation for packet size is 64K (65535 bytes)</ValidationMessage>
                 </iplen>
                 <source type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
+                    <Default>any</Default>
                     <asList>Y</asList>
                 </source>
                 <source_not type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </source_not>
                 <src_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
+                    <Default>any</Default>
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
                     <FieldSeparator>,</FieldSeparator>
-                    <default>any</default>
+                    <Default>any</Default>
                     <asList>Y</asList>
                 </destination>
                 <destination_not type="BooleanField">
-                    <default>0</default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </destination_not>
                 <dst_port type="PortField">
                     <Required>Y</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
-                    <default>any</default>
+                    <Default>any</Default>
                 </dst_port>
                 <dscp type="OptionField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <be>Best Effort</be>
@@ -341,10 +321,8 @@
                     </OptionValues>
                 </dscp>
                 <direction type="OptionField">
-                    <Required>N</Required>
-                    <default></default>
+                    <BlankDesc>both</BlankDesc>
                     <OptionValues>
-                        <__empty__>both</__empty__>
                         <in>in</in>
                         <out>out</out>
                     </OptionValues>
@@ -372,12 +350,10 @@
                     <Required>Y</Required>
                 </target>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                 </description>
                 <origin type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
+                    <Mask>/^([a-z,A-Z,1-9]){0,30}$/</Mask>
                     <ValidationMessage>origin should be regular text of max 30 characters</ValidationMessage>
                 </origin>
             </rule>

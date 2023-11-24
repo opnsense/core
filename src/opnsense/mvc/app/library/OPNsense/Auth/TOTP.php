@@ -82,7 +82,7 @@ trait TOTP
     }
 
     /**
-     * @param int $moment timestemp
+     * @param int $moment timestamp
      * @param string $secret secret to use
      * @return calculated token code
      */

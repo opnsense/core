@@ -53,6 +53,7 @@ class ApiControllerBase extends ControllerRoot
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
+        $records = is_array($records) ? $records : []; // safeguard input, we are only able to search arrays.
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
         $itemsPerPage = $itemsPerPage == -1 ? count($records) : $itemsPerPage;
         $currentPage = intval($this->request->getPost('current', 'int', 1));
@@ -60,39 +61,50 @@ class ApiControllerBase extends ControllerRoot
         $entry_keys = array_keys($records);
         $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
 
+        $sortOrder = SORT_ASC;
+        $sortKey = $defaultSort;
         if (
             $this->request->hasPost('sort') &&
             is_array($this->request->getPost('sort')) &&
             !empty($this->request->getPost('sort'))
         ) {
             $keys = array_keys($this->request->getPost('sort'));
-            $order = $this->request->getPost('sort')[$keys[0]];
-            $keys = array_column($records, $keys[0]);
-            if (!empty($keys)) {
-                array_multisort($keys, $order == 'asc' ? SORT_ASC : SORT_DESC, $sort_flags, $records);
+            $sortOrder = $this->request->getPost('sort')[$keys[0]] == 'asc' ? SORT_ASC : SORT_DESC;
+            $sortKey = $keys[0];
+        }
+        if (!empty($sortKey) && !empty($records)) {
+            // make sure the sort key exists in the recordset to prevent "sizes are inconsistent"
+            foreach ($records as &$record) {
+                if (!isset($record[$sortKey])) {
+                    $record[$sortKey] = null;
+                }
             }
-        } elseif (!empty($defaultSort)) {
-            $keys = array_column($records, $defaultSort);
-            if (!empty($keys)) {
-                array_multisort($keys, SORT_ASC, $sort_flags, $records);
-            }
+            $keys = array_column($records, $sortKey);
+            array_multisort($keys, $sortOrder, $sort_flags, $records);
         }
 
-        $entry_keys = array_filter($entry_keys, function ($key) use ($searchPhrase, $filter_funct, $fields, $records) {
+        $search_clauses = preg_split('/\s+/', $searchPhrase);
+        $entry_keys = array_filter($entry_keys, function ($key) use ($search_clauses, $filter_funct, $fields, $records) {
             if (is_callable($filter_funct) && !$filter_funct($records[$key])) {
                 // not applicable according to $filter_funct()
                 return false;
-            } elseif (!empty($searchPhrase)) {
-                foreach ($records[$key] as $itemkey => $itemval) {
-                    if (
-                        !is_array($itemval) &&
-                        stripos((string)$itemval, $searchPhrase) !== false &&
-                        (empty($fields) || in_array($itemkey, $fields))
-                    ) {
-                        return true;
+            } elseif (!empty($search_clauses)) {
+                foreach ($search_clauses as $clause) {
+                    $matches = false;
+                    foreach ($records[$key] as $itemkey => $itemval) {
+                        if (!empty($fields) && !in_array($itemkey, $fields)) {
+                            continue;
+                        }
+                        $itemval = !is_array($itemval) ? $itemval : implode(' ', $itemval);
+                        if (stripos((string)$itemval, $clause) !== false) {
+                            $matches = true;
+                        }
+                    }
+                    if (!$matches) {
+                        return $matches;
                     }
                 }
-                return false;
+                return true;
             } else {
                 return true;
             }
@@ -313,7 +325,7 @@ class ApiControllerBase extends ControllerRoot
      */
     public function afterExecuteRoute($dispatcher)
     {
-        // exit when reponse headers are already set
+        // exit when response headers are already set
         if ($this->response->getHeaders()->get("Status") != null) {
             return false;
         } else {

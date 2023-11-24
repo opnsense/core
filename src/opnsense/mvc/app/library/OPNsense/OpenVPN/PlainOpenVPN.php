@@ -99,7 +99,9 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "proto " . strtolower("{$this->config['protocol']}-client");
         }
 
-        $conf[] = "cipher {$this->config['crypto']}";
+        if (!empty($this->config['crypto']) && $this->config['crypto'] != 'none') {
+            $conf[] = "data-ciphers-fallback {$this->config['crypto']}";
+        }
         if (!empty($this->config['digest'])) {
             $conf[] = "auth {$this->config['digest']}";
         }
@@ -173,9 +175,7 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
         $conf = array();
         if (!empty($this->config['server_ca_chain'])) {
             $conf[] = "<ca>";
-            foreach ($this->config['server_ca_chain'] as $ca) {
-                $conf = array_merge($conf, explode("\n", trim($ca)));
-            }
+            $conf[] = $this->config['server_ca_chain'];
             $conf[] = "</ca>";
         }
 

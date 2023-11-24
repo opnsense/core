@@ -33,6 +33,7 @@ import time
 import syslog
 import traceback
 import subprocess
+import sqlite3
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB
@@ -47,7 +48,7 @@ class CPBackgroundProcess(object):
     """
     def __init__(self):
         # open syslog and notice startup
-        syslog.openlog('captiveportal', logoption=syslog.LOG_DAEMON, facility=syslog.LOG_LOCAL4)
+        syslog.openlog('captiveportal', facility=syslog.LOG_LOCAL4)
         syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
         # handles to ipfw, arp the config and the internal administration
         self.ipfw = IPFW()
@@ -156,7 +157,7 @@ class CPBackgroundProcess(object):
                 elif db_client['authenticated_via'] == '---mac---':
                     # detect mac changes
                     current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip is not None:
+                    if current_ip is not None and db_client['ipAddress'] != current_ip:
                         if db_client['ipAddress'] != '':
                             # remove old ip
                             self.ipfw.delete(zoneid, db_client['ipAddress'])
@@ -236,6 +237,11 @@ def main():
             break
         except SystemExit:
             break
+        except sqlite3.DatabaseError:
+            # try to repair a broken sqlite database if it appears to be broken after using a table
+            syslog.syslog(syslog.LOG_ERR, "Forcefully repair database (%s)" % traceback.format_exc().replace("\n", " "))
+            check_and_repair('/var/captiveportal/captiveportal.sqlite', force_repair=True)
+            time.sleep(60)
         except:
             syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
             print(traceback.format_exc())

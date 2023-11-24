@@ -1,0 +1,34 @@
+<model>
+    <mount>/ifgroups</mount>
+    <version>1.0.0</version>
+    <description>Firewall interface groups</description>
+    <items>
+        <ifgroupentry type=".\GroupField">
+            <ifname type=".\GroupNameField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Group name already exists!</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </ifname>
+            <members type=".\InterfaceField">
+                <Required>Y</Required>
+                <Multiple>Y</Multiple>
+            </members>
+            <nogroup type="BooleanField"/>
+            <sequence type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>9999</MaximumValue>
+                <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                <Required>Y</Required>
+                <Default>0</Default>
+            </sequence>
+            <descr type="TextField">
+                <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
+                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+            </descr>
+        </ifgroupentry>
+    </items>
+</model>

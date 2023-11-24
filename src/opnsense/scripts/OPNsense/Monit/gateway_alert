@@ -27,8 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('config.inc');
-require_once('util.inc');
+require_once 'config.inc';
+require_once 'interfaces.inc';
+require_once 'util.inc';
+require_once 'plugins.inc.d/dpinger.inc';
 
 /**
  * @param string $status
@@ -49,7 +51,7 @@ function get_gateway_error(string $status, string $gwname, array $group)
     }
 }
 
-$gateways_status = return_gateways_status();
+$gateways_status = dpinger_status();
 $clean = true;
 
 if (isset($config['gateways']['gateway_group'])) {

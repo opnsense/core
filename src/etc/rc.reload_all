@@ -36,6 +36,8 @@ require_once("util.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+exit_on_bootup();
+
 if (count($argv) > 1 && is_numeric($argv[1])) {
     // starting delayed.
     sleep($argv[1]);
@@ -48,8 +50,7 @@ system_login_configure(true);
 system_cron_configure(true);
 system_timezone_configure(true);
 system_hostname_configure(true);
-system_hosts_generate(true);
-system_resolvconf_generate(true);
+system_resolver_configure(true);
 interfaces_configure(true);
 system_routing_configure(true);
 filter_configure_sync(true);

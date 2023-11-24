@@ -1,9 +1,15 @@
 <form>
     <field>
         <id>preSharedKey.ident</id>
-        <label>Identifier</label>
+        <label>Local Identifier</label>
         <type>text</type>
         <help>This can be either an IP address, fully qualified domain name or an email address.</help>
+    </field>
+    <field>
+        <id>preSharedKey.remote_ident</id>
+        <label>Remote Identifier</label>
+        <type>text</type>
+        <help>(optional) This can be either an IP address, fully qualified domain name or an email address to identify the remote host.</help>
     </field>
     <field>
         <id>preSharedKey.Key</id>

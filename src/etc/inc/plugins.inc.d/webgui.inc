@@ -30,43 +30,57 @@
 
 function webgui_configure()
 {
-    return array(
-        'early' => array('webgui_configure_do'),
-        'local' => array('webgui_configure_do'),
-        'newwanip' => array('webgui_configure_do:2'),
-        'webgui' => array('webgui_configure_do'),
-    );
+    return [
+        'early' => ['webgui_configure_do'],
+        'local' => ['webgui_configure_do'],
+        'newwanip' => ['webgui_configure_do:2'],
+        'webgui' => ['webgui_configure_do'],
+    ];
 }
 
-function webgui_configure_delayed()
+function webgui_services()
 {
-    configd_run('webgui restart 3', true);
+    return [[
+        'pidfile' => '/var/run/lighty-webConfigurator.pid',
+        'description' => gettext('Web GUI'),
+        'php' => ['restart' => ['webgui_configure_defer']],
+        'name' => 'webgui',
+        'locked' => true,
+    ]];
+}
+
+function webgui_configure_defer($verbose = false, $sleep = 3)
+{
+    service_log('Starting web GUI...', $verbose);
+    configdp_run('webgui restart', [$sleep]);
+    service_log("deferred.\n", $verbose);
 }
 
 function webgui_configure_do($verbose = false, $interface = '')
 {
     global $config;
 
-    $interfaces = array();
+    $interfaces = [];
     if (!empty($config['system']['webgui']['interfaces'])) {
         $interfaces = explode(',', $config['system']['webgui']['interfaces']);
         /* place loopback with good IPv4 first for server.bind */
         array_unshift($interfaces, 'lo0');
     }
 
-    @mkdir('/var/lib/php/sessions', 0750, true);
-    /* do not trust PHP with mkdir permission on existing directory */
-    @chmod('/var/lib/php/sessions', 0750);
-    @chown('/var/lib/php/sessions', 'root');
-    @chgrp('/var/lib/php/sessions', 'wheel');
+    /* 'newwanip' configuration is the only event to take second argument */
+    if (!empty($interface)) {
+        if (in_array($interface, $interfaces)) {
+            /* funnel through configd to avoid race conditions */
+            webgui_configure_defer($verbose, 0);
+        }
 
-    if (!empty($interface) && !in_array($interface, $interfaces)) {
+        /* nothing else to do */
         return;
     }
 
     service_log('Starting web GUI...', $verbose);
 
-    $listeners = count($interfaces) ? array() : array('0.0.0.0', '::');
+    $listeners = count($interfaces) ? [] : ['0.0.0.0', '::'];
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
         if ($info['scope']) {
@@ -114,16 +128,13 @@ function webgui_configure_do($verbose = false, $interface = '')
 
     webgui_generate_config($portarg, $crt, $key, $ca, $listeners);
 
-    /* only stop the frontend when the generation was successful */
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
+    /* regenerate the php.ini files in case the setup has changed */
+    configd_run('template reload OPNsense/WebGui');
 
     /* flush Phalcon volt templates */
     foreach (glob('/usr/local/opnsense/mvc/app/cache/*.php') as $filename) {
         unlink($filename);
     }
-
-    /* regenerate the php.ini files in case the setup has changed */
-    configd_run('template reload OPNsense/WebGui');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -132,14 +143,11 @@ function webgui_configure_do($verbose = false, $interface = '')
         @touch('/var/run/development');
     }
 
-    /*
-     * Force reloading all php-cgi children to
-     * avoid hiccups with moved include files.
-     */
-    killbyname('php-cgi', 'HUP');
+    /* stop the frontend when the generation was completed */
+    killbypid('/var/run/lighty-webConfigurator.pid', 'INT');
 
     /* start lighttpd */
-    if (!count($listeners) || mwexec('/usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
+    if (!count($listeners) || mwexec('/usr/local/bin/flock -ne /var/run/lighty-webConfigurator.pid /usr/local/sbin/lighttpd -f /var/etc/lighty-webConfigurator.conf')) {
         service_log("failed.\n", $verbose);
     } else {
         service_log("done.\n", $verbose);
@@ -195,6 +203,7 @@ function webgui_generate_config($port, $cert, $key, $ca, $listeners)
     $key_location = '/var/etc/key.pem';
 
     @mkdir('/tmp/lighttpdcompress');
+    shell_safe('rm -rf /tmp/lighttpdcompress/*');
 
     $http_rewrite_rules = <<<EOD
 # Phalcon ui and api routing
@@ -276,6 +285,9 @@ server.tag = "OPNsense"
 
 # Maximum idle time with nothing being written (php downloading)
 server.max-write-idle = 999
+
+# Set shutdown time to 2 seconds for SIGINT handling
+server.feature-flags = ( "server.graceful-shutdown-timeout" => 2 )
 
 {$lighty_use_syslog}
 
@@ -373,8 +385,9 @@ EOD;
         }
 
         file_put_contents($cert_location, $chain);
-        file_put_contents($key_location, $key);
+        touch($key_location);
         chmod($key_location, 0600);
+        file_put_contents($key_location, $key);
 
         $lighty_config .= "\n## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
@@ -446,9 +459,10 @@ debug.log-response-header  = "disable"
 debug.log-request-handling = "disable"
 debug.log-file-not-found   = "disable"
 
-# gzip compression
+# compression
+deflate.mimetypes = ("text/plain", "text/css", "text/javascript", "text/xml")
+deflate.allowed-encodings = ( "br", "gzip", "deflate" )
 deflate.cache-dir = "/tmp/lighttpdcompress/"
-deflate.mimetypes = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$server_upload_dirs}
 

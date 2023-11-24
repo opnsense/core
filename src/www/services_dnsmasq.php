@@ -52,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['no_hosts'] = isset($a_dnsmasq['no_hosts']);
     // simple text types
     $pconfig['port'] = !empty($a_dnsmasq['port']) ? $a_dnsmasq['port'] : "";
+    $pconfig['dns_forward_max'] = !empty($a_dnsmasq['dns_forward_max']) ? $a_dnsmasq['dns_forward_max'] : "";
+    $pconfig['cache_size'] = isset($a_dnsmasq['cache_size']) ? $a_dnsmasq['cache_size'] : '';
+    $pconfig['local_ttl'] = isset($a_dnsmasq['local_ttl']) ? $a_dnsmasq['local_ttl'] : '';
     // arrays
     $pconfig['interface'] = !empty($a_dnsmasq['interface']) ? explode(",", $a_dnsmasq['interface']) : array();
 
@@ -66,10 +69,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number");
         }
-        $unbound_port = empty($config['unbound']['port']) ? "53" : $config['unbound']['port'];
+        if (!empty($pconfig['dns_forward_max']) && !is_numericint($pconfig['dns_forward_max'])) {
+            $input_errors[] = gettext("You must specify a valid maximum number of DNS queries");
+        }
+        if (isset($pconfig['cache_size']) && $pconfig['cache_size'] !== '') {
+            if (!is_numericint($pconfig['cache_size'])) {
+                $input_errors[] = gettext("You must specify a valid cache size");
+            } elseif (!empty($pconfig['dnssec']) && $pconfig['cache_size'] < 150) {
+                $input_errors[] = gettext("You must specify a valid cache size of at least 150 when DNSSEC is enabled");
+            }
+        }
+        if (isset($pconfig['local_ttl']) && $pconfig['local_ttl'] !== '' && !is_numericint($pconfig['local_ttl'])) {
+            $input_errors[] = gettext("You must specify a valid TTL for local DNS");
+        }
+
         $dnsmasq_port = empty($pconfig['port']) ? "53" : $pconfig['port'];
-        if (!empty($pconfig['enable']) && isset($config['unbound']['enable']) && $dnsmasq_port == $unbound_port) {
-            $input_errors[] = gettext('Unbound is still active on the same port. Disable it before enabling Dnsmasq.');
+        $port_conflict = service_by_filter(['dns_ports' => $dnsmasq_port]);
+        if (!empty($pconfig['enable']) && !empty($port_conflict) && $port_conflict['name'] != 'dnsmasq') {
+            $input_errors[] = sprintf(gettext('%s is currently using this port.'), $port_conflict['description']);
         }
 
         if (count($input_errors) == 0) {
@@ -100,17 +117,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($a_dnsmasq['port'])) {
                 unset($a_dnsmasq['port']);
             }
+            if (!empty($pconfig['dns_forward_max'])) {
+                $a_dnsmasq['dns_forward_max'] = $pconfig['dns_forward_max'];
+            } elseif (isset($a_dnsmasq['dns_forward_max'])) {
+                unset($a_dnsmasq['dns_forward_max']);
+            }
+            if (isset($pconfig['cache_size']) && $pconfig['cache_size'] !== '') {
+                $a_dnsmasq['cache_size'] = $pconfig['cache_size'];
+            } elseif (isset($a_dnsmasq['cache_size'])) {
+                unset($a_dnsmasq['cache_size']);
+            }
+            if (isset($pconfig['local_ttl'])&& $pconfig['local_ttl'] !== '') {
+                $a_dnsmasq['local_ttl'] = $pconfig['local_ttl'];
+            } elseif (isset($a_dnsmasq['local_ttl'])) {
+                unset($a_dnsmasq['local_ttl']);
+            }
+
             write_config();
-            system_resolvconf_generate();
+
+            system_resolver_configure();
             dnsmasq_configure_do();
             plugins_configure('dhcp');
+
             header(url_safe('Location: /services_dnsmasq.php'));
             exit;
         }
     } elseif (isset($pconfig['apply'])) {
         filter_configure();
-        system_resolvconf_generate();
-        system_hosts_generate();
+        system_resolver_configure();
         dnsmasq_configure_do();
         plugins_configure('dhcp');
         clear_subsystem_dirty('hosts');
@@ -122,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_hosts[$pconfig['id']]);
             write_config();
             mark_subsystem_dirty('hosts');
+            /* ajax call, do not redirect */
             exit;
         }
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'doverride') {
@@ -130,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_domainOverrides[$pconfig['id']]);
             write_config();
             mark_subsystem_dirty('hosts');
+            /* ajax call, do not redirect */
             exit;
         }
     }
@@ -361,7 +397,7 @@ $( document ).ready(function() {
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('No Hosts Lookup') ?></td>
                   <td>
                     <input name="no_hosts" type="checkbox" id="no_hosts" value="yes" <?= !empty($pconfig['no_hosts']) ? 'checked="checked"' : '' ?> />
-                    <?= gettext('Don\'t read the hostnames in /etc/hosts.') ?>
+                    <?= gettext('Do not read hostnames in /etc/hosts') ?>
                   </td>
                 </tr>
                 <tr>
@@ -369,6 +405,33 @@ $( document ).ready(function() {
                   <td>
                     <input name="log_queries" type="checkbox" id="log_queries" value="yes" <?= !empty($pconfig['log_queries']) ? 'checked="checked"' : '' ?> />
                     <?= gettext('Log the results of DNS queries') ?>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_dns_forward_max" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Maximum concurrent queries') ?></td>
+                  <td>
+                    <input name="dns_forward_max" type="text" id="dns_forward_max" size="6" placeholder="5000" <?= !empty($pconfig['dns_forward_max']) ? 'value="' . html_safe($pconfig['dns_forward_max']) . '"' : '' ?> />
+                    <div class="hidden" data-for="help_for_dns_forward_max">
+                      <?= gettext('Set the maximum number of concurrent DNS queries. On configurations with tight resources, this value may need to be reduced.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_cache_size" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Cache size') ?></td>
+                  <td>
+                    <input name="cache_size" type="text" id="cache_size" size="8" placeholder="10000" value="<?= html_safe($pconfig['cache_size']) ?>" />
+                    <div class="hidden" data-for="help_for_cache_size">
+                      <?= gettext('Set the size of the cache. Setting the cache size to zero disables caching. Please note that huge cache size impacts performance.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_local_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Local DNS entry TTL') ?></td>
+                  <td>
+                    <input name="local_ttl" type="text" id="local_ttl" size="5" placeholder="1" value="<?= html_safe($pconfig['local_ttl']) ?>"/>
+                    <div class="hidden" data-for="help_for_local_ttl">
+                      <?=gettext("This option allows a time-to-live (in seconds) to be given for local DNS entries, i.e. /etc/hosts or DHCP leases. This will reduce the load on the server at the expense of clients using stale data under some circumstances. A value of zero will disable client-side caching.");?>
+                    </div>
                   </td>
                 </tr>
                 <tr>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
+use Phalcon\Logger\Formatter\Line;
 use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
@@ -325,14 +326,14 @@ abstract class BaseModel
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
-
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
         }
-        $this->internal_mountpoint = $model_xml->mount;
 
+        $this->internal_mountpoint = $model_xml->mount;
         $config_array = [];
-        if ($this->internal_mountpoint != ':memory:') {
+
+        if (!$this->isVolatile()) {
             /*
              *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
              *       mountpoints starting with a single /
@@ -349,8 +350,6 @@ abstract class BaseModel
                 $config_array = simplexml_import_dom($tmp_config_data->item(0));
             }
         }
-
-
 
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData);
@@ -425,6 +424,24 @@ abstract class BaseModel
     public function iterateItems()
     {
         return $this->internalData->iterateItems();
+    }
+
+    /**
+     * iterate (non virtual) child nodes recursively
+     * @return mixed
+     */
+    public function iterateRecursiveItems()
+    {
+        return $this->internalData->iterateRecursiveItems();
+    }
+
+    /**
+     * check if the model is not persistent in the config
+     * @return true if memory model, false if config is stored
+     */
+    public function isVolatile()
+    {
+        return $this->internal_mountpoint == ':memory:';
     }
 
     /**
@@ -555,10 +572,12 @@ abstract class BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
+        $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
+        $adapter->setFormatter(new Line('%message%'));
         $logger = new Logger(
             'messages',
             [
-                'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                'main' => $adapter
             ]
         );
 
@@ -583,12 +602,13 @@ abstract class BaseModel
                 throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
-        if ($this->internal_mountpoint != ':memory:') {
-            $this->internalSerializeToConfig();
-            return true;
-        } else {
+
+        if ($this->isVolatile()) {
             return false;
         }
+
+        $this->internalSerializeToConfig();
+        return true;
     }
 
     /**
@@ -642,17 +662,20 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if ($this->internal_mountpoint == ':memory:') {
+        if ($this->isVolatile()) {
             return false;
-        } elseif (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+        } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
             $migObjects = array();
+            $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
+            $adapter->setFormatter(new Line('%message%'));
             $logger = new Logger(
                 'messages',
                 [
-                    'main' => new Syslog("config", ['option' => LOG_PID, 'facility' => LOG_LOCAL2])
+                    'main' => $adapter
                 ]
             );
+
             $class_info = new ReflectionClass($this);
             // fetch version migrations
             $versions = array();
@@ -667,7 +690,7 @@ abstract class BaseModel
             uksort($versions, "version_compare");
             foreach ($versions as $mig_version => $filename) {
                 if (
-                    version_compare($this->internal_current_model_version, $mig_version, '<') &&
+                    version_compare($this->internal_current_model_version ?? '0.0.0', $mig_version, '<') &&
                     version_compare($this->internal_model_version, $mig_version, '>=')
                 ) {
                     // execute upgrade action
@@ -690,10 +713,8 @@ abstract class BaseModel
                             $upgradePerformed = true;
                         } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
-                                $this->internal_current_model_version .
-                                " to " . $mig_version . " in " .
-                                $class_info->getName() .
-                                " [skipping step]");
+                                $this->getVersion() .  " to " . $mig_version . " in " .
+                                $class_info->getName() .  " [skipping step]");
                         }
                         $this->internal_current_model_version = $mig_version;
                     }
@@ -724,6 +745,6 @@ abstract class BaseModel
      */
     public function getVersion()
     {
-        return $this->internal_current_model_version;
+        return $this->internal_current_model_version ?? '<unversioned>';
     }
 }

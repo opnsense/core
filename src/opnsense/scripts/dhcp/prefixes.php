@@ -2,6 +2,7 @@
 <?php
 
 /*
+ * Copyright (C) 2022-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2012 Seth Mos <seth.mos@dds.nl>
  * All rights reserved.
  *
@@ -27,9 +28,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once 'config.inc';
+require_once 'interfaces.inc';
 require_once 'util.inc';
+require_once 'plugins.inc.d/dhcpd.inc';
 
-$leases_file = "/var/dhcpd/var/db/dhcpd6.leases";
+$leases_file = '/var/dhcpd/var/db/dhcpd6.leases';
 if (!file_exists($leases_file)) {
     exit(1);
 }
@@ -39,70 +43,91 @@ foreach (new SplFileObject($leases_file) as $line) {
     if (preg_match("/^(ia-[np][ad])[ ]+\"(.*?)\"/i ", $line, $duidmatch)) {
         $type = $duidmatch[1];
         $duid = $duidmatch[2];
-        continue;
-    }
-
-    if (preg_match("/iaaddr[ ]+([0-9a-f:]+)[ ]+/i", $line, $addressmatch)) {
+    } elseif (preg_match("/iaaddr[ ]+([0-9a-f:]+)[ ]+/i", $line, $addressmatch)) {
         $ia_na = $addressmatch[1];
-        continue;
-    }
-
-    if (preg_match("/iaprefix[ ]+([0-9a-f:\/]+)[ ]+/i", $line, $prefixmatch)) {
+    } elseif (preg_match("/iaprefix[ ]+([0-9a-f:\/]+)[ ]+/i", $line, $prefixmatch)) {
         $ia_pd = $prefixmatch[1];
-        continue;
-    }
+    } elseif (preg_match("/binding state active/i", $line, $activematch)) {
+        $active = true;
+    } elseif (preg_match("/^}/i ", $line)) {
+        $iaid_duid = dhcpd_parse_duid($duid);
+        $duid = implode(':', $iaid_duid[1]);
 
-    /* closing bracket */
-    if (preg_match("/^}/i ", $line)) {
         switch ($type) {
-            case "ia-na":
-                if (!empty($ia_na)) {
-                    $duid_arr[$duid][$type] = $ia_na;
+            case 'ia-na':
+                if (!empty($ia_na) && !empty($active)) {
+                    $duid_arr[$duid]['address'] = $ia_na;
                 }
                 break;
-            case "ia-pd":
-                if (!empty($ia_pd)) {
-                    $duid_arr[$duid][$type] = $ia_pd;
+            case 'ia-pd':
+                if (!empty($ia_pd) && !empty($active)) {
+                    $duid_arr[$duid]['prefix'] = $ia_pd;
                 }
                 break;
         }
 
-        unset($type);
+        unset($active);
         unset($duid);
         unset($ia_na);
         unset($ia_pd);
+        unset($type);
+    }
+}
+
+/* since a route requires a gateway address try to derive it from static mapping as well */
+foreach (plugins_run('static_mapping') as $map) {
+    foreach ($map as $host) {
+        if (empty($host['duid'])) {
+            continue;
+        }
+
+        if (empty($duid_arr[$host['duid']])) {
+            continue;
+        }
+
+        if (!empty($host['ipaddrv6'])) {
+            $ipaddrv6 = $host['ipaddrv6'];
+
+            /* although link-local is not a real static mapping use it to reach the downstream router */
+            if (is_linklocal($ipaddrv6) && strpos($ipaddrv6, '%') === false) {
+                $ipaddrv6 .= '%' . get_real_interface($host['interface'], 'inet6');
+            }
+
+            /* we want static mapping to have a higher priority */
+            $duid_arr[$host['duid']]['address'] = $ipaddrv6;
+        }
     }
 }
 
 $routes = [];
 
-foreach ($duid_arr as $entry) {
-    if (!empty($entry['ia-pd']) && !empty($entry['ia-na'])) {
-        $routes[$entry['ia-na']] = $entry['ia-pd'];
-    }
-}
-
-foreach ($routes as $address => $prefix) {
-    mwexecf('/sbin/route delete -inet6 %s %s', [$prefix, $address], true);
-    mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
-}
-
-$dhcpd_log = trim(shell_exec('opnsense-log -n dhcpd'));
-$expires = [];
-
-if (empty($dhcpd_log)) {
-    exit(1);
-}
-
-foreach (new SplFileObject($dhcpd_log) as $line) {
-    if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
-        if (in_array($expire[1], $routes)) {
-            continue;
+/* collect expired leases */
+$dhcpd_log = shell_safe('opnsense-log -n dhcpd');
+if (!empty($dhcpd_log)) {
+    foreach (new SplFileObject($dhcpd_log) as $line) {
+        if (preg_match('/releases prefix ([0-9a-f:]+\/[0-9]+)/i', $line, $expire)) {
+            /* expire first, overwritten later when active */
+            $routes[$expire[1]] = null;
         }
-        $expires[$expire[1]] = 1;
     }
 }
 
-foreach (array_keys($expires) as $prefix) {
+/* collect active leases */
+foreach ($duid_arr as $entry) {
+    if (!empty($entry['prefix']) && !empty($entry['address'])) {
+        /* new or reassigned takes priority */
+        $routes[$entry['prefix']] = $entry['address'];
+    }
+}
+
+/* expire all first */
+foreach (array_keys($routes) as $prefix) {
     mwexecf('/sbin/route delete -inet6 %s', [$prefix], true);
+}
+
+/* active route apply */
+foreach ($routes as $prefix => $address) {
+    if (!empty($address)) {
+        mwexecf('/sbin/route add -inet6 %s %s', [$prefix, $address]);
+    }
 }

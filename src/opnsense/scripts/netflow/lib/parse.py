@@ -30,6 +30,7 @@ import glob
 import tempfile
 import subprocess
 import os
+import re
 from lib.flowparser import FlowParser
 
 
@@ -40,11 +41,11 @@ class Interfaces(object):
         """ construct local interface mapping
         """
         self._if_index = dict()
-        sp = subprocess.run(['/sbin/ifconfig', '-l'], capture_output=True, text=True)
-        if_index = 1
-        for line in sp.stdout.split():
-            self._if_index["%s" % if_index] = line
-            if_index += 1
+        sp = subprocess.run(['/usr/local/sbin/ifinfo'], capture_output=True, text=True)
+        interfaces = re.findall(r"Interface ([^ ]+)", sp.stdout)
+
+        for index, interface in enumerate(interfaces, start=1):
+            self._if_index["%s" % index] = interface
 
     def if_device(self, if_index):
         """ convert index to device (if found)

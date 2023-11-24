@@ -34,7 +34,7 @@ require_once("interfaces.inc");
 require_once("util.inc");
 require_once("plugins.inc.d/openssh.inc");
 
-$version = trim(shell_exec('opnsense-version'));
+$version = shell_safe('opnsense-version');
 
 echo "\n*** {$config['system']['hostname']}.{$config['system']['domain']}: {$version} ***\n";
 
@@ -89,7 +89,7 @@ foreach ($iflist as $ifname => $ifcfg) {
     list ($primary,, $bits) = interfaces_primary_address($ifname, $ifdetails);
     $network = "{$primary}/{$bits}";
 
-    list ($primary6,, $bits6) = interfaces_prefix_address6($ifname, $ifdetails);
+    list ($primary6,, $bits6) = interfaces_primary_address6($ifname, $ifdetails);
     $network6 = "{$primary6}/{$bits6}";
 
     $tobanner = "{$ifcfg['descr']} ({$realif})";

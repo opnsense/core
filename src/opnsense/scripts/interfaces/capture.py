@@ -140,6 +140,8 @@ if __name__ == '__main__':
                             tokens.append(token)
                         elif token.find('/') > -1:
                             tokens.append('net %s' % token)
+                        elif token.count(':') == 5 and sum([len(x) == 2 for x in token.split(':')]) == 6:
+                            tokens.append('ether host %s' % token)
                         else:
                             tokens.append('host %s' % token)
                     filters.append('( %s )' % ' '.join(tokens))
@@ -171,7 +173,7 @@ if __name__ == '__main__':
         result['status'] = 'ok'
         result['interfaces'] = {}
         for filename in glob.glob("%s%s*.pcap" % (TEMP_DIR, cmd_args.job)):
-            intf = filename.split('_')[-1].split('.')[0]
+            intf = filename.split('_', 1)[-1].rsplit('.', 1)[0]
             result['interfaces'][intf] = {'rows': []}
             args = []
             if cmd_args.detail == 'normal':

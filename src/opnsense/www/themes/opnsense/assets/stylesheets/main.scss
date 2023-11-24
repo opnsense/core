@@ -395,7 +395,7 @@ main.page-content.col-lg-12 {
         padding-left: 0px;
         padding-right: 0px;
         padding-top: 12px;
-        border-bottom: 2px solid #lightergrey;
+        border-bottom: 2px solid map-get($colors, lightergrey);
         border-right: 1px solid #D9D9D9;
         > span {
           &.fa, &.glyphicon {
@@ -594,7 +594,7 @@ ul.nav > li.dropdown > ul.dropdown-menu > li > a {
   }
   }
 
-  > li:last-child > a{
+  li:last-child > a{
     border-right:1px solid transparent !important;
 
     @media (max-width:$screen-xs-max){
@@ -630,8 +630,17 @@ table{
 }
 
 .table > tbody > tr > td:last-child{
-    padding-right: 15px;
+    padding-right: 10px;
 }
+
+.table > tbody > tr > td:first-child {
+  padding-left: 10px;
+}
+
+.table > thead > tr > th:first-child {
+  padding-left: 10px;
+}
+
 
 /* helpers */
 .__nowrap{
@@ -854,4 +863,12 @@ div[data-for*="help_for"] {
 .tokens-container {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.bootstrap-dialog-body {
+  padding: 15px;
+}
+
+#OPNsenseStdWaitDialog div.modal-body {
+  padding: 15px;
 }

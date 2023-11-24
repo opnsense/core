@@ -1,0 +1,52 @@
+<form>
+    <field>
+        <id>acl.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable or disable this ACL.</help>
+    </field>
+    <field>
+        <id>acl.name</id>
+        <label>Access List Name</label>
+        <type>text</type>
+        <help>Provide an access list name.</help>
+    </field>
+    <field>
+        <id>acl.action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>
+            <![CDATA[
+            Choose what to do with DNS requests that match the criteria specified below.<br/><br/>
+            <b>Deny</b>: This action stops queries from hosts within the netblock defined below.<br/>
+            <b>Refuse</b>: This action also stops queries from hosts within the netblock defined below,
+            but sends a DNS rcode REFUSED error message back to the client.<br/>
+            <b>Allow</b>: This action allows queries from hosts within the netblock defined below.<br/>
+            <b>Allow Snoop</b>: This action allows recursive and nonrecursive access from hosts within
+            the netblock defined below. Used for cache snooping and ideally should only be configured
+            for your administrative host.<br/>
+            <b>Deny Non-local</b>: Allow only authoritative local-data queries from hosts within the
+            netblock defined below. Messages that are disallowed are dropped.<br/>
+            <b>Refuse Non-local</b>: Allow only authoritative local-data queries from hosts within the
+            netblock defined below. Sends a DNS rcode REFUSED error message back to the client
+            for messages that are disallowed.
+            ]]>
+        </help>
+    </field>
+    <field>
+        <id>acl.networks</id>
+        <label>Networks</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>
+            List of networks in CIDR notation to apply this ACL on. For example: 192.168.1.0/24.
+        </help>
+    </field>
+    <field>
+        <id>acl.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference.</help>
+    </field>
+</form>

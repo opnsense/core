@@ -1,3 +1,29 @@
+{#
+ # Copyright (c) 2018-2023 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
+
 <link href="{{ cache_safe('/ui/css/flags/flag-icon.css') }}" rel="stylesheet">
 <style>
     @media (min-width: 768px) {
@@ -5,6 +31,10 @@
             width: 90%;
             max-width:1200px;
         }
+    }
+
+    .dropdown-fixup {
+        overflow-x: hidden !important;
     }
 
     .alias_table {
@@ -84,6 +114,12 @@
                             }
                             return html.join('&nbsp;');
                         }
+                    },
+                    timestamp: function (column, row) {
+                        if (row[column.id] && row[column.id].includes('.')) {
+                            return row[column.id].split('.')[0].replace('T', ' ');
+                        }
+                        return row[column.id];
                     }
                 }
             }
@@ -96,7 +132,7 @@
         $("#grid-aliases").bootgrid().on("loaded.rs.jquery.bootgrid", function (e){
             // network content field should only contain valid aliases, we need to fetch them separately
             // since the form field misses context
-            ajaxGet("/api/firewall/alias/listNetworkAliases", {}, function(data){
+            ajaxGet("/api/firewall/alias/list_network_aliases", {}, function(data){
                 $("#network_content").empty();
                 $.each(data, function(alias, value) {
                     let $opt = $("<option/>").val(alias).text(value.name);
@@ -251,13 +287,28 @@
         });
 
         /**
+         * fetch user groups
+         **/
+        ajaxGet("/api/firewall/alias/list_user_groups", {}, function(data){
+            $("#authgroup_content").empty();
+            $.each(data, function(alias, value) {
+                let $opt = $("<option/>").val(alias).text(value.name);
+                $opt.data('subtext', value.description);
+                $("#authgroup_content").append($opt);
+            });
+            $("#authgroup_content").selectpicker('refresh');
+        });
+
+
+        /**
          * hook network group type changes, replicate content
          */
-        $("#network_content").change(function(){
+        $("#network_content, #authgroup_content").change(function(){
+            let target = $(this);
             let $content = $("#alias\\.content");
             $content.unbind('tokenize:tokens:change');
             $content.tokenize2().trigger('tokenize:clear');
-            $("#network_content").each(function () {
+            target.each(function () {
                $.each($(this).val(), function(key, item){
                    $content.tokenize2().trigger('tokenize:tokens:add', item);
                });
@@ -270,7 +321,6 @@
             });
         });
 
-
         /**
          * Type selector, show correct type input.
          */
@@ -280,9 +330,15 @@
             $("#row_alias\\.interface").hide();
             $("#copy-paste").hide();
             switch ($(this).val()) {
+                case 'authgroup':
+                    $("#alias_type_authgroup").show();
+                    $("#alias\\.proto").selectpicker('hide');
+                    break;
                 case 'geoip':
                     $("#alias_type_geoip").show();
                     $("#alias\\.proto").selectpicker('show');
+                    /* work around JS injection of nasty overflow scroll bar being injected */
+                    $("#row_alias\\.type > td > .dropdown:last > .dropdown-menu > .inner").addClass('dropdown-fixup');
                     break;
                 case 'asn':
                     $("#alias_type_default").show();
@@ -321,28 +377,21 @@
          */
         $("#alias\\.content").change(function(){
             var items = $(this).val();
-            $(".geoip_select").each(function(){
-                var geo_item = $(this);
-                geo_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    geo_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-
+            ['#authgroup_content', '#network_content', '.geoip_select'].forEach(function(target){
+                $(target).each(function(){
+                    var content_item = $(this);
+                    content_item.val([]);
+                    for (var i=0; i < items.length; ++i) {
+                        content_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
+                    }
+                });
+                $(target).selectpicker('refresh');
             });
-            $(".geoip_select").selectpicker('refresh');
             geoip_update_labels();
-            $("#network_content").each(function(){
-                var network_item = $(this);
-                network_item.val([]);
-                for (var i=0; i < items.length; ++i) {
-                    network_item.find('option[value="' + $.escapeSelector(items[i]) + '"]').prop("selected", true);
-                }
-            });
-            $("#network_content").selectpicker('refresh');
         });
 
         /**
-         * update expiration (updatefreq is splitted into days and hours on the form)
+         * update expiration (updatefreq is split into days and hours on the form)
          */
         $("#alias\\.updatefreq").change(function(){
             if ($(this).val() !== "") {
@@ -519,9 +568,7 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
-                saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function(){
-                    dfObj.resolve();
-                });
+                saveFormToEndpoint("/api/firewall/alias/set", 'frm_GeopIPSettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
             },
             onAction: function(data, status){
@@ -555,7 +602,7 @@
 <div id="aliases_stat"  title="{{ lang._('Current Tables Entries/Firewall Maximum Table Entries') }}">
     <div class="col-xs-1"><i class="fa fa-fw fa-info-circle"></i></div>
     <div id="entries_bar" class="progress" style="text-align: center;">
-        <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 23%;z-index: 0;"></div>
+        <div id="room_left" class="progress-bar" role="progressbar" aria-valuenow="0%" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
         <span class="state_text" style="position:absolute;right:0;left:0;">
         <span>{{ lang._('loading data..') }}</span>
         </span>
@@ -574,7 +621,7 @@
                     <div class="hidden">
                         <!-- filter per type container -->
                         <div id="type_filter_container" class="btn-group">
-                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" multiple="multiple" data-width="200px">
+                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker"  data-live-search="true" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
@@ -585,6 +632,7 @@
                                 <option value="mac">{{ lang._('MAC address') }}</option>
                                 <option value="asn">{{ lang._('BGP ASN') }}</option>
                                 <option value="dynipv6host">{{ lang._('Dynamic IPv6 Host') }}</option>
+                                <option value="authgroup">{{ lang._('(OpenVPN) user groups') }}</option>
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
@@ -602,7 +650,7 @@
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                             <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
-                            <th data-column-id="last_updated" data-type="string">{{ lang._('Last updated') }}</th>
+                            <th data-column-id="last_updated"  data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
                             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                         </tr>
                         </thead>
@@ -708,7 +756,7 @@
                                         <input type="text" class="form-control" size="50" id="alias.name">
                                         <div class="hidden" data-for="help_for_alias.name">
                                             <small>
-                                                {{lang._('The name of the alias may only consist of the characters "a-z, A-Z, 0-9 and _". Aliases can be nested using this name.')}}
+                                                {{lang._('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores. Aliases can be nested using this name.')}}
                                             </small>
                                         </div>
                                     </td>
@@ -724,8 +772,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.type" class="selectpicker" data-width="200px"></select>
-                                        <select id="alias.proto" multiple="multiple" title="" class="selectpicker" data-width="110px"></select>
+                                        <select id="alias.type" class="selectpicker" data-width="245px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="IPv4, IPv6" class="selectpicker" data-width="100px"></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
@@ -739,12 +787,13 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.categories"  multiple="multiple" class="tokenize"></select>
-                                    </td>
-                                    <td>
-                                        <span class="help-block" id="help_block_alias.categories">
+                                        <select id="alias.categories" multiple="multiple" class="tokenize" data-width="348px"></select>
+                                        <span class="hidden" data-for="help_for_alias.categories">
                                             {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <span class="help-block" id="help_block_alias.categories"></span>
                                     </td>
                                 </tr>
                                 <tr id="row_alias.updatefreq">
@@ -792,7 +841,7 @@
                                             <select multiple="multiple"
                                                     id="alias.content"
                                                     class="tokenize"
-                                                    data-width="334px"
+                                                    data-width="348px"
                                                     data-allownew="true"
                                                     data-nbdropdownelements="10"
                                                     data-live-search="true"
@@ -813,6 +862,10 @@
                                             <tbody>
                                             </tbody>
                                         </table>
+                                        <div class="alias_type" id="alias_type_authgroup" style="display: none;">
+                                            <select multiple="multiple" class="selectpicker" id="authgroup_content" data-live-search="true">
+                                            </select>
+                                        </div>
 
                                         <a href="#" class="text-danger" id="clear-options_alias.content"><i class="fa fa-times-circle"></i>
                                         <small>{{lang._('Clear All')}}</small></a><span id="copy-paste">

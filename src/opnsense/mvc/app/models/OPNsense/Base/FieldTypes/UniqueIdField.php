@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,33 +42,38 @@ class UniqueIdField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var string default validation message string
+     * @var bool past actionPostLoadingEvent? (load unique id from disk, generate new when not)
      */
-    protected $internalValidationMessage = "Unique ID is immutable";
+    private $fieldLoaded = false;
 
     /**
-     * @var null|string initial field value
+     * {@inheritdoc}
      */
-    private $initialValue = null;
-
-    /**
-     * retrieve field validators for this field type
-     * @return array
-     */
-    public function getValidators()
+    public function setValue($value)
     {
-        if (empty($this->internalValue) && empty($this->initialValue)) {
-            // trigger initial value on change, before returning validators
-            // (new nodes will always be marked as "changed", see isFieldChanged())
-            // Maybe we should add an extra event handler if this kind of scenarios happen more often, similar to
-            // actionPostLoadingEvent. (which is not triggered on setting data for a complete new structure node)
-            $this->internalValue = uniqid('', true);
-            $this->initialValue = $this->internalValue;
+        if (empty((string)$this) && $this->fieldLoaded) {
+            parent::setValue(uniqid('', true));
+        } elseif (empty((string)$this) && !$this->fieldLoaded) {
+            parent::setValue($value);
         }
-        $validators = parent::getValidators();
-        // unique id may not change..
-        $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-            'domain' => array($this->initialValue)));
-        return $validators;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function actionPostLoadingEvent()
+    {
+        parent::actionPostLoadingEvent();
+        $this->fieldLoaded = true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function applyDefault()
+    {
+        /** When cloned (add), set our default to a new uniqueid */
+        $this->fieldLoaded = true;
+        $this->setValue(null);
     }
 }

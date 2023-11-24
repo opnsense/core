@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2023 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -97,7 +97,7 @@ class Drive
         if ($filename != null) {
             $query .= " and title in '" . $filename . "'";
         }
-        return $this->service->files->listFiles(array('q' => $query));
+        return $this->service->files->listFiles(['q' => $query, 'supportsAllDrives' => true]);
     }
 
 
@@ -108,7 +108,7 @@ class Drive
      */
     public function download($fileHandle)
     {
-        $response = $this->service->files->get($fileHandle->id, array('alt' => 'media'));
+        $response = $this->service->files->get($fileHandle->id, ['alt' => 'media', 'supportsAllDrives' => true]);
         return $response->getBody()->getContents();
     }
 
@@ -127,13 +127,14 @@ class Drive
         $file->setName($filename);
         $file->setDescription($filename);
         $file->setMimeType('text/plain');
-        $file->setParents(array($directoryId));
+        $file->setParents([$directoryId]);
 
-        $createdFile = $this->service->files->create($file, array(
+        $createdFile = $this->service->files->create($file, [
             'data' => $content,
             'mimeType' => $mimetype,
             'uploadType' => 'media',
-        ));
+            'supportsAllDrives' => true
+        ]);
 
         return $createdFile;
     }
@@ -144,6 +145,6 @@ class Drive
      */
     public function delete($fileHandle)
     {
-        $this->service->files->delete($fileHandle['id']);
+        $this->service->files->delete($fileHandle['id'], ['supportsAllDrives' => true]);
     }
 }

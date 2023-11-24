@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -30,49 +30,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("IPv6.inc");
+require_once 'IPv6.inc';
 
-function killbyname($procname, $sig = 'TERM', $waitforit = false)
+/* XXX only two callers left, better remove this unreliable function */
+function killbyname($procname, $sig = 'TERM', $waitforit = true)
 {
-    if (!is_process_running($procname)) {
-        return;
-    }
-
-    mwexecf('/bin/pkill -%s %s', array($sig, $procname));
-
-    if (!$waitforit) {
-        return;
-    }
-
-    while (is_process_running($procname)) {
-        usleep(200 * 1000);
-    }
+    /* pgrep -n only kills the newest matching process */
+    _killbypid(shell_safe('/bin/pgrep -anx %s', $procname), $sig, $waitforit, "name:$procname");
 }
 
-function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
+function killbypid($pid_or_file, $sig = 'TERM', $waitforit = true)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        mwexecf('/bin/kill -%s %s', array($sig, $pidfile));
-    } elseif (isvalidpid($pidfile)) {
-        mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
-    } else {
+    $pid = $pid_or_file;
+
+    if (strpos($pid_or_file, '/') !== false) {
+        $pid = trim(@file_get_contents($pid_or_file) ?? '');
+    }
+
+    _killbypid($pid, $sig, $waitforit, "pid:$pid_or_file");
+}
+
+function _killbypid($pid, $sig, $waitforit, $caller)
+{
+    if (!is_numeric($pid) || $pid <= 1) {
         return;
     }
 
-    if (!$waitforit) {
+    mwexecf('/bin/kill -%s %s', [$sig, $pid], $caller);
+
+    if (!$waitforit || $sig == 'HUP') {
         return;
     }
 
-    while (isvalidpid($pidfile)) {
+    while (mwexecf('/bin/kill -0 %s', $pid, true) == 0) {
         usleep(200 * 1000);
     }
 }
 
 function isvalidpid($pidfile)
 {
-    if (is_numeric($pidfile) && $pidfile > 1) {
-        return mwexecf('/bin/kill -0 %s', $pidfile, true) == 0;
-    } elseif (file_exists($pidfile)) {
+    if (file_exists($pidfile)) {
         return mwexecf('/bin/pgrep -nF %s', $pidfile, true) == 0;
     }
 
@@ -103,26 +100,35 @@ function is_process_running($process)
     return (intval($retval) == 0);
 }
 
-function service_by_name($name, $filter = array())
+function service_by_filter($filter = [])
+{
+    return service_by_name('*', $filter);
+}
+
+function service_by_name($name, $filter = [])
 {
     $services = plugins_services();
 
     foreach ($services as $service) {
-        if ($service['name'] != $name) {
+        /* skip unless filter wildcard is set */
+        if ($name != '*' && $service['name'] != $name) {
             continue;
         }
         if (!count($filter)) {
-            /* force match if filter wasn't set (standard behaviour) */
+            /* force (mis)match if filter is empty (standard behaviour) */
             $filter['name'] = $name;
         }
         foreach ($filter as $key => $value) {
-            if (isset($service[$key]) && $service[$key] == $value) {
+            if (
+                isset($service[$key]) && ($service[$key] == $value ||
+                (is_array($service[$key]) && in_array($value, $service[$key])))
+            ) {
                 return $service;
             }
         }
     }
 
-    return array();
+    return [];
 }
 
 function service_status($service)
@@ -138,17 +144,65 @@ function service_status($service)
     return is_process_running($service['name']);
 }
 
-function service_control_start($name, $extras)
+function service_message($service)
 {
-    $filter = array();
+   /*
+    * Emulate the following messages from rc system:
+    *
+    *     syslog_ng is running as pid 11645.
+    *     syslog_ng is not running.
+    */
 
-    if (!empty($extras['id'])) {
+    $pid = '';
+    $status = false;
+
+    if (!empty($service['nocheck'])) {
+        /* do not expose pid / may not exist */
+        $status = true;
+    } elseif (isset($service['pidfile'])) {
+        $status = isvalidpid($service['pidfile']);
+        if ($status) {
+            /* could be wrong pid but best effort only */
+            $pid = ' as pid ' . trim(@file_get_contents($service['pidfile']) ?? '');
+        }
+    } else {
+        $status = is_process_running($service['name']);
+        if ($status) {
+            /* could be wrong pid but best effort only */
+            $pid = ' as pid ' . shell_safe('/bin/pgrep -anx %s', $service['name']);
+        }
+    }
+
+    return sprintf('%s is %s.', service_name($service), $status ? 'running' . $pid : 'not running');
+}
+
+function service_name($service)
+{
+    return $service['name'] . (array_key_exists('id', $service) ? "[{$service['id']}]" : '');
+}
+
+function service_control_get($name, $extras)
+{
+    $filter = [];
+
+    if (array_key_exists('id', $extras) && $extras['id'] !== '') {
         $filter['id'] = $extras['id'];
     }
 
     $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
+    if (empty($service)) {
+        $name .= isset($filter['id']) ? "[{$filter['id']}]" : '';
+        return sprintf(gettext("Could not find unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    return $service;
+}
+
+function service_control_start($name, $extras)
+{
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['start'])) {
@@ -157,7 +211,7 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['php']['start'])) {
         foreach ($service['php']['start'] as $cmd) {
-            $params = array();
+            $params = [];
             if (isset($service['php']['args'])) {
                 foreach ($service['php']['args'] as $param) {
                     $params[] = $service[$param];
@@ -170,23 +224,17 @@ function service_control_start($name, $extras)
             mwexec($cmd);
         }
     } else {
-        return sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not start service `%s'"), htmlspecialchars(service_name($service)));
     }
 
-    return sprintf(gettext("Service `%s' has been started."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been started."), htmlspecialchars(service_name($service)));
 }
 
 function service_control_stop($name, $extras)
 {
-    $filter = array();
-
-    if (!empty($extras['id'])) {
-        $filter['id'] = $extras['id'];
-    }
-
-    $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not stop unknown service `%s'"), htmlspecialchars($name));
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['stop'])) {
@@ -202,26 +250,20 @@ function service_control_stop($name, $extras)
             mwexec($cmd);
         }
     } elseif (isset($service['pidfile'])) {
-        killbypid($service['pidfile'], 'TERM', true);
+        killbypid($service['pidfile']);
     } else {
         /* last resort, but not very elegant */
         killbyname($service['name']);
     }
 
-    return sprintf(gettext("Service `%s' has been stopped."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been stopped."), htmlspecialchars(service_name($service)));
 }
 
 function service_control_restart($name, $extras)
 {
-    $filter = array();
-
-    if (!empty($extras['id'])) {
-        $filter['id'] = $extras['id'];
-    }
-
-    $service = service_by_name($name, $filter);
-    if (!isset($service['name'])) {
-        return sprintf(gettext("Could not restart unknown service `%s'"), htmlspecialchars($name));
+    $service = service_control_get($name, $extras);
+    if (!is_array($service)) {
+        return $service;
     }
 
     if (isset($service['configd']['restart'])) {
@@ -230,7 +272,7 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['php']['restart'])) {
         foreach ($service['php']['restart'] as $cmd) {
-            $params = array();
+            $params = [];
             if (isset($service['php']['args'])) {
                 foreach ($service['php']['args'] as $param) {
                     $params[] = $service[$param];
@@ -243,10 +285,10 @@ function service_control_restart($name, $extras)
             mwexec($cmd);
         }
     } else {
-        return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars(service_name($service)));
     }
 
-    return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars($name));
+    return sprintf(gettext("Service `%s' has been restarted."), htmlspecialchars(service_name($service)));
 }
 
 function is_subsystem_dirty($subsystem = '')
@@ -264,60 +306,15 @@ function clear_subsystem_dirty($subsystem = '')
     @unlink("/tmp/{$subsystem}.dirty");
 }
 
-/* lock configuration file */
-function lock($lock, $op = LOCK_SH)
-{
-    if (!$lock) {
-        die(gettext("WARNING: You must give a name as parameter to lock() function."));
-    }
-
-    if (!file_exists("{/tmp/{$lock}.lock")) {
-        @touch("/tmp/{$lock}.lock");
-        @chmod("/tmp/{$lock}.lock", 0666);
-    }
-
-    if ($fp = fopen("/tmp/{$lock}.lock", "w")) {
-        if (flock($fp, $op)) {
-            return $fp;
-        } else {
-            fclose($fp);
-        }
-    }
-}
-
-/* unlock configuration file */
-function unlock($cfglckkey = null)
-{
-    if ($cfglckkey) {
-        flock($cfglckkey, LOCK_UN);
-        fclose($cfglckkey);
-    }
-}
-
 function exit_on_bootup($callback = null, $arguments = [])
 {
-    $bootflag = '/var/run/booting';
-
-    /* make sure file exists */
-    @touch($bootflag);
-
-    $fp = fopen($bootflag, 'r');
-    if (!$fp) {
-        /* log possible error and adjust exist code */
-        log_msg("exit_on_bootup(): error opening $bootflag", LOG_ERR);
-        exit(1);
-    }
-
-    if (!flock($fp, LOCK_SH | LOCK_NB)) {
+    if (product::getInstance()->booting()) {
         if ($callback) {
             call_user_func_array($callback, $arguments);
         }
-        /* intentionally we exit here to avoid future cleverness WRT bootup handing */
+        /* intentionally we exit here to avoid future cleverness WRT bootup handling */
         exit(0);
     }
-
-    /* let the script run if we made sure we are up and running */
-    fclose($fp);
 }
 
 /**
@@ -436,7 +433,12 @@ function calculate_ipv6_delegation_length($if)
             break;
         case 'dhcp6':
             $dhcp6cfg = $config['interfaces'][$if];
-            if (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
+            if (!empty($dhcp6cfg['adv_dhcp6_config_file_override'])) {
+                /* emit error since we cannot cope with custom config */
+                $pdlen = -1;
+            } elseif (!empty($dhcp6cfg['adv_dhcp6_config_advanced']) && is_numeric($dhcp6cfg['adv_dhcp6_prefix_interface_statement_sla_len'])) {
+                $pdlen = $dhcp6cfg['adv_dhcp6_prefix_interface_statement_sla_len'];
+            } elseif (is_numeric($dhcp6cfg['dhcp6-ia-pd-len'])) {
                 $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
             }
             break;
@@ -540,6 +542,11 @@ function find_smallest_cidr6($ips)
 /* merge IPv6 address prefix of default size 64 with suffix */
 function merge_ipv6_address($prefix, $suffix, $size = 64)
 {
+    if (strpos($suffix, '::') !== 0) {
+        /* do not override full addresses */
+        return $suffix;
+    }
+
     $size = 128 - $size;
 
     $prefix_bits = unpack('N*', inet_pton($prefix));
@@ -611,7 +618,13 @@ function is_ipaddrv4($ipaddr)
 /* returns true if $ipaddr is a valid linklocal address (inside fe80::/10) */
 function is_linklocal($ipaddr)
 {
-    return preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr);
+    return !!preg_match('/^fe[89ab][0-9a-f]:/i', $ipaddr ?? '');
+}
+
+/* returns true if $ipaddr is a valid uniquelocal address (inside fd00::/8) */
+function is_uniquelocal($ipaddr)
+{
+    return !!preg_match('/^fd[0-9a-f][0-9a-f]:/i', $ipaddr ?? '');
 }
 
 /* returns true if $ipaddr is a valid literal IPv6 address */
@@ -707,23 +720,23 @@ function is_hostname($hostname)
 }
 
 /* returns true if $domain is a valid domain name */
-function is_domain($domain)
+function is_domain($domain, $allow_root = false)
 {
     if (!is_string($domain)) {
         return false;
-    }
-    if (preg_match('/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i', $domain)) {
+    } elseif (preg_match('/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i', $domain)) {
         return true;
-    } else {
-        return false;
+    } elseif ($allow_root && $domain == '.') {
+        return true;
     }
+
+    return false;
 }
 
 /* returns true if $macaddr is a valid MAC address */
 function is_macaddr($macaddr, $partial = false)
 {
-    $repeat = ($partial) ? '1,5' : '5';
-    return preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . $repeat . '}$/i', $macaddr) == 1 ? true : false;
+    return !!preg_match('/^[0-9A-F]{2}(?:[:][0-9A-F]{2}){' . ($partial ? '1,' : '') . '5}$/i', $macaddr);
 }
 
 /* returns true if $port is a valid TCP/UDP port */
@@ -907,11 +920,11 @@ function log_msg($msg, $prio = LOG_NOTICE)
     syslog($prio, "$page: $msg");
 }
 
-function url_safe($format, $args = array())
+function url_safe($format, $args = [])
 {
     if (!is_array($args)) {
         /* just in case there's only one argument */
-        $args = array($args);
+        $args = [$args];
     }
 
     foreach ($args as $id => $arg) {
@@ -932,34 +945,17 @@ function cache_safe($url)
     return $url;
 }
 
-/****f* util/exec_command
- * NAME
- *   exec_command - Execute a command and return a string of the result.
- * INPUTS
- *   $command   - String of the command to be executed.
- * RESULT
- *   String containing the command's result.
- * NOTES
- *   This function returns the command's stdout and stderr.
- ******/
-function exec_command($command)
-{
-    $output = array();
-    exec($command . ' 2>&1', $output);
-    return(implode("\n", $output));
-}
-
 function mwexec($command, $mute = false)
 {
-    $oarr = array();
+    $oarr = [];
     $retval = 0;
 
     $garbage = exec("{$command} 2>&1", $oarr, $retval);
     unset($garbage);
 
-    if ($retval != 0 && $mute == false) {
+    if ($retval != 0 && $mute !== true) {
         $output = implode(' ', $oarr);
-        log_msg(sprintf("The command '%s' returned exit code '%d', the output was '%s'", $command, $retval, $output), LOG_ERR);
+        log_msg(sprintf("The command '%s'%s returned exit code '%d', the output was '%s'", $command, !empty($mute) ? "($mute) " : '', $retval, $output), LOG_ERR);
         unset($output);
     }
 
@@ -973,30 +969,42 @@ function mwexec_bg($command, $mute = false)
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
 }
 
-function exec_safe($format, $args = array())
+function exec_safe($format, $args = [])
 {
     if (!is_array($args)) {
         /* just in case there's only one argument */
-        $args = array($args);
+        $args = [$args];
     }
 
     foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg);
+        $args[$id] = escapeshellarg($arg ?? '');
     }
 
     return vsprintf($format, $args);
 }
 
-function mwexecf($format, $args = array(), $mute = false)
+function mwexecf($format, $args = [], $mute = false)
 {
     return mwexec(exec_safe($format, $args), $mute);
 }
 
-function mwexecf_bg($format, $args = array(), $mute = false)
+function mwexecf_bg($format, $args = [], $mute = false)
 {
     mwexec_bg(exec_safe($format, $args), $mute);
 }
 
+function shell_safe($format, $args = [])
+{
+    $ret = shell_exec(exec_safe($format, $args));
+
+    /* shell_exec() has weird semantics */
+    if ($ret === false || $ret === null) {
+        $ret = '';
+    }
+
+    /* always trim() result on a string */
+    return trim($ret);
+}
 
 /* check if an alias exists */
 function is_alias($name)
@@ -1056,7 +1064,9 @@ function ipcmp($a, $b)
 /* return true if $addr is in $subnet, false if not */
 function ip_in_subnet($addr, $subnet)
 {
-    if (is_ipaddrv6($addr)) {
+    if (empty($subnet)) {
+        /* discard invalid input */
+    } elseif (is_ipaddrv6($addr)) {
         return (Net_IPv6::isInNetmask($addr, $subnet));
     } elseif (is_ipaddrv4($addr)) {
         list($ip, $mask) = explode('/', $subnet);
@@ -1070,7 +1080,7 @@ function ip_in_subnet($addr, $subnet)
 
 function is_private_ip($iptocheck)
 {
-    foreach (array("10.0.0.0/8", "100.64.0.0/10", "172.16.0.0/12", "192.168.0.0/16") as $private) {
+    foreach (['10.0.0.0/8', '100.64.0.0/10', '172.16.0.0/12', '192.168.0.0/16'] as $private) {
         if (ip_in_subnet($iptocheck, $private) == true) {
             return true;
         }
@@ -1103,20 +1113,20 @@ function format_bytes($bytes)
 function get_sysctl($names)
 {
     if (empty($names)) {
-        return array();
+        return [];
     }
 
     if (is_array($names)) {
-        $name_list = array();
+        $name_list = [];
         foreach ($names as $name) {
             $name_list[] = escapeshellarg($name);
         }
     } else {
-        $name_list = array(escapeshellarg($names));
+        $name_list = [escapeshellarg($names)];
     }
 
     exec("/sbin/sysctl -i " . implode(" ", $name_list), $output);
-    $values = array();
+    $values = [];
     foreach ($output as $line) {
         $line = explode(": ", $line, 2);
         if (count($line) == 2) {
@@ -1130,18 +1140,20 @@ function get_sysctl($names)
 /*
  * get_single_sysctl($name)
  * Wrapper for get_sysctl() to simplify read of a single sysctl value
- * return the value for sysctl $name or empty string if it doesn't exist
+ * return the value for sysctl $name or null if it does not exist
  */
 function get_single_sysctl($name)
 {
-    if (empty($name)) {
-        return '';
+    $ret = null;
+
+    if (!empty($name)) {
+        $value = get_sysctl($name);
+        if (isset($value[$name])) {
+            $ret = $value[$name];
+        }
     }
-    $value = get_sysctl($name);
-    if (empty($value) || !isset($value[$name])) {
-        return '';
-    }
-    return $value[$name];
+
+    return $ret;
 }
 
 /*
@@ -1277,7 +1289,7 @@ function is_install_media()
 
 function dhcp6c_duid_read()
 {
-    $parts = array();
+    $parts = [];
     $skip = 2;
 
     if (file_exists('/var/db/dhcp6c_duid')) {

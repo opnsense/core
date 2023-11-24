@@ -163,6 +163,19 @@ class Monit extends BaseModel
                 $parentNode = $node->getParentNode();
                 // perform plugin specific validations
                 switch ($parentNode->getInternalXMLTagName()) {
+                    case 'alert':
+                        switch ($node->getInternalXMLTagName()) {
+                            case 'noton':
+                            case 'events':
+                                if (!empty((string)$parentNode->noton) && empty((string)$parentNode->events)) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("At least one event should be selected when using an inverted selection."),
+                                        $key
+                                    ));
+                                }
+                                break;
+                        }
+                        break;
                     case 'test':
                         // test node validations
                         switch ($node->getInternalXMLTagName()) {
@@ -332,7 +345,7 @@ class Monit extends BaseModel
 
     /**
      * determine if services have links to this test node
-     * @param uuid of the test node
+     * @param string $testUUID uuid of the test node
      * @return bool
      */
     public function isTestServiceRelated($testUUID = null)
@@ -348,7 +361,7 @@ class Monit extends BaseModel
 
     /**
      * get test type from condition string
-     * @param condition string
+     * @param string $condition condition string
      * @return string
      */
     public function getTestType($condition)

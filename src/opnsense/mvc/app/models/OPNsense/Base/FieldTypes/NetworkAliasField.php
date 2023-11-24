@@ -54,18 +54,11 @@ class NetworkAliasField extends BaseListField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    protected function getValidationMessage()
+    protected function defaultValidationMessage()
     {
-        if ($this->internalValidationMessage == null) {
-            return sprintf(
-                gettext("%s is not a valid source IP address or alias."),
-                (string)$this
-            );
-        } else {
-            return $this->internalValidationMessage;
-        }
+        return sprintf(gettext("%s is not a valid source IP address or alias."), (string)$this);
     }
 
     /**
@@ -102,7 +95,7 @@ class NetworkAliasField extends BaseListField
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function setMultiple($value)
     {

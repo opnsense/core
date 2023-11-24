@@ -96,6 +96,7 @@ class TestTemplateMethods(unittest.TestCase):
         generated_filenames = self.tmpl.generate('OPNsense/Sample')
         self.assertEqual(len(generated_filenames), 4, 'number of output files not 4')
 
+    @unittest.skip("Very fragile test, only works on clean install")
     def test_all(self):
         """ Test if all expected templates are created, can only find test for static defined cases.
             Calls "generate *" and compares that to all defined templates in all +TARGET files

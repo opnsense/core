@@ -87,6 +87,8 @@ POSSIBILITY OF SUCH DAMAGE.
           });
 
           $('.policy_select').selectpicker('refresh');
+          // reset data container to ensure string type result when no metadata is found
+          $("#policy\\.content").data('data', '');
           $('.policy_select').change(function(){
               let selections = [];
               $(".policy_select").each(function(){

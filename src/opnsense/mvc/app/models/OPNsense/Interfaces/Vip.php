@@ -41,22 +41,35 @@ class Vip extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        $vips = [];
-        $carp_vhids = [];
 
-        // collect chaned VIP entries
+        $unqiue_addrs = [];
+        $carp_vhids = [];
+        $vips = [];
+
+        // collect changed VIP entries
         $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
+
             if ($validateFullModel || $node->isFieldChanged()) {
                 if ($parentNode->getInternalXMLTagName() === 'vip' && in_array($tagName, $vip_fields)) {
-                    $parentKey = $parentNode->__reference;
-                    $vips[$parentKey] = $parentNode;
+                    $vips[$parentNode->__reference] = $parentNode;
                 }
             }
-            if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[(string)$parentNode->vhid])) {
-                $carp_vhids[(string)$parentNode->vhid] = $parentNode;
+
+            if ($parentNode->getInternalXMLTagName() === 'vip' && $tagName == 'subnet') {
+                $addr = (string)$parentNode->subnet;
+                if (Util::isLinkLocal($addr)) {
+                    $addr .= '@' . (string)$parentNode->interface;
+                }
+                $unique_addrs[$parentNode->__reference] = $addr;
+            }
+
+            $vhid_key = sprintf("%s_%s", $parentNode->interface, $parentNode->vhid);
+
+            if ((string)$parentNode->mode == 'carp' && !isset($carp_vhids[$vhid_key])) {
+                $carp_vhids[$vhid_key] = $parentNode;
             }
         }
 
@@ -65,30 +78,31 @@ class Vip extends BaseModel
             $subnet_bits = (string)$node->subnet_bits;
             $subnet = (string)$node->subnet;
             if (in_array((string)$node->mode, ['carp', 'ipalias'])) {
-                if (Util::isSubnet($subnet . "/" . $subnet_bits) && strpos($subnet, ':') === false) {
+                if (Util::isSubnet($subnet . "/" . $subnet_bits) && strpos($subnet, ':') === false && $subnet_bits <= 30) {
                     $sm = 0;
                     for ($i = 0; $i < $subnet_bits; $i++) {
                         $sm >>= 1;
                         $sm |= 0x80000000;
                     }
                     $network_addr = long2ip(ip2long($subnet) & $sm);
-                    $broadcast_addr = long2ip((ip2long($subnet) & 0xFFFFFFFF) | $sm);
-                    if ($subnet == $network_addr && $subnet_bits != '32') {
+                    $broadcast_addr = long2ip((ip2long($subnet) & $sm) | (0xFFFFFFFF ^ $sm));
+                    if ($subnet == $network_addr) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("You cannot use the network address for this VIP"),
+                                gettext('You cannot use the network address.'),
                                 $key . ".subnet"
                             )
                         );
-                    } elseif ($subnet == $broadcast_addr && $subnet_bits != '32') {
+                    } elseif ($subnet == $broadcast_addr) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("You cannot use the broadcast address for this VIP"),
+                                gettext('You cannot use the broadcast address.'),
                                 $key . ".subnet"
                             )
                         );
                     }
                 }
+
                 $configHandle = Config::getInstance()->object();
                 if (!empty($configHandle->interfaces) && !empty((string)$node->vhid)) {
                     foreach ($configHandle->interfaces->children() as $ifname => $ifnode) {
@@ -104,6 +118,7 @@ class Vip extends BaseModel
                     }
                 }
             }
+            $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
             if ((string)$node->mode == 'carp') {
                 if (empty((string)$node->password)) {
                     $messages->appendMessage(
@@ -121,15 +136,15 @@ class Vip extends BaseModel
                         )
                     );
                 } elseif (
-                    isset($carp_vhids[(string)$node->vhid]) &&
-                    $carp_vhids[(string)$node->vhid]->__reference != $node->__reference
+                    isset($carp_vhids[$vhid_key]) &&
+                    $carp_vhids[$vhid_key]->__reference != $node->__reference
                 ) {
                     $errmsg = gettext(
                         "VHID %s is already in use on interface %s. Pick a unique number on this interface."
                     );
                     $messages->appendMessage(
                         new Message(
-                            sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[(string)$node->vhid]->interface),
+                            sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[$vhid_key]->interface),
                             $key . ".vhid"
                         )
                     );
@@ -137,8 +152,8 @@ class Vip extends BaseModel
             } elseif (
                 (string)$node->mode == 'ipalias' &&
                 !empty((string)$node->vhid) && (
-                  !isset($carp_vhids[(string)$node->vhid]) ||
-                  (string)$carp_vhids[(string)$node->vhid]->interface != (string)$node->interface
+                  !isset($carp_vhids[$vhid_key]) ||
+                  (string)$carp_vhids[$vhid_key]->interface != (string)$node->interface
                 )
             ) {
                 $errmsg = gettext("VHID %s must be defined on interface %s as a CARP VIP first.");
@@ -148,6 +163,17 @@ class Vip extends BaseModel
                         $key . ".vhid"
                     )
                 );
+            }
+
+            /* ensure address is unique; for link-local we test with scope attached */
+            $addr = (string)$node->subnet;
+            if (Util::isLinkLocal($addr)) {
+                $addr .= '@' . (string)$node->interface;
+            }
+            foreach ($unique_addrs as $refKey => $refAddr) {
+                if ($refKey != $key && $refAddr === $addr) {
+                    $messages->appendMessage(new Message(gettext('Address already assigned.'), $key . '.subnet'));
+                }
             }
         }
 

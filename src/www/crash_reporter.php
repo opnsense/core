@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2018 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2014 Deciso B.V.
  * Copyright (C) 2011 Scott Ullrich <sullrich@gmail.com>
  * All rights reserved.
@@ -28,7 +28,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("guiconfig.inc");
+require_once 'guiconfig.inc';
+
+function has_crash_report()
+{
+    $skip_files = ['.', '..', 'minfree', 'bounds', ''];
+    $PHP_errors_log = '/tmp/PHP_errors.log';
+    $count = 0;
+
+    if (file_exists($PHP_errors_log)) {
+        if (intval(shell_safe('/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'', $PHP_errors_log))) {
+            $count++;
+        }
+    }
+
+    $crashes = glob('/var/crash/*');
+    foreach ($crashes as $crash) {
+        if (!in_array(basename($crash), $skip_files)) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
 
 function upload_crash_report($files, $agent)
 {
@@ -62,7 +84,7 @@ function upload_crash_report($files, $agent)
 
 include('head.inc');
 
-$plugins = implode(' ',  explode("\n", shell_exec('pkg info -g "os-*"')));
+$plugins = implode(' ',  explode("\n", shell_safe('pkg info -g "os-*"')));
 $product = product::getInstance();
 
 $crash_report_header = sprintf(
@@ -74,8 +96,8 @@ $crash_report_header = sprintf(
     $product->hash(),
     empty($plugins) ? '' : "Plugins $plugins\n",
     date('r'),
-    trim(shell_exec('/usr/local/bin/openssl version')),
-    trim(shell_exec('/usr/local/bin/python3 -V')),
+    shell_safe('/usr/local/bin/openssl version | cut -f -2 -d \' \''),
+    shell_safe('/usr/local/bin/python3 -V'),
     PHP_VERSION
 );
 
@@ -121,6 +143,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if ($count || (!empty($desc) && !empty($email))) {
+            $files_to_upload = glob('/var/crash/*');
+            foreach ($files_to_upload as $file_to_upload) {
+                if (filesize($file_to_upload) > 450000) {
+                    @unlink($file_to_upload);
+                }
+            }
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
             if (file_exists('/tmp/PHP_errors.log')) {
                 // limit PHP_errors to send to 1MB
@@ -150,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     /* if there is no user activity probe for a crash report */
-    $has_crashed = !empty(get_crash_report());
+    $has_crashed = has_crash_report();
 }
 
 if ($has_crashed) {
@@ -181,8 +209,12 @@ if ($has_crashed) {
         $crash_reports['dmesg.boot'] = trim($dmesg_boot);
     }
     foreach ($crash_files as $cf) {
-        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
-            $crash_reports[$cf] = trim(file_get_contents($cf));
+        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds') {
+            if (filesize($cf) > 450000) {
+                $crash_reports[$cf] = gettext('File too big to process. It will not be submitted automatically.');
+            } else {
+                $crash_reports[$cf] = trim(file_get_contents($cf));
+            }
         }
     }
 }
@@ -243,7 +275,7 @@ legacy_html_escape_form_data($pconfig);
               foreach ($crash_reports as $report => $content):?>
                   <p>
                     <?=$report;?>:<br/>
-                    <pre><?=$content;?></pre>
+                    <pre><?=html_safe($content);?></pre>
                   </p>
 <?php
               endforeach;

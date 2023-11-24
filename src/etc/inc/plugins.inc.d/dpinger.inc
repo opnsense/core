@@ -3,7 +3,7 @@
 /*
  * Copyright (C) 2020 Deciso B.V.
  * Copyright (C) 2018 Martin Wasley <martin@team-rebellion.net>
- * Copyright (C) 2016-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>
  * Copyright (C) 2008 Seth Mos <seth.mos@dds.nl>
  * Copyright (C) 2010 Ermal Luçi
@@ -33,25 +33,11 @@
 
 function dpinger_services()
 {
-    global $config;
+    $services = [];
 
-    $services = array();
-
-    if (!isset($config['gateways']['gateway_item'])) {
-        return $services;
-    }
-
-    foreach ($config['gateways']['gateway_item'] as $gateway) {
-        if (!empty($gateway['monitor_disable']) || isset($gateway['disabled'])) {
-            continue;
-        }
-
-        if (empty($config['interfaces'][$gateway['interface']]['enable'])) {
-            continue;
-        }
-
+    foreach (dpinger_instances() as $name => $gateway) {
         $pconfig = [];
-        $pconfig['description'] = sprintf(gettext('Gateway Monitor (%s)'), $gateway['name']);
+        $pconfig['description'] = sprintf(gettext('Gateway monitor (%s)'), $gateway['name']);
         $pconfig['php']['restart'] = ['dpinger_configure_do'];
         $pconfig['php']['start'] = ['dpinger_configure_do'];
         $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
@@ -62,22 +48,22 @@ function dpinger_services()
         $services[] = $pconfig;
     }
 
-    return $services;
-}
+    if (count($services)) {
+        $pconfig = [];
+        $pconfig['description'] = gettext('Gateway monitor watcher');
+        $pconfig['php']['restart'] = ['dpinger_configure_do'];
+        $pconfig['php']['start'] = ['dpinger_configure_do'];
+        $pconfig['pidfile'] = '/var/run/gateway_watcher.pid';
+        $pconfig['php']['args'] = ['verbose', 'id'];
+        $pconfig['name'] = 'dpinger';
+        $pconfig['verbose'] = false;
+        $pconfig['id'] = ':watcher:';
+        $pconfig['locked'] = true;
+        /* add as first entry which is used as "global" control */
+        array_unshift($services, $pconfig);
+    }
 
-function dpinger_defaults()
-{
-    return array(
-        'alert_interval' => '1',
-        'data_length' => '0',
-        'interval' => '1',
-        'latencyhigh' => '500',
-        'latencylow' => '200',
-        'loss_interval' => '2',
-        'losshigh' => '20',
-        'losslow' => '10',
-        'time_period' => '60',
-    );
+    return $services;
 }
 
 function dpinger_configure()
@@ -101,7 +87,7 @@ function dpinger_host_routes()
     $routes = [];
 
     foreach (dpinger_instances() as $gateway) {
-        if (isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['monitor_noroute'])) {
             /* no need to register */
             continue;
         } elseif (empty($gateway['gateway'])) {
@@ -118,34 +104,21 @@ function dpinger_host_routes()
     return $routes;
 }
 
-function dpinger_instances($ifconfig_details = null)
+function dpinger_instances($extended = false)
 {
     $instances = [];
 
-    $gateways = new \OPNsense\Routing\Gateways($ifconfig_details ?? legacy_interfaces_details());
-
-    foreach ($gateways->gatewaysIndexedByName(true) as $name => $gateway) {
-        if (empty($gateway['monitor'])) {
-            /* skip monitors not currently attached */
-            continue;
-        } elseif (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+    foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $name => $gateway) {
+        if (!empty($gateway['monitor_disable']) && !$extended) {
             /* do not monitor if such was requested */
             continue;
         }
 
-        /*
-         * If gateway is a local link and 'monitor' is global routable
-         * then the ICMP6 response would not find its way back home.
-         */
-        if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
-            $gateway['monitor'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
-        }
-        if (!empty($gateway['gateway'])) {
-            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
-                $gateway['gateway'] .= '%' . get_real_interface($gateway['interface'], 'inet6');
+        foreach (['monitor', 'gateway'] as $key) {
+            /* add link-local scope where missing */
+            if (!empty($gateway[$key]) && is_linklocal($gateway[$key]) && strpos($gateway[$key], '%') === false) {
+                $gateway[$key] .= '%' . $gateway['if'];
             }
-        } else {
-            log_msg("Gateway currently empty for {$gateway['monitor']} on {$gateway['interface']}");
         }
 
         $instances[$name] = $gateway;
@@ -158,22 +131,33 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
 {
     service_log(sprintf('Setting up gateway monitor%s...', empty($gwname) ? 's' : " {$gwname}"), $verbose);
 
-    foreach (dpinger_processes() as $running_gwname => $process) {
+    foreach (dpinger_processes() as $running_gwname => $proc) {
         if (!empty($gwname) && $running_gwname != $gwname) {
             continue;
         }
-        killbypid($process['pidfile'], 'TERM', true);
-        @unlink($process['pidfile']);
-        @unlink($process['socket']);
+        if (isvalidpid($proc['pidfile'])) {
+            killbypid($proc['pidfile']);
+        }
+    }
+
+    if (!empty($gwname) && $gwname == ':watcher:') {
+        /* allow the watcher to be restarted as well */
+        killbypid('/var/run/gateway_watcher.pid');
     }
 
     $ifconfig_details = legacy_interfaces_details();
-    $dpinger_default = dpinger_defaults();
     $routes = [];
 
-    foreach (dpinger_instances($ifconfig_details) as $name => $gateway) {
+    foreach (dpinger_instances() as $name => $gateway) {
         if (!empty($gwname) && $gwname != $name) {
             continue;
+        }
+
+        foreach (['monitor', 'gateway'] as $key) {
+            if (empty($gateway[$key])) {
+                log_msg("Skipping gateway {$name} due to empty '{$key}' property.", LOG_WARNING);
+                continue;
+            }
         }
 
         $gwifip = null;
@@ -220,7 +204,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
                 /* link local monitor needs a link local address for the "src" part */
                 list ($gwifip) = interfaces_scoped_address6($gateway['interface'], $ifconfig_details);
             } else {
-                list ($gwifip) = interfaces_primary_address6($gateway['interface'], $ifconfig_details);
+                list ($gwifip) = interfaces_routed_address6($gateway['interface'], $ifconfig_details);
             }
 
             if (empty($gwifip) && is_ipaddrv6($gateway['gateway'])) {
@@ -247,7 +231,7 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
             continue;
         }
 
-        if (!empty($gateway['gateway']) && !isset($gateway['monitor_noroute'])) {
+        if (!empty($gateway['gateway']) && empty($gateway['monitor_noroute'])) {
             if (isset($routes[$gateway['monitor']])) {
                 log_msg("Duplicated monitor route ignored for {$gateway['monitor']} on {$gateway['interface']}", LOG_WARNING);
             } else {
@@ -281,30 +265,35 @@ function dpinger_configure_do($verbose = false, $gwname = null, $bootup = false)
         /* status socket */
         $params .= exec_safe('-u %s ', "/var/run/dpinger_{$name}.sock");
 
-        /* command to run on alarm */
-        $params .= '-C "/usr/local/etc/rc.syshook monitor" ';
-
         foreach (
             [
             'interval' => '-s %ss ',
             'loss_interval' => '-l %ss ',
             'time_period' => '-t %ss ',
-            'alert_interval' => '-A %ss ',
-            'latencyhigh' => '-D %s ',
-            'losshigh' => '-L %s ',
             'data_length' => '-d %s '
             ] as $pname => $ppattern
         ) {
-            $params .= exec_safe(
-                $ppattern,
-                isset($gateway[$pname]) && is_numeric($gateway[$pname]) ?
-                    $gateway[$pname] : $dpinger_default[$pname]
-            );
+            $params .= exec_safe($ppattern, $gateway["current_" . $pname]);
         }
         $params .= exec_safe('%s ', $gateway['monitor']);
 
         /* foreground mode in background to deal with tentative connectivity */
         mwexec_bg("/usr/local/bin/dpinger -f {$params}");
+    }
+
+    if (count(dpinger_services())) {
+        if (isvalidpid('/var/run/gateway_watcher.pid')) {
+            /* indicate that the configuration needs a reload */
+            killbypid('/var/run/gateway_watcher.pid', 'HUP');
+        } else {
+            /* use a separate script to produce the monitor alerts which runs forever */
+            mwexecf(
+                '/usr/sbin/daemon -f -p %s /usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
+                ['/var/run/gateway_watcher.pid', 'interface routes alarm']
+            );
+        }
+    } else {
+        killbypid('/var/run/gateway_watcher.pid');
     }
 
     service_log("done.\n", $verbose);
@@ -320,36 +309,29 @@ function dpinger_run()
 
 function dpinger_status()
 {
-    $status = array();
-    $gateways_arr = array();
+    $procs = dpinger_processes();
+    $status = [];
 
-    foreach (config_read_array('gateways', 'gateway_item') as $gwitem) {
-        if (isset($gwitem['disabled'])) {
-            continue;
-        }
-        $gateways_arr[$gwitem['name']] = $gwitem;
+    foreach (dpinger_instances(true) as $gwitem) {
+        /* we seem to be concerned about disabled monitors just because of force_down */
+        $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
+        $gwname = $gwitem['name'];
 
-        $gwstatus = isset($gwitem['monitor_disable']) ? 'none' : 'down';
-
-        if (isset($gwitem['force_down'])) {
-            $gwstatus = 'force_down';
-        }
-
-        $status[$gwitem['name']] = array(
-            'name' => $gwitem['name'],
-            'status' => $gwstatus,
+        $status[$gwname] = $report = [
+            'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
+            /* grab the runtime monitor from the instance if available */
+            'monitor' => !empty($gwitem['monitor']) ? $gwitem['monitor'] : '~',
+            'name' => $gwname,
             'stddev' => '~',
             'delay' => '~',
             'loss' => '~',
-        );
-    }
+        ];
 
-    foreach (dpinger_processes() as $gwname => $proc) {
-        if (!isset($status[$gwname])) {
+        if (!isset($procs[$gwitem['name']])) {
             continue;
         }
 
-        $fp = @stream_socket_client("unix://{$proc['socket']}", $errno, $errstr, 3);
+        $fp = @stream_socket_client("unix://{$procs[$gwname]['socket']}", $errno, $errstr, 1);
         if (!$fp) {
             continue;
         }
@@ -361,59 +343,34 @@ function dpinger_status()
 
         fclose($fp);
 
-        $r = array();
-
-        list($r['gwname'], $r['latency_avg'], $r['latency_stddev'], $r['loss']) =
-            explode(' ', preg_replace('/\n/', '', $dinfo));
-
-        if ($r['latency_stddev'] == '0' && $r['loss'] == '0') {
-            /* not yet ready, act like nothing was returned, but don't consider the gateway to be down */
-            $status[$gwname] = array(
-                'name' => $gwname,
-                'status' => 'none',
-                'stddev' => '~',
-                'delay' => '~',
-                'loss' => '~',
-            );
-        } else {
-            $r['latency_stddev'] = round($r['latency_stddev'] / 1000, 1);
-            $r['latency_avg'] = round($r['latency_avg'] / 1000, 1);
-            $r['status'] = $status[$gwname]['status'];
-
-            $settings = dpinger_defaults();
-
-            if ($r['status'] != 'force_down') {
-                $keys = array('latencylow', 'latencyhigh', 'losslow', 'losshigh');
-
-                /* Replace default values by user-defined */
-                foreach ($keys as $key) {
-                    if (isset($gateways_arr[$gwname][$key]) && is_numeric($gateways_arr[$gwname][$key])) {
-                        $settings[$key] = $gateways_arr[$gwname][$key];
-                    }
-                }
-
-                if ($r['latency_avg'] > $settings['latencyhigh']) {
-                    $r['status'] = 'down';
-                } elseif ($r['loss'] > $settings['losshigh']) {
-                    $r['status'] = 'down';
-                } elseif ($r['latency_avg'] > $settings['latencylow']) {
-                    $r['status'] = 'delay';
-                } elseif ($r['loss'] > $settings['losslow']) {
-                    $r['status'] = 'loss';
-                } else {
-                    $r['status'] = 'none';
-                }
-            }
-
-            $status[$gwname] = array(
-                'delay' => sprintf('%0.1f ms', empty($r['latency_avg']) ? 0.0 : round($r['latency_avg'], 1)),
-                'stddev' => sprintf('%0.1f ms', empty($r['latency_stddev']) ? 0.0 : round($r['latency_stddev'], 1)),
-                'loss' => sprintf('%0.1f %%', empty($r['loss']) ? 0.0 : round($r['loss'], 1)),
-                'status' => $r['status'],
-                'details' => array_merge($r, $settings),
-                'name' => $gwname,
-            );
+        list(, $latency_avg, $latency_stddev, $loss) = explode(' ', preg_replace('/\n/', '', $dinfo));
+        if ($latency_stddev == '0' && $loss == '0') {
+            continue;
         }
+
+        $latency_stddev = round($latency_stddev / 1000, 1);
+        $latency_avg = round($latency_avg / 1000, 1);
+
+        if (isset($gwitem['current_losshigh']) && $report['status'] != 'force_down') {
+            if ($latency_avg > $gwitem['current_latencyhigh'] || $loss > $gwitem['current_losshigh']) {
+                $report['status'] = 'down';
+            } elseif ($latency_avg > $gwitem['current_latencylow'] && $loss > $gwitem['current_losslow']) {
+                $report['status'] = 'delay+loss';
+            } elseif ($latency_avg > $gwitem['current_latencylow']) {
+                $report['status'] = 'delay';
+            } elseif ($loss > $gwitem['current_losslow']) {
+                $report['status'] = 'loss';
+            } else {
+                $report['status'] = 'none';
+            }
+        }
+
+        $report['delay'] = sprintf('%0.1f ms', empty($latency_avg) ? 0.0 : round($latency_avg, 1));
+        $report['stddev'] = sprintf('%0.1f ms', empty($latency_stddev) ? 0.0 : round($latency_stddev, 1));
+        $report['loss'] = sprintf('%0.1f %%', empty($loss) ? 0.0 : round($loss, 1));
+
+        /* rewrite report using gathered information */
+        $status[$gwname] = $report;
     }
 
     return $status;
@@ -421,7 +378,7 @@ function dpinger_status()
 
 function dpinger_processes()
 {
-    $result = array();
+    $result = [];
 
     $pidfiles = glob('/var/run/dpinger_*.pid');
     if ($pidfiles === false) {
@@ -429,13 +386,12 @@ function dpinger_processes()
     }
 
     foreach ($pidfiles as $pidfile) {
-        if (!isvalidpid($pidfile)) {
-            /* spare caller from trying to read a stale socket later on */
-            continue;
-        }
         if (preg_match('/^dpinger_(.+)\.pid$/', basename($pidfile), $matches)) {
             $socket_file = preg_replace('/\.pid$/', '.sock', $pidfile);
-            $result[$matches[1]] = array('socket' => $socket_file, 'pidfile' => $pidfile);
+            $result[$matches[1]] = [
+                'socket' => $socket_file,
+                'pidfile' => $pidfile,
+            ];
         }
     }
 
