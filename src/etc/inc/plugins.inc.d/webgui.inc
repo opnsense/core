@@ -83,11 +83,6 @@ function webgui_configure_do($verbose = false, $interface = '')
     $listeners = count($interfaces) ? [] : ['0.0.0.0', '::'];
 
     foreach (interfaces_addresses($interfaces) as $tmpaddr => $info) {
-        if ($info['scope']) {
-            /* link-local does not seem to be supported */
-            continue;
-        }
-
         if (!$info['bind']) {
             continue;
         }
