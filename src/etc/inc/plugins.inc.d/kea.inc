@@ -52,3 +52,18 @@ function kea_syslog()
     $logfacilities['kea'] = ['facility' => ['kea-dhcp4', 'kea-dhcp6', 'kea-ctrl-agent']];
     return $logfacilities;
 }
+
+
+function kea_xmlrpc_sync()
+{
+    $result = [];
+
+    $result[] = [
+        'description' => gettext('Kea DHCP'),
+        'section' => 'OPNsense.Kea',
+        'id' => 'kea',
+        'services' => ["kea-dhcpv4"],
+    ];
+
+    return $result;
+}
