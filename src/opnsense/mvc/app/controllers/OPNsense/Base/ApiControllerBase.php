@@ -29,6 +29,7 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
+use OPNsense\Core\Config;
 use OPNsense\Auth\AuthenticationFactory;
 
 /**
@@ -267,7 +268,11 @@ class ApiControllerBase extends ControllerRoot
 
                                 // link username on successful login
                                 $this->logged_in_user = $authResult['username'];
-
+                                // pass revision context to config object
+                                Config::getInstance()->setRevisionContext([
+                                    'username' => $authResult['username'],
+                                    'user_apitoken' => $apiKey
+                                ]);
                                 return true;
                             }
                         }

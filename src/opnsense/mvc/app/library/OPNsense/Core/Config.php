@@ -70,6 +70,11 @@ class Config extends Singleton
     private $statusIsValid = false;
 
     /**
+     * @var array list of revision relevant data
+     */
+    private $revisionContext = [];
+
+    /**
      * @var float current modification time of our known config
      */
     private $mtime = 0;
@@ -466,75 +471,102 @@ class Config extends Singleton
     }
 
     /**
+     * @return array revision key/values
+     */
+    public function getRevisionContext()
+    {
+        $revision = $this->revisionContext;
+        if (!empty($_SESSION["Username"])) {
+            $revision['username'] = $_SESSION["Username"];
+        } elseif (!isset($revision['username'])) {
+            $revision['username'] = "(system)" ;
+        }
+        if (!empty($_SERVER['REMOTE_ADDR']) && strpos($revision['username'], '@') === false) {
+            $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
+        }
+        $revision['description'] = sprintf(
+            gettext('%s made changes'),
+            !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] :  $_SERVER['SCRIPT_NAME']
+        );
+        // append session revision tags when supplied (keys start with xrevision_)
+        if (!empty($_SESSION) && is_array($_SESSION)) {
+            foreach ($_SESSION as $key => $value) {
+                if (stripos($key, 'xrevision_') === 0 && !isset($revision[substr($key,10)])) {
+                    $revision[substr($key,10)] = $value;
+                }
+            }
+
+        }
+        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
+
+        return $revision;
+    }
+
+    /**
+     * set revision payload
+     * @param array revision payload
+     */
+    public function setRevisionContext($ctx)
+    {
+        if (is_array($ctx)) {
+            $this->revisionContext = $ctx;
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * update config revision information (ROOT.revision tag)
      * @param array|null $revision revision tag (associative array)
      * @param \SimpleXMLElement|null pass trough xml node
+     * @return array revision data
      */
     private function updateRevision($revision, $node = null, $timestamp = null)
     {
-        // if revision info is not provided, create a default.
+        /* If revision info is not provided, create one. $revision is used for recursion */
         if (!is_array($revision)) {
-            $revision = array();
-            // try to fetch userinfo from session
-            if (!empty($_SESSION["Username"])) {
-                $revision['username'] = $_SESSION["Username"];
-            } else {
-                $revision['username'] = "(system)";
-            }
-            if (!empty($_SERVER['REMOTE_ADDR'])) {
-                $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
-            }
-            if (!empty($_SERVER['REQUEST_URI'])) {
-                // when update revision is called from a controller, log the endpoint uri
-                $revision['description'] = sprintf(gettext('%s made changes'), $_SERVER['REQUEST_URI']);
-            } else {
-                // called from a script, log script name and path
-                $revision['description'] = sprintf(gettext('%s made changes'), $_SERVER['SCRIPT_NAME']);
-            }
+            $revision = $this->getRevisionContext();
         }
-
-        // always set timestamp
-        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
-
         if ($node == null) {
-            if (isset($this->simplexml->revision)) {
-                $node = $this->simplexml->revision;
+            if (!isset($this->simplexml->revision)) {
+                $target = $this->simplexml->addChild("revision");
             } else {
-                $node = $this->simplexml->addChild("revision");
+                $target = $this->simplexml->revision;
+                foreach (iterator_to_array($target->children()) as $child) {
+                    unset($target->{$child->getName()});
+                }
             }
+        } else {
+            $target = $node;
         }
-        foreach ($revision as $revKey => $revItem) {
-            if (isset($node->{$revKey})) {
-                // key already in revision object
-                $childNode = $node->{$revKey};
+
+        array_walk($revision,  function($value, $key) use (&$target) {
+            $node = $target->addChild($key);
+            if (is_array($value)) {
+                $this->updateRevision($value, $node);
             } else {
-                $childNode = $node->addChild($revKey);
+                $node[0] = $value;
             }
-            if (is_array($revItem)) {
-                $this->updateRevision($revItem, $childNode);
-            } else {
-                $childNode[0] = $revItem;
-            }
-        }
+        });
+
+        return $revision;
     }
 
     /**
      * send config change to audit log including the context we currently know of.
+     * @param string $backup_filename new backup filename
+     * @param array $revision revision adata used
      */
-    private function auditLogChange($backup_filename, $revision = null)
+    private function auditLogChange($backup_filename, $revision)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
-        $append_message = "";
-        if (is_array($revision) && !empty($revision['description'])) {
-            $append_message = sprintf(" [%s]", $revision['description']);
-        }
         syslog(LOG_NOTICE, sprintf(
             "user %s%s changed configuration to %s in %s%s",
-            !empty($_SESSION["Username"]) ? $_SESSION["Username"] : "(system)",
-            !empty($_SERVER['REMOTE_ADDR']) ? "@" . $_SERVER['REMOTE_ADDR'] : "",
+            $revision['username'],
+            !empty($revision['impersonated_by']) ? sprintf(" (%s)", $revision['impersonated_by']) : '',
             $backup_filename,
             !empty($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : $_SERVER['SCRIPT_NAME'],
-            $append_message
+            $revision['description'] ?? ''
         ));
         closelog();
     }
@@ -716,7 +748,7 @@ class Config extends Singleton
         $this->checkvalid();
         $time = microtime(true);
         // update revision information ROOT.revision tag, align timestamp to backup output
-        $this->updateRevision($revision, null, $time);
+        $revision = $this->updateRevision($revision, null, $time);
 
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
