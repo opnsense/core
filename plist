@@ -387,12 +387,14 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -833,6 +835,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -2152,7 +2155,6 @@
 /usr/local/www/vpn_openvpn_client.php
 /usr/local/www/vpn_openvpn_server.php
 /usr/local/www/widgets/api/get.php
-/usr/local/www/widgets/api/plugins/interfaces.inc
 /usr/local/www/widgets/api/plugins/system.inc
 /usr/local/www/widgets/api/plugins/temperature.inc
 /usr/local/www/widgets/include/carp_status.inc

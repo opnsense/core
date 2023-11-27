@@ -61,34 +61,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 ?>
 
 <script>
-  /**
-   * Hybrid widget only update interface status using ajax
-   */
-  function interface_widget_update(sender, data)
-  {
-      data.map(function(interface_data) {
-          var tr_id = 'interface_widget_item_' + interface_data['name'];
-          if ($("#"+tr_id).length) {
-              switch (interface_data['status']) {
-                  case 'up':
-                    $("#"+tr_id).find('.text-danger').removeClass('text-danger').addClass('text-success');
-                    $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-arrow-up');
-                    $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-up');
-                    break;
-                  case 'down':
-                    $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
-                    $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-arrow-down');
-                    $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-down');
-                    break;
-                  default:
-                    $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
-                    $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-times');
-                    $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-times');
-                    break;
-              }
-          }
-      });
-  }
+ajaxGet('/api/interfaces/overview/interfacesInfo', {}, function(data, status) {
+    data.rows.map(function(interface_data) {
+        var tr_id = 'interface_widget_item_' + interface_data['identifier'];
+        if ($("#"+tr_id).length) {
+            let row = $("#"+tr_id);
+            let $link_status = $("#"+tr_id).find('#link_status');
+            let $if_status = $("#"+tr_id).find('#if_status');
+            $link_status.empty();
+            $if_status.empty();
+            let $status_symbol = $('<span></span>');
+            switch (interface_data['link_type']) {
+                case 'ppp':
+                $status_symbol.addClass('fa fa-mobile');
+                break;
+                case 'wireless':
+                $status_symbol.addClass('fa fa-signal');
+                break;
+                default:
+                $status_symbol.addClass('fa fa-exchange');
+                break;
+            }
+            $link_status.append($status_symbol.addClass('text-success'));
+            $if_status.append($('<span class="fa fa-arrow-up text-success" title="' + interface_data['status'] + '"></span>'));
+
+
+            switch (interface_data['status']) {
+                case 'up':
+                //case 'associated':
+                $("#"+tr_id).find('.text-danger').removeClass('text-danger').addClass('text-success');
+                $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-arrow-up');
+                $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-up');
+                break;
+                case 'down':
+                $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
+                $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-arrow-down');
+                $("#"+tr_id).find('.fa-times').removeClass('fa-times').addClass('fa-arrow-down');
+                break;
+                default:
+                $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
+                $("#"+tr_id).find('.fa-arrow-down').removeClass('fa-arrow-down').addClass('fa-times');
+                $("#"+tr_id).find('.fa-arrow-up').removeClass('fa-arrow-up').addClass('fa-times');
+                break;
+            }
+
+            let $name = $("#"+tr_id).find('#if_name');
+            $name.empty();
+            let $name_span = $('<span style="cursor:pointer" onclick="location.href=\'/interfaces.php?if=' + interface_data['identifier'] +
+                                '\'"><strong><u>' + interface_data['description'] +'</strong></u></span>');
+            $name.append($name_span)
+
+
+            $media = $("#"+tr_id).find('#if_media');
+            $media.empty();
+            if (!'media' in interface_data) {
+                $media.html(interface_data['cell_mode']);
+            } else {
+                $media.html(interface_data['media']);
+            }
+        }
+    });
+});
 </script>
 
 <div id="interface_list-settings" class="widgetconfigdiv" style="display:none;">
@@ -112,61 +145,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   </form>
 </div>
 
-<table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
+<table class="table table-striped table-condensed">
 <?php
-  $ifsinfo = get_interfaces_info();
-  foreach ($interfaces as $ifdescr => $ifname):
-    $listed = in_array($ifdescr, $pconfig['interfaceslistfilter']);
+  foreach ($interfaces as $ident => $ifname):
+    $listed = in_array($ident, $pconfig['interfaceslistfilter']);
     $listed = !empty($pconfig['interfaceslistinvert']) ? $listed : !$listed;
     if (!$listed) {
       continue;
     }
-    $ifinfo = $ifsinfo[$ifdescr]; ?>
-  <tr id="interface_widget_item_<?= html_safe($ifname) ?>">
-    <td style="width:5%; word-break: break-word;">
-<?php if (isset($ifinfo['ppplink'])): ?>
-      <span title="3g" class="fa fa-mobile text-success"></span>
-<?php elseif (isset($config['interfaces'][$ifdescr]['wireless'])): ?>
-<?php if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'): ?>
-      <span title="wlan" class="fa fa-signal text-success"></span>
-<?php else: ?>
-      <span title="wlan_d" class="fa fa-signal text-danger"></span>
-<?php endif ?>
-<?php else: ?>
-<?php if ($ifinfo['status'] == 'up'): ?>
-      <span title="cablenic" class="fa fa-exchange text-success"></span>
-<?php else: ?>
-      <span title="cablenic" class="fa fa-exchange text-danger"></span>
-<?php endif ?>
-<?php endif ?>
-    </td>
-    <td style="width:15%; word-break: break-word;">
-      <strong>
-        <u>
-          <span onclick="location.href='/interfaces.php?if=<?= html_safe($ifdescr) ?>'" style="cursor:pointer">
-            <?= html_safe($ifname) ?>
-          </span>
-        </u>
-      </strong>
-    </td>
-    <td style="width:5%; word-break: break-word;">
-<?php if ($ifinfo['status'] == 'up' || $ifinfo['status'] == 'associated'): ?>
-      <span class="fa fa-arrow-up text-success"></span>
-<?php elseif ($ifinfo['status'] == "down"): ?>
-      <span class="fa fa-arrow-down text-danger"></span>
-<?php elseif ($ifinfo['status'] == "no carrier"): ?>
-      <span class="fa fa-times text-danger"></span>
-<?php else: ?>
-      <?= html_safe($ifinfo['status']) ?>
-<?php endif ?>
-    </td>
-    <td style="width:32%; word-break: break-word;">
-      <?= html_safe(empty($ifinfo['media']) ? $ifinfo['cell_mode'] ?? '' : $ifinfo['media']) ?>
-    </td>
+
+    list($primary4,, $bits4) = interfaces_primary_address($ident);
+    list($primary6,, $bits6) = interfaces_primary_address6($ident);
+?>
+  <tr id="interface_widget_item_<?= html_safe($ident) ?>">
+    <td style="width:5%; word-break: break-word;" id="link_status"></td>
+    <td style="width:15%; word-break: break-word;" id="if_name"></td>
+    <td style="width:5%; word-break: break-word;" id="if_status"></td>
+    <td style="width:32%; word-break: break-word;" id="if_media"></td>
     <td style="width:43%; word-break: break-word;">
-      <?= html_safe($ifinfo['ipaddr']) ?>
-      <?= !empty($ifinfo['ipaddr']) ? '<br/>' : '' ?>
-      <?= html_safe(interfaces_has_prefix_only($ifdescr) ? $ifinfo['linklocal'] : $ifinfo['ipaddrv6']) ?>
+      <?= html_safe($primary4) ?>
+      <?= !empty($primary4) ? '<br/>' : '' ?>
+      <?= html_safe($primary6) ?>
     </td>
   </tr>
 <?php endforeach ?>
