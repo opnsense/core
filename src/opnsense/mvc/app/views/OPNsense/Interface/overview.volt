@@ -90,7 +90,7 @@
                                     .text('Expand'));
                             }
                             return $elements.prop('outerHTML');
-                        
+
                         },
                         "status": function (column, row) {
                             let connected = row.status == 'up' ? 'text-success' : 'text-danger';

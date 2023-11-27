@@ -116,7 +116,7 @@ class OverviewController extends ApiControllerBase
         }
 
         /* map routes to interfaces */
-        foreach($routes as $route) {
+        foreach ($routes as $route) {
             if (!empty($route['netif']) && !empty($ifinfo[$route['netif']])) {
                 $ifinfo[$route['netif']]['routes'][] = $route['destination'];
             }
@@ -144,7 +144,7 @@ class OverviewController extends ApiControllerBase
 
             $tmp['status'] = (!empty($details['flags']) && in_array('up', $details['flags'])) ? 'up' : 'down';
             if (!empty($details['status'])) {
-                if (!(in_array($details['status'] , ['active', 'running']))) {
+                if (!(in_array($details['status'], ['active', 'running']))) {
                     /* reflect current ifconfig status, such as 'no carrier' */
                     $tmp['status'] = $details['status'];
                 }
@@ -179,7 +179,7 @@ class OverviewController extends ApiControllerBase
                             if (!empty($ip['vhid'])) {
                                 $vhid = $ip['vhid'];
                                 $entry['vhid'] = $vhid;
-    
+
                                 if (!empty($details['carp'])) {
                                     foreach ($details['carp'] as $carp) {
                                         if ($carp['vhid'] == $vhid) {
@@ -198,7 +198,7 @@ class OverviewController extends ApiControllerBase
             }
 
             /* gateway(s) */
-            $gatewayv4 =  $gateways->getInterfaceGateway($tmp['identifier'] , 'inet');
+            $gatewayv4 =  $gateways->getInterfaceGateway($tmp['identifier'], 'inet');
             $gatewayv6 = $gateways->getInterfaceGateway($tmp['identifier'], 'inet6');
             $tmp['gateways'] = array_filter([$gatewayv4, $gatewayv6]);
 
