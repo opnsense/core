@@ -479,7 +479,7 @@ class Config extends Singleton
         if (!empty($_SESSION["Username"])) {
             $revision['username'] = $_SESSION["Username"];
         } elseif (!isset($revision['username'])) {
-            $revision['username'] = "(system)" ;
+            $revision['username'] = '(system)';
         }
         if (!empty($_SERVER['REMOTE_ADDR']) && strpos($revision['username'], '@') === false) {
             $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
@@ -491,11 +491,10 @@ class Config extends Singleton
         // append session revision tags when supplied (keys start with xrevision_)
         if (!empty($_SESSION) && is_array($_SESSION)) {
             foreach ($_SESSION as $key => $value) {
-                if (stripos($key, 'xrevision_') === 0 && !isset($revision[substr($key,10)])) {
-                    $revision[substr($key,10)] = $value;
+                if (stripos($key, 'xrevision_') === 0 && !isset($revision[substr($key, 10)])) {
+                    $revision[substr($key, 10)] = $value;
                 }
             }
-
         }
         $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
 
@@ -540,7 +539,7 @@ class Config extends Singleton
             $target = $node;
         }
 
-        array_walk($revision,  function($value, $key) use (&$target) {
+        array_walk($revision, function ($value, $key) use (&$target) {
             $node = $target->addChild($key);
             if (is_array($value)) {
                 $this->updateRevision($value, $node);
