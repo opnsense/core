@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($_POST['submit'] == 'remote') {
             configdp_run('interface reconfigure', array($interface));
         } elseif (!empty($_POST['status']) && $_POST['status'] == 'up') {
-            interface_bring_down($interface);
+            interface_suspend($interface);
         } else {
             interface_configure(false, $interface, true);
         }

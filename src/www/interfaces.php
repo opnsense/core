@@ -569,12 +569,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_subsystem_dirty('interfaces')) {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
-            clear_subsystem_dirty('interfaces');
-
             if (file_exists('/tmp/.interfaces.apply')) {
                 $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
                 foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    interface_bring_down($ifapply, $ifcfgo);
+                    interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
                     interface_configure(false, $ifapply, true);
                 }
 
@@ -585,8 +583,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 rrd_configure();
             }
+
+            clear_subsystem_dirty('interfaces');
+            @unlink('/tmp/.interfaces.apply');
         }
-        @unlink('/tmp/.interfaces.apply');
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
         } else {

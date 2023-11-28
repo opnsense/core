@@ -52,7 +52,7 @@ if (!empty($a_hasync['disconnectppps'])) {
                 if ($ppp['if'] == $interface['if']) {
                     log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
                     if ($type == 'BACKUP') {
-                        interface_bring_down($ifkey);
+                        interface_suspend($ifkey);
                     } else {
                         interface_ppps_configure($ifkey);
                     }

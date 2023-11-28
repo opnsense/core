@@ -61,7 +61,7 @@ function handle_argument_group($action, $device)
     switch ($action) {
         case 'stop':
             log_msg(sprintf("DEVD: Ethernet detached event for %s(%s)", $interface, $device));
-            interface_bring_down($interface);
+            interface_suspend($interface);
             break;
         case 'start':
             log_msg(sprintf("DEVD: Ethernet attached event for %s(%s)", $interface, $device));
