@@ -818,9 +818,11 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
             break;
     }
 
-    if (!empty($ifcfg['ipaddrv6']) && !is_ipaddrv6($ifcfg['ipaddrv6'])) {
+    if ($reset) {
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
+    } elseif (!empty($ifcfg['ipaddrv6']) && !is_ipaddrv6($ifcfg['ipaddrv6'])) {
         /* edge case: bring down a primary GUA, but not a link-local */
-        list ($ip6) = _interfaces_primary_address6($interface, null, false, false);
+        list ($ip6) = _interfaces_primary_address6($interface, $ifconfig_details, false, false);
         if (!empty($ip6)) {
             mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
         }
@@ -851,8 +853,10 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
             break;
     }
 
-    if (!empty($ifcfg['ipaddr']) && !is_ipaddrv4($ifcfg['ipaddr'])) {
-        list ($ip4) = interfaces_primary_address($interface);
+    if ($reset) {
+        interfaces_addresses_flush($realif, 4, $ifconfig_details);
+    } elseif (!empty($ifcfg['ipaddr']) && !is_ipaddrv4($ifcfg['ipaddr'])) {
+        list ($ip4) = interfaces_primary_address($interface, $ifconfig_details);
         if (!empty($ip4)) {
             mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
         }
@@ -861,11 +865,6 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
-
-    if ($reset) {
-        interfaces_addresses_flush($realif, 4, $ifconfig_details);
-        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
-    }
 }
 
 function interface_suspend($interface)
