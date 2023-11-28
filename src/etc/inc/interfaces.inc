@@ -766,7 +766,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface, $ifacecfg = false, $full = true)
+function interface_bring_down($interface, $ifacecfg = false, $full = true, $reset = false)
 {
     global $config;
 
@@ -780,13 +780,17 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true)
         $ifcfg = $config['interfaces'][$interface];
         $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
         /* signal pppoe on demand to restart to retain behaviour */
-        $ifcfg['enable'] = true;
+        $ifcfg['enable'] = !$reset;
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
         /* When $ifacecfg is passed, it should contain the original interfaces */
         $realif = $ifacecfg['ifcfg']['realif'];
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
+    }
+
+    if ($reset && isset($ifcfg['enable']) && $ifacecfg === false) {
+        log_msg("interface_bring_down(): sloppy reconfiguration of $interface detected.", LOG_WARNING);
     }
 
     interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
@@ -893,16 +897,9 @@ function interface_suspend($interface)
     interface_bring_down($interface, false, false);
 }
 
-function interface_reset($interface)
+function interface_reset($interface, $ifacecfg = false)
 {
-    $toapplylist = [];
-
-    /* makes the passing of $ifacecfg automatic, but does not modify the cache */
-    if (file_exists('/tmp/.interfaces.apply')) {
-        $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
-    }
-
-    interface_bring_down($interface, $toapplylist[$interface] ?? false);
+    interface_bring_down($interface, $ifacecfg, true, true);
 }
 
 function interfaces_ptpid_used($ptpid)
