@@ -766,7 +766,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface, $ifacecfg = false, $reset = true)
+function interface_reset($interface, $ifacecfg = false, $suspend = false)
 {
     global $config;
 
@@ -774,6 +774,12 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
         return;
     }
 
+    /*
+     * The function formerly known as interface_bring_down() is largely intact,
+     * but its purpose was split between different use cases that it could not
+     * handle correctly not being aware of the caller's requirements.  Now we
+     * split between a suspend and reset mode in order to accomodate the need.
+     */
     if ($ifacecfg === false) {
         $realif = get_real_interface($interface);
         $realifv6 = get_real_interface($interface, "inet6");
@@ -818,7 +824,7 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
             break;
     }
 
-    if ($reset) {
+    if (!$suspend) {
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     } elseif (!empty($ifcfg['ipaddrv6']) && !is_ipaddrv6($ifcfg['ipaddrv6'])) {
         /* edge case: bring down a primary GUA, but not a link-local */
@@ -836,7 +842,7 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
             if (!empty($ppps)) {
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
-                        if (isset($ppp['ondemand']) && !$reset) {
+                        if (isset($ppp['ondemand']) && $suspend) {
                             configdp_run('interface reconfigure', [$interface], true);
                         } else {
                             killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
@@ -853,7 +859,7 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
             break;
     }
 
-    if ($reset) {
+    if (!$suspend) {
         interfaces_addresses_flush($realif, 4, $ifconfig_details);
     } elseif (!empty($ifcfg['ipaddr']) && !is_ipaddrv4($ifcfg['ipaddr'])) {
         list ($ip4) = interfaces_primary_address($interface, $ifconfig_details);
@@ -869,12 +875,14 @@ function interface_bring_down($interface, $ifacecfg = false, $reset = true)
 
 function interface_suspend($interface)
 {
-    interface_bring_down($interface, false, false);
-}
-
-function interface_reset($interface, $ifacecfg = false)
-{
-    interface_bring_down($interface, $ifacecfg);
+    /*
+     * Suspend uses a subset of interface_reset() to avoid
+     * stripping all the static addresses already in use.
+     * This helps to retain routes and gateway information
+     * also relevant when reloading the packet filter for
+     * e.g. NAT rules generation.
+     */
+    interface_reset($interface, false, true);
 }
 
 function interfaces_ptpid_used($ptpid)
