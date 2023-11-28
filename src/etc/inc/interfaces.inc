@@ -766,7 +766,7 @@ function interface_vip_bring_down($vip)
     }
 }
 
-function interface_bring_down($interface, $ifacecfg = false, $full = true, $reset = false)
+function interface_bring_down($interface, $ifacecfg = false, $reset = true)
 {
     global $config;
 
@@ -779,8 +779,6 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true, $rese
         $realifv6 = get_real_interface($interface, "inet6");
         $ifcfg = $config['interfaces'][$interface];
         $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
-        /* signal pppoe on demand to restart to retain behaviour */
-        $ifcfg['enable'] = !$reset;
     } else {
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
@@ -791,15 +789,6 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true, $rese
 
     $ifconfig_details = legacy_interfaces_details();
 
-    interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
-    if ($full == true) {
-        interfaces_addresses_flush($realif, 4, $ifconfig_details);
-        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
-    }
-}
-
-function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps)
-{
     /*
      * hostapd and wpa_supplicant do not need to be running when the
      * interface is down.  They will also use 100% CPU if running after
@@ -845,7 +834,7 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
             if (!empty($ppps)) {
                 foreach ($ppps as $ppp) {
                     if ($ifcfg['if'] == $ppp['if']) {
-                        if (isset($ppp['ondemand']) && isset($ifcfg['enable'])) {
+                        if (isset($ppp['ondemand']) && !$reset) {
                             configdp_run('interface reconfigure', [$interface], true);
                         } else {
                             killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
@@ -872,6 +861,11 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
+
+    if ($reset) {
+        interfaces_addresses_flush($realif, 4, $ifconfig_details);
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
+    }
 }
 
 function interface_suspend($interface)
@@ -881,7 +875,7 @@ function interface_suspend($interface)
 
 function interface_reset($interface, $ifacecfg = false)
 {
-    interface_bring_down($interface, $ifacecfg, true, true);
+    interface_bring_down($interface, $ifacecfg);
 }
 
 function interfaces_ptpid_used($ptpid)
