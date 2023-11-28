@@ -135,7 +135,7 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 		done
 	done
 
-        # legacy behaviour originating from interface_bring_down()
+        # XXX legacy behaviour originating from interface_bring_down()
 	/usr/sbin/arp -d -i ${IF} -a
 
 	exit 0

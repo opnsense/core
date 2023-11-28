@@ -842,14 +842,14 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
 }
 
-function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
+function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg, $any_vip = false)
 {
     global $config;
 
     if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             /* XXX eventually bring down all as requested */
-            if ($vip['interface'] == $interface && $vip['mode'] != 'carp') {
+            if ($vip['interface'] == $interface && ($vip['mode'] != 'carp' || $any_vip)) {
                 /**
                  * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do its work
                  * when a carp interface goes down
@@ -868,7 +868,7 @@ function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
     }
 }
 
-function interface_bring_down($interface, $ifacecfg = false, $full = true)
+function interface_bring_down($interface, $ifacecfg = false, $full = true, $any_vip = false)
 {
     global $config;
 
@@ -893,7 +893,7 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true)
 
     interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
     if ($full == true) {
-        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg);
+        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg, $any_vip);
     }
 }
 
@@ -911,7 +911,7 @@ function interface_reset($interface)
         $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
     }
 
-    interface_bring_down($interface, $toapplylist[$interface] ?? false);
+    interface_bring_down($interface, $toapplylist[$interface] ?? false, true, true);
 }
 
 function interfaces_ptpid_used($ptpid)

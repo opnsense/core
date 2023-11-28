@@ -411,7 +411,7 @@ EOD;
         }
     } elseif (isset($config['interfaces']['lan'])) {
         unset($config['interfaces']['lan']['enable']);
-        interface_bring_down('lan');
+        interface_reset('lan');
 
         if (isset($config['dhcpd']['lan'])) {
             unset($config['dhcpd']['lan']);
@@ -447,7 +447,7 @@ EOD;
         }
     } elseif (isset($config['interfaces']['wan'])) {
         unset($config['interfaces']['wan']['enable']);
-        interface_bring_down('wan');
+        interface_reset('wan');
         unset($config['interfaces']['wan']);
     }
 
@@ -467,7 +467,7 @@ EOD;
     /* remove all other (old) optional interfaces */
     for (; isset($config['interfaces']['opt' . ($i + 1)]); $i++) {
         unset($config['interfaces']['opt' . ($i + 1)]['enable']);
-        interface_bring_down('opt' . ($i + 1));
+        interface_reset('opt' . ($i + 1));
         unset($config['interfaces']['opt' . ($i + 1)]);
     }
 

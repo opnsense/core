@@ -584,7 +584,7 @@ write_config(sprintf('%s configuration from console menu', $interface));
 echo "done.\n";
 
 system_resolver_configure(true);
-interface_bring_down($interface);
+interface_reset($interface);
 interface_configure(true, $interface, true);
 filter_configure_sync(true);
 
