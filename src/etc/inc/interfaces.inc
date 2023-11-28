@@ -789,13 +789,12 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true, $rese
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
     }
 
-    if ($reset && isset($ifcfg['enable']) && $ifacecfg === false) {
-        log_msg("interface_bring_down(): sloppy reconfiguration of $interface detected.", LOG_WARNING);
-    }
+    $ifconfig_details = legacy_interfaces_details();
 
     interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
     if ($full == true) {
-        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg);
+        interfaces_addresses_flush($realif, 4, $ifconfig_details);
+        interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 }
 
@@ -873,23 +872,6 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $realif);
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
-}
-
-function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
-{
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
-        if ($vip['interface'] == $interface) {
-            interface_vip_bring_down($vip);
-        }
-    }
-
-    if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
-        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ifcfg['ipaddrv6']]);
-    }
-
-    if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
-        mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ifcfg['ipaddr']]);
-    }
 }
 
 function interface_suspend($interface)
