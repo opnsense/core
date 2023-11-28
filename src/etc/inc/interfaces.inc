@@ -842,20 +842,11 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
     mwexecf('/usr/local/sbin/ifctl -6c -i %s', $realifv6);
 }
 
-function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg, $any_vip = false)
+function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
 {
-    global $config;
-
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            /* XXX eventually bring down all as requested */
-            if ($vip['interface'] == $interface && ($vip['mode'] != 'carp' || $any_vip)) {
-                /**
-                 * only disable non carp aliases, net.inet.carp.ifdown_demotion_factor should do its work
-                 * when a carp interface goes down
-                 */
-                interface_vip_bring_down($vip);
-            }
+    foreach (config_read_array('virtualip', 'vip') as $vip) {
+        if ($vip['interface'] == $interface) {
+            interface_vip_bring_down($vip);
         }
     }
 
@@ -868,7 +859,7 @@ function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg, $an
     }
 }
 
-function interface_bring_down($interface, $ifacecfg = false, $full = true, $any_vip = false)
+function interface_bring_down($interface, $ifacecfg = false, $full = true)
 {
     global $config;
 
@@ -893,7 +884,7 @@ function interface_bring_down($interface, $ifacecfg = false, $full = true, $any_
 
     interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
     if ($full == true) {
-        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg, $any_vip);
+        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg);
     }
 }
 
@@ -911,7 +902,7 @@ function interface_reset($interface)
         $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'));
     }
 
-    interface_bring_down($interface, $toapplylist[$interface] ?? false, true, true);
+    interface_bring_down($interface, $toapplylist[$interface] ?? false);
 }
 
 function interfaces_ptpid_used($ptpid)
