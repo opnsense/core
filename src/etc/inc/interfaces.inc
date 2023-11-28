@@ -766,6 +766,35 @@ function interface_vip_bring_down($vip)
     }
 }
 
+function interface_bring_down($interface, $ifacecfg = false, $full = true)
+{
+    global $config;
+
+    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
+        return;
+    }
+
+    if ($ifacecfg === false) {
+        $realif = get_real_interface($interface);
+        $realifv6 = get_real_interface($interface, "inet6");
+        $ifcfg = $config['interfaces'][$interface];
+        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
+        /* signal pppoe on demand to restart to retain behaviour */
+        $ifcfg['enable'] = true;
+    } else {
+        $ifcfg = $ifacecfg['ifcfg'];
+        $ppps = $ifacecfg['ppps'];
+        /* When $ifacecfg is passed, it should contain the original interfaces */
+        $realif = $ifacecfg['ifcfg']['realif'];
+        $realifv6 = $ifacecfg['ifcfg']['realifv6'];
+    }
+
+    interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
+    if ($full == true) {
+        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg);
+    }
+}
+
 function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps)
 {
     /*
@@ -856,35 +885,6 @@ function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
 
     if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
         mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ifcfg['ipaddr']]);
-    }
-}
-
-function interface_bring_down($interface, $ifacecfg = false, $full = true)
-{
-    global $config;
-
-    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
-        return;
-    }
-
-    if ($ifacecfg === false) {
-        $realif = get_real_interface($interface);
-        $realifv6 = get_real_interface($interface, "inet6");
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
-        /* signal pppoe on demand to restart to retain behaviour */
-        $ifcfg['enable'] = true;
-    } else {
-        $ifcfg = $ifacecfg['ifcfg'];
-        $ppps = $ifacecfg['ppps'];
-        /* When $ifacecfg is passed, it should contain the original interfaces */
-        $realif = $ifacecfg['ifcfg']['realif'];
-        $realifv6 = $ifacecfg['ifcfg']['realifv6'];
-    }
-
-    interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $ppps);
-    if ($full == true) {
-        interface_bring_down_static($interface, $realif, $realifv6, $ifcfg);
     }
 }
 
