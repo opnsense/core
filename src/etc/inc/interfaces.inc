@@ -793,6 +793,15 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         $realifv6 = $ifacecfg['ifcfg']['realifv6'];
     }
 
+    if (!$suspend) {
+        foreach (config_read_array('virtualip', 'vip') as $vip) {
+            if ($vip['interface'] == $interface) {
+                interface_vip_bring_down($vip);
+            }
+        }
+    }
+
+    /* cache ifconfig now that VIPs are handled */
     $ifconfig_details = legacy_interfaces_details();
 
     /*
