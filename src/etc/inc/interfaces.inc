@@ -797,7 +797,6 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
             break;
     }
 
-    /* strip dynamic IPv6 addresses */
     if (!empty($ifcfg['ipaddrv6']) && !is_ipaddrv6($ifcfg['ipaddrv6'])) {
         /* edge case: bring down a primary GUA, but not a link-local */
         list ($ip6) = _interfaces_primary_address6($interface, null, false, false);
@@ -831,7 +830,6 @@ function interface_bring_down_dynamic($interface, $realif, $realifv6, $ifcfg, $p
             break;
     }
 
-    /* strip dynamic IPv4 addresses (also due to dhclient limitation) */
     if (!empty($ifcfg['ipaddr']) && !is_ipaddrv4($ifcfg['ipaddr'])) {
         list ($ip4) = interfaces_primary_address($interface);
         if (!empty($ip4)) {
@@ -861,19 +859,12 @@ function interface_bring_down_static($interface, $realif, $realifv6, $ifcfg)
         }
     }
 
-    if (is_ipaddrv6($ifcfg['ipaddrv6'] ?? 'none')) {
-        /* edge case: bring down a primary GUA, but not a link-local */
-        list ($ip6) = _interfaces_primary_address6($interface, null, false, false);
-        if (!empty($ip6)) {
-            mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ip6]);
-        }
+    if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
+        mwexecf('/sbin/ifconfig %s inet6 %s delete', [$realifv6, $ifcfg['ipaddrv6']]);
     }
 
-    if (is_ipaddrv4($ifcfg['ipaddr'] ?? 'none')) {
-        list ($ip4) = interfaces_primary_address($interface);
-        if (!empty($ip4)) {
-            mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ip4]);
-        }
+    if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
+        mwexecf('/sbin/ifconfig %s delete %s', [$realif, $ifcfg['ipaddr']]);
     }
 }
 
