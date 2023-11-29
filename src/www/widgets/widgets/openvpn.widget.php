@@ -109,7 +109,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         </tr>
         <tr>
           <th><?=gettext("Name/Time");?></th>
-          <th><?=gettext("Real/Virtual IP");?></th>
+          <th><?=gettext("Real/Virtual IPs");?></th>
           <th></th>
         </tr>
       </thead>
@@ -119,7 +119,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         foreach ($server['client_list'] as $conn) :?>
           <tr>
             <td><?=$conn['common_name'] ?? '';?><br/><?=$conn['connected_since'] ?? '';?></td>
-            <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?></td>
+	    <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?><br/><?=$conn['virtual_ipv6_address'] ?? '';?></td>
             <td>
                <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['vpnid'];?>"
                  data-client-ip="<?=$conn['real_address'];?>"
@@ -133,7 +133,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     elseif (!empty($server['timestamp'])):?>
           <tr>
             <td><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-            <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?></td>
+	    <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?><br/><?=$conn['virtual_ipv6_address'];?></td>
             <td>
             <span class='fa fa-exchange fa-fw <?=$server['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
             </td>
@@ -155,7 +155,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
           </tr>
           <tr>
             <th><?= gettext('Name/Time') ?></th>
-            <th><?= gettext('Remote/Virtual IP') ?></th>
+            <th><?= gettext('Remote/Virtual IPs') ?></th>
             <th></th>
           </tr>
       </thead>
@@ -165,7 +165,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
 foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
         <tr>
           <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $client['timestamp']);?></td>
-          <td><?=$client['real_address'];?><br/><?=$client['virtual_address'];?></td>
+          <td><?=$client['real_address'];?><br/><?=$client['virtual_address'];?><br/><?=$conn['virtual_ipv6_address'];?></td>
           <td>
             <span class='fa fa-exchange fa-fw <?=$client['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
           </td>

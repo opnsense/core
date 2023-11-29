@@ -130,6 +130,7 @@
                 <th data-column-id="common_name" data-type="string">{{ lang._('Common Name') }}</th>
                 <th data-column-id="real_address" data-type="string">{{ lang._('Real Address') }}</th>
                 <th data-column-id="virtual_address" data-type="string">{{ lang._('Virtual Address') }}</th>
+                <th data-column-id="virtual_ipv6_address" data-type="string">{{ lang._('Virtual IPv6 Address') }}</th>
                 <th data-column-id="connected_since" data-type="string">{{ lang._('Connected Since') }}</th>
                 <th data-column-id="bytes_sent" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes Sent') }}</th>
                 <th data-column-id="bytes_received" data-type="numeric" data-formatter="bytes">{{ lang._('Bytes Received') }}</th>
