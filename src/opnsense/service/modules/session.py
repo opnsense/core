@@ -1,3 +1,4 @@
+
 """
     Copyright (c) 2014-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
@@ -22,48 +23,50 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
+
+    --------------------------------------------------------------------------------------
+    package : configd
+    function: session handling and authorisation
 """
-import syslog
+import struct
+import socket
+import pwd
+import grp
+
+class xucred:
+    def __init__(self, connection):
+        # xucred structure defined in : https://man.freebsd.org/cgi/man.cgi?query=unix&sektion=4
+        # XU_NGROUPS is 16
+        xucred_fmt = '2ih16iP'
+        tmp = connection.getsockopt(0, socket.LOCAL_PEERCRED, struct.calcsize(xucred_fmt))
+        tmp = tuple(struct.unpack(xucred_fmt, tmp))
+        self.cr_version = tmp[0]
+        self.cr_uid = tmp[1]
+        self.cr_ngroups = tmp[2]
+        self.cr_groups = tmp[3:18]
+        self.cr_pid = tmp[19]
+        self._user = None
+        self._groups = set()
+        tmp = pwd.getpwuid(self.cr_uid)
+        if tmp:
+            self._user = tmp.pw_name
+        for idx,item in enumerate(self.cr_groups):
+            if idx < self.cr_ngroups:
+                tmp = grp.getgrgid(item)
+                if tmp:
+                    self._groups.add(tmp.gr_name)
+
+    def get_groups(self):
+        return self._groups
+
+    def get_user(self):
+        return self._user
 
 
-def singleton(cls, *args, **kwargs):
-    """ singleton pattern, use ad decorator
-    :param cls:
+def get_session_context(connection):
     """
-    instances = {}
+    :param instr: string with optional tags [field.$$]
+    :return: xucred
+    """
 
-    # noinspection PyShadowingNames
-    def getinstance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return getinstance
-
-
-def emit_syslog(priority, message):
-    msg = message.replace('\n', ' ')[:4000]
-    syslog.syslog(priority, msg)
-
-
-def syslog_debug(message):
-    emit_syslog(syslog.LOG_DEBUG, message)
-
-
-def syslog_notice(message):
-    emit_syslog(syslog.LOG_NOTICE, message)
-
-
-def syslog_info(message):
-    emit_syslog(syslog.LOG_INFO, message)
-
-
-def syslog_error(message):
-    emit_syslog(syslog.LOG_ERR, message)
-
-
-def syslog_auth_info(message):
-    emit_syslog(syslog.LOG_AUTH | syslog.LOG_INFO, message)
-
-def syslog_auth_error(message):
-    emit_syslog(syslog.LOG_AUTH | syslog.LOG_ERR, message)
+    return xucred(connection)

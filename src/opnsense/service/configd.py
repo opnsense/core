@@ -72,7 +72,7 @@ def validate_config(cnf):
             sys.exit(0)
 
 
-def main(cnf, simulate=False, single_threaded=False):
+def main(cnf, single_threaded=False):
     """ configd startup
         :param cnf: config handle
         :param simulate: simulate only
@@ -86,17 +86,18 @@ def main(cnf, simulate=False, single_threaded=False):
         for envKey in cnf.items('environment'):
             config_environment[envKey[0]] = envKey[1]
 
+    action_defaults = dict()
+    if cnf.has_section('action_defaults'):
+        for envKey in cnf.items('action_defaults'):
+            action_defaults[envKey[0]] = envKey[1]
+
     # run process coordinator ( on console or as daemon )
-    # if command-line arguments contain "emulate",  start in emulation mode
-    if simulate:
-        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main', 'socket_filename'),
-                                                      config_path='%s/conf' % program_path,
-                                                      config_environment=config_environment,
-                                                      simulation_mode=True)
-    else:
-        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main', 'socket_filename'),
-                                                      config_path='%s/conf' % program_path,
-                                                      config_environment=config_environment)
+    proc_handler = modules.processhandler.Handler(
+        socket_filename=cnf.get('main', 'socket_filename'),
+        config_path='%s/conf' % program_path,
+        config_environment=config_environment,
+        action_defaults=action_defaults,
+    )
     proc_handler.single_threaded = single_threaded
     proc_handler.run()
 
@@ -135,11 +136,7 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         profile = cProfile.Profile(subcalls=True)
         profile.enable()
         try:
-            if len(sys.argv) > 1 and 'simulate' in sys.argv[1:]:
-                print('simulate calls.')
-                main(cnf=this_config, simulate=True, single_threaded=True)
-            else:
-                main(cnf=this_config, single_threaded=True)
+            main(cnf=this_config, single_threaded=True)
         except KeyboardInterrupt:
             pass
         except:

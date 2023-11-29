@@ -28,19 +28,20 @@
     function: unix domain socket process worker process
 """
 
+import copy
+import configparser
+import glob
 import os
-import subprocess
+import shlex
 import socket
 import traceback
 import threading
-import configparser
-import glob
 import time
 import uuid
-import shlex
+from .session import get_session_context
 from .actions import ActionFactory
 from .actions.base import BaseAction
-from . import syslog_error, syslog_info, syslog_notice, singleton
+from . import syslog_error, syslog_info, syslog_notice, syslog_auth_info, syslog_auth_error, singleton
 
 
 class Handler(object):
@@ -55,18 +56,21 @@ class Handler(object):
                     <- send back result string
     """
 
-    def __init__(self, socket_filename, config_path, config_environment=None, simulation_mode=False):
+    def __init__(self, socket_filename, config_path, config_environment=None, action_defaults=None):
         """ Constructor
         :param socket_filename: filename of unix domain socket to use
-        :param config_path: location of configuration files
-        :param simulation_mode: emulation mode, do not start actual (script) commands
+        :param config_path: location of action configuration files
+        :param config_environment: env to use in shell commands
+        :param action_defaults: default properties for action objects
         """
         if config_environment is None:
             config_environment = {}
+        if action_defaults is None:
+            action_defaults = {}
         self.socket_filename = socket_filename
         self.config_path = config_path
-        self.simulation_mode = simulation_mode
         self.config_environment = config_environment
+        self.action_defaults = action_defaults
         self.single_threaded = False
 
     def run(self):
@@ -77,7 +81,11 @@ class Handler(object):
         while True:
             # noinspection PyBroadException
             try:
-                act_handler = ActionHandler(config_path=self.config_path, config_environment=self.config_environment)
+                act_handler = ActionHandler(
+                    config_path=self.config_path,
+                    config_environment=self.config_environment,
+                    action_defaults=self.action_defaults
+                )
                 try:
                     os.unlink(self.socket_filename)
                 except OSError:
@@ -91,12 +99,12 @@ class Handler(object):
                 while True:
                     # wait for a connection to arrive
                     connection, client_address = sock.accept()
+
                     # spawn a client connection
                     cmd_thread = HandlerClient(
                         connection=connection,
                         client_address=client_address,
-                        action_handler=act_handler,
-                        simulation_mode=self.simulation_mode
+                        action_handler=act_handler
                     )
                     if self.single_threaded:
                         # run single threaded
@@ -128,20 +136,19 @@ class HandlerClient(threading.Thread):
     """ Handle commands via specified socket connection
     """
 
-    def __init__(self, connection, client_address, action_handler, simulation_mode=False):
+    def __init__(self, connection, client_address, action_handler):
         """
         :param connection: socket connection object
         :param client_address: client address ( from socket accept )
         :param action_handler: action handler object
-        :param simulation_mode: Emulation mode, do not start actual (script) commands
         :return: None
         """
         threading.Thread.__init__(self)
         self.connection = connection
         self.client_address = client_address
         self.action_handler = action_handler
-        self.simulation_mode = simulation_mode
         self.message_uuid = uuid.uuid4()
+        self.session = get_session_context(connection)
 
     def run(self):
         """ handle single action ( read data, execute command, send response )
@@ -149,9 +156,6 @@ class HandlerClient(threading.Thread):
         :return: None
         """
         result = ''
-        exec_command = ''
-        exec_action = ''
-        exec_params = ''
         exec_in_background = False
         # noinspection PyBroadException
         try:
@@ -176,11 +180,7 @@ class HandlerClient(threading.Thread):
                     self.connection.close()
 
                 # execute requested action
-                if self.simulation_mode:
-                    self.action_handler.show_action(data_parts, self.message_uuid)
-                    result = 'OK'
-                else:
-                    result = self.action_handler.execute(data_parts, self.message_uuid, self.connection)
+                result = self.action_handler.execute(data_parts, self.message_uuid, self.connection, self.session)
 
                 if not exec_in_background:
                     # send response back to client (including trailing enters)
@@ -199,13 +199,13 @@ class HandlerClient(threading.Thread):
             # send end of stream characters
             if not exec_in_background:
                 self.connection.sendall(("%c%c%c" % (chr(0), chr(0), chr(0))).encode())
-        except SystemExit:
-            # ignore system exit related errors
+        except (SystemExit, BrokenPipeError):
+            # ignore system exit or "client left" related errors
             pass
         except Exception:
             print(traceback.format_exc())
-            syslog_notice('unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (
-                result, exec_command, exec_action, exec_params, self.message_uuid, traceback.format_exc()
+            syslog_notice('unable to sendback response for %s, message was %s' % (
+                self.message_uuid, traceback.format_exc()
             ))
         finally:
             if not exec_in_background:
@@ -218,28 +218,27 @@ class ActionHandler(object):
     """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
     """
 
-    def __init__(self, config_path=None, config_environment=None):
+    def __init__(self, config_path=None, config_environment=None, action_defaults=None):
         """ Initialize action handler to start system functions
 
         :param config_path: full path of configuration data
         :param config_environment: environment to use (if possible)
+        :param action_defaults: default properties for action objects
         :return:
         """
-        if config_path is not None:
-            self.config_path = config_path
-        if config_environment is not None:
-            self.config_environment = config_environment
-
-        # try to load data on initial start
-        if not hasattr(self, 'action_map'):
-            self.action_map = {}
-            self.load_config()
+        self.config_path = config_path
+        self.config_environment = config_environment if config_environment else {}
+        self.action_defaults = action_defaults if action_defaults else {}
+        self.action_map = {}
+        self.load_config()
 
     def load_config(self):
         """ load action configuration from config files into local dictionary
 
         :return: None
         """
+        if self.config_path is None:
+            return
         action_factory = ActionFactory()
         for config_filename in glob.glob('%s/actions_*.conf' % self.config_path) \
                 + glob.glob('%s/actions.d/actions_*.conf' % self.config_path):
@@ -257,8 +256,10 @@ class ActionHandler(object):
                 syslog_error('exception occurred while reading "%s": %s' % (config_filename, traceback.format_exc(0)))
 
             for section in cnf.sections():
-                # map configuration data on object
-                conf = {}
+                # map configuration data on object, start with default action config and add __full_command for
+                # easy reference.
+                conf = copy.deepcopy(self.action_defaults)
+                conf['__full_command'] = "%s.%s" % (topic_name, section)
                 for act_prop in cnf.items(section):
                     conf[act_prop[0]] = act_prop[1]
                 action_obj = action_factory.get(environment=self.config_environment, conf=conf)
@@ -321,28 +322,29 @@ class ActionHandler(object):
 
         return None, []
 
-    def execute(self, action, message_uuid, connection=None):
+    def execute(self, action, message_uuid, connection, session):
         """ execute configuration defined action
         :param action: list of commands and parameters
         :param message_uuid: message unique id
+        :param connection: socket connection (in case we need to stream data back)
+        :param session: this session context (used for access management)
         :return: OK on success, else error code
         """
+        full_command = '.'.join(action)
         action_obj, action_params = self.find_action(action)
 
         if action_obj is not None:
-            return action_obj.execute(action_params, message_uuid, connection)
+            is_allowed = action_obj.is_allowed(session)
+            if is_allowed:
+                syslog_auth_info("action allowed %s for user %s" % (action_obj.full_command,session.get_user()))
+                return action_obj.execute(action_params, message_uuid, connection)
+            else:
+                syslog_auth_error("action denied %s for user %s (requires : %s)" % (
+                    action_obj.full_command,
+                    session.get_user(),
+                    action_obj.requires())
+                )
+                return 'Action not allowed or missing\n'
 
-        return 'Action not found\n'
-
-    def show_action(self, action, message_uuid):
-        """ debug/simulation mode: show action information
-        :param action: list of commands and parameters
-        :param message_uuid: message unique id
-        :return: None
-        """
-        action_obj, parameters = self.find_action(action)
-        if action_obj is not None:
-            print('---------------------------------------------------------------------')
-            print('execute %s ' % ' '.join(action))
-            print('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
-            print('---------------------------------------------------------------------')
+        syslog_auth_error("action %s not found for user %s" % (full_command, session.get_user()))
+        return 'Action not allowed or missing\n'
