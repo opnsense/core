@@ -210,6 +210,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         // add VPN and local networks
         $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
         foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
+            /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
@@ -384,10 +385,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= $fw->outputFilterRules();
     $rules .= $fw->anchorToText('fw', 'tail');
 
-    // Copy rules.debug to rules.debug.old
-    if (file_exists('/tmp/rules.debug')) {
-        @copy('/tmp/rules.debug', '/tmp/rules.debug.old');
-    }
+    @copy('/tmp/rules.debug', '/tmp/rules.debug.old');
+    @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
+
+    mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
