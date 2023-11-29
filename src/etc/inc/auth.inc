@@ -349,16 +349,10 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $user_group = 'wheel';
         $user_home = '/root';
     } else {
-        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
+        $is_admin = userIsAdmin($user['name']);
+        $user_shell = $is_admin && isset($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
+        $user_group = $is_admin ? 'wheel' : 'nobody';
         $user_home = "/home/{$user_name}";
-        $user_group = 'nobody';
-    }
-
-    /* admins access gives wheely rights */
-    if (userIsAdmin($user['name'])) {
-        $user_group = 'wheel';
-    } else {
-        $user_shell = '/usr/sbin/nologin';
     }
 
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
