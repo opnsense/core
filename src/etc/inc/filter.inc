@@ -396,10 +396,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= $fw->outputFilterRules();
     $rules .= $fw->anchorToText('fw', 'tail');
 
-    // Copy rules.debug to rules.debug.old
-    if (file_exists('/tmp/rules.debug')) {
-        @copy('/tmp/rules.debug', '/tmp/rules.debug.old');
-    }
+    @copy('/tmp/rules.debug', '/tmp/rules.debug.old');
+    @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
+
+    mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
 
     if (!@file_put_contents('/tmp/rules.debug', $rules, LOCK_EX)) {
         syslog(LOG_ERR, 'ERROR: Could not write new rules!');
