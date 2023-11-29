@@ -215,10 +215,10 @@ function userIsAdmin($username)
 
 function auth_get_shells($uid = 0)
 {
-    $shells = array('' => '/usr/sbin/nologin');
+    $shells = ['' => '/usr/sbin/nologin'];
 
     if ($uid == 0) {
-        $shells = array('' => '/usr/local/sbin/opnsense-shell');
+        $shells = ['' => '/usr/local/sbin/opnsense-shell'];
     }
 
     $etc_shells = @file_get_contents('/etc/shells');
@@ -357,7 +357,10 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     /* admins access gives wheely rights */
     if (userIsAdmin($user['name'])) {
         $user_group = 'wheel';
+    } else {
+        $user_shell = '/usr/sbin/nologin';
     }
+
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 

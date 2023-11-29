@@ -566,10 +566,12 @@ $( document ).ready(function() {
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors)) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+<?php if (isset($id) && !empty($a_user[$id]['shell']) && !userIsAdmin($a_user[$id]['name'])): ?>
+          <? print_alert_box(gettext('The login shell for this non-admin user is not active for security reasons.'), 'warning'); ?>
+<?php endif ?>
         <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12 table-responsive">
-<?php
-            if ($act == "new" || $act == "edit" ) :?>
+<?php if ($act == 'new' || $act == 'edit'): ?>
               <form method="post" name="iform" id="iform">
                 <input type="hidden" id="act" name="act" value="<?=$act;?>" />
                 <input type="hidden" id="userid" name="userid" value="<?=(isset($id) ? $id : '');?>" />
@@ -671,11 +673,9 @@ $( document ).ready(function() {
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Login shell') ?></td>
                     <td>
                       <select name="shell" class="selectpicker" data-style="btn-default">
-<?php
-                      foreach (auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']) as $shell_key => $shell_value) :?>
+<?php foreach (auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']) as $shell_key => $shell_value): ?>
                         <option value="<?= html_safe($shell_key) ?>" <?= $pconfig['shell'] == $shell_key ? 'selected="selected"' : '' ?>><?= html_safe($shell_value) ?></option>
-<?php
-                      endforeach;?>
+<?php endforeach ?>
                       </select>
                     </td>
                   </tr>
