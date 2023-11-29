@@ -119,7 +119,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         foreach ($server['client_list'] as $conn) :?>
           <tr>
             <td><?=$conn['common_name'] ?? '';?><br/><?=$conn['connected_since'] ?? '';?></td>
-	    <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?><br/><?=$conn['virtual_ipv6_address'] ?? '';?></td>
+            <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?><br/><?=$conn['virtual_ipv6_address'] ?? '';?></td>
             <td>
                <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['vpnid'];?>"
                  data-client-ip="<?=$conn['real_address'];?>"
@@ -133,7 +133,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     elseif (!empty($server['timestamp'])):?>
           <tr>
             <td><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-	    <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?><br/><?=$conn['virtual_ipv6_address'];?></td>
+            <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?><br/><?=$conn['virtual_ipv6_address'];?></td>
             <td>
             <span class='fa fa-exchange fa-fw <?=$server['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
             </td>
