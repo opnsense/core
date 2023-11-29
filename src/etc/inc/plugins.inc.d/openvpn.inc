@@ -1067,7 +1067,7 @@ function openvpn_configure_single($id)
                 }
                 openvpn_reconfigure($mode, $settings);
                 openvpn_restart($mode, $settings);
-                configd_run('filter reload'); /* XXX really needed? */
+                configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
                 return;
             }
         }
@@ -1109,7 +1109,7 @@ function openvpn_configure_do($verbose = false, $interface = '', $carp_event = f
     }
 
     if ($reconfigure_count > 0) {
-        configd_run('filter reload'); /* XXX really needed? */
+        configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
     }
 
     service_log("done.\n", $verbose);

@@ -294,5 +294,9 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
             }
         }
     }
+
+    if (count($server_devs)) {
+        configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
+    }
 }
 closelog();
