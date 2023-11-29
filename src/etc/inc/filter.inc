@@ -222,6 +222,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         // add VPN and local networks
         $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
         foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
+            /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
                 foreach (array(500, null) as $dstport) {
                     $rule = array(
