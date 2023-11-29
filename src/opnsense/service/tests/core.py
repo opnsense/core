@@ -27,6 +27,7 @@
 
     package : configd
 """
+import struct
 import unittest
 import json
 from modules import processhandler
@@ -81,6 +82,12 @@ class DummySocket(object):
     def shutdown(self, mode):
         pass
 
+    def getsockopt(*args, **kwargs):
+        # return dummy xucred structure data
+        tmp = ('2ih16iP', 0, 0, 3, 0, 0, 5, 1999, 2002, 2012, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1317)
+        return struct.pack(*tmp)
+
+
 
 class TestCoreMethods(unittest.TestCase):
     def setUp(self):
@@ -106,8 +113,7 @@ class TestCoreMethods(unittest.TestCase):
         self.dummysock.setTestData('xxxxxx\n')
         cmd_thread = processhandler.HandlerClient(connection=self.dummysock,
                                                   client_address=None,
-                                                  action_handler=self.act_handler,
-                                                  simulation_mode=False)
+                                                  action_handler=self.act_handler)
         cmd_thread.run()
         self.assertEqual(self.dummysock.getReceived()[-4:], '\n%c%c%c' % (chr(0), chr(0), chr(0)), "Invalid sequence")
 
@@ -118,10 +124,13 @@ class TestCoreMethods(unittest.TestCase):
         self.dummysock.setTestData('xxxxxx\n')
         cmd_thread = processhandler.HandlerClient(connection=self.dummysock,
                                                   client_address=None,
-                                                  action_handler=self.act_handler,
-                                                  simulation_mode=False)
+                                                  action_handler=self.act_handler)
         cmd_thread.run()
-        self.assertEqual(self.dummysock.getReceived().split('\n')[0], 'Action not found', 'Invalid response')
+        self.assertEqual(
+            self.dummysock.getReceived().split('\n')[0],
+            'Action not allowed or missing',
+            'Invalid response'
+        )
 
     def test_configd_actions(self):
         """ request configd command list
@@ -130,8 +139,7 @@ class TestCoreMethods(unittest.TestCase):
         self.dummysock.setTestData('configd actions json\n')
         cmd_thread = processhandler.HandlerClient(connection=self.dummysock,
                                                   client_address=None,
-                                                  action_handler=self.act_handler,
-                                                  simulation_mode=False)
+                                                  action_handler=self.act_handler)
         cmd_thread.run()
         response = json.loads(self.dummysock.getReceived()[:-4])
         self.assertGreater(len(response), 10, 'number of configd commands very suspicious')
