@@ -249,6 +249,34 @@ class OpenVPN extends BaseModel
     }
 
     /**
+     * @return array of server devices (legacy and mvc)
+     */
+    public function serverDevices()
+    {
+        $result = [];
+        foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
+            if (!empty((string)$node->enabled) && (string)$node->role == 'server') {
+                $result[(string)$node->__devname] = [
+                    'descr' => (string)$node->description ?? '',
+                    'sockFilename' => (string)$node->sockFilename
+                ];
+            }
+        }
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->openvpn) && isset($cfg->openvpn->{'openvpn-server'})) {
+            foreach ($cfg->openvpn->{'openvpn-server'} as $item) {
+                if (empty((string)$item->disable)) {
+                    $result[sprintf("ovpns%s", $item->vpnid)] = [
+                        'descr' => (string)$item->description ?? '',
+                        'sockFilename' => "/var/etc/openvpn/server{$item->vpnid}.sock"
+                    ];
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Find unique instance properties, either from legacy or mvc model
      * Offers glue between both worlds.
      * @param string $server_id vpnid (either numerical or uuid)

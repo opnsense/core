@@ -123,12 +123,9 @@ function rrd_configure($verbose = false, $bootup = false)
         $ifdescrs = get_configured_interface_with_descr();
         /* IPsec counters */
         $ifdescrs['ipsec'] = "IPsec";
-        /* OpenVPN server counters */
-        if (isset($config['openvpn']['openvpn-server'])) {
-            foreach ($config['openvpn']['openvpn-server'] as $server) {
-                $serverid = "ovpns" . $server['vpnid'];
-                $ifdescrs[$serverid] = $server['description'] ?? "";
-            }
+        $ovpn_servers = (new OPNsense\OpenVPN\OpenVPN())->serverDevices();
+        foreach ($ovpn_servers as $ifname => $data) {
+            $ifdescrs[$ifname] = $data['descr'];
         }
 
         /* process all real and pseudo interfaces */
@@ -232,7 +229,7 @@ function rrd_configure($verbose = false, $bootup = false)
             }
 
             /* OpenVPN, set up the rrd file */
-            if (stristr($ifname, "ovpns")) {
+            if (isset($ovpn_servers[$ifname])) {
                 if (!file_exists("$rrddbpath$ifname$vpnusers")) {
                     $rrdcreate = "$rrdtool create $rrddbpath$ifname$vpnusers --step $rrdvpninterval ";
                     $rrdcreate .= "DS:users:GAUGE:$vpnvalid:0:10000 ";
@@ -249,24 +246,15 @@ function rrd_configure($verbose = false, $bootup = false)
                 if ($bootup) {
                     mwexec("$rrdtool update $rrddbpath$ifname$vpnusers N:U");
                 }
-
-                if (isset($config['openvpn']['openvpn-server'])) {
-                    foreach ($config['openvpn']['openvpn-server'] as $server) {
-                        if ("ovpns{$server['vpnid']}" == $ifname) {
-                            $port = $server['local_port'];
-                            $vpnid = $server['vpnid'];
-                        }
-                    }
-                }
                 $rrdupdatesh .= "\n";
-                $rrdupdatesh .= "# polling vpn users for interface $ifname $realif port $port\n";
+                $rrdupdatesh .= "# polling vpn users for interface $ifname\n";
                 $rrdupdatesh .= "list_current_users() {\n";
                 $rrdupdatesh .= " sleep 0.2\n";
                 $rrdupdatesh .= " echo \"status 2\"\n";
                 $rrdupdatesh .= " sleep 0.2\n";
                 $rrdupdatesh .= " echo \"quit\"\n";
                 $rrdupdatesh .= "}\n";
-                $rrdupdatesh .= "OVPN=`list_current_users | nc -U /var/etc/openvpn/server{$vpnid}.sock | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
+                $rrdupdatesh .= "OVPN=`list_current_users | nc -U {$ovpn_servers[$ifname]['sockFilename']} | awk -F\",\" '/^CLIENT_LIST/ {print \$2}' | wc -l | awk '{print $1}'`\n";
                 $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$vpnusers N:\${OVPN}\n";
             }
 
