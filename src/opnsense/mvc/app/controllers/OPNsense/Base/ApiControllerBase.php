@@ -96,7 +96,13 @@ class ApiControllerBase extends ControllerRoot
                         if (!empty($fields) && !in_array($itemkey, $fields)) {
                             continue;
                         }
-                        $itemval = !is_array($itemval) ? $itemval : implode(' ', $itemval);
+
+                        if (is_array($itemval)) {
+                            $tmp = [];
+                            array_walk_recursive($itemval, function($a) use (&$tmp) { $tmp[] = $a; });
+                            $itemval = implode(' ', $tmp);
+                        }
+
                         if (stripos((string)$itemval, $clause) !== false) {
                             $matches = true;
                         }

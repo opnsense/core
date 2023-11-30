@@ -212,7 +212,10 @@ class OverviewController extends ApiControllerBase
     {
         $this->sessionClose();
         $result = $this->parseIfInfo(null, $details);
-        return $this->searchRecordsetBase($result);
+        return $this->searchRecordsetBase(
+            $result,
+            ['status', 'description', 'device', 'link_type', 'ipv4', 'ipv6', 'gateways', 'routes']
+        );
     }
 
     public function getInterfaceAction($if = null)
