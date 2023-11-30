@@ -162,7 +162,6 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
       <tbody>
 
 <?php
-
 foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
         <tr>
           <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $client['timestamp']);?></td>
