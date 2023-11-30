@@ -109,7 +109,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         </tr>
         <tr>
           <th><?=gettext("Name/Time");?></th>
-          <th><?=gettext("Real/Virtual IPs");?></th>
+          <th><?=gettext("Real/Virtual IP");?></th>
           <th></th>
         </tr>
       </thead>
