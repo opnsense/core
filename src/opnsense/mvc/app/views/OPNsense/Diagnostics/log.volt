@@ -149,15 +149,15 @@
 
       function switch_mode(value) {
           let select = $("#severity_filter");
-
-          // switch select mode and destroy selectpicker
-          select.prop("multiple", filter_exact);
-          select.selectpicker('destroy');
-
-          // remove title option. bug in bs-select. fixed in v1.13.18 https://github.com/snapappointments/bootstrap-select/issues/2491
-          select.find('option.bs-title-option').remove();
-
           let header_val = filter_exact ? m_header : s_header;
+
+          select.prop("multiple", filter_exact);
+          // switch select mode and destroy selectpicker
+          if (!select.hasClass('severity_filter_init')) {
+              select.addClass('severity_filter_init');
+          } else {
+              select.selectpicker('destroy');
+          }
           select.selectpicker({ header: header_val });
 
           // attach event handler each time header created
@@ -179,8 +179,11 @@
                   localStorage.setItem('log_severity_{{module}}_{{scope}}', new_val);
               }
               switch_mode(new_val);
-              // keep it open
-              select.selectpicker('toggle');
+              // keep it open, but wait for selectpicker to be completed
+              setTimeout(function(){
+                select.selectpicker('toggle');
+              }, 100);
+
           });
 
           select.val(value);
