@@ -119,7 +119,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
         foreach ($server['client_list'] as $conn) :?>
           <tr>
             <td><?=$conn['common_name'] ?? '';?><br/><?=$conn['connected_since'] ?? '';?></td>
-            <td><?=$conn['real_address'] ?? '';?><br/><?=$conn['virtual_address'] ?? '';?><?php if($conn['virtual_address'] && $conn['virtual_ipv6_address']){ echo "<br/>"; }?><?=$conn['virtual_ipv6_address'] ?? '';?></td>
+            <td><?= join('<br/>', array_filter([$conn['real_address'] ?? '', $conn['virtual_address'] ?? '', $conn['virtual_ipv6_address'] ?? ''])) ?></td>
             <td>
                <span class="fa fa-times fa-fw act_kill_client" data-client-port="<?=$server['vpnid'];?>"
                  data-client-ip="<?=$conn['real_address'];?>"
@@ -133,7 +133,7 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
     elseif (!empty($server['timestamp'])):?>
           <tr>
             <td><?=date('Y-m-d H:i:s', $server['timestamp']);?></td>
-            <td><?=$server['real_address'];?><br/><?=$server['virtual_address'];?><?php if($conn['virtual_address'] && $conn['virtual_ipv6_address']){ echo "<br/>"; }?><?=$conn['virtual_ipv6_address'];?></td>
+           <td><?= join('<br/>', array_filter([$server['real_address'] ?? '', $server['virtual_address'] ?? '', $server['virtual_ipv6_address'] ?? ''])) ?></td>
             <td>
             <span class='fa fa-exchange fa-fw <?=$server['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
             </td>
@@ -162,10 +162,11 @@ foreach ($openvpn_cfg as $section => &$ovpncfg) {
       <tbody>
 
 <?php
+
 foreach ($openvpn_cfg['openvpn-client'] as $client) :?>
         <tr>
           <td><?=$client['name'];?><br/><?=date('Y-m-d H:i:s', $client['timestamp']);?></td>
-          <td><?=$client['real_address'];?><br/><?=$client['virtual_address'];?><?php if($conn['virtual_address'] && $conn['virtual_ipv6_address']){ echo "<br/>"; }?><?=$conn['virtual_ipv6_address'];?></td>
+          <td><?= join('<br/>', array_filter([$client['real_address'] ?? '', $client['virtual_address'] ?? '', $client['virtual_ipv6_address'] ?? ''])) ?></td>
           <td>
             <span class='fa fa-exchange fa-fw <?=$client['status'] == "connected" ? "text-success" : "text-danger" ;?>'></span>
           </td>
