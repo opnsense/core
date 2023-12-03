@@ -181,19 +181,28 @@ class Alias(object):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
-                    # Always save last recorded content to disk, also when we're not responsible for the alias
-                    # so we can use cached results when reloading a single alias.
-                    with open(self._filename_alias_content, 'w') as f_out:
-                        f_out.write('\n'.join(self._resolve_content))
                 except (IOError, DNSException) as e:
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
-                    # parse issue, keep data as-is, flush previous content to disk
-                    with open(self._filename_alias_content, 'w') as f_out:
-                        f_out.write(undo_content)
                     self._resolve_content = set(undo_content.split("\n"))
+
+                resolve_content_str = '\n'.join(sorted(self._resolve_content))
+                if undo_content != resolve_content_str:
+                    # Always save last recorded content to disk when changed, even when we're not responsible
+                    # for the alias, so we can use cached results when reloading a single alias.
+                    with open(self._filename_alias_content, 'w') as f_out:
+                        f_out.write(resolve_content_str)
+
                 if self.get_parser():
-                    # flush md5 hash to disk
-                    open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                    # flush md5 hash to disk (when unchanged)
+                    new_uniqueid = self.uniqueid()
+                    old_uniqueid = None
+                    if os.path.isfile(self._filename_alias_hash):
+                       old_uniqueid = open(self._filename_alias_hash, 'r').read()
+                    if old_uniqueid != new_uniqueid:
+                        open(self._filename_alias_hash, 'w').write(self.uniqueid())
+                    else:
+                        # update modification time for correct TTL measurements when unchanged
+                        os.utime(self._filename_alias_hash, None)
             else:
                 self._resolve_content = set(open(self._filename_alias_content).read().split())
         # return the addresses and networks of this alias
