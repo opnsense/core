@@ -60,6 +60,7 @@ function is_valid_syslog_server($target) {
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['preservelogs'] =  !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : null;
+    $pconfig['maxfilesize'] =  !empty($config['syslog']['maxfilesize']) ? $config['syslog']['maxfilesize'] : null;
     $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
     $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
@@ -82,15 +83,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("Preserve logs must be a positive integer value.");
             }
         }
+        if (!empty($pconfig['maxfilesize']) && (strlen($pconfig['maxfilesize']) > 0)) {
+            if (!is_numeric($pconfig['maxfilesize'])) {
+                $input_errors[] = gettext("Max file size must be a positive integer value.");
+            }
+        }
+
+
 
         if (count($input_errors) == 0) {
             if (empty($config['syslog'])) {
-                $config['syslog'] = array();
+                $config['syslog'] = [];
             }
-            if (isset($_POST['preservelogs']) && (strlen($pconfig['preservelogs']) > 0)) {
-                $config['syslog']['preservelogs'] = (int)$pconfig['preservelogs'];
-            } elseif (isset($config['syslog']['preservelogs'])) {
-                unset($config['syslog']['preservelogs']);
+            foreach (['preservelogs', 'maxfilesize'] as $fieldname) {
+                if (isset($pconfig[$fieldname]) && (strlen($pconfig[$fieldname]) > 0)) {
+                    $config['syslog'][$fieldname] = (int)$pconfig[$fieldname];
+                } elseif (isset($config['syslog'][$fieldname])) {
+                    unset($config['syslog'][$fieldname]);
+                }
             }
 
             $config['syslog']['disablelocallogging'] = !empty($pconfig['disablelocallogging']);
@@ -188,11 +198,20 @@ $(document).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_preservelogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Preserve logs (Days)') ?></td>
+                    <td><a id="help_for_preservelogs" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Preserve logs') ?></td>
                     <td>
                       <input name="preservelogs" id="preservelogs" type="text" value="<?=$pconfig['preservelogs'];?>" />
                       <div class="hidden" data-for="help_for_preservelogs">
-                          <?=gettext("Number of log to preserve. By default 31 logs are preserved.");?>
+                          <?=gettext("Number of logs to preserve. By default 31 logs are preserved. When no max filesize is offered or the logs are smaller than the the size requested, this equals the number of days");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_maxfilesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Max log filesize (MB)') ?></td>
+                    <td>
+                      <input name="maxfilesize" id="maxfilesize" type="text" value="<?=$pconfig['maxfilesize'];?>" />
+                      <div class="hidden" data-for="help_for_maxfilesize">
+                          <?=gettext("Maximum filesize per log file, when set and a logfile exceeds the amount specified, it will be rotated.");?>
                       </div>
                     </td>
                   </tr>
