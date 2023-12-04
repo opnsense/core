@@ -2,15 +2,12 @@
 
 function system_get_language_code() {
     global $config;
-    $code = "en-US"; // Set default code.
-
-    // a language code, as per [RFC3066]
     if (isset($config['system']['language'])) {
-        $language = $config['system']['language'];
-        $code = str_replace("_", "-", $language);
+        // a language code, as per [RFC3066]
+        return htmlspecialchars(str_replace("_", "-", $config['system']['language']), ENT_QUOTES | ENT_HTML401);
+    } else {
+        return "en-US"; // Set default code.
     }
-
-    return $code;
 }
 
 // link menu system
