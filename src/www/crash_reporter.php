@@ -36,7 +36,7 @@ function has_crash_report()
     $PHP_errors_log = '/tmp/PHP_errors.log';
     $count = 0;
 
-    if (file_exists($PHP_errors_log)) {
+    if (file_exists($PHP_errors_log) && !is_link('/tmp/PHP_errors.log')) {
         if (intval(shell_safe('/bin/cat %s | /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'', $PHP_errors_log))) {
             $count++;
         }
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($has_crashed) {
     $crash_files = glob("/var/crash/*");
     $crash_reports['System Information'] = trim($crash_report_header);
-    if (file_exists('/tmp/PHP_errors.log')) {
+    if (file_exists('/tmp/PHP_errors.log') && !is_link('/tmp/PHP_errors.log')) {
         $php_errors_size = @filesize('/tmp/PHP_errors.log');
         $max_php_errors_size = 1 * 1024 * 1024;
         // limit reporting for PHP_errors.log to $max_php_errors_size characters
