@@ -16,17 +16,11 @@
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanlocal>
-            <vxlanlocalport type="PortField">
-                <Required>Y</Required>
-                <default>4789</default>
-            </vxlanlocalport>
+            <vxlanlocalport type="PortField"/>
             <vxlanremote type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanremote>
-            <vxlanremoteport type="PortField">
-                <Required>Y</Required>
-                <default>4789</default>
-            </vxlanremoteport>
+            <vxlanremoteport type="PortField"/>
             <vxlangroup type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlangroup>
