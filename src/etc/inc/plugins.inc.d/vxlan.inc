@@ -110,12 +110,12 @@ function vxlan_configure_do($verbose = false, $device = null)
         } else {
             $isChanged = false;
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
-            $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
-            $current_settings['vxlanlocalport'] = explode(":", $interfaces_details[$device_name]['vxlan']['localport'])[0];
-            $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
-            $current_settings['vxlanremoteport'] = explode(":", $interfaces_details[$device_name]['vxlan']['remoteport'])[0];
+            $current_settings['vxlanlocal'] = $interfaces_details[$device_name]['vxlan']['local'];
+            $current_settings['vxlanlocalport'] = $interfaces_details[$device_name]['vxlan']['localport'];
+            $current_settings['vxlanremote'] = $interfaces_details[$device_name]['vxlan']['remote'];
+            $current_settings['vxlanremoteport'] = $interfaces_details[$device_name]['vxlan']['remoteport'];
             if (!empty($interfaces_details[$device_name]['vxlan']['group'])) {
-                $current_settings['vxlangroup'] = explode(":", $interfaces_details[$device_name]['vxlan']['group'])[0];
+                $current_settings['vxlangroup'] = $interfaces_details[$device_name]['vxlan']['group'];
             }
         }
         // gather settings, detect changes
