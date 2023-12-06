@@ -94,8 +94,20 @@ if __name__ == '__main__':
         # only try to replace the contents of this alias if we're responsible for it (know how to parse)
         if alias.get_parser():
             # when the alias or any of it's dependencies has changed, generate new
-            if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
-                open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
+            alias_filename = '/var/db/aliastables/%s.txt' % alias_name
+            alias_file_exists = os.path.isfile(alias_filename)
+            if alias_changed_or_expired or not alias_file_exists:
+                new_alias_content = '\n'.join(sorted(alias_content))
+                if alias_file_exists:
+                    try:
+                        current_alias_content = open(alias_filename, 'r').read()
+                    except UnicodeDecodeError:
+                        current_alias_content = ""
+                else:
+                     current_alias_content = ""
+
+                if current_alias_content != new_alias_content:
+                    open(alias_filename, 'w').write(new_alias_content)
 
             # list current alias content when not trying to update a targetted list
             alias_pf_content = list(PF.list_table(alias_name)) if to_update is None else alias_content
