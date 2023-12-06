@@ -98,18 +98,17 @@ class LogController extends ApiControllerBase
                     $severities = is_array($severities) ? implode(",", $severities) : $severities;
                     $severities = $filter->sanitize($severities, "query");
                 }
-                $response = $backend->configdpStream("system diag log_stream", [
-                    0, 0, $searchPhrase, $module, $scope, $severities
-                ]);
-                header('Content-Type: text/csv');
-                header("Content-Disposition: attachment; filename=" . $scope . ".log");
-                header("Content-Transfer-Encoding: binary");
-                header("Pragma: no-cache");
-                header("Expires: 0");
-                ob_end_flush();
-                rewind($response);
-                fpassthru($response);
-                return;
+                return $this->configdStream(
+                    'system diag log_stream',
+                    [0, 0, $searchPhrase, $module, $scope, $severities],
+                    [
+                        'Content-Type: text/csv',
+                        'Content-Disposition: attachment; filename=' . $scope . '.log',
+                        'Content-Transfer-Encoding: binary',
+                        'Pragma: no-cache',
+                        'Expires: 0'
+                    ]
+                );
             }
         }
         return [];

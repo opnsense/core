@@ -29,6 +29,7 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Auth\AuthenticationFactory;
 
@@ -130,6 +131,28 @@ class ApiControllerBase extends ControllerRoot
            'current' => $currentPage,
            'rows' => $formatted,
         ];
+    }
+
+    /**
+     * passtru configd stream
+     * @param string $action configd action to perform
+     * @param array $params list of parameters
+     * @param array $headers http headers to send before pushing data
+     */
+    protected function configdStream(
+        $action,
+        $params = [],
+        $headers = [
+            'Content-Type: application/json', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
+        ])
+    {
+        $response = (new Backend())->configdpStream($action, $params);
+        foreach ($headers as $header) {
+            header($header);
+        }
+        ob_end_flush();
+        rewind($response);
+        fpassthru($response);
     }
 
     /**
