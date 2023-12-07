@@ -54,7 +54,8 @@ class OverviewController extends ApiControllerBase
             'gateways' => gettext('Gateways'),
             'routes' => gettext('Routes'),
             'macaddr' => gettext('MAC Address'),
-            'media_raw' => gettext('Media'),
+            'media' => gettext('Media'),
+            'media_raw' => gettext('Media (Raw)'),
             'mediaopt' => gettext('Media Options'),
             'capabilities' => gettext('Capabilities'),
             'identifier' => gettext('Identifier'),
@@ -87,6 +88,14 @@ class OverviewController extends ApiControllerBase
             'packets for unknown protocol' => gettext('Packets for Unknown Protocol'),
             'HW offload capabilities' => gettext('Hardware Offload Capabilities'),
             'uptime at attach or stat reset' => gettext('Uptime at Attach or Statistics Reset'),
+            'laggoptions' => gettext('LAGG Options'),
+            'lagghash' => gettext('LAGG Hash'),
+            'laggproto' => gettext('LAGG Protocol'),
+            'laggstatistics' => gettext('LAGG Statistics'),
+            'groups' => gettext('Groups'),
+            'active ports' => gettext('Active Ports'),
+            'vlan' => gettext('VLAN details'),
+            'vlan_tag' => gettext('VLAN Tag'),
         ];
     }
 
@@ -104,14 +113,13 @@ class OverviewController extends ApiControllerBase
         /* detailed information */
         if ($detailed) {
             $stats = json_decode($backend->configdpRun('interface list stats', [$interface]), true);
-            if (!$interface) {
-                foreach ($ifinfo as $if => $info) {
-                    if (array_key_exists($if, $stats)) {
-                        $ifinfo[$if]['statistics'] = $stats[$if];
-                    }
+
+            foreach ($ifinfo as $if => $info) {
+                if ($interface !== null && $if !== $interface) {
+                    continue;
                 }
-            } else {
-                $ifinfo[$interface]['statistics'] = $stats;
+
+                $ifinfo[$if]['statistics'] = $interface !== null ? $stats : $stats[$if];
             }
         }
 
@@ -197,6 +205,12 @@ class OverviewController extends ApiControllerBase
                 }
             }
 
+            /* parse VLAN configuration */
+            $tmp['vlan_tag'] = null;
+            if (!empty($details['vlan']) && !empty($details['vlan']['tag'])) {
+                $tmp['vlan_tag'] = $details['vlan']['tag'];
+            }
+
             /* gateway(s) */
             $gatewayv4 =  $gateways->getInterfaceGateway($tmp['identifier'], 'inet');
             $gatewayv6 = $gateways->getInterfaceGateway($tmp['identifier'], 'inet6');
@@ -214,7 +228,7 @@ class OverviewController extends ApiControllerBase
         $result = $this->parseIfInfo(null, $details);
         return $this->searchRecordsetBase(
             $result,
-            ['status', 'description', 'device', 'link_type', 'ipv4', 'ipv6', 'gateways', 'routes']
+            ['status', 'description', 'device', 'link_type', 'ipv4', 'ipv6', 'gateways', 'vlan_tag', 'routes']
         );
     }
 
@@ -242,6 +256,7 @@ class OverviewController extends ApiControllerBase
                 }
 
                 unset($ifinfo['config']);
+                unset($ifinfo['carp']);
 
                 /* apply translations */
                 foreach ($ifinfo as $key => $value) {

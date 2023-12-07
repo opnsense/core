@@ -26,6 +26,35 @@
 
 <script>
     $( document ).ready(function() {
+        function createTable(data) {
+            let table = $('<table class="table table-condensed">');
+            let headerRow = $('<tr>');
+            table.append(headerRow);
+
+            // Create table headers
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    headerRow.append($('<th>').text(key));
+                }
+            }
+
+            // Create table rows
+            let dataRow = $('<tr>');
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let value = data[key];
+                    if (Array.isArray(value)) {
+                        // If the value is an array, join the elements with a newline
+                        value = value.join('<br>');
+                    }
+                    dataRow.append($('<td>').html(value));
+                }
+            }
+            table.append(dataRow);
+
+            return table;
+        }
+
         function format_linerate(value) {
             if (!isNaN(value) && value > 0) {
                 let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
@@ -49,7 +78,7 @@
                     $carp.attr('class', 'bootgrid-tooltip badge badge-pill');
                     $carp.css('background-color', ip['status'] == 'MASTER' ? 'green' : 'primary');
                     $carp.attr('data-toggle', 'tooltip');
-                    $carp.attr('title', ip['status']);
+                    $carp.attr('title', ip['status'] + ' (freq. ' + ip['advbase'] + '/' + ip['advskew'] + ')');
                     $span.append($carp);
                 }
                 $elements.append($span);
@@ -69,6 +98,17 @@
                                 descr += ' (' + row.identifier + ')';
                             }
                             return descr;
+                        },
+                        "vlan": function (column, row) {
+                            if (row.vlan_tag) {
+                                let $tooltip = $('<span></span>').attr('class', 'bootgrid-tooltip').text(row.vlan_tag);
+                                $tooltip.attr('data-toggle', 'tooltip');
+                                let standard = row.vlan.proto && row.vlan.proto == "802.1q" ? "QinQ" : "VLAN";
+                                let parent = row.vlan.parent ? row.vlan.parent : 'none';
+                                $tooltip.attr('title', standard + ' ' + row.vlan_tag + ' / Parent: ' + parent);
+                                return $tooltip.prop('outerHTML');
+                            }
+                            return '';
                         },
                         "routes": function (column, row) {
                             let $elements = $('<div></div>').attr('class', 'route-container');
@@ -130,6 +170,7 @@
                             let $btn = $('<button type="button" class="btn btn-xs btn-default" data-toggle="tooltip"">\
                                             <i></i></button>');
 
+                            /* reload action for dynamic configurations */
                             if ('link_type' in row) {
                                 if (["dhcp", "pppoe", "pptp", "l2tp", "ppp"].includes(row.link_type)) {
                                     let $command = $btn.clone();
@@ -138,8 +179,33 @@
                                     $commands.append($command);
                                 }
                             }
-                            $btn.addClass('interface-info').attr('title', 'Info').attr('data-row-id', row.device);
+
+                            /* go to interfaces assignment */
+                            $anchor = $('<a class="btn btn-xs btn-default" data-toggle="tooltip"><i></i></a>');
+                            if ('identifier' in row && row.identifier) {
+                                if (!(row.config && row.config.internal_dynamic)) {
+                                    $a_interfaces = $anchor.clone().attr('href', '/interfaces_assign.php?if=' + row.identifier);
+                                    $a_interfaces.attr('title', 'Settings');
+                                    $a_interfaces.find('i').addClass('fa fa-fw fa-cog');
+                                    $commands.append($a_interfaces);
+                                }
+
+                                if (row.enabled) {
+                                    $a_fw = $anchor.clone().attr('href', '/firewall_rules.php?if=' + row.identifier);
+                                    $a_fw.attr('title', 'Firewall Rules');
+                                    $a_fw.find('i').addClass('fa fa-fw fa-fire');
+                                    $commands.append($a_fw);
+                                }
+                            } else {
+                                $a_interfaces = $anchor.clone().attr('href', '/interfaces_assign.php');
+                                $a_interfaces.attr('title', 'Assign');
+                                $a_interfaces.find('i').addClass('fa fa-fw fa-plus');
+                                $commands.append($a_interfaces);
+                            }
+
+                            $btn.addClass('interface-info').attr('title', 'Details').attr('data-row-id', row.device);
                             $btn.find('i').addClass('fa fa-fw fa-search');
+
                             $commands.append($btn);
                             return $commands.prop('outerHTML');
                         }
@@ -190,10 +256,26 @@
                                 continue;
                             }
                             key = data[key]['translation'];
+                            $row.append($('<td/>').text(key));
                             if (typeof value === 'string' || Array.isArray(value)) {
                                 value = value.toString().split(",").join("<br/>");
+                            } else if (typeof value === 'object' && value !== null) {
+                                // skip any deeper nested structures
+                                let skip = false;
+                                for (let key in value) {
+                                    if (typeof value[key] === 'object' && value !== null && !Array.isArray(value[key])) {
+                                        skip = true;
+                                        break;
+                                    }
+                                }
+
+                                if (skip) {
+                                    continue;
+                                }
+
+                                $table_sub = createTable(value);
+                                value = $table_sub.prop('outerHTML');
                             }
-                            $row.append($('<td/>').text(key));
                             $row.append($('<td/>').html(value));
                             $table_body.append($row);
                         }
@@ -302,6 +384,7 @@
                 <th data-column-id="status" data-width="5em" data-formatter="status" data-type="string">{{ lang._('Status') }}</th>
                 <th data-column-id="description" data-formatter="interface" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="device" data-identifier="true" data-width="5em" data-type="string">{{ lang._('Device') }}</th>
+                <th data-column-id="vlan_tag" data-formatter="vlan" data-type="string" data-width="3em">{{ lang._('VLAN') }}</th>
                 <th data-column-id="link_type" data-type="string">{{ lang._('Link Type') }}</th>
                 <th data-column-id="ipv4" data-formatter="ipv4" data-type="string">{{ lang._('IPv4') }}</th>
                 <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6') }}</th>
