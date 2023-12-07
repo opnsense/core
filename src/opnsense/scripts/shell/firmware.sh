@@ -37,6 +37,7 @@ set -e
 # will tell us itself.  With this we shield the firmware shell run from
 # the complexity of GUI/API updates so that bugs are most likely avoided.
 
+LAUNCHER="/usr/local/opnsense/scripts/firmware/launcher.sh"
 RELEASE=$(opnsense-update -vR)
 PROMPT="y/N"
 CHANGELOG=
@@ -45,7 +46,7 @@ ARGS=
 run_action()
 {
 	echo
-	if ! /usr/local/opnsense/scripts/firmware/launcher.sh ${1}; then
+	if ! ${LAUNCHER} ${1}; then
 		echo "A firmware action is currently in progress."
 	fi
 	echo
@@ -53,7 +54,7 @@ run_action()
 }
 
 echo -n "Fetching change log information, please wait... "
-if /usr/local/opnsense/scripts/firmware/changelog.sh fetch; then
+if ${LAUNCHER} -u changelog fetch; then
 	echo "done"
 fi
 

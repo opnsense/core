@@ -28,6 +28,7 @@ BASEDIR="/usr/local/opnsense/scripts/firmware"
 LOCKFILE="/tmp/pkg_upgrade.progress"
 FLOCK="/usr/local/bin/flock -n -o"
 COMMANDS="
+changelog
 check
 connection
 health
@@ -45,14 +46,18 @@ upgrade
 
 DO_RANDOM=
 DO_SCRIPT=
+DO_UNLOCKED=
 
-while getopts r:s: OPT; do
+while getopts r:s:u OPT; do
 	case ${OPT} in
 	r)
 		DO_RANDOM="-r $(jot -r 1 1 ${OPTARG})"
 		;;
 	s)
 		DO_SCRIPT="-s ${OPTARG}"
+		;;
+	u)
+		DO_UNLOCKED="-u"
 		;;
 	*)
 		# ignore unknown
@@ -68,11 +73,10 @@ else
 	FOUND=
 
 	for COMMAND in ${COMMANDS}; do
-		if [ "${1}" != ${COMMAND} ]; then
-			continue
+		if [ "${1}" = ${COMMAND} ]; then
+			FOUND=1
+			break;
 		fi
-
-		FOUND=1
 	done
 
 	if [ -n "${FOUND}" ]; then
@@ -99,7 +103,12 @@ if [ -n "$(opnsense-update -x)" ]; then
 	export SSL_NO_TLS1_1="yes"
 fi
 
-${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+if [ -z "${DO_UNLOCKED}" ]; then
+	${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
+else
+	${COMMAND} "${@}"
+fi
+
 RET=${?}
 
 # backend expects us to avoid returning errors
