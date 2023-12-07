@@ -94,8 +94,12 @@ if __name__ == '__main__':
         # only try to replace the contents of this alias if we're responsible for it (know how to parse)
         if alias.get_parser():
             # when the alias or any of it's dependencies has changed, generate new
-            if alias_changed_or_expired or not os.path.isfile('/var/db/aliastables/%s.txt' % alias_name):
-                open('/var/db/aliastables/%s.txt' % alias_name, 'w').write('\n'.join(sorted(alias_content)))
+            alias_filename = '/var/db/aliastables/%s.txt' % alias_name
+            if alias_changed_or_expired or not os.path.isfile(alias_filename):
+                alias_content_str = '\n'.join(sorted(alias_content))
+                if  not os.path.isfile(alias_filename) or alias_content_str != alias.read_alias_file(alias_filename):
+                    # read before write, only save when the contents have changed
+                    open(alias_filename, 'w').write(alias_content_str)
 
             # list current alias content when not trying to update a targetted list
             alias_pf_content = list(PF.list_table(alias_name)) if to_update is None else alias_content
@@ -108,7 +112,7 @@ if __name__ == '__main__':
                         PF.flush(alias_name)
                 else:
                     # replace table contents with collected alias
-                    error_output = PF.replace(alias_name, '/var/db/aliastables/%s.txt' % alias_name)
+                    error_output = PF.replace(alias_name, alias_filename)
                     if error_output.find('pfctl: ') > -1:
                         error_message = "Error loading alias [%s]: %s {current_size: %d, new_size: %d}" % (
                             alias_name,

@@ -158,6 +158,20 @@ class Alias(object):
 
         return list(self._resolve_content)
 
+    @staticmethod
+    def read_alias_file(filename):
+        """
+        :param filename: filename to read (when it exists)
+        :return: string, empty when not found or not parseable
+        """
+        if os.path.isfile(filename):
+            try:
+                return open(filename, 'r').read()
+            except UnicodeDecodeError:
+                return ''
+        return ''
+
+
     def resolve(self, force=False):
         """ resolve (fetch) alias content, without dependencies.
             :force: force load
@@ -165,13 +179,7 @@ class Alias(object):
         """
         if not self._resolve_content:
             if self.expired() or self.changed() or force:
-                if os.path.isfile(self._filename_alias_content):
-                    try:
-                        undo_content = open(self._filename_alias_content, 'r').read()
-                    except UnicodeDecodeError:
-                        undo_content = ""
-                else:
-                    undo_content = ""
+                undo_content = self.read_alias_file(self._filename_alias_content)
                 try:
                     self._resolve_content = self.pre_process()
                     address_parser = self.get_parser()
