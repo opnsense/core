@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -91,6 +91,12 @@ fi
 
 if [ -n "${DO_RANDOM}" ]; then
 	sleep ${DO_RANDOM#"-r "}
+fi
+
+# business mirror compliance requires disabling the use of TLS 1.0 and 1.1
+if [ -n "$(opnsense-update -x)" ]; then
+	export SSL_NO_TLS1="yes"
+	export SSL_NO_TLS1_1="yes"
 fi
 
 ${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
