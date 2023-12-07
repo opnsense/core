@@ -313,7 +313,7 @@ class FilterRule extends Rule
     public function getUIFromAddress()
     {
         if (!empty($this->rule['from'])) {
-            return preg_replace('/,(?:[^\s])/', ', ', $this->rule['from']);
+            return preg_replace('/,(?=[^\s])/', ', ', $this->rule['from']);
         } elseif (isset($this->rule['source']['address'])) {
             return $this->rule['source']['address'];
         } elseif (isset($this->rule['source']['any'])) {
@@ -339,7 +339,7 @@ class FilterRule extends Rule
     public function getUIToAddress()
     {
         if (!empty($this->rule['to'])) {
-            return preg_replace('/,(?:[^\s])/', ', ', $this->rule['to']);
+            return preg_replace('/,(?=[^\s])/', ', ', $this->rule['to']);
         } elseif (isset($this->rule['destination']['address'])) {
             return $this->rule['destination']['address'];
         } elseif (isset($this->rule['destination']['any'])) {
