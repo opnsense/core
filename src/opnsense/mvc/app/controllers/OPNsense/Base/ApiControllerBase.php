@@ -100,7 +100,9 @@ class ApiControllerBase extends ControllerRoot
 
                         if (is_array($itemval)) {
                             $tmp = [];
-                            array_walk_recursive($itemval, function($a) use (&$tmp) { $tmp[] = $a; });
+                            array_walk_recursive($itemval, function ($a) use (&$tmp) {
+                                $tmp[] = $a;
+                            });
                             $itemval = implode(' ', $tmp);
                         }
 
@@ -144,8 +146,8 @@ class ApiControllerBase extends ControllerRoot
         $params = [],
         $headers = [
             'Content-Type: application/json', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
-        ])
-    {
+        ]
+    ) {
         $response = (new Backend())->configdpStream($action, $params);
         foreach ($headers as $header) {
             header($header);
