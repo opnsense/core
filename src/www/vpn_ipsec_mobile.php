@@ -608,9 +608,15 @@ endforeach;
                       <textarea name="login_banner" cols="65" rows="7" id="login_banner" class="formpre"><?=$pconfig['login_banner'];?></textarea>
                     </td>
                   </tr>
+                </table>
+            </div>
+        </section>
+        <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12">
+              <table class="table table-striped opnsense_standard_table_form" id="ike_extensions">
                   <tr>
-                    <td>&nbsp;</td>
-                    <td>
+                    <td style="width:22%">&nbsp;</td>
+                    <td style="width:78%;">
                       <input name="submit" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save')); ?>" />
                     </td>
                   </tr>
