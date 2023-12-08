@@ -99,7 +99,7 @@ if __name__ == '__main__':
                 alias_content_str = '\n'.join(sorted(alias_content))
                 if  not os.path.isfile(alias_filename) or alias_content_str != alias.read_alias_file(alias_filename):
                     # read before write, only save when the contents have changed
-                    open('/var/db/aliastables/%s.txt' % alias_name, 'w').write(alias_content_str)
+                    open(alias_filename, 'w').write(alias_content_str)
 
             # list current alias content when not trying to update a targetted list
             alias_pf_content = list(PF.list_table(alias_name)) if to_update is None else alias_content
