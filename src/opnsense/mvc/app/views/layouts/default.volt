@@ -199,6 +199,13 @@
                 $("form").submit(function() {
                     return false;
                 });
+
+                /* overwrite clipboard paste behavior and trim before paste */
+                $("input").on('paste', function(e) {
+                    e.preventDefault();
+                    $(this).val(e.originalEvent.clipboardData.getData("text/plain").trim())
+                });
+
             });
         </script>
 
