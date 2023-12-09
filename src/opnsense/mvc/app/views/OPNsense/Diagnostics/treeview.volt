@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2020 Deciso B.V.
+ # Copyright (c) 2020-2023 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or withoutmodification,
@@ -24,15 +24,60 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+ <style>
+    .bootstrap-dialog-body {
+        overflow-x: auto;
+    }
+    .modal-dialog,
+    .modal-content {
+        height: 80%;
+    }
+
+    .modal-body {
+        max-height: calc(100% - 120px);
+        overflow-y: scroll;
+    }
+    @media (min-width: 768px) {
+        .modal-dialog {
+            width: 90%;
+        }
+    }
+</style>
+
 <script>
     $( document ).ready(function() {
+      let tree = null;
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
           $(".tab-icon").removeClass("fa-refresh");
           if ($("#"+e.target.id).data('tree-target') !== undefined) {
               $("#"+e.target.id).unbind('click').click(function(){
                 ajaxGet($("#"+e.target.id).data('tree-endpoint'), {}, function (data, status) {
                     if (status == "success") {
-                        update_tree(data, "#" + $("#"+e.target.id).data('tree-target'));
+                        tree = update_tree(data, "#" + $("#"+e.target.id).data('tree-target'));
+                        if (!tree.hasClass('tree_events_added')) {
+                            /* add double click event */
+                            tree.on(
+                                'tree.dblclick',
+                                function(event) {
+                                    let table = treeview_node_to_table(event.node);
+                                    if (table) {
+                                        BootstrapDialog.show({
+                                            title: event.node.id,
+                                            message: table,
+                                            type: BootstrapDialog.TYPE_INFO,
+                                            draggable: true,
+                                            buttons: [{
+                                                label: "{{ lang._('Close') }}",
+                                                action: function(dialogItself){
+                                                    dialogItself.close();
+                                                }
+                                            }]
+                                        });
+                                    }
+                                }
+                            );
+                            tree.addClass('tree_events_added');
+                        }
                     }
                 });
               });
@@ -101,7 +146,7 @@
     <div id="{{tab['name']}}" class="tab-pane fade in active">
       <div class="row">
           <section class="col-xs-12">
-              <div class="content-box">
+            <div class="content-box">
                 <div class="searchbox">
                     <input
                         id="{{tab['name']}}Search"
