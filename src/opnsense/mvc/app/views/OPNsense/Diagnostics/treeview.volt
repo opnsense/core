@@ -34,7 +34,7 @@
     }
 
     .modal-body {
-        max-height: calc(100% - 120px);
+        height: calc(100% - 120px);
         overflow-y: scroll;
     }
     @media (min-width: 768px) {
@@ -46,38 +46,13 @@
 
 <script>
     $( document ).ready(function() {
-      let tree = null;
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
           $(".tab-icon").removeClass("fa-refresh");
           if ($("#"+e.target.id).data('tree-target') !== undefined) {
               $("#"+e.target.id).unbind('click').click(function(){
                 ajaxGet($("#"+e.target.id).data('tree-endpoint'), {}, function (data, status) {
                     if (status == "success") {
-                        tree = update_tree(data, "#" + $("#"+e.target.id).data('tree-target'));
-                        if (!tree.hasClass('tree_events_added')) {
-                            /* add double click event */
-                            tree.on(
-                                'tree.dblclick',
-                                function(event) {
-                                    let table = treeview_node_to_table(event.node);
-                                    if (table) {
-                                        BootstrapDialog.show({
-                                            title: event.node.id,
-                                            message: table,
-                                            type: BootstrapDialog.TYPE_INFO,
-                                            draggable: true,
-                                            buttons: [{
-                                                label: "{{ lang._('Close') }}",
-                                                action: function(dialogItself){
-                                                    dialogItself.close();
-                                                }
-                                            }]
-                                        });
-                                    }
-                                }
-                            );
-                            tree.addClass('tree_events_added');
-                        }
+                        update_tree(data, "#" + $("#"+e.target.id).data('tree-target'));
                     }
                 });
               });

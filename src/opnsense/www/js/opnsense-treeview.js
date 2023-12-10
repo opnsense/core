@@ -131,6 +131,24 @@ function update_tree(src_data, target)
         $tree.bind('tree.click', function(e) {
             $tree.tree('toggle', e.node);
         });
+        // open table on label dblclick
+        $tree.bind('tree.dblclick',function(event) {
+            let table = treeview_node_to_table(event.node);
+            if (table) {
+                BootstrapDialog.show({
+                    title: event.node.id,
+                    message: table,
+                    type: BootstrapDialog.TYPE_INFO,
+                    draggable: true,
+                    buttons: [{
+                        label: '<i class="fa fa-fw fa-close"></i>',
+                        action: function(dialogItself){
+                            dialogItself.close();
+                        }
+                    }]
+                });
+            }
+        });
     } else {
         let curent_state = $tree.tree('getState');
         $tree.tree('loadData', tree_data);
