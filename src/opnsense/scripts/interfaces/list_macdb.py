@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -35,21 +35,31 @@ import ujson
 import importlib.util
 
 if __name__ == '__main__':
-    result=dict()
     oui_registry_file = "%s/eui/oui.txt" % os.path.dirname(importlib.util.find_spec('netaddr').origin)
+    cache_file = '/tmp/oui.txt.json'
+    result = {}
     if os.path.isfile(oui_registry_file):
-        for line in open(oui_registry_file, 'rb'):
-            line = line.decode()
-            if line.find('(base 16)') > -1:
-                parts=line.split('(base 16)')
-                if len(parts) >= 2:
-                    result[parts[0].strip()] = parts[1].strip()
+        oui_mtime = os.stat(oui_registry_file).st_mtime
+        if os.path.isfile(cache_file) and os.stat(cache_file).st_mtime == os.stat(oui_registry_file).st_mtime:
+            try:
+                result = ujson.loads(open(cache_file).read())
+            except ValueError:
+                result = {}
 
-    if len(sys.argv) > 1 and sys.argv[1] == 'json':
-        # output json
-        print(ujson.dumps(result))
-    else:
-        # output plain text (console)
-        print ('%-6s %s' % ('prefix', 'manufacturer'))
-        for mac_prefix in result:
-            print ('%s %s' % (mac_prefix, result[mac_prefix]))
+        if len(result) == 0:
+            for line in open(oui_registry_file, 'rb'):
+                line = line.decode()
+                if line.find('(base 16)') > -1:
+                    parts=line.split('(base 16)')
+                    if len(parts) >= 2:
+                        result[parts[0].strip()] = parts[1].strip()
+
+            json_payload = ujson.dumps(result)
+            open(cache_file, 'w').write(json_payload)
+            os.chmod(cache_file, 0o444)
+            os.utime(cache_file, (oui_mtime, oui_mtime))
+
+            print(json_payload)
+            sys.exit(0)
+
+    print(ujson.dumps(result))
