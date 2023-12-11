@@ -2046,6 +2046,7 @@
 /usr/local/opnsense/www/themes/opnsense/build/images/favicon.png
 /usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/carp_service_status
+/usr/local/sbin/certctl.py
 /usr/local/sbin/configctl
 /usr/local/sbin/ifctl
 /usr/local/sbin/opnsense-beep
