@@ -117,6 +117,18 @@ class Vip extends BaseModel
                         }
                     }
                 }
+            } elseif ((string)$node->mode == 'proxyarp') {
+                $net = $subnet . "/" . $subnet_bits;
+                if (Util::isSubnet($net) && !Util::isSubnetStrict($net)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("Only strict subnets are allowed for Proxy ARP types".
+                                " (e.g. 192.168.0.0/24, 192.168.1.1/32)."
+                            ),
+                            $key . ".subnet"
+                        )
+                    );
+                }
             }
             $vhid_key = sprintf("%s_%s", $node->interface, $node->vhid);
             if ((string)$node->mode == 'carp') {
