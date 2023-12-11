@@ -71,7 +71,7 @@ include("head.inc");
         <div class="row">
           <section class="col-xs-12">
 <?php
-            $mac_man = json_decode(configd_run('interface list macdb json'), true);
+            $mac_man = json_decode(configd_run('interface list macdb'), true);
             $pfctl_counters = json_decode(configd_run('filter list counters json'), true);
             $vmstat_interrupts = json_decode(configd_run('system list interrupts json'), true);
             foreach (get_interfaces_info(true) as $ifdescr => $ifinfo):

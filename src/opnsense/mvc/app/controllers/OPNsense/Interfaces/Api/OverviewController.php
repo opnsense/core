@@ -226,7 +226,7 @@ class OverviewController extends ApiControllerBase
             $ifinfo = $this->parseIfInfo($if, true)[0] ?? [];
             if (!empty($ifinfo)) {
                 if (!empty($ifinfo['macaddr'])) {
-                    $macs = json_decode((new Backend())->configdRun('interface list macdb json'), true);
+                    $macs = json_decode((new Backend())->configdRun('interface list macdb'), true);
                     $mac_hi = strtoupper(substr(str_replace(':', '', $ifinfo['macaddr']), 0, 6));
                     if (array_key_exists($mac_hi, $macs)) {
                         $ifinfo['macaddr'] = $ifinfo['macaddr'] . ' - ' . $macs[$mac_hi];

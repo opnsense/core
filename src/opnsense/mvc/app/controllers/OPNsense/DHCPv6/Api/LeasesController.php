@@ -56,7 +56,7 @@ class LeasesController extends ApiControllerBase
         /* get dynamic leases, inactive leases if requested */
         $raw_leases = json_decode($backend->configdpRun('dhcpd6 list leases', [$inactive]), true);
         /* get manufacturer info */
-        $mac_man = json_decode($backend->configdRun('interface list macdb json'), true);
+        $mac_man = json_decode($backend->configdRun('interface list macdb'), true);
         /* get ifconfig info to match IPs to interfaces */
         $ifconfig = json_decode($backend->configdRun('interface list ifconfig'), true);
 
