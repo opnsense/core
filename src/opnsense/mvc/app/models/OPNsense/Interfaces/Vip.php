@@ -122,9 +122,8 @@ class Vip extends BaseModel
                 if (Util::isSubnet($net) && !Util::isSubnetStrict($net)) {
                     $messages->appendMessage(
                         new Message(
-                            gettext("Only strict subnets are allowed for Proxy ARP types".
-                                " (e.g. 192.168.0.0/24, 192.168.1.1/32)."
-                            ),
+                            gettext("Only strict subnets are allowed for Proxy ARP types" .
+                                " (e.g. 192.168.0.0/24, 192.168.1.1/32)."),
                             $key . ".subnet"
                         )
                     );
