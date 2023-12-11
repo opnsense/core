@@ -1069,6 +1069,7 @@
 /usr/local/opnsense/scripts/syslog/logformats/syslog.py
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/system/activity.py
+/usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php

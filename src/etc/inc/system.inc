@@ -948,7 +948,7 @@ function system_trust_configure($verbose = false)
     service_log("done.\n", $verbose);
 
     /* collects all trusted certificates into /etc/ssl/certs directory */
-    passthru('/usr/sbin/certctl rehash');
+    passthru('/usr/local/opnsense/scripts/system/certctl.py rehash');
 
     service_log('Writing trust bundles...', $verbose);
 
