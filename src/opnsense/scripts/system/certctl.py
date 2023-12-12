@@ -93,7 +93,7 @@ def cmd_rehash():
                     os.symlink(os.path.relpath(filename, BLACKLISTDESTDIR), "%s/%s.%d" % (BLACKLISTDESTDIR, hash, seq))
                 else:
                     if hash in targets['blacklisted']:
-                        print("Skipping blacklisted certificate %s (%s)" % (filename, hash))
+                        print("Skipping blacklisted certificate %s (%s/%s.%d)" % (filename, BLACKLISTDESTDIR, hash, seq))
                     else:
                         os.symlink(os.path.relpath(filename, CERTDESTDIR), "%s/%s.%d" % (CERTDESTDIR, hash, seq))
 
