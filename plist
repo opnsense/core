@@ -1154,6 +1154,7 @@
 /usr/local/opnsense/scripts/unbound/cache.sh
 /usr/local/opnsense/scripts/unbound/check.sh
 /usr/local/opnsense/scripts/unbound/logger.py
+/usr/local/opnsense/scripts/unbound/restore_db.py
 /usr/local/opnsense/scripts/unbound/start.sh
 /usr/local/opnsense/scripts/unbound/stats.py
 /usr/local/opnsense/scripts/unbound/wrapper.py
