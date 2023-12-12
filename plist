@@ -1137,6 +1137,7 @@
 /usr/local/opnsense/scripts/syslog/logformats/syslog.py
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/system/activity.py
+/usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
@@ -2046,7 +2047,6 @@
 /usr/local/opnsense/www/themes/opnsense/build/images/favicon.png
 /usr/local/opnsense/www/themes/opnsense/build/images/icon-logo.svg
 /usr/local/sbin/carp_service_status
-/usr/local/sbin/certctl.py
 /usr/local/sbin/configctl
 /usr/local/sbin/ifctl
 /usr/local/sbin/opnsense-beep
