@@ -419,7 +419,7 @@ include("head.inc");
                       <?= legacy_html_escape_form_data($iface) ?>
                       <tr>
                         <td>
-                          <a href="/interfaces.php?if=<?= html_safe($ifname) ?>" target="_blank">[<?= $iface['descr'] ?>]</a>
+                          <a href="/interfaces.php?if=<?= html_safe($ifname) ?>">[<?= $iface['descr'] ?>]</a>
                         </td>
                         <td><?= $ifname ?></td>
                         <td>
