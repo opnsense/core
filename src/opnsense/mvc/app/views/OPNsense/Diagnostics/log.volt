@@ -151,12 +151,14 @@
           let select = $("#severity_filter");
           let header_val = filter_exact ? m_header : s_header;
 
+          // switch select mode and reinit selectpicker
           select.prop("multiple", filter_exact);
-          // switch select mode and destroy selectpicker
-          if (!select.hasClass('severity_filter_init')) {
-              select.addClass('severity_filter_init');
-          } else {
-              select.selectpicker('destroy');
+
+          // destroy, reinit & reopen select after load if called from mode switch
+          if (event && (event.currentTarget.id == 'exact_severity')) {
+              select.selectpicker('destroy').on('loaded.bs.select', function () {
+                  select.selectpicker('toggle');
+              });
           }
           select.selectpicker({ header: header_val });
 
@@ -179,11 +181,6 @@
                   localStorage.setItem('log_severity_{{module}}_{{scope}}', new_val);
               }
               switch_mode(new_val);
-              // keep it open, but wait for selectpicker to be completed
-              setTimeout(function(){
-                select.selectpicker('toggle');
-              }, 100);
-
           });
 
           select.val(value);
@@ -202,7 +199,7 @@
                 <div class="hidden">
                     <!-- filter per type container -->
                     <div id="severity_filter_container" class="btn-group">
-                        <select id="severity_filter" data-title="{{ lang._('Severity') }}" class="selectpicker" data-width="200px">
+                        <select id="severity_filter" data-title="{{ lang._('Severity') }}" data-width="200px">
                             <option value="Emergency">{{ lang._('Emergency') }}</option>
                             <option value="Alert">{{ lang._('Alert') }}</option>
                             <option value="Critical">{{ lang._('Critical') }}</option>
