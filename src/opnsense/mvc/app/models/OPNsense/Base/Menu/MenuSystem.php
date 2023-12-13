@@ -202,12 +202,16 @@ class MenuSystem
         // collect interfaces for dynamic (interface) menu tabs...
         $iftargets = ['if' => [], 'gr' => [], 'wl' => [], 'fw' => [], 'dhcp4' => [], 'dhcp6' => []];
         $ifgroups = [];
+        $ifgroups_seq = [];
 
         if ($config->interfaces->count() > 0) {
             if ($config->ifgroups->count() > 0) {
                 foreach ($config->ifgroups->children() as $key => $node) {
                     if (empty($node->members) || !empty($node->nogroup)) {
                         continue;
+                    }
+                    if (!empty((string)$node->sequence)) {
+                        $ifgroups_seq[(string)$node->ifname] = (int)((string)$node->sequence);
                     }
                     /* we need both if and gr reference */
                     $iftargets['if'][(string)$node->ifname] = (string)$node->ifname;
@@ -251,13 +255,13 @@ class MenuSystem
         }
 
         // add groups and interfaces to "Interfaces" menu tab...
-        $ordid = 0;
+        $ordid = count($ifgroups_seq) > 0 ? max($ifgroups_seq) : 0;
         foreach ($iftargets['if'] as $key => $descr) {
             if (array_key_exists($key, $iftargets['gr'])) {
                 $this->appendItem('Interfaces', $key, array(
                     'visiblename' => '[' . $descr . ']',
                     'cssclass' => 'fa fa-sitemap',
-                    'order' => $ordid++,
+                    'order' => isset($ifgroups_seq[$key]) ? $ifgroups_seq[$key] : $ordid++,
                 ));
             } elseif (!array_key_exists($key, $ifgroups)) {
                 $this->appendItem('Interfaces', $key, array(
