@@ -112,4 +112,3 @@ if __name__ == '__main__':
         print('%s rehash\n\tGenerate hash links for all certificates' % script_name)
     else:
         cmds[sys.argv[1]]()
-
