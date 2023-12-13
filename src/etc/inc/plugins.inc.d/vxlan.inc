@@ -97,8 +97,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         $current_settings = [
             'vxlanid' => null,
             'vxlanlocal' => null,
-            'vxlanlocalport' => null,
             'vxlanremote' => null,
+            'vxlanlocalport' => null,
             'vxlanremoteport' => null,
             'vxlangroup' => null,
         ];
@@ -110,18 +110,31 @@ function vxlan_configure_do($verbose = false, $device = null)
         } else {
             $isChanged = false;
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
-            $current_settings['vxlanlocal'] = $interfaces_details[$device_name]['vxlan']['local'];
-            $current_settings['vxlanlocalport'] = $interfaces_details[$device_name]['vxlan']['localport'];
-            $current_settings['vxlanremote'] = $interfaces_details[$device_name]['vxlan']['remote'];
-            $current_settings['vxlanremoteport'] = $interfaces_details[$device_name]['vxlan']['remoteport'];
-            if (!empty($interfaces_details[$device_name]['vxlan']['group'])) {
-                $current_settings['vxlangroup'] = $interfaces_details[$device_name]['vxlan']['group'];
+            $current_settings['vxlanlocal'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[0];
+            $current_settings['vxlanremote'] = explode(":", $interfaces_details[$device_name]['vxlan']['remote'])[0];
+            $current_settings['vxlanlocalport'] = explode(":", $interfaces_details[$device_name]['vxlan']['local'])[1];
+
+            // extract vxlanremoteport from vxlanremote or vxlangroup
+            if (!empty($interfaces_details[$device_name]['vxlan']['remote'])) {
+                $vxlanRemoteParts = explode(":", $interfaces_details[$device_name]['vxlan']['remote']);
+                if (isset($vxlanRemoteParts[1])) {
+                    $current_settings['vxlanremoteport'] = $vxlanRemoteParts[1];
+                }
             }
+
+            if (empty($current_settings['vxlanremoteport']) && !empty($interfaces_details[$device_name]['vxlan']['group'])) {
+                $vxlangroupParts = explode(":", $interfaces_details[$device_name]['vxlan']['group']);
+                $current_settings['vxlangroup'] = $vxlangroupParts[0];
+                if (isset($vxlangroupParts[1])) {
+                    $current_settings['vxlanremoteport'] = $vxlangroupParts[1];
+                }
+            }
+
         }
         // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
         $ifcnfcmdp = array($device_name);
-        foreach (array('vxlanid', 'vxlanlocal', 'vxlanlocalport', 'vxlanremote', 'vxlanremoteport', 'vxlangroup', 'vxlandev') as $param) {
+        foreach (array('vxlanid', 'vxlanlocal', 'vxlanremote', 'vxlanlocalport', 'vxlanremoteport', 'vxlangroup', 'vxlandev') as $param) {
             $value = '';
             if ($param == 'vxlandev') {
                 $intfnm = (string)$vxlan->$param;
