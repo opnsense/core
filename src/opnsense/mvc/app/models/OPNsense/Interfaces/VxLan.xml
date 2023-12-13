@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Interfaces/vxlans</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>VXLAN configuration</description>
     <items>
         <vxlan type="ArrayField">
@@ -16,9 +16,11 @@
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanlocal>
+            <vxlanlocalport type="PortField"/>
             <vxlanremote type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlanremote>
+            <vxlanremoteport type="PortField"/>
             <vxlangroup type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
             </vxlangroup>

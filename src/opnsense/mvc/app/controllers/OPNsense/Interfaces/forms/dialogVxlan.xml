@@ -21,6 +21,13 @@
         </help>
     </field>
     <field>
+        <id>vxlan.vxlanlocalport</id>
+        <label>Source port</label>
+        <type>text</type>
+        <help>Define the source port. Default is 4789.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>vxlan.vxlanremote</id>
         <label>Remote address</label>
         <type>text</type>
@@ -28,6 +35,13 @@
           The interface can be configured in a unicast, or point-to-point, mode to create a tunnel between two hosts.
           This is the IP address of the remote end of the tunnel.
         </help>
+    </field>
+    <field>
+        <id>vxlan.vxlanremoteport</id>
+        <label>Remote port</label>
+        <type>text</type>
+        <help>Define the remote port. Default is 4789.</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>vxlan.vxlangroup</id>
