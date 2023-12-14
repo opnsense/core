@@ -1187,6 +1187,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_zfs.conf
 /usr/local/opnsense/service/conf/actions_service.conf
 /usr/local/opnsense/service/conf/configd.conf
+/usr/local/opnsense/service/conf/configd.conf.d/.placeholder
 /usr/local/opnsense/service/configd.py
 /usr/local/opnsense/service/configd_ctl.py
 /usr/local/opnsense/service/modules/__init__.py
