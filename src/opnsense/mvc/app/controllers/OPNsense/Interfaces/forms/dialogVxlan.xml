@@ -24,7 +24,8 @@
         <id>vxlan.vxlanlocalport</id>
         <label>Source port</label>
         <type>text</type>
-        <help>Define the source port. Default is 4789.</help>
+        <help>Define the port to be used.</help>
+        <hint>4789</hint>
         <advanced>true</advanced>
     </field>
     <field>
@@ -40,7 +41,8 @@
         <id>vxlan.vxlanremoteport</id>
         <label>Remote port</label>
         <type>text</type>
-        <help>Define the remote port. Default is 4789.</help>
+        <help>Define the port to be used.</help>
+        <hint>4789</hint>
         <advanced>true</advanced>
     </field>
     <field>
@@ -56,8 +58,6 @@
         <id>vxlan.vxlandev</id>
         <label>Device</label>
         <type>dropdown</type>
-        <help>
-          When the interface is configured in multicast mode, the dev interface is used to transmit IP multicast packets.
-        </help>
+        <help>When the interface is configured in multicast mode, the dev interface is used to transmit IP multicast packets.</help>
     </field>
 </form>
