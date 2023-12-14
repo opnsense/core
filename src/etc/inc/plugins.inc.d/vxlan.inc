@@ -106,17 +106,19 @@ function vxlan_configure_do($verbose = false, $device = null)
             foreach (['local', 'remote', 'group'] as $target) {
                 if (!empty($interfaces_details[$device_name]['vxlan'][$target])) {
                     $tmp = explode(':', $interfaces_details[$device_name]['vxlan'][$target]);
-                    $current_settings['vxlan'.$target] = $tmp[0];
-                    $current_settings['vxlan'.$target.'port'] = $tmp[1];
+                    $current_settings['vxlan' . $target] = $tmp[0];
+                    $current_settings['vxlan' . $target . 'port'] = $tmp[1];
                 }
             }
         }
         // gather settings, detect changes
         $ifcnfcmd = '/sbin/ifconfig %s';
         $ifcnfcmdp = array($device_name);
-        foreach ([
+        foreach (
+            [
             'vxlanid', 'vxlanlocal', 'vxlanremote', 'vxlanlocalport', 'vxlanremoteport', 'vxlangroup', 'vxlandev'
-        ] as $param) {
+            ] as $param
+        ) {
             $value = '';
             if ($param == 'vxlandev') {
                 $intfnm = (string)$vxlan->$param;
