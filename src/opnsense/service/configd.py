@@ -32,6 +32,7 @@
     function: delivers a process coordinator to handle frontend functions
 """
 
+import glob
 import os
 import sys
 import logging
@@ -58,7 +59,10 @@ def get_config():
     """
     cnf = ConfigParser()
     cnf.optionxform = str
-    cnf.read('conf/configd.conf')
+    configs = ['conf/configd.conf']
+    for filename in glob.glob('conf/configd.conf.d/*.conf'):
+        configs.append(filename)
+    cnf.read(configs)
     return cnf
 
 
