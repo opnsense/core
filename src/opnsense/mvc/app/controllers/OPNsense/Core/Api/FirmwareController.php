@@ -436,6 +436,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a reboot", $this->getUserName()));
             $response['status'] = 'ok';
             $response['msg_uuid'] = trim($backend->configdRun('firmware reboot', true));
         } else {
@@ -455,6 +456,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a poweroff", $this->getUserName()));
             $response['status'] = 'ok';
             $response['msg_uuid'] = trim($backend->configdRun('firmware poweroff', true));
         } else {
@@ -474,6 +476,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware update", $this->getUserName()));
             $backend->configdRun('firmware flush');
             $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
             $response['status'] = 'ok';
@@ -494,6 +497,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware upgrade", $this->getUserName()));
             $backend->configdRun('firmware flush');
             $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
             $response['status'] = 'ok';
@@ -558,6 +562,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a security audit", $this->getUserName()));
             $response['status'] = 'ok';
             $response['msg_uuid'] = trim($backend->configdRun("firmware audit", true));
         } else {
@@ -580,6 +585,9 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(
+                sprintf("[Firmware] User %s executed a reinstall of package %s", $this->getUserName(), $pkg_name)
+            );
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \OPNsense\Phalcon\Filter\Filter([
@@ -609,6 +617,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a plugins sync", $this->getUserName()));
             $response['status'] = strtolower(trim($backend->configdRun('firmware sync')));
         } else {
             $response['status'] = 'failure';
@@ -650,6 +659,9 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(
+                sprintf("[Firmware] User %s executed an install of package %s", $this->getUserName(), $pkg_name)
+            );
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \OPNsense\Phalcon\Filter\Filter([
@@ -680,6 +692,9 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(
+                sprintf("[Firmware] User %s executed an remove of package %s", $this->getUserName(), $pkg_name)
+            );
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \OPNsense\Phalcon\Filter\Filter([
@@ -710,6 +725,9 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(
+                sprintf("[Firmware] User %s locked package %s", $this->getUserName(), $pkg_name)
+            );
             $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
@@ -743,6 +761,9 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
+            $this->getLogger('audit')->notice(
+                sprintf("[Firmware] User %s unlocked package %s", $this->getUserName(), $pkg_name)
+            );
             $filter = new \OPNsense\Phalcon\Filter\Filter([
                 'pkgname' => function ($value) {
                     return preg_replace('/[^0-9a-zA-Z._-]/', '', $value);
