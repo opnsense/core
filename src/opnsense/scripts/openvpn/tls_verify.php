@@ -30,7 +30,7 @@
 require_once("config.inc");
 
 /**
- * verify certificate depth
+ * verify certificate depth and optional against a ocsp server
  * @param string $serverid server identifier
  * @return string|bool an error string or true when properly authenticated
  */
@@ -45,6 +45,63 @@ function do_verify($serverid)
     if ($allowed_depth != null && ($certificate_depth > $allowed_depth)) {
         return "Certificate depth {$certificate_depth} exceeded max allowed depth of {$allowed_depth}.";
     }
+    if ($certificate_depth < $allowed_depth) {
+      # get relevant cfg stuff: ocsp_uri needs to be implemented in the gui
+      # optional: get the crlDistributionPoint(s) from CA:
+      # openssl x509 -in "/var/etc/openvpn/server" . $serverid . ".ca" -noout -ext crlDistributionPoints
+      $ocsp_uri = $a_server['ocsp_uri'] ?? '';
+      if (strlen($ocsp_uri) > 0) {
+        $cn = getenv('common_name');
+        $serial = getenv('tls_serial_' . $certificate_depth);
+        $issuer = "/var/etc/openvpn/server" . $serverid . ".ca";
+        $nonce = "-nonce"; # make this configurable ?
+        syslog(LOG_WARNING, __FILE__ . " : certificate_depth: " . $certificate_depth . " serial: " . $serial . " cn: " . $cn);
+        $ocsp_out = null;
+        $ocsp_ecode = null;
+        $openssl_ocsp = "/usr/bin/openssl ocsp -issuer " . escapeshellarg($issuer)
+                . " " . $nonce
+                . " -CAfile " . escapeshellarg($issuer)
+                . " -url " . escapeshellarg($ocsp_uri)
+                . " -serial " . escapeshellarg($serial);
+        syslog(LOG_WARNING, __FILE__ . " : ocsp command: '" . $openssl_ocsp ."'");
+        $descriptorspec = array(
+           0 => array("pipe", "r"),  // stdin
+           1 => array("pipe", "w"),  // stdout
+           2 => array("pipe", "w")   // stderr
+        );
+        $process = proc_open($openssl_ocsp, $descriptorspec, $pipes);
+        if (is_resource($process)) {
+          fclose($pipes[0]);
+          $ocsp_out = stream_get_contents($pipes[1]);
+          fclose($pipes[1]);
+          $ocsp_err = stream_get_contents($pipes[2]);
+          fclose($pipes[2]);
+          $ocsp_ecode = proc_close($process);
+        }
+        syslog(LOG_WARNING, __FILE__ . " : ocsp ecode: " . $ocsp_ecode . " stdout: '" . $ocsp_out . "' stderr: '" . $ocsp_err . "'");
+        if ($ocsp_ecode > 0) {
+            return "ocsp check command error";
+        }
+        # check for crt status in msg
+        if (preg_match('/^' . $serial . ': good/', $ocsp_out)) {
+            syslog(LOG_WARNING, __FILE__ . " : ocsp status is good ...");
+            # check if signature on the OCSP response verified correctly
+            if (preg_match('/^Response verify OK/', $ocsp_err)) {
+                syslog(LOG_WARNING, __FILE__ . " : ocsp Response verify OK");
+            } else {
+                syslog(LOG_WARNING, __FILE__ . " : ocsp Response verify ERROR");
+                return "signature check on the OCSP response failed";
+            }
+        } else if (preg_match('/^' . $serial . ': revoked/', $ocsp_out)) {
+            syslog(LOG_WARNING, __FILE__ . " : ocsp status is revoked");
+            return "ocsp check result is 'revoked' for serial " . $serial;
+        } else {
+            syslog(LOG_WARNING, __FILE__ . " : ocsp status is undefined");
+            return "ocsp check result is 'undefined' for serial " . $serial;
+        }
+      }
+    }
+
     return true;
 }
 
