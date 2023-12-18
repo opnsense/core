@@ -50,7 +50,7 @@ class AuthGroup(BaseContentParser):
             return
 
         users = {}
-        for server in ovpn_status.get('server', None):
+        for server in ovpn_status.get('server', []):
             if server:
                 for client in ovpn_status['server'][server].get('client_list', []):
                     if type(client) is dict and 'common_name' in client:
