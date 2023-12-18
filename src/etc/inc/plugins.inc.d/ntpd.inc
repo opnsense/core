@@ -427,6 +427,7 @@ function ntpd_configure_do($verbose = false)
 
     if (is_array($interfaces) && count($interfaces)) {
         $ntpcfg .= "interface ignore all\n";
+        $ntpcfg .= "interface ignore wildcard\n";
         foreach ($interfaces as $interface) {
             if (!is_ipaddr($interface)) {
                 $interface = get_real_interface($interface);
