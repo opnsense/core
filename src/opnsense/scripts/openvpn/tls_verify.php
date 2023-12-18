@@ -47,7 +47,7 @@ function do_verify($serverid)
     }
     if ($certificate_depth < $allowed_depth) {
       # get relevant cfg stuff: ocsp_uri needs to be implemented in the gui
-      # optional: get the crlDistributionPoint(s) from CA / server cert:
+      # optional: get the URL for the OCSP query from the authorityInfoAccess field from CA / server cert:
       # openssl x509 -in "/var/etc/openvpn/server" . $serverid . ".ca" -noout -ocsp_uri
       # openssl x509 -in "/var/etc/openvpn/server" . $serverid . ".cert" -noout -ocsp_uri
       $ocsp_uri = $a_server['ocsp_uri'] ?? '';
