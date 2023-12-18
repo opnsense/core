@@ -97,10 +97,11 @@ if [ -n "${DO_RANDOM}" ]; then
 	sleep ${DO_RANDOM#"-r "}
 fi
 
-# business mirror compliance requires disabling the use of TLS 1.0 and 1.1
+# business mirror compliance requires disabling the use of TLS below 1.3
 if [ -n "$(opnsense-update -x)" ]; then
 	export SSL_NO_TLS1="yes"
 	export SSL_NO_TLS1_1="yes"
+	export SSL_NO_TLS1_2="yes"
 fi
 
 if [ -z "${DO_UNLOCKED}" ]; then
