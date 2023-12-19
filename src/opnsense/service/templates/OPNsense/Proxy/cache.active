@@ -1,5 +1,0 @@
-{% if helpers.exists('OPNsense.proxy.general.cache.local') %}
-{%   if OPNsense.proxy.general.cache.local.enabled == '1' %}
-yes
-{%   endif %}
-{% endif %}

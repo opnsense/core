@@ -1,5 +1,0 @@
-{% if helpers.exists('OPNsense.proxy.forward.sslnobumpsites') and OPNsense.proxy.forward.sslnobumpsites != '' %}
-{% for line in OPNsense.proxy.forward.sslnobumpsites.split(',') %}
-{{ line }}
-{% endfor %}
-{% endif %}

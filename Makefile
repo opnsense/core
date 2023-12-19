@@ -185,8 +185,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			radvd \
 			rrdtool \
 			samplicator \
-			squid \
-			squid-langpack \
 			strongswan \
 			sudo \
 			syslog-ng \
