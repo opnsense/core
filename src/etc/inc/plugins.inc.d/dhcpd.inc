@@ -1369,15 +1369,15 @@ function dhcpd_dhcp6_configure($verbose = false, $blacklist = [])
                     /* XXX $pdlen is never validated against prefixlenght setting, but must be smaller or equal */
                     $pdlen = 64 - calculate_ipv6_delegation_length($config['interfaces'][$ifname]['track6-interface']);
 
-                    $range_from = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['from'], '::');
-                    if ($range_from == '::') {
+                    $range_from = $dhcpdv6cfg[$ifname]['prefixrange']['from'];
+                    if (merge_ipv6_address($range_from, '::') == '::') {
                         log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['from']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_from = $dhcpdv6cfg[$ifname]['prefixrange']['from'] . ':0:0:0:0';
                     }
 
-                    $range_to = merge_ipv6_address($dhcpdv6cfg[$ifname]['prefixrange']['to'], '::');
-                    if ($range_to == '::') {
+                    $range_to = $dhcpdv6cfg[$ifname]['prefixrange']['to'];
+                    if (merge_ipv6_address($range_to, '::') == '::') {
                         log_msg("'{$dhcpdv6cfg[$ifname]['prefixrange']['to']}' is not a valid prefix range value", LOG_WARNING);
                         /* XXX previously it was suggested to use suffix but it was actually infix so shift 64 bits if possible */
                         $range_to = $dhcpdv6cfg[$ifname]['prefixrange']['to'] . ':0:0:0:0';
