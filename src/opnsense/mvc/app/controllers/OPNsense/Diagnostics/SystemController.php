@@ -26,14 +26,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- namespace OPNsense\Diagnostics;
+namespace OPNsense\Diagnostics;
 
- use OPNsense\Base\IndexController;
+use OPNsense\Base\IndexController;
 
- /**
-  * Class SystemController
-  * @package OPNsense\Diagnostics
-  */
+/**
+ * Class SystemController
+ * @package OPNsense\Diagnostics
+ */
 class SystemController extends IndexController
 {
     /**
