@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2017-2022 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2017-2023 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,8 @@ TMPFILE=/tmp/pkg_check.exclude
 : > ${LOCKFILE}
 
 MTREE_PATTERNS="
+./.cshrc
+./.profile
 ./etc/csh.cshrc
 ./etc/group
 ./etc/hosts
@@ -48,6 +50,8 @@ MTREE_PATTERNS="
 ./etc/shells
 ./etc/spwd.db
 ./etc/ttys
+./root/.cshrc
+./root/.profile
 ./usr/share/man/mandoc.db
 ./usr/share/openssl/man/mandoc.db
 "
