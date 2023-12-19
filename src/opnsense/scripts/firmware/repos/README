@@ -1,0 +1,7 @@
+Repository-based scripts live here to be provided by plugins.
+The firmware configuration will run any script with executable
+bit set regardless of the script language.  The scripts are not
+restricted in scope at the moment because we do not know all
+the requirements of other vendors.
+
+Single script per repository matching in name is recommended.
