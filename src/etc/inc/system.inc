@@ -828,37 +828,27 @@ function get_memory()
 
 function system_firmware_configure($verbose = false)
 {
-    global $config;
+    service_log('Writing firmware settings:', $verbose);
 
-    service_log('Writing firmware setting...', $verbose);
+    $scripts = glob('/usr/local/opnsense/scripts/firmware/repos/*');
+    natsort($scripts);
 
-    /* calculate the effective ABI */
-    $args = [ exec_safe('-A %s', shell_safe('opnsense-version -x')) ];
-    $url_sub = '';
+    foreach ($scripts as $script) {
+        $basename = basename($script);
+        if ($basename == 'README' || strpos($basename, '.pgksave') !== false) {
+            continue;
+        } elseif (!is_executable($script)) {
+            continue;
+        }
 
-    if (!empty($config['system']['firmware']['subscription'])) {
-        /*
-         * Append the url now that it is not in the mirror anymore.
-         * This only ever works if the mirror is set to a non-default.
-         */
-        $url_sub = '/' . $config['system']['firmware']['subscription'];
-    } else {
-        /* clear the license file when no subscription key is set */
-        @unlink('/usr/local/opnsense/version/core.license');
+         /* run the script in passthru() but avoid standard output from this side */
+         passthru($script . '> /dev/null');
+
+        /* make a note about repo being handled */
+        service_log(' ' . preg_replace('/\..*?$/', '', $basename));
     }
 
-    if (!empty($config['system']['firmware']['mirror'])) {
-        $args[] = exec_safe('-m %s', str_replace('/', '\/', $config['system']['firmware']['mirror'] . $url_sub));
-    }
-
-    if (!empty($config['system']['firmware']['flavour'])) {
-        $args[] = exec_safe('-n %s', str_replace('/', '\/', $config['system']['firmware']['flavour']));
-    }
-
-    /* rewrite the config via the defaults and possible arguments */
-    mwexec('/usr/local/sbin/opnsense-update -sd ' . join(' ', $args));
-
-    service_log("done.\n", $verbose);
+    service_log("\n");
 }
 
 function system_trust_configure($verbose = false)
