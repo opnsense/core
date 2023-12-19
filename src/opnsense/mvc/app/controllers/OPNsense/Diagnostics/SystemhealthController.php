@@ -31,8 +31,8 @@ namespace OPNsense\Diagnostics;
 use OPNsense\Base\IndexController;
 
 /**
- * Class IndexController
- * @package OPNsense\Proxy
+ * Class SystemhealthController
+ * @package OPNsense\Diagnostics
  */
 class SystemhealthController extends IndexController
 {
