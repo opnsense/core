@@ -159,12 +159,24 @@ $wlan_modes = array(
     'hostap' => 'Access Point'
 );
 
-function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors)
+function do_input_validation($postdata, $reqdfields, $fielddescr, &$input_errors)
 {
+    /* if $fielddescr is a mapping (name => description) we can use it in our errors, otherwise when it only contains descriptions, we need to fetch the name from the required fields */
+    $fieldnames = [];
+    foreach ($fielddescr as $seq => $descr) {
+        if (preg_match('/^\d+$/', $seq)) {
+            if (isset($reqdfields[$seq])) {
+                $fieldnames[$reqdfields[$seq]] = $descr;
+            }
+        } else {
+            $fieldnames[$seq] = $descr;
+        }
+    }
+
     /* check for bad control characters */
     foreach ($postdata as $pn => $pd) {
         if (is_string($pd) && preg_match("/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]/", $pd)) {
-            $input_errors[] = sprintf(gettext("The field %s contains invalid characters."), $pn);
+            $input_errors[] = sprintf(gettext("The field %s contains invalid characters."), $fieldnames[$pn] ?? $pn);
         }
     }
 
@@ -180,7 +192,7 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
             }
 
             if (!$found) {
-                $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+                $input_errors[] = sprintf(gettext("The field %s is required."), $fieldnames[$reqdfields[$i]]);
             }
         }
     }
