@@ -311,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (count($input_errors) == 0) {
+        if (count($input_errors) == 0 && isset($pconfig['enable'])) {
             /* make sure the range lies within the current subnet */
             $subnet_start = ip2ulong(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) & gen_subnet_mask_long($config['interfaces'][$if]['subnet'])));
             $subnet_end = ip2ulong(long2ip32(ip2long($config['interfaces'][$if]['ipaddr']) | (~gen_subnet_mask_long($config['interfaces'][$if]['subnet']))));
@@ -350,6 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                   !empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
             }
         }
+
         // save data
         if (count($input_errors) == 0) {
             $dhcpdconf = array();
