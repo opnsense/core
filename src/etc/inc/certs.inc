@@ -158,14 +158,17 @@ function ca_chain(&$cert)
     return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
-function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg)
+function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'v3_ca', $extns = [])
 {
-    $args = array(
-        'config' => '/usr/local/etc/ssl/opnsense.cnf',
-        'x509_extensions' => 'v3_ca',
+    // handle parameters which can only be set via the configuration file
+    $config_filename = create_temp_openssl_config($extns);
+
+    $args = [
+        'config' => $config_filename,
+        'x509_extensions' => $x509_extensions,
         'digest_alg' => $digest_alg,
         'encrypt_key' => false
-    );
+    ];
     if (is_numeric($keylen_curve)) {
         $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
         $args['private_key_bits'] = (int)$keylen_curve;
@@ -454,7 +457,7 @@ function cert_get_purpose($str_crt, $decode = true)
 
     $crt_details = openssl_x509_parse($str_crt);
     $purpose = array();
-    foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage'] as $ext) {
+    foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage', 'authorityInfoAccess'] as $ext) {
         $purpose[$ext] = [];
         if (!empty($crt_details['extensions'][$ext])) {
             foreach (explode(",", $crt_details['extensions'][$ext]) as $item) {
@@ -703,12 +706,10 @@ function create_temp_openssl_config(&$extns)
 
     $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
 
-    foreach (['subjectAltName', 'keyUsage', 'extendedKeyUsage', 'basicConstraints'] as $extnTag) {
-        if (isset($extns[$extnTag])) {
-            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
-            // Overwrite the placeholders for this property
-            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
-        }
+    foreach (array_keys($extns) as $extnTag) {
+        $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
+        // Overwrite the placeholders for this property
+        $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
     }
     file_put_contents($configFilename, $template);
     return $configFilename;

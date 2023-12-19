@@ -97,7 +97,7 @@ function csr_get_modulus($str_crt, $decode = true)
 
 function parse_csr($csr_str)
 {
-    $ret = array();
+    $ret = [];
     $ret['parse_success'] = true;
     $ret['subject'] = openssl_csr_get_subject($csr_str);
     if ($ret['subject'] === false) {
@@ -117,7 +117,7 @@ function parse_csr($csr_str)
                     foreach ($value as $column) {
                         switch ($column['extnId']) {
                             case 'id-ce-basicConstraints':
-                                $ret['basicConstraints'] = array();
+                                $ret['basicConstraints'] = [];
                                 $ret['basicConstraints']['CA'] = $column['extnValue']['cA'];
                                 if (isset($column['extnValue']['pathLenConstraint'])) {
                                     $ret['basicConstraints']['pathlen'] = (int)($column['extnValue']['pathLenConstraint']->toString());
@@ -130,14 +130,14 @@ function parse_csr($csr_str)
                                 break;
 
                             case 'id-ce-extKeyUsage':
-                                $ret['extendedKeyUsage'] = array();
+                                $ret['extendedKeyUsage'] = [];
                                 foreach ($column['extnValue'] as $usage) {
                                     array_push($ret['extendedKeyUsage'], strpos($usage, 'id-kp-') === 0 ? ASN1::getOID($usage) : $usage);
                                 }
                                 break;
 
                             case 'id-ce-subjectAltName':
-                                $ret['subjectAltName'] = array();
+                                $ret['subjectAltName'] = [];
                                 foreach ($column['extnValue'] as $item) {
                                     if (isset($item['dNSName'])) {
                                         array_push($ret['subjectAltName'], array('type'=> 'DNS', 'value'=> $item['dNSName']));
@@ -264,13 +264,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $act = isset($_GET['act']) ? $_GET['act'] : null;
 
-    $pconfig = array();
+    $pconfig = [];
     if ($act == "new") {
-        if (isset($_GET['method'])) {
-            $pconfig['certmethod'] = $_GET['method'];
-        } else {
-            $pconfig['certmethod'] = null;
-        }
+        $pconfig['certmethod'] = $_GET['method'] ?? null;
         if (isset($_GET['caref'])) {
             $pconfig['caref'] = $_GET['caref'];
         }
@@ -370,62 +366,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header(url_safe('Location: /system_certmanager.php'));
         exit;
     } elseif ($act == 'csr_info') {
-      if (!isset($pconfig['csr'])) {
-        http_response_code(400);
+        if (!isset($pconfig['csr'])) {
+            http_response_code(400);
+            header("Content-Type: text/plain;charset=UTF-8");
+            echo gettext('Invalid request');
+            exit;
+        }
+
         header("Content-Type: text/plain;charset=UTF-8");
-        echo gettext('Invalid request');
+        // use openssl to dump csr in readable format
+        $process = proc_open('/usr/local/bin/openssl req -text -noout', array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
+        if (is_resource($process)) {
+            fwrite($pipes[0], $pconfig['csr']);
+            fclose($pipes[0]);
+
+            $result_stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            $result_stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+
+            proc_close($process);
+
+            echo $result_stdout;
+            echo $result_stderr;
+        }
         exit;
-      }
-
-      header("Content-Type: text/plain;charset=UTF-8");
-      // use openssl to dump csr in readable format
-      $process = proc_open('/usr/local/bin/openssl req -text -noout', array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
-      if (is_resource($process)) {
-        fwrite($pipes[0], $pconfig['csr']);
-        fclose($pipes[0]);
-
-        $result_stdout = stream_get_contents($pipes[1]);
-        fclose($pipes[1]);
-
-        $result_stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-
-        proc_close($process);
-
-        echo $result_stdout;
-        echo $result_stderr;
-      }
-      exit;
     } elseif ($act == 'csr_info_json') {
-      header("Content-Type: application/json;charset=UTF-8");
+        header("Content-Type: application/json;charset=UTF-8");
 
-      if (!isset($pconfig['csr'])) {
-        http_response_code(400);
-        echo json_encode(array(
-          'error' => gettext('Invalid Request'),
-          'error_detail' => gettext('No csr parameter in query')
-        ));
+        if (!isset($pconfig['csr'])) {
+            http_response_code(400);
+            echo json_encode(array(
+              'error' => gettext('Invalid Request'),
+              'error_detail' => gettext('No csr parameter in query')
+            ));
+            exit;
+        }
+
+        $parsed_result = parse_csr($pconfig['csr']);
+
+        if ($parsed_result['parse_success'] !== true) {
+            http_response_code(400);
+            echo json_encode(array(
+              'error' => gettext('CSR file is invalid'),
+              'error_detail' => gettext('Could not parse CSR file.')
+            ));
+            exit;
+        }
+
+        echo json_encode($parsed_result);
         exit;
-      }
-
-      $parsed_result = parse_csr($pconfig['csr']);
-
-      if ($parsed_result['parse_success'] !== true) {
-        http_response_code(400);
-        echo json_encode(array(
-          'error' => gettext('CSR file is invalid'),
-          'error_detail' => gettext('Could not parse CSR file.')
-        ));
-        exit;
-      }
-
-      echo json_encode($parsed_result);
-      exit;
     } elseif ($act == "p12") {
         // export cert+key in p12 format
         if (isset($id)) {
             $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
-            $args = array();
+            $args = [];
             $args['friendly_name'] = $a_cert[$id]['descr'];
 
             $ca = lookup_ca($a_cert[$id]['caref']);
@@ -455,7 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         exit;
     } elseif ($act == "csr") {
-        $input_errors = array();
+        $input_errors = [];
         $pconfig = $_POST;
         if (!isset($id)) {
             header(url_safe('Location: /system_certmanager.php'));
@@ -491,96 +487,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             exit;
         }
     } elseif (!empty($_POST['save'])) {
-        $input_errors = array();
+        $input_errors = [];
         $act = isset($_GET['act']) ? $_GET['act'] : null;
-
+        $fielddescriptions = [
+          'descr' => gettext("Descriptive name"),
+          'caref' => gettext("Signing Certificate Authority"),
+          'cert' => gettext("Certificate data"),
+          'key' => gettext("Key data"),
+          'keytype' => gettext("Key type"),
+          'keylen' => gettext("Key length"),
+          'curve' => gettext("Curve"),
+          'digest_alg' => gettext("Digest algorithm"),
+          'lifetime' => gettext("Lifetime"),
+          'dn_country' => gettext("Distinguished name Country Code"),
+          'dn_state' => gettext("Distinguished name State or Province"),
+          'dn_city' => gettext("Distinguished name City"),
+          'dn_organization' => gettext("Distinguished name Organization"),
+          'dn_email' => gettext("Distinguished name Email Address"),
+          'dn_commonname' => gettext("Distinguished name Common Name"),
+          'ocsp_uri' => gettext("OCSP uri"),
+          'csr_keytype' => gettext("Key type"),
+          'csr_keylen' => gettext("Key length"),
+          'csr_curve' => gettext("Curve"),
+          'csr_digest_alg' => gettext("Digest algorithm"),
+          'csr_dn_country' => gettext("Distinguished name Country Code"),
+          'csr_dn_state' => gettext("Distinguished name State or Province"),
+          'csr_dn_city' => gettext("Distinguished name City"),
+          'csr_dn_organization' => gettext("Distinguished name Organization"),
+          'csr_dn_email' => gettext("Distinguished name Email Address"),
+          'csr_dn_commonname' => gettext("Distinguished name Common Name"),
+          'caref_sign_csr' => gettext("Certificate authority"),
+          'csr' =>  gettext("CSR file"),
+          'lifetime_sign_csr' => gettext("Lifetime"),
+          'digest_alg_sign_csr' => gettext("Digest Algorithm"),
+          'certref' => gettext("Existing Certificate Choice")
+        ];
         /* input validation */
         if ($pconfig['certmethod'] == "import") {
-            $reqdfields = explode(" ", "descr cert key");
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Certificate data"),
-                    gettext("Key data"));
+            $reqdfields = ['descr', 'cert', 'key'];
             if (!empty($pconfig['cert']) && (!strstr($pconfig['cert'], "BEGIN CERTIFICATE") || !strstr($pconfig['cert'], "END CERTIFICATE"))) {
                 $input_errors[] = gettext("This certificate does not appear to be valid.");
             }
         } elseif ($pconfig['certmethod'] == "internal") {
-            $reqdfields = explode(" ", "descr caref keytype keylen curve digest_alg lifetime dn_country dn_state dn_city ".
-                "dn_organization dn_email dn_commonname"
-            );
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Certificate authority"),
-                    gettext("Key type"),
-                    gettext("Key length"),
-                    gettext("Curve"),
-                    gettext("Digest algorithm"),
-                    gettext("Lifetime"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
-                    gettext("Distinguished name Common Name"));
+            $reqdfields = ['descr', 'caref', 'keytype', 'keylen', 'curve', 'digest_alg', 'lifetime', 'dn_commonname'];
         } elseif ($pconfig['certmethod'] == "external") {
-            $reqdfields = explode(" ", "descr csr_keytype csr_keylen csr_curve csr_digest_alg csr_dn_country csr_dn_state csr_dn_city ".
-                "csr_dn_organization csr_dn_email csr_dn_commonname"
-            );
-            $reqdfieldsn = array(
-                    gettext("Descriptive name"),
-                    gettext("Key type"),
-                    gettext("Key length"),
-                    gettext("Curve"),
-                    gettext("Digest algorithm"),
-                    gettext("Distinguished name Country Code"),
-                    gettext("Distinguished name State or Province"),
-                    gettext("Distinguished name City"),
-                    gettext("Distinguished name Organization"),
-                    gettext("Distinguished name Email Address"),
-                    gettext("Distinguished name Common Name"));
+            $reqdfields = ['descr', 'csr_keytype', 'csr_keylen', 'csr_curve', 'csr_digest_alg', 'csr_dn_commonname'];
         } elseif ($pconfig['certmethod'] == "existing") {
-            $reqdfields = array("certref");
-            $reqdfieldsn = array(gettext("Existing Certificate Choice"));
+            $reqdfields = ["certref"];
         } elseif ($pconfig['certmethod'] == 'sign_cert_csr') {
-            $reqdfields = array('caref_sign_csr', 'csr', 'lifetime_sign_csr', 'digest_alg_sign_csr');
-            $reqdfieldsn = array(gettext("Certificate authority"), gettext("CSR file"), gettext("Lifetime"), gettext("Digest Algorithm"));
+            $reqdfields = ['caref_sign_csr', 'csr', 'lifetime_sign_csr', 'digest_alg_sign_csr'];
         }
 
-        $altnames = array();
-        do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-        if (isset($pconfig['altname_value']) && $pconfig['certmethod'] != "import" && $pconfig['certmethod'] != "existing" && $pconfig['certmethod'] != 'sign_cert_csr') {
+        $altnames = [];
+        do_input_validation($pconfig, $reqdfields, $fielddescriptions, $input_errors);
+        if (!in_array($pconfig['certmethod'], ['import', 'existing', 'sign_cert_csr'])) {
             /* subjectAltNames */
-            foreach ($pconfig['altname_type'] as $altname_seq => $altname_type) {
-                if (!empty($pconfig['altname_value'][$altname_seq])) {
-                    $altnames[] = array("type" => $altname_type, "value" => $pconfig['altname_value'][$altname_seq]);
+            if (!empty($pconfig['altname_type']) && !empty($pconfig['altname_value'])) {
+                foreach ($pconfig['altname_type'] as $altname_seq => $altname_type) {
+                    if (!empty($pconfig['altname_value'][$altname_seq])) {
+                        $altnames[] = array("type" => $altname_type, "value" => $pconfig['altname_value'][$altname_seq]);
+                    }
                 }
             }
 
             /* Input validation for subjectAltNames */
             foreach ($altnames as $altname) {
-                if (! is_valid_alt_value($altname, $input_errors)) {
+                if (!is_valid_alt_value($altname, $input_errors)) {
                     break;
                 }
             }
-
             /* Make sure we do not have invalid characters in the fields for the certificate */
-            for ($i = 0; $i < count($reqdfields); $i++) {
-                if (preg_match('/email/', $reqdfields[$i])) {
-                    /* dn_email or csr_dn_name */
-                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
-                        $input_errors[] = gettext("The field 'Distinguished name Email Address' contains invalid characters.");
+            foreach ($fielddescriptions as $fieldname => $description) {
+                if (preg_match('/email/', $fieldname)) {
+                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_email"])) {
+                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $description);
                     }
-                } elseif (preg_match('/commonname/', $reqdfields[$i])) {
-                    /* dn_commonname or csr_dn_commonname */
-                    if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
-                        $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
+                } elseif (preg_match('/commonname/', $fieldname)) {
+                    if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig["dn_commonname"])) {
+                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $description);
                     }
-                } elseif ($reqdfields[$i] == "csr_dn_organization" || $reqdfields[$i] == "dn_organization") {
-                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\"\']/", $pconfig[$reqdfields[$i]])) {
-                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
+                } elseif ($fieldname == "csr_dn_organization" || $fieldname == "dn_organization") {
+                    if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\"\']/", $pconfig["dn_organization"])) {
+                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $description);
                     }
-                } elseif ($reqdfields[$i] != "descr" && $reqdfields[$i] != "csr" && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$reqdfields[$i]])) {
-                    $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
+                } elseif ($fieldname == "ocsp_uri") {
+                    if (!empty($pconfig["ocsp_uri"]) && !filter_var($pconfig["ocsp_uri"], FILTER_VALIDATE_URL)) {
+                        $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $description);
+                    }
+                } elseif (!in_array($fieldname, ['descr', 'csr']) && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $pconfig[$fieldname])) {
+                    $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $description);
                 }
             }
 
@@ -614,12 +609,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($pconfig['certmethod'] == "sign_cert_csr" && !in_array($pconfig["digest_alg_sign_csr"], $openssl_digest_algs)) {
                 $input_errors[] = gettext("Please select a valid Digest Algorithm.");
             }
-        }
-
-        // validation and at the same time create $dn for sign_cert_csr
-        if ($pconfig['certmethod'] === 'sign_cert_csr') {
+        } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
             // XXX: we should separate validation and data gathering
-            $extns = array();
+            $extns = [];
             if (isset($pconfig['key_usage_sign_csr'])) {
                 $san_str = '';
                 if (!empty($pconfig['altname_type_sign_csr'])) {
@@ -683,14 +675,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* save modifications */
         if (count($input_errors) == 0) {
+            $dn = [];
+            foreach ([
+              'dn_country' => 'countryName',
+              'csr_dn_country' => 'countryName',
+              'dn_state' => 'stateOrProvinceName',
+              'csr_dn_state' => 'stateOrProvinceName',
+              'dn_city' => 'localityName',
+              'csr_dn_city' => 'localityName',
+              'dn_organization' => 'organizationName',
+              'csr_dn_organization' => 'organizationName',
+              'dn_email' => 'emailAddress',
+              'csr_dn_email' => 'emailAddress',
+              'dn_commonname' => 'commonName',
+              'csr_dn_commonname' => 'commonName'
+            ] as $source => $target) {
+                if ($pconfig['certmethod'] != "external" && str_starts_with($source, 'csr_')) {
+                    continue;
+                } else if ($pconfig['certmethod']  == "external" && !str_starts_with($source, 'csr_')) {
+                    continue;
+                }
+                if (!empty($pconfig[$source])) {
+                    $dn[$target] = $pconfig[$source];
+                }
+            }
             if ($pconfig['certmethod'] == "existing") {
                 $cert = lookup_cert($pconfig['certref']);
                 if ($cert && !empty($userid)) {
                     $a_user[$userid]['cert'][] = $cert['refid'];
                 }
             } else {
-                $cert = array();
-                $cert['refid'] = uniqid();
+                $cert = ['refid' => uniqid()];
                 if (isset($id) && $a_cert[$id]) {
                     $cert = $a_cert[$id];
                 }
@@ -711,22 +726,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['certmethod'] == "import") {
                     cert_import($cert, $pconfig['cert'], $pconfig['key']);
                 } elseif ($pconfig['certmethod'] == "internal") {
-                    $dn = array(
-                        'countryName' => $pconfig['dn_country'],
-                        'stateOrProvinceName' => $pconfig['dn_state'],
-                        'localityName' => $pconfig['dn_city'],
-                        'organizationName' => $pconfig['dn_organization'],
-                        'emailAddress' => $pconfig['dn_email'],
-                        'commonName' => $pconfig['dn_commonname']);
-                    $extns = array();
+                    $extns = [];
                     if (count($altnames)) {
-                        $altnames_tmp = array();
+                        $altnames_tmp = [];
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
                         $extns['subjectAltName'] = implode(",", $altnames_tmp);
                     }
-
+                    if (!empty($pconfig['ocsp_uri'])) {
+                        $extns['authorityInfoAccess'] = "OCSP;URI:{$pconfig['ocsp_uri']}";
+                    }
                     if (!cert_create(
                         $cert,
                         $pconfig['caref'],
@@ -737,7 +747,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['cert_type'],
                         $extns
                     )) {
-                        $input_errors = array();
+                        $input_errors = [];
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
@@ -751,32 +761,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } elseif ($pconfig['certmethod'] === 'sign_cert_csr') {
                     if (!sign_cert_csr($cert, $pconfig['caref_sign_csr'], $pconfig['csr'], (int) $pconfig['lifetime_sign_csr'],
                                        $pconfig['digest_alg_sign_csr'], $extns)) {
-                        $input_errors = array();
+                        $input_errors = [];
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
                 } elseif ($pconfig['certmethod'] == "external") {
-                    $dn = array(
-                        'countryName' => $pconfig['csr_dn_country'],
-                        'stateOrProvinceName' => $pconfig['csr_dn_state'],
-                        'localityName' => $pconfig['csr_dn_city'],
-                        'organizationName' => $pconfig['csr_dn_organization'],
-                        'emailAddress' => $pconfig['csr_dn_email'],
-                        'commonName' => $pconfig['csr_dn_commonname']);
-                    $extns = array();
+                    $extns = [];
                     if (!empty($pconfig['csr_dn_organizationalunit'])) {
                         $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
                     }
                     if (count($altnames)) {
-                        $altnames_tmp = array();
+                        $altnames_tmp = [];
                         foreach ($altnames as $altname) {
                             $altnames_tmp[] = "{$altname['type']}:{$altname['value']}";
                         }
                         $extns['subjectAltName'] = implode(",", $altnames_tmp);
                     }
                     if (!csr_generate($cert, $pconfig['csr_keylen_curve'], $dn, $pconfig['csr_digest_alg'], $extns)) {
-                        $input_errors = array();
+                        $input_errors = [];
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
@@ -1200,7 +1203,18 @@ $( document ).ready(function() {
           continue;
       }
       $subject = cert_get_subject_array($ca['crt']);
+      $ext = cert_get_purpose($ca['crt']);
       legacy_html_escape_form_data($subject);
+      legacy_html_escape_form_data($ext);
+      $ocsp_uri = null;
+      if (!empty($ext['authorityInfoAccess'])) {
+          foreach ($ext['authorityInfoAccess'] as $item) {
+              if (str_starts_with($item, 'OCSP')) {
+                  $ocsp_uri = explode(':', $item, 2)[1];
+              }
+          }
+      }
+
       $subject_items = array('C'=>'', 'ST' => '', 'L' => '', 'O' => '', 'emailAddress' => '', 'CN' => '');
       foreach ($subject as $subject_item) {
           $subject_items[$subject_item['a']] = $subject_item['v'];
@@ -1214,6 +1228,7 @@ $( document ).ready(function() {
           $('#dn_country option').prop('selected', false);
           $('#dn_country option').filter('[value="<?=$subject_items['C'];?>"]').prop('selected', true);
           $("#dn_country").selectpicker('refresh');
+          $("#ocsp_uri").val("<?=$ocsp_uri;?>");
           break;
   <?php
   endforeach; ?>
@@ -1747,6 +1762,17 @@ $( document ).ready(function() {
                   </table>
                 </td>
               </tr>
+              <tr>
+                <td><a id="help_for_ocsp_uri" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("OCSP uri");?> : &nbsp;</td>
+                <td>
+                  <input name="ocsp_uri" id="ocsp_uri" type="text" size="25" value="<?=$pconfig['ocsp_uri'];?>"/>
+                  <div class="hidden" data-for="help_for_ocsp_uri">
+                    <em><?=gettext("ex:");?></em>
+                    &nbsp;
+                    <?=gettext("http://ocsp.my.host/");?>
+                  </div>
+                </td>
+              </tr>
               </tbody>
             </table>
             <!-- external cert -->
@@ -1912,7 +1938,7 @@ $( document ).ready(function() {
 <?php
                   foreach ($config['cert'] as $cert) :
                       $caname = "";
-                      $usercert = isset($config['system']['user'][$userid]['cert']) ? $config['system']['user'][$userid]['cert'] : array();
+                      $usercert = isset($config['system']['user'][$userid]['cert']) ? $config['system']['user'][$userid]['cert'] : [];
                       if (isset($userid) && in_array($cert['refid'], $usercert)) {
                           continue;
                       }
