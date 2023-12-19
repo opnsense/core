@@ -834,11 +834,12 @@ function system_firmware_configure($verbose = false)
     natsort($scripts);
 
     foreach ($scripts as $script) {
-        if (is_executable($script)) {
+        $basename = basename($script);
+        if (is_executable($script) && $basename != 'README') {
             /* run the script in passthru() but avoid standard output from this side */
             passthru($script . '> /dev/null');
             /* make a note about repo being handled */
-            service_log(' ' . preg_replace('/\..*?$/', ' ', basename($script)));
+            service_log(' ' . preg_replace('/\..*?$/', '', $basename));
         }
     }
 
