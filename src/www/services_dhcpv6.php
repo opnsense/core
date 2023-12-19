@@ -534,8 +534,8 @@ include("head.inc");
                            <?= gettext("Ensure that any prefix delegation range does not overlap the LAN prefix range."); ?>
 <?php if (isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])): ?>
                           <br/><br/>
-                          <?= gettext('When using a tracked interface then please only enter the range itself, i.e. ::xxxx:0:0:0:0. ' .
-                            'For example, for a /56 delegation from ::100:0:0:0:0 to ::f00:0:0:0:0. ' .
+                          <?= gettext('When using a tracked interface then please only enter the range itself, i.e. ::xxxx. ' .
+                            'For example, for /56 delegations from ::100 to ::f00 or for /60 delegations from ::10 to ::f0. ' .
                             'Also make sure that the desired prefix delegation size is not longer than the available size shown above.') ?>
 <?php endif ?>
                           <br/><br/>
