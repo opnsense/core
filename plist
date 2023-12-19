@@ -951,6 +951,7 @@
 /usr/local/opnsense/scripts/firmware/repos/FreeBSD.php
 /usr/local/opnsense/scripts/firmware/repos/OPNsense.php
 /usr/local/opnsense/scripts/firmware/repos/README
+/usr/local/opnsense/scripts/firmware/repos/SunnyValley.php
 /usr/local/opnsense/scripts/firmware/resync.sh
 /usr/local/opnsense/scripts/firmware/running.sh
 /usr/local/opnsense/scripts/firmware/security.sh
