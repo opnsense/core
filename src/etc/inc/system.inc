@@ -835,12 +835,17 @@ function system_firmware_configure($verbose = false)
 
     foreach ($scripts as $script) {
         $basename = basename($script);
-        if (is_executable($script) && $basename != 'README') {
-            /* run the script in passthru() but avoid standard output from this side */
-            passthru($script . '> /dev/null');
-            /* make a note about repo being handled */
-            service_log(' ' . preg_replace('/\..*?$/', '', $basename));
+        if ($basename == 'README' || strpos($basename, '.pgksave') !== false) {
+            continue;
+        } elseif (!is_executable($script)) {
+            continue;
         }
+
+         /* run the script in passthru() but avoid standard output from this side */
+         passthru($script . '> /dev/null');
+
+        /* make a note about repo being handled */
+        service_log(' ' . preg_replace('/\..*?$/', '', $basename));
     }
 
     service_log("\n");
