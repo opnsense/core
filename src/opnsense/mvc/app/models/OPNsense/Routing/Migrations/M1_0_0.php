@@ -60,8 +60,13 @@ class M1_0_0 extends BaseModelMigration
             foreach ($config->gateways->gateway_item as $gateway) {
                 $node = $model->gateway_item->Add();
 
-                // monitoring was on when no node present
+                // special handling of implied booleans
+                $node->defaultgw = !empty((string)$gateway->defaultgw) ? '1' : '0';
+                $node->disabled = !empty((string)$gateway->disabled) ? '1' : '0';
+                $node->fargw = !empty((string)$gateway->fargw) ? '1' : '0';
+                $node->force_down = !empty((string)$gateway->force_down) ? '1' : '0';
                 $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
+                $node->monitor_noroute = !empty((string)$gateway->monitor_noroute) ? '1' : '0';
 
                 if (empty((string)$gateway->priority)) {
                     $node->priority = '255';
