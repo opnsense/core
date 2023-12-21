@@ -76,7 +76,7 @@ def cmd_rehash():
                     continue
                 cert = get_cert(filename)
                 if cert:
-                    nhash = hex(cert.subject_name_hash()).lstrip('0x')
+                    nhash = hex(cert.subject_name_hash()).lstrip('0x').zfill(8)
                     if nhash not in targets[targetname]:
                         targets[targetname][nhash] = []
                     targets[targetname][nhash].append(filename)
