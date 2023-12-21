@@ -240,6 +240,18 @@
     </div>
 </div>
 <div class="tab-content content-box col-xs-12 __mb">
+    <table class="table table-condensed">
+      <tbody>
+        <tr>
+          <td>
+            <input name="enable" class="pending" type="checkbox" id="enable"/>
+            <strong>{{ lang._('Enable IPsec') }}</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+<div class="tab-content content-box col-xs-12 __mb">
     <table id="grid-phase1" class="table table-condensed table-hover table-striped">
         <thead>
           <tr>
@@ -292,16 +304,4 @@
         <tbody>
         </tbody>
       </table>
-</div>
-<div class="tab-content content-box col-xs-12 __mb">
-    <table class="table table-condensed">
-      <tbody>
-        <tr>
-          <td>
-            <input name="enable" class="pending" type="checkbox" id="enable"/>
-            <strong>{{ lang._('Enable IPsec') }}</strong>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 </div>
