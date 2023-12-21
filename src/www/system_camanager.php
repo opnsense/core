@@ -72,70 +72,6 @@ function ca_import(& $ca, $str, $key="", $serial=0)
     return true;
 }
 
-function ca_inter_create(&$ca, $keylen_curve, $lifetime, $dn, $caref, $digest_alg = 'sha256', $extns = [])
-{
-    // Create Intermediate Certificate Authority
-    $signing_ca = &lookup_ca($caref);
-    if (!$signing_ca) {
-        return false;
-    }
-
-    $signing_ca_res_crt = openssl_x509_read(base64_decode($signing_ca['crt']));
-    $signing_ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($signing_ca['prv']) , 1 => ""));
-    if (!$signing_ca_res_crt || !$signing_ca_res_key) {
-        return false;
-    }
-    $signing_ca_serial = ++$signing_ca['serial'];
-
-    // handle parameters which can only be set via the configuration file
-    $config_filename = create_temp_openssl_config($extns);
-
-    $args = array(
-        'config' => $config_filename,
-        'x509_extensions' => 'v3_ca',
-        'digest_alg' => $digest_alg,
-        'encrypt_key' => false
-    );
-    if (is_numeric($keylen_curve)) {
-        $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
-        $args['private_key_bits'] = (int)$keylen_curve;
-    } else {
-        $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
-        $args['curve_name'] = $keylen_curve;
-    }
-
-    // generate a new key pair
-    $res_key = openssl_pkey_new($args);
-    if (!$res_key) {
-        return false;
-    }
-
-    // generate a certificate signing request
-    $res_csr = openssl_csr_new($dn, $res_key, $args);
-    if (!$res_csr) {
-        return false;
-    }
-
-    // Sign the certificate
-    $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
-    if (!$res_crt) {
-        return false;
-    }
-
-    // export our certificate data
-    if (!openssl_pkey_export($res_key, $str_key) ||
-        !openssl_x509_export($res_crt, $str_crt)) {
-        return false;
-    }
-
-    // return our ca information
-    $ca['crt'] = base64_encode($str_crt);
-    $ca['caref'] = $caref;
-    $ca['prv'] = base64_encode($str_key);
-    $ca['serial'] = 0;
-
-    return true;
-}
 
 $ca_keylens = array( "512", "1024", "2048", "3072", "4096", "8192");
 $ca_curves = array( "prime256v1", "secp384r1", "secp521r1");
@@ -403,19 +339,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ($pconfig['camethod'] == "existing") {
                     ca_import($ca, $pconfig['cert'], $pconfig['key'], $pconfig['serial']);
                 } elseif ($pconfig['camethod'] == "internal") {
-                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'], 'v3_ca',  $extns)) {
+                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'], null, 'v3_ca',  $extns)) {
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
                 } elseif ($pconfig['camethod'] == "intermediate") {
-                    if (!ca_inter_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'], $extns)) {
+                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'], $pconfig['caref'], 'v3_ca', $extns)) {
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
                 } elseif ($pconfig['camethod'] == "ocsp") {
-                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'], 'ocsp',  $extns)) {
+                    if (!ca_create($ca, $pconfig['keylen_curve'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'], $pconfig['caref'], 'ocsp',  $extns)) {
                         while ($ssl_err = openssl_error_string()) {
                             $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }

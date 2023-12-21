@@ -158,7 +158,7 @@ function ca_chain(&$cert)
     return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
-function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_extensions = 'v3_ca', $extns = [])
+function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $caref = null, $x509_extensions = 'v3_ca', $extns = [])
 {
     // handle parameters which can only be set via the configuration file
     $config_filename = create_temp_openssl_config($extns);
@@ -177,26 +177,43 @@ function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_exten
         $args['curve_name'] = $keylen_curve;
     }
 
-    // generate a new key pair
-    $res_key = openssl_pkey_new($args);
-    if (!$res_key) {
-        return false;
+    if (!empty($caref)) {
+        // intermediate type CA, could also be an OCSP verification cert
+        $signing_ca = &lookup_ca($caref);
+        if (!$signing_ca) {
+            return false;
+        }
+        $signing_ca_res_crt = openssl_x509_read(base64_decode($signing_ca['crt']));
+        $signing_ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($signing_ca['prv']) , 1 => ""));
+        if (!$signing_ca_res_crt || !$signing_ca_res_key) {
+            return false;
+        }
+        // XXX: side affect (unavoidable given legacy constraints), updating parent serial number
+        $signing_ca_serial = ++$signing_ca['serial'];
+    } else {
+        $signing_ca_serial = 0;
+        $signing_ca_res_crt = null;
+        // generate a new key pair
+        $signing_ca_res_key = openssl_pkey_new($args);
+        if (!$signing_ca_res_key) {
+            return false;
+        }
     }
 
     // generate a certificate signing request
-    $res_csr = openssl_csr_new($dn, $res_key, $args);
+    $res_csr = openssl_csr_new($dn, $signing_ca_res_key, $args);
     if (!$res_csr) {
         return false;
     }
 
     // self sign the certificate
-    $res_crt = openssl_csr_sign($res_csr, null, $res_key, $lifetime, $args);
+    $res_crt = openssl_csr_sign($res_csr, $signing_ca_res_crt, $signing_ca_res_key, $lifetime, $args, $signing_ca_serial);
     if (!$res_crt) {
         return false;
     }
 
     // export our certificate data
-    if (!openssl_pkey_export($res_key, $str_key) || !openssl_x509_export($res_crt, $str_crt)) {
+    if (!openssl_pkey_export($signing_ca_res_key, $str_key) || !openssl_x509_export($res_crt, $str_crt)) {
         return false;
     }
 
@@ -204,6 +221,9 @@ function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $x509_exten
     $ca['crt'] = base64_encode($str_crt);
     $ca['prv'] = base64_encode($str_key);
     $ca['serial'] = 0;
+    if (!empty($caref)) {
+        $ca['caref'] = $caref;
+    }
 
     return true;
 }
