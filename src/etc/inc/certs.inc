@@ -714,6 +714,59 @@ function cert_get_cn($crt, $isref = false)
 }
 
 /**
+ * @param $ca_filename string filename
+ * @param $serial serial number to check
+ * @return array
+ */
+function ocsp_validate($ca_filename, $serial)
+{
+    if (!is_file($ca_filename)) {
+        return [
+            'pass' => false,
+            'response' => 'missing_CA_file'
+        ];
+    }
+    $ocsp_uri = null;
+    $crt_details = openssl_x509_parse(file_get_contents($ca_filename));
+    if (!empty($crt_details['extensions']) && !empty($crt_details['extensions']['authorityInfoAccess'])) {
+        foreach (explode("\n", $crt_details['extensions']['authorityInfoAccess']) as $line) {
+            if (str_starts_with($line, 'OCSP - URI')) {
+                $ocsp_uri = explode(":", $line, 2)[1];
+            }
+        }
+    }
+    if ($ocsp_uri !== null) {
+        $result = exec(
+            exec_safe(
+                "/usr/bin/openssl ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1",
+                [$ca_filename, $ca_filename, $ocsp_uri, $serial]
+            ),
+            $output,
+            $retval
+        );
+        $verdict_pass = empty($retval);
+        foreach ($output as $line) {
+            if (str_starts_with($line, "{$serial}:")) {
+                return [
+                    'pass' => $verdict_pass,
+                    'response' => explode(':', $line, 2)[1],
+                    'verify' => $output[0]
+                ];
+            }
+        }
+        $verdict_msg  = $output[0] ?? '';
+    } else {
+        $verdict_pass = true;
+        $verdict_msg  = 'no OCSP configured';
+    }
+
+    return [
+        'pass' => $verdict_pass,
+        'response' => $verdict_msg
+    ];
+}
+
+/**
  * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
  *
  * @param $dn
