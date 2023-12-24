@@ -200,7 +200,7 @@ class OverviewController extends ApiControllerBase
             /* gateway(s) */
             $gatewayv4 =  $gateways->getInterfaceGateway($tmp['identifier'], 'inet');
             $gatewayv6 = $gateways->getInterfaceGateway($tmp['identifier'], 'inet6');
-            $tmp['gateways'] = array_filter([$gatewayv4, $gatewayv6]);
+            $tmp['gateways'] = array_values(array_filter([$gatewayv4, $gatewayv6]));
 
             $result[] = $tmp;
         }
