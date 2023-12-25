@@ -497,7 +497,8 @@
     <page-status-interfaces>
         <name>Status: Interfaces</name>
         <patterns>
-            <pattern>status_interfaces.php*</pattern>
+            <pattern>ui/interfaces/overview</pattern>
+            <pattern>api/interfaces/overview/*</pattern>
         </patterns>
     </page-status-interfaces>
     <page-status-openvpn>

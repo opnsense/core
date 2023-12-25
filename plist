@@ -914,7 +914,6 @@
 /usr/local/opnsense/scripts/filter/lib/alias/pf.py
 /usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
-/usr/local/opnsense/scripts/filter/list_counters.py
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
 /usr/local/opnsense/scripts/filter/list_rule_ids.py
@@ -1073,7 +1072,6 @@
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
-/usr/local/opnsense/scripts/system/list_interrupts.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv
@@ -2045,7 +2043,6 @@
 /usr/local/www/services_opendns.php
 /usr/local/www/services_router_advertisements.php
 /usr/local/www/status_habackup.php
-/usr/local/www/status_interfaces.php
 /usr/local/www/status_ntpd.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
