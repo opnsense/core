@@ -292,7 +292,7 @@
 
 <div class="tab-content content-box">
     <div id="export-wrapper" class="btn-group">
-        <button id="export" class="btn btn-default" data-toggle="tooltip" title="" type="button" data-original-title="Download raw ifconfig output">
+        <button id="export" class="btn btn-default" data-toggle="tooltip" title="" type="button" data-original-title="Download overview (json)">
             <span class="fa fa-cloud-download"></span>
         </button>
     </div>

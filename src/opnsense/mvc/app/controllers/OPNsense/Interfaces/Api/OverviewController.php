@@ -255,7 +255,7 @@ class OverviewController extends ApiControllerBase
             }
         }
 
-        return json_encode($result);
+        return $result;
     }
 
     public function reloadInterfaceAction($identifier = null)
@@ -276,6 +276,6 @@ class OverviewController extends ApiControllerBase
         $this->sessionClose();
         $this->response->setRawHeader('Content-Type: application/json');
         $this->response->setRawHeader('Content-Disposition: attachment; filename=ifconfig.json');
-        echo (new Backend())->configdRun('interface list ifconfig');
+        echo json_encode($this->parseIfInfo(null, true));
     }
 }
