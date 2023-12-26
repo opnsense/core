@@ -773,7 +773,11 @@ include("head.inc");
                     $ca_crl_map[$crl['caref']][] = $crl['refid'];
                 }
 
-                foreach ($a_ca as $ca) :?>
+                foreach ($a_ca as $ca) :
+                  if (($ca['x509_extensions'] ?? '') == 'ocsp') {
+                      continue;
+                  }
+                ?>
                 <tr>
                   <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
                   <td class="text-nowrap">
