@@ -220,6 +220,7 @@ function ca_create(&$ca, $keylen_curve, $lifetime, $dn, $digest_alg, $caref = nu
     // return our ca information
     $ca['crt'] = base64_encode($str_crt);
     $ca['prv'] = base64_encode($str_key);
+    $ca['x509_extensions'] = $x509_extensions;
     $ca['serial'] = 0;
     if (!empty($caref)) {
         $ca['caref'] = $caref;

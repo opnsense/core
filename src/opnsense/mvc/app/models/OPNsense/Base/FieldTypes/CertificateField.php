@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2023 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,10 @@ class CertificateField extends BaseListField
             self::$internalStaticOptionList[$this->certificateType] = array();
             $configObj = Config::getInstance()->object();
             foreach ($configObj->{$this->certificateType} as $cert) {
+                if ($this->certificateType == 'ca' && (string)$cert->x509_extensions == 'ocsp') {
+                    // skip ocsp signing certs
+                    continue;
+                }
                 self::$internalStaticOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
             }
             natcasesort(self::$internalStaticOptionList[$this->certificateType]);

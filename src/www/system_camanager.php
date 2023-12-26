@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2023 Deciso B.V.
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
  *
@@ -295,12 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $ca['refid'] = uniqid();
             }
-
-            if (isset($pconfig['descr'])) {
-                $ca['descr'] = $pconfig['descr'];
-            } else {
-                $ca['descr'] = null;
-            }
+            $ca['descr'] = $pconfig['descr'] ?? null;
 
             if (!empty($pconfig['serial'])) {
                 $ca['serial'] = $pconfig['serial'] - 1;
