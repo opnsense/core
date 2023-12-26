@@ -37,7 +37,7 @@ class GatewayField extends ArrayField
     public static function getDpingerDefaults()
     {
         return [
-            'data_length' => 0,
+            'data_length' => 1,
             'interval' => 1,
             'latencyhigh' => 500,
             'latencylow' => 200,
