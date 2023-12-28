@@ -204,11 +204,11 @@ class Voucher extends Base implements IAuthConnector
             $expirytime = $expirytime == 0 ? 0 : $expirytime + time();
             while ($vouchersGenerated < $count) {
                 $generatedUsername = '';
-                for ($j = 0; $j < $this->usernameLength; $j++) {
+                for ($j = 0; $j < max($this->usernameLength, 1); $j++) {
                     $generatedUsername .= $characterMap[random_int(0, strlen($characterMap) - 1)];
                 }
                 $generatedPassword = '';
-                for ($j = 0; $j < $this->passwordLength; $j++) {
+                for ($j = 0; $j < max($this->passwordLength, 1); $j++) {
                     $generatedPassword .= $characterMap[random_int(0, strlen($characterMap) - 1)];
                 }
 
@@ -423,7 +423,7 @@ class Voucher extends Base implements IAuthConnector
         $fields["usernameLength"]["default"] = null;
         $fields["usernameLength"]["help"] = gettext("Specify alternative username length for generating vouchers");
         $fields["usernameLength"]["validate"] = function ($value) {
-            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+            if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 1)) {
                 return array(gettext("Username length must be a number or empty for default."));
             } else {
                 return array();
@@ -435,7 +435,7 @@ class Voucher extends Base implements IAuthConnector
         $fields["passwordLength"]["default"] = null;
         $fields["passwordLength"]["help"] = gettext("Specify alternative password length for generating vouchers");
         $fields["passwordLength"]["validate"] = function ($value) {
-            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+            if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 1)) {
                 return array(gettext("Password length must be a number or empty for default."));
             } else {
                 return array();
