@@ -470,7 +470,20 @@ class OpenVPN extends BaseModel
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
                     if (!empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
-                        $options['server'] = $parts[0] . " " . Util::CIDRToMask($parts[1]);
+                        $mask = Util::CIDRToMask($parts[1]);
+                        if ((string)$node->dev_type == 'tun' && (string)$node->topology != 'subnet' && $parts[1] > 29) {
+                            /**
+                             * Workaround and backwards compatibility, the server directive doesn't support
+                             * networks smaller than /30, pushing ifconfig manually works in some cases.
+                             * According to RFC3021 when the mask is /31 we may omit network and broadcast addresses.
+                             **/
+                            $masklong = ip2long($mask);
+                            $ip1 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 0 : 1));
+                            $ip2 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 1 : 2));
+                            $options['ifconfig'] = "{$ip1} {$ip2}";
+                        } else {
+                            $options['server'] = $parts[0] . " " . $mask;
+                        }
                     }
                     if (!empty((string)$node->server_ipv6)) {
                         $options['server-ipv6'] = (string)$node->server_ipv6;
