@@ -135,7 +135,7 @@ class GEOIP(BaseContentParser):
         do_update = True
         if os.path.isfile('%s/NL-IPv4' % self._target_dir):
             fstat = os.stat('%s/NL-IPv4' % self._target_dir)
-            if (time.time() - fstat.st_mtime) < (86400 - 90):
+            if (time.time() - fstat.st_mtime) < (86400 - 90) and fstat.st_size > 1024:
                 do_update = False
         if do_update:
             syslog.syslog(
