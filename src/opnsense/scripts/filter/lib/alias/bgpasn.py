@@ -46,7 +46,7 @@ class BGPASN(BaseContentParser):
         do_update = True
         if os.path.isfile(cls._asn_filename):
             fstat = os.stat(cls._asn_filename)
-            if (time.time() - fstat.st_mtime) < cls._asn_ttl:
+            if (time.time() - fstat.st_mtime) < cls._asn_ttl and fstat.st_size > 1024:
                 do_update = False
         if do_update:
             if not os.path.exists(os.path.dirname(cls._asn_filename)):
