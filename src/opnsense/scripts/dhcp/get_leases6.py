@@ -33,12 +33,10 @@ import calendar
 import datetime
 import time
 import argparse
-import re
 
-def parse_date(ymd, hms):
-    dt = '%s %s' % (ymd, hms)
+def parse_date(dt):
     try:
-        return calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
+        return calendar.timegm(datetime.datetime.strptime(dt.strip(), "%Y/%m/%d %H:%M:%S;").timetuple())
     except ValueError:
         return None
 
@@ -47,24 +45,21 @@ def parse_iaaddr_iaprefix(input):
     parse either an iaaddr or iaprefix segment. return a tuple
     containing the type parsed and the corresponding segment
     """
-    seg_type = input[0].split()[0]
     segment = dict()
-    segment[seg_type] = input[0].split()[1]
-    for line in input[1:]:
-        parts = line.split()
-        field_name = parts[0] if len(parts) > 0 else ''
-        field_value = None
-        if field_name == 'binding':
-            segment[field_name] = parts[2].strip(';')
-        elif field_name in ('preferred-life', 'max-life'):
-            field_value = parts[1].strip(';')
-        elif field_name == 'ends' and len(parts) >= 4:
-            field_value = parse_date(parts[2], parts[3])
+    for idx, line in enumerate(input):
+        parts = line.split(maxsplit=1)
+        if idx == 0:
+            segment[parts[0]] = parts[1].split()[0]
+        elif not parts[0]:
+            continue
+        elif parts[0] == 'binding':
+            segment[parts[0]] = parts[1].split()[1].strip(';')
+        elif parts[0] in ('preferred-life', 'max-life'):
+            segment[parts[0]] = parts[1].strip(';')[0]
+        elif parts[0] == 'ends':
+            segment[parts[0]] = parse_date(parts[1].split(maxsplit=1)[1])
 
-        if field_value is not None:
-            segment[field_name] = field_value
-
-    return (seg_type, segment)
+    return segment
 
 def parse_iaid_duid(input):
     """
@@ -75,7 +70,6 @@ def parse_iaid_duid(input):
     used to uniquely identify a lease, so this value should be used to determine the last
     relevant entry in the leases file.
     """
-    input = input[1:-1] # strip double quotes
     parsed = []
     i = 0
     while i < len(input):
@@ -108,39 +102,34 @@ def parse_lease(lines):
     cur_segment = []
     addresses = []
     prefixes = []
-    # make sure any whitespace between the iaid_duid and the double quotes is removed
-    first = re.sub(r'"\s*([^"]*?)\s*"', r'"\1"', lines[0]).split()[1]
-    iaid_duid = parse_iaid_duid(first)
-    lease['lease_type'] = lines[0].split()[0]
-    lease.update(iaid_duid)
 
-    for line in lines:
-        parts = line.split()
-
-        if parts[0] == 'cltt' and len(parts) >= 3:
-            cltt = parse_date(parts[2], parts[3])
+    for idx, line in enumerate(lines):
+        parts = line.split(maxsplit=1)
+        if idx == 0:
+            lease['lease_type'] = parts[0]
+            lease.update(parse_iaid_duid(parts[1][parts[1].index('"'):parts[1].rfind('"')]))
+        elif parts[0] == 'cltt' and len(parts) >= 2:
+            cltt = parse_date(parts[1].split(maxsplit=1)[1])
             lease['cltt'] = cltt
 
-        if parts[0] == 'iaaddr' or parts[0] == 'iaprefix':
+        if len(line) > 1 and line[0] == ' ' and '}' in line and len(cur_segment) > 0:
             cur_segment.append(line)
-        elif len(line) > 1 and line[0] == ' ' and '}' in line and len(cur_segment) > 0:
-            cur_segment.append(line)
-            (segment_type, segment) = parse_iaaddr_iaprefix(cur_segment)
-            if segment_type == 'iaaddr':
+            segment = parse_iaaddr_iaprefix(cur_segment)
+            if 'iaaddr' in segment:
                 addresses.append(segment)
-            if segment_type == 'iaprefix':
+            elif 'iaprefix' in segment:
                 prefixes.append(segment)
             cur_segment = []
-        elif len(cur_segment) > 0:
+        elif len(cur_segment) > 0 or parts[0] in ['iaaddr', 'iaprefix']:
             cur_segment.append(line)
 
     # ia_ta/ia_na (addresses) and ia_pd (prefixes) are mutually exclusive.
     if addresses:
         lease['addresses'] = addresses
-    if prefixes:
+    elif prefixes:
         lease['prefixes'] = prefixes
 
-    return (iaid_duid['iaid_duid'], lease)
+    return lease
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -159,7 +148,7 @@ if __name__ == '__main__':
                 elif len(line) > 1 and line[0] == '}' and len(cur_lease) > 0:
                     cur_lease.append(line)
                     parsed_lease = parse_lease(cur_lease)
-                    last_leases[parsed_lease[0]] = parsed_lease[1]
+                    last_leases[parsed_lease['iaid_duid']] = parsed_lease
                     cur_lease = []
                 elif len(cur_lease) > 0:
                     cur_lease.append(line)
