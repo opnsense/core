@@ -43,6 +43,7 @@ function get_vhid_status()
     foreach ((new OPNsense\Interfaces\Vip())->vip->iterateItems() as $id => $item) {
         if ($item->mode == 'carp') {
             $uuids[(string)$item->vhid] =  $id;
+            $vhids[$id] = ['status' => 'DISABLED', 'vhid' => (string)$item->vhid];
         }
     }
     foreach (legacy_interfaces_details() as $ifdata) {
