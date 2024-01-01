@@ -107,7 +107,7 @@ def parse_lease(lines):
         parts = line.split(maxsplit=1)
         if idx == 0:
             lease['lease_type'] = parts[0]
-            lease.update(parse_iaid_duid(parts[1][parts[1].index('"'):parts[1].rfind('"')]))
+            lease.update(parse_iaid_duid(parts[1][parts[1].index('"')+1:parts[1].rfind('"')]))
         elif parts[0] == 'cltt' and len(parts) >= 2:
             cltt = parse_date(parts[1].split(maxsplit=1)[1])
             lease['cltt'] = cltt
