@@ -136,6 +136,9 @@ $.fn.UIBootgrid = function (params) {
             requestHandler: function (request) {
                 return JSON.stringify(request);
             },
+            searchSettings: {
+                delay: 1000,
+            },
             datakey: 'uuid',
             useRequestHandlerOnGet: false,
             formatters: {
