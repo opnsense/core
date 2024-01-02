@@ -118,7 +118,7 @@ CORE_WWW?=		https://opnsense.org/
 
 CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
 CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2023
+CORE_COPYRIGHT_YEARS?=	2014-2024
 
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
