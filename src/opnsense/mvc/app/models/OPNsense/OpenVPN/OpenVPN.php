@@ -79,14 +79,15 @@ class OpenVPN extends BaseModel
                     );
                 }
                 if (!empty((string)$instance->server) && strpos((string)$instance->server, '/') !== false) {
-                    if (explode('/', (string)$instance->server)[1] > 29 && !(
+                    if (
+                        explode('/', (string)$instance->server)[1] > 29 && !(
                         (string)$instance->dev_type == 'tun' && (string)$instance->topology != 'subnet'
-                    )) {
+                        )
+                    ) {
                         /* tun + (net30 or p2p) are the exceptions here */
                         $messages->appendMessage(
                             new Message(gettext('Server directive must define a subnet of /29 or lower .'), $key . '.server')
                         );
-
                     }
                 }
             }
