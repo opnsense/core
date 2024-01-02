@@ -93,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!is_ipaddroralias($pconfig['src'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid source IP address or alias."), $pconfig['src']);
     }
-    if (!empty($pconfig['dst']) && !is_ipaddroralias($pconfig['dst'])) {
-        $input_errors[] = sprintf(gettext("%s is not a valid destination IP address or alias."), $pconfig['dst']);
+    if (!empty($pconfig['dst']) && !is_ipaddr($pconfig['dst'])) {
+        $input_errors[] = sprintf(gettext("%s is not a valid redirect IP address."), $pconfig['dst']);
     }
 
     if (count($input_errors) == 0) {
