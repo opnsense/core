@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Deciso B.V.
+ * Copyright (C) 2017-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,8 +73,13 @@ class NptRule extends Rule
     {
         foreach ($this->reader('npt') as $rule) {
             if (empty($rule['to'])) {
-                /* auto-detect expands from dynamic interface address */
-                $rule['to'] = $this->parseInterface($rule['interface'], '(', ':0)/' . explode('/', $rule['from'])[1]);
+                /* auto-detect expands from dynamic interface address on interface */
+                $toif = !empty($rule['trackif']) ? $rule['trackif'] : $rule['interface'];
+
+                /* can be empty on /128 due to legacy pconfig_to_address() behaviour */
+                $frommask = explode('/', $rule['from'])[1] ?? '128';
+
+                $rule['to'] = $this->parseInterface($toif, '(', ':0)/' . $frommask);
             }
             yield $rule;
         }

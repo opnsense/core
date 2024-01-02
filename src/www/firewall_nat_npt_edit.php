@@ -96,6 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['dst']) && !is_ipaddr($pconfig['dst'])) {
         $input_errors[] = sprintf(gettext("%s is not a valid redirect IP address."), $pconfig['dst']);
     }
+    if (!empty($pconfig['dst']) && !empty($pconfig['trackif'])) {
+        $input_errors[] = sprintf(gettext("Cannot use %s when selecting a specific destination interface."), $pconfig['dst']);
+    }
+    if (!empty($pconfig['trackif'])) {
+        if ($config['interfaces'][$pconfig['interface']]['ipaddrv6'] != 'dhcp6' || ($config['interfaces'][$pconfig['trackif']]['track6-interface'] ?? '') != $pconfig['interface']) {
+            $input_errors[] = sprintf(gettext("Destination interface %s is not tracking the current rule interface."), $pconfig['trackif']);
+        }
+    }
 
     if (count($input_errors) == 0) {
         $natent = [];
@@ -105,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['descr'] = $pconfig['descr'];
         $natent['interface'] = $pconfig['interface'];
         $natent['log'] = !empty($pconfig['log']);
+        $natent['trackif'] = $pconfig['trackif'];
 
         pconfig_to_address($natent['source'], trim($pconfig['src']), $pconfig['srcmask']);
         if (!empty($pconfig['dst'])) {
@@ -177,14 +186,11 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                     <td>
-                        <select name="interface" class="selectpicker" data-width="348px" data-live-search="true">
-  <?php
-                          foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
-                          <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
-                            <?=htmlspecialchars($ifdetail['descr']);?>
-                          </option>
-                          <?php endforeach; ?>
-                        </select>
+                      <select name="interface" class="selectpicker" data-width="348px" data-live-search="true">
+<?php foreach (legacy_config_get_interfaces(['enable' => true]) as $iface => $ifdetail): ?>
+                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? 'selected="selected"' : '' ?>><?= html_safe($ifdetail['descr']) ?></option>
+<?php endforeach ?>
+                      </select>
                       <div class="hidden" data-for="help_for_interface">
                         <?=gettext("Choose which interface this rule applies to"); ?>.<br />
                         <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
@@ -217,8 +223,14 @@ $( document ).ready(function() {
                     <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("External IPv6 Prefix"); ?></td>
                     <td>
                       <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("External IPv6 Prefix");?>"/>
+                      <select name="trackif" class="selectpicker" data-width="348px" data-live-search="true">
+                        <option value="" <?= empty($pconfig['trackif']) ? 'selected="selected"' : '' ?>><?= gettext('(Default to rule interface)') ?></option>
+<?php foreach (legacy_config_get_interfaces(['enable' => true]) as $iface => $ifdetail): ?>
+                        <option value="<?=$iface;?>" <?= $iface == $pconfig['trackif'] ? 'selected="selected"' : '' ?>><?= html_safe($ifdetail['descr']) ?></option>
+<?php endforeach ?>
+                      </select>
                       <div class="hidden" data-for="help_for_dst">
-                        <?=gettext("Enter the external (WAN) IPv6 prefix for the Network Prefix Translation. Leave empty to auto-detect the prefix address. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
+                        <?=gettext("Enter the external IPv6 prefix for this network prefix translation. Leave empty to auto-detect the prefix address using the specified tracking interface instead. The prefix size specified for the internal prefix will also be applied to the external prefix."); ?>
                       </div>
                     </td>
                   </tr>
