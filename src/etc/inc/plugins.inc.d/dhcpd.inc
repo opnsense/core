@@ -806,13 +806,8 @@ EOPP;
         // Setup pool options
         foreach ($all_pools as $poolconf) {
             $dhcpdconf .= "  pool {\n";
-            /* is failover dns setup? */
             if (!empty($poolconf['dnsserver'][0])) {
-                $dhcpdconf .= "    option domain-name-servers {$poolconf['dnsserver'][0]}";
-                if (!empty($poolconf['dnsserver'][1])) {
-                    $dhcpdconf .= ",{$poolconf['dnsserver'][1]}";
-                }
-                $dhcpdconf .= ";\n";
+                $dhcpdconf .= '    option domain-name-servers ' . join(',', $poolconf['dnsserver']) . ";\n";
             }
 
             /* allow/deny MACs */
@@ -856,19 +851,18 @@ EOPP;
                 $dhcpdconf .= "    failover peer \"dhcp_{$dhcpif}\";\n";
             }
 
-            $pdnscfg = "";
             if (
                 !empty($poolconf['domain'])
                 && (empty($dhcpifconf['domain']) || $poolconf['domain'] != $dhcpifconf['domain'])
             ) {
-                $pdnscfg .= "    option domain-name \"{$poolconf['domain']}\";\n";
+                $dhcpdconf .= "    option domain-name \"{$poolconf['domain']}\";\n";
             }
 
             if (
                 !empty($poolconf['domainsearchlist'])
                 && (empty($dhcpifconf['domainsearchlist']) || $poolconf['domainsearchlist'] != $dhcpifconf['domainsearchlist'])
             ) {
-                $pdnscfg .= "    option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $poolconf['domainsearchlist'])) . "\";\n";
+                $dhcpdconf .= "    option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $poolconf['domainsearchlist'])) . "\";\n";
             }
 
             if (isset($poolconf['ddnsupdate'])) {
@@ -876,7 +870,7 @@ EOPP;
                     !empty($poolconf['ddnsdomain'])
                     && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])
                 ) {
-                    $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
+                    $dhcpdconf .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
 
                     $newddnszone = [];
                     $newddnszone['domain-name'] = $poolconf['ddnsdomain'];
@@ -887,14 +881,6 @@ EOPP;
                     $ddns_zones[] = $newddnszone;
                 }
             }
-
-            if (
-                !empty($poolconf['dnsserver'][0])
-                && (empty($dhcpifconf['dnsserver'][0]) || $poolconf['dnsserver'][0] != $dhcpifconf['dnsserver'][0])
-            ) {
-                $pdnscfg .= "    option domain-name-servers " . join(",", $poolconf['dnsserver']) . ";\n";
-            }
-            $dhcpdconf .= "{$pdnscfg}";
 
             // default-lease-time
             if (
