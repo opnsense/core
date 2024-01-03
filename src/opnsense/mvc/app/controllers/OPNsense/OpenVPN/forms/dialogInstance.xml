@@ -164,6 +164,13 @@
         <help>Specify if the client is required to offer a certificate.</help>
     </field>
     <field>
+        <id>instance.use_ocsp</id>
+        <label>Use OCSP (when available)</label>
+        <style>role role_server</style>
+        <type>checkbox</type>
+        <help>When the CA used supplies an authorityInfoAccess OCSP URI extension, it will be used to validate the client certificate.</help>
+    </field>
+    <field>
         <id>instance.cert_depth</id>
         <label>Certificate Depth</label>
         <type>dropdown</type>

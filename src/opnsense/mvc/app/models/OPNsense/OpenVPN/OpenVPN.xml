@@ -201,6 +201,10 @@
                         <require>required</require>
                     </OptionValues>
                 </verify_client_cert>
+                <use_ocsp type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </use_ocsp>
                 <auth type="OptionField">
                     <BlankDesc>OpenVPN default</BlankDesc>
                     <OptionValues>
