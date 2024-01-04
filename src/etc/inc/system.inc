@@ -263,7 +263,6 @@ function get_locale_list()
 
     if (!product::getInstance()->development()) {
         /* below 30% progress or currently unvetted */
-        unset($locales['zh_TW']);
         unset($locales['vi_VN']);
     }
 
