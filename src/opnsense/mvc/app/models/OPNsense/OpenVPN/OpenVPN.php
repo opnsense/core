@@ -420,6 +420,8 @@ class OpenVPN extends BaseModel
                     // user/passwords need to be feed using a file
                     $output .= $key . " " . $value['filename'] . "\n";
                     File::file_put_contents($value['filename'], $value['content'], 0600);
+                } elseif ($key == 'ca-file') {
+                    File::file_put_contents($value['filename'], $value['content'], 0600);
                 } else {
                     foreach ($value as $item) {
                         $output .= $key . " " . $item . "\n";
@@ -645,6 +647,12 @@ class OpenVPN extends BaseModel
                             $options['<ca>'] = $tmp['ca']['crt'];
                         }
                     }
+                }
+                if (!empty((string)$node->use_ocsp) && !empty($options['<ca>'])) {
+                    $options['ca-file'] = [
+                        "filename" => "/var/etc/openvpn/instance-{$node_uuid}.ca",
+                        "content" => $options['<ca>']
+                    ];
                 }
 
                 // dump to file

@@ -724,7 +724,8 @@ function ocsp_validate($ca_filename, $serial)
     if (!is_file($ca_filename)) {
         return [
             'pass' => false,
-            'response' => 'missing_CA_file'
+            'uri' => null,
+            'response' => "missing_CA_file ({$ca_filename})"
         ];
     }
     $ocsp_uri = null;
@@ -745,12 +746,14 @@ function ocsp_validate($ca_filename, $serial)
             $output,
             $retval
         );
-        $verdict_pass = empty($retval);
+        $verdict_pass = false;
         foreach ($output as $line) {
             if (str_starts_with($line, "{$serial}:")) {
+                $status = explode(':', $line, 2)[1];
                 return [
-                    'pass' => $verdict_pass,
-                    'response' => explode(':', $line, 2)[1],
+                    'pass' => $status == 'good',
+                    'response' => $status,
+                    'uri' => $ocsp_uri,
                     'verify' => $output[0]
                 ];
             }
@@ -763,6 +766,7 @@ function ocsp_validate($ca_filename, $serial)
 
     return [
         'pass' => $verdict_pass,
+        'uri' => $ocsp_uri,
         'response' => $verdict_msg
     ];
 }
