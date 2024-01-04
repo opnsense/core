@@ -247,7 +247,7 @@ function get_ocsp_info_data($caref)
             }
 
             $result .= sprintf(
-                "%s\t%s\t%s\tunknown\t%s\t%s\n",
+                "%s\t%s\t%s\t%s\tunknown\t%s\n",
                 $status,                    // Certificate status flag (V=valid, R=revoked, E=expired).
                 $x509['validTo'],           // Certificate expiration date in YYMMDDHHMMSSZ format.
                 $rev_date,                  // Certificate revocation date in YYMMDDHHMMSSZ[,reason] format. Empty if not revoked.
