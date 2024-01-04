@@ -758,7 +758,7 @@ include("head.inc");
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <td><?=gettext("Name");?></td>
+                  <td><?=gettext("CA Name");?> \ <?=gettext("CRL Name");?></td>
                   <td><?=gettext("Internal");?></td>
                   <td><?=gettext("Certificates");?></td>
                   <td><?=gettext("In Use");?></td>
@@ -768,7 +768,7 @@ include("head.inc");
               <tbody>
 <?php
                 // Map CRLs to CAs
-                $ca_crl_map = array();
+                $ca_crl_map = [];
                 foreach ($a_crl as $crl) {
                     $ca_crl_map[$crl['caref']][] = $crl['refid'];
                 }
@@ -778,6 +778,8 @@ include("head.inc");
                       continue;
                   }
                 ?>
+<?php
+                if (empty($ca_crl_map[$ca['refid']])):?>
                 <tr>
                   <td colspan="4"> <?=htmlspecialchars($ca['descr']);?></td>
                   <td class="text-nowrap">
@@ -796,13 +798,13 @@ include("head.inc");
                   </td>
                 </tr>
 <?php
-                  if (isset($ca_crl_map[$ca['refid']]) && is_array($ca_crl_map[$ca['refid']])):
+                else:
                     foreach ($ca_crl_map[$ca['refid']] as $crl):
                         $tmpcrl = lookup_crl($crl);
                         $internal = is_crl_internal($tmpcrl);
                         $inuse = is_openvpn_server_crl($tmpcrl['refid']);?>
                 <tr>
-                  <td><?=htmlspecialchars($tmpcrl['descr']); ?></td>
+                  <td> <?=htmlspecialchars($ca['descr']);?> \ <?=htmlspecialchars($tmpcrl['descr']); ?></td>
                   <td><?=$internal ? gettext("YES") : gettext("NO"); ?></td>
                   <td><?=$internal ? (isset($tmpcrl['cert']) ? count($tmpcrl['cert']) : 0) : gettext("Unknown (imported)"); ?></td>
                   <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
