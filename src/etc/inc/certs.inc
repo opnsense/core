@@ -738,6 +738,7 @@ function ocsp_validate($ca_filename, $serial)
         }
     }
     if ($ocsp_uri !== null) {
+        $verdict_pass = false;
         $result = exec(
             exec_safe(
                 "/usr/bin/openssl ocsp -resp_no_certs -timeout 10 -nonce -CAfile %s -issuer %s -url %s -serial %s 2>&1",
@@ -746,12 +747,11 @@ function ocsp_validate($ca_filename, $serial)
             $output,
             $retval
         );
-        $verdict_pass = false;
         foreach ($output as $line) {
             if (str_starts_with($line, "{$serial}:")) {
-                $status = explode(':', $line, 2)[1];
+                $status = trim(explode(':', $line, 2)[1]);
                 return [
-                    'pass' => $status == 'good',
+                    'pass' => $status == 'good' && trim($output[0]) == 'Response verify OK',
                     'response' => $status,
                     'uri' => $ocsp_uri,
                     'verify' => $output[0]
