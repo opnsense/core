@@ -302,12 +302,9 @@
                     type:BootstrapDialog.TYPE_INFO,
                     title: "{{ lang._('Your device is rebooting') }}",
                     closable: false,
-                    onshow:function(dialogRef){
-                        dialogRef.setClosable(false);
-                        dialogRef.getModalBody().html(
-                            "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
-                            ' <i class="fa fa-cog fa-spin"></i>'
-                        );
+                    message: "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
+                        ' <i class="fa fa-cog fa-spin"></i>',
+                    onshow: function (dialogRef) {
                         setTimeout(rebootWait, 45000);
                     },
                 });

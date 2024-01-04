@@ -49,11 +49,9 @@
                 type:BootstrapDialog.TYPE_INFO,
                 title: '{{ lang._('Your device is rebooting') }}',
                 closable: false,
-                onshow: function(dialogRef){
-                    dialogRef.getModalBody().html(
-                        '{{ lang._('The system is rebooting now, please wait...') }}' +
-                        ' <i class="fa fa-cog fa-spin"></i>'
-                );
+                message: '{{ lang._('The system is rebooting now, please wait...') }}' +
+                    ' <i class="fa fa-cog fa-spin"></i>',
+                onshow: function (dialogRef) {
                     ajaxCall('/api/core/system/reboot');
                     setTimeout(rebootWait, 45000);
                 },
