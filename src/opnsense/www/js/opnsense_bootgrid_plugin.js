@@ -543,6 +543,14 @@ $.fn.UIBootgrid = function (params) {
                     $(this).tooltip();
                 });
 
+                // tooltip when ellipsis is used (overflow on text elements without children)
+                $(this).find("td").bind('mouseenter', function(){
+                    let $this = $(this);
+                    if (this.offsetWidth < this.scrollWidth && !$this.attr('title') && $this.children().length == 0){
+                        $this.attr('title', $this.text()).tooltip({container: 'body', trigger: 'hover'}).tooltip('show');
+                    }
+                });
+
                 // hook all events
                 const commands = this_grid.getCommands();
                 Object.keys(commands).map(function (k) {

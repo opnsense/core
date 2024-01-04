@@ -632,7 +632,7 @@
                                     return row.resolve_time_ms + 'ms';
                                 },
                                 "domain": function (column, row) {
-                                    return '<span class="domain-content" data-toggle="tooltip" title="' + row.domain + '">' + row.domain + '</span>';
+                                    return row.domain;
                                 },
                                 "commands": function (column, row) {
                                     if (bl_enabled.enabled == 0) {
