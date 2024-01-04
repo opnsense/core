@@ -38,8 +38,8 @@
                 type:BootstrapDialog.TYPE_INFO,
                 title: '{{ lang._('Your device is powering off') }}',
                 closable: false,
-                onshow: function(dialogRef){
-                    dialogRef.getModalBody().html('{{ lang._('The system is powering off now.') }}');
+                message: '{{ lang._('The system is powering off now.') }}',
+                onshow: function (dialogRef) {
                     ajaxCall('/api/core/system/halt');
                 },
             });

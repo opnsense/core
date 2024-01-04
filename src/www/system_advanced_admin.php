@@ -464,14 +464,11 @@ $(document).ready(function() {
             type:BootstrapDialog.TYPE_INFO,
             title: '<?= html_safe($savemsg) ?>',
             closable: false,
-            onshow:function(dialogRef){
-                dialogRef.setClosable(false);
-                dialogRef.getModalBody().html(
-                    '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
-                    ' <i class="fa fa-cog fa-spin"></i><br /><br />' +
-                    ' <?= html_safe(gettext('If the page does not reload go here:')) ?>' +
-                    ' <a href="<?= html_safe($url) ?>" target="_blank"><?= html_safe($url) ?></a>'
-                );
+            message: '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
+                ' <i class="fa fa-cog fa-spin"></i><br /><br />' +
+                ' <?= html_safe(gettext('If the page does not reload go here:')) ?>' +
+                ' <a href="<?= html_safe($url) ?>" target="_blank"><?= html_safe($url) ?></a>',
+            onshow: function (dialogRef) {
                 setTimeout(reloadWaitNew, 20000);
             },
         });

@@ -58,10 +58,7 @@ $(document).ready(function() {
         type:BootstrapDialog.TYPE_INFO,
         title: '<?= html_safe(gettext('Your device is powering off')) ?>',
         closable: false,
-        onshow:function(dialogRef){
-            dialogRef.setClosable(false);
-            dialogRef.getModalBody().html('<?= html_safe(gettext('The system has been reset to factory defaults and is shutting down.')) ?>');
-        },
+        message: '<?= html_safe(gettext('The system has been reset to factory defaults and is shutting down.')) ?>',
     });
 });
 </script>
