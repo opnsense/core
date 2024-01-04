@@ -145,7 +145,7 @@ else:
         for block in exec_config_cmd(exec_command=exec_command):
             if block is None:
                 sys.exit(-1)
-            else:
+            elif not args.q:
                 if block.endswith(endmarker):
                     print(block[:-3].rstrip())
                 else:
