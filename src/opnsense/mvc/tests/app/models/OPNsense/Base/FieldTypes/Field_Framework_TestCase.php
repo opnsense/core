@@ -49,7 +49,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
         $messages = $validation->validate(array("testfield" => (string)$field));
         if (count($messages)) {
             foreach ($messages as $message) {
-                throw new \OPNsense\Phalcon\Filter\Validation\Exception($message->getType());
+                throw new \Phalcon\Filter\Validation\Exception($message->getType());
             }
         }
         return;

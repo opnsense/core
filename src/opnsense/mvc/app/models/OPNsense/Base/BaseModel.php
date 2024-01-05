@@ -32,7 +32,7 @@ use Exception;
 use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
-use OPNsense\Phalcon\Logger\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Logger\Formatter\Line;
 use Phalcon\Messages\Messages;
@@ -599,7 +599,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new \OPNsense\Phalcon\Filter\Validation\Exception($exception_msg);
+                throw new \Phalcon\Filter\Validation\Exception($exception_msg);
             }
         }
 

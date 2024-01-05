@@ -128,7 +128,7 @@ class TextFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new TextField();
         $field->setRequired("Y");
@@ -173,7 +173,7 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setMask('/^[a-z]{8}$/');
         $field->setValue("4bcd3fgh");
 
-        $this->assertContains('OPNsense\Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
     }
 
     /**
@@ -243,7 +243,7 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setValue(1234);
 
         $this->assertEquals($field->getNodeData(), "1234");
-        $this->assertContains('OPNsense\Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
     }
 
     /**
@@ -341,6 +341,6 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setChangeCase('UPPER');
         $field->setValue("ab cde fgh");
 
-        $this->assertContains('OPNsense\Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
     }
 }

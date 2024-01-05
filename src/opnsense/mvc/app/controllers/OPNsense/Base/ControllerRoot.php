@@ -30,7 +30,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
-use OPNsense\Phalcon\Logger\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Logger\Formatter\Line;
 use Phalcon\Translate\InterpolatorFactory;

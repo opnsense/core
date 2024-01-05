@@ -28,7 +28,7 @@
 
 namespace OPNsense\Syslog\Api;
 
-use OPNsense\Phalcon\Filter\Filter;
+use Phalcon\Filter\Filter;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
