@@ -58,13 +58,14 @@
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
-                <allowedAddresses type="CSVListField">
-                    <Mask>/^([\/0-9.,])*/u</Mask>
+                <allowedAddresses type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please enter valid addresses</ValidationMessage>
                 </allowedAddresses>
-                <allowedMACAddresses type="CSVListField">
-                    <ChangeCase>lower</ChangeCase>
-                    <Mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</Mask>
+                <allowedMACAddresses type="MacAddressField">
+                    <asList>Y</asList>
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
                 <transparentHTTPProxy type="BooleanField">

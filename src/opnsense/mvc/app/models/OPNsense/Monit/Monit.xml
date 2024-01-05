@@ -22,12 +22,11 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Start Delay needs to be an integer value between 0 and 86400</ValidationMessage>
          </startdelay>
-         <mailserver type="CSVListField">
+         <mailserver type="HostnameField">
             <Default>127.0.0.1</Default>
             <Required>Y</Required>
-            <Multiple>Y</Multiple>
-            <Mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</Mask>
-            <ChangeCase>lower</ChangeCase>
+            <asList>Y</asList>
+            <FieldSeparator>,</FieldSeparator>
             <ValidationMessage>Please specify a valid servername or IP address.</ValidationMessage>
          </mailserver>
          <port type="IntegerField">
