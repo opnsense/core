@@ -1,8 +1,5 @@
 <?php
 
-// include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Config/Config.php');
-// include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Autoload/Loader.php');
-
 return new \Phalcon\Config\Config(array(
     'application' => array(
         'controllersDir' => __DIR__ . '/../../../app/controllers/',
