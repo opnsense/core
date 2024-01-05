@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Phalcon\Filter\Validation\Validator\Regex;
+use Phalcon\Filter\Validation\Validator\Regex;
 
 /**
  * Class TextField

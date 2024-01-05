@@ -50,7 +50,7 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testShouldNotBeANumber()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("Regex");
         $field = new BooleanField();
         $field->setValue("90");
@@ -61,7 +61,7 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testShouldNotBeAString()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("Regex");
         $field = new BooleanField();
         $field->setValue("xx");
@@ -73,7 +73,7 @@ class BooleanFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new BooleanField();
         $field->setRequired("Y");

@@ -29,7 +29,7 @@
 namespace OPNsense\Core;
 
 use Phalcon\Di\FactoryDefault;
-use OPNsense\Phalcon\Logger\Logger;
+use Phalcon\Logger\Logger;
 use Phalcon\Logger\Adapter\Syslog;
 use Phalcon\Logger\Formatter\Line;
 

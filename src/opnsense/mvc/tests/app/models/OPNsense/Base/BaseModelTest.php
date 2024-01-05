@@ -170,7 +170,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testValidationNOK()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("not a valid number");
         // replace all numbers
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {
@@ -244,7 +244,7 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testConstraintsNok()
     {
-        $this->expectException(\OPNsense\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
         $this->expectExceptionMessage("number should be unique");
         $count = 2;
         foreach (BaseModelTest::$model->arraytypes->item->iterateItems() as $nodeid => $node) {

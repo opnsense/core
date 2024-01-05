@@ -33,7 +33,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Cron\Cron;
 use OPNsense\IDS\IDS;
-use OPNsense\Phalcon\Filter\Filter;
+use Phalcon\Filter\Filter;
 use Phalcon\Filter\FilterFactory;
 
 /**

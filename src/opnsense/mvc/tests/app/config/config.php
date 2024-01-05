@@ -1,9 +1,9 @@
 <?php
 
-include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Config/Config.php');
-include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Autoload/Loader.php');
+// include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Config/Config.php');
+// include('/usr/local/opnsense/mvc/app/library/OPNsense/Phalcon/Autoload/Loader.php');
 
-return new OPNsense\Phalcon\Config\Config(array(
+return new \Phalcon\Config\Config(array(
     'application' => array(
         'controllersDir' => __DIR__ . '/../../../app/controllers/',
         'modelsDir' => __DIR__ . '/../../../app/models/',

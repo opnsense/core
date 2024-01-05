@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use OPNsense\Phalcon\Di\Di;
+use Phalcon\Di\Di;
 use Phalcon\Di\FactoryDefault;
 
 /**

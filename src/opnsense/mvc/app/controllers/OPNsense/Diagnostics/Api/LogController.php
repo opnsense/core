@@ -30,7 +30,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Phalcon\Filter\Filter;
+use Phalcon\Filter\Filter;
 
 /**
  * @inherit

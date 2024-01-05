@@ -71,7 +71,7 @@ class LegacyCSRF
 
     private function newToken()
     {
-        $random = new \OPNsense\Phalcon\Encryption\Security\Random();
+        $random = new \Phalcon\Encryption\Security\Random();
         // only request new token when session has none
         if (session_status() == PHP_SESSION_NONE) {
             // our session is not guaranteed to be started at this point.
