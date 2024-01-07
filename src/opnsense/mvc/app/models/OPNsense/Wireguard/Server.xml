@@ -21,6 +21,15 @@
                     <Required>Y</Required>
                     <ValidationMessage>A public key is required</ValidationMessage>
                 </pubkey>
+                <pubkey type="Base64Field">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Public keys should be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </pubkey>
                 <privkey type="TextField">
                     <Required>Y</Required>
                     <ValidationMessage>A private key is required</ValidationMessage>
