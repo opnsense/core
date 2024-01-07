@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2020 Deciso B.V.
  * Copyright (C) 2016-2018 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
@@ -167,6 +167,21 @@ function pf_firewall($fw)
                 }
             }
         }
+    }
+
+    $mdlFilter = new OPNsense\Firewall\Filter();
+
+    foreach ($mdlFilter->rules->rule->sortedBy(["sequence"]) as $key => $rule) {
+         $content = $rule->serialize();
+         $content["#ref"] = "ui/firewall/filter#" . (string)$rule->getAttributes()['uuid'];
+         $fw->registerFilterRule($rule->getPriority(), $content);
+    }
+
+    foreach ($mdlFilter->snatrules->rule->sortedBy(["sequence"]) as $key => $rule) {
+         $fw->registerSNatRule(50, $rule->serialize());
+    }
+    foreach ($mdlFilter->npt->rule->sortedBy(["sequence"]) as $key => $rule) {
+         $fw->registerNptRule(50, $rule->serialize());
     }
 }
 
