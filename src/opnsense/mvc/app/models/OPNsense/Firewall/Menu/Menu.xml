@@ -7,9 +7,11 @@
             <SourceNat order="100" VisibleName="Source NAT" url="/ui/firewall/source_nat/">
                 <FilterRef url="/ui/firewall/source_nat#*" visibility="hidden"/>
             </SourceNat>
-            <Npt order="100" VisibleName="NPTv6" url="/ui/firewall/npt/">
-                <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
-            </Npt>
         </Automation>
+        <NAT>
+            <NPTv6 order="400" url="/ui/firewall/npt/">
+                <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
+            </NPTv6>
+        </NAT>
     </Firewall>
 </menu>

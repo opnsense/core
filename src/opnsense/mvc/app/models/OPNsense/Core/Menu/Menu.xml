@@ -148,9 +148,6 @@
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
-            <NPTv6 order="400" url="/firewall_nat_npt.php">
-                <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
-            </NPTv6>
         </NAT>
         <Rules cssClass="fa fa-check fa-fw" />
         <Settings order="200" cssClass="fa fa-cogs fa-fw">

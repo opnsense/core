@@ -64,9 +64,9 @@ class Category extends BaseModel
             ['filter', 'rule'],
             ['nat', 'rule'],
             ['nat', 'onetoone'],
-            ['nat', 'outbound', 'rule'],
-            ['nat', 'npt'],
+            ['nat', 'outbound', 'rule']
         ];
+
         foreach ($source as $aliasref) {
             $cfgsection = $cfgObj;
             foreach ($aliasref as $cfgName) {

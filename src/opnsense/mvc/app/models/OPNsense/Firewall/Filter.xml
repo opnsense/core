@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <migration_prefix>MFP</migration_prefix>
     <description>
         OPNsense firewall filter rules

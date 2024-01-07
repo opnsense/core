@@ -239,18 +239,6 @@
             <pattern>firewall_nat_1to1_edit.php*</pattern>
         </patterns>
     </page-firewall-nat-1-1-edit>
-    <page-firewall-nat-npt>
-        <name>Firewall: NAT: NPT</name>
-        <patterns>
-            <pattern>firewall_nat_npt.php*</pattern>
-        </patterns>
-    </page-firewall-nat-npt>
-    <page-firewall-nat-npt-edit>
-        <name>Firewall: NAT: NPT: Edit</name>
-        <patterns>
-            <pattern>firewall_nat_npt_edit.php*</pattern>
-        </patterns>
-    </page-firewall-nat-npt-edit>
     <page-firewall-nat-outbound>
         <name>Firewall: NAT: Outbound</name>
         <patterns>

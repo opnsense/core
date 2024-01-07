@@ -257,13 +257,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['nat']['npt'])) {
-        // register user npt rules
-        foreach ($config['nat']['npt'] as $rule) {
-            $fw->registerNptRule(400, $rule);
-        }
-    }
-
     if (!empty($config['nat']['onetoone'])) {
         // register user 1:1 mappings
         foreach ($config['nat']['onetoone'] as $rule) {

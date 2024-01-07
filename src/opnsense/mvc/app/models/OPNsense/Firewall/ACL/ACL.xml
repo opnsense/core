@@ -13,4 +13,11 @@
             <pattern>api/firewall/source_nat/*</pattern>
         </patterns>
     </page-filter-snat-api>
+    <page-firewall-nat-npt>
+        <name>Firewall: NAT: NPT</name>
+        <patterns>
+            <pattern>ui/firewall/npt/*</pattern>
+            <pattern>api/firewall/npt/*</pattern>
+        </patterns>
+    </page-firewall-nat-npt>
 </acl>
