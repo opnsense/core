@@ -78,6 +78,14 @@
                 }
             });
         })
+        $("#control_label_client\\.psk").append($("#pskgen_div").detach().show());
+        $("#pskgen").click(function(){
+            ajaxGet("/api/wireguard/client/psk", {}, function(data, status){
+                if (data.status && data.status === 'ok') {
+                    $("#client\\.psk").val(data.psk);
+                }
+            });
+        })
     });
 </script>
 
@@ -93,6 +101,11 @@
         {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
     </div>
     <div id="peers" class="tab-pane fade in">
+        <span id="pskgen_div" style="display:none" class="pull-right">
+            <button id="pskgen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new psk.') }}" data-toggle="tooltip">
+              <i class="fa fa-fw fa-gear"></i>
+            </button>
+        </span>
         <table id="grid-peers" class="table table-condensed table-hover table-striped" data-editDialog="dialogEditWireguardClient">
             <thead>
                 <tr>

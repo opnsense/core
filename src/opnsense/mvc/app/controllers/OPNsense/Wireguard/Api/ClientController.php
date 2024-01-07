@@ -32,11 +32,17 @@ namespace OPNsense\Wireguard\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Wireguard\Server;
+use OPNsense\Core\Backend;
 
 class ClientController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'client';
     protected static $internalModelClass = '\OPNsense\Wireguard\Client';
+
+    public function pskAction()
+    {
+        return ['psk' => trim((new Backend())->configdRun('wireguard gen_psk')), 'status' => 'ok' ];
+    }
 
     public function searchClientAction()
     {
