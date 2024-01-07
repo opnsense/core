@@ -65,28 +65,6 @@ class ServiceController extends ApiMutableServiceControllerBase
     }
 
     /**
-     * show wireguard config
-     * XXX: remove in 24.1
-     * @return array
-     */
-    public function showconfAction()
-    {
-        $response = (new Backend())->configdRun("wireguard showconf");
-        return array("response" => $response);
-    }
-
-    /**
-     * show wireguard handshakes
-     * XXX: remove in 24.1
-     * @return array
-     */
-    public function showhandshakeAction()
-    {
-        $response = (new Backend())->configdRun("wireguard showhandshake");
-        return array("response" => $response);
-    }
-
-    /**
      * wg show all dump output
      * @return array
      */
