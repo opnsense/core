@@ -1,0 +1,270 @@
+<model>
+    <mount>//OPNsense/Firewall/Filter</mount>
+    <version>1.0.2</version>
+    <migration_prefix>MFP</migration_prefix>
+    <description>
+        OPNsense firewall filter rules
+    </description>
+    <items>
+        <rules>
+            <rule type=".\FilterRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <action type="OptionField">
+                    <Required>Y</Required>
+                    <Default>pass</Default>
+                    <OptionValues>
+                        <pass>Pass</pass>
+                        <block>Block</block>
+                        <reject>Reject</reject>
+                    </OptionValues>
+                </action>
+                <quick type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </quick>
+                <interface type="InterfaceField">
+                    <Required>N</Required>
+                    <Multiple>Y</Multiple>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <direction type="OptionField">
+                    <Required>Y</Required>
+                    <Default>in</Default>
+                    <OptionValues>
+                        <in>In</in>
+                        <out>Out</out>
+                    </OptionValues>
+                </direction>
+                <ipprotocol type="OptionField">
+                    <Required>Y</Required>
+                    <Default>inet</Default>
+                    <OptionValues>
+                        <inet>IPv4</inet>
+                        <inet6>IPv6</inet6>
+                    </OptionValues>
+                </ipprotocol>
+                <protocol type="ProtocolField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </protocol>
+                <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
+                <source_net type="NetworkAliasField">
+                    <Default>any</Default>
+                    <Required>Y</Required>
+                </source_net>
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <source_port type="PortField">
+                    <Required>N</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </source_port>
+                <!-- XXX: should map internally to  'source' => array('destination' => destination_net, "not" => true|false) -->
+                <destination_net type="NetworkAliasField">
+                    <Default>any</Default>
+                    <Required>Y</Required>
+                </destination_net>
+                <destination_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </destination_not>
+                <destination_port type="PortField">
+                    <Required>N</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </destination_port>
+                <gateway type="JsonKeyValueStoreField">
+                    <Required>N</Required>
+                    <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                    <SourceFile>/tmp/gateway_list.json</SourceFile>
+                    <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
+                    <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
+                </gateway>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </rule>
+        </rules>
+        <snatrules>
+            <rule type=".\SourceNatRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <nonat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nonat>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>lan</Default>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <ipprotocol type="OptionField">
+                    <Required>Y</Required>
+                    <Default>inet</Default>
+                    <OptionValues>
+                        <inet>IPv4</inet>
+                        <inet6>IPv6</inet6>
+                    </OptionValues>
+                </ipprotocol>
+                <protocol type="ProtocolField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </protocol>
+                <source_net type="NetworkAliasField">
+                    <Default>any</Default>
+                    <Required>Y</Required>
+                </source_net>
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <source_port type="PortField">
+                    <Required>N</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </source_port>
+                <destination_net type="NetworkAliasField">
+                    <Default>any</Default>
+                    <Required>Y</Required>
+                </destination_net>
+                <destination_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </destination_not>
+                <destination_port type="PortField">
+                    <Required>N</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
+                </destination_port>
+                <target type="NetworkAliasField">
+                    <Default>wanip</Default>
+                    <Required>Y</Required>
+                </target>
+                <target_port type="PortField">
+                    <Required>N</Required>
+                    <EnableWellKnown>Y</EnableWellKnown>
+                    <EnableRanges>Y</EnableRanges>
+                </target_port>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </rule>
+        </snatrules>
+        <npt>
+            <rule type=".\SourceNatRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>lan</Default>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <source_net type="NetworkField">
+                    <Required>Y</Required>
+                    <AddressFamily>ipv6</AddressFamily>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </source_net>
+                <destination_net type="NetworkField">
+                    <AddressFamily>ipv6</AddressFamily>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </destination_net>
+                <trackif type="InterfaceField">
+                </trackif>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="TextField">
+                    <Required>N</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </rule>
+        </npt>
+    </items>
+</model>

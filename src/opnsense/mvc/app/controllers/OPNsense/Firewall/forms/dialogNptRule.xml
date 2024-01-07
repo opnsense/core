@@ -1,0 +1,53 @@
+<form>
+    <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.source_net</id>
+        <label>Internal IPv6 Prefix (source)</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.destination_net</id>
+        <label>External IPv6 Prefix (target)</label>
+        <type>text</type>
+        <help>Enter the external IPv6 prefix for this network prefix translation. Leave empty to auto-detect the prefix address using the specified tracking interface instead. The prefix size specified for the internal prefix will also be applied to the external prefix.</help>
+    </field>
+    <field>
+        <id>rule.trackif</id>
+        <label>Track interface</label>
+        <type>dropdown</type>
+        <help>Use prefix defined on the selected interface instead of the interface this rule applies to when target prefix is not provided.</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>For grouping purposes you may select multiple groups here to organize items.</help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

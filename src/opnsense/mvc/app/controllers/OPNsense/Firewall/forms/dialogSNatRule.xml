@@ -1,0 +1,101 @@
+<form>
+    <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+    </field>
+    <field>
+        <id>rule.nonat</id>
+        <label>Do not NAT</label>
+        <type>checkbox</type>
+        <help>Enabling this option will disable NAT for traffic matching this rule and stop processing Outbound NAT rules.</help>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.ipprotocol</id>
+        <label>TCP/IP Version</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.source_net</id>
+        <label>Source</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.source_port</id>
+        <label>Source port</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+    </field>
+    <field>
+        <id>rule.source_not</id>
+        <label>Source / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_net</id>
+        <label>Destination</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.destination_not</id>
+        <label>Destination / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_port</id>
+        <label>Destination port</label>
+        <type>text</type>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+    </field>
+    <field>
+        <id>rule.target</id>
+        <label>Translation / target</label>
+        <type>text</type>
+        <help>
+            Packets matching this rule will be mapped to the IP address given here.
+        </help>
+    </field>
+    <field>
+        <id>rule.target_port</id>
+        <label>Translation port</label>
+        <type>text</type>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...)</help>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>For grouping purposes you may select multiple groups here to organize items.</help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>

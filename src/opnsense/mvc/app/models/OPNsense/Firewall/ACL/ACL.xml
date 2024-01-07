@@ -1,0 +1,16 @@
+<acl>
+    <page-filter-api>
+        <name>Firewall: Rules: API</name>
+        <patterns>
+            <pattern>ui/firewall/filter/*</pattern>
+            <pattern>api/firewall/filter/*</pattern>
+        </patterns>
+    </page-filter-api>
+    <page-filter-snat-api>
+        <name>Firewall: SourceNat: API</name>
+        <patterns>
+            <pattern>ui/firewall/source_nat/*</pattern>
+            <pattern>api/firewall/source_nat/*</pattern>
+        </patterns>
+    </page-filter-snat-api>
+</acl>

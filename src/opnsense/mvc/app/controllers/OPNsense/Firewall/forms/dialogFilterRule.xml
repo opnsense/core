@@ -1,0 +1,114 @@
+<form>
+    <field>
+        <id>rule.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>Enable this rule</help>
+    </field>
+    <field>
+        <id>rule.sequence</id>
+        <label>Sequence</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>Choose what to do with packets that match the criteria specified below.
+            Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block the packet is dropped silently. In either case, the original packet is discarded.
+        </help>
+    </field>
+    <field>
+        <id>rule.quick</id>
+        <label>Quick</label>
+        <type>checkbox</type>
+        <help>
+            If a packet matches a rule specifying quick, then that rule is considered the last matching rule and the specified action is taken.
+            When a rule does not have quick enabled, the last matching rule wins.
+        </help>
+    </field>
+    <field>
+        <id>rule.interface</id>
+        <label>Interface</label>
+        <type>select_multiple</type>
+    </field>
+    <field>
+        <id>rule.direction</id>
+        <label>Direction</label>
+        <type>dropdown</type>
+        <help>
+            Direction of the traffic. The default policy is to filter inbound traffic, which sets the policy to the interface originally receiving the traffic.
+        </help>
+    </field>
+    <field>
+        <id>rule.ipprotocol</id>
+        <label>TCP/IP Version</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.protocol</id>
+        <label>Protocol</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>rule.source_net</id>
+        <label>Source</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.source_port</id>
+        <label>Source port</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+    </field>
+    <field>
+        <id>rule.source_not</id>
+        <label>Source / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_net</id>
+        <label>Destination</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>rule.destination_not</id>
+        <label>Destination / Invert</label>
+        <type>checkbox</type>
+        <help>Use this option to invert the sense of the match.</help>
+    </field>
+    <field>
+        <id>rule.destination_port</id>
+        <label>Destination port</label>
+        <type>text</type>
+        <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
+    </field>
+    <field>
+        <id>rule.gateway</id>
+        <label>Gateway</label>
+        <type>dropdown</type>
+        <help>
+            Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.
+        </help>
+    </field>
+    <field>
+        <id>rule.log</id>
+        <label>Log</label>
+        <type>checkbox</type>
+        <help>Log packets that are handled by this rule</help>
+    </field>
+    <field>
+        <id>rule.categories</id>
+        <label>Categories</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help>For grouping purposes you may select multiple groups here to organize items.</help>
+    </field>
+    <field>
+        <id>rule.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
