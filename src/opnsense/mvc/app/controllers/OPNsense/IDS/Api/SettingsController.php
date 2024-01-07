@@ -42,6 +42,22 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'ids';
     protected static $internalModelClass = '\OPNsense\IDS\IDS';
+    private $modelHandle = null;
+
+    /**
+     * Get (or create) model object
+     * @return null|BaseModel
+     * @throws \ReflectionException
+     */
+    protected function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = (new \ReflectionClass(static::$internalModelClass))->newInstance();
+        }
+
+        return $this->modelHandle;
+    }
+
 
     /**
      * Query non layered model items
@@ -699,7 +715,11 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchPolicyRuleAction()
     {
-        return $this->searchBase("rules.rule", array("sid", "enabled", "action"), "sid");
+        /* XXX: toggle search backend data for rule information as this action can be rather slow and we don't want
+                to enforce this on all callers */
+        $this->getModel()->rules->rule->queryRuleInfo();
+        $this->modelHandle = null;
+        return $this->searchBase("rules.rule", ["sid", "msg", "source", "enabled", "action"], "sid");
     }
 
     /**
@@ -762,7 +782,7 @@ class SettingsController extends ApiMutableModelControllerBase
     }
 
     /**
-     * return then number of custom defined policy rules
+     * return the number of custom defined policy rules
      */
     public function checkPolicyRuleAction()
     {

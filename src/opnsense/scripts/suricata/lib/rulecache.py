@@ -474,3 +474,13 @@ class RuleCache(object):
                     result[record[0]] = list()
                 result[record[0]].append(record[1])
         return result
+
+    def list_rule_metadata(self):
+        result = {}
+        if os.path.exists(self.cachefile):
+            db = sqlite3.connect(self.cachefile)
+            cur = db.cursor()
+            cur.execute("SELECT sid, msg, source FROM rules")
+            for record in cur.fetchall():
+                result[record[0]] = {'msg': record[1], 'source': record[2]}
+        return result

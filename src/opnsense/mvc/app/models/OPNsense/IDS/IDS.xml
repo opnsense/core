@@ -4,7 +4,7 @@
     <description>OPNsense IDS</description>
     <items>
         <rules>
-            <rule type="ArrayField">
+            <rule type=".\PolicyRulesField">
                 <sid type="IntegerField">
                     <ValidationMessage>Sid should be a number.</ValidationMessage>
                     <Required>Y</Required>

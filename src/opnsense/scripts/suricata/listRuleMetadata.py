@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2020 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2020-2023 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@
     script to fetch all metadata types from the installed suricata rules using the shared rule cache
 """
 
+import argparse
 import ujson
 from lib.rulecache import RuleCache
 
@@ -38,4 +39,11 @@ if __name__ == '__main__':
     if rc.is_changed():
         rc.create()
 
-    print(ujson.dumps(rc.list_metadata()))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode', help='fetch mode', default='properties', choices=['properties', 'rules'])
+    args = parser.parse_args()
+
+    if args.mode == 'properties':
+        print(ujson.dumps(rc.list_metadata()))
+    else:
+        print(ujson.dumps(rc.list_rule_metadata()))

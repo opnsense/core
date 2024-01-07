@@ -605,6 +605,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyRulesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Menu/Menu.xml
