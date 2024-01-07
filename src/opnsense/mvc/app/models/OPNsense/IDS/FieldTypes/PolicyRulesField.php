@@ -34,7 +34,6 @@ use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 use OPNsense\Core\Backend;
 
-
 class PolicyRulesField extends ArrayField
 {
     protected static $internalRuleData = null;

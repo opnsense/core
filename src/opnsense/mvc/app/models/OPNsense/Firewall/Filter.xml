@@ -33,7 +33,6 @@
                     <Required>Y</Required>
                 </quick>
                 <interface type="InterfaceField">
-                    <Required>N</Required>
                     <Multiple>Y</Multiple>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
@@ -67,7 +66,6 @@
                     <Required>Y</Required>
                 </source_not>
                 <source_port type="PortField">
-                    <Required>N</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
@@ -83,14 +81,12 @@
                     <Required>Y</Required>
                 </destination_not>
                 <destination_port type="PortField">
-                    <Required>N</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range</ValidationMessage>
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
-                    <Required>N</Required>
                     <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
                     <SourceFile>/tmp/gateway_list.json</SourceFile>
                     <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
@@ -112,8 +108,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </rule>
@@ -161,7 +156,6 @@
                     <Required>Y</Required>
                 </source_not>
                 <source_port type="PortField">
-                    <Required>N</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
@@ -176,7 +170,6 @@
                     <Required>Y</Required>
                 </destination_not>
                 <destination_port type="PortField">
-                    <Required>N</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                     <EnableAlias>Y</EnableAlias>
@@ -187,7 +180,6 @@
                     <Required>Y</Required>
                 </target>
                 <target_port type="PortField">
-                    <Required>N</Required>
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                 </target_port>
@@ -207,8 +199,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </rule>
@@ -260,8 +251,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="TextField">
-                    <Required>N</Required>
-                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
+                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
                     <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
                 </description>
             </rule>
