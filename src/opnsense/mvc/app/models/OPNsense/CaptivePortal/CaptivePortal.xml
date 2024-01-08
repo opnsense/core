@@ -62,11 +62,9 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                     <WildcardEnabled>N</WildcardEnabled>
-                    <ValidationMessage>Please enter valid addresses</ValidationMessage>
                 </allowedAddresses>
                 <allowedMACAddresses type="MacAddressField">
                     <asList>Y</asList>
-                    <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
                 <transparentHTTPProxy type="BooleanField">
                     <Default>0</Default>
