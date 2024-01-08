@@ -2,7 +2,6 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2024 Hasan Ucak <hasan@sunnyvalley.io>
  * All rights reserved.
  *
