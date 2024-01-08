@@ -89,7 +89,7 @@
                   <Default>0</Default>
                   <Required>Y</Required>
                 </rfc5424>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </destination>
         </destinations>
     </items>

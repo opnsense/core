@@ -79,7 +79,7 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </wins_servers>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </Overwrite>
         </Overwrites>
         <Instances>
@@ -343,7 +343,7 @@
                     <type>carp</type>
                     <key>mvc</key>
                 </carp_depend_on>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -360,7 +360,7 @@
                     <Required>Y</Required>
                     <ValidationMessage>A key is required, generate one with the button</ValidationMessage>
                 </key>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </StaticKey>
         </StaticKeys>
     </items>

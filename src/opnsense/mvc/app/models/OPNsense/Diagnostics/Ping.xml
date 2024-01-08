@@ -25,10 +25,7 @@
                 <MaximumValue>65535</MaximumValue>
             </packetsize>
             <disable_frag type="BooleanField"/>
-            <description type="TextField">
-                <Mask>/^(.){1,255}$/u</Mask>
-                <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-            </description>
+            <description type="DescriptionField"/>
         </settings>
     </items>
 </model>

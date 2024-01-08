@@ -107,10 +107,7 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
-                <description type="TextField">
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </rule>
         </rules>
         <snatrules>
@@ -198,10 +195,7 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
-                <description type="TextField">
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </rule>
         </snatrules>
         <npt>
@@ -250,10 +244,7 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
-                <description type="TextField">
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){0,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </rule>
         </npt>
     </items>

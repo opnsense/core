@@ -70,10 +70,7 @@
                         <disable>Disable</disable>
                     </OptionValues>
                 </new_action>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </policy>
         </policies>
         <userDefinedRules>
@@ -89,10 +86,8 @@
                     <Mask>/^([0-9a-fA-F:]){59,59}$/u</Mask>
                     <ValidationMessage>A SSL fingerprint should be a 59 character long hex value.</ValidationMessage>
                 </fingerprint>
-                <description type="TextField">
+                <description type="DescriptionField">
                     <Required>Y</Required>
-                    <Mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters.</ValidationMessage>
                 </description>
                 <action type="OptionField">
                     <Required>Y</Required>

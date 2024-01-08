@@ -526,6 +526,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ConfigdActionsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/ContainerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/CountryField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/DescriptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/EmailField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/HostnameField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IntegerField.php

@@ -22,7 +22,7 @@
                     </check001>
                 </Constraints>
             </name>
-            <descr type="TextField"/>
+            <descr type="DescriptionField"/>
             <interface type="InterfaceField">
                 <Required>Y</Required>
                 <Default>wan</Default>

@@ -164,10 +164,7 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <asList>Y</asList>
                 </networks>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </acl>
         </acls>
         <dnsbl>
@@ -332,10 +329,7 @@
                         </check002>
                     </Constraints>
                 </server>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </host>
         </hosts>
         <aliases>
@@ -378,10 +372,7 @@
                     <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </alias>
         </aliases>
         <domains>
@@ -402,10 +393,7 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </forward_tcp_upstream>
-                <description type="TextField">
-                    <Mask>/^(.){1,255}$/u</Mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
-                </description>
+                <description type="DescriptionField"/>
             </domain>
         </domains>
     </items>

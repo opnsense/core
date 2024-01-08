@@ -155,10 +155,7 @@
             <MaximumValue>86400</MaximumValue>
             <ValidationMessage>Reminder needs to be an integer value between 0 and 86400</ValidationMessage>
          </reminder>
-         <description type="TextField">
-            <Mask>/^.{1,255}$/u</Mask>
-            <ValidationMessage>Enter a description.</ValidationMessage>
-         </description>
+         <description type="DescriptionField"/>
       </alert>
       <service type="ArrayField">
          <enabled type="BooleanField">
@@ -176,7 +173,7 @@
                </check001>
             </Constraints>
          </name>
-         <description type="TextField"/>
+         <description type="DescriptionField"/>
          <type type="OptionField">
             <Required>Y</Required>
             <OptionValues>

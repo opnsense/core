@@ -98,7 +98,7 @@
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>1000</MaximumValue>
                 </keyingtries>
-                <description type="TextField">
+                <description type="DescriptionField">
                     <Required>Y</Required>
                 </description>
             </Connection>
@@ -157,7 +157,7 @@
                     </Model>
                     <Multiple>Y</Multiple>
                 </pubkeys>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </local>
         </locals>
         <remotes>
@@ -218,7 +218,7 @@
                     <Multiple>Y</Multiple>
                 </pubkeys>
                 <!-- XXX add cacert field + logic in ipsec_write_cas -->
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </remote>
         </remotes>
         <children>
@@ -309,7 +309,7 @@
                     <MaximumValue>500000</MaximumValue>
                     <Required>Y</Required>
                 </rekey_time>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </child>
         </children>
         <Pools>
@@ -394,7 +394,7 @@
                     <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </tunnel_remote2>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </VTI>
         </VTIs>
         <SPDs>
@@ -432,7 +432,7 @@
                 <destination type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination>
-                <description type="TextField"/>
+                <description type="DescriptionField"/>
             </SPD>
         </SPDs>
     </items>

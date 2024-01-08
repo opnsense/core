@@ -88,8 +88,7 @@
                 </hw_address>
                 <hostname type="HostnameField">
                 </hostname>
-                <description type="TextField">
-                </description>
+                <description type="DescriptionField"/>
             </reservation>
         </reservations>
         <ha_peers>
