@@ -229,12 +229,12 @@
                 <source_net type="NetworkField">
                     <Required>Y</Required>
                     <AddressFamily>ipv6</AddressFamily>
-                    <NetMaskRequired>Y</NetMaskRequired>
+                    <NetMaskRequired>N</NetMaskRequired>
                     <WildcardEnabled>N</WildcardEnabled>
                 </source_net>
                 <destination_net type="NetworkField">
                     <AddressFamily>ipv6</AddressFamily>
-                    <NetMaskRequired>Y</NetMaskRequired>
+                    <NetMaskRequired>N</NetMaskRequired>
                     <WildcardEnabled>N</WildcardEnabled>
                 </destination_net>
                 <trackif type="InterfaceField">

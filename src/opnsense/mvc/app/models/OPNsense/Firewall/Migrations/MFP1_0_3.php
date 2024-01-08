@@ -45,10 +45,14 @@ class MFP1_0_3 extends BaseModelMigration
             $catmdl = new Category();
             foreach ((Config::getInstance()->object())->nat->children() as $child) {
                 if ($child->getName() == 'npt') {
-                    if (
-                        Util::isSubnet((string)$child->source->address) && (
-                        empty((string)$child->destination->address) ||
-                        Util::isSubnet((string)$child->destination->address))
+                    if ((
+                            Util::isSubnet((string)$child->source->address) ||
+                            Util::isIpAddress((string)$child->source->address)
+                        ) && (
+                            empty((string)$child->destination->address) ||
+                            Util::isSubnet((string)$child->destination->address) ||
+                            Util::isIpAddress((string)$child->destination->address)
+                        )
                     ) {
                         $node = $model->npt->rule->Add();
                         $node->enabled = empty((string)$child->disabled) ? "1" : "0";
@@ -66,7 +70,16 @@ class MFP1_0_3 extends BaseModelMigration
                         }
                         $node->interface = (string)$child->interface;
                         $node->source_net = (string)$child->source->address;
-                        $node->destination_net = (string)$child->destination->address;
+                        if (
+                            !empty((string)$child->destination->address) &&
+                            strpos((string)$child->destination->address, "/") === false
+                        ) {
+                            // matching subnets when omited
+                            $tmp = explode('/', (string)$child->source->address . "/128")[1];
+                            $node->destination_net = (string)$child->destination->address . "/" . $tmp;
+                        } else {
+                            $node->destination_net = (string)$child->destination->address;
+                        }
                         $node->description = (string)$child->descr;
                     }
                 }

@@ -104,9 +104,10 @@ class Filter extends BaseModel
                     ));
                 }
                 if (!empty((string)$rule->destination_net) && !empty((string)$rule->source_net)) {
-                    $dparts = explode('/', (string)$rule->destination_net);
-                    $sparts = explode('/', (string)$rule->source_net);
-                    if (count($dparts) == 2 && count($sparts) == 2 && $dparts[1] != $sparts[1]) {
+                    /* defaults to /128 */
+                    $dparts = explode('/', (string)$rule->destination_net . '/128');
+                    $sparts = explode('/', (string)$rule->source_net . '/128');
+                    if ($dparts[1] != $sparts[1]) {
                         $messages->appendMessage(new Message(
                             gettext("External subnet should match internal subnet."),
                             $rule->destination_net->__reference
