@@ -933,6 +933,8 @@
 /usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
+/usr/local/opnsense/scripts/filter/rollback_cancel.php
+/usr/local/opnsense/scripts/filter/rollback_timer.php
 /usr/local/opnsense/scripts/filter/rule_stats.py
 /usr/local/opnsense/scripts/filter/run_unittests.py
 /usr/local/opnsense/scripts/filter/tests/__init__.py
@@ -1036,8 +1038,6 @@
 /usr/local/opnsense/scripts/openvpn/ovpn_status.py
 /usr/local/opnsense/scripts/openvpn/tls_verify.php
 /usr/local/opnsense/scripts/openvpn/user_pass_verify.php
-/usr/local/opnsense/scripts/pfplugin/rollback_cancel
-/usr/local/opnsense/scripts/pfplugin/rollback_timer
 /usr/local/opnsense/scripts/routes/del_route.py
 /usr/local/opnsense/scripts/routes/gateway_status.php
 /usr/local/opnsense/scripts/routes/gateway_watcher.php
