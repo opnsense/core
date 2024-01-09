@@ -32,9 +32,7 @@ use Exception;
 use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
-use Phalcon\Logger\Logger;
-use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Logger\Formatter\Line;
+use OPNsense\Core\Syslog;
 use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
@@ -572,14 +570,7 @@ abstract class BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         // create logger to save possible consistency issues to
-        $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
-        $adapter->setFormatter(new Line('%message%'));
-        $logger = new Logger(
-            'messages',
-            [
-                'main' => $adapter
-            ]
-        );
+        $logger =  new Syslog('config', null, LOG_LOCAL2);
 
         // Perform validation, collect all messages and raise exception if validation is not disabled.
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
@@ -667,14 +658,7 @@ abstract class BaseModel
         } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
             $migObjects = array();
-            $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
-            $adapter->setFormatter(new Line('%message%'));
-            $logger = new Logger(
-                'messages',
-                [
-                    'main' => $adapter
-                ]
-            );
+            $logger =  new Syslog('config', null, LOG_LOCAL2);
 
             $class_info = new ReflectionClass($this);
             // fetch version migrations

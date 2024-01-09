@@ -28,12 +28,10 @@
 
 namespace OPNsense\Routing\Migrations;
 
-use Phalcon\Logger\Logger;
-use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Logger\Formatter\Line;
 use Phalcon\Messages\Messages;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
+use OPNsense\Core\Syslog;
 use OPNsense\Routing\Gateways;
 
 class M1_0_0 extends BaseModelMigration
@@ -47,14 +45,7 @@ class M1_0_0 extends BaseModelMigration
         $config = Config::getInstance()->object();
 
         // create logger to save possible consistency issues to
-        $adapter = new Syslog('config', ['option' => LOG_PID,'facility' => LOG_LOCAL2]);
-        $adapter->setFormatter(new Line('%message%'));
-        $logger = new Logger(
-            'messages',
-            [
-                'main' => $adapter
-            ]
-        );
+        $logger =  new Syslog('config', null, LOG_LOCAL2);
 
         if (!empty($config->gateways) && count($config->gateways->children()) > 0) {
             foreach ($config->gateways->gateway_item as $gateway) {

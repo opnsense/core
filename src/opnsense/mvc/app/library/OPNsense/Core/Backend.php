@@ -28,9 +28,7 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\Logger\Logger;
-use Phalcon\Logger\Adapter\Syslog;
-use Phalcon\Logger\Formatter\Line;
+use OPNsense\Core\Syslog;
 
 /**
  * Class Backend
@@ -57,23 +55,7 @@ class Backend
      */
     protected function getLogger($ident = 'configd.py')
     {
-        $formatter = new Line('%message%');
-        $adapter = new Syslog(
-            $ident,
-            [
-                'option'   => LOG_PID,
-                'facility' => LOG_LOCAL4,
-            ]
-        );
-        $adapter->setFormatter($formatter);
-        $logger = new Logger(
-            'messages',
-            [
-                'main' => $adapter
-            ]
-        );
-
-        return $logger;
+        return new Syslog($ident, null, LOG_LOCAL2);
     }
 
     /**
