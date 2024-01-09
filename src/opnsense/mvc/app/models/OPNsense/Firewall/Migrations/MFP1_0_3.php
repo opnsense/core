@@ -45,7 +45,8 @@ class MFP1_0_3 extends BaseModelMigration
             $catmdl = new Category();
             foreach ((Config::getInstance()->object())->nat->children() as $child) {
                 if ($child->getName() == 'npt') {
-                    if ((
+                    if (
+                        (
                             Util::isSubnet((string)$child->source->address) ||
                             Util::isIpAddress((string)$child->source->address)
                         ) && (

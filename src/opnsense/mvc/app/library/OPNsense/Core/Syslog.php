@@ -40,7 +40,7 @@ class Syslog
     public function __construct($name, $option = null, $facility = null)
     {
         $this->name = $name;
-        $this->option = $option ?? LOG_ODELAY|LOG_PID;
+        $this->option = $option ?? LOG_ODELAY | LOG_PID;
         $this->facility = $facility ?? LOG_USER;
     }
 
