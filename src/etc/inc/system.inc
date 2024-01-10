@@ -122,6 +122,8 @@ function system_sysctl_defaults()
         'security.bsd.see_other_gids' => [ 'default' => '0' ],
         'security.bsd.see_other_uids' => [ 'default' => '0' ],
         'vfs.read_max' => [ 'default' => '32' ],
+        'vfs.zfs.dirty_data_sync_percent' => [ 'default' => '5', 'required' => true ],
+        'vfs.zfs.txg.timeout' => [ 'default' => '90', 'required' => true ],
         'vm.pmap.pti' => [ 'default' => '1' ],
     ];
 }
