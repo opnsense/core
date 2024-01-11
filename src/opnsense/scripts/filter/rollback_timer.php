@@ -35,7 +35,7 @@ if (count($argv) >= 2) {
         $lckfile = "/tmp/filter_{$revision}.lock";
         file_put_contents($lckfile, "");
         // give the api 60 seconds to callback
-        for ($i=0; $i < 60 ; ++$i) {
+        for ($i = 0; $i < 60; ++$i) {
             if (!file_exists($lckfile)) {
                 // got feedback
                 exit(0);
