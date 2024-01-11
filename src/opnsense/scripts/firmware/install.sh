@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2024 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -27,6 +27,7 @@
 
 LOCKFILE=/tmp/pkg_upgrade.progress
 PACKAGE=${1}
+TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
 
@@ -40,14 +41,14 @@ if [ "${PACKAGE#os-}" != "${PACKAGE}" ]; then
 
 	# plugins must pass a version check on up-to-date core package
 	if [ "$(pkg version -t ${COREVER} ${REPOVER})" = "<" ]; then
-		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." >> ${LOCKFILE} 2>&1
+		echo "Installation out of date. The update to ${COREPKG}-${REPOVER} is required." | ${TEE} ${LOCKFILE}
 		echo '***DONE***' >> ${LOCKFILE}
 		exit
 	fi
 fi
 
-pkg install -y ${PACKAGE} >> ${LOCKFILE} 2>&1
-/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} >> ${LOCKFILE} 2>&1
-pkg autoremove -y >> ${LOCKFILE} 2>&1
+(pkg install -y ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
+(/usr/local/opnsense/scripts/firmware/register.php install ${PACKAGE} 2>&1) | ${TEE} ${LOCKFILE}
+(pkg autoremove -y 2>&1) | ${TEE} ${LOCKFILE}
 
 echo '***DONE***' >> ${LOCKFILE}
