@@ -208,7 +208,7 @@ function pf_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('Firewall Rules'),
         'help' => gettext('Synchronize the firewall rules to the other HA host.'),
-        'section' => 'filter',
+        'section' => 'filter,OPNsense.Firewall.Filter.rules',
         'id' => 'rules',
         'services' => ['pf'],
     );
@@ -239,7 +239,7 @@ function pf_xmlrpc_sync()
     $result[] = array(
         'description' => gettext('NAT'),
         'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
-        'section' => 'nat',
+        'section' => 'nat,OPNsense.Firewall.Filter.snatrules,OPNsense,Firewall.Filter.npt',
         'id' => 'nat',
         'services' => ['pf'],
     );
