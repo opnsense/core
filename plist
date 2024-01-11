@@ -1122,7 +1122,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
-/usr/local/opnsense/service/conf/actions.d/actions_pfplugin.conf
 /usr/local/opnsense/service/conf/actions.d/actions_syslog.conf
 /usr/local/opnsense/service/conf/actions.d/actions_system.conf
 /usr/local/opnsense/service/conf/actions.d/actions_template.conf
