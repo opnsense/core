@@ -27,7 +27,6 @@
 """
 import argparse
 import sys
-import glob
 import os
 
 sys.path.insert(0, "/usr/local/opnsense/site-python")
@@ -41,13 +40,14 @@ if __name__ == '__main__':
     if os.path.isfile("%s/load.sql" % inputargs.backup_dir):
         if os.path.isfile('/var/run/unbound_logger.pid'):
             pid = open('/var/run/unbound_logger.pid').read().strip()
-            os.kill(int(pid), 9)
+            try:
+                os.kill(int(pid), 9)
+            except ProcessLookupError:
+                pass
         if os.path.isfile(inputargs.targetdb):
             os.unlink(inputargs.targetdb)
         if restore_database(inputargs.backup_dir, inputargs.targetdb):
-            for filename in glob.glob('%s/*' % inputargs.backup_dir):
-                os.unlink(filename)
-            print("restored, backup removed")
+            print("restored")
         else:
             print("unable to restore")
     else:
