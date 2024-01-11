@@ -1,6 +1,6 @@
 <menu>
     <Firewall>
-        <Automation order="1000" cssClass="fa fa-gear">
+        <Automation cssClass="fa fa-gear">
             <Filter order="50" url="/ui/firewall/filter/">
                 <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
             </Filter>

@@ -32,6 +32,7 @@ class FilterController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Firewall/filter');
+        $this->view->SavePointBtns = true;
         $this->view->ruleController = "filter";
         $this->view->gridFields = [
             [

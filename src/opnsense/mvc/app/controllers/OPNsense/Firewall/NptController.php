@@ -33,7 +33,6 @@ class NptController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Firewall/filter');
         $this->view->ruleController = "npt";
-        $this->view->hideSavePointBtns = true;
         $this->view->gridFields = [
             [
                 'id' => 'enabled', 'formatter' => 'rowtoggle' ,'width' => '6em', 'heading' => gettext('Enabled')

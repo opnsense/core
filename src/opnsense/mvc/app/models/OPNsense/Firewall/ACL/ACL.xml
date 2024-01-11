@@ -1,20 +1,20 @@
 <acl>
     <page-filter-api>
-        <name>Firewall: Rules: API</name>
+        <name>Firewall: Automation: Filter</name>
         <patterns>
             <pattern>ui/firewall/filter/*</pattern>
             <pattern>api/firewall/filter/*</pattern>
         </patterns>
     </page-filter-api>
     <page-filter-snat-api>
-        <name>Firewall: SourceNat: API</name>
+        <name>Firewall: Automation: Source NAT</name>
         <patterns>
             <pattern>ui/firewall/source_nat/*</pattern>
             <pattern>api/firewall/source_nat/*</pattern>
         </patterns>
     </page-filter-snat-api>
     <page-firewall-nat-npt>
-        <name>Firewall: NAT: NPT</name>
+        <name>Firewall: NAT: NPTv6</name>
         <patterns>
             <pattern>ui/firewall/npt/*</pattern>
             <pattern>api/firewall/npt/*</pattern>

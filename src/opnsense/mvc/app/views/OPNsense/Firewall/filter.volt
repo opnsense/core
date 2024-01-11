@@ -213,7 +213,7 @@
                 data-error-title="{{ lang._('Filter load error') }}"
                 type="button"
         ></button>
-{% if not hideSavePointBtns|default(false) %}
+{% if SavePointBtns is defined %}
         <div class="pull-right">
             <button class="btn" id="savepointAct"
                     data-endpoint='/api/firewall/{{ruleController}}/savepoint'
