@@ -131,10 +131,12 @@ class IPPortField extends BaseField
 
                     if ($this->internalAddressFamily == 'ipv6' || $this->internalAddressFamily == null) {
                         $parts = preg_split('/\[([^\]]+)\]/', $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-                        if (count($parts) == 2 &&
+                        if (
+                            count($parts) == 2 &&
                             Util::isIpv6Address($parts[0]) &&
                             str_contains($parts[1], ':') &&
-                            Util::isPort(trim($parts[1], ': '))) {
+                            Util::isPort(trim($parts[1], ': '))
+                        ) {
                             continue;
                         }
                     }
