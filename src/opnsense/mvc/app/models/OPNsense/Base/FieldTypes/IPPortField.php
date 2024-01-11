@@ -121,7 +121,7 @@ class IPPortField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
-                foreach ($this->internalAsList ? explode($this->internalFieldSeparator, $data) : [$data] as $value) {                    
+                foreach ($this->internalAsList ? explode($this->internalFieldSeparator, $data) : [$data] as $value) {
                     if ($this->internalAddressFamily == 'ipv4' || $this->internalAddressFamily == null) {
                         $parts = explode(':', $value);
                         if (count($parts) == 2 && Util::isIpv4Address($parts[0]) && Util::isPort($parts[1])) {
@@ -131,7 +131,7 @@ class IPPortField extends BaseField
 
                     if ($this->internalAddressFamily == 'ipv6' || $this->internalAddressFamily == null) {
                         $parts = preg_split('/\[([^\]]+)\]/', $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-                        if (count($parts) == 2 && 
+                        if (count($parts) == 2 &&
                             Util::isIpv6Address($parts[0]) &&
                             str_contains($parts[1], ':') &&
                             Util::isPort(trim($parts[1], ': '))) {
