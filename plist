@@ -531,6 +531,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/DescriptionField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/EmailField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/HostnameField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IPPortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IntegerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
@@ -845,6 +846,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CountryFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/Field_Framework_TestCase.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/IPPortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/IntegerFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/InterfaceFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/InterfaceFieldTest/config.xml
