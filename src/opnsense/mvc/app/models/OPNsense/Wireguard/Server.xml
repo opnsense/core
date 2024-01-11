@@ -39,8 +39,11 @@
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9300</MaximumValue>
                 </mtu>
-                <dns type="CSVListField">
-                    <Mask>/^([a-fA-F0-9\.:\[\]]*?,)*([a-fA-F0-9\.:\[\]]*)$/</Mask>
+                <dns type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <WildcardEnabled>N</WildcardEnabled>
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
