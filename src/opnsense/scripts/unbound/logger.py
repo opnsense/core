@@ -38,14 +38,16 @@ import signal
 import socket
 import duckdb
 sys.path.insert(0, "/usr/local/opnsense/site-python")
-from duckdb_helper import DbConnection, StorageVersionException, restore_database
+from duckdb_helper import DbConnection, StorageVersionException, restore_database, export_database
 
 class DNSReader:
-    def __init__(self, source_pipe, target_db, flush_interval):
+    def __init__(self, source_pipe, target_db, flush_interval, backup_dir):
         self.source_pipe = source_pipe
         self.target_db = target_db
+        self.backup_dir = backup_dir
         self.timer = 0
         self.cleanup_timer = 0
+        self.imp_exp_timer = time.time()
         self.flush_interval = flush_interval
         self.buffer = list()
         self.selector = selectors.DefaultSelector()
@@ -178,6 +180,23 @@ class DNSReader:
                         except duckdb.ConstraintException:
                             db.connection.execute("UPDATE client SET hostname=? WHERE ipaddr=?", [host, client])
 
+            # duckdb database files don't like records to be deleted over time, which causes unnecessary growth.
+            # By performing an export/import on regular bases (roughly each 24 hours), we keep the file more managable.
+            if (now - self.imp_exp_timer) > 86400:
+                self.imp_exp_timer = now
+                if export_database(self.target_db, self.backup_dir, 'unbound', 'unbound'):
+                    restore_database(self.backup_dir, self.target_db)
+                    syslog.syslog(
+                        syslog.LOG_NOTICE,
+                        'Database auto restore from %s for cleanup reasons in %.2f seconds' % (
+                            self.backup_dir,
+                            time.time() - now
+                        )
+                    )
+                else:
+                    syslog.syslog(syslog.LOG_ERROR, "unable to export database to %s" % self.backup_dir)
+
+
         return True
 
     def run_logger(self):
@@ -219,8 +238,8 @@ class DNSReader:
                     # unbound closed pipe
                     self.close_logger()
 
-def run(pipe, target_db, flush_interval):
-    r = DNSReader(pipe, target_db, flush_interval)
+def run(pipe, target_db, flush_interval, backup_dir):
+    r = DNSReader(pipe, target_db, flush_interval, backup_dir)
     try:
         r.run_logger()
     except InterruptedError:
@@ -247,7 +266,6 @@ if __name__ == '__main__':
                     syslog.LOG_NOTICE,
                     'Database restored from %s due to version mismatch' % inputargs.backup_dir
                 )
-                # XXX: remove contents of backup_dir?
             else:
                 syslog.syslog(syslog.LOG_ERR, 'Restore needed, but backup locked, exit...')
                 sys.exit(-1)
@@ -262,4 +280,4 @@ if __name__ == '__main__':
 
 
     syslog.syslog(syslog.LOG_NOTICE, 'Backgrounding unbound logging backend.')
-    run(inputargs.pipe, inputargs.targetdb, inputargs.flush_interval)
+    run(inputargs.pipe, inputargs.targetdb, inputargs.flush_interval, inputargs.backup_dir)
