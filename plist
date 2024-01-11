@@ -145,12 +145,12 @@
 /usr/local/etc/rc.syshook.d/start/90-sysctl
 /usr/local/etc/rc.syshook.d/start/95-beep
 /usr/local/etc/rc.syshook.d/stop/05-beep
-/usr/local/etc/rc.syshook.d/stop/20-unbound-duckdb.py
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
 /usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
 /usr/local/etc/rc.syshook.d/update/10-refresh
 /usr/local/etc/rc.syshook.d/upgrade/20-squid-plugin.php
+/usr/local/etc/rc.syshook.d/upgrade/20-unbound-duckdb.py
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/unbound.opnsense.d/README
