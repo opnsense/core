@@ -108,10 +108,12 @@ class Filter extends BaseModel
                         ));
                     }
 
-                    if ((empty($config->interfaces->{$rule->interface}->ipaddrv6) ||
+                    if (
+                        (empty($config->interfaces->{$rule->interface}->ipaddrv6) ||
                         $config->interfaces->{$rule->interface}->ipaddrv6 != 'dhcp6') ||
                         empty($config->interfaces->{$rule->trackif}->{'track6-interface'}) ||
-                        $config->interfaces->{$rule->trackif}->{'track6-interface'} != (string)$rule->interface) {
+                        $config->interfaces->{$rule->trackif}->{'track6-interface'} != (string)$rule->interface
+                    ) {
                         $messages->appendMessage(new Message(
                             gettext('This interface is not tracking the current rule interface.'),
                             $rule->trackif->__reference
