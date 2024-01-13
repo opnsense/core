@@ -38,7 +38,7 @@ if __name__ == '__main__':
     parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet'])
     inputargs = parser.parse_args()
     if inputargs.proto == 'inet':
-        filename = '/tmp/kea-leases4.csv' # '/var/db/kea/kea-leases4.csv'
+        filename = '/var/db/kea/kea-leases4.csv'
 
     ranges = {}
     this_interface = None
