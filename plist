@@ -1139,6 +1139,7 @@
 /usr/local/opnsense/service/modules/config.py
 /usr/local/opnsense/service/modules/daemonize.py
 /usr/local/opnsense/service/modules/processhandler.py
+/usr/local/opnsense/service/modules/session.py
 /usr/local/opnsense/service/modules/template.py
 /usr/local/opnsense/service/run_unittests.py
 /usr/local/opnsense/service/templates/OPNsense/Auth/+TARGETS
