@@ -146,7 +146,7 @@
 
         $(".cipher_tooltip").change(function(){
             let sender = $(this);
-            if (!sender.hasClass('tooltip_started')) {
+            if (!sender.hasClass('tooltip_started') && sender.hasClass('selectpicker')) {
                 /**
                  * hook cipher tooltip on initial load
                  */
