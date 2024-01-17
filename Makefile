@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -245,8 +245,8 @@ manifest:
 		fi; \
 	done
 	@echo "}"
-	@if [ -f ${WRKSRC}/usr/local/opnsense/version/core ]; then \
-	    echo "annotations $$(cat ${WRKSRC}/usr/local/opnsense/version/core)"; \
+	@if [ -f ${WRKSRC}${LOCALBASE}/opnsense/version/core ]; then \
+	    echo "annotations $$(cat ${WRKSRC}${LOCALBASE}/opnsense/version/core)"; \
 	fi
 
 .if ${.TARGETS:Mupgrade}
@@ -324,7 +324,7 @@ package: plist-check package-check clean-wrksrc
 	@${CORE_MAKE} DESTDIR=${WRKSRC} install
 	@echo " done"
 	@echo ">>> Generated version info for ${CORE_NAME}-${CORE_PKGVERSION}:"
-	@cat ${WRKSRC}/usr/local/opnsense/version/core
+	@cat ${WRKSRC}${LOCALBASE}/opnsense/version/core
 	@echo -n ">>> Generating metadata for ${CORE_NAME}-${CORE_PKGVERSION}..."
 	@${CORE_MAKE} DESTDIR=${WRKSRC} metadata
 	@echo " done"
