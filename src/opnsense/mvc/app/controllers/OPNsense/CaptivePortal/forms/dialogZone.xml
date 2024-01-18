@@ -105,6 +105,13 @@
         <help><![CDATA[Offer extended data to the login template before authentication  (mac addresses for upstream use).]]></help>
     </field>
     <field>
+        <id>zone.reverseCaptivePortal</id>
+        <label>Reverse Captive Portal</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable reverse captive portal. Allows outgoing traffic from selected interfaces.</help>
+    </field>
+    <field>
         <id>zone.template</id>
         <label>Custom template</label>
         <type>dropdown</type>

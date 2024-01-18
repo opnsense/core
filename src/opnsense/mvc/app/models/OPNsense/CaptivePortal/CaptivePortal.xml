@@ -78,6 +78,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </extendedPreAuthData>
+                <reverseCaptivePortal type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </reverseCaptivePortal>
                 <template type="ModelRelationField">
                     <Model>
                         <template>
