@@ -1014,6 +1014,14 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     ) {
         $conf .= openvpn_gen_routes($settings['remote_network'], 'ipv4', false, true);
     }
+
+    if (
+        !empty($settings['iroute_network']) &&
+        openvpn_validate_cidr($settings['iroute_network'], '', true, 'ipv4') === false
+    ) {
+        $conf .= openvpn_gen_routes($settings['iroute_network'], 'ipv4', false, true);
+    }
+
     if (
         !empty($settings['remote_networkv6']) &&
         openvpn_validate_cidr($settings['remote_networkv6'], '', true, 'ipv6') === false
