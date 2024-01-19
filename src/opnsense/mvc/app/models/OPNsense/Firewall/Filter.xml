@@ -2,9 +2,7 @@
     <mount>//OPNsense/Firewall/Filter</mount>
     <version>1.0.3</version>
     <migration_prefix>MFP</migration_prefix>
-    <description>
-        OPNsense firewall filter rules
-    </description>
+    <description>OPNsense firewall filter rules</description>
     <items>
         <rules>
             <rule type=".\FilterRuleField">
