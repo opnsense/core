@@ -171,6 +171,7 @@ class OpenVPN extends BaseModel
                 'dns_domain',
                 'dns_domain_search',
                 'tunnel_network',
+                'iroute_network',
                 'tunnel_networkv6',
                 'route_gateway',
             ];
