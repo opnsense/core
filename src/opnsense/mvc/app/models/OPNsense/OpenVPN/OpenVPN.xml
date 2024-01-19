@@ -39,6 +39,10 @@
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
                 </remote_networks>
+                <iroute_networks type="NetworkField">
+                    <FieldSeparator>,</FieldSeparator>
+                    <asList>Y</asList>
+                </iroute_networks>
                 <route_gateway type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </route_gateway>
