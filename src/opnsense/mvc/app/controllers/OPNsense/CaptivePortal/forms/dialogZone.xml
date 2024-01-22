@@ -106,10 +106,10 @@
     </field>
     <field>
         <id>zone.reverseCaptivePortal</id>
-        <label>Reverse Captive Portal</label>
+        <label>Reverse captive portal</label>
         <type>checkbox</type>
         <advanced>true</advanced>
-        <help>Enable reverse captive portal. Allows outgoing traffic from selected interfaces.</help>
+        <help>Allows outgoing traffic from the captive portal interface</help>
     </field>
     <field>
         <id>zone.template</id>
