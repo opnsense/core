@@ -87,6 +87,7 @@
                     <Required>Y</Required>
                 </hw_address>
                 <hostname type="HostnameField">
+                    <IsDNSName>Y</IsDNSName>
                 </hostname>
                 <description type="DescriptionField"/>
             </reservation>

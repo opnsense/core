@@ -52,6 +52,7 @@ class HostValidator extends BaseValidator
         $allow_hostwildcard = $this->getOption('hostwildcard');
         $allow_fqdnwildcard = $this->getOption('fqdnwildcard');
         $allow_zoneroot = $this->getOption('zoneroot');
+        $is_dns_name  = $this->getOption('is_dns_name');
         $fieldSplit = $this->getOption('split', null);
         if ($fieldSplit == null) {
             $values = array($validator->getValue($attribute));
@@ -60,7 +61,7 @@ class HostValidator extends BaseValidator
         }
         foreach ($values as $value) {
             // set filter options
-            $filterOptDomain = FILTER_FLAG_HOSTNAME;
+            $filterOptDomain = $is_dns_name ? 0 : FILTER_FLAG_HOSTNAME;
             $filterOptIp = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
             if ($allow_fqdnwildcard && substr($value, 0, 2) == '*.') {
                 $value = substr($value, 2);
