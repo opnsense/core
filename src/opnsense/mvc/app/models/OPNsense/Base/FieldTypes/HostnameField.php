@@ -72,6 +72,20 @@ class HostnameField extends BaseField
     protected $internalZoneRootAllowed = false;
 
     /**
+     * @var bool dns name as defined by RFC2181 (lifting some constraints)
+     */
+    protected $internalIsDNSName = false;
+
+    /**
+     * is dns name as defined by RFC2181
+     * @param string $value Y/N
+     */
+    public function setIsDNSName($value)
+    {
+        $this->internalIsDNSName = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
      * ip addresses allowed
      * @param string $value Y/N
      */
@@ -176,6 +190,7 @@ class HostnameField extends BaseField
                 'hostwildcard' => $this->internalHostWildcardAllowed,
                 'fqdnwildcard' => $this->internalFqdnWildcardAllowed,
                 'zoneroot' => $this->internalZoneRootAllowed,
+                'is_dns_name' => $this->internalIsDNSName
             ]);
         }
         return $validators;
