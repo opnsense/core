@@ -112,7 +112,7 @@ class M1_0_0 extends BaseModelMigration
             foreach ($model->gateway_item->iterateRecursiveItems() as $node) {
                 if (!$node->getInternalIsVirtual() && !empty((string)$node)) {
                     /* There is at least one entry stored. */
-                    unset(Config::getInstance()->object()->gateways);
+                    unset(Config::getInstance()->object()->gateways->gateway_item);
                     return;
                 }
             }
