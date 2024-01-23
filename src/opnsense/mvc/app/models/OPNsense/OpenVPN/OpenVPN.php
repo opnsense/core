@@ -350,7 +350,7 @@ class OpenVPN extends BaseModel
                     'cert_depth' => (string)$node->cert_depth,
                     'digest' => (string)$node->auth,
                     'description' => (string)$node->description,
-                    'use_ocsp' => !empty((string)$node->use_ocsp)
+                    'use_ocsp' => !empty((string)$node->use_ocsp),
                 ];
             }
         }
@@ -392,7 +392,7 @@ class OpenVPN extends BaseModel
                         'crypto' => (string)$item->crypto,
                         'digest' => (string)$item->digest,
                         'interface' => (string)$item->interface,
-                        'use_ocsp' => false
+                        'use_ocsp' => false,
                     ];
                 }
             }
