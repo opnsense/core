@@ -311,6 +311,10 @@
                         <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
                     </OptionValues>
                 </redirect_gateway>
+                <route_metric type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </route_metric>
                 <register_dns type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
