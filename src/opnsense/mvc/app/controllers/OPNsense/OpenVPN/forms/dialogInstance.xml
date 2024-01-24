@@ -322,6 +322,14 @@ Set to 0 to disable, remember to change your client as well.
         <help>Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN.</help>
     </field>
     <field>
+        <id>instance.route_metric</id>
+        <style>role role_server</style>
+        <label>Route-metric (client)</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Specify a default metric m for use with --route on the connecting client (push option).</help>
+    </field>
+    <field>
         <id>instance.register_dns</id>
         <label>Register DNS</label>
         <type>checkbox</type>
