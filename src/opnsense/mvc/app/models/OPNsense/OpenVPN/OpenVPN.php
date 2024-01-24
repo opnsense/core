@@ -535,6 +535,10 @@ class OpenVPN extends BaseModel
                         $redirect_gateway = str_replace(',', ' ', (string)$node->redirect_gateway);
                         $options['push'][] = "\"redirect-gateway {$redirect_gateway}\"";
                     }
+
+                    if (!empty((string)$node->route_metric)) {
+                        $options['push'][] = "\"route-metric {$node->route_metric}\"";
+                    }
                     if (!empty((string)$node->register_dns)) {
                         $options['push'][] = "\"register-dns\"";
                     }
