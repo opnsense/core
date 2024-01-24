@@ -51,11 +51,14 @@ if __name__ == '__main__':
 
     result = {'records': []}
     header = None
+    dedup_keys = set()
     with open(filename, 'r') as csvfile:
         for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
+            rec_key = ','.join(record[:2])
             if idx == 0:
                 header = record
-            elif header:
+            elif header and rec_key not in dedup_keys:
+                dedup_keys.add(rec_key)
                 named_record = {'if': None}
                 for findx, field in enumerate(record):
                     if findx < len(header):
