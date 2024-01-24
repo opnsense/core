@@ -147,7 +147,7 @@ class Backend
 
         // read response data
         $starttime = time();
-        while (true) {
+        while (is_resource($stream)) {
             $resp = $resp . stream_get_contents($stream);
 
             if (strpos($resp, $endOfStream) !== false) {
