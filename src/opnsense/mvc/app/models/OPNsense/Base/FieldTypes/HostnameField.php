@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2022 Deciso B.V.
+ * Copyright (C) 2017-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -190,7 +190,7 @@ class HostnameField extends BaseField
                 'hostwildcard' => $this->internalHostWildcardAllowed,
                 'fqdnwildcard' => $this->internalFqdnWildcardAllowed,
                 'zoneroot' => $this->internalZoneRootAllowed,
-                'is_dns_name' => $this->internalIsDNSName
+                'is_dns_name' => $this->internalIsDNSName,
             ]);
         }
         return $validators;
