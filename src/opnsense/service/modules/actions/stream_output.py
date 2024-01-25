@@ -27,7 +27,7 @@
 import traceback
 import selectors
 import subprocess
-from .. import syslog_error
+from .. import syslog_error, syslog_info
 from .base import BaseAction
 
 
@@ -57,10 +57,22 @@ class Action(BaseAction):
         selector.register(process.stdout, selectors.EVENT_READ, stdout_reader)
 
         try:
+
             while process.poll() is None:
-                for key, mask in selector.select():
+                timeout = True
+                for key, mask in selector.select(1):
+                    timeout = False
                     callback = key.data
                     callback(key.fileobj, mask)
+                if timeout:
+                    # when timeout has reached, check if the other end is still connected using getpeername()
+                    # kill process when nobody is waiting for an answer
+                    try:
+                        connection.getpeername()
+                    except OSError:
+                        syslog_info('[%s] Script action terminated by other end' % message_uuid)
+                        process.kill()
+                        return None
 
             return_code = process.wait()
             script_error_output = process.stderr.read().decode()

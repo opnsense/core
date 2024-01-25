@@ -209,8 +209,12 @@ class HandlerClient(threading.Thread):
             ))
         finally:
             if not exec_in_background:
-                self.connection.shutdown(socket.SHUT_RDWR)
-                self.connection.close()
+                try:
+                    self.connection.shutdown(socket.SHUT_RDWR)
+                    self.connection.close()
+                except OSError:
+                    # ignore shutdown errors when listener disconnected
+                    pass
 
 
 @singleton
