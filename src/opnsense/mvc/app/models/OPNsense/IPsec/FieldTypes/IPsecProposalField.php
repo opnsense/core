@@ -37,13 +37,72 @@ class IPsecProposalField extends BaseListField
 {
     private static $internalCacheOptionList = [];
 
-    private static function commonOptions()
+    /**
+     * @var string cache phase key
+     */
+    private $internalCacheKey = null;
+
+    /**
+     * @var phase. either '1' or '2'.
+     */
+    private $phase = null;
+
+    public function setPhase($value)
+    {
+        $this->phase = trim($value);
+        $this->internalCacheKey = $this->phase;
+    }
+
+    private function AeadPhase1()
+    {
+        /* a PRF is mandatory for IKE proposals containing AEAD algorithms (gcm) */
+        return [
+            'aes256gcm16-sha256-modp2048' => null,
+            'aes256gcm16-sha512-modp2048' => null,
+            'aes256gcm16-sha256-ecp521' => null,
+            'aes256gcm16-sha512-ecp521' => null,
+            'aes256gcm16-sha256-x25519' => 'aes256gcm16-sha256-curve25519 [DH31, Modern EC]',
+            'aes256gcm16-sha512-x25519' => 'aes256gcm16-sha512-curve25519 [DH31, Modern EC]',
+            'aes256gcm16-sha256-x448' => 'aes256gcm16-sha256-curve448 [DH32, Modern EC]',
+            'aes256gcm16-sha512-x448' => 'aes256gcm16-sha512-curve448 [DH32, Modern EC]',
+            'aes128gcm16-sha256-modp2048' => null,
+            'aes128gcm16-sha512-modp2048' => null,
+            'aes128gcm16-sha256-ecp521' => null,
+            'aes128gcm16-sha512-ecp521' => null,
+            'aes128gcm16-sha256-x25519' => 'aes128gcm16-sha256-curve25519 [DH31, Modern EC]',
+            'aes128gcm16-sha512-x25519' => 'aes128gcm16-sha512curve25519 [DH31, Modern EC]',
+            'aes128gcm16-sha256-x448' => 'aes128gcm16-sha256-curve448 [DH32, Modern EC]',
+            'aes128gcm16-sha512-x448' => 'aes128gcm16-sha512-curve448 [DH32, Modern EC]',
+        ];
+    }
+
+    private function AeadPhase2()
+    {
+        return [
+            'aes256gcm16-modp2048' => null,
+            'aes256gcm16-ecp521' => null,
+            'aes256gcm16-x25519' => 'aes256gcm16-curve25519 [DH31, Modern EC]',
+            'aes256gcm16-x448' => 'aes256gcm16-curve448 [DH32, Modern EC]',
+            'aes128gcm16-modp2048' => null,
+            'aes128gcm16-ecp521' => null,
+            'aes128gcm16-x25519' => 'aes128gcm16-curve25519 [DH31, Modern EC]',
+            'aes128gcm16-x448' => 'aes128gcm16-curve448 [DH32, Modern EC]',
+        ];
+    }
+
+    private function AeadAlgorithms()
+    {
+        return $this->phase == '1' ? $this->AeadPhase1() : $this->AeadPhase2();
+    }
+
+    private function commonOptions()
     {
         /* group and cipher order, when set to null an auto generated description will be used */
         return [
             gettext('Internal') => [
                 'default' => gettext('default')
             ],
+            /* Non-AEAD algorithms */
             gettext('Commonly used AES') => [
                 'aes256-sha256-modp2048' => null,
                 'aes256-sha512-modp2048' => null,
@@ -54,15 +113,9 @@ class IPsecProposalField extends BaseListField
                 'aes256-sha256-ecp521' => null,
                 'aes256-sha512-ecp521' => null,
             ],
+            /* AEAD algorithms */
             gettext('Commonly used AES with Galois/Counter Mode') => [
-                'aes256gcm16-modp2048' => null,
-                'aes256gcm16-ecp521' => null,
-                'aes256gcm16-x25519' => 'aes256gcm16-curve25519 [DH31, Modern EC]',
-                'aes256gcm16-x448' => 'aes256gcm16-curve448 [DH32, Modern EC]',
-                'aes128gcm16-modp2048' => null,
-                'aes128gcm16-ecp521' => null,
-                'aes128gcm16-x25519' => 'aes128gcm16-curve25519 [DH31, Modern EC]',
-                'aes128gcm16-x448' => 'aes128gcm16-curve448 [DH32, Modern EC]',
+                ...$this->AeadAlgorithms()
             ],
             gettext('Commonly used, but insecure cipher suites') => [
                 'aes256-sha1-modp2048' => 'aes256-sha1-modp2048 [DH14]',
@@ -78,15 +131,15 @@ class IPsecProposalField extends BaseListField
 
     protected function actionPostLoadingEvent()
     {
-        if (empty(self::$internalCacheOptionList)) {
+        if (empty(self::$internalCacheOptionList[$this->internalCacheKey])) {
             /**
              *  Build cipher suite options, for more information, we refer to the following documents:
              *  https://wiki.strongswan.org/projects/strongswan/wiki/CipherSuiteExamples
              *  https://wiki.strongswan.org/projects/strongswan/wiki/SecurityRecommendations/50
              */
-            foreach (self::commonOptions() as $group => $ciphers) {
+            foreach ($this->commonOptions() as $group => $ciphers) {
                 foreach ($ciphers as $cipher => $description) {
-                    self::$internalCacheOptionList[$cipher] = ['value' => $description, 'optgroup' => $group];
+                    self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => $group];
                 }
             }
 
@@ -112,31 +165,28 @@ class IPsecProposalField extends BaseListField
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
                     foreach ($dhgroups as $dhgroup => $descr) {
                         $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
-                        if (strpos($encalg, 'gcm') !== false) {
-                            /**
-                             * GCM includes hashing, for IKE we might optionally add PRF options, which we will sort at
-                             * the end of the list.
-                             */
+                        if (strpos($encalg, 'gcm') !== false && $this->phase != '1') {
+                            /* only relevant for phase 2 entries, see comment in AeadPhase1() */
                             $gcm_prf_options[$cipher] = [
                                 'value' => $cipher . " [{$descr}]",
                                 'optgroup' => gettext('Miscellaneous')
                             ];
                             $cipher = "{$encalg}-{$dhgroup}";
                         }
-                        if (empty(self::$internalCacheOptionList[$cipher])) {
-                            self::$internalCacheOptionList[$cipher] = [
+                        if (empty(self::$internalCacheOptionList[$this->internalCacheKey][$cipher])) {
+                            self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = [
                                 'value' => $cipher . " [{$descr}]",
                                 'optgroup' => gettext('Miscellaneous')
                             ];
-                        } elseif (empty(self::$internalCacheOptionList[$cipher]['value'])) {
-                            self::$internalCacheOptionList[$cipher]['value'] = $cipher . " [{$descr}]";
+                        } elseif (empty(self::$internalCacheOptionList[$this->internalCacheKey][$cipher]['value'])) {
+                            self::$internalCacheOptionList[$this->internalCacheKey][$cipher]['value'] = $cipher . " [{$descr}]";
                         }
                     }
                 }
             }
-            self::$internalCacheOptionList = self::$internalCacheOptionList + $gcm_prf_options;
+            self::$internalCacheOptionList[$this->internalCacheKey] = self::$internalCacheOptionList[$this->internalCacheKey] + $gcm_prf_options;
         }
 
-        $this->internalOptionList = self::$internalCacheOptionList;
+        $this->internalOptionList = self::$internalCacheOptionList[$this->internalCacheKey];
     }
 }

@@ -13,6 +13,7 @@
                     <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
+                    <Phase>1</Phase>
                 </proposals>
                 <unique type="OptionField">
                     <Required>Y</Required>
@@ -245,6 +246,7 @@
                     <Default>default</Default>
                     <Required>Y</Required>
                     <Multiple>Y</Multiple>
+                    <Phase>2</Phase>
                 </esp_proposals>
                 <sha256_96 type="BooleanField">
                     <Default>0</Default>
