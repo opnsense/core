@@ -1158,8 +1158,6 @@ function system_login_configure($verbose = false)
     /* depends on user account locking */
     local_sync_accounts();
 
-    configd_run('template reload OPNsense/Auth');
-
     $serialspeed = system_console_speed();
 
     $new_boot_config = array();
@@ -1285,6 +1283,8 @@ function system_login_configure($verbose = false)
     }
 
     fclose($fd);
+
+    configd_run('template reload OPNsense/Auth');
 
     service_log("done.\n", $verbose);
 
