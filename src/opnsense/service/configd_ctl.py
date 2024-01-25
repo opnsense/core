@@ -133,8 +133,12 @@ if args.e:
                 syslog_notice("event @ %.2f msg: %s" % (last_message_stamp, line))
             # execute command(s)
             for exec_command in exec_commands:
-                syslog_notice("event @ %.2f exec: %s" % (last_message_stamp, exec_command))
-                exec_config_cmd(exec_command=exec_command)
+                if args.d:
+                    exec_command = '&' + exec_command
+                # we need to fetch the generator's response in order to execute the command, lets return it to the
+                # users as well.
+                cmd_outp = (' '.join(exec_config_cmd(exec_command=exec_command))).strip()
+                syslog_notice("event @ %.2f exec: %s response: %s" % (last_message_stamp, exec_command, cmd_outp))
             stashed_lines = list()
 else:
     # normal execution mode
