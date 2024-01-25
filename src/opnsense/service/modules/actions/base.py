@@ -55,8 +55,6 @@ class BaseAction:
         :param session: xucred session object
         :return: bool
         """
-        print(session.get_groups())
-        print(self.allowed_groups)
         memberOf = session.get_groups() if isinstance(session, xucred) else []
         return len(self.allowed_groups) == 0 or len(self.allowed_groups & memberOf) > 0
 
