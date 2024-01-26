@@ -108,14 +108,14 @@ esac
 # endless loop
 while : ; do
 
+${CMD_BANNER}
+
 # We `set -e' to force exit if we encounter an error.
 # This is mainly useful in case we lose our tty (happens when
 # an ssh connection breaks, for example), in which case our stdout
 # is closed and the `echo' commands in the while loop will silently fail.
 # Failure to exit at that moment would lead to an infinite loop.
 set -e
-
-${CMD_BANNER}
 
 echo
 echo "  0) Logout                              7) Ping host"
