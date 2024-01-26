@@ -24,8 +24,8 @@
 # SUCH DAMAGE.
 
 CORE_ABI?=	24.1
-CORE_MESSAGE?=	TBA
+CORE_MESSAGE?=	Oh, the shark has pretty teeth, dear, and he shows them pearly white
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Savvy Shark
 CORE_TYPE?=	community
