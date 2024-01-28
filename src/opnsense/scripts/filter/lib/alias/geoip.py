@@ -103,7 +103,7 @@ class GEOIP(BaseContentParser):
                                         country_blocks = zf.open(file_handles[result['address_sources'][proto]]).read()
                                         for line in country_blocks.decode().split('\n'):
                                             parts = line.split(',')
-                                            if len(parts) > 3 and parts[1] in country_codes:
+                                            if len(parts) > 1 and parts[1] in country_codes:
                                                 country_code = country_codes[parts[1]]
                                                 if country_code not in output_handles:
                                                     if not os.path.exists(cls._target_dir):
