@@ -166,8 +166,8 @@
                             return $elements.prop('outerHTML');
                         },
                         "commands": function (column, row) {
-                            let $commands = $('<div></div>');
-                            let $btn = $('<button type="button" class="btn btn-xs btn-default" data-toggle="tooltip"">\
+                            let $commands = $('<div class="commands-td"></div>');
+                            let $btn = $('<button type="button" class="btn btn-xs btn-default command" data-toggle="tooltip"">\
                                             <i></i></button>');
 
                             /* reload action for dynamic configurations */
@@ -180,11 +180,10 @@
                                 }
                             }
 
-                            /* go to interfaces assignment */
-                            $anchor = $('<a class="btn btn-xs btn-default" data-toggle="tooltip"><i></i></a>');
-                            if ('identifier' in row && row.identifier) {
-                                if (!(row.config && row.config.internal_dynamic)) {
-                                    $a_interfaces = $anchor.clone().attr('href', '/interfaces_assign.php?if=' + row.identifier);
+                            $anchor = $('<a class="btn btn-xs btn-default command" data-toggle="tooltip"><i></i></a>');
+                            if ('identifier' in row && row.identifier && 'config' in row && row.config) {
+                                if (!row.config.internal_dynamic) {
+                                    $a_interfaces = $anchor.clone().attr('href', '/interfaces.php?if=' + row.identifier);
                                     $a_interfaces.attr('title', 'Settings');
                                     $a_interfaces.find('i').addClass('fa fa-fw fa-cog');
                                     $commands.append($a_interfaces);
@@ -196,11 +195,6 @@
                                     $a_fw.find('i').addClass('fa fa-fw fa-fire');
                                     $commands.append($a_fw);
                                 }
-                            } else {
-                                $a_interfaces = $anchor.clone().attr('href', '/interfaces_assign.php');
-                                $a_interfaces.attr('title', 'Assign');
-                                $a_interfaces.find('i').addClass('fa fa-fw fa-plus');
-                                $commands.append($a_interfaces);
                             }
 
                             $btn.addClass('interface-info').attr('title', 'Details').attr('data-row-id', row.device);
@@ -350,6 +344,15 @@
     .bootgrid-table td {
         text-align: center;
         vertical-align: middle;
+    }
+
+    .commands-td {
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    .command {
+        margin-left: 0.3em;
     }
 
     .bootgrid-table th {
