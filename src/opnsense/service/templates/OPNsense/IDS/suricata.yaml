@@ -1333,6 +1333,8 @@ stream:
   checksum-validation: yes      # reject wrong csums
   inline: {% if OPNsense.IDS.general.ips|default("0") == "1" %}true{% else %}auto{% endif %}
 
+  midstream:
+    midstream-policy: ignore
   reassembly:
     memcap: 256mb
     depth: 1mb                  # reassemble 1mb into a stream
