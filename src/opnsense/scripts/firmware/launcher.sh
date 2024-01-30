@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,7 @@ fi
 if [ -z "${DO_UNLOCKED}" ]; then
 	${FLOCK} ${LOCKFILE} ${COMMAND} "${@}"
 else
-	${COMMAND} "${@}"
+	env LOCKFILE=/dev/null ${COMMAND} "${@}"
 fi
 
 RET=${?}
