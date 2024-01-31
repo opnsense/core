@@ -7,7 +7,7 @@
                 $.each(data, function(key, value) {
                     $('#tablename').append($("<option/>").attr("value", value).text(value));
                 });
-                $('#tablename').selectpicker('refresh');
+                $('#tablename').selectpicker();
                 // link change event, change grid content
                 $('#tablename').change(function(){
                     $('#alias_content').bootgrid('destroy');
@@ -178,7 +178,7 @@
             <section class="col-xs-12">
                 <div class="row">
                   <div class="col-xs-4">
-                      <select id="tablename" class="selectpicker" data-width="auto" data-live-search="true">
+                      <select id="tablename" data-width="auto" data-live-search="true">
                       </select>
                       <button class="btn btn-default" id="refresh">
                           <i class="fa fa-refresh" aria-hidden="true"></i>
@@ -194,7 +194,7 @@
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                       </span>
-                      <input type="text" class="form-control" id="quick_add" placeholder="{{ lang._('Quick add address') }}">
+                      <input type="text" class="form-control" id="quick_add" placeholder="{{ lang._('Quick add address') }}"/>
                     </div>
                   </div>
                   <div class="col-xs-4">
