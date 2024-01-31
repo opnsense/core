@@ -47,4 +47,4 @@ if os.path.isfile('/var/unbound/data/unbound.duckdb'):
     else:
         print('Unbound DNS database export not required.')
 else:
-    print('Unbound DNS database not found, no update needed.')
+    print('Unbound DNS database not found, no export needed.')
