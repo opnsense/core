@@ -31,6 +31,10 @@ from duckdb_helper import export_database
 
 
 if os.path.isfile('/var/unbound/data/unbound.duckdb'):
+    if not os.path.isfile('/var/unbound/data/stats'):
+        print('Unbound DNS stats disabled')
+        sys.exit(0)
+
     if os.path.isfile('/var/run/unbound_logger.pid'):
         pid = open('/var/run/unbound_logger.pid').read().strip()
         try:
