@@ -16,6 +16,7 @@
                 </name>
                 <instance type="AutoNumberField">
                     <Required>Y</Required>
+                    <MinimumValue>0</MinimumValue>
                 </instance>
                 <pubkey type="TextField">
                     <Required>Y</Required>
