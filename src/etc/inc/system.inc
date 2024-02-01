@@ -955,6 +955,8 @@ function system_trust_configure($verbose = false)
         chmod($pem, 0644);
     }
 
+    configd_run('template reload OPNsense/Trust');
+
     service_log("done.\n", $verbose);
 }
 
