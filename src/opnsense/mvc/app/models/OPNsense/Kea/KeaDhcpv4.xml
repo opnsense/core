@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -15,6 +15,10 @@
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <fwrules type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </fwrules>
         </general>
         <ha>
             <enabled type="BooleanField">

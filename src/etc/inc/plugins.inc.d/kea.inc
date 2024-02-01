@@ -54,6 +54,45 @@ function kea_syslog()
 }
 
 
+function kea_firewall($fw)
+{
+    global $config;
+    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
+    if ($keav4->fwrulesEnabled()) {
+        // automatic (IPv4) rules enabled
+        foreach (explode(',', $keav4->general->interfaces) as $intf) {
+            $fw->registerFilterRule(
+                1,
+                [
+                    'protocol' => 'udp',
+                    'direction' => 'in',
+                    'from_port' => 68,
+                    'to' => '255.255.255.255',
+                    '#ref' => 'ui/kea/dhcp/v4',
+                    'to_port' => 67,
+                    'interface' => $intf,
+                    'descr' => 'allow access to DHCP server',
+                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                ]
+            );
+            $fw->registerFilterRule(
+                1,
+                [
+                    'protocol' => 'udp',
+                    'direction' => 'in',
+                    'from_port' => 68,
+                    'to' => '(self)',
+                    '#ref' => 'ui/kea/dhcp/v4',
+                    'to_port' => 67,
+                    'interface' => $intf,
+                    'descr' => 'allow access to DHCP server',
+                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                ]
+            );
+        }
+    }
+}
+
 function kea_xmlrpc_sync()
 {
     $result = [];

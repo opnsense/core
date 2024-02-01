@@ -22,6 +22,12 @@
         <help>Defines how long the addresses (leases) given out by the server are valid (in seconds)</help>
     </field>
     <field>
+        <id>dhcpv4.general.fwrules</id>
+        <label>Firewall rules</label>
+        <type>checkbox</type>
+        <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>High Availability</label>
     </field>
