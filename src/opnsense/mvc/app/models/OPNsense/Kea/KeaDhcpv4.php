@@ -65,4 +65,15 @@ class KeaDhcpv4 extends BaseModel
         }
         return parent::setNodes($data);
     }
+
+    /**
+     * should filter rules be enabled
+     * @return bool
+     */
+    public function fwrulesEnabled()
+    {
+        return  (string)$this->general->enabled == '1' &&
+                (string)$this->general->fwrules == '1' &&
+                !empty((string)(string)$this->general->interfaces);
+    }
 }
