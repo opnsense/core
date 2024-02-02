@@ -303,6 +303,8 @@ function dhcpd_radvd_configure($verbose = false, $blacklist = [])
         if ($carp_mode) {
             /* to avoid wrong MAC being stuck during failover */
             $radvdconf .= "\tAdvSourceLLAddress off;\n";
+            /* to avoid final advertisement with zero router lifetime */
+            $radvdconf .= "\tRemoveAdvOnExit off;\n";
         }
 
         /* VIPs may duplicate readings from system */
