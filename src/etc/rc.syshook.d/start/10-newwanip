@@ -5,7 +5,7 @@ for IPV4 in $(find /tmp -type f -name "newwanip_*"); do
 	rm "${IPV4}"
 
 	echo "Reconfiguring IPv4 on ${INTERFACE}"
-	configctl -dq interface newip ${INTERFACE}
+	configctl -dq interface newip ${INTERFACE} force
 done
 
 for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
@@ -13,5 +13,5 @@ for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
 	rm "${IPV6}"
 
 	echo "Reconfiguring IPv6 on ${INTERFACE}"
-	configctl -dq interface newipv6 ${INTERFACE}
+	configctl -dq interface newipv6 ${INTERFACE} force
 done
