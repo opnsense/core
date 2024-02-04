@@ -443,7 +443,7 @@ class OpenVPN extends BaseModel
     {
         foreach ($this->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (!empty((string)$node->enabled) && ($uuid == null || $node_uuid == $uuid)) {
-                $options = ['push' => [], 'route' => [], 'route-ipv6' => []];
+                $options = [];
                 // mode specific settings
                 if ($node->role == 'client') {
                     $options['client'] = null;
@@ -529,6 +529,9 @@ class OpenVPN extends BaseModel
                         // assume multihome when no bind address is specified for udp
                         $options['multihome'] = null;
                     }
+                    $options['push'] = [];
+                    $options['route'] = [];
+                    $options['route-ipv6'] = [];
 
                     // push options
                     if (!empty((string)$node->redirect_gateway)) {
@@ -595,6 +598,12 @@ class OpenVPN extends BaseModel
                 if (!empty((string)$node->various_flags)) {
                     foreach (explode(',', (string)$node->various_flags) as $opt) {
                         $options[$opt] = null;
+                    }
+                }
+
+                if (!empty((string)$node->various_push_flags)) {
+                    foreach (explode(',', (string)$node->various_push_flags) as $opt) {
+                        $options['push'][] = "\"{$opt}\"";
                     }
                 }
 

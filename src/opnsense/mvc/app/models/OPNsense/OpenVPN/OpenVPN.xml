@@ -273,6 +273,13 @@
                         <remote-random>remote-random</remote-random>
                     </OptionValues>
                 </various_flags>
+                <various_push_flags type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <block-outside-dns>push block-outside-dns</block-outside-dns>
+                        <register-dns>push register-dns</register-dns>
+                    </OptionValues>
+                </various_push_flags>
                 <username_as_common_name type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
