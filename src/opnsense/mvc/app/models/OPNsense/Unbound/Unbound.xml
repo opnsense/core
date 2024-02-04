@@ -54,6 +54,7 @@
                 <Multiple>Y</Multiple>
             </outgoing_interface>
             <enable_wpad type="BooleanField"/>
+            <builtin_hints type="BooleanField"/>
         </general>
         <advanced>
             <hideidentity type="BooleanField"/>

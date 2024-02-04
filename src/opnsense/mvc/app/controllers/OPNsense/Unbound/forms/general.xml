@@ -132,4 +132,15 @@
             but you should not enable it if you are not using WPAD or if you want to configure it by yourself.
         </help>
     </field>
+    <field>
+        <id>unbound.general.builtin_hints</id>
+        <label>Use built-in root hints</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>
+            If this option is set, unbound built-in root hints for the IN class are used.
+            Built-in addresses may become outdated, when servers change, therefore it  is
+            good practice to use a root-hints file provided by OPNsense.
+        </help>
+    </field>
 </form>
