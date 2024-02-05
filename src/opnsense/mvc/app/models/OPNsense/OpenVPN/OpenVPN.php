@@ -373,7 +373,7 @@ class OpenVPN extends BaseModel
                         'vpnid' => (string)$item->vpnid,
                         'authmode' => (string)$item->authmode,
                         'local_group' => (string)$item->local_group,
-                        'cso_login_matching' => (string)$item->{'use-common-name'},
+                        'cso_login_matching' => (string)$item->cso_login_matching,
                         'strictusercn' => (string)$item->strictusercn,
                         'dev_mode' => (string)$item->dev_mode,
                         'topology_subnet' => (string)$item->topology_subnet,
