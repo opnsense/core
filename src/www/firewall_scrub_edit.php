@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* defaults */
         $pconfig['src'] = 'any';
         $pconfig['dst'] = 'any';
+        $pconfig['direction'] = 'in';
     }
 
     // initialize empty fields
