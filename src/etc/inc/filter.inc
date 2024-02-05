@@ -562,30 +562,25 @@ function filter_generate_scrubbing(&$FilterIflist)
 
     /* scrub per interface options */
     if (empty($config['system']['scrub_interface_disable'])) {
+        /* scrub generic options, appended to all default rules */
+        $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
+        $scrub_gen_opts .= (!empty($config['system']['scrubrnid']) ? ' random-id ' : '');
         foreach ($FilterIflist as $scrubcfg) {
-            if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
-                continue;
-            }
-
-            $mssclampv4 = '';
-            $mssclampv6 = '';
-            if (
-                !empty($scrubcfg['mss']) && is_numeric($scrubcfg['mss']) &&
-                !in_array($scrubcfg['if'], array('pppoe', 'pptp', 'l2tp'))
-            ) {
+            if (is_numeric($scrubcfg['mss'] ?? '') && !in_array($scrubcfg['if'], ['pppoe', 'pptp', 'l2tp'])) {
+                /**
+                 * Legacy MSS clamping on interface expects outbound packets to be scrubbed in order to work.
+                 * https://github.com/pfsense/pfsense/commit/7c382a8
+                 *
+                 * In a future release we might want to consider to move the MSS option from the interface into a
+                 * manual scrubbing rule, this is a bit intransparant.
+                 */
                 $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
                 $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-            }
-
-            $scrubnodf = !empty($config['system']['scrubnodf']) ? 'no-df' : '';
-            $scrubrnid = !empty($config['system']['scrubrnid']) ? 'random-id' : '';
-            if (!empty($mssclampv4)) {
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrubnodf} {$scrubrnid} {$mssclampv4}\n";
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrubnodf} {$scrubrnid} {$mssclampv6}\n";
-            } else {
-                $scrubrules .= "scrub on {$scrubcfg['if']} all {$scrubnodf} {$scrubrnid}\n";
+                $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrub_gen_opts} {$mssclampv4}\n";
+                $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrub_gen_opts} {$mssclampv6}\n";
             }
         }
+        $scrubrules .= "scrub in all {$scrub_gen_opts}\n";
     }
 
     return $scrubrules;
