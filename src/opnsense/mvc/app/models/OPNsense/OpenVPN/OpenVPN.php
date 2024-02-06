@@ -496,7 +496,11 @@ class OpenVPN extends BaseModel
                             $masklong = ip2long($mask);
                             $ip1 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 0 : 1));
                             $ip2 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 1 : 2));
+                            $ip3 = long2ip32((ip2long32($parts[0]) & $masklong) + ($masklong == 0xfffffffe ? 2 : 3));
+                            $options['mode'] = 'server';
+                            $options['tls-server'] = null;
                             $options['ifconfig'] = "{$ip1} {$ip2}";
+                            $options['ifconfig-pool'] = "{$ip2} {$ip3}";
                         } else {
                             $options['server'] = $parts[0] . " " . $mask;
                         }
@@ -534,6 +538,10 @@ class OpenVPN extends BaseModel
                     $options['route-ipv6'] = [];
 
                     // push options
+                    if (isset($options['ifconfig'])) {
+                        /* "manual" server directive, we should tell the client which topology we are using */
+                        $options['push'][] = "\"topology {$node->topology}\"";
+                    }
                     if (!empty((string)$node->redirect_gateway)) {
                         $redirect_gateway = str_replace(',', ' ', (string)$node->redirect_gateway);
                         $options['push'][] = "\"redirect-gateway {$redirect_gateway}\"";
