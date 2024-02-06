@@ -935,6 +935,8 @@ $( document ).ready(function() {
                             $otp_url = "otpauth://totp/";
                             $otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."?secret=";
                             $otp_url .= $pconfig['otp_seed'];
+                            $otp_url .= "&issuer=OPNsense";
+                            $otp_url .= "&image=https://docs.opnsense.org/_static/favicon.png";
                         ?>
                   <tr>
                     <td><a id="help_for_otp_code" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('OTP QR code') ?></td>
