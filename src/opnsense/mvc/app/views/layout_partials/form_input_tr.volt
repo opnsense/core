@@ -87,9 +87,10 @@
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
             ></select>
             {% if type == 'select_multiple' %}
-              {% if style|default('selectpicker') != "tokenize" %}<br />{% endif %}
-              <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
-              {% if style|default('selectpicker') == "tokenize" %}&nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_{{ id }}"><i class="fa fa-copy"></i> <small>{{ lang._('Copy') }}</small></a>
+              <?php $this_style = explode(' ', $style ?? '');?>
+              {% if "tokenize" not in this_style  %}<br />{% endif %}
+                <a href="#" class="text-danger" id="clear-options_{{ id }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear All') }}</small></a>
+              {% if "tokenize" in this_style  %}&nbsp;&nbsp;<a href="#" class="text-danger" id="copy-options_{{ id }}"><i class="fa fa-copy"></i> <small>{{ lang._('Copy') }}</small></a>
               &nbsp;&nbsp;<a href="#" class="text-danger" id="paste-options_{{ id }}" style="display:none"><i class="fa fa-paste"></i> <small>{{ lang._('Paste') }}</small></a>
               {%    if allownew %}
               &nbsp;&nbsp;<a href="#" class="text-danger" id="to-text_{{ id }}" ><i class="fa fa-file-text-o"></i> <small>{{ lang._('Text') }}</small> </a>
