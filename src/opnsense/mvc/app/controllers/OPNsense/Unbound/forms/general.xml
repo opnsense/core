@@ -46,7 +46,7 @@
     </field>
     <field>
         <id>unbound.general.regdhcp</id>
-        <label>Register DHCP Leases</label>
+        <label>Register ISC DHCP4 Leases</label>
         <type>checkbox</type>
         <help>If this option is set, then machines that specify their hostname when requesting a DHCP lease will be registered in Unbound, so that their name can be resolved.</help>
     </field>
@@ -58,7 +58,7 @@
     </field>
     <field>
         <id>unbound.general.regdhcpstatic</id>
-        <label>Register DHCP Static Mappings</label>
+        <label>Register ISC DHCP Static Mappings</label>
         <type>checkbox</type>
         <help>
             <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
