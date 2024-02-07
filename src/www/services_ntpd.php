@@ -340,9 +340,10 @@ include("head.inc");
                       endforeach;?>
                       </select>
                       <div class="hidden" data-for="help_for_interfaces">
-                        <?=gettext("Interfaces without an IP address will not be shown."); ?>
+                        <?=gettext("Interfaces to listen on and send outgoing queries."); ?>
                         <br /><?=gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
                         <br /><?=gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
+                        <br /><?=gettext("Interfaces without an IP address will not be shown."); ?>
                       </div>
                     </td>
                   </tr>
