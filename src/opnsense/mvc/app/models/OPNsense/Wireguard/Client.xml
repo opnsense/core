@@ -20,6 +20,10 @@
                         <check001>
                             <ValidationMessage>Public keys should be unique.</ValidationMessage>
                             <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>serveraddress</field1>
+                                <field2>serverport</field2>
+                            </addFields>
                         </check001>
                     </Constraints>
                 </pubkey>
@@ -29,8 +33,20 @@
                     <Required>Y</Required>
                     <asList>Y</asList>
                 </tunneladdress>
-                <serveraddress type="HostnameField"/>
-                <serverport type="PortField"/>
+                <serveraddress type="HostnameField">
+                    <Constraints>
+                        <check001>
+                            <reference>pubkey.check001</reference>
+                        </check001>
+                    </Constraints>
+                </serveraddress>
+                <serverport type="PortField">
+                    <Constraints>
+                        <check001>
+                            <reference>pubkey.check001</reference>
+                        </check001>
+                    </Constraints>
+                </serverport>
                 <keepalive type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>86400</MaximumValue>
