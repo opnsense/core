@@ -91,19 +91,19 @@ database	= $dir/index.txt	# database index file.
 					# several certs with same subject.
 new_certs_dir	= $dir/newcerts		# default place for new certs.
 
-certificate	= $dir/cacert.pem 	# The CA certificate
-serial		= $dir/serial 		# The current serial number
+certificate	= $dir/cacert.pem	# The CA certificate
+serial		= $dir/serial		# The current serial number
 crlnumber	= $dir/crlnumber	# the current crl number
 					# must be commented out to leave a V1 CRL
-crl		= $dir/crl.pem 		# The current CRL
+crl		= $dir/crl.pem		# The current CRL
 private_key	= $dir/private/cakey.pem# The private key
 
 x509_extensions	= usr_cert		# The extensions to add to the cert
 
 # Comment out the following two lines for the "traditional"
 # (and highly broken) format.
-name_opt 	= ca_default		# Subject Name options
-cert_opt 	= ca_default		# Certificate field options
+name_opt	= ca_default		# Subject Name options
+cert_opt	= ca_default		# Certificate field options
 
 # Extension copying option: use with caution.
 # copy_extensions = copy
@@ -147,7 +147,7 @@ emailAddress		= optional
 ####################################################################
 [ req ]
 default_bits		= 2048
-default_keyfile 	= privkey.pem
+default_keyfile		= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
 x509_extensions	= v3_ca	# The extensions to add to the self signed cert
@@ -316,7 +316,7 @@ default_tsa = tsa_config1	# the default TSA section
 dir		= ./demoCA		# TSA root directory
 serial		= $dir/tsaserial	# The current serial number (mandatory)
 crypto_device	= builtin		# OpenSSL engine to use for signing
-signer_cert	= $dir/tsacert.pem 	# The TSA signing certificate
+signer_cert	= $dir/tsacert.pem	# The TSA signing certificate
 					# (optional)
 certs		= $dir/cacert.pem	# Certificate chain to include in reply
 					# (optional)
