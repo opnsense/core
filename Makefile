@@ -123,7 +123,7 @@ CORE_COPYRIGHT_YEARS?=	2014-2024
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
 			py${CORE_PYTHON}-numpy \
 			py${CORE_PYTHON}-pandas \
-			suricata-stable
+			suricata
 
 CORE_DEPENDS_amd64?=	beep \
 			${CORE_DEPENDS_aarch64}
