@@ -369,6 +369,37 @@ function addMultiSelectClearUI() {
             });
         });
     });
+    /* Tokenizer <-> text for quick edits */
+    $('[id*="to-text"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            let id = $(this).attr("id").replace(/_*to-text_*/, '');
+            let source = $('div[id="select_' + id + '"]').hide().find('select');
+            let destination = $('div[id="textarea_' + id + '"]').show().find('textarea');
+            if (!source.hasClass('text_area_hooked')) {
+                /* Switch to normal tokenizer view on change() */
+                source.addClass('text_area_hooked');
+                source.change(function(){
+                    $('a[id="to-select_' + id + '"]').click();
+                });
+            }
+            destination.val(source.val().join('\n'));
+            destination.unbind('change').change(function(){
+                source.tokenize2().trigger('tokenize:clear');
+                $.each($(this).val().split("\n"), function( index, value ) {
+                    source.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                });
+            });
+        });
+    });
+    $('[id*="to-select"]').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            let id = $(this).attr("id").replace(/_*to-select_*/, '');
+            $('div[id="select_' + id + '"]').show();
+            $('div[id="textarea_' + id + '"]').hide();
+        });
+    });
 }
 
 
