@@ -47,7 +47,7 @@ class LogController extends ApiControllerBase
         // create filter to sanitize input data
         $filter = new Filter([
             'query' => function ($value) {
-                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#]/", "", $value);
+                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#,\:]/", "", $value);
             }
         ]);
 
