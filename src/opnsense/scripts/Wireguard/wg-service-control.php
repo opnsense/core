@@ -125,7 +125,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
-    interfaces_restart_by_device(false, [(string)$server->interface], false);
+    interfaces_restart_by_device(false, [(string)$server->interface], true);
 }
 
 /**
