@@ -62,12 +62,14 @@ function get_vhid_status()
 /**
  * mimic wg-quick behaviour, but bound to our config
  */
-function wg_start($server, $fhandle, $ifcfgflag = 'up')
+function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 {
     if (!does_interface_exist($server->interface)) {
         mwexecf('/sbin/ifconfig wg create name %s', [$server->interface]);
         mwexecf('/sbin/ifconfig %s group wireguard', [$server->interface]);
+        $reload = true;
     }
+
     mwexecf('/usr/bin/wg syncconf %s %s', [$server->interface, $server->cnfFilename]);
 
     /* The tunneladdress can be empty, so array_filter without callback filters empty strings out. */
@@ -78,7 +80,6 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     if (!empty((string)$server->mtu)) {
         mwexecf('/sbin/ifconfig %s mtu %s', [$server->interface, $server->mtu]);
     }
-    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
 
     if (empty((string)$server->disableroutes)) {
         /**
@@ -133,12 +134,18 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
         mwexecf('/sbin/route -q -n add %s %s -iface %s', [$ipprefix, $server->gateway, $server->interface]);
     }
 
+    if ($reload) {
+        interfaces_restart_by_device(false, [(string)$server->interface]);
+    }
+
+    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
+
     // flush checksum to ease change detection
     fseek($fhandle, 0);
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
+
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
-    interfaces_restart_by_device(false, [(string)$server->interface], false);
 }
 
 /**
@@ -266,10 +273,13 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                 )
                             );
                         }
+
                         if (
                             @md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file'] ||
                             empty($ifdetails[(string)$node->interface])
                         ) {
+                            $reload = false;
+
                             if (get_stat_hash($statHandle)['interface'] != wg_reconfigure_hash($node)) {
                                 // Fluent reloading not supported for this instance, make sure the user is informed
                                 syslog(
@@ -277,14 +287,27 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                     "wireguard instance {$node->name} ({$node->interface}) " .
                                     "can not reconfigure without stopping it first."
                                 );
-                                wg_stop($node);
+
+                                /*
+                                 * Scrub interface, although dropping and recreating is more clean, there are
+                                 * side affects in doing so. Dropping the addresses should drop the associated
+                                 * routes and force a full reload (also of attached interface).
+                                 */
+                                interfaces_addresses_flush((string)$node->interface, 4, $ifdetails);
+                                interfaces_addresses_flush((string)$node->interface, 6, $ifdetails);
+                                $reload = true;
                             }
-                            wg_start($node, $statHandle, $carp_if_flag);
-                        } else {
-                            // when triggered via a CARP event, check our interface status [UP|DOWN]
-                            if ($ifstatus !=  $carp_if_flag) {
-                                mwexecf('/sbin/ifconfig %s %s', [$node->interface, $carp_if_flag]);
-                            }
+
+                            wg_start($node, $statHandle, $carp_if_flag, $reload);
+                        /* when triggered via a CARP event, check our interface status [UP|DOWN] */
+                        } elseif ($ifstatus != $carp_if_flag) {
+                            syslog(
+                                LOG_NOTICE,
+                                "wireguard instance {$node->name} ({$node->interface}) " .
+                                "switching to " . strtoupper($carp_if_flag)
+                            );
+
+                            mwexecf('/sbin/ifconfig %s %s', [$node->interface, $carp_if_flag]);
                         }
                         break;
                 }
@@ -309,8 +332,9 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         }
     }
 
-    if (count($server_devs)) {
-        configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
+    if (count($server_devs) && $action == 'restart') {
+        /* XXX required for filter/NAT rules, as interface was recreated, rules might not match anymore */
+        configd_run('filter reload');
     }
 }
 closelog();
