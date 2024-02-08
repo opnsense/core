@@ -64,10 +64,14 @@ function get_vhid_status()
  */
 function wg_start($server, $fhandle, $ifcfgflag = 'up')
 {
+    $reload = false;
+
     if (!does_interface_exist($server->interface)) {
         mwexecf('/sbin/ifconfig wg create name %s', [$server->interface]);
         mwexecf('/sbin/ifconfig %s group wireguard', [$server->interface]);
+        $reload = true;
     }
+
     mwexecf('/usr/bin/wg syncconf %s %s', [$server->interface, $server->cnfFilename]);
 
     /* The tunneladdress can be empty, so array_filter without callback filters empty strings out. */
@@ -125,7 +129,10 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
-    interfaces_restart_by_device(false, [(string)$server->interface], true);
+
+    if ($reload) {
+        interfaces_restart_by_device(false, [(string)$server->interface]);
+    }
 }
 
 /**
