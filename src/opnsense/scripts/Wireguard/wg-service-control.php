@@ -94,7 +94,16 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
          *      where these (and maybe other) static routes hook into.
          **/
         $peers = explode(',', $server->peers);
-        $routes_to_add = ['inet' => [], 'inet6' => []];
+        $routes_to_add = $routes_to_skip = ['inet' => [], 'inet6' => []];
+
+        /* calculate subnets to skip because these are automatically attached by instance address */
+        foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
+            $proto = strpos($alias, ':') === false ? 'inet' : 'inet6';
+            $alias = explode('/', $alias);
+            $routes_to_skip[$proto][] = ($proto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
+                gen_subnetv6($alias[0], $alias[1])) . "/{$alias[1]}";
+        }
+
         foreach ((new OPNsense\Wireguard\Client())->clients->client->iterateItems() as $key => $client) {
             if (empty((string)$client->enabled) || !in_array($key, $peers)) {
                 continue;
@@ -108,7 +117,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
                     } else {
                         array_push($routes_to_add[$ipproto], '::/1', '8000::/1');
                     }
-                } else {
+                } elseif (!in_array($tunneladdress, $routes_to_skip[$ipproto])) {
                     $routes_to_add[$ipproto][] = $tunneladdress;
                 }
             }
