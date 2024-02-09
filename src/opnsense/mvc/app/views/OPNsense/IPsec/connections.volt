@@ -229,7 +229,7 @@
           <hr/>
       </div>
       <div class="col-md-12 form-inline __mb">
-        <div class="form-group">
+        <div class="form-group __mr">
           <button class="btn btn-primary" id="reconfigureAct"
                     data-endpoint="/api/ipsec/service/reconfigure"
                     data-label="{{ lang._('Apply') }}"
@@ -237,7 +237,7 @@
                     type="button"
           ></button>
         </div>
-        <div class="form-group __ml" style="vertical-align: sub">
+        <div class="form-group" style="vertical-align: sub">
           <input name="enable" class="pending" type="checkbox" id="enable"/>
           <label for="enable"><strong>{{ lang._('Enable IPsec') }}</strong></label>
         </div>
