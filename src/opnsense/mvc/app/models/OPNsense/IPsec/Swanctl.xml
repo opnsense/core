@@ -139,7 +139,7 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
@@ -196,7 +196,7 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
