@@ -112,8 +112,8 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
             foreach (explode(',', (string)$client->tunneladdress) as $address) {
                 $ipproto = strpos($address, ":") === false ? "inet" :  "inet6";
                 $address = explode('/', $address);
-                $address = ($ipproto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
-                    gen_subnetv6($alias[0], $alias[1])) . "/{$alias[1]}";
+                $address = ($ipproto == 'inet' ? gen_subnet($address[0], $address[1]) :
+                    gen_subnetv6($address[0], $address[1])) . "/{$address[1]}";
                 /* wg-quick seems to prevent /0 being routed and translates this automatically */
                 if (str_ends_with(trim($address), '/0')) {
                     if ($ipproto == 'inet') {
