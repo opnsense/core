@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               frameRate: 30
                           },
                           colorschemes: {
-                              scheme: 'brewer.Paired12'
+                              scheme: 'tableau.Classic10'
                           }
                       }
                   }
