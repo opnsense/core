@@ -98,27 +98,31 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
 
         /* calculate subnets to skip because these are automatically attached by instance address */
         foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
-            $proto = strpos($alias, ':') === false ? 'inet' : 'inet6';
+            $ipproto = strpos($alias, ':') === false ? 'inet' : 'inet6';
             $alias = explode('/', $alias);
-            $routes_to_skip[$proto][] = ($proto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
+            $alias = ($ipproto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
                 gen_subnetv6($alias[0], $alias[1])) . "/{$alias[1]}";
+            $routes_to_skip[$ipproto][] = $alias;
         }
 
         foreach ((new OPNsense\Wireguard\Client())->clients->client->iterateItems() as $key => $client) {
             if (empty((string)$client->enabled) || !in_array($key, $peers)) {
                 continue;
             }
-            foreach (explode(',', (string)$client->tunneladdress) as $tunneladdress) {
-                $ipproto = strpos($tunneladdress, ":") === false ? "inet" :  "inet6";
+            foreach (explode(',', (string)$client->tunneladdress) as $address) {
+                $ipproto = strpos($address, ":") === false ? "inet" :  "inet6";
+                $address = explode('/', $address);
+                $address = ($ipproto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
+                    gen_subnetv6($alias[0], $alias[1])) . "/{$alias[1]}";
                 /* wg-quick seems to prevent /0 being routed and translates this automatically */
-                if (str_ends_with(trim($tunneladdress), '/0')) {
+                if (str_ends_with(trim($address), '/0')) {
                     if ($ipproto == 'inet') {
                         array_push($routes_to_add[$ipproto], '0.0.0.0/1', '128.0.0.0/1');
                     } else {
                         array_push($routes_to_add[$ipproto], '::/1', '8000::/1');
                     }
-                } elseif (!in_array($tunneladdress, $routes_to_skip[$ipproto])) {
-                    $routes_to_add[$ipproto][] = $tunneladdress;
+                } elseif (!in_array($address, $routes_to_skip[$ipproto])) {
+                    $routes_to_add[$ipproto][] = $address;
                 }
             }
         }
