@@ -79,6 +79,18 @@
                 updateServiceControlUI('kea');
             }
         });
+
+        /**
+         *
+         */
+        $("#subnet4\\.option_data_autocollect").change(function(){
+            if ($(this).is(':checked')) {
+                $(".option_data_autocollect").closest('tr').hide();
+            } else {
+                $(".option_data_autocollect").closest('tr').show();
+            }
+        });
+
     });
 </script>
 
