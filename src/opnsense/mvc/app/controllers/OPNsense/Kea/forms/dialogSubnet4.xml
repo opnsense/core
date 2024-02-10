@@ -21,7 +21,7 @@
         <id>subnet4.option_data.routers</id>
         <label>Routers (gateway)</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
+        <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>Default gateways to offer to the clients</help>
     </field>
@@ -29,7 +29,7 @@
         <id>subnet4.option_data.domain_name_servers</id>
         <label>DNS servers</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
+        <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>DNS servers to offer to the clients</help>
     </field>
@@ -37,7 +37,7 @@
         <id>subnet4.option_data.ntp_servers</id>
         <label>NTP servers</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
+        <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>NTP servers to offer to the clients</help>
     </field>
