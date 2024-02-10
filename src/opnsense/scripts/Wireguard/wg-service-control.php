@@ -273,6 +273,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                 )
                             );
                         }
+
                         if (
                             @md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file'] ||
                             empty($ifdetails[(string)$node->interface])
@@ -284,7 +285,12 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                                     "wireguard instance {$node->name} ({$node->interface}) " .
                                     "can not reconfigure without stopping it first."
                                 );
-                                wg_stop($node);
+                                /* Scrub interface, although dropping and recreating is more clean, there are
+                                   side affects in doing so. Dropping the addresses should drop the associated routes.
+                                   Worst case the user can restart manually to recreate all.
+                                 */
+                                interfaces_addresses_flush((string)$node->interface, 4, $ifdetails);
+                                interfaces_addresses_flush((string)$node->interface, 6, $ifdetails);
                             }
                             wg_start($node, $statHandle, $carp_if_flag);
                         } else {
@@ -316,8 +322,9 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         }
     }
 
-    if (count($server_devs)) {
-        configd_run('filter reload'); /* XXX required for NAT rules, but needs coalescing */
+    if (count($server_devs) && $action == 'restart') {
+        /* XXX required for filter/NAT rules, as interface was recreated, rules might not match anymore */
+        configd_run('filter reload');
     }
 }
 closelog();
