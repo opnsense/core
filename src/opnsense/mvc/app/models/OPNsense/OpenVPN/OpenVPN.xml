@@ -240,7 +240,6 @@
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
-                    <Multiple>Y</Multiple>
                     <OptionValues>
                         <AES-256-GCM>AES-256-GCM</AES-256-GCM>
                         <AES-128-GCM>AES-128-GCM</AES-128-GCM>
