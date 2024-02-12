@@ -62,6 +62,13 @@ class KeaDhcpv4 extends BaseModel
                     $subnet->option_data->domain_name_servers = $host_ip;
                     $subnet->option_data->ntp_servers = $host_ip;
                 }
+
+                // find system domain
+                $config = Config::getInstance()->object();
+                $domain = $config->system->domain;
+                if (!empty($domain)) {
+                    $subnet->option_data->domain_name = $domain;
+                }
             }
         }
         return parent::setNodes($data);
