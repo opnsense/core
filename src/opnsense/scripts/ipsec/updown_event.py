@@ -29,7 +29,6 @@
     handle swanctl.conf updown event
 """
 import os
-import json
 import subprocess
 import argparse
 import tempfile
@@ -37,7 +36,7 @@ import syslog
 from configparser import ConfigParser
 from lib import list_spds
 
-spd_filename = '/usr/local/etc/swanctl/reqid_events.conf'
+events_filename = '/usr/local/etc/swanctl/reqid_events.conf'
 
 spd_add_cmd = 'spdadd -%(ipproto)s %(source)s %(destination)s any ' \
     '-P out ipsec %(protocol)s/tunnel/%(local)s-%(remote)s/unique:%(reqid)s;'
@@ -54,47 +53,64 @@ if __name__ == '__main__':
     if cmd_args.action and cmd_args.action.startswith('up'):
         syslog.openlog('charon', facility=syslog.LOG_LOCAL4)
         syslog.syslog(syslog.LOG_NOTICE, '[UPDOWN] received %s event for reqid %s' % (cmd_args.action, cmd_args.reqid))
-        if os.path.exists(spd_filename):
+        if os.path.exists(events_filename):
             cnf = ConfigParser()
-            cnf.read(spd_filename)
+            cnf.read(events_filename)
             spds = []
+            vtis = []
             for section in cnf.sections():
                 if cnf.get(section, 'reqid') == cmd_args.reqid \
                         or cnf.get(section, 'connection_child') == cmd_args.connection_child:
-                    spds.append({
-                        'reqid': cmd_args.reqid,
-                        'local' : cmd_args.local,
-                        'remote' : cmd_args.remote,
-                        'destination': os.environ.get('PLUTO_PEER_CLIENT')
-                    })
-                    for opt in cnf.options(section):
-                        if cnf.get(section, opt).strip() != '':
-                            spds[-1][opt] = cnf.get(section, opt).strip()
+                    if section.startswith('spd_'):
+                        spds.append({
+                            'reqid': cmd_args.reqid,
+                            'local' : cmd_args.local,
+                            'remote' : cmd_args.remote,
+                            'destination': os.environ.get('PLUTO_PEER_CLIENT')
+                        })
+                        for opt in cnf.options(section):
+                            if cnf.get(section, opt).strip() != '':
+                                spds[-1][opt] = cnf.get(section, opt).strip()
+                    elif section.startswith('vti_'):
+                        vtis.append({
+                            'reqid': cmd_args.reqid,
+                            'local' : cmd_args.local,
+                            'remote' : cmd_args.remote
+                        })
 
-                # (re)apply manual policies if specified
-                cur_spds = list_spds(automatic=False)
-                set_key = []
-                for spd in cur_spds:
-                    policy_found = False
-                    for mspd in spds:
-                        if mspd['source'] == spd['src'] and mspd['destination'] == spd['dst']:
-                            policy_found = True
-                    if policy_found or spd['reqid'] == cmd_args.reqid:
-                        set_key.append('spddelete -n %(src)s %(dst)s any -P %(direction)s;' % spd)
+            for vti in vtis:
+                if None in vti.values():
+                    # incomplete, skip
+                    continue
+                intf = 'ipsec%s' % vti['reqid']
+                proto = 'inet6' if vti['local'].find(':') > -1  else 'inet'
+                subprocess.run(['/sbin/ifconfig', intf, 'reqid', vti['reqid']])
+                subprocess.run(['/sbin/ifconfig', intf, proto, 'tunnel', vti['local'], vti['remote']])
 
-                for spd in spds:
-                    if None in spd.values():
-                        # incomplete, skip
-                        continue
-                    spd['ipproto'] = '4' if spd.get('source', '').find(':') == -1 else '6'
-                    syslog.syslog(
-                        syslog.LOG_NOTICE,
-                        '[UPDOWN] add manual policy : %s' % (spd_add_cmd % spd)[7:]
-                    )
-                    set_key.append(spd_add_cmd % spd)
-                if len(set_key) > 0:
-                    f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
-                    f.write('\n'.join(set_key))
-                    f.close()
-                    subprocess.run(['/sbin/setkey', '-f', f.name], capture_output=True, text=True)
-                    os.unlink(f.name)
+            # (re)apply manual policies if specified
+            cur_spds = list_spds(automatic=False)
+            set_key = []
+            for spd in cur_spds:
+                policy_found = False
+                for mspd in spds:
+                    if mspd['source'] == spd['src'] and mspd['destination'] == spd['dst']:
+                        policy_found = True
+                if policy_found or spd['reqid'] == cmd_args.reqid:
+                    set_key.append('spddelete -n %(src)s %(dst)s any -P %(direction)s;' % spd)
+
+            for spd in spds:
+                if None in spd.values():
+                    # incomplete, skip
+                    continue
+                spd['ipproto'] = '4' if spd.get('source', '').find(':') == -1 else '6'
+                syslog.syslog(
+                    syslog.LOG_NOTICE,
+                    '[UPDOWN] add manual policy : %s' % (spd_add_cmd % spd)[7:]
+                )
+                set_key.append(spd_add_cmd % spd)
+            if len(set_key) > 0:
+                f = tempfile.NamedTemporaryFile(mode='wt', delete=False)
+                f.write('\n'.join(set_key))
+                f.close()
+                subprocess.run(['/sbin/setkey', '-f', f.name], capture_output=True, text=True)
+                os.unlink(f.name)

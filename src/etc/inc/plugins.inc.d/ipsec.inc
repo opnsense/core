@@ -1731,26 +1731,7 @@ function ipsec_configure_vti($verbose = false, $device = null)
             continue;
         }
 
-        $local_configured = null;
-        $remote_configured = null;
-        if (!empty($configured_intf[$intf])) {
-            if (!is_ipaddr($configured_intf[$intf]['local'])) {
-                $local_configured = ipsec_resolve($configured_intf[$intf]['local']);
-            } else {
-                $local_configured = $configured_intf[$intf]['local'];
-            }
-            if (!is_ipaddr($configured_intf[$intf]['remote'])) {
-                $remote_configured = ipsec_resolve($configured_intf[$intf]['remote']);
-            } else {
-                $remote_configured = $configured_intf[$intf]['remote'];
-            }
-        }
-        if (
-            empty($configured_intf[$intf])
-            || empty($intf_details['tunnel'])
-            || $local_configured != $intf_details['tunnel']['src_addr']
-            || $remote_configured != $intf_details['tunnel']['dest_addr']
-        ) {
+        if (empty($configured_intf[$intf])) {
             log_msg(sprintf("destroy interface %s", $intf), LOG_DEBUG);
             legacy_interface_destroy($intf);
             unset($current_interfaces[$intf]);
@@ -1797,7 +1778,10 @@ function ipsec_configure_vti($verbose = false, $device = null)
             if (legacy_interface_create('ipsec', $intf) === null) {
                 break;
             }
-            mwexecf('/sbin/ifconfig %s reqid %s', [$intf, $intf_details['reqid']]);
+        }
+        // [re]initialise if_ipsec
+        mwexecf('/sbin/ifconfig %s reqid %s', [$intf, $intf_details['reqid']]);
+        if (!empty($intf_details['local']) && !empty($intf_details['remote'])) {
             mwexecf('/sbin/ifconfig %s %s tunnel %s %s up', [
                 $intf,
                 is_ipaddrv6($intf_details['local']) ? 'inet6' : 'inet',
