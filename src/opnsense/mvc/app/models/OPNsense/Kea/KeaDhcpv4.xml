@@ -81,6 +81,11 @@
                         </subnets>
                     </Model>
                     <ValidationMessage>Related subnet not found</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <reference>hw_address.check001</reference>
+                        </check001>
+                    </Constraints>
                     <Required>Y</Required>
                 </subnet>
                 <ip_address type="NetworkField">
@@ -89,6 +94,15 @@
                 </ip_address>
                 <hw_address type="MacAddressField">
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>subnet</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </hw_address>
                 <hostname type="HostnameField">
                     <IsDNSName>Y</IsDNSName>
