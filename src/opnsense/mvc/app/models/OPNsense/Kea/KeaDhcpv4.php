@@ -28,6 +28,7 @@
 
 namespace OPNsense\Kea;
 
+use Phalcon\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
@@ -65,6 +66,31 @@ class KeaDhcpv4 extends BaseModel
         }
         return parent::setNodes($data);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        // validate changed reservations
+        foreach ($this->reservations->reservation->iterateItems() as $reservation) {
+            if (!$validateFullModel && !$reservation->isFieldChanged()) {
+                continue;
+            }
+            $key = $reservation->__reference;
+            $subnet = "";
+            $subnet_node = $this->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+            if ($subnet_node) {
+                $subnet = (string)$subnet_node->subnet;
+            }
+            if (!Util::isIPInCIDR((string)$reservation->ip_address, $subnet)) {
+                $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
+            }
+        }
+        return $messages;
+    }
+
 
     /**
      * should filter rules be enabled
