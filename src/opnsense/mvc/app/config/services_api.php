@@ -87,10 +87,12 @@ $di->setShared('session', function () {
 /**
  * Setup router
  */
-$di->set('router', function () use ($config) {
+$di->set('router', function () use ($config, $di) {
     $routing = new Routing($config->application->controllersDir, "api");
-    $routing->getRouter()->handle($_SERVER['REQUEST_URI']);
-    return $routing->getRouter();
+    $router = $routing->getRouter();
+    $router->setDI($di);
+    $router->handle($_SERVER['REQUEST_URI']);
+    return $router;
 });
 
 // exception handling
