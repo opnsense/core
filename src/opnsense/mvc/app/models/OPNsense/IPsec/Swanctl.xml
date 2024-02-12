@@ -365,13 +365,11 @@
                 <local type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
-                    <Required>Y</Required>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </local>
                 <remote type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <WildcardEnabled>N</WildcardEnabled>
-                    <Required>Y</Required>
                     <ValidationMessage>Please specify a valid address.</ValidationMessage>
                 </remote>
                 <tunnel_local type="NetworkField">

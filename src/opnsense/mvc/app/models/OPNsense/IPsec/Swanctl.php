@@ -92,6 +92,18 @@ class Swanctl extends BaseModel
                 }
             }
 
+            if (
+                (empty((string)$node->local) && !empty((string)$node->remote)) ||
+                (!empty((string)$node->local) && empty((string)$node->remote))
+            ) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("A local and remote address should be provided or both should be left empty"),
+                        $key . ".local"
+                    )
+                );
+            }
+
             if ($vti_inets['local'] != $vti_inets['remote']) {
                 $messages->appendMessage(new Message(gettext("Protocol families should match"), $key . ".local"));
             }
