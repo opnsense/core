@@ -329,7 +329,7 @@ if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
 $ph1found = false;
 $legacy_radius_configured = false;
 foreach ($config['ipsec']['phase1'] as $ph1ent) {
-    if (isset($ph1ent['mobile'])) {
+    if (!isset($ph1ent['disabled']) && isset($ph1ent['mobile'])) {
         $ph1found = true;
         if (($ph1ent['authentication_method'] ?? '') == 'eap-radius') {
             $legacy_radius_configured = true;
@@ -357,7 +357,7 @@ function print_legacy_box($msg, $name, $value)
 EOFnp;
 }
 
-if (!empty($pconfig['enable']) && !$ph1found) {
+if (!empty($pconfig['enable']) && !$ph1found && !(new OPNsense\IPsec\Swanctl())->isEnabled()) {
     print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("When using (legacy) tunnels, please click Create to define one."), "create", gettext("Create Phase1"));
 }
 if (isset($input_errors) && count($input_errors) > 0) {
@@ -403,14 +403,13 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                       </div>
                     </td>
                   </tr>
-                  <?php if (!$legacy_radius_configured):?>
                   <tr>
                     <td colspan="2"><b><?=gettext("Radius (eap-radius)"); ?></b></td>
                   </tr>
                   <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?> </td>
                   <td>
-                      <select name="radius_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3">
+                      <select name="radius_source[]" class="selectpicker" id="user_source" multiple="multiple" size="3" <?=$legacy_radius_configured ? 'disabled=disabled' : ''?> >
 <?php
                         $authmodes = explode(",", $pconfig['radius_source']);
                         foreach (auth_get_authserver_list() as $auth_key => $auth_server):
@@ -420,13 +419,12 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                           endif;
                         endforeach; ?>
                       </select>
+<?php if ($legacy_radius_configured):?>
+                      <i class="fa fa-info-circle" title="<?= html_safe(gettext('Disable or remove legacy mobile tunnel in order to use this.')) ?>" data-toggle="tooltip" ></i></a>
+<?php endif;?>
                     </td>
 
                   </tr>
-
-<?php endif;?>
-
-
                 </table>
               </div>
           </section>
