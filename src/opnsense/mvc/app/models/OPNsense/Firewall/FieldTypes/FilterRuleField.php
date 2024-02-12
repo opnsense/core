@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Group;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
 
@@ -38,6 +39,11 @@ use OPNsense\Base\FieldTypes\ContainerField;
  */
 class FilterRuleContainerField extends ContainerField
 {
+    /**
+     * Interface group weight
+     */
+    private static $ifgroups = null;
+
     /**
      * map rules
      * @return array
@@ -93,7 +99,7 @@ class FilterRuleContainerField extends ContainerField
     }
 
     /**
-     * rule priority is threaded equally to the legacy rules, first "floating" then groups and single interface
+     * rule priority is treated equally to the legacy rules, first "floating" then groups and single interface
      * rules are handled last
      * @return int priority in the ruleset, sequence should determine sort order.
      */
@@ -101,20 +107,31 @@ class FilterRuleContainerField extends ContainerField
     {
         $configObj = Config::getInstance()->object();
         $interface = (string)$this->interface;
-        if (strpos($interface, ",") !== false) {
+        if (strpos($interface, ",") !== false || empty($interface)) {
             // floating (multiple interfaces involved)
-            return 1000;
+            return 200000;
         } elseif (
             !empty($configObj->interfaces) &&
             !empty($configObj->interfaces->$interface) &&
             !empty($configObj->interfaces->$interface->type) &&
             $configObj->interfaces->$interface->type == 'group'
         ) {
+            if (static::$ifgroups === null) {
+                static::$ifgroups = [];
+                foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
+                    if (!empty((string)$node->sequence)) {
+                        static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
+                    }
+                }
+            }
+            if (!isset(static::$ifgroups[$interface])) {
+                static::$ifgroups[$interface] = 0;
+            }
             // group type
-            return 2000;
+            return 300000 + static::$ifgroups[$interface];
         } else {
             // default
-            return 3000;
+            return 400000;
         }
     }
 }
