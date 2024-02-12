@@ -81,13 +81,14 @@ class OpenVPN extends BaseModel
                 if (!empty((string)$instance->server) && strpos((string)$instance->server, '/') !== false) {
                     if (
                         explode('/', (string)$instance->server)[1] > 29 && !(
-                        (string)$instance->dev_type == 'tun' && (string)$instance->topology != 'subnet'
+                        (string)$instance->dev_type == 'tun' && (string)$instance->topology == 'p2p'
                         )
                     ) {
-                        /* tun + (net30 or p2p) are the exceptions here */
-                        $messages->appendMessage(
-                            new Message(gettext('Server directive must define a subnet of /29 or lower .'), $key . '.server')
+                        /* tun + p2p is the exceptions here */
+                        $msg = gettext(
+                            'Server directive must define a subnet of /29 or lower unless topology equals p2p.'
                         );
+                        $messages->appendMessage(new Message($msg, $key . '.server'));
                     }
                 }
             }
@@ -487,7 +488,7 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
-                        if ((string)$node->dev_type == 'tun' && (string)$node->topology != 'subnet' && $parts[1] > 29) {
+                        if ((string)$node->dev_type == 'tun' && (string)$node->topology == 'p2p' && $parts[1] > 29) {
                             /**
                              * Workaround and backwards compatibility, the server directive doesn't support
                              * networks smaller than /30, pushing ifconfig manually works in some cases.
