@@ -119,7 +119,7 @@ class FilterRuleContainerField extends ContainerField
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
-                    if ( !empty((string)$node->sequence)) {
+                    if (!empty((string)$node->sequence)) {
                         static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
                     }
                 }
