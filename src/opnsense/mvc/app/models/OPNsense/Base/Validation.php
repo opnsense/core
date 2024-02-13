@@ -28,20 +28,16 @@
 
 namespace OPNsense\Base;
 
-use Phalcon\Messages\Messages;
-
 class Validation
 {
     private $validators = [];
     private $messages = null;
-    private $phalcon_validation = null;
     private $data = [];
 
     public function __construct($validators = [])
     {
         $this->validators = $validators;
-        $this->phalcon_validation = new \Phalcon\Filter\Validation();
-        $this->messages = new Messages();
+        $this->messages = [];
         $this->data = [];
     }
 
@@ -51,7 +47,7 @@ class Validation
      */
     public function appendMessage($message)
     {
-        $this->messages->appendMessage($message);
+        $this->messages[] = $message;
     }
 
     /**
@@ -64,14 +60,10 @@ class Validation
      */
     public function add($key, $validator)
     {
-        if (is_a($validator, "OPNsense\\Base\\BaseValidator")) {
-            if (empty($this->validators[$key])) {
-                $this->validators[$key] = [];
-            }
-            $this->validators[$key][] = $validator;
-        } else {
-            $this->phalcon_validation->add($key, $validator);
+        if (empty($this->validators[$key])) {
+            $this->validators[$key] = [];
         }
+        $this->validators[$key][] = $validator;
         return $this;
     }
 
@@ -82,17 +74,20 @@ class Validation
      */
     public function validate($data)
     {
-        $validatorData = $this->validators;
         $this->data = $data;
-
-        foreach ($validatorData as $field => $validators) {
+        $phalcon_validation = new \Phalcon\Filter\Validation();
+        foreach ($this->validators as $field => $validators) {
             foreach ($validators as $validator) {
-                $validator->validate($this, $field);
+                if (is_a($validator, 'Phalcon\Filter\Validation\ValidatorInterface')) {
+                    $phalcon_validation->add($field, $validator);
+                } else {
+                    $validator->validate($this, $field);
+                }
             }
         }
 
         // XXX: temporary dual validation
-        $phalconMsgs = $this->phalcon_validation->validate($data);
+        $phalconMsgs = $phalcon_validation->validate($data);
         if (!empty($phalconMsgs)) {
             foreach ($phalconMsgs as $phalconMsg) {
                 $this->messages[] = $phalconMsg;
