@@ -501,13 +501,13 @@ function _interfaces_gre_configure($gre)
         $family = 'inet6';
     }
 
-    $remote_addr = $gre['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
-
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($local_addr)) {
         log_msg("Device {$gre['greif']} missing required local address, skipping now.");
         return null;
     }
+
+    $remote_addr = $gre['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
 
     mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gre['greif'], $family, $local_addr, $remote_addr]);
 
@@ -591,13 +591,13 @@ function _interfaces_gif_configure($gif)
         $family = 'inet6';
     }
 
-    $remote_addr = $gif['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
-
     /* ensured device is there, but do not configure unless system is ready */
     if (empty($local_addr)) {
         log_msg("Device {$gif['gifif']} missing required local address, skipping now.");
         return null;
     }
+
+    $remote_addr = $gif['remote-addr'] . (strpos($local_addr, '%') === false ? '' : '%' . explode('%', $local_addr)[1]);
 
     mwexecf('/sbin/ifconfig %s %s tunnel %s %s', [$gif['gifif'], $family, $local_addr, $remote_addr]);
 
