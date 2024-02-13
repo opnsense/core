@@ -558,7 +558,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validation.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/HostValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
@@ -848,6 +847,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CertificateFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/CountryFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/Field_Framework_TestCase.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/HostnameFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/IPPortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/IntegerFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/InterfaceFieldTest.php
