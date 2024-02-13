@@ -2345,15 +2345,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     interfaces_vips_configure($interface);
 
-    /* XXX device dependency plugin hook */
-    $loaded = array_merge($loaded, link_interface_to_gre($interface, true));
-    $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
-
     /* XXX device member plugin hook */
     link_interface_to_bridge($interface, $realif, $ifconfig_details);
-
-    /* XXX reload routes for linked devices -- not great but also not avoidable at the moment */
-    interfaces_restart_by_device($verbose, $loaded, false);
 
     /* XXX may be called twice since also tied to dhcp configure */
     interfaces_staticarp_configure($interface, $ifconfig_details);
@@ -2368,6 +2361,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         /* XXX move this up the call stack */
         configdp_run('rfc2136 reload', [$interface]);
     }
+
+    /* XXX device dependency plugin hook */
+    $loaded = array_merge($loaded, link_interface_to_gre($interface, true));
+    $loaded = array_merge($loaded, link_interface_to_gif($interface, true));
+
+    /* XXX reload routes for linked devices -- not great but also not avoidable at the moment */
+    interfaces_restart_by_device($verbose, $loaded, false);
 
     return $loaded;
 }
