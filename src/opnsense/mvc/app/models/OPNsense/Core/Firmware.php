@@ -29,7 +29,7 @@
 namespace OPNsense\Core;
 
 use OPNsense\Base\BaseModel;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Firmware

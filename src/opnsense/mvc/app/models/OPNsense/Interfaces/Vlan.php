@@ -28,7 +28,7 @@
 
 namespace OPNsense\Interfaces;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 

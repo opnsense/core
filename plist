@@ -553,6 +553,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Messages/Message.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validation.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php

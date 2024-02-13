@@ -28,7 +28,7 @@
 
 namespace OPNsense\OpenVPN;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Trust\Store;
 use OPNsense\Core\Config;

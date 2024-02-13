@@ -31,7 +31,7 @@ namespace OPNsense\Unbound;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Backend;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 class Unbound extends BaseModel
 {

@@ -28,7 +28,7 @@
 
 namespace OPNsense\Syslog;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 

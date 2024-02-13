@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2024 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,36 +28,83 @@
  *
  */
 
-namespace OPNsense\Base\Validators;
+namespace OPNsense\Base\Messages;
 
-use OPNsense\Base\BaseValidator;
-use OPNsense\Base\Messages\Message;
-
-/**
- * Class MinMaxValidator
- * @package OPNsense\Base\Validators
- */
-class MinMaxValidator extends BaseValidator
+class Message
 {
     /**
-    * Executes MinMax validation
-    *
-    * @param $validator
-    * @param string $attribute
-    * @return boolean
-    */
-    public function validate($validator, $attribute): bool
+     * @var string
+     */
+    protected $message;
+
+    /**
+     * @var string
+     */
+    protected $field;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+
+    /**
+     * OPNsense\Base\Messages\Message constructor
+     */
+    public function __construct($message, $field = "", $type = "")
     {
-        $value = $validator->getValue($attribute);
+        $this->message = $message;
+        $this->field = $field;
+        $this->type = $type;
+    }
 
-        $min = $this->getOption('min');
-        $max = $this->getOption('max');
-        $msg = $this->getOption('message');
+    /**
+     * Magic __toString method returns verbose message
+     */
+    public function __toString()
+    {
+        return $this->message;
+    }
 
-        if (is_numeric($value) == false || $value < $min || $value > $max) {
-            $validator->appendMessage(new Message($msg, $attribute, 'MinMaxValidator'));
-            return false;
-        }
-        return true;
+    /**
+     * @return string
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Sets field name related to message
+     */
+    public function setField($field)
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    /**
+     * Sets verbose message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+
+    /**
+     * Return type
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

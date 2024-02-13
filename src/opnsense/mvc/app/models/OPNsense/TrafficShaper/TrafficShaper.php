@@ -28,7 +28,7 @@
 
 namespace OPNsense\TrafficShaper;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**

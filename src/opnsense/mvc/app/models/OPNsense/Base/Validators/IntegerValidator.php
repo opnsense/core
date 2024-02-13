@@ -31,7 +31,7 @@
 namespace OPNsense\Base\Validators;
 
 use OPNsense\Base\BaseValidator;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class IntegerValidator

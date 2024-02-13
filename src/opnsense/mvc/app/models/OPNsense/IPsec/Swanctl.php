@@ -28,7 +28,7 @@
 
 namespace OPNsense\IPsec;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;

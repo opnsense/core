@@ -33,7 +33,6 @@ use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
-use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
@@ -576,7 +575,7 @@ abstract class BaseModel
         // If for some reason the developer chooses to ignore the errors, let's at least log there something
         // wrong in this model.
         $messages = $this->performValidation($validateFullModel);
-        if ($messages->count() > 0) {
+        if (count($messages) > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
                 $exception_msg_part = "[" . get_class($this) . ":" . $msg->getField() . "] ";

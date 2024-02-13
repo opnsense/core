@@ -106,12 +106,12 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $container->addNode(['unique_test' => 'value2']);
 
         $msgs = $container->validate();
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->addNode(['unique_test' => 'value1']);
 
         $msgs = $container->validate();
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(1, count($msgs));
     }
 
     public function testMultipleNonEqualAndEqualValues()
@@ -121,12 +121,12 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
         $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value3']);
 
         $msgs = $container->validate();
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->addNode(['unique_test' => 'value1', 'unique_test2' => 'value2']);
 
         $msgs = $container->validate();
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(1, count($msgs));
     }
 
     public function testEmptyValuesNotRequiredAndRequired()
@@ -137,13 +137,13 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(1, count($msgs));
     }
 
     public function testMultipleEmptyValuesNotRequiredAndRequired()
@@ -154,13 +154,13 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(1, count($msgs));
     }
 
     public function testFirstValueEmptyPassAll()
@@ -171,12 +171,12 @@ class UniqueConstraintTest extends \PHPUnit\Framework\Testcase
 
         $msgs = $container->validate();
 
-        $this->assertEquals(0, $msgs->count());
+        $this->assertEquals(0, count($msgs));
 
         $container->setRequired(true);
 
         $msgs = $container->validate();
 
-        $this->assertEquals(1, $msgs->count());
+        $this->assertEquals(1, count($msgs));
     }
 }
