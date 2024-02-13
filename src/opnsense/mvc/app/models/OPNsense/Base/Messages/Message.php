@@ -37,12 +37,24 @@ class Message
     protected $message;
 
     /**
+     * @var string
+     */
+    protected $field;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+
+    /**
      * OPNsense\Base\Messages\Message constructor
      */
-    public function __construct($message, $field = "")
+    public function __construct($message, $field = "", $type = "")
     {
         $this->message = $message;
         $this->field = $field;
+        $this->type = $type;
     }
 
     /**
@@ -85,5 +97,13 @@ class Message
     {
         $this->message = $message;
         return $this;
+    }
+
+    /**
+     * Return type
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

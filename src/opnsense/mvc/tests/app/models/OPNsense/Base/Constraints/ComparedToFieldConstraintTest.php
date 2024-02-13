@@ -44,7 +44,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $validate = $this->make_validator(2, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(0, $messages->count());
+        $this->assertEquals(0, count($messages));
         $this->assertEquals(true, $ret);
     }
 
@@ -54,7 +54,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $validate = $this->make_validator(3, 3, 'test', 'lt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(1, $messages->count());
+        $this->assertEquals(1, count($messages));
         $this->assertEquals(true, $ret);
     }
     // greater then
@@ -64,7 +64,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $validate = $this->make_validator(5, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(0, $messages->count());
+        $this->assertEquals(0, count($messages));
         $this->assertEquals(true, $ret);
     }
 
@@ -74,7 +74,7 @@ class ComparedToFieldConstraintTest extends \PHPUnit\Framework\TestCase
         $validate = $this->make_validator(2, 3, 'test', 'gt');
         $ret = $validate->validate($validator, '');
         $messages = $validator->getMessages();
-        $this->assertEquals(1, $messages->count());
+        $this->assertEquals(1, count($messages));
         $this->assertEquals(true, $ret);
     }
 
