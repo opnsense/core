@@ -33,7 +33,6 @@ use http\Message;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
-use Phalcon\Messages\Messages;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;

@@ -28,7 +28,6 @@
 
 namespace OPNsense\Routing\Migrations;
 
-use Phalcon\Messages\Messages;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
