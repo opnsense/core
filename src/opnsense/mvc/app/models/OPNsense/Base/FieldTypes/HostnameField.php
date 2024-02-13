@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\NetworkValidator;
 use OPNsense\Base\Validators\HostValidator;
 
 /**
