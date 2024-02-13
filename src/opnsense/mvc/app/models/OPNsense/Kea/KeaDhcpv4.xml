@@ -63,10 +63,10 @@
                         <FieldSeparator>,</FieldSeparator>
                     </ntp_servers>
                     <tftp_server_name type="TextField">
-                        <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+                        <Mask>/^([^\n"])*$/u</Mask>
                     </tftp_server_name>
                     <boot_file_name type="TextField">
-                        <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
+                        <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
                 </option_data>
                 <pools type=".\KeaPoolsField">
