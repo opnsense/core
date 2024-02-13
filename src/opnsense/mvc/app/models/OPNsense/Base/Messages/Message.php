@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2024 Deciso B.V.
  *
