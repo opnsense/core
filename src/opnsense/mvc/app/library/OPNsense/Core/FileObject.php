@@ -109,7 +109,7 @@ class FileObject
             $length = fstat($this->fhandle)['size'];
         }
         if ($length === 0) {
-            return null;
+            return '';
         }
         return fread($this->fhandle, $length);
     }
