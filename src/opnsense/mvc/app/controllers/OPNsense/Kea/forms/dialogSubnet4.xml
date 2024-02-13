@@ -34,6 +34,12 @@
         <help>DNS servers to offer to the clients</help>
     </field>
     <field>
+        <id>subnet4.option_data.domain_name</id>
+        <label>Domain name</label>
+        <type>text</type>
+        <help>The domain name to offer to the client, set to this firewall's domain name when left empty</help>
+    </field>
+    <field>
         <id>subnet4.option_data.ntp_servers</id>
         <label>NTP servers</label>
         <type>select_multiple</type>

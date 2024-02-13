@@ -53,6 +53,9 @@
                         <AsList>Y</AsList>
                         <FieldSeparator>,</FieldSeparator>
                     </routers>
+                    <domain_name type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                    </domain_name>
                     <ntp_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
