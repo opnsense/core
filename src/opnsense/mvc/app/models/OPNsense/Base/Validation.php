@@ -34,6 +34,8 @@ class Validation
 {
     private $validators = [];
     private $messages = null;
+    private $phalcon_validation = null;
+
     public function __construct($validators = [])
     {
         $this->validators = $validators;
