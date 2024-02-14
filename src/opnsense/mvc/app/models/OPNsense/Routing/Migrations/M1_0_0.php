@@ -45,27 +45,11 @@ class M1_0_0 extends BaseModelMigration
         $config = Config::getInstance()->object();
 
         // create logger to save possible consistency issues to
-        $logger =  new Syslog('config', null, LOG_LOCAL2);
+        $logger = new Syslog('config', null, LOG_LOCAL2);
 
         if (!empty($config->gateways) && count($config->gateways->children()) > 0) {
             foreach ($config->gateways->gateway_item as $gateway) {
                 $node = $model->gateway_item->Add();
-
-                // special handling of implied booleans
-                $node->defaultgw = !empty((string)$gateway->defaultgw) ? '1' : '0';
-                $node->disabled = !empty((string)$gateway->disabled) ? '1' : '0';
-                $node->fargw = !empty((string)$gateway->fargw) ? '1' : '0';
-                $node->force_down = !empty((string)$gateway->force_down) ? '1' : '0';
-                $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
-                $node->monitor_noroute = !empty((string)$gateway->monitor_noroute) ? '1' : '0';
-
-                if (empty((string)$gateway->priority)) {
-                    $node->priority = '255';
-                }
-
-                if (empty((string)$gateway->ipprotocol)) {
-                    $node->ipprotocol = 'inet';
-                }
 
                 // migrate set nodes
                 $node_properties = iterator_to_array($node->iterateItems());
@@ -84,6 +68,26 @@ class M1_0_0 extends BaseModelMigration
                     $node->$key = (string)$value;
                 }
 
+                // special handling of implied booleans
+                $node->defaultgw = !empty((string)$gateway->defaultgw) ? '1' : '0';
+                $node->disabled = !empty((string)$gateway->disabled) ? '1' : '0';
+                $node->fargw = !empty((string)$gateway->fargw) ? '1' : '0';
+                $node->force_down = !empty((string)$gateway->force_down) ? '1' : '0';
+                $node->monitor_disable = !empty((string)$gateway->monitor_disable) ? '1' : '0';
+                $node->monitor_noroute = !empty((string)$gateway->monitor_noroute) ? '1' : '0';
+
+                if (empty((string)$gateway->priority)) {
+                    $node->priority = '255';
+                }
+
+                if (empty((string)$gateway->ipprotocol)) {
+                    $node->ipprotocol = 'inet';
+                }
+
+                if (empty((string)$gateway->weight)) {
+                    $node->weight = '1';
+                }
+
                 $model->gateway_item->calculateCurrent($node);
                 // increase time period if old model had it set too low
                 $min_time_period = 2 * (
@@ -92,8 +96,15 @@ class M1_0_0 extends BaseModelMigration
                 if ((string)$node->current_time_period < $min_time_period) {
                     $node->time_period = $min_time_period;
                 }
-                if ($model->performValidation()->count() > 0) {
-                    $logger->error(sprintf("Migration skipped gateway %s (%s)", $gateway->name, $gateway->gateway));
+                $result = $model->performValidation();
+                if (count($result) > 0) {
+                    // save details of validation error
+                    error_log(print_r($result, true));
+                    $logger->error(sprintf(
+                        "Migration skipped gateway %s (%s). See crash reporter for details",
+                        $gateway->name,
+                        $gateway->gateway
+                    ));
                     $model->gateway_item->del($node->getAttribute('uuid'));
                 }
             }
