@@ -148,9 +148,7 @@ class Monit extends BaseModel
     ];
 
     /**
-     * validate full model using all fields and data in a single (1 deep) array
-     * @param bool $validateFullModel validate full model or only changed fields
-     * @return \Phalcon\Messages\Messages
+     * {@inheritdoc}
      */
     public function performValidation($validateFullModel = false)
     {
