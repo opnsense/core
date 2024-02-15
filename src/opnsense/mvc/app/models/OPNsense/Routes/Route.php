@@ -41,9 +41,7 @@ use OPNsense\Base\BaseModel;
 class Route extends BaseModel
 {
     /**
-     * extended validations
-     * @param bool $validateFullModel validate full model or only changed fields
-     * @return \Phalcon\Messages\Messages
+     * {@inheritdoc}
      */
     public function performValidation($validateFullModel = false)
     {
