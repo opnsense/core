@@ -99,8 +99,11 @@ class M1_0_0 extends BaseModelMigration
                 if (count($result) > 0) {
                     // save details of validation error
                     error_log(print_r($result, true));
-                    $logger->error(sprintf("Migration skipped gateway %s (%s). See crash reporter for details",
-                        $gateway->name, $gateway->gateway));
+                    $logger->error(sprintf(
+                        "Migration skipped gateway %s (%s). See crash reporter for details",
+                        $gateway->name,
+                        $gateway->gateway
+                    ));
                     $model->gateway_item->del($node->getAttribute('uuid'));
                 }
             }
