@@ -31,7 +31,7 @@
 
 namespace OPNsense\Routes;
 
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**

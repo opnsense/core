@@ -33,7 +33,7 @@ use OPNsense\Base\Validators\CallbackValidator;
 use Phalcon\Filter\Validation\Validator\Regex;
 use Phalcon\Filter\Validation\Validator\ExclusionIn;
 use OPNsense\Core\Config;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Firewall\Util;
 
 /**

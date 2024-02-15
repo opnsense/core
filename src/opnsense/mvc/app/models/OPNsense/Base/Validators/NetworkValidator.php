@@ -32,7 +32,7 @@ namespace OPNsense\Base\Validators;
 
 use OPNsense\Base\BaseValidator;
 use OPNsense\Firewall\Util;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class NetworkValidator validate networks and ip addresses

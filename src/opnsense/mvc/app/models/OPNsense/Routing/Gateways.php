@@ -31,7 +31,7 @@ namespace OPNsense\Routing;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 
 class Gateways extends BaseModel
 {

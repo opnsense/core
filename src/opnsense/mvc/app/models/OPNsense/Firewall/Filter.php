@@ -29,7 +29,7 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Core\Config;
-use Phalcon\Messages\Message;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
