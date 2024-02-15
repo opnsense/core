@@ -225,7 +225,7 @@ class Logger:
                     l = self._pipe_buffer.popleft()
                     res = "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}|{}\n".format(*['' if x is None else x for x in l])
                     os.write(self._pipe_fd, res.encode())
-            except (BrokenPipeError, BlockingIOError) as e:
+            except (BrokenPipeError, BlockingIOError, TypeError) as e:
                 if e.__class__.__name__ == 'BrokenPipeError':
                     log_info("dnsbl_module: Logging backend closed connection. Closing pipe and continuing.")
                     os.close(self._pipe_fd)
