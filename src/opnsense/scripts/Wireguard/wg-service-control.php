@@ -82,7 +82,6 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
     if (!empty((string)$server->mtu)) {
         mwexecf('/sbin/ifconfig %s mtu %s', [$server->interface, $server->mtu]);
     }
-    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
 
     if (empty((string)$server->disableroutes)) {
         /**
@@ -137,15 +136,18 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up')
         mwexecf('/sbin/route -q -n add %s %s -iface %s', [$ipprefix, $server->gateway, $server->interface]);
     }
 
+    if ($reload) {
+        interfaces_restart_by_device(false, [(string)$server->interface]);
+    }
+
+    mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
+
     // flush checksum to ease change detection
     fseek($fhandle, 0);
     ftruncate($fhandle, 0);
     fwrite($fhandle, @md5_file($server->cnfFilename) . "|" . wg_reconfigure_hash($server));
-    syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
 
-    if ($reload) {
-        interfaces_restart_by_device(false, [(string)$server->interface]);
-    }
+    syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) started");
 }
 
 /**
