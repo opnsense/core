@@ -92,6 +92,10 @@
             <url>http://mirror.wjcomms.co.uk/opnsense</url>
             <description>WJComms (HTTP, London, GB)</description>
         </mirror>
+        <mirror>
+            <url>https://mirror.init7.net/opnsense</url>
+            <description>init7 (HTTPS, Winterthur, CH)</description>
+        </mirror>
     </mirrors>
     <flavours allow_custom="true">
         <flavour has_subscription="true">
