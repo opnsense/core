@@ -28,16 +28,15 @@
 
 namespace OPNsense\Base;
 
-class Validation
+class Validation extends \ArrayObject
 {
     private $validators = [];
-    private $messages = null;
     private $data = [];
 
     public function __construct($validators = [])
     {
+        parent::__construct();
         $this->validators = $validators;
-        $this->messages = [];
         $this->data = [];
     }
 
@@ -47,7 +46,7 @@ class Validation
      */
     public function appendMessage($message)
     {
-        $this->messages[] = $message;
+        $this[] = $message;
     }
 
     /**
@@ -90,10 +89,10 @@ class Validation
         $phalconMsgs = $phalcon_validation->validate($data);
         if (!empty($phalconMsgs)) {
             foreach ($phalconMsgs as $phalconMsg) {
-                $this->messages[] = $phalconMsg;
+                $this[] = $phalconMsg;
             }
         }
-        return $this->messages;
+        return $this;
     }
 
     public function getValue($attribute)
@@ -106,6 +105,6 @@ class Validation
      */
     public function getMessages()
     {
-        return $this->messages;
+        return $this;
     }
 }
