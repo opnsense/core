@@ -86,6 +86,12 @@ abstract class BaseModel
     private static $internalCacheReflectionClasses = null;
 
     /**
+     * uuid missing on load
+     * @var bool
+     */
+    private $internalMissingUuids = false;
+
+    /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
      */
@@ -256,6 +262,7 @@ abstract class BaseModel
                                 $tagUUID = (string)$conf_section->attributes()['uuid'];
                             } else {
                                 $tagUUID = $internal_data->generateUUID();
+                                $this->internalMissingUuids = true;
                             }
 
                             // iterate array items from config data
@@ -331,9 +338,15 @@ abstract class BaseModel
         }
 
         $this->internal_mountpoint = $model_xml->mount;
-        $config_array = [];
+        $config_array = new SimpleXMLElement('<opnsense/>');
 
-        if (!$this->isVolatile()) {
+        if ($this->isLegacyMapper()) {
+            $xpath = "/opnsense" . rtrim($model_xml->mount, '+');
+            $to_dom = dom_import_simplexml($config_array);
+            foreach ($internalConfigHandle->xpath($xpath) as $node) {
+                $to_dom->appendChild($to_dom->ownerDocument->importNode($node, true));
+            }
+        } elseif (!$this->isVolatile()) {
             /*
              *  XXX: we should probably replace start with // for absolute root, but to limit impact only select root for
              *       mountpoints starting with a single /
@@ -437,12 +450,23 @@ abstract class BaseModel
 
     /**
      * check if the model is not persistent in the config
-     * @return true if memory model, false if config is stored
+     * @return bool true if memory model, false if config is stored
      */
     public function isVolatile()
     {
         return $this->internal_mountpoint == ':memory:';
     }
+
+    /**
+     * check if the model maps a legacy model without a container. these should operate similar as
+     * regular models, but without a migration or version number (due to the lack of a container)
+     * @return bool
+     */
+    public function isLegacyMapper()
+    {
+        return str_ends_with($this->internal_mountpoint, '+') && strpos($this->internal_mountpoint, "//") !== 0;
+    }
+
 
     /**
      * validate full model using all fields and data in a single (1 deep) array
@@ -509,20 +533,25 @@ abstract class BaseModel
     public function toXML()
     {
         // calculate root node from mountpoint
-        $xml_root_node = "";
-        foreach (explode("/", ltrim($this->internal_mountpoint, "/")) as $part) {
-            $xml_root_node .= "<" . $part . ">";
-        }
-        foreach (array_reverse(explode("/", ltrim($this->internal_mountpoint, "/"))) as $part) {
-            $xml_root_node .= "</" . $part . ">";
-        }
 
-        $xml = new SimpleXMLElement($xml_root_node);
-
-        $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
-        // add this model's version to the newly created xml structure
-        if (!empty($this->internal_current_model_version)) {
-            $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+        if ($this->isVolatile() || $this->isLegacyMapper()) {
+            $xml = new SimpleXMLElement('<root/>');
+            $this->internalData->addToXMLNode($xml);
+        } else {
+            $xml_root_node = "";
+            $parts = explode("/", ltrim($this->internal_mountpoint, "/"));
+            foreach ($parts as $part) {
+                $xml_root_node .= "<" . $part . ">";
+            }
+            foreach (array_reverse($parts) as $part) {
+                $xml_root_node .= "</" . $part . ">";
+            }
+            $xml = new SimpleXMLElement($xml_root_node);
+            $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
+            // add this model's version to the newly created xml structure
+            if (!empty($this->internal_current_model_version)) {
+                $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+            }
         }
 
         return $xml;
@@ -533,32 +562,56 @@ abstract class BaseModel
      */
     private function internalSerializeToConfig()
     {
-        // setup config handle to singleton config singleton
-        $internalConfigHandle = Config::getInstance();
-        $config_xml = $internalConfigHandle->object();
-
         // serialize this model's data to xml
         $data_xml = $this->toXML();
 
-        // Locate source node (in theory this must return a valid result, delivered by toXML).
-        // Because toXML delivers the actual xml including the full path, we need to find the root of our data.
-        $source_node = $data_xml->xpath($this->internal_mountpoint);
-
-        // find parent of mountpoint (create if it doesn't exists)
-        $target_node = $config_xml;
-        foreach (explode("/", ltrim($this->internal_mountpoint, "/")) as $part) {
-            if (count($target_node->xpath($part)) == 0) {
-                $target_node = $target_node->addChild($part);
-            } else {
-                $target_node = $target_node->xpath($part)[0];
+        $target_node = Config::getInstance()->object();
+        if ($this->isLegacyMapper()) {
+            /**
+             *  Merge xml node, try to keep them in the same area of the xml file to lower the diff size.
+             *  First we collect all new nodes in an array, then seek the ones we know and replace, remove access
+             *  (when we end up with less nodes). Finally append new nodes not merged yet.
+             */
+            $xpath = "/opnsense" . rtrim($this->internal_mountpoint, '+');
+            $toDom = dom_import_simplexml($target_node);
+            $newNodes = [];
+            foreach ($data_xml->children() as $node) {
+                $newNodes[] = dom_import_simplexml($node[0]);
             }
-        }
+            foreach ($target_node->xpath($xpath) as $idx => $node) {
+                if (isset($newNodes[$idx])) {
+                    $node = dom_import_simplexml($node);
+                    $nodeImport = $toDom->ownerDocument->importNode($newNodes[$idx], true);
+                    $node->parentNode->replaceChild($nodeImport, $node);
+                    $newNodes[$idx] = null;
+                } else {
+                    unset($node[0]);
+                }
+            }
+            foreach ($newNodes as $node) {
+                if ($node !== null) {
+                    $toDom->appendChild($toDom->ownerDocument->importNode($node, true));
+                }
+            }
+        } else {
+            // Locate source node (in theory this must return a valid result, delivered by toXML).
+            // Because toXML delivers the actual xml including the full path, we need to find the root of our data.
+            $source_node = $data_xml->xpath($this->internal_mountpoint);
 
-        // copy model data into config
-        $toDom = dom_import_simplexml($target_node);
-        $fromDom = dom_import_simplexml($source_node[0]);
-        $nodeImport  = $toDom->ownerDocument->importNode($fromDom, true);
-        $toDom->parentNode->replaceChild($nodeImport, $toDom);
+            // find parent of mountpoint (create if it doesn't exists)
+            foreach (explode("/", ltrim($this->internal_mountpoint, "/")) as $part) {
+                if (count($target_node->xpath($part)) == 0) {
+                    $target_node = $target_node->addChild($part);
+                } else {
+                    $target_node = $target_node->xpath($part)[0];
+                }
+            }
+            // copy model data into config
+            $toDom = dom_import_simplexml($target_node);
+            $fromDom = dom_import_simplexml($source_node[0]);
+            $nodeImport  = $toDom->ownerDocument->importNode($fromDom, true);
+            $toDom->parentNode->replaceChild($nodeImport, $toDom);
+        }
     }
 
     /**
@@ -655,7 +708,11 @@ abstract class BaseModel
      */
     public function runMigrations()
     {
-        if ($this->isVolatile()) {
+        if ($this->isVolatile() || $this->isLegacyMapper()) {
+            if ($this->isLegacyMapper() && $this->internalMissingUuids) {
+                $this->serializeToConfig();
+                return true;
+            }
             return false;
         } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
