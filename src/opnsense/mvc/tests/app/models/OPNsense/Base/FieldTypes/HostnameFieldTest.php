@@ -104,7 +104,6 @@ class HostnameFieldTest extends Field_Framework_TestCase
             $field->setValue($value);
             $this->assertEmpty($this->validate($field));
         }
-
     }
 
     public function testAsList()

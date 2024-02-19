@@ -331,7 +331,7 @@ abstract class BaseModel
         $config_array = new SimpleXMLElement('<opnsense/>');
 
         if ($this->isLegacyMapper()) {
-            $xpath = "/opnsense".rtrim($model_xml->mount, '+');
+            $xpath = "/opnsense" . rtrim($model_xml->mount, '+');
             $to_dom = dom_import_simplexml($config_array);
             foreach ($internalConfigHandle->xpath($xpath) as $node) {
                 $to_dom->appendChild($to_dom->ownerDocument->importNode($node, true));
@@ -562,7 +562,7 @@ abstract class BaseModel
              *  First we collect all new nodes in an array, then seek the ones we know and replace, remove access
              *  (when we end up with less nodes). Finally append new nodes not merged yet.
              */
-            $xpath = "/opnsense".rtrim($this->internal_mountpoint, '+');
+            $xpath = "/opnsense" . rtrim($this->internal_mountpoint, '+');
             $toDom = dom_import_simplexml($target_node);
             $newNodes = [];
             foreach ($data_xml->children() as $node) {
