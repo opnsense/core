@@ -4,6 +4,7 @@
         <patterns>
             <pattern>ui/diagnostics/interface/arp/*</pattern>
             <pattern>api/diagnostics/interface/getArp*</pattern>
+            <pattern>api/diagnostics/interface/search_arp*</pattern>
         </patterns>
     </page-diagnostics-arptable>
     <page-diagnostics-ndptable>
@@ -11,6 +12,7 @@
         <patterns>
             <pattern>ui/diagnostics/interface/ndp/*</pattern>
             <pattern>api/diagnostics/interface/getNdp*</pattern>
+            <pattern>api/diagnostics/interface/search_ndp*</pattern>
         </patterns>
     </page-diagnostics-ndptable>
     <page-diagnostics-netstat>
