@@ -551,7 +551,7 @@ class Config extends Singleton
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         syslog(LOG_NOTICE, sprintf(
-            "user %s%s changed configuration to %s in %s%s",
+            "user %s%s changed configuration to %s in %s %s",
             $revision['username'],
             !empty($revision['impersonated_by']) ? sprintf(" (%s)", $revision['impersonated_by']) : '',
             $backup_filename,
