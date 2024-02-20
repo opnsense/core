@@ -264,4 +264,83 @@ class ArrayField extends BaseField
         }
         return false;
     }
+
+    /**
+     * @param bool $include_static include non importable static items
+     * @param array $exclude fieldnames to exclude
+     * @return array simple array set
+     */
+    public function asRecordSet($include_static = false, $exclude = [])
+    {
+        $records = [];
+        $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
+        foreach ($iterator as $akey => $anode) {
+            $record = [];
+            foreach ($anode->iterateItems() as $tag => $node) {
+                if (!in_array($tag, $exclude)) {
+                    $record[$tag] = (string)$node;
+                }
+            }
+            $records[] = $record;
+        }
+        return $records;
+    }
+
+    /**
+     * @param array $records payload to merge
+     * @param array $keyfields search criteria
+     * @param function $data_callback inline data modification
+     * @return array exceptions
+     */
+    public function importRecordSet($records, $keyfields = [], $data_callback = null)
+    {
+        $results = ['validations' => [], 'inserted' => 0, 'updated' => 0, 'uuids' => []];
+        $records = is_array($records) ? $records : [];
+        $current = [];
+        if (!empty($keyfields)) {
+            foreach (parent::iterateItems() as $node) {
+                $keydata = [];
+                foreach ($keyfields as $keyfield) {
+                    $keydata[] = (string)$node->$keyfield;
+                }
+                $key = implode("\n", $keydata);
+                if (isset($current[$key])) {
+                    $current[$key] = null;
+                } else {
+                    $current[$key] = $node;
+                }
+            }
+        }
+
+        foreach ($records as $idx => $record) {
+            if (is_callable($data_callback)) {
+                $data_callback($record);
+            }
+            $keydata = [];
+            foreach ($keyfields as $keyfield) {
+                $keydata[] = (string)$record[$keyfield] ?? '';
+            }
+            $key = implode("\n", $keydata);
+            $node = null;
+            if (isset($current[$key])) {
+                if ($current[$key] === null) {
+                    $results['validations'][] = ['sequence' => $idx, 'message' => gettext('Duplicate key entry found')];
+                    continue;
+                } else {
+                    $node = $current[$key];
+                }
+            }
+            if ($node === null) {
+                $results['inserted'] += 1;
+                $node = $this->add();
+            } else {
+                $results['updated'] += 1;
+            }
+            $results['uuids'][$node->getAttributes()['uuid']] = $idx;
+            foreach ($record as $fieldname => $content) {
+                $node->$fieldname = (string)$content;
+            }
+        }
+        return $results;
+    }
 }
