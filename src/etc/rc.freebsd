@@ -79,7 +79,7 @@ rc_enabled()
 	esac
 }
 
-rc_filenames="$(${RCORDER} /etc/rc.d/[a-z]* /usr/local/etc/rc.d/[a-z]* 2> /dev/null)"
+rc_filenames="$(${RCORDER} /etc/rc.d/* /usr/local/etc/rc.d/* 2> /dev/null)"
 rc_filenames_defer=
 rc_filenames_reverse=
 rc_filenames_skip=
