@@ -80,6 +80,11 @@
             }
         });
 
+        $("#download_reservations").click(function(e){
+            e.preventDefault();
+            window.open("/api/kea/dhcpv4/download_reservations");
+        });
+
         /**
          *
          */
@@ -121,7 +126,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -147,7 +152,8 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                        <button id="download_reservations" type="button" title="{{ lang._('Export as csv') }}" data-toggle="tooltip"  class="btn btn-xs"><span class="fa fa-fw fa-table"></span></button>
                     </td>
                 </tr>
             </tfoot>
@@ -170,7 +176,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                     </td>
                 </tr>
             </tfoot>

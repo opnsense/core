@@ -105,6 +105,14 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
         return $this->delBase("reservations.reservation", $uuid);
     }
 
+    public function downloadReservationsAction()
+    {
+        if ($this->request->isGet()) {
+            $this->sessionClose();
+            $this->exportCsv($this->getModel()->reservations->reservation->asRecordSet(false, ['subnet']));
+        }
+    }
+
     public function searchPeerAction()
     {
         return $this->searchBase("ha_peers.peer", ['name', 'role'], "name");
