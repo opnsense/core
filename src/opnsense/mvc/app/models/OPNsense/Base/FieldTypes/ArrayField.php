@@ -264,4 +264,26 @@ class ArrayField extends BaseField
         }
         return false;
     }
+
+    /**
+     * @param bool $include_static include non importable static items
+     * @param array $exclude fieldnames to exclude
+     * @return array simple array set
+     */
+    public function asRecordSet($include_static=false, $exclude = [])
+    {
+        $records = [];
+        $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
+        foreach ($iterator as $akey => $anode)
+        {
+            $record = [];
+            foreach ($anode->iterateItems() as $tag => $node) {
+                if (!in_array($tag, $exclude)) {
+                    $record[$tag] = (string)$node;
+                }
+            }
+            $records[] = $record;
+        }
+        return $records;
+    }
 }

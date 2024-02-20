@@ -136,6 +136,34 @@ class ApiControllerBase extends ControllerRoot
     }
 
     /**
+     * passtru recordset (key value store) as csv output
+     * @param array $records dataset to export (e.g. [['field' => 'value'], ['field' => 'value']])
+     */
+    protected function exportCsv(
+        $records,
+        $headers = [
+            'Content-Type: text/csv', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
+        ]
+    ) {
+        $records = is_array($records) ? $records : [];
+        $stream = fopen('php://temp', 'rw+');
+        if (isset($records[0])) {
+            fputcsv($stream, array_keys($records[0]));
+        }
+        foreach ($records as $record) {
+            fputcsv($stream, $record);
+        }
+        fseek($stream, 0);
+        foreach ($headers as $header) {
+            header($header);
+        }
+        ob_end_flush();
+        rewind($stream);
+        fpassthru($stream);
+        fclose($stream);
+    }
+
+    /**
      * passtru configd stream
      * @param string $action configd action to perform
      * @param array $params list of parameters
