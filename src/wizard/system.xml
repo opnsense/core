@@ -602,24 +602,22 @@ if (!empty($input_errors)) {
             </field>
         </fields>
         <stepafterformdisplay><![CDATA[
-$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
-$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
-
-$found = false;
-$defaultgw_found = false;
 $gateways = new \OPNsense\Routing\Gateways();
+$found = $defaultgw_found = false;
+
 foreach ($gateways->gatewayIterator() as $gw) {
     if (!empty($gw['defaultgw'])) {
         $defaultgw_found = true;
     }
+
     if ($gw['name'] == 'WAN_GW' && !empty($gw['uuid'])) {
-        $found = true;
         $gateways->createOrUpdateGateway(['gateway' => $config['wizardtemp']['wangateway']], $gw['uuid']);
-        $config['interfaces']['wan']['gateway'] = $gw['name'];
+        $found = true;
     }
 }
+
 if (!$found) {
-    $newgw = [
+    $gateways->createOrUpdateGateway([
         'interface' => 'wan',
         'gateway' => $config['wizardtemp']['wangateway'],
         'name' => 'WAN_GW',
@@ -627,14 +625,17 @@ if (!$found) {
         'monitor_disable' => 1,
         'descr' => "WAN Gateway",
         'defaultgw' => !$defaultgw_found,
-    ];
-
-    $gateways->createOrUpdateGateway($newgw);
+    ]);
 }
 
+/* Assignments to $config only after this went through! */
 $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
 
+$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
+$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
+$config['interfaces']['wan']['gateway'] = 'WAN_GW';
 unset($config['wizardtemp']);
+
 write_config();
     ]]></stepafterformdisplay>
     </step>
