@@ -18,14 +18,8 @@
                     <Required>Y</Required>
                     <MinimumValue>0</MinimumValue>
                 </instance>
-                <pubkey type="TextField">
-                    <Required>Y</Required>
-                    <ValidationMessage>A public key is required</ValidationMessage>
-                </pubkey>
-                <pubkey type="Base64Field">
-                    <Required>Y</Required>
-                </pubkey>
-                <privkey type="TextField">
+                <pubkey type="Base64Field"/>
+                <privkey type="Base64Field">
                     <Required>Y</Required>
                     <ValidationMessage>A private key is required</ValidationMessage>
                 </privkey>
