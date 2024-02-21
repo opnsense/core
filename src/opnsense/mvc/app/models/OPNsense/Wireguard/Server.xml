@@ -52,6 +52,7 @@
                         </check001>
                     </Constraints>
                 </disableroutes>
+                <endpoint type="TextField"/>
                 <gateway type="NetworkField"/>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>

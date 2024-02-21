@@ -2,7 +2,6 @@
 
 /*
  * Copyright (C) 2024 Deciso B.V.
- * Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,6 +9,7 @@
  *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
@@ -26,24 +26,34 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Wireguard;
+namespace OPNsense\Wireguard\FieldTypes;
 
-class GeneralController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Wireguard\Server;
+
+class ClientField extends ArrayField
 {
-    protected function templateJSIncludes()
+    /**
+     * backreference servers
+     */
+    protected function actionPostLoadingEvent()
     {
-        $result = parent::templateJSIncludes();
-        $result[] = '/ui/js/jquery.qrcode.js';
-        $result[] = '/ui/js/qrcode.js';
-        return $result;
-    }
-
-    public function indexAction()
-    {
-        $this->view->generalForm = $this->getForm("general");
-        $this->view->formDialogEditWireguardClient = $this->getForm("dialogEditWireguardClient");
-        $this->view->formDialogEditWireguardServer = $this->getForm("dialogEditWireguardServer");
-        $this->view->formDialogConfigBuilder = $this->getForm("dialogConfigBuilder");
-        $this->view->pick('OPNsense/Wireguard/general');
+        $peers = [];
+        foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+            if (!empty((string)$node->peers)) {
+                foreach (explode(',', (string)$node->peers) as $peer) {
+                    if (!isset($peers[$peer])) {
+                        $peers[$peer] = [];
+                    }
+                    $peers[$peer][] = $key;
+                }
+            }
+        }
+        foreach ($this->internalChildnodes as $key => $node) {
+            if (isset($peers[$key])) {
+                $node->servers->setValue(implode(',', $peers[$key]));
+            }
+        }
+        return parent::actionPostLoadingEvent();
     }
 }
