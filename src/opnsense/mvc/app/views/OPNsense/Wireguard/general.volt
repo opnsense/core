@@ -86,21 +86,27 @@
                 }
             });
         })
+        // update history on tab state and implement navigation
+        if(window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click()
+        }
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
+        });
+        $(window).on('hashchange', function(e) {
+            $('a[href="' + window.location.hash + '"]').click()
+        });
     });
 </script>
 
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#general">{{ lang._('General') }}</a></li>
-    <li><a data-toggle="tab" href="#instances">{{ lang._('Instances') }}</a></li>
+    <li class="active"><a data-toggle="tab" href="#instances">{{ lang._('Instances') }}</a></li>
     <li><a data-toggle="tab" href="#peers">{{ lang._('Peers') }}</a></li>
 </ul>
 
 <div class="tab-content content-box tab-content">
-    <div id="general" class="tab-pane fade in active">
-        {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
-    </div>
-    <div id="peers" class="tab-pane fade in">
+    <div id="peers" class="tab-pane fade in active">
         <span id="pskgen_div" style="display:none" class="pull-right">
             <button id="pskgen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new psk.') }}" data-toggle="tooltip">
               <i class="fa fa-fw fa-gear"></i>
@@ -167,16 +173,13 @@
 
 <section class="page-content-main">
     <div class="content-box">
-        <div class="col-md-12">
-            <br/>
-            <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint='/api/wireguard/service/reconfigure'
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring WireGuard') }}"
-                    type="button"
-            ></button>
-            <br/><br/>
-        </div>
+        {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
+        <button class="btn btn-primary __mt __mb __ml" id="reconfigureAct"
+            data-endpoint='/api/wireguard/service/reconfigure'
+            data-label="{{ lang._('Apply') }}"
+            data-error-title="{{ lang._('Error reconfiguring WireGuard') }}"
+            type="button"
+        ></button>
     </div>
 </section>
 
