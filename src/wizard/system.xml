@@ -602,9 +602,6 @@ if (!empty($input_errors)) {
             </field>
         </fields>
         <stepafterformdisplay><![CDATA[
-$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
-$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
-
 $found = false;
 $defaultgw_found = false;
 $gateways = new \OPNsense\Routing\Gateways();
@@ -634,7 +631,10 @@ if (!$found) {
 
 $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
 
+$config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
+$config['system']['domain'] = $config['wizardtemp']['system']['domain'];
 unset($config['wizardtemp']);
+
 write_config();
     ]]></stepafterformdisplay>
     </step>
