@@ -155,6 +155,9 @@ class SettingsController extends ApiMutableModelControllerBase
             /* uuid is likely a gateway name (legacy config) */
             $gateway = $this->getModel()->gatewaysIndexedByName(true, false, true)[$uuid] ?? [];
             if (!empty($gateway)) {
+                if (!empty($gateway['dynamic'])) {
+                    $gateway['gateway'] = null;
+                }
                 $node = $this->getModel()->gateway_item->Add();
                 $node->setNodes($gateway);
                 return ['gateway_item' => $node->getNodes()];
