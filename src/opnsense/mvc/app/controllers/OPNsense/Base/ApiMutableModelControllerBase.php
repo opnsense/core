@@ -546,4 +546,83 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
         return $result;
     }
+
+    /**
+     * Import csv data into ArrayField type
+     * @param string $path model path, should point to an ArrayField type
+     * @param string $payload csv data to import
+     * @param array $keyfields fieldnames to use as key
+     * @param function $data_callback inline data modification, used to match parsed csv data
+     * @return array exceptions
+     */
+    protected function importCsv($path, $payload, $keyfields = [], $data_callback = null)
+    {
+        /* parse csv data to array structure */
+        $data = [];
+        $stream = fopen('php://temp', 'rw+');
+        fwrite($stream, $payload);
+        fseek($stream, 0);
+        $heading = [];
+        while (($line = fgetcsv($stream)) !== FALSE) {
+            if (empty($heading)) {
+                $heading = $line;
+            } else {
+                $record = [];
+                foreach ($line as $idx => $content) {
+                    if (isset($heading[$idx])) {
+                        $record[$heading[$idx]] = $content;
+                    }
+                }
+                $data[] = $record;
+            }
+
+        }
+        fclose($stream);
+
+        /*
+         * Try to import the offered data, when errors occur remove records and try again.
+         * Always return validation items collected in the first run.
+         **/
+        $response = [];
+        for ($i=0; $i < 2; $i++) {
+            $mdl = $this->getModel();
+            $node = $mdl->getNodeByReference($path);
+            if (is_a($node, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
+                is_subclass_of($node, "OPNsense\\Base\\FieldTypes\\ArrayField")
+            ) {
+                $result = $node->importRecordSet($data, $keyfields, $data_callback);
+                foreach ($this->getModel()->performValidation() as $msg) {
+                    if (str_starts_with($msg->getField(), $path)) {
+                        $uuid = explode('.', substr($msg->getField(), strlen($path)+1))[0];
+                        $result['validations'][] = [
+                            'sequence' => $result['uuids'][$uuid] ?? null,
+                            'message' =>  $msg->getMessage()
+                        ];
+                    }
+                }
+                // save first validation result
+                $response = empty($response) ? $result : $response;
+                // remove invalid records and reinitialize model (so next pass can update)
+                if (!empty($result['validations'])) {
+                    $this->modelHandle = null;
+                    $error_keys = [];
+                    foreach ($result['validations'] as $val) {
+                        if ($val['sequence'] !== null) {
+                            $error_keys[] = $val['sequence'];
+                        }
+                    }
+                    foreach (array_reverse(array_unique($error_keys, SORT_NUMERIC)) as $err_key) {
+                        unset($data[$err_key]);
+                    }
+                } else {
+                    // save to config when there's anything left
+                    if ($result['inserted'] > 0 || $result['updated'] > 0) {
+                        $this->save(false, true);
+                    }
+                    break;
+                }
+            }
+        }
+        return $response + ['fieldnames' => $heading];
+    }
 }
