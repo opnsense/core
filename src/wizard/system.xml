@@ -633,9 +633,7 @@ $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
 
 $config['system']['hostname'] = $config['wizardtemp']['system']['hostname'];
 $config['system']['domain'] = $config['wizardtemp']['system']['domain'];
-if ($found) {
-    $config['interfaces']['wan']['gateway'] = 'WAN_GW';
-}
+$config['interfaces']['wan']['gateway'] = 'WAN_GW';
 unset($config['wizardtemp']);
 
 write_config();
