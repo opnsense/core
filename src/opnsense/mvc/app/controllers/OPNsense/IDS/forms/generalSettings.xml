@@ -92,6 +92,13 @@
         <help>With this option, you can set the size of the packets on your network. It is possible that bigger packets have to be processed sometimes. The engine can still process these bigger packets, but processing it will lower the performance.</help>
     </field>
     <field>
+        <id>ids.general.ignorePolicy</id>
+        <label>Ignore Policy Errors</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>With this option, when a protocol parser fails, it will just ignore the error which will mimic the default behavior in Suricata version 6 and below. Starting with Suricata 7, the default changed to drop affcted packets which might break e.g. services running on port 443 but not offering HTTPS protocol.</help>
+    </field>
+    <field>
         <id>ids.general.AlertLogrotate</id>
         <label>Rotate log</label>
         <type>dropdown</type>
