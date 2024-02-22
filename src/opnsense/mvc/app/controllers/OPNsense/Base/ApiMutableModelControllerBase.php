@@ -591,13 +591,18 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 is_subclass_of($node, "OPNsense\\Base\\FieldTypes\\ArrayField")
             ) {
                 $result = $node->importRecordSet($data, $keyfields, $data_callback);
+                $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
-                    if (str_starts_with($msg->getField(), $path)) {
-                        $uuid = explode('.', substr($msg->getField(), strlen($path)+1))[0];
+                    if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {
+                        $tmp = explode('.', substr($msg->getField(), strlen($path)+1));
+                        $uuid = $tmp[0];
+                        $fieldname = end($tmp);
                         $result['validations'][] = [
                             'sequence' => $result['uuids'][$uuid] ?? null,
-                            'message' =>  $msg->getMessage()
+                            'message' =>  $msg->getMessage(),
+                            'field' => $fieldname
                         ];
+                        $valmsgfields[] = $msg->getField();
                     }
                 }
                 // save first validation result

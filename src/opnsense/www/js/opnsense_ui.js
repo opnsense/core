@@ -627,3 +627,95 @@ $.fn.SimpleActionButton = function (params) {
         return button;
     });
 }
+
+
+/**
+ *  File upload dialog, constructs a modal, asks for a file to upload and sets {'payload': ..,, 'filename': ...}
+ *  to specified endpoint. Endppoint response should contain validation errors including messages and row sequences,
+ *  specified as :
+ *  {
+ *     validations: [
+ *          {
+ *            'sequence': X << sequence number,  first data record starts at 0
+ *            'message': '' << validation message
+ *          }
+ *     ]
+ *  }
+ *
+ *      data-endpoint='/path/to/my/endpoint'
+ *      data-title="Apply text"
+ */
+$.fn.SimpleFileUploadDlg = function () {
+    let this_button = this;
+
+    this.construct = function () {
+        this_button.click(function(){
+            let content = $("<div/>");
+            let fileinp = $("<input type='file'/>");
+            let error_output = $("<textarea style='display:none; max-width:100%; height:200px;'/>");
+            let doinp = $('<button style="display:none" type="button" class="btn btn-xs"/>');
+            doinp.append($('<span class="fa fa-fw fa-check"></span>'));
+
+            content.append(
+                $("<table/>").append(
+                    $("<tr/>").append(
+                        $("<td style='width:200px;'/>").append(fileinp),
+                        $("<td/>").append(doinp)
+                    ),
+                    $("<tr/>").append($("<td colspan='2' style='height:10px;'/>"))
+                )
+            );
+            content.append(error_output);
+            fileinp.change(function(evt) {
+                if (evt.target.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(readerEvt) {
+                        doinp.data('payload', readerEvt.target.result);
+                        doinp.data('filename', fileinp.val().split('\\').pop());
+                        doinp.show();
+                    };
+                    reader.readAsBinaryString(evt.target.files[0]);
+                }
+            });
+            let dialog = BootstrapDialog.show({
+                title: this_button.data('title'),
+                type: BootstrapDialog.TYPE_DEFAULT,
+                message: content
+            });
+            doinp.click(function(){
+                let params =  {
+                    'payload': $(this).data('payload'),
+                    'filename': $(this).data('filename')
+                };
+                ajaxCall(this_button.data('endpoint'), params, function (data, status) {
+                    if (data.validations && data.validations.length > 0) {
+                        // When validation errors are returned, write to textarea including original data lines.
+                        let output = [];
+                        let records = params.payload.split('\n');
+                        records.shift();
+                        for (r=0; r < records.length; ++r) {
+                            let found = false;
+                            for (i=0; i < data.validations.length ; ++i) {
+                                if (r == data.validations[i].sequence) {
+                                    if (!found) {
+                                        output.push(records[data.validations[i].sequence]);
+                                        found = true;
+                                    }
+                                    output.push('!! ' + data.validations[i].message);
+                                }
+                            }
+                        }
+                        error_output.val(output.join('\n')).show();
+                    } else {
+                        dialog.close();
+                    }
+                });
+            });
+        });
+    }
+
+    return this.each(function () {
+        const button = this_button.construct();
+        return button;
+    });
+}
