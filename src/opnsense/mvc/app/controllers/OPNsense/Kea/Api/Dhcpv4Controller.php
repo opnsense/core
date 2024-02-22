@@ -30,6 +30,8 @@ namespace OPNsense\Kea\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
+
 
 class Dhcpv4Controller extends ApiMutableModelControllerBase
 {
@@ -110,6 +112,34 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
         if ($this->request->isGet()) {
             $this->sessionClose();
             $this->exportCsv($this->getModel()->reservations->reservation->asRecordSet(false, ['subnet']));
+        }
+    }
+
+    public function uploadReservationsAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            $this->sessionClose();
+            $subnets = [];
+            foreach ($this->getModel()->subnets->subnet4->iterateItems() as $key => $node) {
+                $subnets[(string)$node->subnet] = $key;
+            }
+            return $this->importCsv(
+                'reservations.reservation',
+                $this->request->getPost('payload'),
+                ['hw_address', 'subnet'],
+                function (&$record) use ($subnets) {
+                    /* seek matching subnet */
+                    if (!empty($record['ip_address'])) {
+                        foreach ($subnets as $subnet => $uuid) {
+                            if (Util::isIPInCIDR($record['ip_address'], $subnet)) {
+                                $record['subnet'] = $uuid;
+                            }
+                        }
+                    }
+                }
+            );
+        } else {
+            return ['status' => 'failed'];
         }
     }
 
