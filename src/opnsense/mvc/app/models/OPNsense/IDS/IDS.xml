@@ -234,6 +234,10 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </LogPayload>
+            <ignorePolicy type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </ignorePolicy>
             <verbosity type="OptionField">
                 <BlankDesc>DEFAULT (0)</BlankDesc>
                 <OptionValues>
