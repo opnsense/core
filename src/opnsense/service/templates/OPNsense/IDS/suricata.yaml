@@ -736,7 +736,7 @@ pcap-file:
 # "detection-only" enables protocol detection only (parser disabled).
 app-layer:
 {% if not helpers.empty('OPNsense.IDS.general.ignorePolicy') %}
-  error-policy: ignore
+  error-policy: {% if OPNsense.IDS.general.ignorePolicy|default("0") == "1" %}ignore{% else %}auto{% endif %}ignore
 {% endif %}  
   protocols:
     krb5:
