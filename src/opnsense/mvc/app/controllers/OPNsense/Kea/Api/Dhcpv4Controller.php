@@ -32,7 +32,6 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-
 class Dhcpv4Controller extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dhcpv4';

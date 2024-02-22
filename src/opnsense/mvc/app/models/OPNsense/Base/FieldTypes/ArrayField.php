@@ -292,14 +292,13 @@ class ArrayField extends BaseField
      * @param function $data_callback inline data modification
      * @return array exceptions
      */
-    public function importRecordSet($records, $keyfields = [], $data_callback=null)
+    public function importRecordSet($records, $keyfields = [], $data_callback = null)
     {
         $results = ['validations' => [], 'inserted' => 0, 'updated' => 0, 'uuids' => []];
         $records = is_array($records) ? $records : [];
         $current = [];
         if (!empty($keyfields)) {
-            foreach (parent::iterateItems() as $node)
-            {
+            foreach (parent::iterateItems() as $node) {
                 $keydata = [];
                 foreach ($keyfields as $keyfield) {
                     $keydata[] = (string)$node->$keyfield;

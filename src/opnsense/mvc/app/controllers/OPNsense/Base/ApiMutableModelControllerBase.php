@@ -563,7 +563,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         fwrite($stream, $payload);
         fseek($stream, 0);
         $heading = [];
-        while (($line = fgetcsv($stream)) !== FALSE) {
+        while (($line = fgetcsv($stream)) !== false) {
             if (empty($heading)) {
                 $heading = $line;
             } else {
@@ -575,7 +575,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
                 $data[] = $record;
             }
-
         }
         fclose($stream);
 
@@ -584,17 +583,18 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
          * Always return validation items collected in the first run.
          **/
         $response = [];
-        for ($i=0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path);
-            if (is_a($node, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
+            if (
+                is_a($node, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
                 is_subclass_of($node, "OPNsense\\Base\\FieldTypes\\ArrayField")
             ) {
                 $result = $node->importRecordSet($data, $keyfields, $data_callback);
                 $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
                     if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {
-                        $tmp = explode('.', substr($msg->getField(), strlen($path)+1));
+                        $tmp = explode('.', substr($msg->getField(), strlen($path) + 1));
                         $uuid = $tmp[0];
                         $fieldname = end($tmp);
                         $result['validations'][] = [
