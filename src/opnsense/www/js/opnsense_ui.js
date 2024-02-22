@@ -645,7 +645,7 @@ $.fn.SimpleActionButton = function (params) {
  *      data-endpoint='/path/to/my/endpoint'
  *      data-title="Apply text"
  */
-$.fn.SimpleFileUploadDlg = function () {
+$.fn.SimpleFileUploadDlg = function (params) {
     let this_button = this;
 
     this.construct = function () {
@@ -683,11 +683,14 @@ $.fn.SimpleFileUploadDlg = function () {
                 message: content
             });
             doinp.click(function(){
-                let params =  {
+                let eparams =  {
                     'payload': $(this).data('payload'),
                     'filename': $(this).data('filename')
                 };
-                ajaxCall(this_button.data('endpoint'), params, function (data, status) {
+                ajaxCall(this_button.data('endpoint'), eparams, function (data, status) {
+                    if (params && params.onAction) {
+                        params.onAction(data, status);
+                    }
                     if (data.validations && data.validations.length > 0) {
                         // When validation errors are returned, write to textarea including original data lines.
                         let output = [];
