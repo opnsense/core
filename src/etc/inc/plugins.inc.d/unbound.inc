@@ -142,6 +142,7 @@ function unbound_generate_config()
 
     mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
+    mwexec('/sbin/mount -r -t nullfs /lib /var/unbound/lib');
 
     $optimization = unbound_optimization();
 
