@@ -96,6 +96,10 @@ class OverviewController extends ApiControllerBase
             'active ports' => gettext('Active Ports'),
             'vlan' => gettext('VLAN details'),
             'vlan_tag' => gettext('VLAN Tag'),
+            'ifctl.nameserver' => gettext('Dynamic nameserver received'),
+            'ifctl.prefix'  => gettext('Dynamic IPv6 prefix received'),
+            'ifctl.router'  => gettext('Dynamic router received'),
+            'ifctl.searchdomain'  => gettext('Dynamic searchdomain received')
         ];
     }
 
@@ -149,6 +153,18 @@ class OverviewController extends ApiControllerBase
             if ($if == 'pfsync0') {
                 continue;
             }
+            /* collect ifctl received properties for this interface */
+            foreach (['nameserver', 'prefix', 'router', 'searchdomain'] as $ifctl) {
+                $items = [];
+                foreach (['', 'v6'] as $ext) {
+                    if (is_file("/tmp/{$if}_{$ifctl}{$ext}")) {
+                        $items[] = trim(file_get_contents("/tmp/{$if}_{$ifctl}{$ext}"));
+                    }
+                }
+                if (!empty($items)) {
+                    $tmp["ifctl.{$ifctl}"] =  $items;
+                }
+            }
 
             $tmp['status'] = (!empty($details['flags']) && in_array('up', $details['flags'])) ? 'up' : 'down';
             if (!empty($details['status'])) {
@@ -173,6 +189,12 @@ class OverviewController extends ApiControllerBase
             $tmp['link_type'] = !empty($config['ipaddr']) ? $config['ipaddr'] : 'none';
             if (Util::isIpAddress($tmp['link_type'])) {
                 $tmp['link_type'] = 'static';
+            } elseif (empty($config['ipaddr']) && !empty(!empty($config['ipaddrv6']))) {
+                /* link_type prefers ipv4, but if none is found, show ipv6 type */
+                $tmp['link_type'] = $config['ipaddrv6'];
+                if (Util::isIpAddress($tmp['link_type'])) {
+                    $tmp['link_type'] = 'static';
+                }
             }
 
             /* parse IP configuration */
