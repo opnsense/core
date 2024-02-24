@@ -123,6 +123,7 @@ function unbound_service_stop()
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
     mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
+    mwexecf('/sbin/umount %s', '/var/unbound/lib');
 }
 
 function unbound_generate_config()
@@ -142,6 +143,7 @@ function unbound_generate_config()
 
     mwexecf('/sbin/mount -t devfs devfs %s', '/var/unbound/dev');
     mwexecf('/sbin/mount -r -t nullfs %s %s', [$python_dir, $chroot_python_dir]);
+    mwexecf('/sbin/mount -r -t nullfs %s %s', ['/lib', '/var/unbound/lib']);
 
     $optimization = unbound_optimization();
 
