@@ -1355,7 +1355,7 @@ legacy:
 # extra option: auto - which means drop-flow or drop-packet (as explained above)
 # in IPS mode, and ignore in IDS mode. Exception policy values are: drop-packet,
 # drop-flow, reject, bypass, pass-packet, pass-flow, ignore (disable).
-exception-policy: auto
+exception-policy: ignore
 
 # IP Reputation
 #reputation-categories-file: /usr/local/etc/suricata/iprep/categories.txt
