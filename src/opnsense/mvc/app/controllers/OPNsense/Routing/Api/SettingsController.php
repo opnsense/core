@@ -194,6 +194,16 @@ class SettingsController extends ApiMutableModelControllerBase
             if ($uuid != null) {
                 $gateway = $this->getModel()->getNodeByReference('gateway_item.' . $uuid);
                 $cfg = Config::getInstance()->object();
+                foreach ($cfg->interfaces->children() as $tag => $interface) {
+                    if ((string)$interface->gateway == (string)$gateway->name) {
+                        throw new UserException(sprintf(
+                            gettext("Gateway %s cannot be deleted because it is in use on Interface '%s'"),
+                            $gateway->name,
+                            $interface->descr ?? $tag
+                        ));
+                    }
+                }
+
                 $groups = [];
                 foreach ($cfg->gateways->children() as $tag => $gw_group) {
                     if ($tag == 'gateway_group' && !empty($gw_group)) {
