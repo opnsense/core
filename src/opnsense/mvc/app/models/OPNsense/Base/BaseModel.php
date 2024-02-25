@@ -86,6 +86,12 @@ abstract class BaseModel
     private static $internalCacheReflectionClasses = null;
 
     /**
+     * uuid missing on load
+     * @var bool
+     */
+    private $internalMissingUuids = false;
+
+    /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
      */
@@ -253,6 +259,7 @@ abstract class BaseModel
                                 $tagUUID = (string)$conf_section->attributes()['uuid'];
                             } else {
                                 $tagUUID = $internal_data->generateUUID();
+                                $this->internalMissingUuids = true;
                             }
 
                             // iterate array items from config data
@@ -699,6 +706,10 @@ abstract class BaseModel
     public function runMigrations()
     {
         if ($this->isVolatile() || $this->isLegacyMapper()) {
+            if ($this->isLegacyMapper() && $this->internalMissingUuids) {
+                $this->serializeToConfig();
+                return true;
+            }
             return false;
         } elseif (version_compare($this->internal_current_model_version ?? '0.0.0', $this->internal_model_version, '<')) {
             $upgradePerformed = false;
