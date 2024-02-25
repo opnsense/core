@@ -1,0 +1,13 @@
+<model>
+    <mount>/cert+</mount>
+    <version>1.0.0</version>
+    <items>
+        <cert type="ArrayField">
+            <refid type="TextField"/>
+            <descr type="DescriptionField"/>
+            <caref type="TextField"/>
+            <crt type="TextField"/>
+            <prv type="TextField"/>
+        </cert>
+    </items>
+</model>

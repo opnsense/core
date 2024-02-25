@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>cert.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.crt</id>
+        <label>Certificate</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.prv</id>
+        <label>Private Key</label>
+        <type>textbox</type>
+    </field>
+</form>
