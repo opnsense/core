@@ -342,6 +342,7 @@ remote-control:
 EOD;
 
     file_put_contents('/var/unbound/unbound.conf', $unboundconf);
+    copy('/usr/local/opnsense/data/unbound/root.min.hints', '/var/unbound/root.hints');
     configd_run('template reload OPNsense/Unbound/*');
 }
 

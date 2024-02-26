@@ -208,6 +208,7 @@
 /usr/local/opnsense/contrib/tzdata/iso3166.tab
 /usr/local/opnsense/contrib/tzdata/zone.tab
 /usr/local/opnsense/data/firmware/upgrade.html
+/usr/local/opnsense/data/unbound/root.min.hints
 /usr/local/opnsense/mvc/app/cache/README
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -1259,7 +1260,6 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
-/usr/local/opnsense/service/templates/OPNsense/Unbound/core/root.min.hints
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/safesearch.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS
