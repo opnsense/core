@@ -461,7 +461,7 @@ abstract class BaseModel
      */
     public function isLegacyMapper()
     {
-        return str_ends_with($this->internal_mountpoint, '+') && strpos($model_xml->mount, "//") !== 0;
+        return str_ends_with($this->internal_mountpoint, '+') && strpos($this->internal_mountpoint, "//") !== 0;
     }
 
 
