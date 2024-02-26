@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -61,6 +61,10 @@
             <prefetch type="BooleanField"/>
             <prefetchkey type="BooleanField"/>
             <dnssecstripped type="BooleanField"/>
+            <aggressivensec type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </aggressivensec>
             <serveexpired type="BooleanField"/>
             <serveexpiredreplyttl type="NumericField"/>
             <serveexpiredttl type="NumericField"/>
