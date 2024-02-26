@@ -48,12 +48,12 @@ abstract class BaseField
     /**
      * @var array child nodes
      */
-    protected $internalChildnodes = array();
+    protected $internalChildnodes = [];
 
     /**
      * @var array constraints for this field, additional to fieldtype
      */
-    protected $internalConstraints = array();
+    protected $internalConstraints = [];
 
     /**
      * @var null pointer to parent
@@ -108,7 +108,7 @@ abstract class BaseField
     /**
      * @var array key value store for attributes (will be saved as xml attributes)
      */
-    protected $internalAttributes = array();
+    protected $internalAttributes = [];
 
     /**
      * @var string $internalToLower
@@ -222,6 +222,10 @@ abstract class BaseField
         $this->internalIsVirtual = false;
         $this->internalValue = "";
         $this->internalReference = null;
+        /* clone children */
+        foreach ($this->internalChildnodes as $nodeName => $node) {
+            $this->internalChildnodes[$nodeName] = clone $node;
+        }
     }
 
     /**
@@ -512,7 +516,7 @@ abstract class BaseField
      */
     private function getConstraintValidators()
     {
-        $result = array();
+        $result = [];
         foreach ($this->internalConstraints as $name => $constraint) {
             if (!empty($constraint['reference'])) {
                 // handle references (should use the same level)
