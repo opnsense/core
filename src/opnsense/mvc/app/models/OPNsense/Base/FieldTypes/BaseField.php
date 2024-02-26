@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Deciso B.V.
+ * Copyright (C) 2015-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,6 +104,11 @@ abstract class BaseField
      * @var bool node (and subnodes) is virtual
      */
     protected $internalIsVirtual = false;
+
+    /**
+     * @var bool node (and subnodes) is volatile (non persistent, but should validate when offered)
+     */
+    protected $internalIsVolatile = false;
 
     /**
      * @var array key value store for attributes (will be saved as xml attributes)
@@ -574,6 +579,23 @@ abstract class BaseField
     }
 
     /**
+     * Mark this node as volatile
+     */
+    public function setInternalIsVolatile()
+    {
+        $this->internalIsVolatile = true;
+    }
+
+    /**
+     * returns if this node is volatile, the framework uses this to determine if this node should be stored.
+     * @return bool is volatile node
+     */
+    public function getInternalIsVolatile()
+    {
+        return $this->internalIsVolatile;
+    }
+
+    /**
      * getter for internal tag name
      * @return null|string xml tagname to use
      */
@@ -687,8 +709,8 @@ abstract class BaseField
         }
 
         foreach ($this->iterateItems() as $key => $FieldNode) {
-            if ($FieldNode->getInternalIsVirtual()) {
-                // Virtual fields should never be persisted
+            if ($FieldNode->getInternalIsVirtual() || $FieldNode->getInternalIsVolatile()) {
+                // Virtual and volatile fields should never be persisted
                 continue;
             }
             $FieldNode->addToXMLNode($subnode);
