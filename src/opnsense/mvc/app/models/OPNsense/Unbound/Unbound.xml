@@ -62,6 +62,10 @@
             <prefetch type="BooleanField"/>
             <prefetchkey type="BooleanField"/>
             <dnssecstripped type="BooleanField"/>
+            <aggressivensec type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </aggressivensec>
             <serveexpired type="BooleanField"/>
             <serveexpiredreplyttl type="NumericField"/>
             <serveexpiredttl type="NumericField"/>

@@ -34,6 +34,16 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.aggressivensec</id>
+        <label>Aggressive NSEC</label>
+        <type>checkbox</type>
+        <help>
+            Enable RFC8198-based aggressive use of the DNSSEC-Validated cache.
+            Helps to reduce the query rate towards targets but may lead to false negative responses
+            if there are errors in the zone config.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.qnameminstrict</id>
         <label>Strict QNAME Minimisation</label>
         <type>checkbox</type>
