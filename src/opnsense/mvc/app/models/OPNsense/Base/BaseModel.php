@@ -209,6 +209,9 @@ abstract class BaseModel
             }
             $fieldObject = $field_rfcls->newInstance($new_ref, $tagName);
             $fieldObject->setParentModel($this);
+            if (($xmlNode->attributes()["volatile"] ?? '') == 'true') {
+                $fieldObject->setInternalIsVolatile();
+            }
 
             // now add content to this model (recursive)
             if ($fieldObject->isContainer() == false) {
