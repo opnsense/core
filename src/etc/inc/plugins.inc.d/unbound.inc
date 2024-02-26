@@ -148,7 +148,6 @@ function unbound_generate_config()
     $module_config = 'python ';
     $anchor_file = '';
     $dns64_config = '';
-    $root_hints = (!empty($general['builtin_hints'])) ? '# use builtin root hints' : 'root-hints: /var/unbound/root.hints';
 
     if (!empty($general['dns64'])) {
         if (!empty($general['dns64prefix'])) {
@@ -284,7 +283,7 @@ chroot: /var/unbound
 username: unbound
 directory: /var/unbound
 pidfile: /var/run/unbound.pid
-{$root_hints}
+root-hints: /var/unbound/root.hints
 use-syslog: yes
 port: {$port}
 include: /var/unbound/advanced.conf
