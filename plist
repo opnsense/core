@@ -496,6 +496,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Rule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Interface/Autoconf.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ArchiveOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php

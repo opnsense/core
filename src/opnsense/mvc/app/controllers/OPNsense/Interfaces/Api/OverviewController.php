@@ -155,8 +155,7 @@ class OverviewController extends ApiControllerBase
                 continue;
             }
             /* collect ifctl received properties for this interface */
-            foreach (Autoconf::all($if) as $key => $value)
-            {
+            foreach (Autoconf::all($if) as $key => $value) {
                 $tmp["ifctl.{$key}"] =  $value;
             }
 

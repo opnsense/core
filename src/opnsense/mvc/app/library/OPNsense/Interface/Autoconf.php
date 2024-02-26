@@ -33,7 +33,7 @@ class Autoconf
     /**
      * @return string fetch ifctl collected data
      */
-    private static function get($if, $type, $ipproto='inet')
+    private static function get($if, $type, $ipproto = 'inet')
     {
         $fsuffix = $ipproto == 'inet6' ? 'v6' : '';
         foreach (['', ':slaac'] as $isuffix) {
@@ -48,7 +48,7 @@ class Autoconf
     /**
      * @return string nameserver when offered
      */
-    public static function getNameserver($if, $ipproto='inet')
+    public static function getNameserver($if, $ipproto = 'inet')
     {
         return self::get($if, 'nameserver', $ipproto);
     }
@@ -56,7 +56,7 @@ class Autoconf
     /**
      * @return string router when offered
      */
-    public static function getRouter($if, $ipproto='inet')
+    public static function getRouter($if, $ipproto = 'inet')
     {
         return self::get($if, 'router', $ipproto);
     }
@@ -64,7 +64,7 @@ class Autoconf
     /**
      * @return string prefix when offered
      */
-    public static function getPrefix($if, $ipproto='inet')
+    public static function getPrefix($if, $ipproto = 'inet')
     {
         return self::get($if, 'prefix', $ipproto);
     }
@@ -72,7 +72,7 @@ class Autoconf
     /**
      * @return string search domain when offered
      */
-    public static function getSearchdomain($if, $ipproto='inet')
+    public static function getSearchdomain($if, $ipproto = 'inet')
     {
         return self::get($if, 'searchdomain', $ipproto);
     }
@@ -85,8 +85,7 @@ class Autoconf
     {
 
         $result = [];
-        foreach (['inet', 'inet6'] as $ipproto)
-        {
+        foreach (['inet', 'inet6'] as $ipproto) {
             $map = [
                 'nameserver' => self::getNameserver($if, $ipproto),
                 'prefix' => self::getPrefix($if, $ipproto),
