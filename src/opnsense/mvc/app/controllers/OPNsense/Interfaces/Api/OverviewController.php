@@ -33,6 +33,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
+use OPNsense\Interface\Autoconf;
 
 class OverviewController extends ApiControllerBase
 {
@@ -154,16 +155,9 @@ class OverviewController extends ApiControllerBase
                 continue;
             }
             /* collect ifctl received properties for this interface */
-            foreach (['nameserver', 'prefix', 'router', 'searchdomain'] as $ifctl) {
-                $items = [];
-                foreach (['', 'v6'] as $ext) {
-                    if (is_file("/tmp/{$if}_{$ifctl}{$ext}")) {
-                        $items[] = trim(file_get_contents("/tmp/{$if}_{$ifctl}{$ext}"));
-                    }
-                }
-                if (!empty($items)) {
-                    $tmp["ifctl.{$ifctl}"] =  $items;
-                }
+            foreach (Autoconf::all($if) as $key => $value)
+            {
+                $tmp["ifctl.{$key}"] =  $value;
             }
 
             $tmp['status'] = (!empty($details['flags']) && in_array('up', $details['flags'])) ? 'up' : 'down';
