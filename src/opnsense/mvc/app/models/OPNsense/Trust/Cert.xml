@@ -2,12 +2,49 @@
     <mount>/cert+</mount>
     <version>1.0.0</version>
     <items>
-        <cert type="ArrayField">
+        <cert type=".\CertificatesField">
             <refid type="TextField"/>
             <descr type="DescriptionField"/>
-            <caref type="TextField"/>
+            <caref type="CertificateField">
+                <type>ca</type>
+                <BlankDesc>self-signed</BlankDesc>
+                <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+            </caref>
             <crt type="TextField"/>
+            <csr type="TextField"/>
             <prv type="TextField"/>
+            <city type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </city>
+            <state type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </state>
+            <organization type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </organization>
+            <country type="CountryField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+                <Default>NL</Default>
+            </country>
+            <email type="EmailField"/>
+            <commonname type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </commonname>
+            <ocsp_uri type="UrlField" volatile="true"/>
+            <altnames_dns type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_dns>
+            <altnames_ip type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_ip>
+            <altnames_uri type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_uri>
+            <altnames_email type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
+            </altnames_email>
+            <valid_from type="EmailField"/>
+            <valid_to type="EmailField"/>
         </cert>
     </items>
 </model>

@@ -46,17 +46,19 @@
 
    </script>
 
-
    <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-       <li class="active"><a data-toggle="tab" href="#cso">{{ lang._('Certificates') }}</a></li>
+       <li class="active"><a data-toggle="tab" href="#cert">{{ lang._('Certificates') }}</a></li>
    </ul>
    <div class="tab-content content-box">
-       <div id="cso" class="tab-pane fade in active">
-           <table id="grid-cert" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCert">
+       <div id="cert" class="tab-pane fade in active">
+            <table id="grid-cert" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCert">
                <thead>
                    <tr>
                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                        <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
+                       <th data-column-id="caref" data-type="string">{{ lang._('Issuer') }}</th>
+                       <th data-column-id="valid_from" data-type="datetime">{{ lang._('Valid from') }}</th>
+                       <th data-column-id="valid_to" data-type="datetime">{{ lang._('Valid to') }}</th>
                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                    </tr>
                </thead>

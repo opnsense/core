@@ -30,6 +30,13 @@ namespace OPNsense\Trust;
 
 class CertController extends \OPNsense\Base\IndexController
 {
+    protected function templateJSIncludes()
+    {
+        $result = parent::templateJSIncludes();
+        $result[] = '/ui/js/moment-with-locales.min.js';
+        return $result;
+    }
+
     public function indexAction()
     {
         $this->view->formDialogEditCert = $this->getForm("dialogCert");

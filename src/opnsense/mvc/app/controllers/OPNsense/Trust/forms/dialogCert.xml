@@ -1,17 +1,76 @@
 <form>
     <field>
+        <type>header</type>
+        <label>General</label>
+    </field>
+    <field>
         <id>cert.descr</id>
         <label>Description</label>
         <type>text</type>
     </field>
     <field>
-        <id>cert.crt</id>
-        <label>Certificate</label>
+        <id>cert.caref</id>
+        <label>Issuer</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.country</id>
+        <label>Country Code</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.state</id>
+        <label>State or Province</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.city</id>
+        <label>City</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.organization</id>
+        <label>Organization</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.email</id>
+        <label>Email Address</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.commonname</id>
+        <label>Common Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>cert.ocsp_uri</id>
+        <label>OCSP uri</label>
+        <type>text</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Alternative Names</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>cert.altnames_dns</id>
+        <label>DNS domain names</label>
         <type>textbox</type>
     </field>
     <field>
-        <id>cert.prv</id>
-        <label>Private Key</label>
+        <id>cert.altnames_ip</id>
+        <label>IP adresses</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.altnames_uri</id>
+        <label>URIs</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.altnames_email</id>
+        <label>Email addresses</label>
         <type>textbox</type>
     </field>
 </form>

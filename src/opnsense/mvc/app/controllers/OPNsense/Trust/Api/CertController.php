@@ -41,7 +41,7 @@ class CertController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase('cert', ['descr']);
+        return $this->searchBase('cert', ['descr', 'caref', 'valid_from', 'valid_to']);
     }
     public function getAction($uuid = null)
     {
@@ -49,11 +49,11 @@ class CertController extends ApiMutableModelControllerBase
     }
     public function addAction()
     {
-        return $this->addBase('cso', 'cert');
+        return $this->addBase('cert', 'cert');
     }
     public function setAction($uuid = null)
     {
-        return $this->setBase('cso', 'cert', $uuid);
+        return $this->setBase('cert', 'cert', $uuid);
     }
     public function delAction($uuid)
     {
