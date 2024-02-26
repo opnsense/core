@@ -3,7 +3,7 @@
         <id>group.ifname</id>
         <label>Name</label>
         <type>text</type>
-        <help>No numbers or spaces are allowed. Only characters in a-zA-Z</help>
+        <help>Only texts containing letters, digits and underscores with a maximum length of 15 characters are allowed and the name may not end with a digit.</help>
     </field>
     <field>
         <id>group.members</id>
