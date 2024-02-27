@@ -771,7 +771,7 @@ $( document ).ready(function() {
                     } elseif (($rule->getInterface() == "" || strpos($rule->getInterface(), ",") !== false) && $selected_if == "FloatingRules") {
                         // floating type of rule and "floating" view
                         $is_selected = true;
-                    } elseif ($rule->getInterface() == "" || in_array($selected_if, explode(',', $rule->getInterface())) || in_array($rule->getInterface(), $ifgroups)) {
+                    } elseif ($rule->getInterface() == "" || !empty(array_intersect(array_merge([$selected_if], $ifgroups), explode(',', $rule->getInterface())))) {
                         // rule is floating or of group type and matches this interface
                         $is_selected = true;
                     }
@@ -836,7 +836,7 @@ $( document ).ready(function() {
                               <a style="cursor: pointer;" title="<?=html_safe(gettext('Affects all interfaces'));?>" data-placement='bottom' data-toggle="tooltip">
                                 <?=$intf_count;?>
                               </a>
-                          <?php elseif ($intf_count != '1' || $selected_if == 'FloatingRules'): ?>
+                          <?php elseif ($intf_count != '1' || $selected_if != $rule->getInterface() || $selected_if == 'FloatingRules'): ?>
                             <?= !empty($rule->getRawRule()['interfacenot']) ? '!' : '';?>
                             <a style="cursor: pointer;" class='interface_tooltip' data-interfaces="<?=$rule->getInterface();?>">
                               <?=$intf_count;?>
