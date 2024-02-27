@@ -297,6 +297,18 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * Hook to be overridden if the controller is to take an action when
+     * setBase/addBase is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @throws UserException when action is not possible (and save should be aborted)
+     */
+    protected function setBaseHook($node)
+    {
+    }
+
+
+    /**
      * Update model settings
      * @return array status / validation errors
      * @throws \Phalcon\Filter\Validation\Exception on validation issues
@@ -409,6 +421,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
+                $this->setBaseHook($node);
                 // save config if validated correctly
                 $this->save(false, true);
                 $result = array(
@@ -492,6 +505,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
                 $result = $this->validate($node, $post_field, true);
                 if (empty($result['validations'])) {
+                    $this->setBaseHook($node);
                     // save config if validated correctly
                     $this->save(false, true);
                     $result = ["result" => "saved"];
