@@ -57,6 +57,7 @@
                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                        <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
                        <th data-column-id="caref" data-type="string">{{ lang._('Issuer') }}</th>
+                       <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                        <th data-column-id="valid_from" data-type="datetime">{{ lang._('Valid from') }}</th>
                        <th data-column-id="valid_to" data-type="datetime">{{ lang._('Valid to') }}</th>
                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>

@@ -31,7 +31,7 @@ namespace OPNsense\Trust;
 use OPNsense\Core\Config;
 
 /**
- * Wrapper around legacy trust store
+ * Wrapper around [legacy] trust store
  * @package OPNsense\Trust
  */
 class Store
@@ -124,5 +124,27 @@ class Store
             $chain[] = base64_decode((string)$item->crt);
         }
         return implode("\n", $chain);
+    }
+
+    /**
+     * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
+     *
+     * @param $dn
+     * @return string The name of the temporary config file.
+     */
+    public static function createTempOpenSSLconfig($extns = [])
+    {
+        // define temp filename to use for openssl.cnf and add extensions values to it
+        $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+
+        $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+
+        foreach (array_keys($extns) as $extnTag) {
+            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
+            // Overwrite the placeholders for this property
+            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
+        }
+        file_put_contents($configFilename, $template);
+        return $configFilename;
     }
 }

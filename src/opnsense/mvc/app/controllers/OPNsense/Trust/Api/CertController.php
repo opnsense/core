@@ -29,6 +29,7 @@
 namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 
 /**
  * Class CertController
@@ -39,9 +40,15 @@ class CertController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'cert';
     protected static $internalModelClass = 'OPNsense\Trust\Cert';
 
+
+    protected function setBaseHook($node)
+    {
+        throw new UserException("Not allowed to save yet", (string)$node->action);
+    }
+
     public function searchAction()
     {
-        return $this->searchBase('cert', ['descr', 'caref', 'valid_from', 'valid_to']);
+        return $this->searchBase('cert', ['descr', 'caref', 'name', 'valid_from', 'valid_to']);
     }
     public function getAction($uuid = null)
     {

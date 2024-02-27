@@ -54,9 +54,10 @@ class CertificatesField extends ArrayField
             if (!empty($cert_data)) {
                 $crt = @openssl_x509_parse($cert_data);
                 if ($crt !== null) {
-                    // valid from/to
+                    // valid from/to and name of this cert
                     $node->valid_from = $crt['validFrom_time_t'];
                     $node->valid_to = $crt['validTo_time_t'];
+                    $node->name = $crt['name'];
                     foreach ($issue_map as $key => $target) {
                         if (!empty($crt['issuer'][$key])) {
                             $node->$target = $crt['issuer'][$key];

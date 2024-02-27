@@ -13,6 +13,42 @@
             <crt type="TextField"/>
             <csr type="TextField"/>
             <prv type="TextField"/>
+            <action type="OptionField" volatile="true">
+                <default>internal</default>
+                <required>Y</required>
+                <OptionValues>
+                    <internal>Create an internal Certificate</internal>
+                    <external>Create a Certificate Signing Request</external>
+                    <import>Import an existing Certificate</import>
+                    <sign>Sign a Certificate Signing Request</sign>
+                </OptionValues>
+            </action>
+            <key type="OptionField" volatile="true">
+                <required>Y</required>
+                <default>RSA-2048</default>
+                <OptionValues>
+                    <RSA-512>RSA-512</RSA-512>
+                    <RSA-1024>RSA-1024</RSA-1024>
+                    <RSA-2048>RSA-2048</RSA-2048>
+                    <RSA-3072>RSA-3072</RSA-3072>
+                    <RSA-4096>RSA-4096</RSA-4096>
+                    <RSA-8192>RSA-8192</RSA-8192>
+                    <EC-prime256v1>Elliptic Curve prime256v1</EC-prime256v1>
+                    <EC-secp384r1>Elliptic Curve secp384r1</EC-secp384r1>
+                    <EC-secp521r1>Elliptic Curve secp521r1</EC-secp521r1>
+                </OptionValues>
+            </key>
+            <digest type="OptionField" volatile="true">
+                <required>Y</required>
+                <default>sha256</default>
+                <OptionValues>
+                    <sha1>SHA1</sha1>
+                    <sha224>SHA224</sha224>
+                    <sha256>SHA256</sha256>
+                    <sha384>SHA384</sha384>
+                    <sha512>SHA512</sha512>
+                </OptionValues>
+            </digest>
             <city type="TextField" volatile="true">
                 <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
             </city>
@@ -43,6 +79,7 @@
             <altnames_email type="TextField" volatile="true">
                 <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
             </altnames_email>
+            <name type="TextField" volatile="true"/>
             <valid_from type="TextField" volatile="true"/>
             <valid_to type="TextField" volatile="true"/>
         </cert>

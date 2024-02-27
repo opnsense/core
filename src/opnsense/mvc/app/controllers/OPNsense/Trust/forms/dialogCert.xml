@@ -1,5 +1,10 @@
 <form>
     <field>
+        <id>cert.action</id>
+        <label>Method</label>
+        <type>dropdown</type>
+    </field>
+    <field>
         <type>header</type>
         <label>General</label>
     </field>
@@ -7,6 +12,16 @@
         <id>cert.descr</id>
         <label>Description</label>
         <type>text</type>
+    </field>
+    <field>
+        <id>cert.key</id>
+        <label>Key type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.digest</id>
+        <label>Digest Algorithm</label>
+        <type>dropdown</type>
     </field>
     <field>
         <id>cert.caref</id>
