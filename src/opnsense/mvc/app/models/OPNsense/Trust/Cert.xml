@@ -43,8 +43,8 @@
             <altnames_email type="TextField" volatile="true">
                 <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f]*$/</Mask>
             </altnames_email>
-            <valid_from type="EmailField"/>
-            <valid_to type="EmailField"/>
+            <valid_from type="TextField" volatile="true"/>
+            <valid_to type="TextField" volatile="true"/>
         </cert>
     </items>
 </model>
