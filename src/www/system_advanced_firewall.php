@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['lb_use_sticky']);
         }
 
-        if ($pconfig['noantilockout'] == "yes") {
+        if (!empty($pconfig['noantilockout'])) {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
             unset($config['system']['webgui']['noantilockout']);
@@ -516,7 +516,7 @@ include("head.inc");
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Outbound NAT') ?></td>
                 <td>
-                  <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?php if ($pconfig['logoutboundnat']) echo "checked=\"checked\""; ?> />
+                  <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?= !empty($pconfig['logoutboundnat']) ? 'checked="checked"' : '' ?> />
                   <?= gettext('Log packets matched by automatic outbound NAT rules') ?>
                 </td>
               </tr>
@@ -530,7 +530,7 @@ include("head.inc");
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Private networks') ?></td>
                 <td>
-                  <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
+                  <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?= !empty($pconfig['logprivatenets']) ? 'checked="checked"' : '' ?> />
                   <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
                 </td>
               </tr>
