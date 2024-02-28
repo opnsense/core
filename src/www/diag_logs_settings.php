@@ -34,22 +34,6 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
-function clear_all_log_files()
-{
-    $it = new RecursiveDirectoryIterator('/var/log');
-
-    foreach(new RecursiveIteratorIterator($it) as $file) {
-        if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
-            if (strpos($file->getFilename(), 'flowd') === false) {
-                @unlink((string)$file);
-            }
-        }
-    }
-
-    system_syslog_start();
-    plugins_configure('dhcp');
-}
-
 function is_valid_syslog_server($target) {
     return (is_ipaddr($target)
       || is_ipaddrwithport($target)
@@ -70,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
-        clear_all_log_files();
+        system_syslog_reset();
         $pconfig = $_POST;
         $savemsg = gettext("The log files have been reset.");
     } else {
