@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
     $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
-    $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
@@ -92,14 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
             $oldnologbogons = isset($config['syslog']['nologbogons']);
             $oldnologprivatenets = isset($config['syslog']['nologprivatenets']);
-            $oldnologlighttpd = isset($config['syslog']['nologlighttpd']);
             $oldlogoutboundnat = isset($config['syslog']['logoutboundnat']);
             $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
             $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
             $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
             $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
             $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
-            $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
             write_config();
 
@@ -114,11 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             $savemsg = get_std_save_message();
-
-            if ($oldnologlighttpd !== isset($config['syslog']['nologlighttpd'])) {
-                configd_run('webgui restart 2', true);
-                $savemsg .= "<br />" . gettext("WebGUI process is restarting.");
-            }
         }
     }
 }
@@ -238,16 +230,6 @@ $(document).ready(function() {
                     <td>
                       <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
                       <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_loglighttpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Web Server Log') ?></td>
-                    <td>
-                      <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log errors from the web server process.");?>
-                      <div class="hidden" data-for="help_for_loglighttpd">
-                        <?=gettext('Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.');?>
-                      </div>
                     </td>
                   </tr>
                   <tr>

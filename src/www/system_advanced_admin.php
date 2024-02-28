@@ -78,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
     $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
+    /* XXX not really a syslog setting */
+    $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
+
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -157,10 +160,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['compression'] != $pconfig['compression'] ||
             $config['system']['webgui']['ssl-ciphers'] != $newciphers ||
             $config['system']['webgui']['interfaces'] != $newinterfaces ||
-            (empty($pconfig['httpaccesslog'])) != empty($config['system']['webgui']['httpaccesslog']) ||
-            (empty($pconfig['ssl-hsts'])) != empty($config['system']['webgui']['ssl-hsts']) ||
+            empty($pconfig['httpaccesslog']) != empty($config['system']['webgui']['httpaccesslog']) ||
+            empty($pconfig['ssl-hsts']) != empty($config['system']['webgui']['ssl-hsts']) ||
             !empty($pconfig['disablehttpredirect']) != !empty($config['system']['webgui']['disablehttpredirect']) ||
-            ($config['system']['deployment'] ?? '') != $pconfig['deployment'];
+            ($config['system']['deployment'] ?? '') != $pconfig['deployment'] ||
+            !empty($config['syslog']['nologlighttpd']) != empty($pconfig['loglighttpd']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -168,6 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
+        $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
         if (!empty($pconfig['deployment'])) {
             $config['system']['deployment'] = $pconfig['deployment'];
@@ -687,6 +692,16 @@ $(document).ready(function() {
                   <?=gettext("Enable access log"); ?>
                   <div class="hidden" data-for="help_for_httpaccesslog">
                     <?=gettext("Enable access logging on the web GUI for debugging and analysis purposes.") ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_loglighttpd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Server Log') ?></td>
+                <td>
+                  <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?=!empty($pconfig['loglighttpd']) ? "checked=\"checked\"" :""; ?> />
+                  <?=gettext("Log server errors") ?>
+                  <div class="hidden" data-for="help_for_loglighttpd">
+                    <?=gettext('If this is checked, errors from the web GUI will appear in the main system log.') ?>
                   </div>
                 </td>
               </tr>
