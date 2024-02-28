@@ -471,6 +471,7 @@ function core_configure()
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['core_routing_batch:2'],
+        'syslog_reset' => ['system_syslog_reset'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];
 }

@@ -414,6 +414,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/forms/dialogDestination.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/forms/local.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/IndexController.php
@@ -706,6 +707,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Syslog/Syslog.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
@@ -2006,7 +2008,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/diag_defaults.php
-/usr/local/www/diag_logs_settings.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_1to1.php

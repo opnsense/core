@@ -1304,7 +1304,7 @@ include("head.inc");
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
                       <?= gettext('Log packets that are handled by this rule') ?>
                       <div class="hidden" data-for="help_for_log">
-                        <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
+                        <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="ui/syslog/">','</a>') ?>
                       </div>
                     </td>
                   </tr>

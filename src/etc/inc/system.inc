@@ -812,6 +812,22 @@ function system_syslog_stop()
     mwexecf('/usr/sbin/service syslog-ng stop');
 }
 
+function system_syslog_reset($verbose = false)
+{
+    $it = new RecursiveDirectoryIterator('/var/log');
+
+    foreach (new RecursiveIteratorIterator($it) as $file) {
+        if ($file->isFile() && strpos($file->getFilename(), '.log') > -1) {
+            if (strpos($file->getFilename(), 'flowd') === false) {
+                @unlink((string)$file);
+            }
+        }
+    }
+
+    system_syslog_start($verbose);
+    plugins_configure('dhcp', $verbose);
+}
+
 /*
  *     get_memory()
  *     returns an array listing the amount of
