@@ -193,7 +193,7 @@ class Store
             }
         }
         /* something went wrong, return openssl error */
-        if (empty($result)){
+        if (empty($result)) {
             $result['error'] = '';
             while ($ssl_err = openssl_error_string()) {
                 $result['error'] .= " " . $ssl_err;

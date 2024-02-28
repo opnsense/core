@@ -31,7 +31,6 @@ namespace OPNsense\Trust\FieldTypes;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 
-
 class CertificatesField extends ArrayField
 {
     protected function actionPostLoadingEvent()
