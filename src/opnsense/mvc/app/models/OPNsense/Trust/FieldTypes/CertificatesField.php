@@ -31,59 +31,19 @@ namespace OPNsense\Trust\FieldTypes;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\TextField;
 
+
 class CertificatesField extends ArrayField
 {
     protected function actionPostLoadingEvent()
     {
-        $issue_map = [
-            'L' => 'city',
-            'ST' => 'state',
-            'O' => 'organization',
-            'C' => 'country',
-            'emailAddress' => 'email',
-            'CN' => 'commonname'
-        ];
-        $altname_map = [
-            'IP Address' => 'altnames_ip',
-            'DNS' => 'altnames_dns',
-            'email' => 'altnames_email',
-            'URI' => 'altnames_uri',
-        ];
         foreach ($this->internalChildnodes as $node) {
             $cert_data = base64_decode($node->crt);
             if (!empty($cert_data)) {
-                $crt = @openssl_x509_parse($cert_data);
-                if ($crt !== null) {
-                    // valid from/to and name of this cert
-                    $node->valid_from = $crt['validFrom_time_t'];
-                    $node->valid_to = $crt['validTo_time_t'];
-                    $node->name = $crt['name'];
-                    foreach ($issue_map as $key => $target) {
-                        if (!empty($crt['issuer'][$key])) {
-                            $node->$target = $crt['issuer'][$key];
-                        }
-                    }
-                    // OCSP URI
-                    if (!empty($crt['extensions']) && !empty($crt['extensions']['authorityInfoAccess'])) {
-                        foreach (explode("\n", $crt['extensions']['authorityInfoAccess']) as $line) {
-                            if (str_starts_with($line, 'OCSP - URI')) {
-                                $node->ocsp_uri = explode(":", $line, 2)[1];
-                            }
-                        }
-                    }
-                    // Altnames
-                    if (!empty($crt['extensions']) && !empty($crt['extensions']['subjectAltName'])) {
-                        $altnames = [];
-                        foreach (explode(',', trim($crt['extensions']['subjectAltName'])) as $altname) {
-                            $parts = explode(':', trim($altname), 2);
-                            $target = $altname_map[$parts[0]];
-                            if (isset($altnames[$target])) {
-                                $altnames[$target] = [];
-                            }
-                            $altnames[$target][] = $parts[1];
-                        }
-                        foreach ($altnames as $key => $values) {
-                            $node->$target = implode('\n', $values);
+                $payload = \OPNsense\Trust\Store::parseX509($cert_data);
+                if ($payload !== false) {
+                    foreach ($payload as $key => $value) {
+                        if (isset($node->$key)) {
+                            $node->$key = $value;
                         }
                     }
                 }

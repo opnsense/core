@@ -111,6 +111,161 @@ class Store
         return false;
     }
 
+    /**
+     * Create a new certificate, when signed by a CA, make sure to serialize the config after doing so,
+     * it's the callers responsibility to update the serial number administration of the supplied CA.
+     * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
+     *
+     * @param string $keylen_curve rsa key length or elliptic curve name to use
+     * @param int $lifetime in number of days
+     * @param array $dn subject to use
+     * @param string $digest_alg digest algorithm
+     * @param string $caref key to certificate authority
+     * @param string $x509_extensions openssl section to use
+     * @param array $extns template fragments to replace in openssl.cnf
+     * @return array containing generated certificate or returned errors
+     */
+    public static function createCert(
+        $keylen_curve,
+        $lifetime,
+        $dn,
+        $digest_alg,
+        $caref = null,
+        $x509_extensions = 'usr_cert',
+        $extns = []
+    ) {
+        $result = [];
+        $ca = null;
+        $ca_res_crt = null;
+        $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
+        if ($caref !== null) {
+            $ca = self::getCA($caref);
+            if ($ca == null || empty((string)$ca->prv)) {
+                $result = ['error' => 'missing CA key'];
+            }
+            $ca_res_crt = openssl_x509_read(base64_decode($ca->crt));
+            $ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($ca->prv), 1 => ""));
+            if (!$ca_res_key) {
+                $result = ['error' => 'invalid CA'];
+            }
+        }
+        if (!empty($result)) {
+            error_reporting($old_err_level);
+            return $result;
+        }
+
+        // handle parameters which can only be set via the configuration file
+        $config_filename = create_temp_openssl_config($extns);
+        $args = [
+            'config' => $config_filename,
+            'x509_extensions' => $x509_extensions,
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        ];
+        if (is_numeric($keylen_curve)) {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+            $args['private_key_bits'] = (int)$keylen_curve;
+        } else {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+            $args['curve_name'] = $keylen_curve;
+        }
+
+        // generate a new key pair
+        $res_key = openssl_pkey_new($args);
+        if ($res_key !== false) {
+            $res_csr = openssl_csr_new($dn, $res_key, $args);
+            if ($res_csr !== false) {
+                // self sign the certificate
+                $res_crt = openssl_csr_sign(
+                    $res_csr,
+                    $ca_res_crt,
+                    $ca_res_key ?? $res_key,
+                    $lifetime,
+                    $args,
+                    $ca_serial
+                );
+                if (openssl_pkey_export($res_key, $str_key) && openssl_x509_export($res_crt, $str_crt)) {
+                    $result = ['caref' => $caref, 'crt' => $str_crt, 'prv' =>  $str_key];
+                    if ($ca !== null) {
+                        $ca->serial = (int)$ca->serial + 1;
+                    }
+                }
+            }
+        }
+        /* something went wrong, return openssl error */
+        if (empty($result)){
+            $result['error'] = '';
+            while ($ssl_err = openssl_error_string()) {
+                $result['error'] .= " " . $ssl_err;
+            }
+        }
+
+        // remove tempfile (template)
+        @unlink($config_filename);
+        error_reporting($old_err_level);
+        return $result;
+    }
+
+    /**
+     * Extract certificate info into easy to use flattened chunks
+     * @return array|bool
+     */
+    public static function parseX509($cert)
+    {
+        $issue_map = [
+            'L' => 'city',
+            'ST' => 'state',
+            'O' => 'organization',
+            'C' => 'country',
+            'emailAddress' => 'email',
+            'CN' => 'commonname'
+        ];
+        $altname_map = [
+            'IP Address' => 'altnames_ip',
+            'DNS' => 'altnames_dns',
+            'email' => 'altnames_email',
+            'URI' => 'altnames_uri',
+        ];
+
+        $crt = @openssl_x509_parse($cert);
+        if ($crt !== null) {
+            $result = [];
+            // valid from/to and name of this cert
+            $result['valid_from'] = $crt['validFrom_time_t'];
+            $result['valid_to'] = $crt['validTo_time_t'];
+            $result['name'] = $crt['name'];
+            foreach ($issue_map as $key => $target) {
+                if (!empty($crt['issuer'][$key])) {
+                    $result[$target] = $crt['issuer'][$key];
+                }
+            }
+            // OCSP URI
+            if (!empty($crt['extensions']) && !empty($crt['extensions']['authorityInfoAccess'])) {
+                foreach (explode("\n", $crt['extensions']['authorityInfoAccess']) as $line) {
+                    if (str_starts_with($line, 'OCSP - URI')) {
+                        $result['ocsp_uri'] = explode(":", $line, 2)[1];
+                    }
+                }
+            }
+            // Altnames
+            if (!empty($crt['extensions']) && !empty($crt['extensions']['subjectAltName'])) {
+                $altnames = [];
+                foreach (explode(',', trim($crt['extensions']['subjectAltName'])) as $altname) {
+                    $parts = explode(':', trim($altname), 2);
+                    $target = $altname_map[$parts[0]];
+                    if (isset($altnames[$target])) {
+                        $altnames[$target] = [];
+                    }
+                    $altnames[$target][] = $parts[1];
+                }
+                foreach ($altnames as $key => $values) {
+                    $result[$target] = implode('\n', $values);
+                }
+            }
+            return $result;
+        }
+        return false;
+    }
 
     /**
      * Extract certificate chain

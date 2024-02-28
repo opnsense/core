@@ -6,12 +6,17 @@
     </field>
     <field>
         <type>header</type>
-        <label>General</label>
+        <label>Key</label>
     </field>
     <field>
-        <id>cert.descr</id>
-        <label>Description</label>
-        <type>text</type>
+        <id>cert.cert_type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>cert.private_key_location</id>
+        <label>Private key location</label>
+        <type>dropdown</type>
     </field>
     <field>
         <id>cert.key</id>
@@ -27,6 +32,15 @@
         <id>cert.caref</id>
         <label>Issuer</label>
         <type>dropdown</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General</label>
+    </field>
+    <field>
+        <id>cert.descr</id>
+        <label>Description</label>
+        <type>text</type>
     </field>
     <field>
         <id>cert.country</id>
