@@ -45,11 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['preservelogs'] =  !empty($config['syslog']['preservelogs']) ? $config['syslog']['preservelogs'] : null;
     $pconfig['maxfilesize'] =  !empty($config['syslog']['maxfilesize']) ? $config['syslog']['maxfilesize'] : null;
-    $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
-    $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
-    $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
-    $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
-    $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
@@ -72,12 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-
-
         if (count($input_errors) == 0) {
             if (empty($config['syslog'])) {
                 $config['syslog'] = [];
             }
+
             foreach (['preservelogs', 'maxfilesize'] as $fieldname) {
                 if (isset($pconfig[$fieldname]) && (strlen($pconfig[$fieldname]) > 0)) {
                     $config['syslog'][$fieldname] = (int)$pconfig[$fieldname];
@@ -87,28 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             $config['syslog']['disablelocallogging'] = !empty($pconfig['disablelocallogging']);
-            $oldnologdefaultblock = isset($config['syslog']['nologdefaultblock']);
-            $oldnologdefaultpass = isset($config['syslog']['nologdefaultpass']);
-            $oldnologbogons = isset($config['syslog']['nologbogons']);
-            $oldnologprivatenets = isset($config['syslog']['nologprivatenets']);
-            $oldlogoutboundnat = isset($config['syslog']['logoutboundnat']);
-            $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
-            $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
-            $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
-            $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
-            $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
 
             write_config();
 
             system_syslog_start();
-
-            if (($oldnologdefaultblock !== isset($config['syslog']['nologdefaultblock']))
-              || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
-              || ($oldnologbogons !== isset($config['syslog']['nologbogons']))
-              || ($oldlogoutboundnat !== isset($config['syslog']['logoutboundnat']))
-              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))) {
-              filter_configure();
-            }
 
             $savemsg = get_std_save_message();
         }
@@ -189,47 +165,6 @@ $(document).ready(function() {
                       <div class="hidden" data-for="help_for_maxfilesize">
                           <?=gettext("Maximum filesize per log file, when set and a logfile exceeds the amount specified, it will be rotated.");?>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Log Firewall Default Blocks') ?></td>
-                    <td>
-                      <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets matched from the default block rules put in the ruleset");?>
-                      <div class="hidden" data-for="help_for_logdefaultblock">
-                        <?=gettext("Hint: packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
-                      <?=gettext("Log packets matched from the default pass rules put in the ruleset");?>
-                      <div class="hidden" data-for="help_for_logdefaultblock">
-                        <?=gettext("Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?php if ($pconfig['logoutboundnat']) echo "checked=\"checked\""; ?> />
-                      <?= gettext('Log packets processed by automatic outbound NAT rules') ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?php if ($pconfig['logprivatenets']) echo "checked=\"checked\""; ?> />
-                      <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
                     </td>
                   </tr>
                   <tr>
