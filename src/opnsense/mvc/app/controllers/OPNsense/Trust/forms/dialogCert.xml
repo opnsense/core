@@ -7,6 +7,7 @@
     <field>
         <type>header</type>
         <label>Key</label>
+        <style>action action_internal action_reissue action_internal</style>
     </field>
     <field>
         <id>cert.cert_type</id>
@@ -31,11 +32,13 @@
     <field>
         <id>cert.caref</id>
         <label>Issuer</label>
+        <style>selectpicker action action_internal action_reissue</style>
         <type>dropdown</type>
     </field>
     <field>
         <type>header</type>
         <label>General</label>
+        <style>action action_internal action_reissue action_internal</style>
     </field>
     <field>
         <id>cert.descr</id>
@@ -86,6 +89,7 @@
         <type>header</type>
         <label>Alternative Names</label>
         <collapse>true</collapse>
+        <style>action action_internal action_reissue action_internal</style>
     </field>
     <field>
         <id>cert.altnames_dns</id>
@@ -126,5 +130,6 @@
         <id>cert.csr_payload</id>
         <label>Certificate signing request</label>
         <type>textbox</type>
+        <style>selectpicker action action_internal action_reissue action_internal</style>
     </field>
 </form>

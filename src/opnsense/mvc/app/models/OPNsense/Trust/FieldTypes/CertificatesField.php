@@ -126,7 +126,7 @@ class CertificatesField extends ArrayField
             if (!empty((string)$node->csr_payload)) {
                 $node->action = 'import_csr';
             } elseif (!empty((string)$node->crt_payload)) {
-                $node->action = 'replace';
+                $node->action = 'reissue';
             }
         }
         return parent::actionPostLoadingEvent();

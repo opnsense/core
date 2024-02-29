@@ -88,6 +88,11 @@
                 if (event.originalEvent === undefined) {
                     // lock valid options based on server offered action
                     let visible_options = [$(this).val()];
+                    if ($(this).val() == 'internal') {
+                        visible_options.push('internal');
+                        visible_options.push('external');
+                        visible_options.push('import');
+                    }
                     $("#cert\\.action option").each(function(){
                         if (visible_options.includes($(this).val())) {
                             $(this).attr('disabled', null);
@@ -96,7 +101,23 @@
                         }
                     });
                 }
-           });
+
+                let this_action = $(this).val();
+                $(".action").each(function(){
+                    let target = null;
+                    if ($(this)[0].tagName == 'DIV') {
+                        target = $(this)
+                    } else {
+                        target = $(this).closest("tr");
+                    }
+                    target.hide();
+                    if ($(this).hasClass('action_' + this_action)) {
+                        target.show();
+                    }
+                });
+            });
+
+
 
        });
 
