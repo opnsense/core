@@ -36,16 +36,27 @@ class CertificatesField extends ArrayField
     protected function actionPostLoadingEvent()
     {
         foreach ($this->internalChildnodes as $node) {
-            $cert_data = base64_decode($node->crt);
-            if (!empty($cert_data)) {
-                $payload = \OPNsense\Trust\Store::parseX509($cert_data);
-                if ($payload !== false) {
-                    foreach ($payload as $key => $value) {
-                        if (isset($node->$key)) {
-                            $node->$key = $value;
-                        }
+            if (!empty((string)$node->crt)) {
+                $node->crt_payload = (string)base64_decode($node->crt);
+                $payload = \OPNsense\Trust\Store::parseX509($node->crt_payload);
+            } elseif (!empty((string)$node->csr)) {
+                $node->csr_payload = (string)base64_decode($node->csr);
+                $payload = \OPNsense\Trust\Store::parseCSR($node->csr_payload);
+            } else {
+                $payload = false;
+            }
+            if ($payload !== false) {
+                foreach ($payload as $key => $value) {
+                    if (isset($node->$key)) {
+                        $node->$key = $value;
                     }
                 }
+            }
+            $node->prv_payload = !empty((string)$node->prv) ? (string)base64_decode($node->prv) : '';
+            if (!empty((string)$node->csr_payload)) {
+                $node->action = 'import_csr';
+            } elseif (!empty((string)$node->crt_payload)) {
+                $node->action = 'reissue';
             }
         }
         return parent::actionPostLoadingEvent();

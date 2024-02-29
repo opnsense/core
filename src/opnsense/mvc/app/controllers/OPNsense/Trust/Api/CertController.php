@@ -30,6 +30,8 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\Config;
+use OPNsense\Trust\Store as CertStore;
 
 /**
  * Class CertController
@@ -48,8 +50,13 @@ class CertController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase('cert', ['descr', 'caref', 'name', 'valid_from', 'valid_to']);
+        $carefs = $this->request->get('carefs');
+        $filter_funct = function ($record) use ($carefs) {
+            return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
+        };
+        return $this->searchBase('cert', ['descr', 'caref', 'name', 'valid_from', 'valid_to'], null, $filter_funct);
     }
+
     public function getAction($uuid = null)
     {
         return $this->getBase('cert', 'cert', $uuid);
@@ -69,5 +76,39 @@ class CertController extends ApiMutableModelControllerBase
     public function toggleAction($uuid, $enabled = null)
     {
         return $this->toggleBase('cert', $uuid, $enabled);
+    }
+
+    public function caInfoAction($caref)
+    {
+        if ($this->request->isGet()) {
+            $ca = CertStore::getCACertificate($caref);
+            if ($ca) {
+                $payload = CertStore::parseX509($ca['cert']);
+                if ($payload) {
+                    return $payload;
+                }
+            }
+        }
+        return [];
+    }
+
+    public function caListAction()
+    {
+        $result = [];
+        if ($this->request->isGet()) {
+            $result['rows'] = [];
+            if (isset(Config::getInstance()->object()->ca)) {
+                foreach (Config::getInstance()->object()->ca as $cert) {
+                    if (isset($cert->refid)) {
+                        $result['rows'][] = [
+                            'caref' => (string)$cert->refid,
+                            'descr' => (string)$cert->descr
+                        ];
+                    }
+                }
+            }
+            $result['count'] = count($result['rows']);
+        }
+        return $result;
     }
 }

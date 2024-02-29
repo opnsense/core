@@ -63,6 +63,11 @@
         <type>text</type>
     </field>
     <field>
+        <id>cert.organizationalunit</id>
+        <label>Organizational Unit</label>
+        <type>text</type>
+    </field>
+    <field>
         <id>cert.email</id>
         <label>Email Address</label>
         <type>text</type>
@@ -100,6 +105,26 @@
     <field>
         <id>cert.altnames_email</id>
         <label>Email addresses</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Output (PEM format)</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>cert.crt_payload</id>
+        <label>Certificate data</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.prv_payload</id>
+        <label>Private key data</label>
+        <type>textbox</type>
+    </field>
+    <field>
+        <id>cert.csr_payload</id>
+        <label>Certificate signing request</label>
         <type>textbox</type>
     </field>
 </form>

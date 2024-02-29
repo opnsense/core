@@ -36,6 +36,16 @@ use OPNsense\Core\Config;
  */
 class Store
 {
+    private static  $issuer_map = [
+        'L' => 'city',
+        'ST' => 'state',
+        'O' => 'organization',
+        'OU' => 'organizationalunit',
+        'C' => 'country',
+        'emailAddress' => 'email',
+        'CN' => 'commonname'
+    ];
+
     /**
      * find CA record
      * @param string $caref
@@ -66,6 +76,24 @@ class Store
             }
         }
         return implode("\n", $response) . "\n";
+    }
+
+    /**
+     * Return
+     * @param string $caref reference number
+     * @return array|bool structure or boolean false if not found
+     */
+    public static function getCACertificate($caref)
+    {
+        $ca = self::getCA($caref);
+        if ($ca !== null) {
+            $result = ['cert' => self::cleanCert(base64_decode($ca->crt))];
+            if (!empty((string)$ca->prv)) {
+                $result['prv'] = self::cleanCert(base64_decode($ca->prv));
+            }
+            return $result;
+        }
+        return false;
     }
 
     /**
@@ -112,6 +140,112 @@ class Store
     }
 
     /**
+     * Sign a certificate, when signed by a CA, make sure to serialize the config after doing so,
+     * it's the callers responsibility to update the serial number administration of the supplied CA.
+     * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
+     *
+     * @param OpenSSLCertificateSigningRequest|string $csr CSR to sign
+     * @param string|OpenSSLAsymmetricKey $caref key to certificate authority, OpenSSLAsymmetricKey for self signed
+     * @param int $lifetime in number of days
+     * @param array|null You can by options. See openssl_csr_new() for more information about options.
+     * @return array containing generated certificate or returned errors
+     */
+    private static function _signCert($csr, $caref, $lifetime, $options=null)
+    {
+        $ca = null;
+        $ca_res_crt = null;
+        if (is_string($caref)) {
+            $ca = self::getCA($caref);
+            if ($ca == null || empty((string)$ca->prv)) {
+                return ['error' => 'missing CA key'];
+            }
+            $ca_res_crt = openssl_x509_read(base64_decode($ca->crt));
+            $ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($ca->prv), 1 => ""));
+            if (!$ca_res_key) {
+                return ['error' => 'invalid CA'];
+            }
+        }
+        if ($ca !== null) {
+            $ca->serial = (int)$ca->serial + 1;
+        }
+
+        //  sign the certificate, either with a supplied ca or self-signed
+        $res_crt = openssl_csr_sign(
+            $csr,
+            $ca_res_crt,
+            $ca_res_key ?? $caref,
+            $lifetime,
+            $options,
+            $ca !== null ? (int)$ca->serial : 0
+        );
+        if (openssl_x509_export($res_crt, $str_crt)) {
+            return ['crt' =>  $str_crt];
+        }
+        return [];
+    }
+
+    /**
+     * Sign a certificate, when signed by a CA, make sure to serialize the config after doing so,
+     * it's the callers responsibility to update the serial number administration of the supplied CA.
+     * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
+     *
+     * @param string $keylen_curve rsa key length or elliptic curve name to use
+     * @param int $lifetime in number of days
+     * @param string $csr certificate signing request
+     * @param string $digest_alg digest algorithm
+     * @param string $caref key to certificate authority
+     * @param string $x509_extensions openssl section to use
+     * @param array $extns template fragments to replace in openssl.cnf
+     * @return array containing generated certificate or returned errors
+     */
+    public static function signCert(
+        $keylen_curve,
+        $lifetime,
+        $csr,
+        $digest_alg,
+        $caref,
+        $x509_extensions = 'usr_cert',
+        $extns = []
+    ) {
+        $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
+        // handle parameters which can only be set via the configuration file
+        $config_filename = create_temp_openssl_config($extns);
+        $args = [
+            'config' => $config_filename,
+            'x509_extensions' => $x509_extensions,
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        ];
+        if (is_numeric($keylen_curve)) {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+            $args['private_key_bits'] = (int)$keylen_curve;
+        } else {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+            $args['curve_name'] = $keylen_curve;
+        }
+
+        $tmp = self::_signCert($csr, $caref, $lifetime, $args);
+        if (!empty($tmp['crt'])) {
+            $result = ['crt' => $tmp['crt']];
+        } else {
+            $result = $tmp;
+        }
+
+        /* something went wrong, return openssl error */
+        if (empty($result) || !empty($result['error'])) {
+            $result['error'] = $result['error'] ?? '';
+            while ($ssl_err = openssl_error_string()) {
+                $result['error'] .= " " . $ssl_err;
+            }
+        }
+
+        // remove tempfile (template)
+        @unlink($config_filename);
+        error_reporting($old_err_level);
+        return $result;
+    }
+
+    /**
      * Create a new certificate, when signed by a CA, make sure to serialize the config after doing so,
      * it's the callers responsibility to update the serial number administration of the supplied CA.
      * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
@@ -120,7 +254,7 @@ class Store
      * @param int $lifetime in number of days
      * @param array $dn subject to use
      * @param string $digest_alg digest algorithm
-     * @param string $caref key to certificate authority
+     * @param string|bool $caref key to certificate authority, null for self signed, false for csr only
      * @param string $x509_extensions openssl section to use
      * @param array $extns template fragments to replace in openssl.cnf
      * @return array containing generated certificate or returned errors
@@ -135,24 +269,7 @@ class Store
         $extns = []
     ) {
         $result = [];
-        $ca = null;
-        $ca_res_crt = null;
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
-        if ($caref !== null) {
-            $ca = self::getCA($caref);
-            if ($ca == null || empty((string)$ca->prv)) {
-                $result = ['error' => 'missing CA key'];
-            }
-            $ca_res_crt = openssl_x509_read(base64_decode($ca->crt));
-            $ca_res_key = openssl_pkey_get_private(array(0 => base64_decode($ca->prv), 1 => ""));
-            if (!$ca_res_key) {
-                $result = ['error' => 'invalid CA'];
-            }
-        }
-        if (!empty($result)) {
-            error_reporting($old_err_level);
-            return $result;
-        }
 
         // handle parameters which can only be set via the configuration file
         $config_filename = create_temp_openssl_config($extns);
@@ -172,29 +289,27 @@ class Store
 
         // generate a new key pair
         $res_key = openssl_pkey_new($args);
-        if ($res_key !== false) {
+        if ($res_key !== false && openssl_pkey_export($res_key, $str_key)) {
             $res_csr = openssl_csr_new($dn, $res_key, $args);
             if ($res_csr !== false) {
-                // self sign the certificate
-                $res_crt = openssl_csr_sign(
-                    $res_csr,
-                    $ca_res_crt,
-                    $ca_res_key ?? $res_key,
-                    $lifetime,
-                    $args,
-                    $ca_serial
-                );
-                if (openssl_pkey_export($res_key, $str_key) && openssl_x509_export($res_crt, $str_crt)) {
-                    $result = ['caref' => $caref, 'crt' => $str_crt, 'prv' =>  $str_key];
-                    if ($ca !== null) {
-                        $ca->serial = (int)$ca->serial + 1;
+                if ($caref !== false) {
+                    $tmp = self::_signCert($res_csr, $caref !== null ? $caref : $res_key, $lifetime, $args);
+                    if (!empty($tmp['crt'])) {
+                        $result = ['caref' => $caref, 'crt' => $tmp['crt'], 'prv' =>  $str_key];
+                    } else {
+                        $result = $tmp;
+                    }
+                } else {
+                    // return signing request (externally signed)
+                    if (openssl_csr_export($res_csr, $str_csr)) {
+                        $result = ['caref' => $caref, 'csr' => $str_csr, 'prv' =>  $str_key];
                     }
                 }
             }
         }
         /* something went wrong, return openssl error */
-        if (empty($result)) {
-            $result['error'] = '';
+        if (empty($result) || !empty($result['error'])) {
+            $result['error'] = $result['error'] ?? '';
             while ($ssl_err = openssl_error_string()) {
                 $result['error'] .= " " . $ssl_err;
             }
@@ -207,19 +322,36 @@ class Store
     }
 
     /**
+     * Extract csr info into easy to use flattened chunks
+     * @param string csr
+     * @return array|bool
+     */
+    public static function parseCSR($csr_str)
+    {
+        $csr_subj = @openssl_csr_get_subject($csr_str);
+        if ($csr_subj) {
+            $result = ['name' => ''];
+            foreach (self::$issuer_map as $key => $target) {
+                if (!empty($csr_subj[$key])) {
+                    $result[$target] = $csr_subj[$key];
+                }
+            }
+            foreach ($csr_subj as $key => $value) {
+                $result['name'] .= ('/'.$key.'='.$value);
+            }
+
+            return $result;
+        }
+        return false;
+    }
+
+    /**
      * Extract certificate info into easy to use flattened chunks
+     * @param string certificate
      * @return array|bool
      */
     public static function parseX509($cert)
     {
-        $issue_map = [
-            'L' => 'city',
-            'ST' => 'state',
-            'O' => 'organization',
-            'C' => 'country',
-            'emailAddress' => 'email',
-            'CN' => 'commonname'
-        ];
         $altname_map = [
             'IP Address' => 'altnames_ip',
             'DNS' => 'altnames_dns',
@@ -228,13 +360,13 @@ class Store
         ];
 
         $crt = @openssl_x509_parse($cert);
-        if ($crt !== null) {
+        if ($crt) {
             $result = [];
             // valid from/to and name of this cert
             $result['valid_from'] = $crt['validFrom_time_t'];
             $result['valid_to'] = $crt['validTo_time_t'];
             $result['name'] = $crt['name'];
-            foreach ($issue_map as $key => $target) {
+            foreach (self::$issuer_map as $key => $target) {
                 if (!empty($crt['issuer'][$key])) {
                     $result[$target] = $crt['issuer'][$key];
                 }

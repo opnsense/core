@@ -28,18 +28,77 @@
        'use strict';
 
        $( document ).ready(function () {
-           let grid_cso = $("#grid-cert").UIBootgrid({
+           let grid_cert = $("#grid-cert").UIBootgrid({
                search:'/api/trust/cert/search/',
                get:'/api/trust/cert/get/',
                add:'/api/trust/cert/add/',
                set:'/api/trust/cert/set/',
                del:'/api/trust/cert/del/',
-               toggle:'/api/trust/cert/toggle/',
                options:{
-                   selection: false,
-                   formatters:{
-                   }
-               }
+                    requestHandler: function(request){
+                        if ( $('#ca_filter').val().length > 0) {
+                            request['carefs'] = $('#ca_filter').val();
+                        }
+                        return request;
+                    }
+                }
+           });
+           grid_cert.on("loaded.rs.jquery.bootgrid", function (e){
+                // reload categories before grid load
+                if ($("#ca_filter > option").length == 0) {
+                    ajaxGet('/api/trust/cert/ca_list', {}, function(data, status){
+                        if (data.rows !== undefined) {
+                            for (let i=0; i < data.rows.length ; ++i) {
+                                let row = data.rows[i];
+                                $("#ca_filter").append($("<option/>").val(row.caref).html(row.descr));
+                            }
+                            $("#ca_filter").selectpicker('refresh');
+                        }
+                    });
+                }
+            });
+
+            $("#filter_container").detach().prependTo('#grid-cert-header > .row > .actionBar > .actions');
+            $("#ca_filter").change(function(){
+                $('#grid-cert').bootgrid('reload');
+            });
+
+           /**
+            * Autofill certificate fields when choosing a different CA
+            */
+           $("#cert\\.caref").change(function(event){
+                if (event.originalEvent !== undefined) {
+                    // not called on form open, only when the user chooses a new ca
+                    ajaxGet('/api/trust/cert/ca_info/' + $(this).val(), {}, function(data, status){
+                        if (data.name !== undefined) {
+                            [
+                                'city', 'state', 'country', 'name', 'email', 'organization', 'ocsp_uri'
+                            ].forEach(function(field){
+                                if (data[field]) {
+                                    $("#cert\\." + field).val(data[field]);
+                                }
+                            });
+                        }
+                        $("#cert\\.country").selectpicker('refresh');
+                    });
+                }
+           });
+
+           $("#cert\\.action").change(function(event){
+                if (event.originalEvent === undefined) {
+                    // lock valid options based on server offered action
+                    let visible_options = [$(this).val()];
+                    if ($(this).val() == 'reissue') {
+                        visible_options.push('replace');
+                    }
+                    $("#cert\\.action option").each(function(){
+                        if (visible_options.includes($(this).val())) {
+                            $(this).attr('disabled', null);
+                        } else {
+                            $(this).attr('disabled', 'disabled');
+                        }
+                    });
+                }
            });
 
        });
@@ -51,15 +110,22 @@
    </ul>
    <div class="tab-content content-box">
        <div id="cert" class="tab-pane fade in active">
+            <div class="hidden">
+                <!-- filter per type container -->
+                <div id="filter_container" class="btn-group">
+                    <select id="ca_filter"  data-title="{{ lang._('Authority') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
+                    </select>
+                </div>
+            </div>
             <table id="grid-cert" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogCert">
                <thead>
                    <tr>
                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                       <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
-                       <th data-column-id="caref" data-type="string">{{ lang._('Issuer') }}</th>
+                       <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
+                       <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
                        <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                       <th data-column-id="valid_from" data-type="datetime">{{ lang._('Valid from') }}</th>
-                       <th data-column-id="valid_to" data-type="datetime">{{ lang._('Valid to') }}</th>
+                       <th data-column-id="valid_from" data-width="10em" data-type="datetime">{{ lang._('Valid from') }}</th>
+                       <th data-column-id="valid_to" data-width="10em" data-type="datetime">{{ lang._('Valid to') }}</th>
                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                    </tr>
                </thead>
