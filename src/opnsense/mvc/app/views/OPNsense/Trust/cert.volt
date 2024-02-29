@@ -88,9 +88,6 @@
                 if (event.originalEvent === undefined) {
                     // lock valid options based on server offered action
                     let visible_options = [$(this).val()];
-                    if ($(this).val() == 'reissue') {
-                        visible_options.push('replace');
-                    }
                     $("#cert\\.action option").each(function(){
                         if (visible_options.includes($(this).val())) {
                             $(this).attr('disabled', null);

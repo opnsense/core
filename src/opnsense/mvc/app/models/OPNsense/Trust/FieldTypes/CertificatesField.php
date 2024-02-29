@@ -29,10 +29,80 @@
 namespace OPNsense\Trust\FieldTypes;
 
 use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\FieldTypes\TextField;
 
+/**
+ * Class CertificateContainerField
+ * @package OPNsense\Trust\FieldTypes
+ */
+class CertificateContainerField extends ContainerField
+{
+    /**
+     * @return array dn
+     */
+    public function dn()
+    {
+        $dn = [];
+        foreach ([
+          'country' => 'countryName',
+          'state' => 'stateOrProvinceName',
+          'city' => 'localityName',
+          'organization' => 'organizationName',
+          'organizationalunit' => 'organizationalUnitName',
+          'email' => 'emailAddress',
+          'commonname' => 'commonName',
+        ] as $source => $target) {
+            if (!empty((string)$this->$source)) {
+                $dn[$target] = (string)$this->$source;
+            }
+        }
+
+        return $dn;
+    }
+
+    /**
+     * @return array additional openssl properties (subjectAltNames)
+     */
+    public function extns()
+    {
+        $extns = [];
+        $tmp = [];
+        foreach (['DNS', 'IP', 'email', 'URI'] as $topic) {
+            $fieldname = strtolower("altnames_" . $topic);
+            if (!empty(trim((string)$this->$fieldname))) {
+                foreach (explode("\n", (string)$this->$fieldname) as $line) {
+                    if (!empty($line)) {
+                        $tmp[] = $topic . ":" . $line;
+                    }
+                }
+            }
+        }
+        if (!empty($tmp)) {
+            $extns['subjectAltName'] = implode(",", $tmp);
+        }
+        return $extns;
+    }
+}
+
+/**
+ * Class CertificatesField
+ * @package OPNsense\Trust\FieldTypes
+ */
 class CertificatesField extends ArrayField
 {
+
+    /**
+     * @inheritDoc
+     */
+    public function newContainerField($ref, $tagname)
+    {
+        $container_node = new CertificateContainerField($ref, $tagname);
+        $pmodel = $this->getParentModel();
+        $container_node->setParentModel($pmodel);
+        return $container_node;
+    }
+
     protected function actionPostLoadingEvent()
     {
         foreach ($this->internalChildnodes as $node) {
@@ -56,7 +126,7 @@ class CertificatesField extends ArrayField
             if (!empty((string)$node->csr_payload)) {
                 $node->action = 'import_csr';
             } elseif (!empty((string)$node->crt_payload)) {
-                $node->action = 'reissue';
+                $node->action = 'replace';
             }
         }
         return parent::actionPostLoadingEvent();

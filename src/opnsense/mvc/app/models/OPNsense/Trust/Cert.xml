@@ -21,8 +21,7 @@
                     <external>Create a Certificate Signing Request</external>
                     <import>Import an existing Certificate</import>
                     <import_csr>Import certificate (signed by CA)</import_csr>
-                    <replace>Reissue and replace certificate (does not restart services)</replace>
-                    <reissue>Reissue certificate</reissue>
+                    <reissue>Reissue and replace certificate (does not restart services)</reissue>
                 </OptionValues>
             </action>
             <key type="OptionField" volatile="true">

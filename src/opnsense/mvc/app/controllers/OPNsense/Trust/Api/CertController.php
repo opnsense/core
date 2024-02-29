@@ -45,7 +45,10 @@ class CertController extends ApiMutableModelControllerBase
 
     protected function setBaseHook($node)
     {
-        throw new UserException("Not allowed to save yet", (string)$node->action);
+        if (empty((string)$node->refid)) {
+            $node->refid = uniqid();
+        }
+        throw new UserException((string)$node->refid, (string)$node->action);
     }
 
     public function searchAction()
