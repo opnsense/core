@@ -1269,7 +1269,6 @@
 /usr/local/opnsense/service/templates/OPNsense/WebGui/lib.php.ini
 /usr/local/opnsense/service/templates/OPNsense/WebGui/php.ini
 /usr/local/opnsense/service/templates/OPNsense/Wireguard/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/Wireguard/wireguard
 /usr/local/opnsense/service/templates/OPNsense/Wireguard/wireguard-server.conf
 /usr/local/opnsense/service/tests/__init__.py
 /usr/local/opnsense/service/tests/config/config.xml
