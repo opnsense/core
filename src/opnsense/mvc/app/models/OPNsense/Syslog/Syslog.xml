@@ -1,12 +1,21 @@
 <model>
     <mount>//OPNsense/Syslog</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <general>
             <enabled type="BooleanField">
-              <Default>1</Default>
-              <Required>Y</Required>
+                <Default>1</Default>
+                <Required>Y</Required>
             </enabled>
+            <loglocal type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </loglocal>
+            <maxpreserve type="IntegerField">
+                <Default>31</Default>
+                <Required>Y</Required>
+            </maxpreserve>
+            <maxfilesize type="IntegerField"/>
         </general>
         <destinations>
             <destination type="ArrayField">
