@@ -40,11 +40,10 @@ class M1_0_2 extends BaseModelMigration
     public function run($model)
     {
         $config = Config::getInstance()->object();
-
-        if (!empty($config->syslog) && count($config->syslog->children()) > 0) {
-            $model->general->locallog = empty($config->syslog->disablelocallogging); /* inverted */
-            $model->general->maxfilesize = !empty($config->syslog->maxfilesize) ? $config->syslog->maxfilesize : null;
-            $model->general->maxpreserve = !empty($config->syslog->preservelogs) ? $config->syslog->preservelogs : null;
+        if (isset($config->syslog) && count($config->syslog->children()) > 0) {
+            $model->general->loglocal = empty((string)$config->syslog->disablelocallogging) ? "1" : "0"; /* inverted */
+            $model->general->maxfilesize = (string)$config->syslog->maxfilesize;
+            $model->general->maxpreserve = (string)$config->syslog->preservelogs;
         }
 
         parent::run($model);
