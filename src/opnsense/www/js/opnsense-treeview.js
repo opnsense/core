@@ -108,7 +108,7 @@ function update_tree(src_data, target)
             openedIcon: $('<i class="fa fa-minus-square-o"></i>'),
             onCreateLi: function(node, $li) {
                 let n_title = $li.find('.jqtree-title');
-                n_title.text(n_title.text().replace('&gt;','\>').replace('&lt;','\<'));
+                n_title.text(n_title.text().replaceAll('&gt;','\>').replaceAll('&lt;','\<'));
                 if (node.value !== undefined) {
                     $li.find('.jqtree-element').append(
                         '&nbsp; <strong>:</strong> &nbsp;' + node.value
