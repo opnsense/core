@@ -67,7 +67,6 @@
             <General url="/system_general.php">
                 <Edit url="/system_general.php*" visibility="hidden"/>
             </General>
-            <Logging url="/diag_logs_settings.php"/>
             <Miscellaneous url="/system_advanced_misc.php"/>
             <Tunables url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>

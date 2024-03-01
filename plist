@@ -2014,7 +2014,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/diag_defaults.php
-/usr/local/www/diag_logs_settings.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
 /usr/local/www/firewall_nat_1to1.php

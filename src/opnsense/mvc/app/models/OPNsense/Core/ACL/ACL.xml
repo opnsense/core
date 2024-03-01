@@ -118,12 +118,6 @@
             <pattern>api/diagnostics/log/core/gateways/*</pattern>
         </patterns>
     </page-diagnostics-logs-gateways>
-    <page-diagnostics-logs-settings>
-        <name>Diagnostics: Logs: Settings</name>
-        <patterns>
-            <pattern>diag_logs_settings.php*</pattern>
-        </patterns>
-    </page-diagnostics-logs-settings>
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
