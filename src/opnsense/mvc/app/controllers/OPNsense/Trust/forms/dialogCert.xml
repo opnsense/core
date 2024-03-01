@@ -115,6 +115,7 @@
         <type>header</type>
         <label>Output (PEM format)</label>
         <collapse>true</collapse>
+        <style>pem_section</style>
     </field>
     <field>
         <id>cert.crt_payload</id>

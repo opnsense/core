@@ -115,6 +115,12 @@
                         target.show();
                     }
                 });
+                /* expand PEM section */
+                if (['import', 'import_csr'].includes($(this).val())) {
+                    if ($(".pem_section >  table > tbody > tr:eq(0) > td:eq(0)").is(':hidden')) {
+                        $(".pem_section >  table > thead").click();
+                    }
+                }
             });
 
 
