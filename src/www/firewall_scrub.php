@@ -380,7 +380,7 @@ $( document ).ready(function() {
 
                     </td>
                     <td>
-                        <?=$scrubEntry['descr'];?>
+                        <?= $scrubEntry['descr'] ?? '' ?>
                     </td>
                     <td>
                         <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?= html_safe(gettext("Move selected rules before this rule")) ?>" class="act_move btn btn-default btn-xs">

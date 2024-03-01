@@ -1729,7 +1729,7 @@ endforeach;?>
                     <tr>
                       <td><?=gettext("Created");?></td>
                       <td>
-                        <?= date(gettext('n/j/y H:i:s'), $a_filter[$id]['created']['time']) ?> (<?= $a_filter[$id]['created']['username'] ?>)
+                        <?= date(gettext('n/j/y H:i:s'), (int)$a_filter[$id]['created']['time']) ?> (<?= $a_filter[$id]['created']['username'] ?>)
                       </td>
                     </tr>
 <?php
@@ -1738,7 +1738,7 @@ endforeach;?>
                     <tr>
                       <td><?=gettext("Updated");?></td>
                       <td>
-                        <?= date(gettext('n/j/y H:i:s'), $a_filter[$id]['updated']['time']) ?> (<?= $a_filter[$id]['updated']['username'] ?>)
+                        <?= date(gettext('n/j/y H:i:s'), (int)$a_filter[$id]['updated']['time']) ?> (<?= $a_filter[$id]['updated']['username'] ?>)
                       </td>
                     </tr>
 <?php
