@@ -36,7 +36,7 @@ use OPNsense\Core\Config;
  */
 class Store
 {
-    private static  $issuer_map = [
+    private static $issuer_map = [
         'L' => 'city',
         'ST' => 'state',
         'O' => 'organization',
@@ -150,7 +150,7 @@ class Store
      * @param array|null You can by options. See openssl_csr_new() for more information about options.
      * @return array containing generated certificate or returned errors
      */
-    private static function _signCert($csr, $caref, $lifetime, $options=null)
+    private static function _signCert($csr, $caref, $lifetime, $options = null)
     {
         $ca = null;
         $ca_res_crt = null;
@@ -337,7 +337,7 @@ class Store
                 }
             }
             foreach ($csr_subj as $key => $value) {
-                $result['name'] .= ('/'.$key.'='.$value);
+                $result['name'] .= ('/' . $key . '=' . $value);
             }
 
             return $result;

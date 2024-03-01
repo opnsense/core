@@ -44,15 +44,17 @@ class CertificateContainerField extends ContainerField
     public function dn()
     {
         $dn = [];
-        foreach ([
-          'country' => 'countryName',
-          'state' => 'stateOrProvinceName',
-          'city' => 'localityName',
-          'organization' => 'organizationName',
-          'organizationalunit' => 'organizationalUnitName',
-          'email' => 'emailAddress',
-          'commonname' => 'commonName',
-        ] as $source => $target) {
+        foreach (
+            [
+            'country' => 'countryName',
+            'state' => 'stateOrProvinceName',
+            'city' => 'localityName',
+            'organization' => 'organizationName',
+            'organizationalunit' => 'organizationalUnitName',
+            'email' => 'emailAddress',
+            'commonname' => 'commonName',
+            ] as $source => $target
+        ) {
             if (!empty((string)$this->$source)) {
                 $dn[$target] = (string)$this->$source;
             }
@@ -91,7 +93,6 @@ class CertificateContainerField extends ContainerField
  */
 class CertificatesField extends ArrayField
 {
-
     /**
      * @inheritDoc
      */
