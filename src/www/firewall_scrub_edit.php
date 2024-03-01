@@ -639,7 +639,7 @@ include("head.inc");
                     <tr>
                       <td style="width:22%"><?=gettext("Created");?></td>
                       <td style="width:78%">
-                        <?= date(gettext('n/j/y H:i:s'), $a_scrub[$id]['created']['time']) ?> (<?= $a_scrub[$id]['created']['username'] ?>)
+                        <?= date(gettext('n/j/y H:i:s'), (int)$a_scrub[$id]['created']['time']) ?> (<?= $a_scrub[$id]['created']['username'] ?>)
                       </td>
                     </tr>
 <?php
@@ -648,7 +648,7 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("Updated");?></td>
                       <td>
-                        <?= date(gettext('n/j/y H:i:s'), $a_scrub[$id]['updated']['time']) ?> (<?= $a_scrub[$id]['updated']['username'] ?>)
+                        <?= date(gettext('n/j/y H:i:s'), (int)$a_scrub[$id]['updated']['time']) ?> (<?= $a_scrub[$id]['updated']['username'] ?>)
                       </td>
                     </tr>
 <?php

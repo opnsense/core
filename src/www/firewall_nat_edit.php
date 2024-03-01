@@ -1103,7 +1103,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><?=gettext("Created");?></td>
                   <td>
-                    <?= date(gettext('n/j/y H:i:s'), $pconfig['created']['time']) ?> (<?= $pconfig['created']['username'] ?>)
+                    <?= date(gettext('n/j/y H:i:s'), (int)$pconfig['created']['time']) ?> (<?= $pconfig['created']['username'] ?>)
                   </td>
                 </tr>
 <?php          endif;
@@ -1112,7 +1112,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><?=gettext("Updated");?></td>
                   <td>
-                    <?= date(gettext('n/j/y H:i:s'), $pconfig['updated']['time']) ?> (<?= $pconfig['updated']['username'] ?>)
+                    <?= date(gettext('n/j/y H:i:s'), (int)$pconfig['updated']['time']) ?> (<?= $pconfig['updated']['username'] ?>)
                   </td>
                 </tr>
 <?php          endif;
