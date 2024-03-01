@@ -1,0 +1,20 @@
+<form>
+    <field>
+        <id>syslog.general.loglocal</id>
+        <label>Enable local logging</label>
+        <type>checkbox</type>
+        <help>Enable writing log files to the local disk.</help>
+    </field>
+    <field>
+        <id>syslog.general.maxpreserve</id>
+        <label>Maximum preserved files</label>
+        <type>text</type>
+        <help>Number of logs to preserve. When no maximum file size is offered or the logs are smaller than the the size requested, this equals the number of days.</help>
+    </field>
+    <field>
+        <id>syslog.general.maxfilesize</id>
+        <label>Maximum file size (MB)</label>
+        <type>text</type>
+        <help>Maximum file size per log file. When set and a log file exceeds the amount specified, it will be rotated.</help>
+    </field>
+</form>

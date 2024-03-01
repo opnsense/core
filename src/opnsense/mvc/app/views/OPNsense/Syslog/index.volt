@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2019 Deciso B.V.
+ # Copyright (c) 2019-2024 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -25,8 +25,13 @@
  #}
 
 <script>
-
     $( document ).ready(function() {
+        var data_get_map = {'frm_local_settings':"/api/syslog/settings/get"};
+        mapDataToFormUI(data_get_map).done(function(data){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
+
         $("#grid-destinations").UIBootgrid(
             {   search:'/api/syslog/settings/searchDestinations',
                 get:'/api/syslog/settings/getDestination/',
@@ -43,9 +48,8 @@
                 });
             }
         });
-        /**
-         * Reconfigure syslog
-         */
+
+        /* reconfigure syslog */
         $("#reconfigureAct").SimpleActionButton();
         updateServiceControlUI('syslog');
 
@@ -60,11 +64,11 @@
             });
         });
     });
-
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
+    <li><a data-toggle="tab" id="destinations" href="#tab_local">{{ lang._('Local') }}</a></li>
     <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
@@ -93,6 +97,9 @@
             </tr>
             </tfoot>
         </table>
+    </div>
+    <div id="tab_local" class="tab-pane fade in">
+        {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
     </div>
     <div id="tab_statistics" class="tab-pane fade in">
         <table id="grid-statistics" class="table table-condensed table-hover table-striped table-responsive">

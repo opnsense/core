@@ -414,6 +414,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/forms/dialogDestination.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/forms/local.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/IndexController.php
