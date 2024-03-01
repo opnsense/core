@@ -50,7 +50,13 @@
         });
 
         /* reconfigure syslog */
-        $("#reconfigureAct").SimpleActionButton();
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function () {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/syslog/settings/set", 'frm_local_settings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
+              return dfObj;
+            }
+        });
         updateServiceControlUI('syslog');
 
         $("#destination\\.transport").change(function(){
@@ -67,12 +73,15 @@
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
-    <li><a data-toggle="tab" id="destinations" href="#tab_local">{{ lang._('Local') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="destinations" href="#tab_local">{{ lang._('Local') }}</a></li>
+    <li><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
     <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
-    <div id="tab_destinations" class="tab-pane fade in active">
+    <div id="tab_local" class="tab-pane fade in active __mb">
+        {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
+    </div>
+    <div id="tab_destinations" class="tab-pane fade in">
         <!-- tab page "destinations" -->
         <table id="grid-destinations" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDestination" data-editAlert="syslogChangeMessage">
             <thead>
@@ -97,9 +106,7 @@
             </tr>
             </tfoot>
         </table>
-    </div>
-    <div id="tab_local" class="tab-pane fade in">
-        {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
+        <hr/>
     </div>
     <div id="tab_statistics" class="tab-pane fade in">
         <table id="grid-statistics" class="table table-condensed table-hover table-striped table-responsive">
@@ -117,12 +124,12 @@
             <tbody>
             </tbody>
         </table>
+        <hr/>
     </div>
     <div class="col-md-12">
         <div id="syslogChangeMessage" class="alert alert-info" style="display: none" role="alert">
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
-        <hr/>
         <button class="btn btn-primary" id="reconfigureAct"
                 data-endpoint='/api/syslog/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
