@@ -49,7 +49,6 @@
             }
         });
 
-        /* reconfigure syslog */
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function () {
               const dfObj = new $.Deferred();
@@ -57,6 +56,22 @@
               return dfObj;
             }
         });
+        $("#resetAct").SimpleActionButton({
+            onPreAction: function () {
+                const dfObj = new $.Deferred();
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_DANGER,
+                    closable: false, // otherwise the spinner keeps running
+                    title: "{{ lang._('Syslog') }}",
+                    message: "{{ lang._('Do you really want to reset the log files? This will erase all local log data.') }}",
+                    buttons: [
+                        { label: "{{ lang._('No') }}", action: function(dialogRef) { dialogRef.close(); dfObj.reject(); } },
+                        { cssClass: 'btn-danger', label: "{{ lang._('Yes') }}", action: function(dialogRef) { dialogRef.close(); dfObj.resolve(); } }
+                   ]
+                });
+                return dfObj;
+            }
+        })
         updateServiceControlUI('syslog');
 
         $("#destination\\.transport").change(function(){
@@ -126,7 +141,7 @@
         </table>
         <hr/>
     </div>
-    <div class="col-md-12">
+    <div class="col-md-12 __mb">
         <div id="syslogChangeMessage" class="alert alert-info" style="display: none" role="alert">
             {{ lang._('After changing settings, please remember to apply them with the button below') }}
         </div>
@@ -134,10 +149,15 @@
                 data-endpoint='/api/syslog/service/reconfigure'
                 data-label="{{ lang._('Apply') }}"
                 data-service-widget="syslog"
-                data-error-title="{{ lang._('Error reconfiguring syslog') }}"
+                data-error-title="{{ lang._('Error reconfiguring Syslog') }}"
                 type="button"
         ></button>
-        <br/><br/>
+        <button class="btn pull-right" id="resetAct"
+                data-endpoint='/api/syslog/service/reset'
+                data-label="{{ lang._('Reset Log Files') }}"
+                data-error-title="{{ lang._('Error resetting Syslog') }}"
+                type="button"
+        ></button>
     </div>
 </div>
 
