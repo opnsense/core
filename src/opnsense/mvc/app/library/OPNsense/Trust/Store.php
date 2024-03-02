@@ -185,6 +185,62 @@ class Store
     }
 
     /**
+     * create openssl options config including configuration file to use
+     * @param string $keylen_curve rsa key length or elliptic curve name to use
+     * @param string $digest_alg digest algorithm
+     * @param string $x509_extensions openssl section to use
+     * @param array $extns template fragments to replace in openssl.cnf
+     * @return array needed for certificate generation, caller is responsible for removing ['filename'] after use
+     */
+    private static function _createSSLOptions($keylen_curve, $digest_alg, $x509_extensions = 'usr_cert', $extns = [])
+    {
+        // define temp filename to use for openssl.cnf and add extensions values to it
+        $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
+
+        $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+        foreach (array_keys($extns) as $extnTag) {
+            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
+            // Overwrite the placeholders for this property
+            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
+        }
+        file_put_contents($configFilename, $template);
+
+        $args = [
+            'config' => $configFilename,
+            'x509_extensions' => $x509_extensions,
+            'digest_alg' => $digest_alg,
+            'encrypt_key' => false
+        ];
+        if (is_numeric($keylen_curve)) {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
+            $args['private_key_bits'] = (int)$keylen_curve;
+        } else {
+            $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
+            $args['curve_name'] = $keylen_curve;
+        }
+
+        return $args;
+    }
+
+    /**
+     * @param array to add 'error' result to when openssl_error_string returns data
+     */
+    private static function _addSSLErrors(&$arr)
+    {
+        $data = '';
+        while ($ssl_err = openssl_error_string()) {
+            $data .= " " . $ssl_err;
+        }
+        if (!empty(trim($data))) {
+            if (!isset($arr['error'])) {
+                $arr['error'] = $data;
+            } else {
+                $arr['error'] .=  ("\n" . $data);
+            }
+        }
+    }
+
+    /**
      * Sign a certificate, when signed by a CA, make sure to serialize the config after doing so,
      * it's the callers responsibility to update the serial number administration of the supplied CA.
      * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
@@ -208,39 +264,56 @@ class Store
         $extns = []
     ) {
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
-        // handle parameters which can only be set via the configuration file
-        $config_filename = create_temp_openssl_config($extns);
-        $args = [
-            'config' => $config_filename,
-            'x509_extensions' => $x509_extensions,
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        ];
-        if (is_numeric($keylen_curve)) {
-            $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
-            $args['private_key_bits'] = (int)$keylen_curve;
-        } else {
-            $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
-            $args['curve_name'] = $keylen_curve;
-        }
 
-        $tmp = self::_signCert($csr, $caref, $lifetime, $args);
-        if (!empty($tmp['crt'])) {
-            $result = ['crt' => $tmp['crt']];
-        } else {
-            $result = $tmp;
-        }
+        $args = self::_createSSLOptions($keylen_curve, $digest_alg, $x509_extensions, $extns);
+        $result = self::_signCert($csr, $caref, $lifetime, $args);
 
-        /* something went wrong, return openssl error */
-        if (empty($result) || !empty($result['error'])) {
-            $result['error'] = $result['error'] ?? '';
-            while ($ssl_err = openssl_error_string()) {
-                $result['error'] .= " " . $ssl_err;
-            }
-        }
+        self::_addSSLErrors($result);
 
         // remove tempfile (template)
-        @unlink($config_filename);
+        @unlink($args['filename']);
+        error_reporting($old_err_level);
+        return $result;
+    }
+
+    /**
+     * re-issue a certificate, when signed by a CA, make sure to serialize the config after doing so,
+     * it's the callers responsibility to update the serial number administration of the supplied CA.
+     * A call to \OPNsense\Core\Config::getInstance()->save(); would persist the new serial.
+     *
+     * @param string $keylen_curve rsa key length or elliptic curve name to use
+     * @param int $lifetime in number of days
+     * @param array $dn subject to use
+     * @param string $prv private key
+     * @param string $digest_alg digest algorithm
+     * @param string $caref key to certificate authority
+     * @param string $x509_extensions openssl section to use
+     * @param array $extns template fragments to replace in openssl.cnf
+     * @return array containing generated certificate or returned errors
+     */
+    public static function reIssueCert(
+        $keylen_curve,
+        $lifetime,
+        $dn,
+        $prv,
+        $digest_alg,
+        $caref,
+        $x509_extensions = 'usr_cert',
+        $extns = []
+    ) {
+        $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
+
+        $args = self::_createSSLOptions($keylen_curve, $digest_alg, $x509_extensions, $extns);
+        $csr = openssl_csr_new($dn, $prv, $args);
+        if ($csr !== false) {
+            $result = self::_signCert($csr, $caref, $lifetime, $args);
+        } else {
+            $result = [];
+        }
+        self::_addSSLErrors($result);
+
+        // remove tempfile (template)
+        @unlink($args['filename']);
         error_reporting($old_err_level);
         return $result;
     }
@@ -270,22 +343,7 @@ class Store
     ) {
         $result = [];
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
-
-        // handle parameters which can only be set via the configuration file
-        $config_filename = create_temp_openssl_config($extns);
-        $args = [
-            'config' => $config_filename,
-            'x509_extensions' => $x509_extensions,
-            'digest_alg' => $digest_alg,
-            'encrypt_key' => false
-        ];
-        if (is_numeric($keylen_curve)) {
-            $args['private_key_type'] = OPENSSL_KEYTYPE_RSA;
-            $args['private_key_bits'] = (int)$keylen_curve;
-        } else {
-            $args['private_key_type'] = OPENSSL_KEYTYPE_EC;
-            $args['curve_name'] = $keylen_curve;
-        }
+        $args = self::_createSSLOptions($keylen_curve, $digest_alg, $x509_extensions, $extns);
 
         // generate a new key pair
         $res_key = openssl_pkey_new($args);
@@ -293,7 +351,7 @@ class Store
             $res_csr = openssl_csr_new($dn, $res_key, $args);
             if ($res_csr !== false) {
                 if ($caref !== false) {
-                    $tmp = self::_signCert($res_csr, $caref !== null ? $caref : $res_key, $lifetime, $args);
+                    $tmp = self::_signCert($res_csr, !empty($caref) ? $caref : $res_key, $lifetime, $args);
                     if (!empty($tmp['crt'])) {
                         $result = ['caref' => $caref, 'crt' => $tmp['crt'], 'prv' =>  $str_key];
                     } else {
@@ -307,16 +365,10 @@ class Store
                 }
             }
         }
-        /* something went wrong, return openssl error */
-        if (empty($result) || !empty($result['error'])) {
-            $result['error'] = $result['error'] ?? '';
-            while ($ssl_err = openssl_error_string()) {
-                $result['error'] .= " " . $ssl_err;
-            }
-        }
+        self::_addSSLErrors($result);
 
         // remove tempfile (template)
-        @unlink($config_filename);
+        @unlink($args['filename']);
         error_reporting($old_err_level);
         return $result;
     }
@@ -411,27 +463,5 @@ class Store
             $chain[] = base64_decode((string)$item->crt);
         }
         return implode("\n", $chain);
-    }
-
-    /**
-     * Create a temporary config file, to help with calls that require properties that can only be set via the config file.
-     *
-     * @param $dn
-     * @return string The name of the temporary config file.
-     */
-    public static function createTempOpenSSLconfig($extns = [])
-    {
-        // define temp filename to use for openssl.cnf and add extensions values to it
-        $configFilename = tempnam(sys_get_temp_dir(), 'ssl');
-
-        $template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
-
-        foreach (array_keys($extns) as $extnTag) {
-            $template_extn = $extnTag . ' = ' . str_replace(array("\r", "\n"), '', $extns[$extnTag]);
-            // Overwrite the placeholders for this property
-            $template = str_replace('###OPNsense:' . $extnTag . '###', $template_extn, $template);
-        }
-        file_put_contents($configFilename, $template);
-        return $configFilename;
     }
 }

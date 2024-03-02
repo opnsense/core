@@ -24,7 +24,7 @@
                     <reissue>Reissue and replace certificate (does not restart services)</reissue>
                 </OptionValues>
             </action>
-            <key type="OptionField" volatile="true">
+            <key_type type="OptionField" volatile="true">
                 <Required>Y</Required>
                 <Default>2048</Default>
                 <OptionValues>
@@ -38,7 +38,7 @@
                     <secp384r1>Elliptic Curve secp384r1</secp384r1>
                     <secp521r1>Elliptic Curve secp521r1</secp521r1>
                 </OptionValues>
-            </key>
+            </key_type>
             <digest type="OptionField" volatile="true">
                 <Required>Y</Required>
                 <Default>sha256</Default>
@@ -60,9 +60,13 @@
                     <v3_ca>Certificate Authority</v3_ca>
                 </OptionValues>
             </cert_type>
+            <lifetime type="IntegerField" volatile="true">
+                <Required>Y</Required>
+                <Default>397</Default>
+            </lifetime>
             <private_key_location type="OptionField" volatile="true">
                 <Required>Y</Required>
-                <Default>usr_cert</Default>
+                <Default>firewall</Default>
                 <OptionValues>
                     <firewall>Save on this firewall</firewall>
                     <local>Download and do not save</local>
@@ -85,7 +89,9 @@
                 <Default>NL</Default>
                 <Required>Y</Required>
             </country>
-            <email type="EmailField"/>
+            <email type="TextField" volatile="true">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
+            </email>
             <commonname type="TextField" volatile="true">
                 <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
             </commonname>

@@ -48,7 +48,91 @@ class CertController extends ApiMutableModelControllerBase
         if (empty((string)$node->refid)) {
             $node->refid = uniqid();
         }
-        throw new UserException((string)$node->refid, (string)$node->action);
+        $error = false;
+        if (!empty((string)$node->prv_payload)) {
+            /** private key manually offered */
+            $node->prv = base64_encode((string)$node->prv_payload);
+        }
+        switch ((string)$node->action) {
+            case 'internal':
+                $data = CertStore::createCert(
+                    (string)$node->key_type,
+                    (string)$node->lifetime,
+                    $node->dn(),
+                    (string)$node->digest,
+                    (string)$node->caref,
+                    (string)$node->cert_type,
+                    $node->extns()
+                );
+                if (!empty($data['crt']) && !empty($data['prv'])) {
+                    $node->crt = base64_encode($data['crt']);
+                    if ((string)$node->private_key_location == 'local') {
+                        /* return only in volatile storage */
+                        $node->prv_payload = $data['prv'];
+                    } else {
+                        $node->prv= base64_encode($data['prv']);
+                    }
+                } else {
+                    $error = $data['error'] ?? '';
+                }
+                break;
+            case 'external':
+                $data = CertStore::createCert(
+                    (string)$node->key_type,
+                    (string)$node->lifetime,
+                    $node->dn(),
+                    (string)$node->digest,
+                    false,
+                    (string)$node->cert_type,
+                    $node->extns()
+                );
+                if (!empty($data['csr'])) {
+                    $node->csr = base64_encode($data['csr']);
+                } else {
+                    $error = $data['error'] ?? '';
+                }
+                break;
+            case 'import':
+                if (CertStore::parseX509((string)$node->crt_payload) === false) {
+                    $error = gettext('Invalid X509 certificate provided');
+                } else {
+                    $node->crt = base64_encode((string)$node->crt_payload);
+                    if (
+                        !empty(trim((string)$node->prv_payload)) &&
+                        openssl_pkey_get_private((string)$node->prv_payload) === false
+                    ) {
+                        $error = gettext('Invalid private key provided');
+                    }
+                }
+                break;
+            case 'import_csr':
+                if (CertStore::parseX509((string)$node->crt_payload) === false) {
+                    $error = gettext('Invalid X509 certificate provided');
+                } else {
+                    $node->crt = base64_encode((string)$node->crt_payload);
+                }
+                break;
+            case 'reissue':
+                $data = CertStore::reIssueCert(
+                    (string)$node->key_type,
+                    (string)$node->lifetime,
+                    $node->dn(),
+                    (string)$node->prv_payload,
+                    (string)$node->digest,
+                    (string)$node->caref,
+                    (string)$node->cert_type,
+                    $node->extns()
+                );
+                if (!empty($data['crt'])) {
+                    $node->crt = base64_encode($data['crt']);
+                } else {
+                    $error = $data['error'] ?? '';
+                }
+                break;
+        }
+        if ($error !== false) {
+            throw new UserException($error, "Certificate error");
+        }
     }
 
     public function searchAction()

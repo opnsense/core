@@ -7,20 +7,22 @@
     <field>
         <type>header</type>
         <label>Key</label>
-        <style>action action_internal action_reissue action_internal</style>
+        <style>action action_internal action_reissue action_internal action_external</style>
     </field>
     <field>
         <id>cert.cert_type</id>
         <label>Type</label>
         <type>dropdown</type>
+        <style>selectpicker action action_internal action_reissue</style>
     </field>
     <field>
         <id>cert.private_key_location</id>
         <label>Private key location</label>
+        <style>selectpicker action action_internal</style>
         <type>dropdown</type>
     </field>
     <field>
-        <id>cert.key</id>
+        <id>cert.key_type</id>
         <label>Key type</label>
         <type>dropdown</type>
     </field>
@@ -36,9 +38,14 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>cert.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+    </field>
+    <field>
         <type>header</type>
         <label>General</label>
-        <style>action action_internal action_reissue action_internal</style>
+        <style>action action_internal action_reissue action_internal action_external</style>
     </field>
     <field>
         <id>cert.descr</id>
@@ -84,12 +91,13 @@
         <id>cert.ocsp_uri</id>
         <label>OCSP uri</label>
         <type>text</type>
+        <style>action action_internal action_reissue</style>
     </field>
     <field>
         <type>header</type>
         <label>Alternative Names</label>
         <collapse>true</collapse>
-        <style>action action_internal action_reissue action_internal</style>
+        <style>action action_internal action_reissue action_internal action_external</style>
     </field>
     <field>
         <id>cert.altnames_dns</id>
@@ -131,6 +139,6 @@
         <id>cert.csr_payload</id>
         <label>Certificate signing request</label>
         <type>textbox</type>
-        <style>selectpicker action action_internal action_reissue action_internal</style>
+        <style>selectpicker action action_import_csr</style>
     </field>
 </form>
