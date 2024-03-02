@@ -2095,7 +2095,7 @@ $( document ).ready(function() {
                     }
                     $subj = htmlspecialchars($subj);
                 }
-                if (isset($cert['csr'])) {
+                if (!empty($cert['csr'])) {
                     $subj = htmlspecialchars(csr_get_subject($cert['csr']));
                     $caname = "<em>" . gettext("external - signature pending") . "</em>";
                 }
