@@ -42,6 +42,11 @@ class CertController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'cert';
     protected static $internalModelClass = 'OPNsense\Trust\Cert';
 
+    /**
+     * @var private key data when not stored locally
+     */
+    private $response_priv_key = null;
+
 
     protected function setBaseHook($node)
     {
@@ -69,6 +74,7 @@ class CertController extends ApiMutableModelControllerBase
                     if ((string)$node->private_key_location == 'local') {
                         /* return only in volatile storage */
                         $node->prv_payload = $data['prv'];
+                        $this->response_priv_key = $data['prv'];
                     } else {
                         $node->prv= base64_encode($data['prv']);
                     }
@@ -152,7 +158,11 @@ class CertController extends ApiMutableModelControllerBase
     }
     public function addAction()
     {
-        return $this->addBase('cert', 'cert');
+        $response = $this->addBase('cert', 'cert');
+        if ($response['result'] == 'saved' && !empty($this->response_priv_key)) {
+            $response['private_key'] = $this->response_priv_key;
+        }
+        return $response;
     }
     public function setAction($uuid = null)
     {
