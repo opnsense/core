@@ -22,6 +22,7 @@
                     <import>Import an existing Certificate</import>
                     <import_csr>Import certificate (signed by CA)</import_csr>
                     <reissue>Reissue and replace certificate (does not restart services)</reissue>
+                    <manual>Manual</manual>
                 </OptionValues>
             </action>
             <key_type type="OptionField" volatile="true">

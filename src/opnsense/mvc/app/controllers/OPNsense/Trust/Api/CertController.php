@@ -135,6 +135,11 @@ class CertController extends ApiMutableModelControllerBase
                     $error = $data['error'] ?? '';
                 }
                 break;
+            case 'manual':
+                if (!empty((string)$node->crt_payload)) {
+                    $node->crt = base64_encode((string)$node->crt_payload);
+                }
+                break;
         }
         if ($error !== false) {
             throw new UserException($error, "Certificate error");
