@@ -141,7 +141,9 @@ class CertController extends ApiMutableModelControllerBase
         $filter_funct = function ($record) use ($carefs) {
             return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
         };
-        return $this->searchBase('cert', ['descr', 'caref', 'name', 'valid_from', 'valid_to'], null, $filter_funct);
+        return $this->searchBase(
+            'cert', ['descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to'], null, $filter_funct
+        );
     }
 
     public function getAction($uuid = null)
@@ -174,6 +176,19 @@ class CertController extends ApiMutableModelControllerBase
                 if ($payload) {
                     return $payload;
                 }
+            }
+        }
+        return [];
+    }
+
+    public function rawDumpAction($uuid)
+    {
+        $payload = $this->getBase('cert', 'cert', $uuid);
+        if (!empty($payload['cert'])) {
+            if (!empty($payload['cert']['crt_payload'])) {
+                return CertStore::dumpX509($payload['cert']['crt_payload']);
+            } elseif (!empty($payload['cert']['csr_payload'])) {
+                return CertStore::dumpCSR($payload['cert']['csr_payload']);
             }
         }
         return [];

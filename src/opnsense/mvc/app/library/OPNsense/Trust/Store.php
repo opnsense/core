@@ -446,10 +446,96 @@ class Store
                     $result[$target] = implode('\n', $values);
                 }
             }
+
+            /* Extract certificate purpose */
+            $purpose = [];
+            foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage', 'authorityInfoAccess'] as $ext) {
+                $purpose[$ext] = [];
+                if (!empty($crt['extensions'][$ext])) {
+                    foreach (explode(",", $crt['extensions'][$ext]) as $item) {
+                        $purpose[$ext][] = trim($item);
+                    }
+                }
+            }
+
+            // rfc3280 purpose definitions
+            $result['rfc3280_purpose'] = '';
+            if (
+                in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
+                in_array('Digital Signature', $purpose['keyUsage']) && (
+                    in_array('Key Encipherment', $purpose['keyUsage']) ||
+                    in_array('Key Agreement', $purpose['keyUsage'])
+                )
+            ) {
+                $result['rfc3280_purpose'] = 'id-kp-serverAuth';
+            } elseif (
+                in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']) &&
+                in_array('Digital Signature', $purpose['keyUsage'])
+            ) {
+                $result['rfc3280_purpose'] = 'id-kp-clientAuth';
+            } elseif (
+                in_array('OCSP Signing', $purpose['extendedKeyUsage']) &&
+                in_array('Digital Signature', $purpose['keyUsage'])
+            ) {
+                $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
+            }
+            //
             return $result;
         }
         return false;
     }
+
+    /**
+     * @param string $cert certificate
+     * @return array [stdout|stderr]
+     */
+    public static function dumpX509($cert)
+    {
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl x509 -fingerprint -sha256 -text',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $cert);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $csr CSR
+     * @return array [stdout|stderr]
+     */
+    public static function dumpCSR($csr)
+    {
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl req -text -noout',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $csr);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+        }
+        return $result;
+    }
+
+
 
     /**
      * Extract certificate chain

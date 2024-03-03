@@ -41,6 +41,26 @@
                         }
                         return request;
                     }
+                },
+                commands: {
+                    raw_dump: {
+                        method: function(event){
+                            let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                            ajaxGet('/api/trust/cert/raw_dump/' + uuid, {}, function(data, status){
+                                if (data.stdout) {
+                                    BootstrapDialog.show({
+                                        title: "{{ lang._('Certificate info') }}",
+                                        type:BootstrapDialog.TYPE_INFO,
+                                        message: $("<div/>").text(data.stdout).html(),
+                                        cssClass: 'monospace-dialog',
+                                    });
+                                }
+                            });
+                        },
+                        classname: 'fa fa-fw fa-info-circle',
+                        title: "{{ lang._('show certificate info') }}",
+                        sequence: 10
+                    }
                 }
            });
            grid_cert.on("loaded.rs.jquery.bootgrid", function (e){
@@ -126,12 +146,25 @@
                     }
                 }
             });
-
-
-
        });
 
    </script>
+
+   <style>
+        .monospace-dialog {
+            font-family: monospace;
+            white-space: pre;
+        }
+
+        .monospace-dialog > .modal-dialog {
+            width:70% !important;
+        }
+
+        .modal-body {
+            max-height: calc(100vh - 210px);
+            overflow-y: auto;
+        }
+    </style>
 
    <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
        <li class="active"><a data-toggle="tab" href="#cert">{{ lang._('Certificates') }}</a></li>
@@ -151,10 +184,11 @@
                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                        <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
                        <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
+                       <th data-column-id="rfc3280_purpose" data-width="10em"  data-type="string">{{ lang._('Purpose') }}</th>
                        <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                        <th data-column-id="valid_from" data-width="10em" data-type="datetime">{{ lang._('Valid from') }}</th>
                        <th data-column-id="valid_to" data-width="10em" data-type="datetime">{{ lang._('Valid to') }}</th>
-                       <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                       <th data-column-id="commands" data-width="9em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                    </tr>
                </thead>
                <tbody>
