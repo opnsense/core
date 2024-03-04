@@ -505,7 +505,6 @@ class Store
             $result['stderr'] = stream_get_contents($pipes[2]);
             fclose($pipes[2]);
             proc_close($process);
-
         }
         return $result;
     }
@@ -530,7 +529,6 @@ class Store
             $result['stderr'] = stream_get_contents($pipes[2]);
             fclose($pipes[2]);
             proc_close($process);
-
         }
         return $result;
     }

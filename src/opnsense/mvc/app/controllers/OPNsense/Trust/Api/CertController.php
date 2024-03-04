@@ -76,7 +76,7 @@ class CertController extends ApiMutableModelControllerBase
                         $node->prv_payload = $data['prv'];
                         $this->response_priv_key = $data['prv'];
                     } else {
-                        $node->prv= base64_encode($data['prv']);
+                        $node->prv = base64_encode($data['prv']);
                     }
                 } else {
                     $error = $data['error'] ?? '';
@@ -153,7 +153,10 @@ class CertController extends ApiMutableModelControllerBase
             return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
         };
         return $this->searchBase(
-            'cert', ['descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to'], null, $filter_funct
+            'cert',
+            ['descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to'],
+            null,
+            $filter_funct
         );
     }
 
