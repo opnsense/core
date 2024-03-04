@@ -1709,7 +1709,10 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!empty($destif)) {
+        if (!empty($destif) && isset($ifconfig_details[$destif]) && $ifconfig_details[$destif]['macaddr'] == '00:00:00:00:00:00') {
+            /* explicit skip when interface has no valid mac address */
+            continue;
+        } elseif (!empty($destif)) {
             $dhcrelayifs[] = $destif;
         } else {
             log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
