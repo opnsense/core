@@ -231,4 +231,43 @@ class CertController extends ApiMutableModelControllerBase
         }
         return $result;
     }
+
+    /**
+     * generate file download content
+     * @param string $uuid certificate reference
+     * @param string $type one of crt/prv/pkcs12,
+     *                  $_POST['password'] my contain an optional password for the pkcs12 format
+     * @return array
+     */
+    public function generateFileAction($uuid=null, $type='crt')
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isPost() && !empty($uuid)) {
+            $node = $this->getModel()->getNodeByReference('cert.'. $uuid);
+            if ($node === null || empty((string)$node->crt_payload)) {
+                $result['error'] = gettext('Misssing certificate');
+            } elseif ($type == 'crt') {
+                $result['status'] = 'ok';
+                $result['payload'] = (string)$node->crt_payload;
+            } elseif ($type == 'prv') {
+                $result['status'] = 'ok';
+                $result['payload'] = (string)$node->prv_payload;
+            } elseif ($type == 'pkcs12') {
+                $passphrase = $this->request->getPost('password', null, '');
+                $tmp = CertStore::getPKCS12(
+                    (string)$node->crt_payload,
+                    (string)$node->prv_payload,
+                    (string)$node->descr,
+                    $passphrase
+                );
+                if (!empty($tmp['payload'])) {
+                    // binary data, we need to encode it to deliver it to the client
+                    $result['payload_b64'] = base64_encode($tmp['payload']);
+                } else {
+                    $result['error'] = $tmp['error'] ?? '';
+                }
+            }
+        }
+        return $result;
+    }
 }

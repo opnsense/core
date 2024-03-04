@@ -486,6 +486,28 @@ class Store
     }
 
     /**
+     * @param string $certificate
+     * @param string $private_key
+     * @param string $friendly_name
+     * @param string $passphrase
+     * @return string
+     */
+    public static function getPKCS12($certificate, $private_key, $friendly_name=null, $passphrase=null)
+    {
+        $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
+        $options = [];
+        if (!empty($friendly_name)) {
+            $options['friendly_name'] = $friendly_name;
+        }
+        $result = [];
+        if (!openssl_pkcs12_export($certificate, $result['payload'], $private_key, $passphrase, $options)) {
+            self::_addSSLErrors($result);
+        }
+        error_reporting($old_err_level);
+        return $result;
+    }
+
+    /**
      * @param string $cert certificate
      * @return array [stdout|stderr]
      */

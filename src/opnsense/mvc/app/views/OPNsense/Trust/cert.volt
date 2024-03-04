@@ -74,6 +74,72 @@
                         classname: 'fa fa-fw fa-info-circle',
                         title: "{{ lang._('show certificate info') }}",
                         sequence: 10
+                    },
+                    download: {
+                        method: function(event){
+                            let uuid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                            let $container = $("<div style='height:150px;'/>");
+                            let $type = $("<select id='download_type'/>");
+                            let $password = $("<input id='download_password' type='password'/>");
+                            $type.append($("<option value='crt'/>").text('Certificate'));
+                            $type.append($("<option value='prv'/>").text('Private key'));
+                            $type.append($("<option value='pkcs12' selected=selected/>").text('PKCS #12'));
+                            $container.append(
+                                $("<div class='form-group'/>").append(
+                                    $("<label for='download_type'>{{ lang._('File type') }}</label>"),
+                                    $type
+                                )
+                            );
+                            $container.append(
+                                $("<div class='form-group'/>").append(
+                                    $("<label for='download_password'>{{ lang._('Password') }}</label>"),
+                                    $password)
+                                );
+                            $type.change(function(){
+                                if ($(this).val() != 'pkcs12') {
+                                    $password.closest('div').hide();
+                                } else {
+                                    $password.closest('div').show();
+                                }
+                            });
+                            BootstrapDialog.show({
+                                title: "{{ lang._('Certificate download') }}",
+                                type:BootstrapDialog.TYPE_INFO,
+                                message: $container,
+                                buttons: [{
+                                    label: "{{ lang._('Download') }}",
+                                    action: function(dialogItself){
+                                        let params = {};
+                                        if ($password.val()) {
+                                            params['password'] = $password.val();
+                                        }
+                                        ajaxCall(
+                                            '/api/trust/cert/generate_file/'+uuid+'/'+$type.val(),
+                                            params,
+                                            function(data, status) {
+                                                let payload = null;
+                                                let filename = null;
+                                                if (data.payload_b64) {
+                                                    payload = atob(data.payload_b64);
+                                                    filename = 'cert.p12';
+                                                } else if (data.payload) {
+                                                    payload = data.payload;
+                                                    filename = $type.val() + '.pem';
+                                                }
+                                                if (payload !== null) {
+                                                    download_content(payload, filename, 'application/octet-stream');
+                                                }
+                                            }
+                                        )
+                                        dialogItself.close();
+                                    }
+                                }]
+                            });
+
+                        },
+                        classname: 'fa fa-fw fa-cloud-download',
+                        title: "{{ lang._('Download') }}",
+                        sequence: 10
                     }
                 }
            });
@@ -210,7 +276,7 @@
                        <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                        <th data-column-id="valid_from" data-width="10em" data-type="datetime">{{ lang._('Valid from') }}</th>
                        <th data-column-id="valid_to" data-width="10em" data-type="datetime">{{ lang._('Valid to') }}</th>
-                       <th data-column-id="commands" data-width="9em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                       <th data-column-id="commands" data-width="11em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                    </tr>
                </thead>
                <tbody>
