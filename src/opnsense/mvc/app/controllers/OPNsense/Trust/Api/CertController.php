@@ -239,11 +239,11 @@ class CertController extends ApiMutableModelControllerBase
      *                  $_POST['password'] my contain an optional password for the pkcs12 format
      * @return array
      */
-    public function generateFileAction($uuid=null, $type='crt')
+    public function generateFileAction($uuid = null, $type = 'crt')
     {
         $result = ['status' => 'failed'];
         if ($this->request->isPost() && !empty($uuid)) {
-            $node = $this->getModel()->getNodeByReference('cert.'. $uuid);
+            $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
             if ($node === null || empty((string)$node->crt_payload)) {
                 $result['error'] = gettext('Misssing certificate');
             } elseif ($type == 'crt') {

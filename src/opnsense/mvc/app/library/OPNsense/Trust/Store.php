@@ -492,7 +492,7 @@ class Store
      * @param string $passphrase
      * @return string
      */
-    public static function getPKCS12($certificate, $private_key, $friendly_name=null, $passphrase=null)
+    public static function getPKCS12($certificate, $private_key, $friendly_name = null, $passphrase = null)
     {
         $old_err_level = error_reporting(0); /* prevent openssl error from going to stderr/stdout */
         $options = [];
