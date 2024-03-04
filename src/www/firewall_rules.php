@@ -115,18 +115,18 @@ function firewall_rule_item_proto($filterent)
       "mtraceresp" => gettext("mtrace response"),
       "mtrace" => gettext("mtrace messages")
     );
-    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp' && !empty($filterent['icmptype'])) {
+    if (isset($filterent['protocol']) && $filterent['protocol'] == 'icmp') {
         $result = $record_ipprotocol;
-        $icmplabel = $icmptypes[$filterent['icmptype']] ?? $filterent['icmptype'];
+        $icmplabel = $icmptypes[$filterent['icmptype'] ?? ''] ?? $filterent['icmptype'];
         $result .= sprintf(
           '<span data-toggle="tooltip" title="ICMP type: %s">%s</span>',
           html_safe($icmplabel),
           isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : '*'
         );
         return $result;
-    } elseif (isset($filterent['protocol']) && !empty($filterent['icmp6-type'])) {
+    } elseif (isset($filterent['protocol']) && $filterent['protocol'] == 'ipv6-icmp') {
         $result = $record_ipprotocol;
-        $icmplabel = $icmp6types[$filterent['icmp6-type']] ?? $filterent['icmp6-type'];
+        $icmplabel = $icmp6types[$filterent['icmp6-type'] ?? ''] ?? $filterent['icmp6-type'];
         $result .= sprintf(
           '<span data-toggle="tooltip" title="ICMP6 type: %s">%s</span>',
           html_safe($icmplabel),
