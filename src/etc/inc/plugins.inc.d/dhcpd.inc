@@ -1634,6 +1634,7 @@ function dhcpd_dhcrelay4_configure($verbose = false)
     }
 
     service_log('Starting DHCPv4 relay...', $verbose);
+    $ifdetails = legacy_interfaces_details();
 
     killbypid('/var/run/dhcrelay.pid');
 
@@ -1709,7 +1710,10 @@ function dhcpd_dhcrelay4_configure($verbose = false)
             }
         }
 
-        if (!empty($destif)) {
+        if (!empty($destif) && isset($ifdetails[$destif]) && $ifdetails[$destif]['macaddr'] == '00:00:00:00:00:00') {
+            /* explicit skip when interface has no mac address */
+            continue;
+        } elseif (!empty($destif)) {
             $dhcrelayifs[] = $destif;
         } else {
             log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
