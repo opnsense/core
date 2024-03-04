@@ -244,6 +244,9 @@ class FilterRule extends Rule
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
                                              "/" . $rule['max-src-conn-rates'] . ", overload <{$otbl}> flush global ";
                     }
+                    if (!empty($rule['state-policy'])) {
+                        $rule['state']['options'][] = $rule['state-policy'];
+                    }
                 }
             }
             // icmp-type switch (ipv4/ipv6)
