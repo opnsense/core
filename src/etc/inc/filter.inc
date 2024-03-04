@@ -689,99 +689,40 @@ function filter_get_time_based_rule_status($schedule)
      * if the rule should be installed or not.
      */
     foreach ($schedule['timerange'] as $timeday) {
-        if (empty($timeday['month'])) {
-            $monthstatus = true;
-        } else {
-            $monthstatus = filter_tdr_month($timeday['month']);
+        $matched_time = true; /* keep original behavior, no time set allows the whole day */
+        if (!empty($timeday['hour'])) {
+            $tmp = explode("-", $timeday['hour']);
+            $now = strtotime("now");
+            $matched_time = $now >= strtotime($tmp[0]) && $now < strtotime($tmp[1]);
         }
-        if (empty($timeday['day'])) {
-            $daystatus = true;
-        } else {
-            $daystatus = filter_tdr_day($timeday['day']);
-        }
-        if (empty($timeday['hour'])) {
-            $hourstatus = true;
-        } else {
-            $hourstatus = filter_tdr_hour($timeday['hour']);
-        }
-        if (empty($timeday['position'])) {
-            $positionstatus = true;
-        } else {
-            $positionstatus = filter_tdr_position($timeday['position']);
-        }
+        if ($matched_time) {
+            if (!empty($timeday['position'])) {
+                $this_weekday = date('w') == 0 ? 7 : date('w');
 
-        if ($monthstatus == true && $daystatus == true && $positionstatus == true && $hourstatus == true) {
-            return true;
+                foreach (explode(",", $timeday['position']) as $day) {
+                    if ($day == $this_weekday) {
+                        return true;
+                    }
+                }
+            } else {
+                $months = explode(',', $timeday['month'] ?? '');
+                $days = explode(',', $timeday['day'] ?? '');
+                if (empty($months) || empty($days) || count($days) != count($months)) {
+                    /* invalid data */
+                    continue;
+                }
+                $today = date("dm");
+                for ($i = 0; $i < count($days); ++$i) {
+                    if (sprintf("%02d%02d", $days[$i], $months[$i]) == $today) {
+                        return true;
+                    }
+                }
+            }
         }
     }
     return false;
 }
 
-function filter_tdr_day($schedule)
-{
-    /*
-     * Calculate day of month.
-     * IE: 29th of may
-     */
-    $date = date("d");
-    $defined_days = explode(",", $schedule);
-    foreach ($defined_days as $dd) {
-        if ($date == $dd) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function filter_tdr_hour($schedule)
-{
-    /* $schedule should be a string such as 16:00-19:00 */
-    $tmp = explode("-", $schedule);
-    $starting_time = strtotime($tmp[0]);
-    $ending_time = strtotime($tmp[1]);
-    $now = strtotime("now");
-    if ($now >= $starting_time && $now < $ending_time) {
-        return true;
-    }
-    return false;
-}
-
-function filter_tdr_position($schedule)
-{
-    /*
-     * Calculate position, ie: day of week.
-     * Sunday = 7, Monday = 1, Tuesday = 2
-     * Weds = 3, Thursday = 4, Friday = 5,
-     * Saturday = 6
-     * ...
-     */
-    $weekday = date("w");
-    if ($weekday == 0) {
-        $weekday = 7;
-    }
-    $schedule_days = explode(",", $schedule);
-    foreach ($schedule_days as $day) {
-        if ($day == $weekday) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function filter_tdr_month($schedule)
-{
-    /*
-     * Calculate month
-     */
-    $todays_month = date("n");
-    $months = explode(",", $schedule);
-    foreach ($months as $month) {
-        if ($month == $todays_month) {
-            return true;
-        }
-    }
-    return false;
-}
 
 function filter_setup_logging_interfaces(&$FilterIflist)
 {
