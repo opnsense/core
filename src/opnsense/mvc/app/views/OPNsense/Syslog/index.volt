@@ -88,16 +88,17 @@
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" id="destinations" href="#tab_local">{{ lang._('Local') }}</a></li>
-    <li><a data-toggle="tab" id="destinations" href="#tab_destinations">{{ lang._('Destinations') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="local" href="#tab_local">{{ lang._('Local') }}</a></li>
+    <li><a data-toggle="tab" id="remote" href="#tab_remote">{{ lang._('Remote') }}</a></li>
     <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="tab_local" class="tab-pane fade in active __mb">
+        <!-- tab page "local" -->
         {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
     </div>
-    <div id="tab_destinations" class="tab-pane fade in">
-        <!-- tab page "destinations" -->
+    <div id="tab_remote" class="tab-pane fade in">
+        <!-- tab page "remote" -->
         <table id="grid-destinations" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogDestination" data-editAlert="syslogChangeMessage">
             <thead>
             <tr>
