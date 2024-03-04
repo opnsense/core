@@ -1,14 +1,8 @@
 import BaseTableWidget from "./BaseTableWidget.js";
-import BaseWidget from "./BaseWidget.js";
 
 export default class Carp extends BaseTableWidget {
     constructor() {
-        super({
-            options: {noHeaders: true},
-            data: {
-
-            }
-        });
+        super();
         this.title = 'CARP Status';
     }
 

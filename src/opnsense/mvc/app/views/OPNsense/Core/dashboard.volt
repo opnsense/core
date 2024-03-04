@@ -118,7 +118,6 @@ $( document ).ready(function() {
                 dataType: 'json',
                 contentType: 'application/json'
             }).then(async (data) => {
-                // XXX: is this done in Promise.all() or in a loop?
                 const promises = data.map(async (item) => {
                     let basename = item.split('.')[0];
                     const mod = await import('/ui/js/widgets/' + item);
@@ -211,7 +210,6 @@ $( document ).ready(function() {
                     }
                 },
                 (elem) => {
-                    // XXX: do we even need this callback?
                     this._updateGrid(elem.parentElement.parentElement);
                 }
             );

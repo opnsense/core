@@ -7,7 +7,6 @@ export default class BaseTableWidget extends BaseWidget {
         this.options = null;
         this.data = null;
         this.table = null;
-        this.rowType = null;
     }
 
     setTableData(options = {}, data = []) {
@@ -38,18 +37,25 @@ export default class BaseTableWidget extends BaseWidget {
         }        
 
         for (const row of this.data) {
-            this.rowType = typeof row !== 'object' && row !== null ? 'flat' : 'nested';
-            if (this.rowType === 'flat' && this.options.headerPosition !== 'none') {
+            let rowType = Array.isArray(row) && row !== null ? 'flat' : 'nested';
+            if (rowType === 'flat' && this.options.headerPosition !== 'none') {
                 console.error('Flat data is not supported with headers');
                 return null;
             }
 
-            if (this.rowType === 'flat') {
-                $flextable.append($(`
-                    <div class="flextable-row" role="rowgroup">
-                        <div class="flex-row" role="cell">${row}</div>
-                    </div>
-                `));
+            if (rowType === 'nested' && this.options.headerPosition === 'none') {
+                console.error('Nested data requires headers');
+                return null;
+            }
+
+            if (rowType === 'flat') {
+                let $row = $(`<div class="flextable-row"></div>`)
+                for (const item of row) {
+                    $row.append($(`
+                        <div class="flex-row" role="cell">${item}</div>
+                    `));
+                }
+                $flextable.append($row);
             } else {
                 if (this.options.headerPosition === 'top') {
                     let $flextableRow = $(`<div class="flextable-row"></div>`);
