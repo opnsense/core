@@ -200,6 +200,8 @@
                         visible_options.push('internal');
                         visible_options.push('external');
                         visible_options.push('import');
+                    } else if ($(this).val() == 'reissue') {
+                        visible_options.push('external');
                     }
                     $("#cert\\.action option").each(function(){
                         if (visible_options.includes($(this).val())) {

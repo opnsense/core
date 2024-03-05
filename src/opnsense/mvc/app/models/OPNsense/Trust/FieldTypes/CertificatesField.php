@@ -107,14 +107,13 @@ class CertificatesField extends ArrayField
     protected function actionPostLoadingEvent()
     {
         foreach ($this->internalChildnodes as $node) {
+            $node->csr_payload = !empty((string)$node->csr) ? (string)base64_decode($node->csr) : '';
+            $node->crt_payload = !empty((string)$node->crt) ? (string)base64_decode($node->crt) : '';
+            $payload = false;
             if (!empty((string)$node->crt)) {
-                $node->crt_payload = (string)base64_decode($node->crt);
                 $payload = \OPNsense\Trust\Store::parseX509($node->crt_payload);
             } elseif (!empty((string)$node->csr)) {
-                $node->csr_payload = (string)base64_decode($node->csr);
                 $payload = \OPNsense\Trust\Store::parseCSR($node->csr_payload);
-            } else {
-                $payload = false;
             }
             if ($payload !== false) {
                 foreach ($payload as $key => $value) {

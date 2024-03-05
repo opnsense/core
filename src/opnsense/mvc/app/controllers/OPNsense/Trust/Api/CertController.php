@@ -116,6 +116,7 @@ class CertController extends ApiMutableModelControllerBase
                     $error = gettext('Invalid X509 certificate provided');
                 } else {
                     $node->crt = base64_encode((string)$node->crt_payload);
+                    $node->csr = null;
                 }
                 break;
             case 'reissue':
