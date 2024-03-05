@@ -697,7 +697,8 @@ function filter_get_time_based_rule_status($schedule)
         }
         if ($matched_time) {
             if (!empty($timeday['position'])) {
-                $this_weekday = date("w") == 0 ? 7 : date("w");;
+                $this_weekday = date('w') == 0 ? 7 : date('w');
+
                 foreach (explode(",", $timeday['position']) as $day) {
                     if ($day == $this_weekday) {
                         return true;
@@ -711,14 +712,13 @@ function filter_get_time_based_rule_status($schedule)
                     continue;
                 }
                 $today = date("dm");
-                for ($i=0; $i < count($days) ; ++$i) {
+                for ($i = 0; $i < count($days); ++$i) {
                     if (sprintf("%02d%02d", $days[$i], $months[$i]) == $today) {
                         return true;
                     }
                 }
             }
         }
-
     }
     return false;
 }
