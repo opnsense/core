@@ -307,7 +307,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
     }
 
-
     /**
      * Update model settings
      * @return array status / validation errors
