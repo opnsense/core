@@ -65,74 +65,85 @@ class OpenVPN extends BaseModel
                         )
                     );
                 }
+                if (empty((string)$instance->cert) && empty((string)$instance->ca)) {
+                    $messages->appendMessage(new Message(
+                        gettext('When no certificate is provided a CA needs to be provided.'),
+                        $key . ".cert"
+                    ));
+                }
             } elseif ($instance->role == 'server') {
-                if (
-                    $instance->dev_type == 'tun' &&
-                    empty((string)$instance->server) &&
-                    empty((string)$instance->server_ipv6)
-                ) {
-                    $messages->appendMessage(
-                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server')
-                    );
-                    $messages->appendMessage(
-                        new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server_ipv6')
-                    );
-                }
-                if (!empty((string)$instance->server) && strpos((string)$instance->server, '/') !== false) {
-                    if (
-                        explode('/', (string)$instance->server)[1] > 29 && !(
-                        (string)$instance->dev_type == 'tun' && (string)$instance->topology == 'p2p'
-                        )
-                    ) {
-                        /* tun + p2p is the exceptions here */
-                        $msg = gettext(
-                            'Server directive must define a subnet of /29 or lower unless topology equals p2p.'
+                if ($instance->dev_type == 'tun') {
+                    if (empty((string)$instance->server) && empty((string)$instance->server_ipv6)) {
+                        $messages->appendMessage(
+                            new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server')
                         );
-                        $messages->appendMessage(new Message($msg, $key . '.server'));
+                        $messages->appendMessage(
+                            new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server_ipv6')
+                        );
                     }
-                }
-            }
-            if (!empty((string)$instance->cert)) {
-                if ($instance->cert->isFieldChanged() || $validateFullModel) {
-                    $tmp = Store::getCertificate((string)$instance->cert);
-                    if (empty($tmp) || !isset($tmp['ca'])) {
+                    if (!empty((string)$instance->server) && strpos((string)$instance->server, '/') !== false) {
+                        if (
+                            explode('/', (string)$instance->server)[1] > 29 && !(
+                            (string)$instance->dev_type == 'tun' && (string)$instance->topology == 'p2p'
+                            )
+                        ) {
+                            /* tun + p2p is the exceptions here */
+                            $msg = gettext(
+                                'Server directive must define a subnet of /29 or lower unless topology equals p2p.'
+                            );
+                            $messages->appendMessage(new Message($msg, $key . '.server'));
+                        }
+                    }
+                } elseif ($instance->dev_type == 'tap') {
+                    if (!(empty((string)$instance->bridge_gateway) xor ((string)$instance->bridge_pool))) {
                         $messages->appendMessage(new Message(
-                            gettext('Unable to locate a CA for this certificate.'),
-                            $key . ".cert"
+                            gettext('When specifying a bridge gateway, a pool should also be provided.'),
+                            $key . ".bridge_gateway"
                         ));
+                    } elseif (!empty((string)$instance->bridge_pool)) {
+                        $parts = array_map('trim', explode('-', (string)$instance->bridge_pool));
+                        if (count($parts) != 2 || !Util::isIpv4Address($parts[0]) || !Util::isIpv4Address($parts[1])) {
+                            $messages->appendMessage(new Message(
+                                gettext('Invalid range provided.'),
+                                $key . ".bridge_pool"
+                            ));
+                        } else {
+                            $ip = (string)$instance->bridge_gateway;
+                            if (!Util::isIPInCIDR($parts[0], $ip) || !Util::isIPInCIDR($parts[1], $ip)) {
+                                $messages->appendMessage(new Message(
+                                    gettext('Range does not match specified subnet.'),
+                                    $key . ".bridge_pool"
+                                ));
+                            }
+                        }
                     }
                 }
-            } else {
-                if (
-                    $instance->cert->isFieldChanged() ||
-                    $instance->verify_client_cert->isFieldChanged() ||
-                    $instance->ca->isFieldChanged() ||
-                    $validateFullModel
-                ) {
-                    if ((string)$instance->verify_client_cert != 'none' && $instance->role == 'server') {
+                if ((string)$instance->verify_client_cert != 'none') {
+                    if (empty((string)$instance->cert)) {
                         $messages->appendMessage(new Message(
                             gettext('To validate a certificate one has to be provided.'),
                             $key . ".verify_client_cert"
                         ));
-                    } elseif (
-                        $instance->role == 'client' &&
-                        empty((string)$instance->cert) &&
-                        empty((string)$instance->ca)
-                    ) {
-                        $messages->appendMessage(new Message(
-                            gettext('When no certificate is provided a CA needs to be provided.'),
-                            $key . ".cert"
-                        ));
                     }
+                } elseif (empty((string)$instance->authmode)) {
+                    $messages->appendMessage(new Message(
+                        gettext(
+                            'Please select an authentication option, at least one type of authentication is required.'
+                        ),
+                        $key . ".verify_client_cert"
+                    ));
                 }
             }
-            if (
-                (
-                $instance->keepalive_interval->isFieldChanged() ||
-                $instance->keepalive_timeout->isFieldChanged() ||
-                $validateFullModel
-                ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
-            ) {
+            if (!empty((string)$instance->cert)) {
+                $tmp = Store::getCertificate((string)$instance->cert);
+                if (empty($tmp) || !isset($tmp['ca'])) {
+                    $messages->appendMessage(new Message(
+                        gettext('Unable to locate a CA for this certificate.'),
+                        $key . ".cert"
+                    ));
+                }
+            }
+            if ((int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval) {
                 $messages->appendMessage(new Message(
                     gettext('Timeout should be larger than interval.'),
                     $key . ".keepalive_timeout"
@@ -475,6 +486,7 @@ class OpenVPN extends BaseModel
                     //$options['user'] = 'openvpn';
                     //$options['group'] = 'openvpn';
                 } else {
+                    // server only settings
                     $event_script = '/usr/local/opnsense/scripts/openvpn/ovpn_event.py';
                     $options['dev'] = "ovpns{$node->vpnid}";
                     $options['ping-timer-rem'] = null;
@@ -485,10 +497,10 @@ class OpenVPN extends BaseModel
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
-                    if (!empty((string)$node->server)) {
+                    if ((string)$node->dev_type == 'tun' && !empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
-                        if ((string)$node->dev_type == 'tun' && (string)$node->topology == 'p2p' && $parts[1] > 29) {
+                        if ((string)$node->topology == 'p2p' && $parts[1] > 29) {
                             /**
                              * Workaround and backwards compatibility, the server directive doesn't support
                              * networks smaller than /30, pushing ifconfig manually works in some cases.
@@ -505,6 +517,18 @@ class OpenVPN extends BaseModel
                         } else {
                             $options['server'] = $parts[0] . " " . $mask;
                         }
+                    } elseif ((string)$node->dev_type == 'tap') {
+                        if (!empty((string)$node->bridge_gateway)) {
+                            $parts = explode('/', (string)$node->bridge_gateway);
+                            $options['server-bridge'] = sprintf(
+                                "%s %s %s",
+                                $parts[0],
+                                Util::CIDRToMask($parts[1]),
+                                str_replace('-', ' ', (string)$node->bridge_pool)
+                            );
+                        } else {
+                            $options['server-bridge'] = '';
+                        }
                     }
                     if (!empty((string)$node->server_ipv6)) {
                         $options['server-ipv6'] = (string)$node->server_ipv6;
@@ -512,20 +536,17 @@ class OpenVPN extends BaseModel
                     if (!empty((string)$node->username_as_common_name)) {
                         $options['username-as-common-name'] = null;
                     }
-                    // server only settings
-                    if (!empty((string)$node->server) || !empty((string)$node->server_ipv6)) {
-                        $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
-                        // hook event handlers
-                        if (!empty((string)$node->authmode)) {
-                            $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
-                            $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
-                        } else {
-                            // client specific profiles are being deployed using the connect event when no auth is used
-                            $options['client-connect'] = "\"{$event_script} '{$node_uuid}'\"";
-                        }
-                        $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
-                        $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
+                    $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
+                    // hook event handlers
+                    if (!empty((string)$node->authmode)) {
+                        $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
+                        $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
+                    } else {
+                        // client specific profiles are being deployed using the connect event when no auth is used
+                        $options['client-connect'] = "\"{$event_script} '{$node_uuid}'\"";
                     }
+                    $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
+                    $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
 
                     if (!empty((string)$node->maxclients)) {
                         $options['max-clients'] = (string)$node->maxclients;

@@ -161,6 +161,10 @@
                 <server_ipv6 type="NetworkField">
                     <WildcardEnabled>N</WildcardEnabled>
                 </server_ipv6>
+                <bridge_gateway type="NetworkField">
+                    <WildcardEnabled>N</WildcardEnabled>
+                </bridge_gateway>
+                <bridge_pool type="TextField"/>
                 <route type="NetworkField">
                     <FieldSeparator>,</FieldSeparator>
                     <asList>Y</asList>
