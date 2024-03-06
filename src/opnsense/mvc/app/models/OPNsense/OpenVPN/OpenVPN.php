@@ -485,10 +485,10 @@ class OpenVPN extends BaseModel
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
-                    if (!empty((string)$node->server)) {
+                    if ((string)$node->dev_type == 'tun' && !empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
-                        if ((string)$node->dev_type == 'tun' && (string)$node->topology == 'p2p' && $parts[1] > 29) {
+                        if ((string)$node->topology == 'p2p' && $parts[1] > 29) {
                             /**
                              * Workaround and backwards compatibility, the server directive doesn't support
                              * networks smaller than /30, pushing ifconfig manually works in some cases.
@@ -505,6 +505,9 @@ class OpenVPN extends BaseModel
                         } else {
                             $options['server'] = $parts[0] . " " . $mask;
                         }
+                    } elseif ((string)$node->dev_type == 'tap') {
+                        $options['mode'] = 'server';
+                        $options['tls-server'] = null;
                     }
                     if (!empty((string)$node->server_ipv6)) {
                         $options['server-ipv6'] = (string)$node->server_ipv6;
