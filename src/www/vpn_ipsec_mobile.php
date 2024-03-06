@@ -441,7 +441,7 @@ foreach ($auth_servers as $auth_key => $auth_server) : ?>
                   <tr class="ike_heading">
                     <td> <a id="help_for_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable")?></td>
                     <td>
-                      <input name="enable" id="ike_mobile_enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                      <input name="enable" id="ike_mobile_enable" type="checkbox" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
                       <?=gettext("Enable IPsec Mobile Client Support"); ?>
                       <div class="hidden" data-for="help_for_enable">
                         <?= gettext(
