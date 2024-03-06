@@ -28,6 +28,7 @@
 
 namespace OPNsense\Trust\FieldTypes;
 
+use OPNsense\Core\Config;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\FieldTypes\TextField;
@@ -129,6 +130,10 @@ class CertificatesField extends ArrayField
                 $node->action = 'reissue';
             } elseif (!empty((string)$node->crt_payload)) {
                 $node->action = 'manual';
+            }
+            $tmp = Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']");
+            if (is_array($tmp) && count($tmp) > 1) {
+                $node->in_use = '1';
             }
         }
         return parent::actionPostLoadingEvent();

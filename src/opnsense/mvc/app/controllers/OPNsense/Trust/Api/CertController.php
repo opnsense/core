@@ -155,7 +155,7 @@ class CertController extends ApiMutableModelControllerBase
         };
         return $this->searchBase(
             'cert',
-            ['descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to'],
+            ['refid', 'descr', 'caref', 'rfc3280_purpose', 'name', 'valid_from', 'valid_to' , 'in_use'],
             null,
             $filter_funct
         );
@@ -179,7 +179,14 @@ class CertController extends ApiMutableModelControllerBase
     }
     public function delAction($uuid)
     {
-        return $this->delBase('cert', $uuid);
+        if ($this->request->isPost() && !empty($uuid)) {
+            $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
+            if ($node !== null) {
+                $this->checkAndThrowValueInUse((string)$node->refid, false, false);
+            }
+            return $this->delBase('cert', $uuid);
+        }
+        return ['status' => 'failed'];
     }
     public function toggleAction($uuid, $enabled = null)
     {

@@ -272,6 +272,7 @@
                <thead>
                    <tr>
                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                       <th data-column-id="in_use" data-width="6em" data-type="string" data-formatter="boolean">{{ lang._('In use') }}</th>
                        <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
                        <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
                        <th data-column-id="rfc3280_purpose" data-width="10em"  data-type="string">{{ lang._('Purpose') }}</th>
