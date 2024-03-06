@@ -161,13 +161,13 @@ outputs:
              # http-body: yes           # Requires metadata; enable dumping of http body in Base64
              # http-body-printable: yes # Requires metadata; enable dumping of http body in printable format
 
-            # Enable the logging of tagged packets for rules using the
-            # "tag" keyword.
-            tagged-packets: yes
-            # Enable logging the final action taken on a packet by the engine
-            # (e.g: the alert may have action 'allowed' but the verdict be
-            # 'drop' due to another alert. That's the engine's verdict)
-            # verdict: yes
+             # Enable the logging of tagged packets for rules using the
+             # "tag" keyword.
+             tagged-packets: yes
+             # Enable logging the final action taken on a packet by the engine
+             # (e.g: the alert may have action 'allowed' but the verdict be
+             # 'drop' due to another alert. That's the engine's verdict)
+             # verdict: yes
         # app layer frames
         - frame:
             # disabled by default as this is very verbose.
