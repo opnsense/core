@@ -185,7 +185,7 @@ class Gateways extends BaseModel
             $config = Config::getInstance()->object();
             if (!empty($config->gateways) && count($config->gateways->children()) > 0) {
                 foreach ($config->gateways->children() as $tag => $gateway) {
-                    if ($tag == 'gateway_item' && count(gateways->children()) > 0) {
+                    if ($tag == 'gateway_item' && count($gateway->children()) > 0) {
                         $record = [];
                         // iterate over the individual nodes since empty nodes still return a
                         // SimpleXMLObject when the container is converted to an array
