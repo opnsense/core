@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,10 +34,10 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\FieldTypes\TextField;
 
 /**
- * Class CertificateContainerField
+ * Class CaContainerField
  * @package OPNsense\Trust\FieldTypes
  */
-class CertificateContainerField extends ContainerField
+class CaContainerField extends ContainerField
 {
     /**
      * @return array dn
@@ -63,43 +63,20 @@ class CertificateContainerField extends ContainerField
 
         return $dn;
     }
-
-    /**
-     * @return array additional openssl properties (subjectAltNames)
-     */
-    public function extns()
-    {
-        $extns = [];
-        $tmp = [];
-        foreach (['DNS', 'IP', 'email', 'URI'] as $topic) {
-            $fieldname = strtolower("altnames_" . $topic);
-            if (!empty(trim((string)$this->$fieldname))) {
-                foreach (explode("\n", (string)$this->$fieldname) as $line) {
-                    if (!empty($line)) {
-                        $tmp[] = $topic . ":" . $line;
-                    }
-                }
-            }
-        }
-        if (!empty($tmp)) {
-            $extns['subjectAltName'] = implode(",", $tmp);
-        }
-        return $extns;
-    }
 }
 
 /**
- * Class CertificatesField
+ * Class CAsField
  * @package OPNsense\Trust\FieldTypes
  */
-class CertificatesField extends ArrayField
+class CAsField extends ArrayField
 {
     /**
      * @inheritDoc
      */
     public function newContainerField($ref, $tagname)
     {
-        $container_node = new CertificateContainerField($ref, $tagname);
+        $container_node = new CaContainerField($ref, $tagname);
         $pmodel = $this->getParentModel();
         $container_node->setParentModel($pmodel);
         return $container_node;
@@ -108,15 +85,13 @@ class CertificatesField extends ArrayField
     protected function actionPostLoadingEvent()
     {
         foreach ($this->internalChildnodes as $node) {
-            $node->csr_payload = !empty((string)$node->csr) ? (string)base64_decode($node->csr) : '';
             $node->crt_payload = !empty((string)$node->crt) ? (string)base64_decode($node->crt) : '';
             $payload = false;
-            if (!empty((string)$node->crt)) {
+            if (!empty((string)$node->crt_payload)) {
                 $payload = \OPNsense\Trust\Store::parseX509($node->crt_payload);
-            } elseif (!empty((string)$node->csr)) {
-                $payload = \OPNsense\Trust\Store::parseCSR($node->csr_payload);
             }
             if ($payload !== false) {
+                $countries = [];
                 foreach ($payload as $key => $value) {
                     if (isset($node->$key)) {
                         /* prevent injection of invalid countries which trip migrations */
@@ -134,16 +109,9 @@ class CertificatesField extends ArrayField
                 }
             }
             $node->prv_payload = !empty((string)$node->prv) ? (string)base64_decode($node->prv) : '';
-            if (!empty((string)$node->csr_payload)) {
-                $node->action = 'import_csr';
-            } elseif (!empty((string)$node->crt_payload) && !empty((string)$node->prv_payload)) {
-                $node->action = 'reissue';
-            } elseif (!empty((string)$node->crt_payload)) {
-                $node->action = 'manual';
-            }
-            $tmp = Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']");
-            if (is_array($tmp) && count($tmp) > 1) {
-                $node->in_use = '1';
+
+            if (!empty((string)$node->crt_payload)) {
+                $node->action = 'existing';
             }
         }
         return parent::actionPostLoadingEvent();
