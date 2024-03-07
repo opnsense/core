@@ -7,12 +7,51 @@ export default class BaseTableWidget extends BaseWidget {
         this.options = null;
         this.data = null;
         this.table = null;
+
+        this.curSize = null;
+        this.sizeStates = {
+            0: {
+                '.flextable-row': {'padding': ''},
+                '.header .flex-row': {'border-bottom': 'solid 1px'},
+                '.flex-row': {'width': '100%'},
+                '.column': {'width': '100%'},
+                '.flex-cell': {'width': '100%'},
+            },
+            430: {
+                '.flextable-row': {'padding': '0.5em 0.5em'},
+                '.header .flex-row': {'border-bottom': ''},
+                '.flex-row': {'width': this._calculateColumnWidth.bind(this)},
+                '.column': {'width': ''},
+                '.flex-cell': {'width': ''},
+            }
+        }
+        this.widths = Object.keys(this.sizeStates).sort();
+    }
+
+    _calculateColumnWidth() {
+        if (this.options !== null && this.data !== null) {
+            switch (this.options.headerPosition) {
+                case 'none':
+                    return `calc(100% / ${this.data[0].length})`;
+                case 'top':
+                    return `calc(100% / ${Object.keys(this.data[0]).length})`;
+                case 'left':
+                    return `calc(100% / 2)`;
+            }
+        }
+
+        return '';
     }
 
     setTableData(options = {}, data = []) {
-        // Set default options
+        /**
+         * headerPosition: top, left or none.
+         *  top: headers are on top of the table. Data layout: [{header1: value1}, {header1: value2}, ...]
+         *  left: headers are on the left of the table (key-value). Data layout: [{header1: value1, header2: value2}, ...]
+         *  none: no headers. Data layout: [[value1, value2], ...]
+         */
         this.options = {
-            headerPosition: 'top', // top, left or none
+            headerPosition: 'top',
             // TODO:
             // overflowLimit (how many items to show before y-overflow)
             // overflowScroll (scroll or hide overflow)
@@ -129,32 +168,22 @@ export default class BaseTableWidget extends BaseWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        // XXX: refactor and optimize, jquery calls are not always necessary
-        if (width <= 767) {
-            // Apply styles for max-width: 767px
-            $(elem).find('.flex-row').css('width', 'calc(100% / 3)');
-            $(elem).find('.flex-row.first').css('width', '100%');
-            $(elem).find('.column').css('width', '100%');
-        } else {
-            // Unset styles for max-width: 767px
-            $(elem).find('.flex-row').css('width', '');
-            $(elem).find('.flex-row.first').css('width', '');
-            $(elem).find('.column').css('width', '');
+        let lowIndex = 0;
+        for (let i = 0; i < this.widths.length; i++) {
+            if (this.widths[i] <= width) {
+                lowIndex = i;
+            } else {
+                break;
+            }
         }
 
-        if (width <= 430) {
-            // Apply styles for max-width: 430px
-            $(elem).find('.flextable-row').css('padding', '');
-            $(elem).find('.header .flex-row').css('border-bottom', 'solid 1px');
-            $(elem).find('.flex-row').css('width', '100%');
-            $(elem).find('.column').css('width', '100%');
-            $(elem).find('.flex-cell').css('width', '100%');
-        } else {
-            $(elem).find('.flextable-row').css('padding', '0.5em 0.5em');
-            $(elem).find('.header .flex-row').css('border-bottom', '');
-            $(elem).find('.flex-row').css('width', '');
-            $(elem).find('.column').css('width', '');
-            $(elem).find('.flex-cell').css('width', '');
+        const lowIndexWidth = this.widths[lowIndex];
+        if (lowIndexWidth !== this.curSize) {
+            for (const [selector, styles] of Object.entries(this.sizeStates[lowIndexWidth])) {
+                $(elem).find(selector).css(styles);
+            }
+            this.curSize = lowIndexWidth;
+            return true;
         }
     }
 }

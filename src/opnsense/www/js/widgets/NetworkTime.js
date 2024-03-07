@@ -4,6 +4,13 @@ export default class NetworkTime extends BaseWidget {
     constructor() {
         super();
         this.title = 'Network Time';
+        this.tickTimeout = 1000;
+    }
+
+    onWidgetTick() {
+        let $nt = $('#network-time');
+        let d = new Date();
+        $nt.html(d.toLocaleTimeString());
     }
 
     async getHtml() {
@@ -16,11 +23,6 @@ export default class NetworkTime extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        setInterval(function update_timer() {
-            let $nt = $('#network-time');
-            let d = new Date();
-            $nt.html(d.toLocaleTimeString());        
-            return update_timer;
-        }(), 1000);
+
     }
 }

@@ -50,8 +50,25 @@ $( document ).ready(function() {
         _lastWidths = {};
         _lastHeights = {};
 
+        _debounce(f, delay = 50, ensure = true) {
+            // debounce to prevent a flood of calls in a short time
+            let lastCall = Number.NEGATIVE_INFINITY;
+            let wait;
+            let handle;
+            return (...args) => {
+                wait = lastCall + delay - Date.now();
+                clearTimeout(handle);
+                if (wait <= 0 || ensure) {
+                    handle = setTimeout(() => {
+                        f(...args);
+                        lastCall = Date.now();
+                    }, wait);
+                }
+            };
+        }
+
         observe(elements, onSizeChanged, onInitialize) {
-            const observer = new ResizeObserver((entries) => {
+            const observer = new ResizeObserver(this._debounce((entries) => {
                 if (entries != undefined && entries.length > 0) {
                     for (const entry of entries) {
                         const width = entry.contentRect.width;
@@ -77,7 +94,7 @@ $( document ).ready(function() {
                     }
                 }
 
-            });
+            }));
 
             elements.forEach((element) => {
                 observer.observe(element);
@@ -89,8 +106,9 @@ $( document ).ready(function() {
         constructor(gridStackOptions = {}) {
             this.gridStackOptions = gridStackOptions;
             this.modules = {}; // id -> widget module
+            this.widgetConfigurations = {}; // id -> per-widget configuration
             this.widgetClasses = {}; // id -> instantiated widget module
-            this.widgetElements = {}; // id -> per-widget gridstack configuration + raw html string
+            //this.widgetElements = {}; // id -> per-widget gridstack configuration + raw html string
             this.widgetHTMLElements = {}; // id -> Element types
             this.widgetTickRoutines = {}; // id -> tick routines
             this.grid = null; // gridstack instance
@@ -107,8 +125,7 @@ $( document ).ready(function() {
                 // load all dynamic content and start tick routines
                 await this._loadDynamicContent();
             } catch (error) {
-                console.error('Failed initializing Widgets');
-                console.error(error);
+                console.error('Failed initializing Widgets', error);
             }
         }
 
@@ -136,45 +153,50 @@ $( document ).ready(function() {
         }
 
         async _initializeWidgets() {
-            /* TODO: this function should accept the creation of a single widget */
             if ($.isEmptyObject(this.modules)) {
                 throw new Error('No widgets loaded');
             }
 
             for (const [identifier, widgetClass] of Object.entries(this.modules)) {
-                // instantiate widget
-                const widget = new widgetClass();
-                // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
-                widget.setId(identifier);
-                this.widgetClasses[identifier] = widget;
-
-                // setup generic panels
-                let content = await widget.getHtml();
-                let $panel = this._makeWidget(identifier, widget.title, content);
-
-                let gridElement = {
-                    content: $panel.prop('outerHTML'),
-                    sizeToContent: true,
-                    uniqueId: identifier
-                    // any to-be persisted data (backend) can be placed here,
-                    // serialization will return this object
-                };
-
-                // lock the system information widget (TODO: unless specified otherwise)
-                if (identifier == 'systeminformation') {
-                    gridElement = {
-                        x: 0, y: 0,
-                        // locked: true,
-                        // noResize: true,
-                        // noMove: true,
-                        ...gridElement
-                    };
-                }
-
-                this.widgetElements[identifier] = gridElement;
+                await this._createGridStackWidget(identifier, widgetClass);
             }
         }
 
+        async _createGridStackWidget(id, widgetClass) {
+            // instantiate widget
+            // XXX custom options should be passed to constructor
+            const widget = new widgetClass();
+            // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
+            widget.setId(id);
+            this.widgetClasses[id] = widget;
+
+            // setup generic panels
+            let content = await widget.getHtml();
+            let $panel = this._makeWidget(id, widget.title, content);
+
+            // XXX custom options should be persisted
+            let gridElement = {
+                content: $panel.prop('outerHTML'),
+                id: id,
+                // any to-be persisted data (backend) can be placed here,
+                // serialization will return this object
+            };
+
+            // lock the system information widget (TODO: unless specified otherwise)
+            if (id == 'systeminformation') {
+                gridElement = {
+                    x: 0, y: 0,
+                    // locked: true,
+                    // noResize: true,
+                    // noMove: true,
+                    ...gridElement,
+                };
+            }
+
+            this.widgetConfigurations[id] = gridElement;
+        }
+
+        // runs only once
         _initializeGridStack() {
             this.grid = GridStack.init(this.gridStackOptions);
             // before we render the grid, register the added event so we can store the Element type objects
@@ -186,15 +208,20 @@ $( document ).ready(function() {
                 });
             });
 
-            // render to the DOM
-            this.grid.load(Object.values(this.widgetElements));
+            this.grid.on('removed', (event, items) => {
+                items.forEach((item) => {
+                    let id = item.uniqueId;
+                    clearInterval(this.widgetTickRoutines[id]);
+                    this.widgetClasses[id].onWidgetClose();
+                });
+            });
 
-            // click handler for widget removal. Use an arrow-function to bind the correct "this" context
-            // XXX: this should also update the widget objects
+            // render to the DOM
+            this._render();
+
+            // click handler for widget removal.
             $('.close-handle').click((event) => {
                 let widgetId = $(event.currentTarget).data('widget-id');
-                clearInterval(this.widgetTickRoutines[widgetId]);
-                this.widgetClasses[widgetId].onWidgetClose();
                 this.grid.removeWidget(this.widgetHTMLElements[widgetId]);
             });
 
@@ -205,7 +232,9 @@ $( document ).ready(function() {
                     for (const subclass of elem.className.split(" ")) {
                         let id = subclass.split('-')[1];
                         if (id in this.widgetClasses) {
-                            this.widgetClasses[id].onWidgetResize(elem, width, height);
+                            if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
+                                this._updateGrid(elem.parentElement.parentElement);
+                            }
                         }
                     }
                 },
@@ -216,7 +245,7 @@ $( document ).ready(function() {
 
             // force the cell height of each widget to the lowest value. The grid will adjust the height
             // according to the content of the widget.
-            //this.grid.cellHeight(this.grid.cellWidth() * 0.25);
+            // XXX: once widget sizes are persisted, this should be adjusted accordingly
             this.grid.cellHeight(1);
 
             // Serialization options
@@ -226,7 +255,18 @@ $( document ).ready(function() {
             $('#save-grid').click(() => {
                 let items = this.grid.save(false);
                 console.log(items);
+
+                ajaxCall("/api/core/dashboard/set", {
+                    widgets: items,
+                }, (response) => {
+                    console.log(response);
+                });
             });
+        }
+
+        _render() {
+            // render the grid to the DOM
+            this.grid.load(Object.values(this.widgetConfigurations));
         }
 
         /* Executes all widget post-render callbacks asynchronously and in "parallel".
@@ -411,13 +451,6 @@ td {
     display: flex;
     flex-wrap: nowrap;
     white-space: nowrap;
-    font-size: 0;
-    border-style: solid;
-    border-color: rgba(217, 79, 0, 0.15);
-    border-width: 1px;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
 }
 
 .gateway-info {
@@ -431,7 +464,8 @@ td {
     margin: 5px;
 }
 
-.info-detail {
+/* .info-detail { */
+.interface-info {
     display: flex;
     flex-wrap: wrap;
     white-space: wrap;
@@ -497,7 +531,6 @@ td {
     flex-flow: row nowrap;
     width: 100%;
     padding: 4px;
-    /* flex: 0 1 auto; */
     border-style: solid;
     border-color: rgba(217, 79, 0, 0.15);
     border-width: 1px;
@@ -595,7 +628,6 @@ div {
 }
 
 .flex-row {
-    width: calc(100% / 2); /* XXX: needs to be fixed for dynamic columns */
     text-align: left;
     word-break: break-word;
 }

@@ -19,12 +19,11 @@ export default class BaseWidget {
     }
 
     async onMarkupRendered() {
-        console.log('post not implemented')
         return null;
     }
 
     onWidgetResize(elem, width, height) {
-        return null;
+        return false;
     }
 
     async onWidgetTick() {
@@ -32,6 +31,10 @@ export default class BaseWidget {
     }
 
     onWidgetClose() {
+        return null;
+    }
+
+    getConfiguration() {
         return null;
     }
 

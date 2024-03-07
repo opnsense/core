@@ -1905,6 +1905,7 @@
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
+/usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
 /usr/local/opnsense/www/js/widgets/Carp.js
 /usr/local/opnsense/www/js/widgets/Cpu.js
@@ -1914,6 +1915,7 @@
 /usr/local/opnsense/www/js/widgets/Interfaces.js
 /usr/local/opnsense/www/js/widgets/NetworkTime.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
+/usr/local/opnsense/www/js/widgets/SystemResources.js
 /usr/local/opnsense/www/js/widgets/TrafficWidget.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
