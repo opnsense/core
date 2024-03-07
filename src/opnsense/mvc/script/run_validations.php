@@ -50,7 +50,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 $name = $mdl_class_info->getName();
                 $mdl = $mdl_class_info->newInstance();
                 if (!$mdl->isVolatile()) {
-                    $msgs = $mdl->validate();
+                    $msgs = $mdl->validate(null, '', true);
                     foreach ($msgs as $key => $msg) {
                         echo sprintf('%s.%s => %s', $name, $key, $msg) . PHP_EOL;
                     }

@@ -481,10 +481,10 @@ abstract class BaseModel
      * @param string $targetref target reference, for example section. used as prefix if no source given
      * @return array list of validation errors, indexed by field reference
      */
-    public function validate($sourceref = null, $targetref = "")
+    public function validate($sourceref = null, $targetref = '', $validateFullModel = false)
     {
-        $result = array();
-        $valMsgs = $this->performValidation();
+        $result = [];
+        $valMsgs = $this->performValidation($validateFullModel);
         foreach ($valMsgs as $msg) {
             // replace absolute path to attribute for relative one at uuid.
             if ($sourceref != null) {
