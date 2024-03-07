@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/wireguard/client</mount>
     <description>WireGuard peer configuration</description>
-    <version>0.0.7</version>
+    <version>1.0.0</version>
     <items>
         <clients>
             <client type="ArrayField">
@@ -29,6 +29,7 @@
                 </pubkey>
                 <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
                     <FieldSeparator>,</FieldSeparator>
                     <Required>Y</Required>
                     <asList>Y</asList>
