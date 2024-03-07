@@ -76,9 +76,7 @@
             <Authorities url="/system_camanager.php">
                 <Edit url="/system_camanager.php*" visibility="hidden"/>
             </Authorities>
-            <Certificates url="/system_certmanager.php">
-                <Edit url="/system_certmanager.php*" visibility="hidden"/>
-            </Certificates>
+            <Certificates url="/ui/trust/cert"/>
             <Revocation url="/system_crlmanager.php">
                 <Edit url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>

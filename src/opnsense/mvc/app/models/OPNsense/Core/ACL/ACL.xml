@@ -598,7 +598,8 @@
     <page-system-certmanager>
         <name>System: Certificate Manager</name>
         <patterns>
-            <pattern>system_certmanager.php*</pattern>
+            <pattern>ui/trust/cert</pattern>
+            <pattern>api/trust/cert/*</pattern>
         </patterns>
     </page-system-certmanager>
     <page-system-crlmanager>
