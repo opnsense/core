@@ -97,7 +97,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param bool $only_mvc only report (versioned) models
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains=True, $only_mvc=True)
+    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true)
     {
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
