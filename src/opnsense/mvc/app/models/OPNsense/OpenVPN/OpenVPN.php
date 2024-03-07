@@ -65,6 +65,12 @@ class OpenVPN extends BaseModel
                         )
                     );
                 }
+                if (empty((string)$instance->cert) && empty((string)$instance->ca)) {
+                    $messages->appendMessage(new Message(
+                        gettext('When no certificate is provided a CA needs to be provided.'),
+                        $key . ".cert"
+                    ));
+                }
             } elseif ($instance->role == 'server') {
                 if (
                     $instance->dev_type == 'tun' &&
@@ -91,48 +97,30 @@ class OpenVPN extends BaseModel
                         $messages->appendMessage(new Message($msg, $key . '.server'));
                     }
                 }
+                if ((string)$instance->verify_client_cert != 'none') {
+                    $messages->appendMessage(new Message(
+                        gettext('To validate a certificate one has to be provided.'),
+                        $key . ".verify_client_cert"
+                    ));
+                } elseif (empty((string)$instance->authmode)) {
+                    $messages->appendMessage(new Message(
+                        gettext(
+                            'Please select an authentication option, at least one type of authentication is required.'
+                        ),
+                        $key . ".verify_client_cert"
+                    ));
+                }
             }
             if (!empty((string)$instance->cert)) {
-                if ($instance->cert->isFieldChanged() || $validateFullModel) {
-                    $tmp = Store::getCertificate((string)$instance->cert);
-                    if (empty($tmp) || !isset($tmp['ca'])) {
-                        $messages->appendMessage(new Message(
-                            gettext('Unable to locate a CA for this certificate.'),
-                            $key . ".cert"
-                        ));
-                    }
-                }
-            } else {
-                if (
-                    $instance->cert->isFieldChanged() ||
-                    $instance->verify_client_cert->isFieldChanged() ||
-                    $instance->ca->isFieldChanged() ||
-                    $validateFullModel
-                ) {
-                    if ((string)$instance->verify_client_cert != 'none' && $instance->role == 'server') {
-                        $messages->appendMessage(new Message(
-                            gettext('To validate a certificate one has to be provided.'),
-                            $key . ".verify_client_cert"
-                        ));
-                    } elseif (
-                        $instance->role == 'client' &&
-                        empty((string)$instance->cert) &&
-                        empty((string)$instance->ca)
-                    ) {
-                        $messages->appendMessage(new Message(
-                            gettext('When no certificate is provided a CA needs to be provided.'),
-                            $key . ".cert"
-                        ));
-                    }
+                $tmp = Store::getCertificate((string)$instance->cert);
+                if (empty($tmp) || !isset($tmp['ca'])) {
+                    $messages->appendMessage(new Message(
+                        gettext('Unable to locate a CA for this certificate.'),
+                        $key . ".cert"
+                    ));
                 }
             }
-            if (
-                (
-                $instance->keepalive_interval->isFieldChanged() ||
-                $instance->keepalive_timeout->isFieldChanged() ||
-                $validateFullModel
-                ) && (int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval
-            ) {
+            if ((int)(string)$instance->keepalive_timeout < (int)(string)$instance->keepalive_interval) {
                 $messages->appendMessage(new Message(
                     gettext('Timeout should be larger than interval.'),
                     $key . ".keepalive_timeout"
