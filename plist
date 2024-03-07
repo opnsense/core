@@ -742,6 +742,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Server.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Server.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
