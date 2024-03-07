@@ -504,7 +504,11 @@ class OpenVPN extends BaseModel
                         $options['username-as-common-name'] = null;
                     }
                     // server only settings
-                    if (!empty((string)$node->server) || !empty((string)$node->server_ipv6)) {
+                    if (
+                        !empty((string)$node->server) ||
+                        !empty((string)$node->server_ipv6) ||
+                        (string)$node->dev_type == 'tap'
+                    ){
                         $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
                         // hook event handlers
                         if (!empty((string)$node->authmode)) {
