@@ -95,9 +95,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $token token to search recursive
      * @param bool $contains exact match or in list
      * @param bool $only_mvc only report (versioned) models
+     * @param array $exclude_refs exclude topics (for example the tokens original location)
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true)
+    protected function checkAndThrowValueInUse($token, $contains=True, $only_mvc=True, $exclude_refs = [])
     {
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
@@ -108,45 +109,44 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         // find uuid's in our config.xml
         foreach (Config::getInstance()->object()->xpath($xpath) as $node) {
             $referring_node = $node->xpath("..")[0];
-            if (!empty($referring_node->attributes()['uuid'])) {
-                // this looks like a model node, try to find module name (first tag with version attribute)
-                $item_path = array($referring_node->getName());
-                $item_uuid = $referring_node->attributes()['uuid'];
-                $parent_node = $referring_node;
-                do {
-                    $parent_node = $parent_node->xpath("..");
-                    $parent_node = $parent_node != null ? $parent_node[0] : null;
-                    if ($parent_node != null) {
-                        $item_path[] = $parent_node->getName();
-                    }
-                } while ($parent_node != null && !isset($parent_node->attributes()['version']));
+            $item_path = [$referring_node->getName()];
+            // collect path, when it's a model stop at model root
+            $parent_node = $referring_node;
+            do {
+                $parent_node = $parent_node->xpath("..");
+                $parent_node = $parent_node != null ? $parent_node[0] : null;
                 if ($parent_node != null) {
-                    // construct usage info and add to usages if this looks like a model
-                    $item_path = array_reverse($item_path);
-                    $item_description = "";
-                    foreach (["description", "descr", "name"] as $key) {
-                        if (!empty($referring_node->$key)) {
-                            $item_description = (string)$referring_node->$key;
-                            break;
-                        }
-                    }
+                    $item_path[] = $parent_node->getName();
+                }
+            } while ($parent_node != null && !isset($parent_node->attributes()['version']));
+            $item_description = "";
+            foreach (["description", "descr", "name"] as $key) {
+                if (!empty($referring_node->$key)) {
+                    $item_description = (string)$referring_node->$key;
+                    break;
+                }
+            }
+            $item_path = array_reverse($item_path);
+            if ($parent_node == null) {
+                /* chop root node when a legacy path */
+                unset($item_path[0]);
+            }
+            $backref = implode(".", $item_path);
+            if (
+                $parent_node != null &&
+                !empty($referring_node->attributes()['uuid']) &&
+                !in_array($backref, $exclude_refs)
+            ) {
+                if ($parent_node != null) {
                     $usages[] = [
-                        "reference" =>  implode(".", $item_path) . "." . $item_uuid,
+                        "reference" =>  $backref . "." .  $referring_node->attributes()['uuid'],
                         "module" => $item_path[0],
                         "description" => $item_description
                     ];
                 }
-            } elseif (!$only_mvc) {
-                $referring_node = $node->xpath("..")[0];
-                $item_description = "";
-                foreach (["description", "descr", "name"] as $key) {
-                    if (!empty($referring_node->$key)) {
-                        $item_description = (string)$referring_node->$key;
-                        break;
-                    }
-                }
+            } elseif (!$only_mvc && !in_array($backref, $exclude_refs)) {
                 $usages[] = [
-                    "reference" =>  $referring_node->getName(),
+                    "reference" => $backref,
                     "module" => $referring_node->getName(),
                     "description" => $item_description
                 ];
