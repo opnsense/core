@@ -71,8 +71,8 @@ class NumericField extends BaseField
     {
         parent:: __construct($ref, $tagname);
 
-        $this->minimum_value = PHP_FLOAT_MIN;
-        $this->maximum_value = PHP_FLOAT_MAX;
+        $this->minimum_value = -99999999999999.0;
+        $this->maximum_value = 99999999999999.0;
     }
 
     /**
