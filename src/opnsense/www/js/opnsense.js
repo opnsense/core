@@ -215,6 +215,7 @@ function setFormData(parent,data) {
 function handleFormValidation(parent, validationErrors)
 {
     $("#" + parent).find("[id]").each(function () {
+        let target = $("*[id*='" + $(this).prop('id') + "']");
         if (validationErrors !== undefined && $(this).prop('id') in validationErrors) {
             let message = validationErrors[$(this).prop('id')];
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
@@ -225,9 +226,15 @@ function handleFormValidation(parent, validationErrors)
             } else {
                 $("span[id='help_block_" + $(this).prop('id') + "']").text(message);
             }
-            $("*[id*='" + $(this).prop('id') + "']").addClass("has-error");
+            target.addClass("has-error");
+            /* make sure to always unhide row when triggering a validation */
+            if (!target.closest('tr').is(':visible')) {
+                target.closest('tr').show();
+            }
+            /* scroll to element with validation issue */
+            target[0].scrollIntoView();
         } else {
-            $("*[id*='" + $(this).prop('id') + "']").removeClass("has-error");
+            target.removeClass("has-error");
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
         }
     });
