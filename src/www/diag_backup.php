@@ -323,6 +323,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['keepconsole'])) {
                         // restore existing console settings
                         foreach ($csettings as $fieldname => $fieldcontent) {
+                            if ($fieldname === 'serialusb' && $fieldcontent === null) {
+                                /* XXX empty() vs isset() */
+                                continue;
+                            }
                             if ($fieldcontent === null && isset($config[$fieldname])) {
                                 unset($config[$fieldname]);
                             } else {
