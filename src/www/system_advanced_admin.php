@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'] ?? null;
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
-    $pconfig['serialusb'] = isset($config['system']['serialusb']);
+    $pconfig['serialusb'] = !emtpy($config['system']['serialusb']);
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
     $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'] ?? null;
     $pconfig['autologout'] = $config['system']['autologout'] ?? null;
