@@ -1257,7 +1257,7 @@ function system_login_configure($verbose = false)
     $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
     $fd = fopen('/etc/ttys', 'w');
 
-    $on_off_secure_u = $serial_enabled ? (isset($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
+    $on_off_secure_u = $serial_enabled ? (!empty($config['system']['serialusb']) ? 'on' : 'onifconsole') . ' secure' : 'off secure';
     $on_off_secure_v = $virtual_enabled ? 'onifexists secure' : 'off secure';
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
@@ -1278,7 +1278,7 @@ function system_login_configure($verbose = false)
 
         /* serial terminals */
         foreach (['tty%s0', 'tty%s1', 'tty%s2', 'tty%s3'] as $serialport) {
-            $serialport = sprintf($serialport, isset($config['system']['serialusb']) ? 'U' : 'u');
+            $serialport = sprintf($serialport, !empty($config['system']['serialusb']) ? 'U' : 'u');
             if (stripos($tty, $serialport) === 0) {
                 fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\tvt100\t{$on_off_secure_u}\n");
                 continue 2;
