@@ -422,8 +422,11 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogPipe.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogQueue.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/Api/CaController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/Api/CertController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CaController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CertController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCa.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCert.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AclController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AdvancedController.php
@@ -718,8 +721,11 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Trust/Ca.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Trust/Ca.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Cert.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Cert.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Trust/FieldTypes/CAsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/FieldTypes/CertificatesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundDomainField.php
@@ -815,6 +821,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Trust/ca.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Trust/cert.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/acl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/advanced.volt
