@@ -411,6 +411,10 @@ function _interfaces_lagg_configure($lagg)
 
     $interface_stats = legacy_interfaces_details();
     $members = explode(',', $lagg['members']);
+    if (!empty($lagg['primary_member'])) {
+        /* place primary member as first member */
+        $members = array_unique(array_merge([$lagg['primary_member']], $members));
+    }
 
     if (empty($interface_stats[$lagg['laggif']])) {
         legacy_interface_create($lagg['laggif']);

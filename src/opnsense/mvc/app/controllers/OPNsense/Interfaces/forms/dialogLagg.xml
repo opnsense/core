@@ -18,6 +18,13 @@
         <help>The protocol to use, please refer to the documentation for a detailed explanation of the various types available</help>
     </field>
     <field>
+        <id>lagg.primary_member</id>
+        <label>Primary interface</label>
+        <type>dropdown</type>
+        <style>selectpicker proto proto_failover</style>
+        <help>This interface will be added first in the lagg making it the primary one.</help>
+    </field>
+    <field>
         <id>lagg.lacp_fast_timeout</id>
         <label>Fast timeout</label>
         <type>checkbox</type>
