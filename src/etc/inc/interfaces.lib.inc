@@ -416,13 +416,16 @@ function legacy_interfaces_details($intf = null)
             $result[$current_interface]['laggstatistics']['active ports'] = trim(explode(":", $next_line)[1]);
             $next_line = $ifconfig_data[$lineid + 2];
             $result[$current_interface]['laggstatistics']['flapping'] = trim(explode(":", $next_line)[1]);
-        } elseif (preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches)) {
+        } elseif (
+            preg_match("/laggport: (.*)\Wflags=\d+<(.*)> state=\d+<(.*)>$/", $line, $matches) ||
+            preg_match("/laggport: (.*)\Wflags=\d+<(.*)>.*/", $line, $matches)
+        ) {
             if (empty($result[$current_interface]['laggport'])) {
                 $result[$current_interface]['laggport'] = [];
             }
             $result[$current_interface]['laggport'][trim($matches[1])] = [
                 "flags" => explode(",", strtolower($matches[2])),
-                "state" => explode(",", strtolower($matches[3])),
+                "state" => isset($matches[3]) ? explode(",", strtolower($matches[3])) : [],
             ];
         } elseif (strpos($line, "\tgroups: ") !== false) {
             array_shift($line_parts);
