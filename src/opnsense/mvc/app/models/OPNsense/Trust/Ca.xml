@@ -50,7 +50,7 @@
             </digest>
             <lifetime type="IntegerField" volatile="true">
                 <Required>Y</Required>
-                <Default>397</Default>
+                <Default>825</Default>
             </lifetime>
             <city type="TextField" volatile="true">
                 <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\n]*$/</Mask>
@@ -78,6 +78,7 @@
             <ocsp_uri type="UrlField" volatile="true"/>
             <crt_payload type="TextField" volatile="true"/>
             <prv_payload type="TextField" volatile="true"/>
+            <refcount type="IntegerField" volatile="true"/>
 
             <name type="TextField" volatile="true"/>
             <valid_from type="TextField" volatile="true"/>

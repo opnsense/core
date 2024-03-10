@@ -73,9 +73,7 @@
             </Tunables>
         </Settings>
         <Trust cssClass="fa fa-certificate fa-fw">
-            <Authorities url="/system_camanager.php">
-                <Edit url="/system_camanager.php*" visibility="hidden"/>
-            </Authorities>
+            <Authorities url="/ui/trust/ca"/>
             <Certificates url="/ui/trust/cert"/>
             <Revocation url="/system_crlmanager.php">
                 <Edit url="/system_crlmanager.php*" visibility="hidden"/>

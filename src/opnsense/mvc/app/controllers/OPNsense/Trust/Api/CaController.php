@@ -54,6 +54,40 @@ class CaController extends ApiMutableModelControllerBase
         }
         switch ((string)$node->action) {
             case 'internal':
+            case 'ocsp':
+                $extns = [];
+                if (!empty((string)$node->ocsp_uri)) {
+                    $extns['authorityInfoAccess'] = "OCSP;URI:{$node->ocsp_uri}";
+                }
+                $data = CertStore::createCert(
+                    (string)$node->key_type,
+                    (string)$node->lifetime,
+                    $node->dn(),
+                    (string)$node->digest,
+                    (string)$node->caref,
+                    (string)$node->action == 'internal' ? 'v3_ca' : 'ocsp',
+                    $extns
+                );
+                /**
+                 * As createCert updates the config, we need to collect that change in order to push it back
+                 * into the model. (increment serial)
+                 **/
+                if (!empty((string)$node->caref)) {
+                    foreach (Config::getInstance()->object()->ca as $cert) {
+                        if (isset($cert->refid) && (string)$node->caref == $cert->refid) {
+                            $issuer = $this->getModel()->getByCaref($node->caref);
+                            if ($issuer !== null) {
+                                $issuer->serial = (string)$cert->serial;
+                            }
+                        }
+                    }
+                }
+                if (!empty($data['crt']) && !empty($data['prv'])) {
+                    $node->crt = base64_encode($data['crt']);
+                    $node->prv = base64_encode($data['prv']);
+                } else {
+                    $error = $data['error'] ?? '';
+                }
                 break;
             case 'existing':
                 if (CertStore::parseX509((string)$node->crt_payload) === false) {
@@ -68,10 +102,6 @@ class CaController extends ApiMutableModelControllerBase
                     }
                 }
                 break;
-            case 'import':
-                break;
-            case 'ocsp':
-                break;
         }
         if ($error !== false) {
             throw new UserException($error, "Certificate error");
@@ -80,15 +110,9 @@ class CaController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        $carefs = $this->request->get('carefs');
-        $filter_funct = function ($record) use ($carefs) {
-            return empty($carefs) || array_intersect(explode(',', $record->caref), $carefs);
-        };
         return $this->searchBase(
             'ca',
-            ['refid', 'descr', 'caref', 'name', 'valid_from', 'valid_to'],
-            null,
-            $filter_funct
+            ['refid', 'descr', 'caref', 'name', 'refcount', 'valid_from', 'valid_to'],
         );
     }
 
@@ -109,14 +133,7 @@ class CaController extends ApiMutableModelControllerBase
 
     public function delAction($uuid)
     {
-        if ($this->request->isPost() && !empty($uuid)) {
-            $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
-            if ($node !== null) {
-                $this->checkAndThrowValueInUse((string)$node->refid, false, false, ['ca']);
-            }
-            return $this->delBase('ca', $uuid);
-        }
-        return ['status' => 'failed'];
+        return $this->delBase('ca', $uuid);
     }
 
     public function toggleAction($uuid, $enabled = null)

@@ -39,4 +39,12 @@ use OPNsense\Base\BaseModel;
  */
 class Ca extends BaseModel
 {
+    public function getByCaref($caref)
+    {
+        foreach ($this->ca->iterateItems() as $node) {
+            if ((string)$node->refid == (string)$caref) {
+                return $node;
+            }
+        }
+    }
 }

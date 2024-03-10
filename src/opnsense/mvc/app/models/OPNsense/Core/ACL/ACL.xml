@@ -592,7 +592,8 @@
     <page-system-camanager>
         <name>System: CA Manager</name>
         <patterns>
-            <pattern>system_camanager.php*</pattern>
+            <pattern>ui/trust/ca</pattern>
+            <pattern>api/trust/ca/*</pattern>
         </patterns>
     </page-system-camanager>
     <page-system-certmanager>

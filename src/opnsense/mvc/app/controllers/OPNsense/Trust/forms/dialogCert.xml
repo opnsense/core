@@ -5,6 +5,11 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>cert.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+    <field>
         <type>header</type>
         <label>Key</label>
         <style>action action_internal action_reissue action_internal action_external</style>
@@ -46,11 +51,6 @@
         <type>header</type>
         <label>General</label>
         <style>action action_internal action_reissue action_internal action_external</style>
-    </field>
-    <field>
-        <id>cert.descr</id>
-        <label>Description</label>
-        <type>text</type>
     </field>
     <field>
         <id>cert.country</id>
