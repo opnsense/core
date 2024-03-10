@@ -108,6 +108,22 @@
         </help>
     </field>
     <field>
+        <id>instance.bridge_gateway</id>
+        <label>Bridge gateway</label>
+        <type>text</type>
+        <style>role role_server_tap</style>
+        <help>
+            This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network pool.
+        </help>
+    </field>
+    <field>
+        <id>instance.bridge_pool</id>
+        <label>Bridge DHCP pool</label>
+        <type>text</type>
+        <style>role role_server_tap</style>
+        <help>Specify an ip range which should be used to offer IPv4 addresses to the client.</help>
+    </field>
+    <field>
         <id>instance.topology</id>
         <label>Topology</label>
         <type>dropdown</type>
