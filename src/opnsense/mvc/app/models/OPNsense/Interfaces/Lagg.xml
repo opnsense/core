@@ -19,8 +19,7 @@
                 <Multiple>Y</Multiple>
                 <ValidationMessage>At least one valid member is required</ValidationMessage>
             </members>
-            <primary_member type=".\LaggInterfaceField">
-            </primary_member>
+            <primary_member type=".\LaggInterfaceField"/>
             <proto type="OptionField">
               <Required>Y</Required>
               <Default>lacp</Default>
