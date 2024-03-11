@@ -208,8 +208,10 @@ class Voucher extends Base implements IAuthConnector
                     $generatedUsername .= $characterMap[random_int(0, strlen($characterMap) - 1)];
                 }
                 $generatedPassword = '';
-                for ($j = 0; $j < max($this->passwordLength, 1); $j++) {
-                    $generatedPassword .= $characterMap[random_int(0, strlen($characterMap) - 1)];
+                if (!empty($this->passwordLength)) {
+                    for ($j = 0; $j < $this->passwordLength; $j++) {
+                        $generatedPassword .= $characterMap[random_int(0, strlen($characterMap) - 1)];
+                    }
                 }
 
                 if (!$this->userNameExists($generatedUsername)) {
@@ -435,7 +437,7 @@ class Voucher extends Base implements IAuthConnector
         $fields["passwordLength"]["default"] = null;
         $fields["passwordLength"]["help"] = gettext("Specify alternative password length for generating vouchers");
         $fields["passwordLength"]["validate"] = function ($value) {
-            if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 1)) {
+            if ($value != '' && (filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value || $value < 0)) {
                 return array(gettext("Password length must be a number or empty for default."));
             } else {
                 return array();
