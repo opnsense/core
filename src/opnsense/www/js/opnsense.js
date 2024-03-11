@@ -232,7 +232,7 @@ function handleFormValidation(parent, validationErrors)
                 target.closest('tr').show();
             }
             /* scroll to element with validation issue */
-            target[0].scrollIntoView(false);
+            target[0].scrollIntoView();
         } else {
             target.removeClass("has-error");
             $("span[id='help_block_" + $(this).prop('id') + "']").empty();
