@@ -98,7 +98,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param array $exclude_refs exclude topics (for example the tokens original location)
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains=True, $only_mvc=True, $exclude_refs = [])
+    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true, $exclude_refs = [])
     {
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";

@@ -116,7 +116,6 @@ class OpenVPN extends BaseModel
                                 ));
                             }
                         }
-
                     }
                 }
                 if ((string)$instance->verify_client_cert != 'none') {
