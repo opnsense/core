@@ -32,6 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
+use OPNsense\Trust\Cert ;
 
 /**
  * Class CaController
@@ -90,7 +91,8 @@ class CaController extends ApiMutableModelControllerBase
                 }
                 break;
             case 'existing':
-                if (CertStore::parseX509((string)$node->crt_payload) === false) {
+                $x509 = openssl_x509_parse((string)$node->crt_payload);
+                if ($x509 === false) {
                     $error = gettext('Invalid X509 certificate provided');
                 } else {
                     $node->crt = base64_encode((string)$node->crt_payload);
@@ -99,6 +101,32 @@ class CaController extends ApiMutableModelControllerBase
                         openssl_pkey_get_private((string)$node->prv_payload) === false
                     ) {
                         $error = gettext('Invalid private key provided');
+                    } else {
+                        /* link certificates on ca import */
+                        if ($x509['issuer'] != $x509['subject']) {
+                            foreach ($this->getModel()->ca->iterateItems() as $ca) {
+                                if (!empty((string)$ca->crt_payload)) {
+                                    $x509_2 = openssl_x509_parse((string)$ca->crt_payload);
+                                    if ($x509_2 !== false) {
+                                        if (empty(array_diff($x509_2['subject'], $x509['issuer']))) {
+                                            $node->caref = (string)$ca->refid;
+                                        } elseif ($x509_2['issuer'] == $x509['subject']) {
+                                            $ca->caref = (string)$node->refid;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $certmdl = new Cert();
+                        foreach ($certmdl->cert->iterateItems() as $cert) {
+                            $x509_2 = openssl_x509_parse((string)$cert->crt_payload);
+                            if ($x509_2 !== false) {
+                                if (empty(array_diff($x509_2['issuer'], $x509['subject']))) {
+                                    $cert->caref = (string)$node->refid;
+                                }
+                            }
+                        }
+                        $certmdl->serializeToConfig();
                     }
                 }
                 break;

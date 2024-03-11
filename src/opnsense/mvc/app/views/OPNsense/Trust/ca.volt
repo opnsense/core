@@ -206,7 +206,7 @@
                        <th data-column-id="descr" data-width="15em" data-type="string">{{ lang._('Description') }}</th>
                        <th data-column-id="caref" data-width="15em" data-type="string">{{ lang._('Issuer') }}</th>
                        <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                       <th data-column-id="refcount" data-width="7em" data-type="string">{{ lang._('Certificates') }}</th>
+                       <th data-column-id="refcount" data-width="7em" data-type="string">{{ lang._('Usages') }}</th>
                        <th data-column-id="valid_from" data-width="10em" data-type="datetime">{{ lang._('Valid from') }}</th>
                        <th data-column-id="valid_to" data-width="10em" data-type="datetime">{{ lang._('Valid to') }}</th>
                        <th data-column-id="commands" data-width="11em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
