@@ -28,33 +28,36 @@
     package : configd
     function: session handling and authorisation
 """
+import platform
 import struct
 import socket
 import pwd
 import grp
 
+
 class xucred:
     def __init__(self, connection):
-        # xucred structure defined in : https://man.freebsd.org/cgi/man.cgi?query=unix&sektion=4
-        # XU_NGROUPS is 16
-        xucred_fmt = '2ih16iP'
-        tmp = connection.getsockopt(0, socket.LOCAL_PEERCRED, struct.calcsize(xucred_fmt))
-        tmp = tuple(struct.unpack(xucred_fmt, tmp))
-        self.cr_version = tmp[0]
-        self.cr_uid = tmp[1]
-        self.cr_ngroups = tmp[2]
-        self.cr_groups = tmp[3:18]
-        self.cr_pid = tmp[19]
         self._user = None
         self._groups = set()
-        tmp = pwd.getpwuid(self.cr_uid)
-        if tmp:
-            self._user = tmp.pw_name
-        for idx,item in enumerate(self.cr_groups):
-            if idx < self.cr_ngroups:
-                tmp = grp.getgrgid(item)
-                if tmp:
-                    self._groups.add(tmp.gr_name)
+        if platform.system() == 'FreeBSD':
+            # xucred structure defined in : https://man.freebsd.org/cgi/man.cgi?query=unix&sektion=4
+            # XU_NGROUPS is 16
+            xucred_fmt = '2ih16iP'
+            tmp = connection.getsockopt(0, socket.LOCAL_PEERCRED, struct.calcsize(xucred_fmt))
+            tmp = tuple(struct.unpack(xucred_fmt, tmp))
+            self.cr_version = tmp[0]
+            self.cr_uid = tmp[1]
+            self.cr_ngroups = tmp[2]
+            self.cr_groups = tmp[3:18]
+            self.cr_pid = tmp[19]
+            tmp = pwd.getpwuid(self.cr_uid)
+            if tmp:
+                self._user = tmp.pw_name
+            for idx, item in enumerate(self.cr_groups):
+                if idx < self.cr_ngroups:
+                    tmp = grp.getgrgid(item)
+                    if tmp:
+                        self._groups.add(tmp.gr_name)
 
     def get_groups(self):
         return self._groups
