@@ -120,7 +120,7 @@ class CrlController extends ApiControllerBase
                         'selected' => $crlmethod == 'existing' ? '1' : '0'
                     ],
                 ];
-                for ($i=0 ; $i <= 6; $i++) {
+                for ($i = 0; $i <= 6; $i++) {
                     $code = (string)$i;
                     $result['revoked_reason_' . $code] = [];
                     foreach ($certs as $ref => $data) {
@@ -169,7 +169,7 @@ class CrlController extends ApiControllerBase
                 return ['status' => 'failed', 'validations' => $validations];
             } else {
                 $revoked_refs = [];
-                for ($i=0 ; $i <= 6; $i++) {
+                for ($i = 0; $i <= 6; $i++) {
                     $fieldname = 'revoked_reason_' . (string)$i;
                     foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
                         if (!empty($refid)) {

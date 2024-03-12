@@ -434,6 +434,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CrlController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCa.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCert.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCrl.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AclController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AdvancedController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/Api/DiagnosticsController.php
