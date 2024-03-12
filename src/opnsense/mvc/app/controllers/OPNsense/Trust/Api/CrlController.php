@@ -115,10 +115,12 @@ class CrlController extends ApiControllerBase
                 }
             }
             if ($found) {
-                $result = ['caref' => $caref, 'descr' => ''];
+                $result = ['caref' => $caref, 'descr' => '', 'serial' => '0', 'lifetime' => '9999'];
                 foreach ($config->crl as $node) {
                     if ((string)$node->caref == $caref) {
                         $result['descr'] = (string)$node->descr;
+                        $result['serial'] = (string)$node->serial ?? '0';
+                        $result['lifetime'] = (string)$node->lifetime ?? '9999';
                     }
                 }
                 $certs = [];
@@ -155,7 +157,7 @@ class CrlController extends ApiControllerBase
                         'selected' => $crlmethod == 'existing' ? '1' : '0'
                     ],
                 ];
-                for ($i = 0; $i < count($self::status_codes); $i++) {
+                for ($i = 0; $i < count(self::$status_codes); $i++) {
                     $code = (string)$i;
                     $result['revoked_reason_' . $code] = [];
                     foreach ($certs as $ref => $data) {
@@ -212,7 +214,7 @@ class CrlController extends ApiControllerBase
             } else {
                 $revoked_refs = [];
                 if ((string)$node->crlmethod == 'internal') {
-                    for ($i=0 ; $i <= count($self::status_codes); $i++) {
+                    for ($i=0 ; $i <= count(self::$status_codes); $i++) {
                         $fieldname = 'revoked_reason_' . $i;
                         foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
                             if (!empty($refid)) {

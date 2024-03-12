@@ -21,6 +21,16 @@
         <style>crlmethod crlmethod_existing</style>
     </field>
     <field>
+        <id>crl.serial</id>
+        <label>Serial</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>crl.lifetime</id>
+        <label>Lifetime (days)</label>
+        <type>text</type>
+    </field>
+    <field>
         <type>header</type>
         <label>Revocations per type</label>
         <style>crlmethod crlmethod_internal</style>
