@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -33,8 +33,7 @@ function dhcpd_configure()
 {
     return [
         'dhcp' => ['dhcpd_dhcp_configure:3'],
-        'dhcrelay' => ['dhcpd_dhcrelay_configure:2'],
-        'local' => ['dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'],
+        'local' => ['dhcpd_dhcp_configure'],
     ];
 }
 
@@ -113,26 +112,6 @@ function dhcpd_services()
         $pconfig['php']['restart'] = array('dhcpd_radvd_configure');
         $pconfig['php']['start'] = array('dhcpd_radvd_configure');
         $pconfig['pidfile'] = '/var/run/radvd.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay";
-        $pconfig['description'] = gettext("DHCPv4 Relay");
-        $pconfig['php']['restart'] = array('dhcpd_dhcrelay4_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcrelay4_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['dhcrelay6']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay6";
-        $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['php']['restart'] = array('dhcpd_dhcrelay6_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcrelay6_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $services[] = $pconfig;
     }
 
@@ -1605,236 +1584,6 @@ EOD;
     if (count($dhcpdv6ifs) > 0) {
         mwexec('/usr/local/sbin/dhcpd -6 -user dhcpd -group dhcpd -chroot /var/dhcpd -cf /etc/dhcpdv6.conf -pf /var/run/dhcpdv6.pid ' . join(' ', $dhcpdv6ifs));
         mwexecf('/usr/sbin/daemon -f -p %s %s', ['/var/run/dhcpleases6.pid', '/usr/local/opnsense/scripts/dhcp/prefixes.sh']);
-    }
-
-    service_log("done.\n", $verbose);
-}
-
-function dhcpd_dhcrelay_configure($verbose = false, $family = null)
-{
-    if ($family == null || $family == 'inet') {
-        dhcpd_dhcrelay4_configure($verbose);
-    }
-
-    if ($family == null || $family == 'inet6') {
-        dhcpd_dhcrelay6_configure($verbose);
-    }
-}
-
-function dhcpd_dhcrelay4_configure($verbose = false)
-{
-    global $config;
-
-    $dhcrelaycfg = &config_read_array('dhcrelay');
-    $dhcrelayifs = [];
-
-    if (!isset($dhcrelaycfg['enable'])) {
-        killbypid('/var/run/dhcrelay.pid');
-        return;
-    }
-
-    service_log('Starting DHCPv4 relay...', $verbose);
-
-    killbypid('/var/run/dhcrelay.pid');
-
-    $iflist = get_configured_interface_with_descr();
-    $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
-    $dhcifaces = explode(",", $dhcrelaycfg['interface']);
-    foreach ($dhcifaces as $dhcrelayif) {
-        if (isset($iflist[$dhcrelayif]) && get_interface_ip($dhcrelayif, $ifconfig_details)) {
-            $dhcrelayifs[] = get_real_interface($dhcrelayif);
-        }
-    }
-
-    /*
-     * In order for the relay to work, it needs to be active
-     * on the interface in which the destination server sits.
-     */
-    $srvips = explode(",", $dhcrelaycfg['server']);
-    foreach ($srvips as $srvip) {
-        $destif = null;
-
-        /* XXX runs multiple times because of server address loop :( */
-        foreach (array_keys($iflist) as $ifname) {
-            list (, $subnet) = interfaces_primary_address($ifname, $ifconfig_details);
-            if (!is_subnetv4($subnet)) {
-                continue;
-            }
-            if (ip_in_subnet($srvip, $subnet)) {
-                $destif = get_real_interface($ifname, $ifconfig_details);
-                break;
-            }
-        }
-
-        if (empty($destif)) {
-            foreach (get_staticroutes() as $rtent) {
-                if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = $a_gateways[$rtent['gateway']]['if'];
-                    break;
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            /* Create an array from the existing route table */
-            exec("/usr/bin/netstat -rnWf inet", $route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            foreach ($route_str as $routeline) {
-                $items = preg_split("/[ ]+/i", $routeline);
-                if (is_subnetv4($items[0])) {
-                    $subnet = $items[0];
-                } elseif (is_ipaddrv4($items[0])) {
-                    $subnet = "{$items[0]}/32";
-                } else {
-                    // Not a subnet or IP address, skip to the next line.
-                    continue;
-                }
-                if (ip_in_subnet($srvip, $subnet)) {
-                    $destif = trim($items[6]);
-                    break;
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            foreach ($a_gateways as $gateway) {
-                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
-                    $destif = $gateway['if'];
-                    break;
-                }
-            }
-        }
-
-        if (!empty($destif) && isset($ifconfig_details[$destif]) && $ifconfig_details[$destif]['macaddr'] == '00:00:00:00:00:00') {
-            /* explicit skip when interface has no valid mac address */
-            continue;
-        } elseif (!empty($destif)) {
-            $dhcrelayifs[] = $destif;
-        } else {
-            log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
-        }
-    }
-
-    $dhcrelayifs = array_unique($dhcrelayifs);
-
-    if (!empty($dhcrelayifs)) {
-        $cmd = "/usr/local/sbin/dhcrelay -i " .  implode(" -i ", $dhcrelayifs);
-
-        if (isset($dhcrelaycfg['agentoption'])) {
-            $cmd .= ' -a -m replace';
-        }
-
-        $cmd .= " " . implode(" ", $srvips);
-        mwexec($cmd);
-    }
-
-    service_log("done.\n", $verbose);
-}
-
-function dhcpd_dhcrelay6_configure($verbose = false)
-{
-    global $config;
-
-    $dhcrelaycfg = &config_read_array('dhcrelay6');
-    $dhcrelayifs = [];
-
-    if (!isset($dhcrelaycfg['enable'])) {
-        killbypid('/var/run/dhcrelay6.pid');
-        return;
-    }
-
-    service_log('Starting DHCPv6 relay...', $verbose);
-
-    killbypid('/var/run/dhcrelay6.pid');
-
-    $iflist = get_configured_interface_with_descr();
-    $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
-    $dhcifaces = explode(",", $dhcrelaycfg['interface']);
-    foreach ($dhcifaces as $dhcrelayif) {
-        if (isset($iflist[$dhcrelayif]) && get_interface_ipv6($dhcrelayif, $ifconfig_details)) {
-            $dhcrelayifs[] = get_real_interface($dhcrelayif);
-        }
-    }
-    $dhcrelayifs = array_unique($dhcrelayifs);
-
-    /*
-     * In order for the relay to work, it needs to be active
-     * on the interface in which the destination server sits.
-     */
-    $srvips = explode(",", $dhcrelaycfg['server']);
-    $srvifaces = [];
-    foreach ($srvips as $srvip) {
-        $destif = null;
-
-        /* XXX runs multiple times because of server address loop :( */
-        foreach (array_keys($iflist) as $ifname) {
-            list (, $subnet) = interfaces_primary_address6($ifname, $ifconfig_details);
-            if (!is_subnetv6($subnet)) {
-                continue;
-            }
-            if (ip_in_subnet($srvip, $subnet)) {
-                $destif = get_real_interface($ifname, 'inet6');
-                break;
-            }
-        }
-
-        if (empty($destif)) {
-            if (isset($config['staticroutes']['route'])) {
-                foreach ($config['staticroutes']['route'] as $rtent) {
-                    if (ip_in_subnet($srvip, $rtent['network'])) {
-                        $destif = $a_gateways[$rtent['gateway']]['if'];
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            /* Create an array from the existing route table */
-            exec("/usr/bin/netstat -rnWf inet6", $route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            foreach ($route_str as $routeline) {
-                $items = preg_split("/[ ]+/i", $routeline);
-                if (ip_in_subnet($srvip, $items[0])) {
-                    $destif = trim($items[6]);
-                    break;
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            foreach ($a_gateways as $gateway) {
-                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet6') {
-                    $destif = $gateway['if'];
-                    break;
-                }
-            }
-        }
-
-        if (!empty($destif)) {
-            $srvifaces[] = "{$srvip}%{$destif}";
-        } else {
-            log_msg("dhcpd_dhcrelay6_configure() found no suitable interface for {$srvip}", LOG_WARNING);
-        }
-    }
-
-    if (!empty($dhcrelayifs) && !empty($srvifaces)) {
-        $cmd = '/usr/local/sbin/dhcrelay -6 -pf /var/run/dhcrelay6.pid';
-        foreach ($dhcrelayifs as $dhcrelayif) {
-            $cmd .= " -l {$dhcrelayif}";
-        }
-        foreach ($srvifaces as $srviface) {
-            $cmd .= " -u \"{$srviface}\"";
-        }
-        mwexec($cmd);
     }
 
     service_log("done.\n", $verbose);

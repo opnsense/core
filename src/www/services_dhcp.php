@@ -343,12 +343,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     break;
                 }
             }
-
-            /* make sure that the DHCP Relay isn't enabled on this interface */
-            if (isset($config['dhcrelay']['enable']) && (stristr($config['dhcrelay']['interface'], $if) !== false)) {
-                $input_errors[] = sprintf(gettext("You must disable the DHCP relay on the %s interface before enabling the DHCP server."),
-                                  !empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
-            }
         }
 
         // save data
@@ -603,9 +597,6 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (isset($config['dhcrelay']['enable'])): ?>
-          <?php print_info_box(gettext("DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.")); ?>
-        <?php else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('staticmaps')): ?><br/>
@@ -1134,8 +1125,7 @@ include("head.inc");
               </form>
             </div>
           </section>
-<?php
-          if (!isset($pool) && !($act == "newpool")): ?>
+<?php if (!isset($pool) && !($act == 'newpool')): ?>
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
@@ -1193,8 +1183,7 @@ include("head.inc");
               </div>
             </div>
           </section>
-          <?php endif ?>
-          <?php endif ?>
+<?php endif ?>
       </div>
     </div>
   </section>

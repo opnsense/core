@@ -1,0 +1,45 @@
+<model>
+    <mount>//OPNsense/DHCRelay</mount>
+    <version>1.0.1</version>
+    <description>DHCRelay configuration</description>
+    <items>
+        <relays type="ArrayField">
+            <enabled type="BooleanField">
+                <Required>Y</Required>
+            </enabled>
+            <interface type="InterfaceField">
+                <Required>Y</Required>
+            </interface>
+            <destination type="ModelRelationField">
+                <Model>
+                    <template>
+                        <source>OPNsense.DHCRelay.DHCRelay</source>
+                        <items>destinations</items>
+                        <display>name</display>
+                    </template>
+                </Model>
+                <Required>Y</Required>
+            </destination>
+            <agent_info type="BooleanField">
+                <Required>Y</Required>
+            </agent_info>
+        </relays>
+        <destinations type="ArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A destination with this name already exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </name>
+            <server type="NetworkField">
+                <Required>Y</Required>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AsList>Y</AsList>
+                <FieldSeparator>,</FieldSeparator>
+            </server>
+        </destinations>
+    </items>
+</model>

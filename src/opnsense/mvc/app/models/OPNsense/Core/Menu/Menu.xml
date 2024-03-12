@@ -174,12 +174,10 @@
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
         <ISC_DHCPv4 VisibleName="ISC DHCPv4" cssClass="fa fa-bullseye fa-fw">
-            <Relay order="200" url="/services_dhcp_relay.php"/>
             <Leases order="300" url="/ui/dhcpv4/leases"/>
             <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
         </ISC_DHCPv4>
         <ISC_DHCPv6 VisibleName="ISC DHCPv6" cssClass="fa fa-bullseye fa-fw">
-            <Relay order="300" url="/services_dhcpv6_relay.php"/>
             <Leases order="400" url="/ui/dhcpv6/leases"/>
         </ISC_DHCPv6>
         <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>

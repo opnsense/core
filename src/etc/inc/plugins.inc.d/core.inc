@@ -343,7 +343,7 @@ function core_syslog()
 
     $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
-    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['dhcpd'] = array('facility' => array('dhcpd'));
     $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
     $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
@@ -399,23 +399,11 @@ function core_xmlrpc_sync()
         'services' => ["dhcpd"],
     );
     $result[] = array(
-        'description' => gettext('DHCPv4: Relay'),
-        'section' => 'dhcrelay',
-        'id' => 'dhcrelay',
-        'services' => ["dhcrelay"],
-    );
-    $result[] = array(
         'description' => gettext('DHCPDv6'),
         'help' => gettext('Synchronize DHCPv6 including router advertisements.'),
         'section' => 'dhcpdv6',
         'id' => 'dhcpdv6',
         'services' => ["dhcpdv6", "radvd"],
-    );
-    $result[] = array(
-        'description' => gettext('DHCPv6: Relay'),
-        'section' => 'dhcrelay6',
-        'id' => 'dhcrelay6',
-        'services' => ["dhcrelay6"],
     );
     $result[] = array(
         'description' => gettext('Virtual IPs'),

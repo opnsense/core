@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <DHCRelay cssClass="fa fa-bullseye fa-fw" url="/ui/dhcrelay/relay"/>
+    </Services>
+</menu>

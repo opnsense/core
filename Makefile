@@ -132,6 +132,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			choparp \
 			cpustats \
 			dhcp6c \
+			dhcrelay \
 			dnsmasq \
 			dpinger \
 			expiretable \
@@ -141,7 +142,6 @@ CORE_DEPENDS?=		ca_root_nss \
 			hostapd \
 			ifinfo \
 			iftop \
-			isc-dhcp44-relay \
 			isc-dhcp44-server \
 			kea \
 			lighttpd \

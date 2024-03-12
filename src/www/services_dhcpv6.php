@@ -244,12 +244,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-
-            /* make sure that the DHCP Relay isn't enabled on this interface */
-            if (isset($config['dhcrelay'][$if]['enable'])) {
-                $input_errors[] = sprintf(gettext("You must disable the DHCP relay on the %s interface before enabling the DHCP server."),
-                    !empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));
-            }
         }
 
         if (count($input_errors) == 0) {
@@ -424,9 +418,6 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
-          <?php print_info_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?>
-        <?php else: ?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('staticmaps')): ?><p>
@@ -798,7 +789,6 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-<?php endif; ?>
           </section>
         </div>
       </div>
