@@ -25,8 +25,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 namespace OPNsense\Trust\Api;
+
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
@@ -48,6 +48,41 @@ class CrlController extends ApiControllerBase
         '5' => 'cessationOfOperation',
         '6' => 'certificateHold',
     ];
+
+    private function phpseclib_autoload($namespace, $dir)
+    {
+        $split = '\\';
+        $ns = trim($namespace, DIRECTORY_SEPARATOR . $split);
+
+        return spl_autoload_register(
+            function ($class) use ($ns, $dir, $split) {
+                $prefix = $ns . $split;
+                $base_dir = $dir . DIRECTORY_SEPARATOR;
+                $len = strlen($prefix);
+                if (strncmp($prefix, $class, $len)) {
+                    return;
+                }
+
+                $relative_class = substr($class, $len);
+
+                $file = $base_dir .
+                    str_replace($split, DIRECTORY_SEPARATOR, $relative_class) .
+                    '.php';
+
+                if (file_exists($file)) {
+                    require_once $file;
+                }
+            }
+        );
+    }
+
+    public function initialize()
+    {
+        $this->phpseclib_autoload('ParagonIE\ConstantTime', '/usr/local/share/phpseclib/paragonie');
+        $this->phpseclib_autoload('phpseclib3', '/usr/local/share/phpseclib');
+
+        parent::initialize();
+    }
 
     public function searchAction()
     {
@@ -120,7 +155,7 @@ class CrlController extends ApiControllerBase
                         'selected' => $crlmethod == 'existing' ? '1' : '0'
                     ],
                 ];
-                for ($i = 0; $i < count($status_codes); $i++) {
+                for ($i = 0; $i < count($self::status_codes); $i++) {
                     $code = (string)$i;
                     $result['revoked_reason_' . $code] = [];
                     foreach ($certs as $ref => $data) {
@@ -154,6 +189,12 @@ class CrlController extends ApiControllerBase
             if (!preg_match('/^(.){1,255}$/', $payload['descr'] ?? '')) {
                 $validations['crl.descr'] = gettext('Description should be a string between 1 and 255 characters.');
             }
+            if ($payload['crlmethod'] == 'existing') {
+                $x509 = new \phpseclib3\File\X509();
+                if (empty($x509->loadCRL((string)$payload['text']))) {
+                    $validations['crl.text'] = gettext('Invalid CRL provided.');
+                }
+            }
             $found = false;
             foreach ($config->ca as $node) {
                 if ((string)$node->refid == $caref) {
@@ -166,29 +207,37 @@ class CrlController extends ApiControllerBase
             }
 
             if (!empty($validations)) {
+                Config::getInstance()->unlock();
                 return ['status' => 'failed', 'validations' => $validations];
             } else {
                 $revoked_refs = [];
-                for ($i = 0; $i < count($status_codes); $i++) {
-                    $fieldname = 'revoked_reason_' . (string)$i;
-                    foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
-                        if (!empty($refid)) {
-                            $revoked_refs[$refid] = (string)$i;
+                if ((string)$node->crlmethod == 'internal') {
+                    for ($i=0 ; $i <= count($self::status_codes); $i++) {
+                        $fieldname = 'revoked_reason_' . $i;
+                        foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
+                            if (!empty($refid)) {
+                                $revoked_refs[$refid] = (string)$i;
+                            }
                         }
                     }
                 }
                 $crl = null;
+                $to_delete = [];
                 foreach ($config->crl as $node) {
                     if ((string)$node->caref == $caref) {
                         if ($crl !== null) {
                             /* When duplicate CRL's exist, remove all but the first */
-                            $dom = dom_import_simplexml($node);
-                            $dom->parentNode->removeChild($dom);
+                            $to_delete[] = $node;
                         } else {
                             $crl = $node;
                         }
                     }
                 }
+                foreach ($to_delete as $cert) {
+                    $dom = dom_import_simplexml($cert);
+                    $dom->parentNode->removeChild($dom);
+                }
+
                 $last_crl = null;
                 if ($crl === null) {
                     $last_crl = current($config->xpath('//opnsense/crl[last()]'));
@@ -197,17 +246,25 @@ class CrlController extends ApiControllerBase
                     } else {
                         $crl = $config->addChild('crl');
                     }
+                    $crl->refid = uniqid();
+                }
+                if ((string)$node->crlmethod == 'existing') {
+                    $crl->text = base64_encode((string)$payload['text']);
                 }
                 $crl->caref = (string)$caref;
                 $crl->descr = (string)$payload['descr'];
+                $to_delete = [];
                 foreach ($crl->cert as $cert) {
                     if (!isset($revoked_refs[(string)$cert->refid])) {
-                        $dom = dom_import_simplexml($cert);
-                        $dom->parentNode->removeChild($dom);
+                        $to_delete[] = $cert;
                     } else {
                         $cert->reason = $revoked_refs[(string)$cert->refid];
                         unset($revoked_refs[(string)$cert->refid]);
                     }
+                }
+                foreach ($to_delete as $cert) {
+                    $dom = dom_import_simplexml($cert);
+                    $dom->parentNode->removeChild($dom);
                 }
                 foreach ($config->cert as $cert) {
                     if (isset($revoked_refs[(string)$cert->refid])) {
