@@ -424,8 +424,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/TrafficShaper/forms/dialogRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/Api/CaController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/Api/CertController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/Api/CrlController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CaController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CertController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/CrlController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCa.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Trust/forms/dialogCert.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/AclController.php
@@ -823,6 +825,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Trust/ca.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Trust/cert.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Trust/crl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/acl.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/advanced.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Unbound/dnsbl.volt

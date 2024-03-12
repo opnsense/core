@@ -32,7 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
-use OPNsense\Trust\Cert ;
+use OPNsense\Trust\Cert;
 
 /**
  * Class CaController
