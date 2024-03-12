@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2014-2024 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -116,14 +116,17 @@ function dhcpd_services()
         $services[] = $pconfig;
     }
 
-    if (isset($config['dhcrelay']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay";
-        $pconfig['description'] = gettext("DHCPv4 Relay");
-        $pconfig['php']['restart'] = array('dhcpd_dhcrelay4_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcrelay4_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
-        $services[] = $pconfig;
+    foreach ((new \OPNsense\DHCRelay\DHCRelay())->relays->iterateItems() as $relay) {
+        if ((string)$relay->enabled == '1') {
+            $pconfig = [];
+            $pconfig['name'] = 'dhcrelay';
+            $pconfig['description'] = gettext('DHCPv4 Relay') . " ({$relay->interface})";
+            $pconfig['php']['restart'] = ['dhcpd_dhcrelay4_configure'];
+            $pconfig['php']['start'] = ['dhcpd_dhcrelay4_configure'];
+            $pconfig['pidfile'] = "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid";
+            $pconfig['id'] = $relay->getAttribute('uuid');
+            $services[] = $pconfig;
+        }
     }
 
     if (isset($config['dhcrelay6']['enable'])) {
@@ -1623,113 +1626,58 @@ function dhcpd_dhcrelay_configure($verbose = false, $family = null)
 
 function dhcpd_dhcrelay4_configure($verbose = false)
 {
-    global $config;
+    $mdl = new \OPNsense\DHCRelay\DHCRelay();
+    $relays = [];
 
-    $dhcrelaycfg = &config_read_array('dhcrelay');
-    $dhcrelayifs = [];
+    foreach ($mdl->relays->iterateItems() as $relay) {
+        if ((string)$relay->enabled == '1') {
+            $relays[] = $relay;
+        }
 
-    if (!isset($dhcrelaycfg['enable'])) {
-        killbypid('/var/run/dhcrelay.pid');
+        killbypid("/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid");
+    }
+
+    if (!count($relays)) {
         return;
     }
 
     service_log('Starting DHCPv4 relay...', $verbose);
 
-    killbypid('/var/run/dhcrelay.pid');
-
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();
-    $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
-    $dhcifaces = explode(",", $dhcrelaycfg['interface']);
-    foreach ($dhcifaces as $dhcrelayif) {
-        if (isset($iflist[$dhcrelayif]) && get_interface_ip($dhcrelayif, $ifconfig_details)) {
-            $dhcrelayifs[] = get_real_interface($dhcrelayif);
-        }
-    }
 
-    /*
-     * In order for the relay to work, it needs to be active
-     * on the interface in which the destination server sits.
-     */
-    $srvips = explode(",", $dhcrelaycfg['server']);
-    foreach ($srvips as $srvip) {
-        $destif = null;
+    foreach ($relays as $relay) {
+        $interface = (string)$relay->interface;
+        $device = get_real_interface($interface);
 
-        /* XXX runs multiple times because of server address loop :( */
-        foreach (array_keys($iflist) as $ifname) {
-            list (, $subnet) = interfaces_primary_address($ifname, $ifconfig_details);
-            if (!is_subnetv4($subnet)) {
-                continue;
-            }
-            if (ip_in_subnet($srvip, $subnet)) {
-                $destif = get_real_interface($ifname, $ifconfig_details);
-                break;
-            }
-        }
-
-        if (empty($destif)) {
-            foreach (get_staticroutes() as $rtent) {
-                if (ip_in_subnet($srvip, $rtent['network'])) {
-                    $destif = $a_gateways[$rtent['gateway']]['if'];
-                    break;
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            /* Create an array from the existing route table */
-            exec("/usr/bin/netstat -rnWf inet", $route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            array_shift($route_str);
-            foreach ($route_str as $routeline) {
-                $items = preg_split("/[ ]+/i", $routeline);
-                if (is_subnetv4($items[0])) {
-                    $subnet = $items[0];
-                } elseif (is_ipaddrv4($items[0])) {
-                    $subnet = "{$items[0]}/32";
-                } else {
-                    // Not a subnet or IP address, skip to the next line.
-                    continue;
-                }
-                if (ip_in_subnet($srvip, $subnet)) {
-                    $destif = trim($items[6]);
-                    break;
-                }
-            }
-        }
-
-        if (empty($destif)) {
-            foreach ($a_gateways as $gateway) {
-                if (!empty($gateway['defaultgw']) && $gateway['ipprotocol'] == 'inet') {
-                    $destif = $gateway['if'];
-                    break;
-                }
-            }
-        }
-
-        if (!empty($destif) && isset($ifconfig_details[$destif]) && $ifconfig_details[$destif]['macaddr'] == '00:00:00:00:00:00') {
-            /* explicit skip when interface has no valid mac address */
+        if (!isset($iflist[$interface]) || !get_interface_ip($interface, $ifconfig_details)) {
+            log_msg("dhcpd_dhcrelay4_configure() found no IP address for $interface($device)", LOG_WARNING);
             continue;
-        } elseif (!empty($destif)) {
-            $dhcrelayifs[] = $destif;
-        } else {
-            log_msg("dhcpd_dhcrelay4_configure() found no suitable interface for {$srvip}", LOG_WARNING);
-        }
-    }
-
-    $dhcrelayifs = array_unique($dhcrelayifs);
-
-    if (!empty($dhcrelayifs)) {
-        $cmd = "/usr/local/sbin/dhcrelay -i " .  implode(" -i ", $dhcrelayifs);
-
-        if (isset($dhcrelaycfg['agentoption'])) {
-            $cmd .= ' -a -m replace';
         }
 
-        $cmd .= " " . implode(" ", $srvips);
-        mwexec($cmd);
+        if (empty($device) || isset($ifconfig_details[$device]) && $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
+            log_msg("dhcpd_dhcrelay4_configure() found no ethernet address for $interface($device)", LOG_WARNING);
+            continue;
+        }
+
+        $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
+        if ($destination == null) {
+            log_msg("dhcpd_dhcrelay4_configure() found no destination server for $interface($device)", LOG_WARNING);
+            continue;
+        }
+
+        $cmd = [exec_safe('daemon -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
+        $cmd[] = '/usr/local/sbin/dhcrelay -d';
+        if (!empty((string)$relay->agent_info)) {
+            $cmd[] = '-or';
+        }
+        $cmd[] = exec_safe('-i %s', $device);
+
+        foreach (explode(',', (string)$destination->server) as $server) {
+            $cmd[] = exec_safe('%s', $server);
+        }
+
+        mwexec(join(' ', $cmd));
     }
 
     service_log("done.\n", $verbose);

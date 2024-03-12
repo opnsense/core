@@ -599,6 +599,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/DHCRelay.php
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/DHCRelay.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.php
