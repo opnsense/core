@@ -39,6 +39,16 @@ use OPNsense\Trust\Store as CertStore;
  */
 class CrlController extends ApiControllerBase
 {
+    private static $status_codes = [
+        '0' => 'unspecified',
+        '1' => 'keyCompromise',
+        '2' => 'cACompromise',
+        '3' => 'affiliationChanged',
+        '4' => 'superseded',
+        '5' => 'cessationOfOperation',
+        '6' => 'certificateHold'
+    ];
+
     public function searchAction()
     {
         $this->sessionClose();
@@ -55,6 +65,9 @@ class CrlController extends ApiControllerBase
         return $this->searchRecordsetBase(array_values($items));
     }
 
+    /**
+     * fetch (a new) revocation list for a given autority.
+     */
     public function getAction($caref)
     {
         if ($this->request->isGet() && !empty($caref)) {
@@ -67,7 +80,7 @@ class CrlController extends ApiControllerBase
                 }
             }
             if ($found) {
-                $result = ['caref' => $caref];
+                $result = ['caref' => $caref, 'descr' => ''];
                 foreach ($config->crl as $node) {
                     if ((string)$node->caref == $caref) {
                         $result['descr'] = (string)$node->descr;
@@ -76,21 +89,153 @@ class CrlController extends ApiControllerBase
                 $certs = [];
                 foreach ($config->cert as $node) {
                     if ((string)$node->caref == $caref) {
-                        $certs[(string)$node->refid] = (string)255;
+                        $certs[(string)$node->refid] = [
+                            'code' => null,
+                            'descr' => (string)$node->descr
+                        ];
                     }
                 }
+                $crlmethod = 'internal';
                 foreach ($config->crl as $node) {
                     if ((string)$node->caref == $caref) {
                         foreach ($node->cert as $cert) {
                             if (!empty((string)$cert->refid)) {
-                                $certs[(string)$cert->refid] = (string)$cert->reason;
+                                $certs[(string)$cert->refid] = [
+                                    'code' => (string)$cert->reason == '-1' ? '0' : (string)$cert->reason,
+                                    'descr' => (string)$cert->descr
+                                ];
                             }
                         }
+                        $crlmethod = (string)$node->crlmethod;
+                        $result['text'] = !empty((string)$node->text) ? base64_decode((string)$node->text) : '';
+                    }
+                }
+                $result['crlmethod'] = [
+                    'internal' => [
+                        'value' => gettext('Internal'),
+                        'selected' => $crlmethod == 'internal' ? '1' : '0'
+                    ],
+                    'existing' => [
+                        'value' => gettext('Import existing'),
+                        'selected' => $crlmethod == 'existing' ? '1' : '0'
+                    ],
+                ];
+                for ($i=0 ; $i <= 6; $i++) {
+                    $code = (string)$i;
+                    $result['revoked_reason_' . $code] = [];
+                    foreach ($certs as $ref => $data) {
+                        $result['revoked_reason_' . $code][$ref] = [
+                            'value' => $data['descr'],
+                            'selected' => $data['code'] === $code ? '1' : '0'
+                        ];
                     }
                 }
 
-                return ['crl' => $result, 'certs' => $certs];
+                return ['crl' => $result];
+            }
+            return ['caref' => '', 'descr' => ''];
+        }
+    }
+
+    /**
+     * set crl for a certificate authority, mimicking standard model operations
+     * (which we can not use due to the nested structure of the CRL's)
+     */
+    public function setAction($caref)
+    {
+        if ($this->request->isPost() && !empty($caref)) {
+            Config::getInstance()->lock();
+            $config = Config::getInstance()->object();
+            $payload = $_POST['crl'] ?? [];
+            $validations = [];
+            if (!in_array($payload['crlmethod'], ['internal', 'existing'])) {
+                $validations['crl.crlmethod'] = [sprintf(gettext('Invalid method %s'), $payload['crlmethod'])];
+            }
+            if (!preg_match('/^(.){1,255}$/', $payload['descr'] ?? '')) {
+                $validations['crl.descr'] = gettext('Description should be a string between 1 and 255 characters.');
+            }
+            $found = false;
+            foreach ($config->ca as $node) {
+                if ((string)$node->refid == $caref) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $validations['crl.caref'] = gettext('Certificate does not seem to exist');
+            }
+
+            if (!empty($validations)) {
+                return ['status' => 'failed', 'validations' => $validations];
+            } else {
+                $revoked_refs = [];
+                for ($i=0 ; $i <= 6; $i++) {
+                    $fieldname = 'revoked_reason_' . (string)$i;
+                    foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
+                        if (!empty($refid)) {
+                            $revoked_refs[$refid] = (string)$i;
+                        }
+                    }
+                }
+                $crl = null;
+                foreach ($config->crl as $node) {
+                    if ((string)$node->caref == $caref) {
+                        if ($crl !== null) {
+                            /* When duplicate CRL's exist, remove all but the first */
+                            $dom = dom_import_simplexml($node);
+                            $dom->parentNode->removeChild($dom);
+                        } else {
+                            $crl = $node;
+                        }
+                    }
+                }
+                $last_crl = null;
+                if ($crl === null) {
+                    $last_crl = current($config->xpath('//opnsense/crl[last()]'));
+                    if ($last_crl) {
+                        $crl = simplexml_load_string('<crl/>');
+                    } else {
+                        $crl = $config->addChild('crl');
+                    }
+                }
+                $crl->caref = (string)$caref;
+                $crl->descr = (string)$payload['descr'];
+                foreach ($crl->cert as $cert) {
+                    if (!isset($revoked_refs[(string)$cert->refid])) {
+                        $dom = dom_import_simplexml($cert);
+                        $dom->parentNode->removeChild($dom);
+                    } else {
+                        $cert->reason = $revoked_refs[(string)$cert->refid];
+                        unset($revoked_refs[(string)$cert->refid]);
+                    }
+                }
+                foreach ($config->cert as $cert) {
+                    if (isset($revoked_refs[(string)$cert->refid])) {
+                        $tmp = $crl->addChild('cert');
+                        $tmp->refid = (string)$cert->refid;
+                        $tmp->descr = (string)$cert->descr;
+                        $tmp->caref = (string)$cert->caref;
+                        $tmp->crt = (string)$cert->crt;
+                        $tmp->prv = (string)$cert->prv;
+                        $tmp->revoke_time = (string)time();
+                        $tmp->reason = $revoked_refs[(string)$cert->refid];
+                    }
+                }
+
+                if ($last_crl) {
+                    /* insert new item after last crl */
+                    $target = dom_import_simplexml($last_crl);
+                    $insert = $target->ownerDocument->importNode(dom_import_simplexml($crl), true);
+                    if ($target->nextSibling) {
+                        $target->parentNode->insertBefore($insert, $target->nextSibling);
+                    } else {
+                        $target->parentNode->appendChild($insert);
+                    }
+                }
+                Config::getInstance()->save();
+                return ['status' => 'saved'];
             }
         }
+        return ['status' => 'failed'];
     }
 }

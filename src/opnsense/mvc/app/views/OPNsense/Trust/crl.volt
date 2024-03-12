@@ -39,12 +39,51 @@
             $(this).html($("#crl\\.descr").val() !== '' ? $("#crl\\.descr").val() : '-');
             $(this).show();
         });
+
+        $("#DialogCrl").change(function(){
+            if ($("#edit_crl").is(':visible')) {
+                $("#tab_crls").click();
+                $("#DialogCrl").hide();
+            }
+        });
+
+        $("#crl\\.crlmethod").change(function(event){
+            let this_action = $(this).val();
+            $(".crlmethod").each(function(){
+                let target = null;
+                if ($(this)[0].tagName == 'DIV') {
+                    target = $(this)
+                } else {
+                    target = $(this).closest("tr");
+                }
+                target.hide();
+                if ($(this).hasClass('crlmethod_' + this_action)) {
+                    target.show();
+                }
+            });
+        });
+
+        /* when revoking a certificate, make sure we only add the same cert in one group */
+        $(".revoked").change(function(event){
+            event.preventDefault();
+            let values = $(this).val();
+            let that = $(this).attr('id');
+            $("select.revoked").each(function(){
+                if ($(this).attr('id') !== that) {
+                    let target = $(this);
+                    values.forEach(function(refid){
+                        target.find('option[value="'+refid+'"]').prop("selected", false);
+                    });
+                    target.selectpicker('refresh');
+                }
+            });
+        })
     });
 
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#cert">{{ lang._('Index') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="tab_crls"  href="#cert">{{ lang._('Index') }}</a></li>
     <li><a data-toggle="tab" href="#edit_crl" id="DialogCrl" style="display: none;"> </a></li>
 </ul>
 <div class="tab-content content-box">
@@ -73,8 +112,19 @@
     </div>
     <div id="edit_crl" class="tab-pane fade in">
         <form id="frm_DialogCrl">
-            <input  type="text" class="form-control" size="50" id="crl.caref">
-            <input type="text" class="form-control" size="50" id="crl.descr">
+            {{ partial("layout_partials/base_form",['fields':formDialogCrl,'id':'DialogCrl'])}}
         </form>
+        <table class="table table-condensed">
+            <tbody>
+                <tr>
+                    <td>
+                        <button class="btn btn-primary" id="btn_DialogCrl_save" type="button">
+                            <b>{{ lang._('Apply') }}</b>
+                            <i id="DialogCrl_progress" class=""></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

@@ -32,6 +32,7 @@ class CrlController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
+        $this->view->formDialogCrl = $this->getForm("dialogCrl");
         $this->view->pick('OPNsense/Trust/crl');
     }
 }
