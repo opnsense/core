@@ -82,7 +82,10 @@
         <label>Weight</label>
         <advanced>true</advanced>
         <type>text</type>
-        <help>Weight for this gateway when used in a Gateway Group.</help>
+        <help>Weight for this gateway when used in a Gateway Group.
+            Specificed as an integer number between 1 and 5.
+            Default equals 1
+        </help>
     </field>
     <field>
         <id>gateway_item.latencylow</id>
