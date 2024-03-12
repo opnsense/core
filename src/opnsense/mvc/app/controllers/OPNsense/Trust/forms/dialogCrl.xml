@@ -6,7 +6,7 @@
     </field>
     <field>
         <id>crl.caref</id>
-        <label>Caref</label>
+        <label>CA reference</label>
         <type>info</type>
     </field>
     <field>

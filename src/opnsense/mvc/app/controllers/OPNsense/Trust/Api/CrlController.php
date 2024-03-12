@@ -186,7 +186,7 @@ class CrlController extends ApiControllerBase
             $payload = $_POST['crl'] ?? [];
             $validations = [];
             if (!in_array($payload['crlmethod'], ['internal', 'existing'])) {
-                $validations['crl.crlmethod'] = [sprintf(gettext('Invalid method %s'), $payload['crlmethod'])];
+                $validations['crl.crlmethod'] = sprintf(gettext('Invalid method %s'), $payload['crlmethod']);
             }
             if (!preg_match('/^(.){1,255}$/', $payload['descr'] ?? '')) {
                 $validations['crl.descr'] = gettext('Description should be a string between 1 and 255 characters.');
@@ -197,15 +197,40 @@ class CrlController extends ApiControllerBase
                     $validations['crl.text'] = gettext('Invalid CRL provided.');
                 }
             }
-            $found = false;
+
+            $ca_crt_str = false;
+            $ca_key_str = false;
             foreach ($config->ca as $node) {
                 if ((string)$node->refid == $caref) {
-                    $found = true;
+                    $ca_crt_str = !empty((string)$node->prv) ? base64_decode((string)$node->crt) : false;
+                    $ca_key_str = !empty((string)$node->prv) ? base64_decode((string)$node->prv) : false;
                     break;
                 }
             }
-            if (!$found) {
+            $ca_cert = new \phpseclib3\File\X509();
+            if (!$ca_crt_str) {
                 $validations['crl.caref'] = gettext('Certificate does not seem to exist');
+            } elseif (!$ca_key_str) {
+                $validations['crl.caref'] = gettext('Certificate private key missing');
+            } else {
+                /* Load in the CA's cert */
+                $ca_cert->loadX509($ca_crt_str);
+                if (!$ca_cert->validateDate()) {
+                    $validations['crl.caref'] = gettext('Cert revocation error: CA certificate invalid: invalid date');
+                } else {
+                    /* get the private key to sign the new (updated) CRL */
+                    try {
+                        $ca_key = \phpseclib3\Crypt\PublicKeyLoader::loadPrivateKey($ca_key_str);
+                        if (method_exists($ca_key, 'withPadding')) {
+                            $ca_key = $ca_key->withPadding(
+                                \phpseclib3\Crypt\RSA::ENCRYPTION_PKCS1 | \phpseclib3\Crypt\RSA::SIGNATURE_PKCS1
+                            );
+                        }
+                        $ca_cert->setPrivateKey($ca_key);
+                    } catch (\phpseclib3\Exception\NoKeyLoadedException $e) {
+                        $validations['crl.caref'] = gettext('Cert revocation error: Unable to load CA private key');
+                    }
+                }
             }
 
             if (!empty($validations)) {
@@ -213,7 +238,7 @@ class CrlController extends ApiControllerBase
                 return ['status' => 'failed', 'validations' => $validations];
             } else {
                 $revoked_refs = [];
-                if ((string)$node->crlmethod == 'internal') {
+                if ($payload['crlmethod'] == 'internal') {
                     for ($i=0 ; $i <= count(self::$status_codes); $i++) {
                         $fieldname = 'revoked_reason_' . $i;
                         foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
