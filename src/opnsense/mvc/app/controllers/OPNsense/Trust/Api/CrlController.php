@@ -27,7 +27,6 @@
  */
 namespace OPNsense\Trust\Api;
 
-
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
@@ -239,7 +238,7 @@ class CrlController extends ApiControllerBase
             } else {
                 $revoked_refs = [];
                 if ($payload['crlmethod'] == 'internal') {
-                    for ($i=0 ; $i <= count(self::$status_codes); $i++) {
+                    for ($i = 0; $i <= count(self::$status_codes); $i++) {
                         $fieldname = 'revoked_reason_' . $i;
                         foreach (explode(',', $payload[$fieldname] ?? '') as $refid) {
                             if (!empty($refid)) {
