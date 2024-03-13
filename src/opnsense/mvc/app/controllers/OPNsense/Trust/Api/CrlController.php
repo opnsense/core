@@ -244,13 +244,13 @@ class CrlController extends ApiControllerBase
                     $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
 
                     /* Now validate the CRL to see if everything went well */
-                    try {
-                        if (!$x509_crl->validateSignature(false)) {
-                            $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid');
-                        }
-                    } catch (Exception $e) {
-                        $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid') . " " . $e;
+                try {
+                    if (!$x509_crl->validateSignature(false)) {
+                        $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid');
                     }
+                } catch (Exception $e) {
+                    $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid') . " " . $e;
+                }
             }
 
             if (!empty($validations)) {
