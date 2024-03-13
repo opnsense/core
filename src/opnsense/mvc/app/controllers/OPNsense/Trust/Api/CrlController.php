@@ -231,6 +231,27 @@ class CrlController extends ApiControllerBase
                     }
                 }
             }
+            $x509_crl = new \phpseclib3\File\X509();
+            if (empty($validations['crl.caref'])) {
+                    /*
+                    * create empty CRL. A quirk with phpseclib is that in order to correctly sign
+                    * a new CRL, a CA must be loaded using a separate X509 container, which is passed
+                    * to signCRL(). However, to validate the resulting signature, the original X509
+                    * CRL container must load the same CA using loadCA() with a direct reference
+                    * to the CA's public cert.
+                    */
+                    $x509_crl->loadCA($ca_crt_str);
+                    $x509_crl->loadCRL($x509_crl->saveCRL($x509_crl->signCRL($ca_cert, $x509_crl)));
+
+                    /* Now validate the CRL to see if everything went well */
+                    try {
+                        if (!$x509_crl->validateSignature(false)) {
+                            $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid');
+                        }
+                    } catch (Exception $e) {
+                        $validations['crl.caref'] = gettext('Cert revocation error: CRL signature invalid') . " " . $e;
+                    }
+            }
 
             if (!empty($validations)) {
                 Config::getInstance()->unlock();
@@ -279,12 +300,16 @@ class CrlController extends ApiControllerBase
                 }
                 $crl->caref = (string)$caref;
                 $crl->descr = (string)$payload['descr'];
+                $crl->serial = !empty($payload['serial']) ? $payload['serial'] : $crl->serial;
+                $crl->serial = ((int)((string)$crl->serial)) + 1;
                 $to_delete = [];
+                $crl_certs = [];
                 foreach ($crl->cert as $cert) {
                     if (!isset($revoked_refs[(string)$cert->refid])) {
                         $to_delete[] = $cert;
                     } else {
                         $cert->reason = $revoked_refs[(string)$cert->refid];
+                        $crl_certs[] = $cert;
                         unset($revoked_refs[(string)$cert->refid]);
                     }
                 }
@@ -302,7 +327,30 @@ class CrlController extends ApiControllerBase
                         $tmp->prv = (string)$cert->prv;
                         $tmp->revoke_time = (string)time();
                         $tmp->reason = $revoked_refs[(string)$cert->refid];
+                        $crl_certs[] = $tmp;
                     }
+                }
+                if ($payload['crlmethod'] == 'internal') {
+                    /* add all cert serial numbers to crl */
+                    foreach ($crl_certs as $cert) {
+                        $tmp = @openssl_x509_parse(base64_decode((string)$cert->crt));
+                        if ($tmp !== false && isset($tmp['serialNumber'])) {
+                            $x509_crl->setRevokedCertificateExtension(
+                                (string)$tmp['serialNumber'],
+                                'id-ce-cRLReasons',
+                                self::$status_codes[(string)$cert->reason]
+                            );
+                        }
+                    }
+                    $x509_crl->setSerialNumber((string)$crl->serial, 10);
+                    /* consider dates after 2050 lifetime in GeneralizedTime format (rfc5280#section-4.1.2.5) */
+                    $date = new \DateTimeImmutable(
+                        '+' . (string)$crl->lifetime . ' days',
+                        new \DateTimeZone(@date_default_timezone_get())
+                    );
+                    $x509_crl->setEndDate((int)$date->format("Y") < 2050 ? $date : 'lifetime');
+                    $new_crl = $x509_crl->signCRL($ca_cert, $x509_crl);
+                    $crl->text = base64_encode($x509_crl->saveCRL($new_crl) . PHP_EOL);
                 }
 
                 if ($last_crl) {
@@ -320,5 +368,17 @@ class CrlController extends ApiControllerBase
             }
         }
         return ['status' => 'failed'];
+    }
+
+
+    public function rawDumpAction($uuid)
+    {
+        $payload = $this->getAction($uuid);
+        if (!empty($payload['crl'])) {
+            if (!empty($payload['crl']['text'])) {
+                return CertStore::dumpCRL($payload['crl']['text']);
+            }
+        }
+        return [];
     }
 }

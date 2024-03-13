@@ -555,6 +555,30 @@ class Store
         return $result;
     }
 
+    /**
+     * @param string $cert certificate
+     * @return array [stdout|stderr]
+     */
+    public static function dumpCRL($cert)
+    {
+        $result = [];
+        $process = proc_open(
+            '/usr/local/bin/openssl crl -fingerprint -sha256 -text',
+            [["pipe", "r"], ["pipe", "w"], ["pipe", "w"]],
+            $pipes
+        );
+        if (is_resource($process)) {
+            fwrite($pipes[0], $cert);
+            fclose($pipes[0]);
+            $result['stdout'] = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $result['stderr'] = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+        }
+        return $result;
+    }
+
 
 
     /**

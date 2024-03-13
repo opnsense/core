@@ -32,7 +32,30 @@
             get:'/api/trust/crl/get/',
             set:'/api/trust/crl/set/',
             del:'/api/trust/crl/del/',
-            datakey: 'refid'
+            datakey: 'refid',
+            commands: {
+                raw_dump: {
+                    method: function(event){
+                        let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                        ajaxGet('/api/trust/crl/raw_dump/' + refid, {}, function(data, status){
+                            if (data.stdout) {
+                                BootstrapDialog.show({
+                                    title: "{{ lang._('CRL info') }}",
+                                    type:BootstrapDialog.TYPE_INFO,
+                                    message: $("<div/>").text(data.stdout).html(),
+                                    cssClass: 'monospace-dialog',
+                                });
+                            }
+                        });
+                    },
+                    classname: 'fa fa-fw fa-info-circle',
+                    title: "{{ lang._('show certificate info') }}",
+                    sequence: 10
+                },
+                copy: {
+                    classname: undefined
+                }
+            }
         });
 
         $("#DialogCrl").click(function(){
@@ -82,6 +105,22 @@
 
 </script>
 
+<style>
+    .monospace-dialog {
+        font-family: monospace;
+        white-space: pre;
+    }
+
+    .monospace-dialog > .modal-dialog {
+        width:70% !important;
+    }
+
+    .modal-body {
+        max-height: calc(100vh - 210px);
+        overflow-y: auto;
+    }
+</style>
+
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="tab_crls"  href="#cert">{{ lang._('Index') }}</a></li>
     <li><a data-toggle="tab" href="#edit_crl" id="DialogCrl" style="display: none;"> </a></li>
@@ -99,15 +138,6 @@
             </thead>
             <tbody>
             </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
         </table>
     </div>
     <div id="edit_crl" class="tab-pane fade in">
