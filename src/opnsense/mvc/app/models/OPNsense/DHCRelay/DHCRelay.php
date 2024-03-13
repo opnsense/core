@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,35 +38,60 @@ class DHCRelay extends BaseModel
      */
     public function performValidation($validateFullModel = false)
     {
+        $dst4 = $dst6 = [];
+        $ints = [];
+
         $messages = parent::performValidation($validateFullModel);
 
-        $destinations = [];
-
         foreach ($this->destinations->getFlatNodes() as $key => $node) {
-            $tagName = $node->getInternalXMLTagName();
-            $parentNode = $node->getParentNode();
+            if ($node->getInternalXMLTagName() != 'server') {
+                continue;
+            }
+
+            /* single pass lookup for each special IP delimiter beats looping over entries */
+            $v4 = strpos((string)$node, '.') !== false;
+            $v6 = strpos((string)$node, ':') !== false;
 
             if ($validateFullModel || $node->isFieldChanged()) {
-                $destinations[$parentNode->__reference] = $parentNode;
-            }
-        }
-
-        // validate all changed destinations
-        foreach ($destinations as $key => $node) {
-            $v4 = $v6 = false;
-
-            foreach (explode(',', (string)$node->server) as $server) {
-                if (strpos($server, '.') !== false) {
-                    $v4 = true;
-                } else {
-                    $v6 = true;
+                if ($v4 && $v6) {
+                    $messages->appendMessage(new Message(gettext('You cannot mix address families for destinations.'), $key));
                 }
             }
 
-            if ($v4 && $v6) {
-                $messages->appendMessage(
-                    new Message(gettext('You cannot mix address families for destinations.'), "{$key}.server")
-                );
+            $uuid = $node->getParentNode()->getAttribute('uuid');
+
+            if ($v4) {
+                $dst4[$uuid] = true;
+            } elseif ($v6) {
+                $dst6[$uuid] = true;
+            }
+        }
+
+        foreach ($this->relays->getFlatNodes() as $key => $node) {
+            if ($node->getInternalXMLTagName() == 'interface' && ($validateFullModel || $node->isFieldChanged())) {
+                /* collect changed interfaces first to confirm their association afterwards */
+                $ints[$node->getParentNode()->__reference] = (string)$node;
+            }
+        }
+
+        foreach ($ints as $intkey => $int) {
+            $has_v4 = $has_v6 = 0;
+
+            foreach ($this->relays->iterateItems() as $key => $node) {
+                if ((string)$node->interface == $int) {
+                    if (array_key_exists((string)$node->destination, $dst4)) {
+                        $has_v4 += 1;
+                    }
+                    if (array_key_exists((string)$node->destination, $dst6)) {
+                        $has_v6 += 1;
+                    }
+                }
+            }
+
+            if ($has_v4 > 1) {
+                $messages->appendMessage(new Message(gettext('An IPv4 destination for this relay is already set.'), "{$intkey}.destination"));
+            } elseif ($has_v6 > 1) {
+                $messages->appendMessage(new Message(gettext('An IPv6 destination for this relay is already set.'), "{$intkey}.destination"));
             }
         }
 

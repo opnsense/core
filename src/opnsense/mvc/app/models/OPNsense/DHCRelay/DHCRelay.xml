@@ -9,12 +9,6 @@
             </enabled>
             <interface type="InterfaceField">
                 <Required>Y</Required>
-                <Constraints>
-                    <check001>
-                        <ValidationMessage>A relay for this interface already exists.</ValidationMessage>
-                        <type>UniqueConstraint</type>
-                    </check001>
-                </Constraints>
             </interface>
             <destination type="ModelRelationField">
                 <Model>
