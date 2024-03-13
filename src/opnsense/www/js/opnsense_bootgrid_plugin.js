@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2021 Deciso B.V.
+ * Copyright (C) 2015-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -196,11 +196,20 @@ $.fn.UIBootgrid = function (params) {
                         return "<span class=\"fa fa-fw fa-times\" data-value=\"0\" data-row-id=\"" + row.uuid + "\"></span>";
                     }
                 },
-                bytes: function(column, row) {
+                bytes: function (column, row) {
                     if (row[column.id] && row[column.id] > 0) {
                         return byteFormat(row[column.id], 2);
                     }
                     return '';
+                },
+                statusled: function (column, row) {
+                    if (row[column.id] && row[column.id] == 'red') {
+                        return "<span class=\"fa fa-fw fa-square text-danger\"></span>";
+                   }  else if (row[column.id] && row[column.id] == 'green') {
+                        return "<span class=\"fa fa-fw fa-square text-success\"></span>";
+                    } else {
+                        return "<span class=\"fa fa-fw fa-square text-muted\"></span>";
+                    }
                 },
             },
             onBeforeRenderDialog: null
