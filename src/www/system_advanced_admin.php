@@ -173,8 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
 
-        if (empty($config['system']['syslog'])) {
-            $config['system']['syslog'] = [];
+        if (empty($config['syslog'])) {
+            $config['syslog'] = [];
         }
 
         $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
