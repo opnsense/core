@@ -420,12 +420,6 @@
             <pattern>services_dhcp.php*</pattern>
         </patterns>
     </page-services-dhcpserver>
-    <page-services-dhcpv6relay>
-        <name>Services: DHCPv6 Relay</name>
-        <patterns>
-            <pattern>services_dhcpv6_relay.php*</pattern>
-        </patterns>
-    </page-services-dhcpv6relay>
     <page-services-dhcpserverv6-editstaticmapping>
         <name>Services: DHCPv6 Server: Edit static mapping</name>
         <patterns>

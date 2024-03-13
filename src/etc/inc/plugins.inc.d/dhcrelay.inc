@@ -60,8 +60,8 @@ function dhcrelay_xmlrpc_sync()
     $result = [];
 
     $result[] = [
-        'description' => gettext('DHCPv4: Relay'),
-        'section' => 'dhcrelay,OPNsense.DHCRelay',
+        'description' => gettext('DHCRelay'),
+        'section' => 'dhcrelay,dhcrelay6,OPNsense.DHCRelay',
         'services' => ['dhcrelay'],
         'id' => 'dhcrelay',
     ];

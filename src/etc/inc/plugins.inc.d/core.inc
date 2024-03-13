@@ -406,12 +406,6 @@ function core_xmlrpc_sync()
         'services' => ["dhcpdv6", "radvd"],
     );
     $result[] = array(
-        'description' => gettext('DHCPv6: Relay'),
-        'section' => 'dhcrelay6',
-        'id' => 'dhcrelay6',
-        'services' => ["dhcrelay6"],
-    );
-    $result[] = array(
         'description' => gettext('Virtual IPs'),
         'help' => gettext('Synchronize the CARP Virtual IPs to the other HA host.'),
         'section' => 'virtualip',

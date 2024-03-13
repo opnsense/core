@@ -115,16 +115,6 @@ function dhcpd_services()
         $services[] = $pconfig;
     }
 
-    if (isset($config['dhcrelay6']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "dhcrelay6";
-        $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['php']['restart'] = array('dhcpd_dhcrelay6_configure');
-        $pconfig['php']['start'] = array('dhcpd_dhcrelay6_configure');
-        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
-        $services[] = $pconfig;
-    }
-
     if (dhcpd_dhcpv4_enabled()) {
         $pconfig = array();
         $pconfig['name'] = 'dhcpd';
@@ -1597,13 +1587,6 @@ EOD;
     }
 
     service_log("done.\n", $verbose);
-}
-
-function dhcpd_dhcrelay_configure($verbose = false, $family = null, $id = null)
-{
-    if ($family == null || $family == 'inet6') {
-        dhcpd_dhcrelay6_configure($verbose);
-    }
 }
 
 function dhcpd_dhcrelay6_configure($verbose = false)

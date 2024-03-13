@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ use OPNsense\Base\FieldTypes\NetworkField;
 use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Core\Config;
 
-class M1_0_0 extends BaseModelMigration
+class M1_0_1 extends BaseModelMigration
 {
     /**
      * Migrate older models into shared model
@@ -44,7 +44,7 @@ class M1_0_0 extends BaseModelMigration
     {
         $config = Config::getInstance()->object();
 
-        $legacy = $config->dhcrelay;
+        $legacy = $config->dhcrelay6;
         if (empty($legacy->interface) || empty($legacy->server)) {
             /* no value in partial migration so skip all */
             return;
@@ -52,7 +52,7 @@ class M1_0_0 extends BaseModelMigration
 
         $node = $model->destinations->add();
         $node->setNodes([
-            'name' => 'Migrated IPv4 server entry',
+            'name' => 'Migrated IPv6 server entry',
             'server' => (string)$legacy->server,
         ]);
         $dest_uuid = $node->getAttribute('uuid');
@@ -75,6 +75,6 @@ class M1_0_0 extends BaseModelMigration
     public function post($model)
     {
         $config = Config::getInstance()->object();
-        unset($config->dhcrelay);
+        unset($config->dhcrelay6);
     }
 }

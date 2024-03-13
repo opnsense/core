@@ -605,6 +605,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/DHCRelay.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/DnsDiagnostics.xml
@@ -2080,7 +2081,6 @@
 /usr/local/www/services_dhcp_edit.php
 /usr/local/www/services_dhcpv6.php
 /usr/local/www/services_dhcpv6_edit.php
-/usr/local/www/services_dhcpv6_relay.php
 /usr/local/www/services_dnsmasq.php
 /usr/local/www/services_dnsmasq_domainoverride_edit.php
 /usr/local/www/services_dnsmasq_edit.php

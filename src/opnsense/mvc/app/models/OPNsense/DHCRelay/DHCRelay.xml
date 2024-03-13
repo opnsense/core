@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/DHCRelay</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>DHCRelay configuration</description>
     <items>
         <relays type="ArrayField">
