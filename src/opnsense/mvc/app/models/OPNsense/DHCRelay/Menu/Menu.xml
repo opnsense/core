@@ -1,7 +1,5 @@
 <menu>
     <Services>
-        <DHCRelay cssClass="fa fa-lock fa-fw">
-            <V4 VisibleName="Version 4" url="/ui/dhcrelay/relay"/>
-        </DHCRelay>
+        <DHCRelay cssClass="fa fa-bullseye fa-fw" url="/ui/dhcrelay/relay"/>
     </Services>
 </menu>

@@ -52,7 +52,7 @@ class M1_0_0 extends BaseModelMigration
 
         $node = $model->destinations->add();
         $node->setNodes([
-            'name' => 'Migrated server entry',
+            'name' => 'Migrated IPv4 server entry',
             'server' => (string)$legacy->server,
         ]);
         $dest_uuid = $node->getAttribute('uuid');
