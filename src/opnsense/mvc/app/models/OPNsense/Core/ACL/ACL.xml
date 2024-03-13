@@ -594,7 +594,8 @@
     <page-system-crlmanager>
         <name>System: CRL Manager</name>
         <patterns>
-            <pattern>system_crlmanager.php*</pattern>
+            <pattern>ui/trust/crl</pattern>
+            <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
     <page-system-firmware-manualupdate>

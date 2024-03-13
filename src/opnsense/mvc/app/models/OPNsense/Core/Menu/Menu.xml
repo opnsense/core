@@ -75,9 +75,7 @@
         <Trust cssClass="fa fa-certificate fa-fw">
             <Authorities url="/ui/trust/ca"/>
             <Certificates url="/ui/trust/cert"/>
-            <Revocation url="/system_crlmanager.php">
-                <Edit url="/system_crlmanager.php*" visibility="hidden"/>
-            </Revocation>
+            <Revocation url="/ui/trust/crl"/>
         </Trust>
         <Wizard url="/wizard.php?xml=system" cssClass="fa fa-magic fa-fw"/>
         <LogFiles order="150" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
