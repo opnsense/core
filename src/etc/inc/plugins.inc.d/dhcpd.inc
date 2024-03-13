@@ -32,8 +32,9 @@
 function dhcpd_configure()
 {
     return [
+        'bootup' => ['dhcpd_dhcrelay_configure'],
         'dhcp' => ['dhcpd_dhcp_configure:3'],
-        'dhcrelay' => ['dhcpd_dhcrelay_configure:2'],
+        'dhcrelay' => ['dhcpd_dhcrelay_configure:3'],
         'local' => ['dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'],
     ];
 }
@@ -1613,10 +1614,10 @@ EOD;
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_dhcrelay_configure($verbose = false, $family = null)
+function dhcpd_dhcrelay_configure($verbose = false, $family = null, $id = null)
 {
     if ($family == null || $family == 'inet') {
-        dhcpd_dhcrelay4_configure($verbose);
+        dhcpd_dhcrelay4_configure($verbose, $id);
     }
 
     if ($family == null || $family == 'inet6') {
@@ -1624,24 +1625,29 @@ function dhcpd_dhcrelay_configure($verbose = false, $family = null)
     }
 }
 
-function dhcpd_dhcrelay4_configure($verbose = false)
+function dhcpd_dhcrelay4_configure($verbose = false, $id = null)
 {
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
     $relays = [];
 
     foreach ($mdl->relays->iterateItems() as $relay) {
+        $target_id = $relay->getAttribute('uuid');
+        if ($id != null && $id != $target_id) {
+            continue;
+        }
+
         if ((string)$relay->enabled == '1') {
             $relays[] = $relay;
         }
 
-        killbypid("/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid");
+        killbypid("/var/run/dhcrelay-{$target_id}.pid");
     }
 
     if (!count($relays)) {
         return;
     }
 
-    service_log('Starting DHCPv4 relay...', $verbose);
+    service_log('Starting DHCPv4 relays...', $verbose);
 
     $iflist = get_configured_interface_with_descr();
     $ifconfig_details = legacy_interfaces_details();

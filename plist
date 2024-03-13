@@ -253,6 +253,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCPv6/LeasesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/RelayController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/forms/dialogDest.xml
@@ -598,6 +599,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Migrations/M1_0_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/DHCRelay.php
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/DHCRelay.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/DHCRelay/Menu/Menu.xml
@@ -1144,6 +1146,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcpd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcpd6.conf
+/usr/local/opnsense/service/conf/actions.d/actions_dhcrelay.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_filter.conf
 /usr/local/opnsense/service/conf/actions.d/actions_firmware.conf
@@ -2074,7 +2077,6 @@
 /usr/local/www/reporting_settings.php
 /usr/local/www/services_dhcp.php
 /usr/local/www/services_dhcp_edit.php
-/usr/local/www/services_dhcp_relay.php
 /usr/local/www/services_dhcpv6.php
 /usr/local/www/services_dhcpv6_edit.php
 /usr/local/www/services_dhcpv6_relay.php

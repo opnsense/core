@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 namespace OPNsense\DHCRelay\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
@@ -38,7 +39,18 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchRelayAction()
     {
-        return $this->searchBase('relays', ['enabled', 'interface', 'destination', 'agent_info'], 'interface');
+        $search_result = $this->searchBase('relays', ['enabled', 'interface', 'destination', 'agent_info'], 'interface');
+        $status_by_uuid = [];
+
+        foreach (json_decode((new Backend())->configdpRun('service list', [self::$internalModelName]), true) as $service) {
+            $status_by_uuid[$service['id']] = strpos($service['status'], 'not running') > 0 ? 'red' : 'green';
+        }
+
+        foreach ($search_result['rows'] as &$row) {
+            $row['status'] = !empty($status_by_uuid[$row['uuid']]) ? $status_by_uuid[$row['uuid']] : 'grey';
+        }
+
+        return $search_result;
     }
 
     public function getRelayAction($uuid = null)
@@ -63,7 +75,13 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function toggleRelayAction($uuid, $enabled = null)
     {
-        return $this->toggleBase('relays', $uuid, $enabled);
+        $ret = $this->toggleBase('relays', $uuid, $enabled);
+
+        /* when done unconditionally reload the single service */
+        $this->sessionClose();
+        (new Backend())->configdpRun('dhcrelay configure', [$uuid]);
+
+        return $ret;
     }
 
     public function searchDestAction()

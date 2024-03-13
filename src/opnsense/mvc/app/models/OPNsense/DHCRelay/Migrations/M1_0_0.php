@@ -75,7 +75,6 @@ class M1_0_0 extends BaseModelMigration
     public function post($model)
     {
         $config = Config::getInstance()->object();
-        // XXX later
-        //unset($config->dhcrelay);
+        unset($config->dhcrelay);
     }
 }

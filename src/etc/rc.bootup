@@ -95,7 +95,6 @@ plugins_configure('early', true);
 system_routing_configure(true, null, false);
 
 plugins_configure('dhcp', true);
-plugins_configure('dhcrelay', true);
 plugins_configure('dns', true);
 
 filter_configure_sync(true);

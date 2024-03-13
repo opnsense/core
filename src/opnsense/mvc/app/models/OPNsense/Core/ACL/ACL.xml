@@ -408,12 +408,6 @@
             <pattern>wizard.php?xml=system</pattern>
         </patterns>
     </page-wizard-system>
-    <page-services-dhcprelay>
-        <name>Services: DHCP Relay</name>
-        <patterns>
-            <pattern>services_dhcp_relay.php*</pattern>
-        </patterns>
-    </page-services-dhcprelay>
     <page-services-dhcpserver-editstaticmapping>
         <name>Services: DHCP Server: Edit static mapping</name>
         <patterns>

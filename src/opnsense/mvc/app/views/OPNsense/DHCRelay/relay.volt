@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2023 Deciso B.V.
+ # Copyright (c) 2023-2024 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -41,6 +41,7 @@ $( document ).ready(function() {
         add:'/api/dhcrelay/settings/addDest/',
         del:'/api/dhcrelay/settings/delDest/',
     });
+    $("#reconfigureAct").SimpleActionButton();
 });
 </script>
 
@@ -50,6 +51,7 @@ $( document ).ready(function() {
         <tr>
             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+            <th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>
             <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
             <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
             <th data-column-id="agent_info" data-type="string" data-visible="false">{{ lang._('Agent Info') }}</th>
@@ -91,6 +93,18 @@ $( document ).ready(function() {
         </tr>
         </tfoot>
     </table>
+</div>
+
+<div class="content-box">
+    <div class="col-md-12 __mt __mb">
+        <button class="btn btn-primary" id="reconfigureAct"
+                data-endpoint='/api/dhcrelay/service/reconfigure'
+                data-label="{{ lang._('Apply') }}"
+                data-grid-reload="grid-relay"
+                data-error-title="{{ lang._('Error reconfiguring dhcrelay') }}"
+                type="button">
+        </button>
+    </div>
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogRelay,'id':'DialogRelay','label':lang._('Edit DHCP relay')])}}
