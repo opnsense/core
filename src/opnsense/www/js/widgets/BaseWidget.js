@@ -1,5 +1,6 @@
 export default class BaseWidget {
-    constructor() {
+    constructor(config) {
+        this.config = config;
         this.title = "";
         this.id = null;
         this.tickTimeout = 5000; // Default tick timeout
@@ -14,7 +15,7 @@ export default class BaseWidget {
         this.id = id;
     }
 
-    async getHtml() {
+    getMarkup() {
         return $("");
     }
 
@@ -31,10 +32,6 @@ export default class BaseWidget {
     }
 
     onWidgetClose() {
-        return null;
-    }
-
-    getConfiguration() {
         return null;
     }
 

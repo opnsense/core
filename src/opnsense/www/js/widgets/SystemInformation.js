@@ -6,7 +6,7 @@ export default class SystemInformation extends BaseTableWidget {
         this.title = 'System Information';
     }
 
-    async getHtml() {
+    getMarkup() {
         let options = {
             headerPosition: 'left'
         }
@@ -22,6 +22,6 @@ export default class SystemInformation extends BaseTableWidget {
         ];
 
         this.setTableData(options, data);
-        return super.getHtml();
+        return super.getMarkup();
     }
 }

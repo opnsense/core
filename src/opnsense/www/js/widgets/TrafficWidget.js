@@ -10,7 +10,7 @@ export default class TrafficWidget extends BaseWidget {
         this.interfaces = ['LAN', 'WAN'];
     }
 
-    async getHtml() {
+    getMarkup() {
         let $div = $(`<div class="chart-container-trafficwidget"></div>`);
         $div.append($(`<div><h3>Traffic In</h3><div class="canvas-container"><canvas id="traffic-chart"></canvas></div></div>`));
         $div.append($(`<div><h3>Traffic Out</h3><div class="canvas-container"><canvas id="traffic-chart-two"></canvas></div></div>`));

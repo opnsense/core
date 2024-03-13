@@ -6,7 +6,7 @@ export default class Carp extends BaseTableWidget {
         this.title = 'CARP Status';
     }
 
-    async getHtml() {
+    getMarkup() {
     }
 
     onWidgetTick() {

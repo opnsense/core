@@ -6,7 +6,7 @@ export default class Interfaces extends BaseTableWidget {
         this.title = 'Interfaces';
     }
 
-    async getHtml() {
+    getMarkup() {
         let options = {
             headerPosition: 'none'
         }
@@ -41,7 +41,7 @@ export default class Interfaces extends BaseTableWidget {
         }
 
         this.setTableData(options, data);
-        return super.getHtml();
+        return super.getMarkup();
     }
 
     async onMarkupRendered() {

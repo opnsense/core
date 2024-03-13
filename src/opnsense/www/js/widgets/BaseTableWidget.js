@@ -156,7 +156,7 @@ export default class BaseTableWidget extends BaseWidget {
         return $flextable;
     }
 
-    async getHtml() {
+    getMarkup() {
         let $flextable = this._constructTable();        
         this.table = $flextable;
         return $('<div></div>').append($flextable);

@@ -105,18 +105,18 @@ $( document ).ready(function() {
     class WidgetManager  {
         constructor(gridStackOptions = {}) {
             this.gridStackOptions = gridStackOptions;
-            this.modules = {}; // id -> widget module
+            this.loadedModules = {}; // id -> widget module
             this.widgetConfigurations = {}; // id -> per-widget configuration
             this.widgetClasses = {}; // id -> instantiated widget module
-            //this.widgetElements = {}; // id -> per-widget gridstack configuration + raw html string
             this.widgetHTMLElements = {}; // id -> Element types
             this.widgetTickRoutines = {}; // id -> tick routines
             this.grid = null; // gridstack instance
+            this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
         }
 
         async initialize() {
             try {
-                // import allowed modules
+                // import allowed modules and current persisted configuration
                 await this._loadWidgets();
                 // prepare widget markup
                 await this._initializeWidgets();
@@ -130,70 +130,95 @@ $( document ).ready(function() {
         }
 
         async _loadWidgets() {
-            const response = await $.ajax('/api/core/dashboard/getWidgets', {
+            const response = await $.ajax('/api/core/dashboard/getDashboard', {
                 type: 'GET',
                 dataType: 'json',
                 contentType: 'application/json'
             }).then(async (data) => {
-                const promises = data.map(async (item) => {
-                    let basename = item.split('.')[0];
-                    const mod = await import('/ui/js/widgets/' + item);
-                    // basename is the unique identifier of this JS module
-                    // for now this is derived from the filename, but this should come
-                    // from the endpoint. Perhaps we place a comment in each widget class file
-                    // which is parsed in the backend.
-                    this.modules[basename.toLowerCase()] = mod.default;
+                if ('dashboard' in data && data.dashboard != null) {
+                    let configuration = JSON.parse(data.dashboard);
+                    configuration.forEach(item => {
+                        this.widgetConfigurations[item.id] = item;
+                    });
+                }
+
+                const promises = data.modules.map(async (item) => {
+                    const mod = await import('/ui/js/widgets/' + item.module);
+                    this.loadedModules[item.id] = mod.default;
                 });
 
                 // Load all modules simultaneously - this shouldn't take long
                 await Promise.all(promises);
+
+                if (!$.isEmptyObject(this.widgetConfigurations)) {
+                    this.moduleDiff = Object.keys(this.loadedModules).filter(x => !Object.keys(this.widgetConfigurations).includes(x));
+                }
             });
 
-            return this.modules;
+            return this.loadedModules;
         }
 
-        async _initializeWidgets() {
-            if ($.isEmptyObject(this.modules)) {
+        _initializeWidgets() {
+            if ($.isEmptyObject(this.loadedModules)) {
                 throw new Error('No widgets loaded');
             }
 
-            for (const [identifier, widgetClass] of Object.entries(this.modules)) {
-                await this._createGridStackWidget(identifier, widgetClass);
+            if (!$.isEmptyObject(this.widgetConfigurations)) {
+                // restore
+                for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
+                    if (id in this.loadedModules) {
+                        this._createGridStackWidget(id, this.loadedModules[id], configuration);
+                    }
+                }
+            } else {
+                // default
+                for (const [identifier, widgetClass] of Object.entries(this.loadedModules)) {
+                    this._createGridStackWidget(identifier, widgetClass);
+                }
             }
         }
 
-        async _createGridStackWidget(id, widgetClass) {
+        async _createGridStackWidget(id, widgetClass, config = {}) {
             // instantiate widget
-            // XXX custom options should be passed to constructor
-            const widget = new widgetClass();
+            const widget = new widgetClass(config);
             // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
             widget.setId(id);
             this.widgetClasses[id] = widget;
 
             // setup generic panels
-            let content = await widget.getHtml();
+            let content = widget.getMarkup();
             let $panel = this._makeWidget(id, widget.title, content);
 
-            // XXX custom options should be persisted
-            let gridElement = {
-                content: $panel.prop('outerHTML'),
-                id: id,
-                // any to-be persisted data (backend) can be placed here,
-                // serialization will return this object
-            };
-
-            // lock the system information widget (TODO: unless specified otherwise)
-            if (id == 'systeminformation') {
-                gridElement = {
-                    x: 0, y: 0,
-                    // locked: true,
-                    // noResize: true,
-                    // noMove: true,
-                    ...gridElement,
+            if (id in this.widgetConfigurations) {
+                this.widgetConfigurations[id].content = $panel.prop('outerHTML');
+            } else {
+                let gridElement = {
+                    content: $panel.prop('outerHTML'),
+                    id: id,
+                    // any to-be persisted data (backend) can be placed here,
+                    // serialization will return this object
                 };
-            }
 
-            this.widgetConfigurations[id] = gridElement;
+                // lock the system information widget
+                if (id == 'systeminformation') {
+                    gridElement = {
+                        x: 0, y: 0,
+                        id: id,
+                        ...gridElement,
+                    };
+                }
+
+                this.widgetConfigurations[id] = gridElement;
+            }
+        }
+
+
+        _onWidgetClose(id) {
+            clearInterval(this.widgetTickRoutines[id]);
+            this.widgetClasses[id].onWidgetClose();
+            this.grid.removeWidget(this.widgetHTMLElements[id]);
+            this.moduleDiff.push(id);
+            // propagate updated diff to widget selection
         }
 
         // runs only once
@@ -203,26 +228,23 @@ $( document ).ready(function() {
             this.grid.on('added', (event, items) => {
                 // store Elements for later use, such as update() and resizeToContent()
                 items.forEach((item) => {
-                    let id = item.uniqueId;
-                    this.widgetHTMLElements[item.uniqueId] = item.el;
+                    let id = item.id;
+                    this.widgetHTMLElements[item.id] = item.el;
                 });
             });
 
-            this.grid.on('removed', (event, items) => {
-                items.forEach((item) => {
-                    let id = item.uniqueId;
-                    clearInterval(this.widgetTickRoutines[id]);
-                    this.widgetClasses[id].onWidgetClose();
+            for (const event of ['disable', 'dragstop', 'dropped', 'removed', 'resizestop']) {
+                this.grid.on(event, (event, items) => {
+                    $('#save-grid').show();
                 });
-            });
-
+            }
             // render to the DOM
             this._render();
 
             // click handler for widget removal.
             $('.close-handle').click((event) => {
                 let widgetId = $(event.currentTarget).data('widget-id');
-                this.grid.removeWidget(this.widgetHTMLElements[widgetId]);
+                this._onWidgetClose(widgetId);
             });
 
             // handle dynamic resize of widgets
@@ -245,21 +267,42 @@ $( document ).ready(function() {
 
             // force the cell height of each widget to the lowest value. The grid will adjust the height
             // according to the content of the widget.
-            // XXX: once widget sizes are persisted, this should be adjusted accordingly
             this.grid.cellHeight(1);
 
             // Serialization options
             let $btn_group = $('.btn-group-container');
             $btn_group.append($('<button class="btn btn-primary" id="save-grid">Save</button>'));
+            $btn_group.append($('<button class="btn btn-secondary" id="restore-defaults">Restore default layout</button>'));
+            $('#save-grid').hide();
 
             $('#save-grid').click(() => {
+                //this.grid.cellHeight('auto', false);
                 let items = this.grid.save(false);
-                console.log(items);
+                //this.grid.cellHeight(1, false);
 
-                ajaxCall("/api/core/dashboard/set", {
-                    widgets: items,
-                }, (response) => {
-                    console.log(response);
+                $.ajax({
+                    type: "POST",
+                    url: "/api/core/dashboard/saveWidgets",
+                    dataType: "text",
+                    contentType: 'text/plain',
+                    data: JSON.stringify(items),
+                    complete: function(data, status) {
+                        let response = JSON.parse(data.responseText);
+
+                        if (response['result'] == 'failed') {
+                            console.error('Failed to save widgets', data);
+                        }
+                    }
+                });
+            });
+
+            $('#restore-defaults').click(() => {
+                ajaxGet("/api/core/dashboard/restoreDefaults", null, (response, status) => {
+                    if (response['result'] == 'failed') {
+                        alert('Failed to restore default widgets');
+                    } else {
+                        window.location.reload();
+                    }
                 });
             });
         }
@@ -348,7 +391,7 @@ $( document ).ready(function() {
         float: false,
         column: 4,
         margin: 10,
-        cellheight: 'initial',
+        cellheight: 'auto',
         alwaysShowResizeHandle: true,
         sizeToContent: 3,
         resizable: {
@@ -633,26 +676,26 @@ div {
 }
 
 .column {
-  display: flex;
-  flex-flow: column wrap;
-  width: 50%;
-  padding: 0;
+    display: flex;
+    flex-flow: column wrap;
+    width: 50%;
+    padding: 0;
 }
 .column .flex-row {
-  display: flex;
-  flex-flow: row wrap;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  border-top: rgba(217, 79, 0, 0.15); 
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-top: rgba(217, 79, 0, 0.15);
 }
 .column .flex-row:hover {
-  background: #F5F5F5;
-  transition: 500ms;
+    background: #F5F5F5;
+    transition: 500ms;
 }
 .flex-cell {
-  width: 100%;
-  text-align: left;
+    width: 100%;
+    text-align: left;
 }
 
 .column .flex-row:not(:last-child) {

@@ -7,7 +7,7 @@ export default class Cpu extends BaseWidget {
         this.line = null;
     }
 
-    async getHtml() {
+    getMarkup() {
         let $container = $(`<div></div>`);
         let $target = $(`<div class="canvas-container"><canvas id="cpu-usage" style="width: 80%; height: 30px;"></canvas></div>`);
         $container.append($target);

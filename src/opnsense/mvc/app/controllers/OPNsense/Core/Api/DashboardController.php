@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,47 +28,121 @@
 
 namespace OPNsense\Core\Api;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\ACL;
+use OPNsense\Core\Config;
 
-class DashboardController extends ApiMutableModelControllerBase
+class DashboardController extends ApiControllerBase
 {
-    protected static $internalModelClass = '\OPNsense\Core\Dashboard';
-    protected static $internalModelName = 'dashboard';
+    private function canAccessEndpoints($fname)
+    {
+        if (!file_exists($fname)) {
+            return false;
+        }
 
-    public function getWidgetsAction()
+        $handle = fopen($fname, "r");
+
+        if ($handle) {
+            $lines = [];
+            while (($line = fgets($handle)) !== false) {
+                if (strpos($line, "//") === 0) {
+                    $lines[] = trim($line);
+                    continue;
+                }
+                break;
+            }
+
+            fclose($handle);
+
+            $acl = new ACL();
+            foreach ($lines as $line) {
+                if (!$acl->isPageAccessible($this->getUserName(), $line)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public function getDashboardAction()
     {
         $this->sessionClose();
-        /* XXX: model checks etc. */
+        $result = [];
+        $dashboard = null;
 
-        $widgets = array_filter(array_map(
+        $config = Config::getInstance()->object();
+        foreach ($config->system->user as $node) {
+            if ($this->getUserName() === (string)$node->name) {
+                $dashboard = (string)$node->dashboard;
+            }
+        }
+
+        $widgetModules = array_filter(glob('/usr/local/opnsense/www/js/widgets/*.js'),
             function($element) {
-                return basename($element);
-            }, glob('/usr/local/opnsense/www/js/widgets/*.js')), 
-            function($element) {
-                if (strpos($element, '.js') !== false && strpos($element, 'Base') === false) {
-                    return true;
+                $base = basename($element);
+                if (str_contains($base, '.js') && !str_contains($base, 'Base')) {
+                    return $this->canAccessEndpoints($element);
                 }
 
                 return false;
             }
         );
 
-        error_log(print_r($widgets, true));
+        $widgetModules = array_map(function($element) {return basename($element);}, $widgetModules);
 
-        $conf = $this->getAction();
-        error_log(print_r($conf, true));
+        foreach ($widgetModules as $module) {
+            $result['modules'][] = [
+                'id' => strtolower(basename($module, '.js')),
+                'module' => basename($module)
+            ];
+        }
 
+        $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : null;
 
-        return json_encode(array_values($widgets));
+        return json_encode($result);
     }
 
-    // front-end can do set call
-    // public function saveWidgetsAction()
-    // {
-    //     $result = parent::setAction();
-    //     if ($result['result'] != 'failed') {
-            
-    //     }
-    //     return json_encode($result);
-    // }
+    public function saveWidgetsAction()
+    {
+
+        $result = ['result' => 'failed'];
+
+        if ($this->request->isPost() && !empty($this->request->getRawBody())) {
+            $dashboard = $this->request->getRawBody();
+            $encoded = base64_encode($dashboard);
+
+            $config = Config::getInstance()->object();
+            $name = $this->getUserName();
+            foreach ($config->system->user as $node) {
+                if ($name === (string)$node->name) {
+                    $node->dashboard = $encoded;
+                    Config::getInstance()->save();
+                    $result = ['result' => 'saved'];
+                    break;
+                }
+            }
+        }
+
+        return json_encode($result);
+    }
+
+    public function restoreDefaultsAction()
+    {
+        $result = ['result' => 'failed'];
+
+        $config = Config::getInstance()->object();
+        $name = $this->getUserName();
+
+        foreach ($config->system->user as $node) {
+            if ($name === (string)$node->name) {
+                $node->dashboard = null;
+                Config::getInstance()->save();
+                $result = ['result' => 'saved'];
+                break;
+            }
+        }
+
+        return json_encode($result);
+    }
 }

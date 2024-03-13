@@ -13,7 +13,7 @@ export default class NetworkTime extends BaseWidget {
         $nt.html(d.toLocaleTimeString());
     }
 
-    async getHtml() {
+    getMarkup() {
         let $target = $(`
         <div class="network-time-container">
             <p id="network-time"></p>

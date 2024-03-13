@@ -6,7 +6,7 @@ export default class SystemResources extends BaseWidget {
         this.title = 'System Resources';
     }
 
-    async getHtml() {
+    getMarkup() {
         let $container = $(`
         <div>
             <div id="gauge-container">

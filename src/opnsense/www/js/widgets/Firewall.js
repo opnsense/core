@@ -81,7 +81,7 @@ export default class Firewall extends BaseWidget {
         }
     }
 
-    async getHtml() {
+    getMarkup() {
         let $container = $(`<div></div>`);
         let $target = $(`<div class="canvas-container" style="position: relative; padding: 1.5rem; margin-bottom: 10px;"><canvas id="firewall-pie-chart"></canvas></div>`);
         
@@ -99,8 +99,6 @@ export default class Firewall extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        await this.sleep(10000);
-
         let $target = $('#firewall-pie-chart');
         let ctx = $target[0].getContext('2d');
 

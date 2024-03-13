@@ -53,6 +53,9 @@
             <pattern>index.php*</pattern>
             <pattern>widgets/widgets/*.widget.php*</pattern>
             <pattern>widgets/api/get.php*</pattern>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>ui/js/widgets/*</pattern>
+            <pattern>api/core/dashboard/*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>api/routes/gateway/status*</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames</pattern>

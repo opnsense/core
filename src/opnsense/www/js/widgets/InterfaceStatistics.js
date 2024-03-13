@@ -17,7 +17,7 @@ export default class InterfaceStatistics extends BaseWidget {
         }
     }
 
-    async getHtml() {
+    getMarkup() {
         let $div = $(`<div class="chart-container-interface-statistics"></div>`);
         $div.append($(`<div><div class="canvas-container" style="position: relative; padding: 1.5rem; margin-bottom: 10px;"><canvas id="int-stats"></canvas></div></div>`));
         $div.append($(`<button id="btn-switch-chart-style" data-style="single">Change</button>`));

@@ -16,7 +16,7 @@ export default class Gateways extends BaseWidget {
         }
     }
 
-    async getHtml() {
+    getMarkup() {
         let $container = $(`
 <div class="gateways-container">
     <div class="flex-container">
