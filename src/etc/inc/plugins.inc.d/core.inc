@@ -343,7 +343,7 @@ function core_syslog()
 
     $logfacilities['audit'] = array('facility' => array('audit'));
     $logfacilities['configd'] = array('facility' => array('configd.py'));
-    $logfacilities['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay'));
+    $logfacilities['dhcpd'] = array('facility' => array('dhcpd'));
     $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
     $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
     $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
@@ -397,12 +397,6 @@ function core_xmlrpc_sync()
         'section' => 'dhcpd',
         'id' => 'dhcpd',
         'services' => ["dhcpd"],
-    );
-    $result[] = array(
-        'description' => gettext('DHCPv4: Relay'),
-        'section' => 'dhcrelay,OPNsense.DHCRelay',
-        'id' => 'dhcrelay',
-        'services' => ["dhcrelay"],
     );
     $result[] = array(
         'description' => gettext('DHCPDv6'),

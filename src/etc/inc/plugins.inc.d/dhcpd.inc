@@ -32,10 +32,8 @@
 function dhcpd_configure()
 {
     return [
-        'bootup' => ['dhcpd_dhcrelay_configure'],
         'dhcp' => ['dhcpd_dhcp_configure:3'],
-        'dhcrelay' => ['dhcpd_dhcrelay_configure:3'],
-        'local' => ['dhcpd_dhcp_configure', 'dhcpd_dhcrelay_configure'],
+        'local' => ['dhcpd_dhcp_configure'],
     ];
 }
 
@@ -115,19 +113,6 @@ function dhcpd_services()
         $pconfig['php']['start'] = array('dhcpd_radvd_configure');
         $pconfig['pidfile'] = '/var/run/radvd.pid';
         $services[] = $pconfig;
-    }
-
-    foreach ((new \OPNsense\DHCRelay\DHCRelay())->relays->iterateItems() as $relay) {
-        if ((string)$relay->enabled == '1') {
-            $pconfig = [];
-            $pconfig['name'] = 'dhcrelay';
-            $pconfig['description'] = gettext('DHCPv4 Relay') . " ({$relay->interface})";
-            $pconfig['php']['restart'] = ['dhcpd_dhcrelay4_configure'];
-            $pconfig['php']['start'] = ['dhcpd_dhcrelay4_configure'];
-            $pconfig['pidfile'] = "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid";
-            $pconfig['id'] = $relay->getAttribute('uuid');
-            $services[] = $pconfig;
-        }
     }
 
     if (isset($config['dhcrelay6']['enable'])) {
@@ -1616,77 +1601,9 @@ EOD;
 
 function dhcpd_dhcrelay_configure($verbose = false, $family = null, $id = null)
 {
-    if ($family == null || $family == 'inet') {
-        dhcpd_dhcrelay4_configure($verbose, $id);
-    }
-
     if ($family == null || $family == 'inet6') {
         dhcpd_dhcrelay6_configure($verbose);
     }
-}
-
-function dhcpd_dhcrelay4_configure($verbose = false, $id = null)
-{
-    $mdl = new \OPNsense\DHCRelay\DHCRelay();
-    $relays = [];
-
-    foreach ($mdl->relays->iterateItems() as $relay) {
-        $target_id = $relay->getAttribute('uuid');
-        if ($id != null && $id != $target_id) {
-            continue;
-        }
-
-        if ((string)$relay->enabled == '1') {
-            $relays[] = $relay;
-        }
-
-        killbypid("/var/run/dhcrelay-{$target_id}.pid");
-    }
-
-    if (!count($relays)) {
-        return;
-    }
-
-    service_log('Starting DHCPv4 relays...', $verbose);
-
-    $iflist = get_configured_interface_with_descr();
-    $ifconfig_details = legacy_interfaces_details();
-
-    foreach ($relays as $relay) {
-        $interface = (string)$relay->interface;
-        $device = get_real_interface($interface);
-
-        if (!isset($iflist[$interface]) || !get_interface_ip($interface, $ifconfig_details)) {
-            log_msg("dhcpd_dhcrelay4_configure() found no IP address for $interface($device)", LOG_WARNING);
-            continue;
-        }
-
-        if (empty($device) || isset($ifconfig_details[$device]) && $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
-            log_msg("dhcpd_dhcrelay4_configure() found no ethernet address for $interface($device)", LOG_WARNING);
-            continue;
-        }
-
-        $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
-        if ($destination == null) {
-            log_msg("dhcpd_dhcrelay4_configure() found no destination server for $interface($device)", LOG_WARNING);
-            continue;
-        }
-
-        $cmd = [exec_safe('daemon -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
-        $cmd[] = '/usr/local/sbin/dhcrelay -d';
-        if (!empty((string)$relay->agent_info)) {
-            $cmd[] = '-or';
-        }
-        $cmd[] = exec_safe('-i %s', $device);
-
-        foreach (explode(',', (string)$destination->server) as $server) {
-            $cmd[] = exec_safe('%s', $server);
-        }
-
-        mwexec(join(' ', $cmd));
-    }
-
-    service_log("done.\n", $verbose);
 }
 
 function dhcpd_dhcrelay6_configure($verbose = false)
