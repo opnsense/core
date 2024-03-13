@@ -46,6 +46,9 @@ $( document ).ready(function() {
 </script>
 
 <div class="content-box __mb">
+    <table class="table table-striped page-header" style="margin-top: 0">
+        <tbody><tr><th>Relays</th><tr></tbody>
+    </table>
     <table id="grid-relay" class="table table-condensed table-hover table-striped" data-editDialog="DialogRelay">
         <thead>
         <tr>
@@ -71,7 +74,11 @@ $( document ).ready(function() {
         </tfoot>
     </table>
 </div>
+
 <div class="content-box __mb">
+    <table class="table table-striped page-header" style="margin-top: 0">
+        <tbody><tr><th>Destinations</th><tr></tbody>
+    </table>
     <table id="grid-dest" class="table table-condensed table-hover table-striped" data-editDialog="DialogDest">
         <thead>
         <tr>
