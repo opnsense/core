@@ -242,9 +242,6 @@ if (isset($opts['h'])) {
             case 'status':
                 echo htmlspecialchars($service['status']) . PHP_EOL;
                 break;
-            case 'status':
-                echo "Missing command\n";
-                break;
             default:
                 echo "Unknown command `$act'\n";
                 break;
