@@ -75,13 +75,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function toggleRelayAction($uuid, $enabled = null)
     {
-        $ret = $this->toggleBase('relays', $uuid, $enabled);
-
-        /* when done unconditionally reload the single service */
-        $this->sessionClose();
-        (new Backend())->configdpRun('dhcrelay configure', [$uuid]);
-
-        return $ret;
+        return $this->toggleBase('relays', $uuid, $enabled);
     }
 
     public function searchDestAction()
