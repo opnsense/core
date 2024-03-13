@@ -43,7 +43,6 @@
             <server type="NetworkField">
                 <Required>Y</Required>
                 <NetMaskAllowed>N</NetMaskAllowed>
-                <AddressFamily>ipv4</AddressFamily>
                 <AsList>Y</AsList>
                 <FieldSeparator>,</FieldSeparator>
             </server>

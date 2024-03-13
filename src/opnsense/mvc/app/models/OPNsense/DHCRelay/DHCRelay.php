@@ -29,7 +29,47 @@
 namespace OPNsense\DHCRelay;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 class DHCRelay extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+
+        $destinations = [];
+
+        foreach ($this->destinations->getFlatNodes() as $key => $node) {
+            $tagName = $node->getInternalXMLTagName();
+            $parentNode = $node->getParentNode();
+
+            if ($validateFullModel || $node->isFieldChanged()) {
+                $destinations[$parentNode->__reference] = $parentNode;
+            }
+        }
+
+        // validate all changed destinations
+        foreach ($destinations as $key => $node) {
+            $v4 = $v6 = false;
+
+            foreach (explode(',', (string)$node->server) as $server) {
+                if (strpos($server, '.') !== false) {
+                    $v4 = true;
+                } else {
+                    $v6 = true;
+                }
+            }
+
+            if ($v4 && $v6) {
+                $messages->appendMessage(
+                    new Message(gettext('You cannot mix address families for destinations.'), "{$key}.server")
+                );
+            }
+        }
+
+        return $messages;
+    }
 }
