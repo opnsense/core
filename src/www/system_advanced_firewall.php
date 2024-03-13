@@ -252,6 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['keepcounters'] = !empty($pconfig['keepcounters']);
         $config['system']['pfdebug'] = !empty($pconfig['pfdebug']) ? $pconfig['pfdebug'] : '';
 
+        if (empty($config['system']['syslog'])) {
+            $config['system']['syslog'] = [];
+        }
+
         $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
         $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
         $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);

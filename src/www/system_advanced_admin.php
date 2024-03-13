@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
     /* XXX not really a syslog setting */
-    $pconfig['loglighttpd'] = empty($config['syslog']) || empty($config['syslog']['nologlighttpd']);
+    $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
 
     /* XXX listtag "fun" */
     $pconfig['sshlogingroup'] = !empty($config['system']['ssh']['group'][0]) ? $config['system']['ssh']['group'][0] : null;
@@ -152,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
-        $syslog_conf = &config_read_array('syslog');
 
         $restart_webgui = $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             ($config['system']['webgui']['session_timeout'] ?? '') != $pconfig['session_timeout'] ||
@@ -165,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             empty($pconfig['ssl-hsts']) != empty($config['system']['webgui']['ssl-hsts']) ||
             !empty($pconfig['disablehttpredirect']) != !empty($config['system']['webgui']['disablehttpredirect']) ||
             ($config['system']['deployment'] ?? '') != $pconfig['deployment'] ||
-            !empty($syslog_conf['nologlighttpd']) != empty($pconfig['loglighttpd']);
+            !empty($config['syslog']['nologlighttpd']) != empty($pconfig['loglighttpd']);
 
         $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
         $config['system']['webgui']['port'] = $pconfig['webguiport'];
@@ -173,7 +172,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['webgui']['ssl-ciphers'] = $newciphers;
         $config['system']['webgui']['interfaces'] = $newinterfaces;
         $config['system']['webgui']['compression'] = $pconfig['compression'];
-        $syslog_conf['nologlighttpd'] = empty($pconfig['loglighttpd']);
+
+        if (empty($config['system']['syslog'])) {
+            $config['system']['syslog'] = [];
+        }
+
+        $config['syslog']['nologlighttpd'] = empty($pconfig['loglighttpd']);
 
         if (!empty($pconfig['deployment'])) {
             $config['system']['deployment'] = $pconfig['deployment'];
