@@ -26,6 +26,13 @@
 
 <script>
 $( document ).ready(function() {
+    $("#grid-dest").UIBootgrid({
+        search:'/api/dhcrelay/settings/searchDest',
+        get:'/api/dhcrelay/settings/getDest/',
+        set:'/api/dhcrelay/settings/setDest/',
+        add:'/api/dhcrelay/settings/addDest/',
+        del:'/api/dhcrelay/settings/delDest/',
+    });
     $("#grid-relay").UIBootgrid({
         search:'/api/dhcrelay/settings/searchRelay',
         get:'/api/dhcrelay/settings/getRelay/',
@@ -34,30 +41,20 @@ $( document ).ready(function() {
         del:'/api/dhcrelay/settings/delRelay/',
         toggle:'/api/dhcrelay/settings/toggleRelay/'
     });
-    $("#grid-dest").UIBootgrid({
-        search:'/api/dhcrelay/settings/searchDest',
-        get:'/api/dhcrelay/settings/getDest/',
-        set:'/api/dhcrelay/settings/setDest/',
-        add:'/api/dhcrelay/settings/addDest/',
-        del:'/api/dhcrelay/settings/delDest/',
-    });
     $("#reconfigureAct").SimpleActionButton();
 });
 </script>
 
 <div class="content-box __mb">
     <table class="table table-striped page-header" style="margin-top: 0">
-        <tbody><tr><th>Relays</th><tr></tbody>
+        <tbody><tr><th>Destinations</th><tr></tbody>
     </table>
-    <table id="grid-relay" class="table table-condensed table-hover table-striped" data-editDialog="DialogRelay">
+    <table id="grid-dest" class="table table-condensed table-hover table-striped" data-editDialog="DialogDest">
         <thead>
         <tr>
             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-            <th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>
-            <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
-            <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
-            <th data-column-id="agent_info" data-type="string" data-visible="false">{{ lang._('Agent Info') }}</th>
+            <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+            <th data-column-id="server" data-type="string">{{ lang._('Server') }}</th>
             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
         </tr>
         </thead>
@@ -77,14 +74,17 @@ $( document ).ready(function() {
 
 <div class="content-box __mb">
     <table class="table table-striped page-header" style="margin-top: 0">
-        <tbody><tr><th>Destinations</th><tr></tbody>
+        <tbody><tr><th>Relays</th><tr></tbody>
     </table>
-    <table id="grid-dest" class="table table-condensed table-hover table-striped" data-editDialog="DialogDest">
+    <table id="grid-relay" class="table table-condensed table-hover table-striped" data-editDialog="DialogRelay">
         <thead>
         <tr>
             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-            <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-            <th data-column-id="server" data-type="string">{{ lang._('Server') }}</th>
+            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+            <th data-column-id="status" data-width="6em" data-type="string" data-formatter="statusled">{{ lang._('Status') }}</th>
+            <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
+            <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
+            <th data-column-id="agent_info" data-type="string" data-visible="false">{{ lang._('Agent Info') }}</th>
             <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
         </tr>
         </thead>
