@@ -137,7 +137,7 @@ class CertificatesField extends ArrayField
             $node->prv_payload = !empty((string)$node->prv) ? (string)base64_decode($node->prv) : '';
             if (!empty((string)$node->csr_payload) && !empty((string)$node->prv_payload)) {
                 $node->action = 'import_csr';
-            } elseif (!empty((string)$node->csr_payload) ) {
+            } elseif (!empty((string)$node->csr_payload)) {
                 $node->action = 'sign_csr';
             } elseif (!empty((string)$node->crt_payload) && !empty((string)$node->prv_payload)) {
                 $node->action = 'reissue';
