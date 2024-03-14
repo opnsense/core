@@ -97,34 +97,55 @@ function dhcrelay_configure_do($verbose = false, $id = null)
     $ifconfig_details = legacy_interfaces_details();
 
     foreach ($relays as $relay) {
-        $interface = (string)$relay->interface;
-        $device = get_real_interface($interface);
-
-        if (!isset($iflist[$interface]) || !get_interface_ip($interface, $ifconfig_details)) {
-            log_msg("dhcrelay_configure_do() found no IP address for $interface($device)", LOG_WARNING);
-            continue;
-        }
-
-        if (empty($device) || isset($ifconfig_details[$device]) && $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
-            log_msg("dhcrelay_configure_do() found no ethernet address for $interface($device)", LOG_WARNING);
-            continue;
-        }
-
         $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
         if ($destination == null) {
             log_msg("dhcrelay_configure_do() found no destination server for $interface($device)", LOG_WARNING);
             continue;
         }
 
+        $family = strpos((string)$destination->server, '.') !== false ? 'inet' : 'inet6';
+
+        $interface = (string)$relay->interface;
+        $device = get_real_interface($interface, $family);
+
+        if (empty($device) || !isset($ifconfig_details[$device]) || $ifconfig_details[$device]['macaddr'] == '00:00:00:00:00:00') {
+            log_msg("dhcrelay_configure_do() found no device or ethernet address for $interface($device)", LOG_WARNING);
+            continue;
+        }
+
+        if (
+            !isset($iflist[$interface]) || ($family == 'inet' && !get_interface_ip($interface, $ifconfig_details)) ||
+            ($family == 'inet6' && !get_interface_ipv6($interface, $ifconfig_details))
+        ) {
+            log_msg("dhcrelay_configure_do() found no suitable IP address for $interface($device)", LOG_WARNING);
+            continue;
+        }
+
         $cmd = [exec_safe('daemon -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
-        $cmd[] = '/usr/local/sbin/dhcrelay -d';
+        $cmd[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
         if (!empty((string)$relay->agent_info)) {
-            $cmd[] = '-or';
+            $cmd[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');
         }
         $cmd[] = exec_safe('-i %s', $device);
 
+        $has_servers = false;
+
         foreach (explode(',', (string)$destination->server) as $server) {
+            if ($family == 'inet6') {
+                $routeif = shell_safe('/sbin/route -6 get %s | grep interface: | awk \'{ print $2 }\'', $server);
+                if (empty($routeif)) {
+                    log_msg("dhcrelay_configure_do() found no suitable route to $server for $interface($device)", LOG_WARNING);
+                    continue;
+                }
+                $server .= '%' . $routeif;
+            }
             $cmd[] = exec_safe('%s', $server);
+            $has_servers = true;
+        }
+
+        if (!$has_servers) {
+            log_msg("dhcrelay_configure_do() has no reachable servers for $interface($device)", LOG_WARNING);
+            continue;
         }
 
         mwexec(join(' ', $cmd));
