@@ -20,6 +20,7 @@
                     <internal>Create an internal Certificate</internal>
                     <external>Create a Certificate Signing Request</external>
                     <import>Import an existing Certificate</import>
+                    <sign_csr>Sign a Certificate Signing Request</sign_csr>
                     <import_csr>Import certificate (signed by CA)</import_csr>
                     <reissue>Reissue and replace certificate (does not restart services)</reissue>
                     <manual>Manual</manual>

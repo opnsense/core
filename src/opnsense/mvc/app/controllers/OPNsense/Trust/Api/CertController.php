@@ -119,6 +119,23 @@ class CertController extends ApiMutableModelControllerBase
                     $node->csr = null;
                 }
                 break;
+            case 'sign_csr':
+                $data = CertStore::signCert(
+                    (string)$node->key_type,
+                    (string)$node->lifetime,
+                    (string)$node->csr_payload,
+                    (string)$node->digest,
+                    (string)$node->caref,
+                    (string)$node->cert_type,
+                    $node->extns()
+                );
+                if (!empty($data['crt'])) {
+                    $node->crt = base64_encode($data['crt']);
+                    $node->csr = base64_encode((string)$node->csr_payload);
+                } else {
+                    $error = $data['error'] ?? '';
+                }
+                break;
             case 'reissue':
                 $data = CertStore::reIssueCert(
                     (string)$node->key_type,

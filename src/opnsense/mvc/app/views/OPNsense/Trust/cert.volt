@@ -185,9 +185,13 @@
                     visible_options.push('internal');
                     visible_options.push('external');
                     visible_options.push('import');
+                    visible_options.push('sign_csr');
                 } else if ($(this).val() == 'reissue') {
                     visible_options.push('external');
+                } else if ($(this).val() == 'sign_csr') {
+                    visible_options.push('manual');
                 }
+
                 $("#cert\\.action option").each(function(){
                     if (visible_options.includes($(this).val())) {
                         $(this).attr('disabled', null);
@@ -211,7 +215,7 @@
                 }
             });
             /* expand/collapse PEM section */
-            if (['import', 'import_csr'].includes($(this).val())) {
+            if (['import', 'import_csr', 'sign_csr'].includes($(this).val())) {
                 if ($(".pem_section >  table > tbody > tr:eq(0) > td:eq(0)").is(':hidden')) {
                     $(".pem_section >  table > thead").click();
                 }

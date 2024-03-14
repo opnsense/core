@@ -110,6 +110,7 @@ class CertificatesField extends ArrayField
         foreach ($this->internalChildnodes as $node) {
             $node->csr_payload = !empty((string)$node->csr) ? (string)base64_decode($node->csr) : '';
             $node->crt_payload = !empty((string)$node->crt) ? (string)base64_decode($node->crt) : '';
+            $node->csr_payload = !empty((string)$node->csr) ? (string)base64_decode($node->csr) : '';
             $payload = false;
             if (!empty((string)$node->crt)) {
                 $payload = \OPNsense\Trust\Store::parseX509($node->crt_payload);
@@ -134,8 +135,10 @@ class CertificatesField extends ArrayField
                 }
             }
             $node->prv_payload = !empty((string)$node->prv) ? (string)base64_decode($node->prv) : '';
-            if (!empty((string)$node->csr_payload)) {
+            if (!empty((string)$node->csr_payload) && !empty((string)$node->prv_payload)) {
                 $node->action = 'import_csr';
+            } elseif (!empty((string)$node->csr_payload) ) {
+                $node->action = 'sign_csr';
             } elseif (!empty((string)$node->crt_payload) && !empty((string)$node->prv_payload)) {
                 $node->action = 'reissue';
             } elseif (!empty((string)$node->crt_payload)) {
