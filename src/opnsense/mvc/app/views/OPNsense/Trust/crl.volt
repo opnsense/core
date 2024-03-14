@@ -60,15 +60,28 @@
                 download: {
                     method: function(event){
                         let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                        ajaxGet('/api/trust/crl/get/' + refid, {}, function(data, status){
+                            if (data.crl && data.crl.text) {
+                                download_content(data.crl.text, data.crl.descr + '.crl', 'application/octet-stream');
+                            }
+                        });
+                    },
+                    classname: 'fa fa-fw fa-download',
+                    title: "{{ lang._('Download CRL when available') }}",
+                    sequence: 12
+                },
+                download_ocsp: {
+                    method: function(event){
+                        let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
                         ajaxGet('/api/trust/crl/get_ocsp_info_data/' + refid, {}, function(data, status){
                             if (data.payload) {
                                 download_content(data.payload, 'index.txt', 'application/octet-stream');
                             }
                         });
                     },
-                    classname: 'fa fa-fw fa-cloud-download',
+                    classname: 'fa fa-fw fa-file-code-o',
                     title: "{{ lang._('Download OCSP demo index') }}",
-                    sequence: 10
+                    sequence: 15
                 }
             }
         });
