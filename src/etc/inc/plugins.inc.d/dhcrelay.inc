@@ -35,6 +35,13 @@ function dhcrelay_configure()
     ];
 }
 
+function dhcrelay_run()
+{
+    return [
+        'dhcrelay_interfaces' => 'dhcrelay_interfaces',
+    ];
+}
+
 function dhcrelay_services()
 {
     $services = [];
@@ -152,4 +159,30 @@ function dhcrelay_configure_do($verbose = false, $id = null)
     }
 
     service_log("done.\n", $verbose);
+}
+
+function dhcrelay_interfaces($family = null)
+{
+    $mdl = new \OPNsense\DHCRelay\DHCRelay();
+    $interfaces = [];
+
+    foreach ($mdl->relays->iterateItems() as $relay) {
+        if ((string)$relay->enabled != '1') {
+            continue;
+        }
+
+        $destination = $mdl->getNodeByReference("destinations.{$relay->destination}");
+        if ($destination == null) {
+            continue;
+        }
+
+        $dstfamily = strpos((string)$destination->server, '.') !== false ? 'inet' : 'inet6';
+        if ($family !== null && $family != $dstfamily) {
+            continue;
+        }
+
+        $interfaces[(string)$relay->interface] = 1;
+    }
+
+    return array_keys($interfaces);
 }

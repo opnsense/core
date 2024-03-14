@@ -202,6 +202,9 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
+    $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
+    $dhcrelay6_interfaces = !empty($dhcrelay6_interfaces['dhcrelay']) ? $dhcrelay6_interfaces['dhcrelay'] : [];
+
     // block All IPv6 except loopback traffic
     $fw->registerFilterRule(
         1,
@@ -481,10 +484,7 @@ function filter_core_rules_system($fw, $defaults)
             default:
                 $dhcpdv6_enabled = isset($config['dhcpdv6'][$intf]['enable']);
                 $track6_enabled = isset($intfinfo['track6-interface']);
-                $dhcrelay6_interfaces = array();
-                if (!empty($config['dhcrelay6']['interface']) && isset($config['dhcrelay6']['enable'])) {
-                    $dhcrelay6_interfaces = explode(',', $config['dhcrelay6']['interface']);
-                }
+
                 if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
