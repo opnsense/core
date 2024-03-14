@@ -33,6 +33,21 @@ require_once 'guiconfig.inc';
 require_once 'system.inc';
 require_once 'base32/Base32.php';
 
+function cert_get_dates($str_crt, $decode = true)
+{
+    if ($decode) {
+        $str_crt = base64_decode($str_crt);
+    }
+    $crt_details = openssl_x509_parse($str_crt);
+    if ($crt_details['validFrom_time_t'] > 0) {
+        $start = date('r', $crt_details['validFrom_time_t']);
+    }
+    if ($crt_details['validTo_time_t'] > 0) {
+        $end = date('r', $crt_details['validTo_time_t']);
+    }
+    return array($start, $end);
+}
+
 function get_user_privdesc(& $user)
 {
     global $priv_list;
