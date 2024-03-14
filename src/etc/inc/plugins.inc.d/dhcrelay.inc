@@ -44,17 +44,21 @@ function dhcrelay_run()
 
 function dhcrelay_services()
 {
+    $mdl = new \OPNsense\DHCRelay\DHCRelay();
     $services = [];
 
-    foreach ((new \OPNsense\DHCRelay\DHCRelay())->relays->iterateItems() as $relay) {
-        if ((string)$relay->enabled == '1') {
+    foreach ($mdl->relays->iterateItems() as $relay) {
+        if ((string)$relay->enabled == '1' && ($dst = $mdl->getNodeByReference("destinations.{$relay->destination}")) != null) {
             $pconfig = [];
             $pconfig['name'] = 'dhcrelay';
-            $pconfig['description'] = gettext('DHCPv4 Relay') . " ({$relay->interface})";
+            $pconfig['description'] = (strpos((string)$dst->server, '.') !== false ?
+                gettext('DHCPv4 Relay') : gettext('DHCPv6 Relay')) . " ({$relay->interface})";
             $pconfig['php']['restart'] = ['dhcrelay_configure_do'];
             $pconfig['php']['start'] = ['dhcrelay_configure_do'];
+            $pconfig['php']['args'] = ['verbose', 'id'];
             $pconfig['pidfile'] = "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid";
             $pconfig['id'] = $relay->getAttribute('uuid');
+            $pconfig['verbose'] = false;
             $services[] = $pconfig;
         }
     }
