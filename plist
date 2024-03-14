@@ -1319,6 +1319,7 @@
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
 /usr/local/opnsense/www/css/bootstrap-select.css
 /usr/local/opnsense/www/css/chart.css
+/usr/local/opnsense/www/css/dashboard.css
 /usr/local/opnsense/www/css/dns-overview.css
 /usr/local/opnsense/www/css/flags/1x1/ad.svg
 /usr/local/opnsense/www/css/flags/1x1/ae.svg
@@ -1895,6 +1896,7 @@
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js
+/usr/local/opnsense/www/js/opnsense_widget_manager.js
 /usr/local/opnsense/www/js/pick-a-color-1.2.3.LICENSE
 /usr/local/opnsense/www/js/pick-a-color-1.2.3.js
 /usr/local/opnsense/www/js/pick-a-color-1.2.3.min.js
@@ -1907,16 +1909,6 @@
 /usr/local/opnsense/www/js/tree.jquery.min.js
 /usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
-/usr/local/opnsense/www/js/widgets/Carp.js
-/usr/local/opnsense/www/js/widgets/Cpu.js
-/usr/local/opnsense/www/js/widgets/Firewall.js
-/usr/local/opnsense/www/js/widgets/Gateways.js
-/usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
-/usr/local/opnsense/www/js/widgets/Interfaces.js
-/usr/local/opnsense/www/js/widgets/NetworkTime.js
-/usr/local/opnsense/www/js/widgets/SystemInformation.js
-/usr/local/opnsense/www/js/widgets/SystemResources.js
-/usr/local/opnsense/www/js/widgets/TrafficWidget.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf

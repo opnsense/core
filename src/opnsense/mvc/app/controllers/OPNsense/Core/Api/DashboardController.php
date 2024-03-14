@@ -95,6 +95,7 @@ class DashboardController extends ApiControllerBase
 
         $widgetModules = array_map(function($element) {return basename($element);}, $widgetModules);
 
+        $result['modules'] = [];
         foreach ($widgetModules as $module) {
             $result['modules'][] = [
                 'id' => strtolower(basename($module, '.js')),
