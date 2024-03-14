@@ -4,11 +4,6 @@ export default class BaseWidget {
         this.title = "";
         this.id = null;
         this.tickTimeout = 5000; // Default tick timeout
-        /* 
-         * temporary layout of test data interfaces.
-         * the order here determines color
-         */
-        this.test_interfaces = ['ADSL', 'LAN', 'MGMNT', 'PFSYNC', 'WAN', 'WAN2'];
     }
 
     setId(id) {
