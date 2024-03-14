@@ -134,6 +134,7 @@
         <id>cert.prv_payload</id>
         <label>Private key data</label>
         <type>textbox</type>
+        <style>action  action_internal  action_external  action_import  action_import_csr  action_reissue  action_manual</style>
     </field>
     <field>
         <id>cert.csr_payload</id>
