@@ -26,6 +26,8 @@
 
 <script>
     'use strict';
+
+
     $( document ).ready(function () {
         let grid_crl = $("#grid-crl").UIBootgrid({
             search:'/api/trust/crl/search/',
@@ -54,6 +56,19 @@
                 },
                 copy: {
                     classname: undefined
+                },
+                download: {
+                    method: function(event){
+                        let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                        ajaxGet('/api/trust/crl/get_ocsp_info_data/' + refid, {}, function(data, status){
+                            if (data.payload) {
+                                download_content(data.payload, 'index.txt', 'application/octet-stream');
+                            }
+                        });
+                    },
+                    classname: 'fa fa-fw fa-cloud-download',
+                    title: "{{ lang._('Download OCSP demo index') }}",
+                    sequence: 10
                 }
             }
         });

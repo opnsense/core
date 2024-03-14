@@ -371,9 +371,9 @@ class CrlController extends ApiControllerBase
     }
 
 
-    public function rawDumpAction($uuid)
+    public function rawDumpAction($caref)
     {
-        $payload = $this->getAction($uuid);
+        $payload = $this->getAction($caref);
         if (!empty($payload['crl'])) {
             if (!empty($payload['crl']['text'])) {
                 return CertStore::dumpCRL($payload['crl']['text']);
@@ -381,4 +381,52 @@ class CrlController extends ApiControllerBase
         }
         return [];
     }
+
+    /**
+     * for demonstration purposes, we need a CA index file as specified
+     * at https://pki-tutorial.readthedocs.io/en/latest/cadb.html
+     */
+    function getOcspInfoDataAction($caref)
+    {
+        $config = Config::getInstance()->object();
+
+        $revoked = [];
+        foreach ($config->crl as $crl) {
+            if ((string)$crl->caref == $caref) {
+                foreach ($crl->cert as $cert) {
+                    if (!empty((string)$cert->revoke_time)) {
+                        $dt = new \DateTime("@".$cert->revoke_time);
+                        $revoked[(string)$cert->refid] = $dt->format("ymdHis") . "Z";
+                    }
+                }
+            }
+        }
+        $result = '';
+        foreach ($config->cert as $cert) {
+            if ((string)$cert->caref == $caref) {
+                $refid = (string)$cert->refid;
+                $x509 = openssl_x509_parse(base64_decode($cert->crt));
+                $valid_to = date('Y-m-d H:i:s', $x509['validTo_time_t']);
+                $rev_date = '';
+                if (!empty($revoked[$refid])) {
+                    $status = 'R';
+                    $rev_date = $revoked[$refid];
+                } elseif ($x509['validTo_time_t'] < time()) {
+                    $status = 'E';
+                } else {
+                    $status = 'V';
+                }
+                $result .= sprintf(
+                    "%s\t%s\t%s\t%s\tunknown\t%s\n",
+                    $status,                    // Certificate status flag (V=valid, R=revoked, E=expired).
+                    $x509['validTo'],           // Certificate expiration date in YYMMDDHHMMSSZ format.
+                    $rev_date,                  // Certificate revocation date in YYMMDDHHMMSSZ[,reason] format.
+                    $x509['serialNumberHex'],   // Certificate serial number in hex.
+                    $x509['name']               // Certificate distinguished name.
+                );
+            }
+        }
+        return ['payload' => $result];
+    }
+
 }
