@@ -45,8 +45,12 @@ class DashboardController extends ApiControllerBase
         if ($handle) {
             $lines = [];
             while (($line = fgets($handle)) !== false) {
-                if (strpos($line, "//") === 0) {
-                    $lines[] = trim($line);
+                if (strpos($line, "// endpoint:") === 0) {
+                    $endpoint = explode(':', trim($line))[1] ?? null;
+                    if (!empty($endpoint)) {
+                        $endpoint = strstr($endpoint, ' ', true) ?: $endpoint;
+                        $lines[] = $endpoint;
+                    }
                     continue;
                 }
                 break;
@@ -110,8 +114,12 @@ class DashboardController extends ApiControllerBase
 
         if ($this->request->isPost() && !empty($this->request->getRawBody())) {
             $dashboard = $this->request->getRawBody();
-            $encoded = base64_encode($dashboard);
+            if (strlen($dashboard) > (1024 * 1024)) {
+                // prevent saving large blobs of data
+                return json_encode($result);
+            }
 
+            $encoded = base64_encode($dashboard);
             $config = Config::getInstance()->object();
             $name = $this->getUserName();
             foreach ($config->system->user as $node) {

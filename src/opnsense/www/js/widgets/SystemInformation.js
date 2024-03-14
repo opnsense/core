@@ -1,3 +1,5 @@
+// endpoint:/api/interfaces/overview/*
+
 import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class SystemInformation extends BaseTableWidget {

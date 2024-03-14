@@ -32,11 +32,6 @@ class DashboardController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        // /* XXX: some generic checks here */
-        // $this->view->widgets = array_map(function($element) {
-        //     return 'Widgets/' . basename($element, '.volt');
-        // }, glob('/usr/local/opnsense/mvc/app/views/Widgets/*.volt'));
-
         $this->view->pick('OPNsense/Core/dashboard');
     }
 }

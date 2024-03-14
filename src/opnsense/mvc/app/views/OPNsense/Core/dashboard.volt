@@ -103,8 +103,9 @@ $( document ).ready(function() {
     }
 
     class WidgetManager  {
-        constructor(gridStackOptions = {}) {
+        constructor(gridStackOptions = {}, gettext = {}) {
             this.gridStackOptions = gridStackOptions;
+            this.gettext = gettext;
             this.loadedModules = {}; // id -> widget module
             this.widgetConfigurations = {}; // id -> per-widget configuration
             this.widgetClasses = {}; // id -> instantiated widget module
@@ -148,14 +149,15 @@ $( document ).ready(function() {
                 });
 
                 // Load all modules simultaneously - this shouldn't take long
-                await Promise.all(promises);
+                await Promise.all(promises).catch((error) => {
+                    console.error('Failed to load widgets', error);
+                    null;
+                });
 
                 if (!$.isEmptyObject(this.widgetConfigurations)) {
                     this.moduleDiff = Object.keys(this.loadedModules).filter(x => !Object.keys(this.widgetConfigurations).includes(x));
                 }
             });
-
-            return this.loadedModules;
         }
 
         _initializeWidgets() {
@@ -271,8 +273,8 @@ $( document ).ready(function() {
 
             // Serialization options
             let $btn_group = $('.btn-group-container');
-            $btn_group.append($('<button class="btn btn-primary" id="save-grid">Save</button>'));
-            $btn_group.append($('<button class="btn btn-secondary" id="restore-defaults">Restore default layout</button>'));
+            $btn_group.append($(`<button class="btn btn-primary" id="save-grid">${this.gettext.save}</button>`));
+            $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
             $('#save-grid').hide();
 
             $('#save-grid').click(() => {
@@ -299,7 +301,7 @@ $( document ).ready(function() {
             $('#restore-defaults').click(() => {
                 ajaxGet("/api/core/dashboard/restoreDefaults", null, (response, status) => {
                     if (response['result'] == 'failed') {
-                        alert('Failed to restore default widgets');
+                        console.error('Failed to restore default widgets');
                     } else {
                         window.location.reload();
                     }
@@ -325,7 +327,10 @@ $( document ).ready(function() {
             // convert each _onMarkupRendered(widget) to a promise
             let promises = fns.map(func => new Promise(resolve => resolve(func())));
             // fire away
-            await Promise.all(promises);
+            await Promise.all(promises).catch((error) => {
+                console.error('Failed to load dynamic content', error);
+                null;
+            });
         }
 
         // Executed for each widget; starts the widget-specific tick routine.
@@ -396,7 +401,10 @@ $( document ).ready(function() {
         sizeToContent: 3,
         resizable: {
             handles: 'all'
-        },
+        }
+    }, {
+        'save': "{{ lang._('Save') }}",
+        'restore': "{{ lang._('Restore default layout') }}"
     });
     widgetManager.initialize();
 });
