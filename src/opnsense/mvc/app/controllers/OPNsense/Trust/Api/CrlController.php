@@ -395,7 +395,7 @@ class CrlController extends ApiControllerBase
             if ((string)$crl->caref == $caref) {
                 foreach ($crl->cert as $cert) {
                     if (!empty((string)$cert->revoke_time)) {
-                        $dt = new \DateTime("@".$cert->revoke_time);
+                        $dt = new \DateTime("@" . $cert->revoke_time);
                         $revoked[(string)$cert->refid] = $dt->format("ymdHis") . "Z";
                     }
                 }
@@ -428,5 +428,4 @@ class CrlController extends ApiControllerBase
         }
         return ['payload' => $result];
     }
-
 }
