@@ -26,21 +26,6 @@
 
 <script>
     'use strict';
-
-    function download_content(payload, filename, file_type) {
-        let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(payload))
-            .attr('download', filename).appendTo('body');
-
-        a_tag.ready(function() {
-            if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-                var blob = new Blob( [ payload ], { type: file_type } );
-                navigator.msSaveOrOpenBlob( blob, 'aliases.json' );
-            } else {
-                a_tag.get(0).click();
-            }
-        });
-    }
-
     $( document ).ready(function () {
         let grid_cert = $("#grid-cert").UIBootgrid({
             search:'/api/trust/ca/search/',

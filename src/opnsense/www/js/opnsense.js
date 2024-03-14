@@ -332,3 +332,23 @@ function watchScrollPosition() {
         });
     }
 }
+
+/**
+ * Simple wrapper to download a file received via an api endpoint
+ * @param {*} payload
+ * @param {*} filename
+ * @param {*} file_type
+ */
+function download_content(payload, filename, file_type) {
+    let a_tag = $('<a></a>').attr('href','data:application/json;charset=utf8,' + encodeURIComponent(payload))
+        .attr('download', filename).appendTo('body');
+
+    a_tag.ready(function() {
+        if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+            var blob = new Blob( [ payload ], { type: file_type } );
+            navigator.msSaveOrOpenBlob( blob, filename);
+        } else {
+            a_tag.get(0).click();
+        }
+    });
+}
