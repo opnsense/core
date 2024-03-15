@@ -181,7 +181,6 @@ class ApiControllerBase extends ControllerRoot
             header($header);
         }
         ob_end_flush();
-        rewind($response);
         fpassthru($response);
     }
 
