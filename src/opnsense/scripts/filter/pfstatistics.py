@@ -91,7 +91,7 @@ def pfctl_interfaces():
                 result[heading_line][topic] = int(line)
             elif line.find('Packets') > -1 and line.find('Bytes') > -1:
                 parts = line.split()
-                result[heading_line]["%s_packets" % topic] = int(parts[4])
+                result[heading_line]["%s_packets" % topic] = int(parts[2])
                 result[heading_line]["%s_bytes" % topic] = int(parts[4])
 
     return result
