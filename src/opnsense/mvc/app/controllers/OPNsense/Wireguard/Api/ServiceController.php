@@ -72,20 +72,29 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $payload = json_decode((new Backend())->configdRun("wireguard show") ?? '', true);
         $records = !empty($payload) && !empty($payload['records']) ? $payload['records'] : [];
-        $key_descriptions = [];
-        $ifnames = [];
+        $key_descriptions = []; /* descriptions per interface + pub-key */
+        $ifnames = []; /* interface / instance names */
+        $peers = [];
         foreach ((new Client())->clients->client->iterateItems() as $key => $client) {
-            $key_descriptions[(string)$client->pubkey] = (string)$client->name;
+            $peers[$key] = ['name' => (string)$client->name , 'pubkey' =>  (string)$client->pubkey];
         }
         foreach ((new Server())->servers->server->iterateItems() as $key => $server) {
-            $key_descriptions[(string)$server->pubkey] = (string)$server->name;
-            $ifnames[(string)$server->interface] =  (string)$server->name;
+            $if = (string)$server->interface;
+            $key_descriptions[$if . '-' . $server->pubkey] = (string)$server->name;
+            foreach (explode(',', (string)$server->peers) as $peer) {
+                if (!empty($peers[$peer])) {
+                    $key_descriptions[$if . '-' . $peers[$peer]['pubkey']] = $peers[$peer]['name'];
+                }
+            }
+            $ifnames[$if] =  (string)$server->name;
         }
         foreach ($records as &$record) {
-            if (!empty($record['public-key']) && !empty($key_descriptions[$record['public-key']])) {
-                $record['name'] = $key_descriptions[$record['public-key']];
-            } else {
-                $record['name'] = '';
+            $record['name'] = '';
+            if (!empty($record['public-key'])) {
+                $key = $record['if'] . '-' . $record['public-key'];
+                if (!empty($key_descriptions[$key])) {
+                    $record['name'] = $key_descriptions[$key];
+                }
             }
             $record['ifname'] = $ifnames[$record['if']];
         }
