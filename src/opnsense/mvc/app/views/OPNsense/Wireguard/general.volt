@@ -33,25 +33,49 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#grid-peers").UIBootgrid(
+        let grid_peers = $("#grid-peers").UIBootgrid(
             {
-                'search':'/api/wireguard/client/searchClient',
-                'get':'/api/wireguard/client/getClient/',
-                'set':'/api/wireguard/client/setClient/',
-                'add':'/api/wireguard/client/addClient/',
-                'del':'/api/wireguard/client/delClient/',
-                'toggle':'/api/wireguard/client/toggleClient/'
+                search: '/api/wireguard/client/searchClient',
+                get: '/api/wireguard/client/getClient/',
+                set: '/api/wireguard/client/setClient/',
+                add: '/api/wireguard/client/addClient/',
+                del: '/api/wireguard/client/delClient/',
+                toggle: '/api/wireguard/client/toggleClient/',
+                options:{
+                requestHandler: function(request){
+                    if ( $('#server_filter').val().length > 0) {
+                        request['servers'] = $('#server_filter').val();
+                    }
+                    return request;
+                }
+            },
+
+
             }
         );
+        grid_peers.on("loaded.rs.jquery.bootgrid", function (e){
+            // reload servers before grid load
+            if ($("#server_filter > option").length == 0) {
+                ajaxGet('/api/wireguard/client/list_servers', {}, function(data, status){
+                    if (data.rows !== undefined) {
+                        for (let i=0; i < data.rows.length ; ++i) {
+                            let row = data.rows[i];
+                            $("#server_filter").append($("<option/>").val(row.uuid).html(row.name));
+                        }
+                        $("#server_filter").selectpicker('refresh');
+                    }
+                });
+            }
+        });
 
         $("#grid-instances").UIBootgrid(
             {
-                'search':'/api/wireguard/server/searchServer',
-                'get':'/api/wireguard/server/getServer/',
-                'set':'/api/wireguard/server/setServer/',
-                'add':'/api/wireguard/server/addServer/',
-                'del':'/api/wireguard/server/delServer/',
-                'toggle':'/api/wireguard/server/toggleServer/'
+                search: '/api/wireguard/server/searchServer',
+                get: '/api/wireguard/server/getServer/',
+                set: '/api/wireguard/server/setServer/',
+                add: '/api/wireguard/server/addServer/',
+                del: '/api/wireguard/server/delServer/',
+                toggle: '/api/wireguard/server/toggleServer/'
             }
         );
 
@@ -86,6 +110,11 @@
                 }
             });
         })
+        $("#filter_container").detach().prependTo('#grid-peers-header > .row > .actionBar > .actions');
+        $("#server_filter").change(function(){
+            $('#grid-peers').bootgrid('reload');
+        });
+
         // update history on tab state and implement navigation
         if(window.location.hash != "") {
             $('a[href="' + window.location.hash + '"]').click()
@@ -112,6 +141,14 @@
               <i class="fa fa-fw fa-gear"></i>
             </button>
         </span>
+        <div class="hidden">
+            <!-- filter per server container -->
+            <div id="filter_container" class="btn-group">
+                <select id="server_filter"  data-title="{{ lang._('Instances') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
+                </select>
+            </div>
+        </div>
+
         <table id="grid-peers" class="table table-condensed table-hover table-striped" data-editDialog="dialogEditWireguardClient">
             <thead>
                 <tr>
@@ -121,6 +158,7 @@
                     <th data-column-id="serveraddress" data-type="string" data-visible="true">{{ lang._('Endpoint address') }}</th>
                     <th data-column-id="serverport" data-type="string" data-visible="true">{{ lang._('Endpoint port') }}</th>
                     <th data-column-id="tunneladdress" data-type="string" data-visible="true">{{ lang._('Allowed IPs') }}</th>
+                    <th data-column-id="servers" data-type="string" data-visible="true">{{ lang._('Instances') }}</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>

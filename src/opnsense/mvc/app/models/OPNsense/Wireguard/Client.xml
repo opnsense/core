@@ -4,7 +4,7 @@
     <version>1.0.0</version>
     <items>
         <clients>
-            <client type="ArrayField">
+            <client type=".\ClientField">
                 <enabled type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
@@ -53,6 +53,16 @@
                     <MaximumValue>86400</MaximumValue>
                     <ValidationMessage>Please specify a value between 1 and 86400.</ValidationMessage>
                 </keepalive>
+                <servers type="ModelRelationField" volatile="true">
+                    <Model>
+                        <template>
+                            <source>OPNsense.Wireguard.Server</source>
+                            <items>servers.server</items>
+                            <display>name</display>
+                        </template>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </servers>
             </client>
         </clients>
     </items>

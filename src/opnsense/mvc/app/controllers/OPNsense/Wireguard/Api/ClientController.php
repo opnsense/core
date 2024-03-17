@@ -44,27 +44,39 @@ class ClientController extends ApiMutableModelControllerBase
         return ['psk' => trim((new Backend())->configdRun('wireguard gen_psk')), 'status' => 'ok' ];
     }
 
+    public function listServersAction()
+    {
+        if ($this->request->isGet()) {
+            $results = ['rows' => [], 'status' => 'ok'];
+            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+                $results['rows'][] = [
+                    'uuid' => $key,
+                    'name' => (string)$node->name
+                ];
+            }
+            return $results;
+        }
+        return ['status' => 'failed'];
+    }
+
     public function searchClientAction()
     {
+        $servers = $this->request->get('servers');
+        $filter_funct = function ($record) use ($servers) {
+            return empty($servers) || array_intersect(explode(',', $record->servers), $servers);
+        };
+
         return $this->searchBase(
             'clients.client',
-            ["enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport"]
+            ["enabled", "name", "pubkey", "tunneladdress", "serveraddress", "serverport", "servers"],
+            null,
+            $filter_funct
         );
     }
 
     public function getClientAction($uuid = null)
     {
-        $result = $this->getBase('client', 'clients.client', $uuid);
-        if (!empty($result['client'])) {
-            $result['client']['servers'] = [];
-            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
-                $result['client']['servers'][$key] = [
-                    'value' => (string)$node->name,
-                    'selected' => in_array($uuid, explode(',', (string)$node->peers)) ? '1' : '0'
-                ];
-            }
-        }
-        return $result;
+        return $this->getBase('client', 'clients.client', $uuid);
     }
 
     public function addClientAction()
