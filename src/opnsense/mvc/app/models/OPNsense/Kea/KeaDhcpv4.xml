@@ -47,12 +47,21 @@
                         <AsList>Y</AsList>
                         <FieldSeparator>,</FieldSeparator>
                     </domain_name_servers>
+                    <domain_search type="HostnameField">
+                        <IpAllowed>N</IpAllowed>
+                        <FieldSeparator>;</FieldSeparator>
+                        <AsList>Y</AsList>
+                        <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
+                    </domain_search>
                     <routers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
                         <AddressFamily>ipv4</AddressFamily>
                         <AsList>Y</AsList>
                         <FieldSeparator>,</FieldSeparator>
                     </routers>
+                    <static_routes type="TextField">
+                        <!-- Needs a custom validator to validate ip pairs-->
+                    </static_routes>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -62,6 +71,12 @@
                         <AsList>Y</AsList>
                         <FieldSeparator>,</FieldSeparator>
                     </ntp_servers>
+                    <time_servers type="NetworkField">
+                        <NetMaskAllowed>N</NetMaskAllowed>
+                        <AddressFamily>ipv4</AddressFamily>
+                        <AsList>Y</AsList>
+                        <FieldSeparator>,</FieldSeparator>
+                    </time_servers>
                     <tftp_server_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </tftp_server_name>
