@@ -759,6 +759,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Client.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Client.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/FieldTypes/ClientField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/FieldTypes/ServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/General.xml
