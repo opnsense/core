@@ -49,6 +49,12 @@ header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: same-origin');
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
+function html_safe($text)
+{
+    /* gettext() embedded in JavaScript can cause syntax errors */
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
+}
+
 function get_current_theme()
 {
     global $config;
@@ -62,10 +68,25 @@ function get_current_theme()
     return $theme;
 }
 
-function html_safe($text)
+function get_current_lang()
 {
-    /* gettext() embedded in JavaScript can cause syntax errors */
-    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
+    global $config, $userindex;
+
+    $lang = 'en_US';
+
+    if (!empty($config['system']['language'])) {
+        $lang = $config['system']['language'];
+    }
+
+    if (
+        !empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
+        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])
+    ) {
+        $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
+    }
+
+    /* a language code as per RFC3066 */
+    return html_safe(str_replace('_', '-', $lang));
 }
 
 /**

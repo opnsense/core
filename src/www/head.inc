@@ -1,17 +1,5 @@
 <?php
 
-function system_get_language_code()
-{
-    global $config;
-
-    if (isset($config['system']['language'])) {
-        // a language code, as per [RFC3066]
-        return htmlspecialchars(str_replace("_", "-", $config['system']['language']), ENT_QUOTES | ENT_HTML401);
-    }
-
-    return 'en-US';
-}
-
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
 /* XXX generating breadcrumbs requires getItems() call */
@@ -28,7 +16,7 @@ $pagetitle = html_safe(gentitle(array_reverse($menuBreadcrumbs), ' | '));
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
 ?><!doctype html>
-<html lang="<?=system_get_language_code();?>" class="no-js">
+<html lang="<?= get_current_lang() ?>" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

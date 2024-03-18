@@ -309,7 +309,7 @@ function display_error_form($text)
     $product = product::getInstance();
 
     ?><!doctype html>
-<html lang="en" class="no-js">
+<html lang="<?= get_current_lang() ?>" class="no-js">
   <head>
 
     <meta charset="UTF-8" />
@@ -352,7 +352,7 @@ function display_login_form($Login_Error)
     setcookie("cookie_test", bin2hex(random_bytes(16)), time() + 3600, '/', '', $config['system']['webgui']['protocol'] == 'https', true);
     $have_cookies = isset($_COOKIE["cookie_test"]);
     ?><!doctype html>
-<html lang="en" class="no-js">
+<html lang="<?= get_current_lang() ?>" class="no-js">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
