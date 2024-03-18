@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en-US" class="no-js">
+<html lang="{{ langcode|safe }}" class="no-js">
   <head>
 
     <meta charset="UTF-8" />
