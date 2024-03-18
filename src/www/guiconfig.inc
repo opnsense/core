@@ -65,7 +65,33 @@ function cache_safe($url)
     return html_safe($url);
 }
 
-function get_current_theme()
+function get_current_lang()
+{
+    global $config, $userindex;
+
+    $lang = 'en_US';
+
+    if (!empty($config['system']['language'])) {
+        $lang = $config['system']['language'];
+    }
+
+    if (
+        !empty($_SESSION['Username']) && array_key_exists($_SESSION['Username'], $userindex) &&
+        !empty($config['system']['user'][$userindex[$_SESSION['Username']]]['language'])
+    ) {
+        $lang = $config['system']['user'][$userindex[$_SESSION['Username']]]['language'];
+    }
+
+    /* a language code as per RFC3066 */
+    return html_safe(str_replace('_', '-', $lang));
+}
+
+/**
+ * search for a themed filename or return distribution standard
+ * @param string $url relative url
+ * @return string
+ */
+function get_themed_filename($url, $exists = false)
 {
     global $config;
 
@@ -75,28 +101,15 @@ function get_current_theme()
         $theme = $config['theme'];
     }
 
-    return $theme;
-}
-
-/**
- * search for a themed filename or return distribution standard
- * @param string $url relative url
- * @return string
- */
-function get_themed_filename($url)
-{
-    $theme = get_current_theme();
-    $search_pattern = array(
-        "/themes/{$theme}/build/",
-        "/"
-    );
-    foreach ($search_pattern as $pattern) {
+    foreach (["/themes/{$theme}/build/", '/'] as $pattern) {
         $filename = "/usr/local/opnsense/www{$pattern}{$url}";
         if (file_exists($filename)) {
-            return str_replace("//", "/", "/ui{$pattern}{$url}");
+            return $exists ? true : str_replace('//', '/', "/ui{$pattern}{$url}");
         }
     }
-    return $url; // not found, return source
+
+    /* return source when not found */
+    return $exists ? false : $url;
 }
 
 require_once("authgui.inc");
