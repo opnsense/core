@@ -106,7 +106,9 @@ function index_users()
     if (!empty($config['system']['user'])) {
         $i = 0;
         foreach ($config['system']['user'] as $userent) {
-            $userindex[$userent['name']] = $i;
+            if (!empty($userent) && !empty($userent['name'])) {
+                $userindex[$userent['name']] = $i;
+            }
             $i++;
         }
     }
