@@ -352,5 +352,3 @@ function is_cert_revoked($cert, $crlref = "")
     }
     return false;
 }
-
-

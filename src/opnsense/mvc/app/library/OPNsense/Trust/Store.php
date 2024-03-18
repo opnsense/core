@@ -651,5 +651,4 @@ class Store
             'response' => $verdict_msg
         ];
     }
-
 }
