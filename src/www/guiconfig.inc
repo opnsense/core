@@ -55,17 +55,14 @@ function html_safe($text)
     return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
 }
 
-function get_current_theme()
+function cache_safe($url)
 {
-    global $config;
-
-    $theme = 'opnsense';
-
-    if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
-        $theme = $config['theme'];
+    $info = stat('/usr/local/opnsense/www/index.php');
+    if (!empty($info['mtime'])) {
+        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
     }
 
-    return $theme;
+    return html_safe($url);
 }
 
 function get_current_lang()
@@ -94,20 +91,25 @@ function get_current_lang()
  * @param string $url relative url
  * @return string
  */
-function get_themed_filename($url)
+function get_themed_filename($url, $exists = false)
 {
-    $theme = get_current_theme();
-    $search_pattern = array(
-        "/themes/{$theme}/build/",
-        "/"
-    );
-    foreach ($search_pattern as $pattern) {
+    global $config;
+
+    $theme = 'opnsense';
+
+    if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
+        $theme = $config['theme'];
+    }
+
+    foreach (["/themes/{$theme}/build/", '/'] as $pattern) {
         $filename = "/usr/local/opnsense/www{$pattern}{$url}";
         if (file_exists($filename)) {
-            return str_replace("//", "/", "/ui{$pattern}{$url}");
+            return $exists ? true : str_replace('//', '/', "/ui{$pattern}{$url}");
         }
     }
-    return $url; // not found, return source
+
+    /* return source when not found */
+    return $exists ? false : $url;
 }
 
 require_once("authgui.inc");

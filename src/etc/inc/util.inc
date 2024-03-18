@@ -935,16 +935,6 @@ function url_safe($format, $args = [])
     return vsprintf($format, $args);
 }
 
-function cache_safe($url)
-{
-    $info = stat('/usr/local/opnsense/www/index.php');
-    if (!empty($info['mtime'])) {
-        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
-    }
-
-    return $url;
-}
-
 function mwexec($command, $mute = false)
 {
     $oarr = [];
