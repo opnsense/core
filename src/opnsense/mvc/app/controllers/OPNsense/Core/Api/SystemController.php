@@ -185,4 +185,13 @@ class SystemController extends ApiControllerBase
 
         return ["status" => "failed"];
     }
+
+    public function uptimeAction()
+    {
+        if ($this->request->isGet()) {
+            $backend = new Backend();
+	        $uptime = trim($backend->configdRun('system uptime'));
+            return $uptime;
+        }
+    }
 }
