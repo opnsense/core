@@ -30,6 +30,7 @@ namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;
 use OPNsense\Trust\Cert;
@@ -42,6 +43,14 @@ class CaController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'ca';
     protected static $internalModelClass = 'OPNsense\Trust\Ca';
+
+    private function compare_issuer($subject, $issuer)
+    {
+        return empty(array_diff(
+            array_map('serialize', $subject),
+            array_map('serialize', $issuer)
+        ));
+    }
 
     protected function setBaseHook($node)
     {
@@ -108,7 +117,7 @@ class CaController extends ApiMutableModelControllerBase
                                 if (!empty((string)$ca->crt_payload)) {
                                     $x509_2 = openssl_x509_parse((string)$ca->crt_payload);
                                     if ($x509_2 !== false) {
-                                        if (empty(array_diff($x509_2['subject'], $x509['issuer']))) {
+                                        if ($this->compare_issuer($x509_2['subject'], $x509['issuer'])) {
                                             $node->caref = (string)$ca->refid;
                                         } elseif ($x509_2['issuer'] == $x509['subject']) {
                                             $ca->caref = (string)$node->refid;
@@ -121,7 +130,7 @@ class CaController extends ApiMutableModelControllerBase
                         foreach ($certmdl->cert->iterateItems() as $cert) {
                             $x509_2 = openssl_x509_parse((string)$cert->crt_payload);
                             if ($x509_2 !== false) {
-                                if (empty(array_diff($x509_2['issuer'], $x509['subject']))) {
+                                if ($this->compare_issuer($x509_2['issuer'], $x509['subject'])) {
                                     $cert->caref = (string)$node->refid;
                                 }
                             }
@@ -151,22 +160,26 @@ class CaController extends ApiMutableModelControllerBase
 
     public function addAction()
     {
-        return $this->addBase('ca', 'ca');
+        $response = $this->addBase('ca', 'ca');
+        if ($response['result'] != 'failed') {
+            (new Backend())->configdRun('system trust configure', true);
+        }
     }
 
     public function setAction($uuid = null)
     {
-        return $this->setBase('ca', 'ca', $uuid);
+        $response = $this->setBase('ca', 'ca', $uuid);
+        if ($response['result'] != 'failed') {
+            (new Backend())->configdRun('system trust configure', true);
+        }
+        return $response;
     }
 
     public function delAction($uuid)
     {
-        return $this->delBase('ca', $uuid);
-    }
-
-    public function toggleAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase('ca', $uuid, $enabled);
+        $response = $this->delBase('ca', $uuid);
+        (new Backend())->configdRun('system trust configure', true);
+        return $response;
     }
 
     public function caInfoAction($caref)
