@@ -52,9 +52,13 @@ set eventqueue basedir {{ OPNsense.monit.general.eventqueuePath }} {{ slots }}
 {%    set port = "port " ~ OPNsense.monit.general.port if OPNsense.monit.general.port|default('') != '' %}
 {%    set username = '' %}
 {%    set password = '' %}
+{%    set quotechar = '"' %}
 {%    if helpers.exists('OPNsense.monit.general.username') and helpers.exists('OPNsense.monit.general.password') %}
 {%      set username = "username " ~ OPNsense.monit.general.username %}
-{%      set password = "password " ~ '"' ~ OPNsense.monit.general.password ~ '"' %}
+{%      if '"' in OPNsense.monit.general.password %}
+{%        set quotechar = '\'' %}
+{%      endif %}
+{%      set password = "password " ~ quotechar ~ OPNsense.monit.general.password ~ quotechar %}
 {%    endif %}
 {%    if OPNsense.monit.general.ssl|default('0') == '1' %}
 {%      set ssl = 'using ssl' %}
