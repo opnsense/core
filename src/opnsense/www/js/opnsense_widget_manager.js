@@ -61,8 +61,6 @@ class ResizeObserverWrapper {
                         entry.target.id = Math.random().toString(36).substring(7);
                         this._lastWidths[id] = width;
                         this._lastHeights[id] = height;
-                        // call onSizeChanged to trigger initial size requirements
-                        //onSizeChanged(entry.target, width, height);
                     } else {
                         if (width !== this._lastWidths[id] || height !== this._lastHeights[id]) {
                             this._lastWidths[id] = width;
