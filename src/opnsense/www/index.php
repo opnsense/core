@@ -46,6 +46,17 @@ function view_cache_safe($url)
     return $url;
 }
 
+/**
+ * return safe HTML encoded version of input string
+ * @param string $text to make HTML safe
+ * @return string
+ */
+function view_html_safe($text)
+{
+    /* gettext() embedded in JavaScript can cause syntax errors */
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
+}
+
 try {
     /**
      * Read the configuration
