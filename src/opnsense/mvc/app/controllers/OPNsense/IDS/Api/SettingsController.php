@@ -577,7 +577,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchUserRuleAction()
     {
-        return $this->searchBase("userDefinedRules.rule", array("enabled", "action", "description"), "description");
+        return $this->searchBase("userDefinedRules.rule", null, "description");
     }
 
     /**
@@ -646,7 +646,7 @@ class SettingsController extends ApiMutableModelControllerBase
      */
     public function searchPolicyAction()
     {
-        return $this->searchBase("policies.policy", array("enabled", "prio", "description"), "description");
+        return $this->searchBase("policies.policy", null, "description");
     }
 
     /**
@@ -719,7 +719,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 to enforce this on all callers */
         $this->getModel()->rules->rule->queryRuleInfo();
         $this->modelHandle = null;
-        return $this->searchBase("rules.rule", ["sid", "msg", "source", "enabled", "action"], "sid");
+        return $this->searchBase("rules.rule", null, "sid");
     }
 
     /**
