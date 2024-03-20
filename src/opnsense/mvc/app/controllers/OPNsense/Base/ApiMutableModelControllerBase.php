@@ -367,7 +367,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Model search wrapper
      * @param string $path path to search, relative to this model
-     * @param array $fields fieldnames to fetch in result
+     * @param array|null $fields fieldnames to fetch in result, defaults to all fields
      * @param string|null $defaultSort default sort field name
      * @param null|function $filter_funct additional filter callable
      * @param int $sort_flags sorting behavior
@@ -376,7 +376,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     public function searchBase(
         $path,
-        $fields,
+        $fields = null,
         $defaultSort = null,
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
@@ -386,6 +386,21 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         foreach (explode('.', $path) as $step) {
             $element = $element->{$step};
         }
+
+        if (empty($fields) && (
+            is_a($element, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
+            is_subclass_of($element, "OPNsense\\Base\\FieldTypes\\ArrayField")
+            )
+        ) {
+            $fields = [];
+            foreach ($element->iterateItems() as $node) {
+                foreach ($node->iterateItems() as $key => $value) {
+                    $fields[] = $key;
+                }
+                break;
+            }
+        }
+
         $grid = new UIModelGrid($element);
         return $grid->fetchBindRequest(
             $this->request,
