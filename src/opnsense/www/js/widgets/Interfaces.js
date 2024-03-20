@@ -47,7 +47,7 @@ export default class Interfaces extends BaseTableWidget {
             headerPosition: 'none'
         }
 
-        this.setTableOptions(options);
+        super.setTableOptions(options);
         return super.getMarkup();
     }
 
@@ -64,19 +64,6 @@ export default class Interfaces extends BaseTableWidget {
                 }
 
                 let row = [];
-
-                let symbol = '';
-                switch (intf_data.link_type) {
-                    case 'ppp':
-                        symbol = 'fa fa-mobile';
-                        break;
-                    case 'wireless':
-                        symbol = 'fa fa-signal';
-                        break;
-                    default:
-                        symbol = 'fa fa-exchange';
-                        break;
-                }
 
                 row.push($(`
                     <div class="interface-info if-name">
