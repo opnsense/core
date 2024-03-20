@@ -1,5 +1,5 @@
-.fa-circle-o-notch {
-    font-size: 3em;
+.fa-spinner {
+    font-size: 2em;
 }
 
 .grid-stack-item-content {
@@ -25,6 +25,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.widget-spinner {
+    margin-top: 20px;
 }
 
 .fa-stack.small {

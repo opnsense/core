@@ -275,19 +275,7 @@ class WidgetManager  {
      * this has the benefit of making it configurable per widget.
      */
      async _loadDynamicContent() {
-        // map to an array of context-bound _onMarkupRendered functions
-        let fns = Object.values(this.widgetClasses).map((widget) => {
-            return this._onMarkupRendered.bind(this, widget);
-        });
-        // convert each _onMarkupRendered(widget) to a promise
-        let promises = fns.map(func => new Promise(resolve => resolve(func())));
-        // fire away
-        await Promise.all(promises).catch((error) => {
-            console.error('Failed to load dynamic content', error);
-            null;
-        });
-
-        // handle dynamic resize of widgets - do this after the dynamic content has been loaded
+        // handle dynamic resize of widgets
         new ResizeObserverWrapper().observe(
             document.querySelectorAll('.widget'),
             (elem, width, height) => {
@@ -304,6 +292,18 @@ class WidgetManager  {
                 this._updateGrid(elem.parentElement.parentElement);
             }
         );
+
+        // map to an array of context-bound _onMarkupRendered functions
+        let fns = Object.values(this.widgetClasses).map((widget) => {
+            return this._onMarkupRendered.bind(this, widget);
+        });
+        // convert each _onMarkupRendered(widget) to a promise
+        let promises = fns.map(func => new Promise(resolve => resolve(func())));
+        // fire away
+        await Promise.all(promises).catch((error) => {
+            console.error('Failed to load dynamic content', error);
+            null;
+        });
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
@@ -312,7 +312,7 @@ class WidgetManager  {
         let onMarkupRendered = widget.onMarkupRendered.bind(widget);
         // show a spinner while the widget is loading
         let $selector = $(`.widget-${widget.id} > .widget-content > .panel-divider`);
-        $selector.after($(`<div class="spinner-${widget.id}"><i class="fa fa-circle-o-notch fa-spin"></i></div>`));
+        $selector.after($(`<div class="widget-spinner spinner-${widget.id}"><i class="fa fa-spinner fa-spin"></i></div>`));
         await onMarkupRendered();
         $(`.spinner-${widget.id}`).remove();
 

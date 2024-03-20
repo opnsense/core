@@ -52,7 +52,7 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     async onMarkupRendered() {
-        ajaxGet('/api/interfaces/overview/interfacesInfo', {}, (data, status) => {
+        await ajaxGet('/api/interfaces/overview/interfacesInfo', {}, (data, status) => {
             let rows = [];
             data.rows.map((intf_data) => {
                 if (!intf_data.hasOwnProperty('config') || intf_data.enabled == false) {
@@ -118,10 +118,7 @@ export default class Interfaces extends BaseTableWidget {
             super.updateTable(rows);
 
             $('[data-toggle="tooltip"]').tooltip();
-
-            return super.onMarkupRendered();
         });
-
     }
 
     onWidgetResize(elem, width, height) {
