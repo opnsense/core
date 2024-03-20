@@ -82,8 +82,9 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        $widgetModules = array_filter(glob('/usr/local/opnsense/www/js/widgets/*.js'),
-            function($element) {
+        $widgetModules = array_filter(
+            glob('/usr/local/opnsense/www/js/widgets/*.js'),
+            function ($element) {
                 $base = basename($element);
                 if (str_contains($base, '.js') && !str_contains($base, 'Base')) {
                     return $this->canAccessEndpoints($element);
@@ -93,7 +94,9 @@ class DashboardController extends ApiControllerBase
             }
         );
 
-        $widgetModules = array_map(function($element) {return basename($element);}, $widgetModules);
+        $widgetModules = array_map(function ($element) {
+            return basename($element);
+        }, $widgetModules);
 
         $result['modules'] = [];
         foreach ($widgetModules as $module) {

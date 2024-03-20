@@ -143,7 +143,7 @@ export default class BaseTableWidget extends BaseWidget {
                     }
                 }
             }
-            
+
         }
     }
 

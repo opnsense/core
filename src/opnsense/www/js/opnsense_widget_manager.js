@@ -217,7 +217,7 @@ class WidgetManager  {
                 $('#save-grid').show();
             });
         }
-        
+
         // render to the DOM
         this.grid.load(Object.values(this.widgetConfigurations));
 

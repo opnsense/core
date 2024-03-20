@@ -195,7 +195,7 @@ div {
     flex-flow: row wrap;
     transition: 0.5s;
     padding: 0.5em 0.5em;
-    border-top: solid 1px rgba(217, 79, 0, 0.15); 
+    border-top: solid 1px rgba(217, 79, 0, 0.15);
 }
 
 .flextable-row {
@@ -203,7 +203,7 @@ div {
     flex-flow: row wrap;
     transition: 0.5s;
     padding: 0.5em 0.5em;
-    border-top: solid 1px rgba(217, 79, 0, 0.15); 
+    border-top: solid 1px rgba(217, 79, 0, 0.15);
     align-items: center
 }
 
