@@ -48,20 +48,15 @@ class CategoryController extends ApiMutableModelControllerBase
      * @return array search results
      * @throws \ReflectionException
      */
-    public function searchItemAction()
+    public function searchItemAction($add_empty='0')
     {
-        return $this->searchBase("categories.category", array('name', 'auto', 'color'), "name");
-    }
-
-    /**
-     * search categories with an empty (no category) at the beginning
-     * @return array search results
-     * @throws \ReflectionException
-     */
-    public function searchNoCategoryItemAction()
-    {
-        $result = $this->searchBase("categories.category", array('name', 'auto', 'color'), "name");
-        array_unshift($result['rows'], array('uuid' => "", 'name' => gettext("(No Category)"), 'auto' => "", 'color' => ""));
+        $result = $this->searchBase("categories.category", null, "name");
+        if (!empty($add_empty)) {
+            array_unshift(
+                $result['rows'],
+                ['uuid' => "", 'name' => gettext("(No Category)"), 'auto' => "", 'color' => ""]
+            );
+        }
         return $result;
     }
 

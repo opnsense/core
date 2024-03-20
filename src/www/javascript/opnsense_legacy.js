@@ -183,7 +183,7 @@ function window_highlight_table_option()
  */
 function hook_firewall_categories() {
     let cat_select = $("#fw_category");
-    ajaxCall('/api/firewall/category/searchNoCategoryItem', {}, function(data){
+    ajaxCall('/api/firewall/category/searchItem/1', {}, function(data){
         if (data.rows !== undefined && data.rows.length > 0) {
             let color_map = {};
             for (let i=0; i < data.rows.length ; ++i) {
