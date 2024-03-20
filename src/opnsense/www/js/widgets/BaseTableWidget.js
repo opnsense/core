@@ -5,8 +5,7 @@ export default class BaseTableWidget extends BaseWidget {
         super();
 
         this.options = null;
-        this.data = null;
-        this.table = null;
+        this.data = [];
 
         this.curSize = null;
         this.sizeStates = {
@@ -17,7 +16,7 @@ export default class BaseTableWidget extends BaseWidget {
                 '.column': {'width': '100%'},
                 '.flex-cell': {'width': '100%'},
             },
-            430: {
+            500: {
                 '.flextable-row': {'padding': '0.5em 0.5em'},
                 '.header .flex-row': {'border-bottom': ''},
                 '.flex-row': {'width': this._calculateColumnWidth.bind(this)},
@@ -26,6 +25,11 @@ export default class BaseTableWidget extends BaseWidget {
             }
         }
         this.widths = Object.keys(this.sizeStates).sort();
+
+        this.flextableId = Math.random().toString(36).substring(7);
+        this.$flextable = null;
+        this.$headerContainer = null;
+        this.headers = new Set();
     }
 
     _calculateColumnWidth() {
@@ -43,7 +47,7 @@ export default class BaseTableWidget extends BaseWidget {
         return '';
     }
 
-    setTableData(options = {}, data = []) {
+    setTableOptions(options = {}) {
         /**
          * headerPosition: top, left or none.
          *  top: headers are on top of the table. Data layout: [{header1: value1}, {header1: value2}, ...]
@@ -52,30 +56,19 @@ export default class BaseTableWidget extends BaseWidget {
          */
         this.options = {
             headerPosition: 'top',
-            // TODO:
-            // overflowLimit (how many items to show before y-overflow)
-            // overflowScroll (scroll or hide overflow)
             ...options // merge and override defaults
         }
-        this.data = data;
     }
 
-    _constructTable() {
-        if (this.data === null || this.options === null) {
-            console.error('No table data or options set');
-            return null;
+    updateTable(data = [], clear = true) {
+        let $table = $(`#${this.flextableId}`);
+
+        if (clear) {
+            $table.children('.flextable-row').remove();
         }
 
-        let $flextable = $(`<div class="flextable-container" role="table"></div>`)
-
-        let headers = new Set();
-        let $headerContainer = null;
-        if (this.options.headerPosition === 'top') {
-            $headerContainer = $(`<div class="flextable-header"></div>`);
-            $flextable.append($headerContainer);
-        }        
-
-        for (const row of this.data) {
+        for (const row of data) {
+            this.data.push(row);
             let rowType = Array.isArray(row) && row !== null ? 'flat' : 'nested';
             if (rowType === 'flat' && this.options.headerPosition !== 'none') {
                 console.error('Flat data is not supported with headers');
@@ -94,16 +87,16 @@ export default class BaseTableWidget extends BaseWidget {
                         <div class="flex-row" role="cell">${item}</div>
                     `));
                 }
-                $flextable.append($row);
+                $table.append($row);
             } else {
                 if (this.options.headerPosition === 'top') {
                     let $flextableRow = $(`<div class="flextable-row"></div>`);
                     for (const [h, c] of Object.entries(row)) {
-                        if (!headers.has(h)) {
-                            $headerContainer.append($(`
+                        if (!this.headers.has(h)) {
+                            this.$headerContainer.append($(`
                                 <div class="flex-row">${h}</div>
                             `));
-                            headers.add(h);
+                            this.headers.add(h);
                         }
                         if (Array.isArray(c)) {
                             let $column = $('<div class="column"></div>');
@@ -121,7 +114,7 @@ export default class BaseTableWidget extends BaseWidget {
                             `));
                         }
                     }
-                    $flextable.append($flextableRow);
+                    $table.append($flextableRow);
                 } else if (this.options.headerPosition === 'left') {
                     for (const [h, c] of Object.entries(row)) {
                         if (Array.isArray(c)) {
@@ -138,9 +131,9 @@ export default class BaseTableWidget extends BaseWidget {
                                     </div>
                                 `));
                             }
-                            $flextable.append($row.append($column));
+                            $table.append($row.append($column));
                         } else {
-                            $flextable.append($(`
+                            $table.append($(`
                             <div class="flextable-row" role="rowgroup">
                                 <div class="flex-row first" role="cell"><b>${h}</b></div>
                                 <div class="flex-row" role="cell">${c}</div>
@@ -152,19 +145,29 @@ export default class BaseTableWidget extends BaseWidget {
             }
             
         }
+    }
 
-        return $flextable;
+    _constructTable() {
+        if (this.options === null) {
+            console.error('No table options set');
+            return null;
+        }
+
+        this.$flextable = $(`<div class="flextable-container" id="${this.flextableId}" role="table"></div>`)
+
+        if (this.options.headerPosition === 'top') {
+            this.$headerContainer = $(`<div class="flextable-header"></div>`);
+            this.$flextable.append(this.$headerContainer);
+        }
     }
 
     getMarkup() {
-        let $flextable = this._constructTable();        
-        this.table = $flextable;
-        return $('<div></div>').append($flextable);
+        this._constructTable();
+        return $(this.$flextable);
     }
 
     async onMarkupRendered() {
-        $('.flextable-header .flex-row:first-child').addClass('first');
-        $('.flextable-row .flex-row:first-child').addClass('first');
+
     }
 
     onWidgetResize(elem, width, height) {
@@ -185,5 +188,7 @@ export default class BaseTableWidget extends BaseWidget {
             this.curSize = lowIndexWidth;
             return true;
         }
+
+        return false;
     }
 }

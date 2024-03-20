@@ -10,6 +10,11 @@ export default class BaseWidget {
         this.id = id;
     }
 
+    getGridOptions() {
+        // per-widget gridstack options override
+        return {};
+    }
+
     getMarkup() {
         return $("");
     }
@@ -34,5 +39,4 @@ export default class BaseWidget {
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
 }

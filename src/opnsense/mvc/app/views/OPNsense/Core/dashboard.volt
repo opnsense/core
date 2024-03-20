@@ -35,17 +35,19 @@
 <script src="{{ cache_safe('/ui/js/opnsense_widget_manager.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
 
+<script src="{{ cache_safe('/ui/js/chart.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.js') }}"></script>
+
 <script>
 $( document ).ready(function() {
     let widgetManager = new WidgetManager({
         float: false,
         column: 4,
         margin: 10,
-        cellheight: 'auto',
         alwaysShowResizeHandle: false,
-        sizeToContent: 3,
+        sizeToContent: true,
         resizable: {
-            handles: 'all'
+            handles: 'e, w'
         }
     }, {
         'save': "{{ lang._('Save') }}",

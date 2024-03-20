@@ -62,7 +62,7 @@ class ResizeObserverWrapper {
                         this._lastWidths[id] = width;
                         this._lastHeights[id] = height;
                         // call onSizeChanged to trigger initial size requirements
-                        onSizeChanged(entry.target, width, height);
+                        //onSizeChanged(entry.target, width, height);
                     } else {
                         if (width !== this._lastWidths[id] || height !== this._lastHeights[id]) {
                             this._lastWidths[id] = width;
@@ -92,6 +92,7 @@ class WidgetManager  {
         this.widgetTickRoutines = {}; // id -> tick routines
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
+        this.renderDefaultDashboard = true;
     }
 
     async initialize() {
@@ -99,9 +100,9 @@ class WidgetManager  {
             // import allowed modules and current persisted configuration
             await this._loadWidgets();
             // prepare widget markup
-            await this._initializeWidgets();
+            this._initializeWidgets();
             // render grid and append widget markup
-            await this._initializeGridStack();
+            this._initializeGridStack();
             // load all dynamic content and start tick routines
             await this._loadDynamicContent();
         } catch (error) {
@@ -116,6 +117,7 @@ class WidgetManager  {
             contentType: 'application/json'
         }).then(async (data) => {
             if ('dashboard' in data && data.dashboard != null) {
+                this.renderDefaultDashboard = false;
                 let configuration = JSON.parse(data.dashboard);
                 configuration.forEach(item => {
                     this.widgetConfigurations[item.id] = item;
@@ -132,10 +134,6 @@ class WidgetManager  {
                 console.error('Failed to load widgets', error);
                 null;
             });
-
-            if (!$.isEmptyObject(this.widgetConfigurations)) {
-                this.moduleDiff = Object.keys(this.loadedModules).filter(x => !Object.keys(this.widgetConfigurations).includes(x));
-            }
         });
     }
 
@@ -144,7 +142,7 @@ class WidgetManager  {
             throw new Error('No widgets loaded');
         }
 
-        if (!$.isEmptyObject(this.widgetConfigurations)) {
+        if (!this.renderDefaultDashboard) {
             // restore
             for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
                 if (id in this.loadedModules) {
@@ -157,9 +155,11 @@ class WidgetManager  {
                 this._createGridStackWidget(identifier, widgetClass);
             }
         }
+
+        this.moduleDiff = Object.keys(this.loadedModules).filter(x => !Object.keys(this.widgetConfigurations).includes(x));
     }
 
-    async _createGridStackWidget(id, widgetClass, config = {}) {
+    _createGridStackWidget(id, widgetClass, config = {}) {
         // instantiate widget
         const widget = new widgetClass(config);
         // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
@@ -173,11 +173,12 @@ class WidgetManager  {
         if (id in this.widgetConfigurations) {
             this.widgetConfigurations[id].content = $panel.prop('outerHTML');
         } else {
+            // let each widget override settings
+            const options = widget.getGridOptions();
             let gridElement = {
                 content: $panel.prop('outerHTML'),
                 id: id,
-                // any to-be persisted data (backend) can be placed here,
-                // serialization will return this object
+                ...options
             };
 
             // lock the system information widget
@@ -199,7 +200,7 @@ class WidgetManager  {
         this.widgetClasses[id].onWidgetClose();
         this.grid.removeWidget(this.widgetHTMLElements[id]);
         this.moduleDiff.push(id);
-        // propagate updated diff to widget selection
+        // TODO propagate updated diff to widget selection
     }
 
     // runs only once
@@ -209,7 +210,6 @@ class WidgetManager  {
         this.grid.on('added', (event, items) => {
             // store Elements for later use, such as update() and resizeToContent()
             items.forEach((item) => {
-                let id = item.id;
                 this.widgetHTMLElements[item.id] = item.el;
             });
         });
@@ -219,32 +219,15 @@ class WidgetManager  {
                 $('#save-grid').show();
             });
         }
+        
         // render to the DOM
-        this._render();
+        this.grid.load(Object.values(this.widgetConfigurations));
 
         // click handler for widget removal.
         $('.close-handle').click((event) => {
             let widgetId = $(event.currentTarget).data('widget-id');
             this._onWidgetClose(widgetId);
         });
-
-        // handle dynamic resize of widgets
-        new ResizeObserverWrapper().observe(
-            document.querySelectorAll('.widget'),
-            (elem, width, height) => {
-                for (const subclass of elem.className.split(" ")) {
-                    let id = subclass.split('-')[1];
-                    if (id in this.widgetClasses) {
-                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
-                            this._updateGrid(elem.parentElement.parentElement);
-                        }
-                    }
-                }
-            },
-            (elem) => {
-                this._updateGrid(elem.parentElement.parentElement);
-            }
-        );
 
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
@@ -288,11 +271,6 @@ class WidgetManager  {
         });
     }
 
-    _render() {
-        // render the grid to the DOM
-        this.grid.load(Object.values(this.widgetConfigurations));
-    }
-
     /* Executes all widget post-render callbacks asynchronously and in "parallel".
      * No widget should wait on other widgets, and therefore the
      * individual widget tick() callbacks are not bound to a master timer,
@@ -310,6 +288,24 @@ class WidgetManager  {
             console.error('Failed to load dynamic content', error);
             null;
         });
+
+        // handle dynamic resize of widgets - do this after the dynamic content has been loaded
+        new ResizeObserverWrapper().observe(
+            document.querySelectorAll('.widget'),
+            (elem, width, height) => {
+                for (const subclass of elem.className.split(" ")) {
+                    let id = subclass.split('-')[1];
+                    if (id in this.widgetClasses) {
+                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
+                            this._updateGrid(elem.parentElement.parentElement);
+                        }
+                    }
+                }
+            },
+            (elem) => {
+                this._updateGrid(elem.parentElement.parentElement);
+            }
+        );
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
@@ -321,8 +317,6 @@ class WidgetManager  {
         $selector.after($(`<div class="spinner-${widget.id}"><i class="fa fa-circle-o-notch fa-spin"></i></div>`));
         await onMarkupRendered();
         $(`.spinner-${widget.id}`).remove();
-
-        this._updateGrid(this.widgetHTMLElements[widget.id]);
 
         // second: start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
@@ -339,11 +333,9 @@ class WidgetManager  {
     _updateGrid(elem = null) {
         if (elem !== null) {
             this.grid.resizeToContent(elem);
-            this.grid.update(elem, {});
         } else {
             for (const item of this.grid.getGridItems()) {
                 this.grid.resizeToContent(item);
-                this.grid.update(item, {});
             }
         }
     }
