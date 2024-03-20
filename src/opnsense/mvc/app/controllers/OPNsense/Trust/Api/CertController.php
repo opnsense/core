@@ -205,10 +205,6 @@ class CertController extends ApiMutableModelControllerBase
         }
         return ['status' => 'failed'];
     }
-    public function toggleAction($uuid, $enabled = null)
-    {
-        return $this->toggleBase('cert', $uuid, $enabled);
-    }
 
     public function caInfoAction($caref)
     {
