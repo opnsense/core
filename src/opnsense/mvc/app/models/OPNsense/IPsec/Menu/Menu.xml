@@ -1,6 +1,6 @@
 <menu>
     <VPN>
-        <IPsec cssClass="fa fa-lock fa-fw" order="10">
+        <IPsec cssClass="fa fa-lock fa-fw">
             <Connections order="5" url="/ui/ipsec/connections"/>
             <Tunnels order="10" VisibleName="Tunnel Settings [legacy]" url="/ui/ipsec/tunnels">
                 <Phase1 url="/vpn_ipsec_phase1.php*" visibility="hidden"/>
