@@ -284,6 +284,7 @@ class ControllerBase extends ControllerRoot
         // set security policies
         $policies = array(
             "default-src" => "'self'",
+            "base-uri" => "'self'",
             "img-src" => "'self'",
             "script-src" => "'self' 'unsafe-inline' 'unsafe-eval'",
             "style-src" => "'self' 'unsafe-inline' 'unsafe-eval'");
