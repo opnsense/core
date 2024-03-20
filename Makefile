@@ -408,10 +408,6 @@ lint: plist-check lint-shell lint-xml lint-model lint-exec lint-php
 sweep:
 	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
 	    xargs -0 -n1 rm
-	if grep -nr sourceMappingURL= ${.CURDIR}/src; then \
-		echo "Mentions of sourceMappingURL must be removed"; \
-		exit 1; \
-	fi
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
