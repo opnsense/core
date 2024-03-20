@@ -5,11 +5,13 @@
             <Root url="/" visibility="hidden"/>
             <RootArgs url="/?*" visibility="hidden"/>
         </Dashboard>
-        <License order="1" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
-        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
+        <Dashboard_new order="1" VisibleName="Dashboard [new]" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw">
+        </Dashboard_new>
+        <License order="2" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
+        <Password order="3" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
             <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
         </Password>
-        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
+        <Logout order="4" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <Reporting order="15" cssClass="fa fa-area-chart">
         <Settings order="10" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>

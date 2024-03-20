@@ -1,0 +1,249 @@
+.fa-circle-o-notch {
+    font-size: 3em;
+}
+
+.grid-stack-item-content {
+  text-align: center;
+  border-style: solid;
+  border-color: rgba(217, 79, 0, 0.15);
+  border-width: 2px;
+  background-color: #fbfbfb;
+  border-radius: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.widget-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 1px;
+}
+
+.widget-header {
+    margin-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fa-stack.small {
+    font-size: 0.5em;
+}
+
+/* Align fa icons to middle to adjust for icon stack */
+i {
+    vertical-align: middle;
+}
+
+.close-handle {
+    vertical-align: middle;
+    text-align: right;
+    cursor: pointer;
+}
+
+.close-handle > i {
+    font-size: 0.7em;
+}
+
+.panel-divider {
+    width: 100%;
+    text-align: center;
+    height: 8px;
+    margin-bottom: 10px;
+}
+
+table {
+    table-layout: fixed;
+}
+
+td {
+    word-break: break-all;
+}
+
+.line {
+    display: inline-block;
+    height: 1px;
+    width: 70%;
+    background: #d94f00;
+    margin: 5px;
+}
+
+.canvas-container {
+    width: 100%;
+}
+
+.smoothie-chart-tooltip {
+  z-index: 1; /* necessary to force to foreground */
+  background: rgba(50, 50, 50, 0.9);
+  padding-left: 15px;
+  padding-right: 15px;
+  color: white;
+  font-size: 13px;
+  border-radius: 0.5em 0.5em 0.5em 0.5em;
+  pointer-events: none;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.gateway-info {
+  margin: 5px;
+  padding: 5px;
+  font-size: 13px;
+}
+
+.gateway-detail-container {
+    display: none;
+    margin: 5px;
+}
+
+.interface-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    height: 100%;
+}
+
+.nowrap {
+    flex-wrap: nowrap;
+}
+
+.gateway-graph {
+    display: none;
+}
+
+.flex-container > .gateway-graph {
+    font-size: 13px;
+}
+
+.vertical-center-row {
+    height: 100%;
+    display: inline;
+}
+
+.interfaces-info {
+  margin: 5px;
+  font-size: 13px;
+}
+
+.interface-descr {
+    margin-left: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.interfaces-detail-container {
+    margin: 5px;
+    display: none;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.d-flex > .justify-content-start {
+    justify-content: start;
+}
+
+.d-flex > .justify-content-end {
+    justify-content: end;
+}
+
+#chartjs-toolip {
+    z-index: 20;
+}
+
+/* Gauge */
+#gauge-container {
+    width: 80%;
+    margin: 5px auto;
+    background-color: #ccc;
+    height: 10px;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#gauge-fill {
+    height: 100%;
+    width: 0;
+    background-color: green;
+    border-radius: 5px;
+    transition: width 0.5s, background-color 0.5s;
+}
+
+
+/* Custom flex table */
+div {
+    box-sizing: border-box;
+}
+
+.flextable-container {
+    display: block;
+    margin: 2em auto;
+    width: 95%;
+    max-width: 1200px; /* XXX */
+}
+
+.flextable-header {
+    display: flex;
+    flex-flow: row wrap;
+    transition: 0.5s;
+    padding: 0.5em 0.5em;
+    border-top: solid 1px rgba(217, 79, 0, 0.15); 
+}
+
+.flextable-row {
+    display: flex;
+    flex-flow: row wrap;
+    transition: 0.5s;
+    padding: 0.5em 0.5em;
+    border-top: solid 1px rgba(217, 79, 0, 0.15); 
+    align-items: center
+}
+
+.flextable-header .flex-row {
+    font-weight: bold;
+}
+
+.flextable-row:hover {
+    background: #F5F5F5;
+    transition: 500ms;
+}
+
+.flex-row {
+    text-align: left;
+    word-break: break-word;
+}
+
+.column {
+    display: flex;
+    flex-flow: column wrap;
+    width: 50%;
+    padding: 0;
+}
+.column .flex-row {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-top: rgba(217, 79, 0, 0.15);
+}
+.column .flex-row:hover {
+    background: #F5F5F5;
+    transition: 500ms;
+}
+.flex-cell {
+    width: 100%;
+    text-align: left;
+}
+
+.column .flex-row:not(:last-child) {
+    border-bottom: solid 1px rgba(217, 79, 0, 0.15);
+}
