@@ -2060,7 +2060,7 @@ include("head.inc");
                           <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IPv4 Upstream Gateway') ?></td>
                           <td>
                             <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
-                              <option value="none"><?= gettext('Auto-detect') ?></option>
+                              <option value="none"><?= gettext('Default') ?></option>
 <?php
                               foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
                                 if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])):
@@ -2074,8 +2074,8 @@ include("head.inc");
 ?>
                             </select>
                             <div class="hidden" data-for="help_for_gateway">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
-                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
+                              <?= gettext('Select a gateway from the list to reply the incoming packets to the proper next hop on their way back and apply source NAT when configured. ' .
+                                          'Usually LAN type connections leave this to default.');?>
                             </div>
                           </td>
                         </tr>
@@ -2575,7 +2575,7 @@ include("head.inc");
                           <td><a id="help_for_gatewayv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Upstream Gateway"); ?></td>
                           <td>
                             <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
-                              <option value="none"><?= gettext('Auto-detect') ?></option>
+                              <option value="none"><?= gettext('Default') ?></option>
 <?php
                               foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway):
                                 if ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])):
@@ -2589,8 +2589,8 @@ include("head.inc");
 ?>
                             </select>
                             <div class="hidden" data-for="help_for_gatewayv6">
-                              <?= gettext('If this interface is a multi-WAN interface, select an existing gateway from the list. For single WAN interfaces a gateway must be ' .
-                                          'created but set to auto-detect. For a LAN a gateway is not necessary to be set up.') ?>
+                              <?= gettext('Select a gateway from the list to reply the incoming packets to the proper next hop on their way back. ' .
+                                          'Usually LAN type connections leave this to default.');?>
                             </div>
                           </td>
                         </tr>
