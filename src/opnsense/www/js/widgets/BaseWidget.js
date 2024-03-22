@@ -4,6 +4,11 @@ export default class BaseWidget {
         this.title = "";
         this.id = null;
         this.tickTimeout = 5000; // Default tick timeout
+        this.resizeHandles = "all"
+    }
+
+    getResizeHandles() {
+        return this.resizeHandles;
     }
 
     setId(id) {

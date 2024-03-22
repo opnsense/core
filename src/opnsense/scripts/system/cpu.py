@@ -32,6 +32,8 @@
 import subprocess
 import select
 import argparse
+import ujson
+import re
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -53,8 +55,20 @@ if __name__ == '__main__':
 
             if data:
                 output = data.decode().strip()
-                if not (output.startswith("tty") or output.startswith("tin")):
-                    print(f"event: message\ndata: {output}\n\n", flush=True)
+                if output.startswith("tty") or output.startswith("tin"):
+                    continue
+
+                formatted = re.sub(r'\s+', ' ', output).split(" ")[2:]
+                formatted = [int(x) for x in formatted]
+                result = {
+                    'total': sum(formatted) - formatted[4],
+                    'user': formatted[0],
+                    'nice': formatted[1],
+                    'sys': formatted[2],
+                    'intr': formatted[3],
+                    'idle': formatted[4]
+                }
+                print(f"event: message\ndata: {ujson.dumps(result)}\n\n", flush=True)
             else:
                 read_fds.remove(fd)
 

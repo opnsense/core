@@ -74,6 +74,11 @@ td {
 }
 
 .canvas-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.smoothie-container {
     width: 100%;
 }
 

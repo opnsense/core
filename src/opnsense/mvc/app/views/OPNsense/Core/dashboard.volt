@@ -37,6 +37,7 @@
 
 <script src="{{ cache_safe('/ui/js/chart.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/smoothie.js') }}"></script>
 
 <script>
 $( document ).ready(function() {
@@ -47,7 +48,7 @@ $( document ).ready(function() {
         alwaysShowResizeHandle: false,
         sizeToContent: true,
         resizable: {
-            handles: 'e, w'
+            handles: 'all'
         }
     }, {
         'save': "{{ lang._('Save') }}",

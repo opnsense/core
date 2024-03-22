@@ -316,6 +316,12 @@ class WidgetManager  {
         await onMarkupRendered();
         $(`.spinner-${widget.id}`).remove();
 
+        // XXX this code enforces per-widget resize handle definitions, which isn't natively
+        // supported by GridStack.
+        $(this.widgetHTMLElements[widget.id]).attr('gs-resize-handles', widget.getResizeHandles());
+        this.widgetHTMLElements[widget.id].gridstackNode._initDD = false;
+        this.grid.resizable(this.widgetHTMLElements[widget.id], true);
+
         // second: start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         await onWidgetTick();
