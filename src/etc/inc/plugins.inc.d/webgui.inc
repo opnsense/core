@@ -433,7 +433,7 @@ EOD;
             $listener = "[{$listener}]";
         }
         $lighty_config .= "\$SERVER[\"socket\"] == \"{$listener}:{$lighty_port}\" {\n";
-        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^api\" {\n\t\tserver.stream-response-body = 2\n\t}\n";
+        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^/api/\" {\n\t\tserver.stream-response-body = 2\n\t}\n";
         if ($config['system']['webgui']['protocol'] == "https") {
             $lighty_config .= "\tssl.engine = \"enable\"" . PHP_EOL;
         }
