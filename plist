@@ -263,6 +263,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/DHCRelay/forms/dialogRelay.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/ActivityController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/ActivityController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/CpuUsageController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/DnsDiagnosticsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/Api/FirewallController.php
@@ -1127,6 +1128,7 @@
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
+/usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/nameservers.php
 /usr/local/opnsense/scripts/system/remote_backup.php
 /usr/local/opnsense/scripts/system/rfc5246_cipher_suites.csv

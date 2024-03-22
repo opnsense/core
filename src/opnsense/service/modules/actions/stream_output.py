@@ -27,6 +27,8 @@
 import traceback
 import selectors
 import subprocess
+import os
+import signal
 from .. import syslog_error, syslog_info
 from .base import BaseAction
 
@@ -50,20 +52,25 @@ class Action(BaseAction):
             env=self.config_environment,
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            bufsize=0,
+            preexec_fn=os.setsid
         )
 
         selector = selectors.DefaultSelector()
         selector.register(process.stdout, selectors.EVENT_READ, stdout_reader)
 
         try:
-
             while process.poll() is None:
                 timeout = True
                 for key, mask in selector.select(1):
                     timeout = False
                     callback = key.data
-                    callback(key.fileobj, mask)
+                    try:
+                        callback(key.fileobj, mask)
+                    except BrokenPipeError:
+                        timeout = True
+                        break
                 if timeout:
                     # when timeout has reached, check if the other end is still connected using getpeername()
                     # kill process when nobody is waiting for an answer
@@ -72,6 +79,11 @@ class Action(BaseAction):
                     except OSError:
                         syslog_info('[%s] Script action terminated by other end' % message_uuid)
                         process.kill()
+                        # kill child processes as well
+                        try:
+                            os.killpg(os.getpgid(process.pid), signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
                         return None
 
             return_code = process.wait()

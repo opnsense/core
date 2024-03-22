@@ -67,9 +67,12 @@ def exec_config_cmd(exec_command):
                 yield line
             else:
                 break
+    except KeyboardInterrupt:
+        # intentional
+        pass
     except:
         syslog_error('error in configd communication \n%s'%traceback.format_exc())
-        print ('error in configd communication %s, see syslog for details', file=sys.stderr)
+        print ('error in configd communication, see syslog for details', file=sys.stderr)
     finally:
         sock.close()
 
