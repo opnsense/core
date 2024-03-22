@@ -48,7 +48,7 @@ class CategoryController extends ApiMutableModelControllerBase
      * @return array search results
      * @throws \ReflectionException
      */
-    public function searchItemAction($add_empty='0')
+    public function searchItemAction($add_empty = '0')
     {
         $result = $this->searchBase("categories.category", null, "name");
         if (!empty($add_empty)) {

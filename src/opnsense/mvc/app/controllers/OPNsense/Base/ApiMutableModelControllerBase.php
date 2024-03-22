@@ -387,7 +387,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $element = $element->{$step};
         }
 
-        if (empty($fields) && (
+        if (
+            empty($fields) && (
             is_a($element, "OPNsense\\Base\\FieldTypes\\ArrayField") ||
             is_subclass_of($element, "OPNsense\\Base\\FieldTypes\\ArrayField")
             )
