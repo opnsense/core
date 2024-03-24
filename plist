@@ -469,6 +469,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/DiagnosticsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/GeneralController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogConfigBuilder.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardClient.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/dialogEditWireguardServer.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/forms/general.xml
