@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2024 Deciso B.V.
  * Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
@@ -29,11 +30,20 @@ namespace OPNsense\Wireguard;
 
 class GeneralController extends \OPNsense\Base\IndexController
 {
+    protected function templateJSIncludes()
+    {
+        $result = parent::templateJSIncludes();
+        $result[] = '/ui/js/jquery.qrcode.js';
+        $result[] = '/ui/js/qrcode.js';
+        return $result;
+    }
+
     public function indexAction()
     {
         $this->view->generalForm = $this->getForm("general");
         $this->view->formDialogEditWireguardClient = $this->getForm("dialogEditWireguardClient");
         $this->view->formDialogEditWireguardServer = $this->getForm("dialogEditWireguardServer");
+        $this->view->formDialogConfigBuilder = $this->getForm("dialogConfigBuilder");
         $this->view->pick('OPNsense/Wireguard/general');
     }
 }

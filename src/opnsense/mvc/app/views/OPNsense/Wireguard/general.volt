@@ -33,8 +33,7 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        let grid_peers = $("#grid-peers").UIBootgrid(
-            {
+        let grid_peers = $("#grid-peers").UIBootgrid({
                 search: '/api/wireguard/client/searchClient',
                 get: '/api/wireguard/client/getClient/',
                 set: '/api/wireguard/client/setClient/',
@@ -48,11 +47,8 @@
                     }
                     return request;
                 }
-            },
-
-
             }
-        );
+        });
         grid_peers.on("loaded.rs.jquery.bootgrid", function (e){
             // reload servers before grid load
             if ($("#server_filter > option").length == 0) {
@@ -68,16 +64,14 @@
             }
         });
 
-        $("#grid-instances").UIBootgrid(
-            {
-                search: '/api/wireguard/server/searchServer',
-                get: '/api/wireguard/server/getServer/',
-                set: '/api/wireguard/server/setServer/',
-                add: '/api/wireguard/server/addServer/',
-                del: '/api/wireguard/server/delServer/',
-                toggle: '/api/wireguard/server/toggleServer/'
-            }
-        );
+        $("#grid-instances").UIBootgrid({
+            search: '/api/wireguard/server/searchServer',
+            get: '/api/wireguard/server/getServer/',
+            set: '/api/wireguard/server/setServer/',
+            add: '/api/wireguard/server/addServer/',
+            del: '/api/wireguard/server/delServer/',
+            toggle: '/api/wireguard/server/toggleServer/'
+        });
 
 
         $("#reconfigureAct").SimpleActionButton({
@@ -110,9 +104,122 @@
                 }
             });
         })
+
+        /**
+         * Quick instance filter on top
+         */
         $("#filter_container").detach().prependTo('#grid-peers-header > .row > .actionBar > .actions');
         $("#server_filter").change(function(){
             $('#grid-peers').bootgrid('reload');
+        });
+
+        /**
+         * Config maker tab hooks
+         */
+        $("#control_label_configbuilder\\.psk").append($("#pskgen_cb_div").detach().show());
+        $("#pskgen_cb").click(function(){
+            ajaxGet("/api/wireguard/client/psk", {}, function(data, status){
+                if (data.status && data.status === 'ok') {
+                    $("#configbuilder\\.psk").val(data.psk).change();
+                }
+            });
+        })
+        let tmp = $("#configbuilder\\.output").closest('tr');
+        tmp.find('td:eq(2)').empty().append($("<div id='qrcode'/>"));
+        $("#configbuilder\\.output").css('max-width', '100%');
+        $("#configbuilder\\.output").css('height', '256px');
+        $("#configbuilder\\.output").change(function(){
+            $('#qrcode').empty().qrcode($(this).val());
+        });
+
+        $("#configbuilder\\.servers").change(function(){
+            ajaxGet('/api/wireguard/server/getServer/' + $(this).val(), {}, function(data, status) {
+                if (data.server) {
+                    let endpoint = $("#configbuilder\\.endpoint");
+                    endpoint
+                        .val(data.server.endpoint)
+                        .data('org-value', data.server.endpoint)
+                        .data('pubkey', data.server.pubkey)
+                        .change();
+                }
+            });
+        });
+
+        $("#configbuilder\\.store_btn").replaceWith($("#btn_configbuilder_save"));
+
+        $("#btn_configbuilder_save").click(function(){
+            let instance_id = $("#configbuilder\\.servers").val();
+            let endpoint = $("#configbuilder\\.endpoint");
+            let peer = {
+                configbuilder: {
+                    enabled: '1',
+                    name: $("#configbuilder\\.name").val(),
+                    pubkey: $("#configbuilder\\.pubkey").val(),
+                    psk: $("#configbuilder\\.psk").val(),
+                    tunneladdress: $("#configbuilder\\.tunneladdress").val(),
+                    keepalive: $("#configbuilder\\.keepalive").val(),
+                    servers: instance_id,
+                }
+            };
+            ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
+                if (data.validations) {
+                    handleFormValidation("frm_config_builder", data.validations);
+                } else {
+                    if (endpoint.val() != endpoint.data('org-value')) {
+                        let param = {'server': {'endpoint': endpoint.val()}};
+                        ajaxCall('/api/wireguard/server/setServer/' + instance_id, param, function(data, status){
+                            configbuilder_new();
+                        });
+                    } else {
+                        configbuilder_new();
+                    }
+                }
+            });
+        });
+        $('input[id ^= "configbuilder\\."]').change(configbuilder_update_config);
+        $('select[id ^= "configbuilder\\."]').change(configbuilder_update_config);
+
+        function configbuilder_new()
+        {
+            mapDataToFormUI({'frm_config_builder':"/api/wireguard/client/get_client_builder"}).done(function(data){
+                    formatTokenizersUI();
+                    $('.selectpicker').selectpicker('refresh');
+                    ajaxGet("/api/wireguard/server/key_pair", {}, function(data, status){
+                    if (data.status && data.status === 'ok') {
+                            $("#configbuilder\\.pubkey").val(data.pubkey);
+                            $("#configbuilder\\.privkey").val(data.privkey).change();
+                        }
+                    });
+                    $("#configbuilder\\.tunneladdress").val("0.0.0.0/0,::/0");
+                    clearFormValidation("frm_config_builder");
+                });
+        }
+
+        function configbuilder_update_config()
+        {
+            let rows = [];
+            rows.push('[Interface]');
+            rows.push('PrivateKey = ' + $("#configbuilder\\.privkey").val());
+            rows.push('');
+            rows.push('[Peer]');
+            rows.push('PublicKey = ' + $("#configbuilder\\.endpoint").data('pubkey'));
+            if ($("#configbuilder\\.psk").val()) {
+                rows.push('PresharedKey = ' + $("#configbuilder\\.psk").val());
+            }
+            rows.push('Endpoint = ' + $("#configbuilder\\.endpoint").val());
+            rows.push('AllowedIPs = ' + $("#configbuilder\\.tunneladdress").val());
+            if ($("#configbuilder\\.keepalive").val()) {
+                rows.push('PersistentKeepalive = ' + $("#configbuilder\\.keepalive").val());
+            }
+            $("#configbuilder\\.output").val(rows.join("\n")).change();
+        }
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id == 'tab_configbuilder'){
+                configbuilder_new();
+            } else if (e.target.id == 'tab_peers') {
+                $('#grid-peers').bootgrid('reload');
+            }
         });
 
         // update history on tab state and implement navigation
@@ -130,12 +237,13 @@
 
 <!-- Navigation bar -->
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#instances">{{ lang._('Instances') }}</a></li>
-    <li><a data-toggle="tab" href="#peers">{{ lang._('Peers') }}</a></li>
+    <li class="active"><a data-toggle="tab" id="tab_instances" href="#instances">{{ lang._('Instances') }}</a></li>
+    <li><a data-toggle="tab" id="tab_peers" href="#peers">{{ lang._('Peers') }}</a></li>
+    <li><a data-toggle="tab" id="tab_configbuilder" href="#configbuilder">{{ lang._('Peer config builder') }}</a></li>
 </ul>
 
 <div class="tab-content content-box tab-content">
-    <div id="peers" class="tab-pane fade in active">
+    <div id="peers" class="tab-pane fade in">
         <span id="pskgen_div" style="display:none" class="pull-right">
             <button id="pskgen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new psk.') }}" data-toggle="tooltip">
               <i class="fa fa-fw fa-gear"></i>
@@ -175,7 +283,7 @@
             </tfoot>
         </table>
     </div>
-    <div id="instances" class="tab-pane fade in">
+    <div id="instances" class="tab-pane fade in active">
         <span id="keygen_div" style="display:none" class="pull-right">
             <button id="keygen" type="button" class="btn btn-secondary" title="{{ lang._('Generate new keypair.') }}" data-toggle="tooltip">
               <i class="fa fa-fw fa-gear"></i>
@@ -206,6 +314,20 @@
                 </tr>
             </tfoot>
         </table>
+    </div>
+    <div id="configbuilder" class="tab-pane fade in">
+        <span id="pskgen_cb_div" style="display:none" class="pull-right">
+            <button id="pskgen_cb" type="button" class="btn btn-secondary" title="{{ lang._('Generate new psk.') }}" data-toggle="tooltip">
+              <i class="fa fa-fw fa-gear"></i>
+            </button>
+        </span>
+        <span id="configbuilder_div" style="display:none">
+            <button id="btn_configbuilder_save" type="button" class="btn btn-primary">
+                <i class="fa fa-fw fa-check"></i>
+              </button>
+        </span>
+
+        {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
 </div>
 

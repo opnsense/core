@@ -130,4 +130,14 @@ class ClientController extends ApiMutableModelControllerBase
     {
         return $this->toggleBase('clients.client', $uuid);
     }
+
+    public function getClientBuilderAction()
+    {
+        return $this->getBase('configbuilder', 'clients.client', null);
+    }
+
+    public function addClientBuilderAction()
+    {
+        return $this->addBase('configbuilder', 'clients.client');
+    }
 }

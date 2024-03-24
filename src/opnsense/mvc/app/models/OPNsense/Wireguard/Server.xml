@@ -52,6 +52,7 @@
                         </check001>
                     </Constraints>
                 </disableroutes>
+                <endpoint type="TextField"/>
                 <gateway type="NetworkField"/>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>
@@ -66,7 +67,7 @@
                         </template>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Choose an Peer.</ValidationMessage>
+                    <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
             </server>
         </servers>
