@@ -1591,7 +1591,7 @@ function ipsec_configure_do($verbose = false, $interface = '')
                     $this_conn['children'][$this_connid]['esp_proposals'] = join(',', $parsed_phase2['esp_proposals']);
                 }
                 if (!empty($parsed_phase2['ah_proposals'])) {
-                    $this_conn['children'][$this_connid]['ah_proposals'] = join(',', $parsed_phase2['esp_proposals']);
+                    $this_conn['children'][$this_connid]['ah_proposals'] = join(',', $parsed_phase2['ah_proposals']);
                 }
                 foreach (['life_time', 'rekey_time', 'rand_time'] as $fieldname) {
                     $values = array_diff($parsed_phase2[$fieldname], [null]);
