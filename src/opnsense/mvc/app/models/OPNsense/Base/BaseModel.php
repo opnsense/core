@@ -721,7 +721,7 @@ abstract class BaseModel
 
             $class_info = new ReflectionClass($this);
             // fetch version migrations
-            $versions = array();
+            $versions = [];
             // set default migration for current model version
             $versions[$this->internal_model_version] = __DIR__ . "/BaseModelMigration.php";
             $migprefix = $this->internal_model_migration_prefix;
@@ -757,7 +757,10 @@ abstract class BaseModel
                         } catch (Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->getVersion() .  " to " . $mig_version . " in " .
-                                $class_info->getName() .  " [skipping step]");
+                                $class_info->getName() .  " ( " . $e . " )");
+                            /* fail migration when exceptions are thrown */
+                            $this->internal_current_model_version = $mig_version;
+                            return false;
                         }
                         $this->internal_current_model_version = $mig_version;
                     }
