@@ -180,7 +180,7 @@ class ApiControllerBase extends ControllerRoot
         foreach ($headers as $header) {
             header($header);
         }
-
+        ob_end_flush();
         fpassthru($response);
     }
 
