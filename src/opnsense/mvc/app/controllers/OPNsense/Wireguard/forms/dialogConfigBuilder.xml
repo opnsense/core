@@ -25,7 +25,7 @@
     </field>
     <field>
         <id>configbuilder.privkey</id>
-        <label>Public key</label>
+        <label>Private key</label>
         <type>text</type>
         <help>Private key of this peer, not stored on this host, only used for the configuration below.</help>
     </field>
