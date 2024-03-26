@@ -24,6 +24,14 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
+<?php
+    // Time display format: Use or override log raw time format
+    $locale  = !empty(OPNsense\Core\Config::getInstance()->object()->system->language) ? OPNsense\Core\Config::getInstance()->object()->system->language : 'OS_Locale';
+    $timefmt = !empty(OPNsense\Core\Config::getInstance()->object()->OPNsense->Syslog->general->timefmt) ? OPNsense\Core\Config::getInstance()->object()->OPNsense->Syslog->general->timefmt : 'Log_Raw';
+    $timefmt = $timefmt == 'Web_GUI_Language' ? $locale : $timefmt;
+    $timefmt = $timefmt == 'OS_Locale' ? 'default' : $timefmt;
+?>
+
 <script>
     $( document ).ready(function() {
       var filter_exact = false;
@@ -46,6 +54,8 @@
       }
       switch_mode(s_filter_val);
 
+      var timefmt = "<?= $timefmt ?>".replaceAll('_','-');
+
       let grid_log = $("#grid-log").UIBootgrid({
           options:{
               sorting:false,
@@ -63,6 +73,22 @@
                       } else {
                           return "";
                       }
+                  },
+                  timestamp: function (column, row) {
+                      if (row[column.id]) {
+                            if (timefmt == 'Log-Raw') {
+                                return row[column.id];
+                            } else if (timefmt == 'Log-Long') {
+                                return row[column.id].substring(0,22).replace('T', ' ');
+                            } else if (timefmt == 'Log-Long-No-TZ') {
+                                return row[column.id].substring(0,19).replace('T', ' ');
+                            } else if (timefmt == 'Log-Short') {
+                                return row[column.id].substring(5,19).replace('T', ' ');
+                            } else {
+                                return new Date(row[column.id]).toLocaleString(timefmt, { month:'short', day:'2-digit', hour:'numeric', hourCycle:'h23', minute: 'numeric', second: 'numeric'}).replace(/[.,]/g, '');
+                            }
+                      }
+                      return row[column.id];
                   },
               },
               requestHandler: function(request){
@@ -214,7 +240,7 @@
                 <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
-                        <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
+                        <th data-column-id="timestamp" data-width="9.5em" data-formatter="timestamp" data-type="string">{{ lang._('Date') }}</th>
                         <th data-column-id="facility" data-type="string" data-visible="false">{{ lang._('Facility') }}</th>
                         <th data-column-id="severity" data-type="string" data-width="2em">{{ lang._('Severity') }}</th>
                         <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
