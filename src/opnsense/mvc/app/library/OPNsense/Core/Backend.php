@@ -64,13 +64,12 @@ class Backend
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @param int $connect_timeout connect timeout in seconds
+     * @param int $poll_timeout poll timeout after connect
      * @return resource|null
      * @throws \Exception
      */
-    public function configdStream($event, $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdStream($event, $detach = false, $timeout = 120, $connect_timeout = 10, $poll_timeout = 2)
     {
-        $poll_timeout = 2; // poll timeout interval
-
         // wait until socket exist for a maximum of $connect_timeout
         $timeout_wait = $connect_timeout;
         $errorMessage = "";
@@ -107,13 +106,14 @@ class Backend
      * send event to backend using command parameter list (which will be quoted for proper handling)
      * @param string $event event string
      * @param array $params list of parameters to send with command
+     * @param int $poll_timeout poll timeout after connect
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
      * @param int $connect_timeout connect timeout in seconds
      * @return resource|null
      * @throws \Exception
      */
-    public function configdpStream($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdpStream($event, $params = [], $poll_timeout = 2, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
             /* just in case there's only one parameter */
@@ -124,7 +124,7 @@ class Backend
             $event .= ' ' . escapeshellarg($param ?? '');
         }
 
-        return $this->configdStream($event, $detach, $timeout, $connect_timeout);
+        return $this->configdStream($event, $detach, $timeout, $connect_timeout, $poll_timeout);
     }
 
 

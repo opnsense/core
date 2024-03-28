@@ -168,15 +168,17 @@ class ApiControllerBase extends ControllerRoot
      * @param string $action configd action to perform
      * @param array $params list of parameters
      * @param array $headers http headers to send before pushing data
+     * @param int $poll_timeout poll timeout after connect
      */
     protected function configdStream(
         $action,
         $params = [],
         $headers = [
             'Content-Type: application/json', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
-        ]
+        ],
+        $poll_timeout = 2
     ) {
-        $response = (new Backend())->configdpStream($action, $params);
+        $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
         foreach ($headers as $header) {
             header($header);
         }

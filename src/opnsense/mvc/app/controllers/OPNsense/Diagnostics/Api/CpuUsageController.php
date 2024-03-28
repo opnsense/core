@@ -29,8 +29,6 @@
 namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\Config;
-use OPNsense\Core\Backend;
 
 /**
  * Class CpuUsage
