@@ -35,8 +35,8 @@
             del:'/api/trust/cert/del/',
             options:{
                 requestHandler: function(request){
-                    if ( $('#server_filter').val().length > 0) {
-                        request['servers'] = $('#server_filter').val();
+                    if ( $('#ca_filter').val().length > 0) {
+                        request['carefs'] = $('#ca_filter').val();
                     }
                     return request;
                 }
