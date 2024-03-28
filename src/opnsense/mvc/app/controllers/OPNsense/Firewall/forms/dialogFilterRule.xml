@@ -54,6 +54,7 @@
         <id>rule.source_net</id>
         <label>Source</label>
         <type>text</type>
+        <style>net_selector</style>
     </field>
     <field>
         <id>rule.source_port</id>
@@ -72,6 +73,7 @@
         <id>rule.destination_net</id>
         <label>Destination</label>
         <type>text</type>
+        <style>net_selector</style>
     </field>
     <field>
         <id>rule.destination_not</id>
