@@ -105,58 +105,9 @@
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
         ajaxGet('/api/firewall/{{ruleController}}/list_network_select_options', [], function(data, status){
-            // fetch options
-            let options = [];
             if (data.single) {
-                Object.keys(data).forEach((key, idx) => {
-                    if (data[key].items !== undefined) {
-                        let optgrp = $("<optgroup/>").attr('label', data[key].label);
-                        Object.keys(data[key].items).forEach((key2, idx2) => {
-                            let this_item = data[key].items[key2];
-                            optgrp.append($("<option/>").val(key2).text(this_item));
-                        });
-                        options.push(optgrp);
-                    } else {
-                        options.push($("<option/>").val('').text(data[key].label));
-                    }
-                });
+                $(".net_selector").replaceInputWithSelector(data);
             }
-            if (options.length == 0) {
-                // unable to fetch options.
-                return;
-            }
-            $(".net_selector").each(function(){
-                let $items = $("#network_select").clone().show();
-                let $this_input = $items.find('input');
-                let $this_select = $items.find('select');
-                for (i=0; i < options.length; ++i) {
-                    $this_select.append(options[i].clone());
-                }
-                $this_select.attr('for', $(this).attr('id')).selectpicker();
-                $this_select.change(function(){
-                    let $value = $(this).val();
-                    if ($value !== '') {
-                        $this_input.val($value);
-                        $this_input.hide();
-                    } else {
-                        $this_input.show();
-                    }
-                });
-                $this_input.attr('id', $(this).attr('id'));
-                $this_input.change(function(){
-                    $this_select.val($(this).val());
-                    if ($this_select.val() === null || $this_select.val() == '') {
-                        $this_select.val('');
-                        $this_input.show();
-                    } else {
-                        $this_input.hide();
-                    }
-                    $this_select.selectpicker('refresh');
-                });
-                $this_input.show();
-                $(this).replaceWith($items);
-            });
-
         });
     });
 </script>
@@ -229,22 +180,6 @@
         <br/><br/>
     </div>
     </div>
-</div>
-
-<div id="network_select" style="display: none;" >
-    <table style="max-width: 348px">
-        <tr>
-            <td>
-                <select data-live-search="true" data-size="5" data-width="348px">
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input style="display:none;" type="text"/>
-            </td>
-        </tr>
-    </table>
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogFilterRule,'id':'DialogFilterRule','label':lang._('Edit rule')])}}
