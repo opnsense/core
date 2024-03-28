@@ -877,3 +877,12 @@ div[data-for*="help_for"] {
 #OPNsenseStdWaitDialog div.modal-body {
   padding: 15px;
 }
+
+.modal-body {
+  max-height: calc(100vh - 265px);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 15px;
+}
