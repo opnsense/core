@@ -725,3 +725,85 @@ $.fn.SimpleFileUploadDlg = function (params) {
         return button;
     });
 }
+
+/**
+ * Changes an input to a selector with manual input option.
+ * Expects the following structure:
+ *      {
+ *          group_name: {
+ *              label: 'this items label',
+ *              items: {                    << omit to mark the manual (empty) input
+ *                  key: 'value',
+ *              }
+ *          }
+ *      }
+ * @param {*} params data structure to use for the select picker
+ */
+$.fn.replaceInputWithSelector = function (data) {
+    let that = this;
+    this.new_item = function() {
+        let $div = $("<div/>");
+        let $table = $('<table style="max-width: 348px"/>');
+        $table.append(
+            $("<tr/>").append(
+                $("<td/>").append($('<select data-live-search="true" data-size="5" data-width="348px"/>'))
+            )
+        );
+        $table.append(
+            $("<tr/>").append(
+                $("<td/>").append($('<input style="display:none;" type="text"/>'))
+            )
+        );
+        $div.append($table);
+        return $div;
+    }
+
+    this.construct = function () {
+        let options = [];
+        Object.keys(data).forEach((key, idx) => {
+            if (data[key].items !== undefined) {
+                let optgrp = $("<optgroup/>").attr('label', data[key].label);
+                Object.keys(data[key].items).forEach((key2, idx2) => {
+                    let this_item = data[key].items[key2];
+                    optgrp.append($("<option/>").val(key2).text(this_item));
+                });
+                options.push(optgrp);
+            } else {
+                options.push($("<option/>").val('').text(data[key].label));
+            }
+        });
+        let $target = that.new_item();
+        $(this).replaceWith($target);
+        let $this_input = $target.find('input');
+        let $this_select = $target.find('select');
+        for (i=0; i < options.length; ++i) {
+            $this_select.append(options[i].clone());
+        }
+        $this_select.attr('for', $(this).attr('id')).selectpicker();
+        $this_select.change(function(){
+            let $value = $(this).val();
+            if ($value !== '') {
+                $this_input.val($value);
+                $this_input.hide();
+            } else {
+                $this_input.show();
+            }
+        });
+        $this_input.attr('id', $(this).attr('id'));
+        $this_input.change(function(){
+            $this_select.val($(this).val());
+            if ($this_select.val() === null || $this_select.val() == '') {
+                $this_select.val('');
+                $this_input.show();
+            } else {
+                $this_input.hide();
+            }
+            $this_select.selectpicker('refresh');
+        });
+        $this_input.show();
+    }
+
+    return this.each(function () {
+        return $.proxy(that.construct, $(this))();
+    });
+}
