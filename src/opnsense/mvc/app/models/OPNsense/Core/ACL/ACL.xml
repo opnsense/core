@@ -74,6 +74,20 @@
             <pattern>api/monit/status/get/xml</pattern>
         </patterns>
     </page-dashboard-widgets>
+    <page-dashboard-widget-interfaces>
+        <name>Dashboard: Interfaces overview widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/interfaces/overview/*</pattern>
+        </patterns>
+    </page-dashboard-widget-interfaces>
+    <page-dashboard-widget-cpu>
+        <name>Dashboard: CPU Usage widget</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/diagnostics/cpu_usage/*</pattern>
+        </patterns>
+    </page-dashboard-widget-cpu>
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
