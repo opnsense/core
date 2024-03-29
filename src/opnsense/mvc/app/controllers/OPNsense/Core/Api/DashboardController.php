@@ -34,9 +34,9 @@ use OPNsense\Core\Config;
 
 class DashboardController extends ApiControllerBase
 {
-    private function getTranslations($id)
+    private function getTranslations()
     {
-        $translations = [
+        return [
             'cpu' => [
                 'title' => gettext('CPU Usage'),
                 'total' => gettext('Total'),
@@ -48,8 +48,6 @@ class DashboardController extends ApiControllerBase
                 'title' => gettext('Interfaces'),
             ]
         ];
-
-        return $translations[$id] ?? [];
     }
 
     private function canAccessEndpoints($fname)
@@ -122,7 +120,7 @@ class DashboardController extends ApiControllerBase
             $result['modules'][] = [
                 'id' => $id,
                 'module' => basename($module),
-                'translations' => $this->getTranslations($id)
+                'translations' => $this->getTranslations()[$id] ?? []
             ];
         }
 
