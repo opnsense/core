@@ -35,7 +35,7 @@ require_once("system.inc");
 $a_defaults = system_sysctl_defaults();
 $a_system = []; /* to be filled from defaults */
 $a_tunable = &config_read_array('sysctl', 'item');
-$a_sysctl = json_decode(configd_run('system sysctl'), true);
+$a_sysctl = json_decode(configd_run('system sysctl gather'), true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && isset($a_tunable[$_GET['id']])) {
