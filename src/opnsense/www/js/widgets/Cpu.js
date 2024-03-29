@@ -32,7 +32,6 @@ import BaseWidget from "./BaseWidget.js";
 export default class Cpu extends BaseWidget {
     constructor() {
         super();
-        this.title = 'CPU Usage';
         this.resizeHandles = "e, w";
     }
 
@@ -65,19 +64,19 @@ export default class Cpu extends BaseWidget {
         let $container = $(`
         <div class="canvas-container">
             <div class="smoothie-container">
-                <b>Total</b>
+                <b>${this.translations.total}</b>
                 <div><canvas id="cpu-usage" style="width: 80%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
-                <b>Interrupt</b>
+                <b>${this.translations.interrupt}</b>
                 <div><canvas id="cpu-usage-intr" style="width: 80%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
-                <b>User</b>
+                <b>${this.translations.user}</b>
                 <div><canvas id="cpu-usage-user" style="width: 80%; height: 50px;"></canvas></div>
             </div>
             <div class="smoothie-container">
-                <b>System</b>
+                <b>${this.translations.system}</b>
                 <div><canvas id="cpu-usage-sys" style="width: 80%; height: 50px;"></canvas></div>
             </div>
         </div>`);

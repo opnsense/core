@@ -32,7 +32,6 @@ import BaseTableWidget from "./BaseTableWidget.js";
 export default class Interfaces extends BaseTableWidget {
     constructor() {
         super();
-        this.title = "Interfaces";
         this.resizeHandles = "e, w";
     }
 

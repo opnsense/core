@@ -84,6 +84,7 @@ class WidgetManager  {
         this.gridStackOptions = gridStackOptions;
         this.gettext = gettext;
         this.loadedModules = {}; // id -> widget module
+        this.widgetTranslations = {}; // id -> translations
         this.widgetConfigurations = {}; // id -> per-widget configuration
         this.widgetClasses = {}; // id -> instantiated widget module
         this.widgetHTMLElements = {}; // id -> Element types
@@ -125,6 +126,7 @@ class WidgetManager  {
             const promises = data.modules.map(async (item) => {
                 const mod = await import('/ui/js/widgets/' + item.module);
                 this.loadedModules[item.id] = mod.default;
+                this.widgetTranslations[item.id] = item.translations;
             });
 
             // Load all modules simultaneously - this shouldn't take long
@@ -163,6 +165,13 @@ class WidgetManager  {
         // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)
         widget.setId(id);
         this.widgetClasses[id] = widget;
+
+        if (!id in this.widgetTranslations) {
+            console.error('Missing translations for widget', id);
+        }
+
+        widget.setTranslations(this.widgetTranslations[id]);
+        widget.setTitle(this.widgetTranslations[id].title);
 
         // setup generic panels
         let content = widget.getMarkup();

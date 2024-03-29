@@ -34,6 +34,24 @@ use OPNsense\Core\Config;
 
 class DashboardController extends ApiControllerBase
 {
+    private function getTranslations($id)
+    {
+        $translations = [
+            'cpu' => [
+                'title' => gettext('CPU Usage'),
+                'total' => gettext('Total'),
+                'interrupt' => gettext('Interrupt'),
+                'user' => gettext('User'),
+                'system' => gettext('System'),
+            ],
+            'interfaces' => [
+                'title' => gettext('Interfaces'),
+            ]
+        ];
+
+        return $translations[$id] ?? [];
+    }
+
     private function canAccessEndpoints($fname)
     {
         if (!file_exists($fname)) {
@@ -100,9 +118,11 @@ class DashboardController extends ApiControllerBase
 
         $result['modules'] = [];
         foreach ($widgetModules as $module) {
+            $id = strtolower(basename($module, '.js'));
             $result['modules'][] = [
-                'id' => strtolower(basename($module, '.js')),
-                'module' => basename($module)
+                'id' => $id,
+                'module' => basename($module),
+                'translations' => $this->getTranslations($id)
             ];
         }
 
