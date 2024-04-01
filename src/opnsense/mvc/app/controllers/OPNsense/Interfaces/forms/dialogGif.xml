@@ -1,0 +1,55 @@
+<form>
+    <field>
+        <id>gif.gifif</id>
+        <label>Device</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>gif.local-addr</id>
+        <label>Local address</label>
+        <type>text</type>
+        <style>net_selector</style>
+    </field>
+    <field>
+        <id>gif.remote-addr</id>
+        <label>Remote address</label>
+        <type>text</type>
+        <help>Peer address where encapsulated gif packets will be sent.</help>
+    </field>
+    <field>
+        <id>gif.tunnel-local-addr</id>
+        <label>Tunnel local address</label>
+        <type>text</type>
+        <help>Local gif tunnel endpoint</help>
+    </field>
+    <field>
+        <id>gif.tunnel-remote-addr</id>
+        <label>Tunnel remote address</label>
+        <type>text</type>
+        <help>Remote gif tunnel endpoint</help>
+    </field>
+    <field>
+        <id>gif.tunnel-remote-net</id>
+        <label>Tunnel netmask / prefix</label>
+        <type>text</type>
+        <help>Netmask [ipv4] or prefix [ipv6] to use for this tunnel</help>
+    </field>
+    <field>
+        <id>gif.link2</id>
+        <label>Disable Ingress filtering</label>
+        <type>checkbox</type>
+        <help>Ingress filtering on outer tunnel source can break tunnel operation in an asymmetrically routed networks, in which case this can be disabled by marking this option.</help>
+    </field>
+    <field>
+        <id>gif.link1</id>
+        <label>ECN friendly behavior</label>
+        <type>checkbox</type>
+        <help>Note that the ECN friendly behavior violates RFC2893. This should be used in mutual agreement with the peer.</help>
+    </field>
+    <field>
+        <id>gif.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+</form>

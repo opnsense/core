@@ -570,9 +570,11 @@ function interfaces_gif_configure($device)
 
 function _interfaces_gif_configure($gif)
 {
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($gif['gifif']);
-    legacy_interface_create($gif['gifif']);
+    $ifdetails = legacy_interfaces_details($gif['gifif']);
+    if (empty($ifdetails)) {
+        /* Only create when not already there */
+        legacy_interface_create($gif['gifif']);
+    }
 
     $gateways = new \OPNsense\Routing\Gateways();
     $interface = explode('_vip', $gif['if'])[0];
