@@ -31,7 +31,6 @@ namespace OPNsense\Interfaces;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
-
 class Gif extends BaseModel
 {
     /**

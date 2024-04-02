@@ -80,7 +80,6 @@ class LinkAddressField extends BaseField
                     natcasesort(self::$option_groups[$item]['items']);
                 }
             }
-
         }
         return parent::actionPostLoadingEvent();
     }
