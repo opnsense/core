@@ -31,8 +31,8 @@ $di->set('url', function () use ($config) {
  * Setting up the view component
  */
 $di->set('view', function () use ($config) {
-
     $view = new View();
+
     // if configuration defines more view locations, convert phalcon config items to array
     if (is_string($config->application->viewsDir)) {
         $view->setViewsDir($config->application->viewsDir);
@@ -43,24 +43,26 @@ $di->set('view', function () use ($config) {
         }
         $view->setViewsDir($viewDirs);
     }
-    $view->registerEngines(array(
-        '.volt' => function ($view) use ($config) {
 
+    $view->registerEngines([
+        '.volt' => function ($view) use ($config) {
             $volt = new VoltEngine($view, $this);
 
-            $volt->setOptions(array(
+            $volt->setOptions([
                 'path' => $config->application->cacheDir,
                 'separator' => '_'
-            ));
-            // register additional volt template functions
+            ]);
+
+            // register additional volt template functions and filters
             $volt->getCompiler()->addFunction('theme_file_or_default', 'view_fetch_themed_filename');
             $volt->getCompiler()->addFunction('file_exists', 'view_file_exists');
             $volt->getCompiler()->addFunction('cache_safe', 'view_cache_safe');
+            $volt->getCompiler()->addFilter('safe', 'view_html_safe');
 
             return $volt;
         },
-        '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
-    ));
+        '.phtml' => 'Phalcon\Mvc\View\Engine\Php',
+    ]);
 
     return $view;
 }, true);
@@ -95,8 +97,6 @@ $di->setShared('session', function () {
 
     return $session;
 });
-
-
 
 /**
  * Setup router
