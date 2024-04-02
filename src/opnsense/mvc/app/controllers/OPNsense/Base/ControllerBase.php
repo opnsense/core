@@ -230,6 +230,8 @@ class ControllerBase extends ControllerRoot
         $cnf = Config::getInstance();
 
         $this->view->setVar('lang', $this->translator);
+        $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
+
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
         $this->view->menuSystem = $menu->getItems($rewrite_uri);
         /* XXX generating breadcrumbs requires getItems() call */

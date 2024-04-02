@@ -45,7 +45,6 @@ class ControllerRoot extends Controller
      */
     public $translator;
 
-
     /**
      * log handle
      */
@@ -55,6 +54,11 @@ class ControllerRoot extends Controller
      * @var null|string logged in username, populated during authentication
      */
     protected $logged_in_user = null;
+
+    /**
+     * current language code
+     */
+    protected $langcode = 'en_US';
 
     /**
      * Wrap close session, for long running operations.
@@ -70,7 +74,7 @@ class ControllerRoot extends Controller
     protected function setLang()
     {
         $config = Config::getInstance()->object();
-        $lang = 'en_US';
+        $lang = $this->langcode;
 
         foreach ($config->system->children() as $key => $node) {
             if ($key == 'language') {
@@ -100,6 +104,8 @@ class ControllerRoot extends Controller
         /* somehow this is not done by Phalcon */
         bind_textdomain_codeset('OPNsense', $locale);
         putenv('LANG=' . $locale);
+
+        $this->langcode = $lang;
     }
 
     /**
