@@ -9,7 +9,6 @@
 /usr/local/etc/inc/IPv6.inc
 /usr/local/etc/inc/XMLRPC_Client.inc
 /usr/local/etc/inc/auth.inc
-/usr/local/etc/inc/authgui.inc
 /usr/local/etc/inc/certs.inc
 /usr/local/etc/inc/config.inc
 /usr/local/etc/inc/console.inc
@@ -2063,6 +2062,7 @@
 /usr/local/share/man/man8/opnsense-version.8.gz
 /usr/local/wizard/openvpn.xml
 /usr/local/wizard/system.xml
+/usr/local/www/authgui.inc
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
