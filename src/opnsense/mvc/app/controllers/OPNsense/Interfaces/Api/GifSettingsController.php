@@ -140,8 +140,8 @@ class GifSettingsController extends ApiMutableModelControllerBase
             }
         }
         $result = $this->delBase("gif", $uuid);
-        if ($result['result'] != 'failed' && !empty($gifif)) {
-            $this->stashUpdate($gifif);
+        if ($result['result'] != 'failed' && $node != null) {
+            $this->stashUpdate((string)$node->gifif);
         }
         return $result;
     }

@@ -4,7 +4,10 @@
     <description>GIF interfaces</description>
     <items>
         <gif type="ArrayField">
-            <local-addr type=".\LinkAddressField" volatile="true"/>
+            <local-addr type=".\LinkAddressField" volatile="true">
+                <Required>Y</Required>
+                <Default>wan</Default>
+            </local-addr>
             <!--
                 local address is either an interface, carp address or an ordinary address.
                 The LinkAddressField type dispatches into the fields below and validates the options available.
@@ -32,6 +35,7 @@
             </tunnel-remote-addr>
             <tunnel-remote-net type="IntegerField">
                 <Required>Y</Required>
+                <Default>32</Default>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>128</MaximumValue>
             </tunnel-remote-net>

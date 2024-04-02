@@ -119,7 +119,7 @@ class LinkAddressField extends BaseField
                 return (string)$parent->$fieldname;
             }
         }
-        return null;
+        return (string)$this->internalValue;
     }
 
     /**

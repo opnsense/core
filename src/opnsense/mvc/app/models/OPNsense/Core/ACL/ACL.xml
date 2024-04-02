@@ -361,15 +361,10 @@
     <page-interfaces-gif>
         <name>Interfaces: GIF</name>
         <patterns>
-            <pattern>interfaces_gif.php*</pattern>
+            <pattern>ui/interfaces/gif</pattern>
+            <pattern>ui/interfaces/gif_settings/*</pattern>
         </patterns>
     </page-interfaces-gif>
-    <page-interfaces-gif-edit>
-        <name>Interfaces: GIF: Edit</name>
-        <patterns>
-            <pattern>interfaces_gif_edit.php*</pattern>
-        </patterns>
-    </page-interfaces-gif-edit>
     <page-interfaces-gre>
         <name>Interfaces: GRE</name>
         <patterns>

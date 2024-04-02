@@ -30,6 +30,7 @@
 require_once 'config.inc';
 require_once 'interfaces.inc';
 require_once 'util.inc';
+require_once 'system.inc';
 
 /* gather all relevant gif interfaces*/
 $gifs_todo = [];

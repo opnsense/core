@@ -575,25 +575,25 @@ function _interfaces_gif_configure($gif)
         legacy_interface_create($gif['gifif']);
     }
 
-    $gateways = new \OPNsense\Routing\Gateways();
-    $interface = explode('_vip', $gif['if'])[0];
+    $interface = !empty($gif['if']) ? explode('_vip', $gif['if'])[0] : null;
+    $family = is_ipaddrv4($gif['remote-addr']) ? 'inet' : 'inet6';
+    /* XXX: remove routing part in 24.7 */
+    $remote_gw = null;
+    if (!empty($interface)) {
+        $remote_gw = (new \OPNsense\Routing\Gateways())->getInterfaceGateway($interface, $family);
+        if ($family == 'inet6' && is_linklocal($remote_gw) && strpos($remote_gw, '%') === false) {
+            $remote_gw .= '%' . get_real_interface($interface, 'inet6');
+        }
+    }
 
-    if (is_ipaddrv4($gif['remote-addr'])) {
+    if ($family == 'inet') {
         $local_addr = get_interface_ip(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if']);
-        $remote_gw = $gateways->getInterfaceGateway($interface, 'inet');
-        $family = 'inet';
-    } elseif (is_ipaddrv6($gif['remote-addr'])) {
+    } else {
         if (is_linklocal($gif['remote-addr'])) {
             $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'scoped');
-            $remote_gw = null;
         } else {
             $local_addr = get_interface_ipv6(!empty($gif['ipaddr']) ? $gif['ipaddr'] : $gif['if'], null, 'routed');
-            $remote_gw = $gateways->getInterfaceGateway($interface, 'inet6');
-            if (is_linklocal($remote_gw) && strpos($remote_gw, '%') === false) {
-                $remote_gw .= '%' . get_real_interface($interface, 'inet6');
-            }
         }
-        $family = 'inet6';
     }
 
     /* ensured device is there, but do not configure unless system is ready */
@@ -634,12 +634,12 @@ function _interfaces_gif_configure($gif)
     $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
     legacy_interface_flags($gif['gifif'], $flags);
 
+    interfaces_bring_up($gif['gifif']);
+
+    /* XXX: remove below routing blocks in 24.7 */
     if (!empty($remote_gw)) {
         system_host_route($remote_addr, $remote_gw);
     }
-
-    interfaces_bring_up($gif['gifif']);
-
     mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
         $gif['gifif'],
         is_ipaddrv4($gif['tunnel-remote-addr']) ? '4' : '6',

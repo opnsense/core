@@ -112,9 +112,7 @@
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
-            <GIF url="/interfaces_gif.php">
-                <Edit url="/interfaces_gif_edit.php*" visibility="hidden"/>
-            </GIF>
+            <GIF url="/ui/interfaces/gif"/>
             <GRE url="/interfaces_gre.php">
                 <Edit url="/interfaces_gre_edit.php*" visibility="hidden"/>
             </GRE>
