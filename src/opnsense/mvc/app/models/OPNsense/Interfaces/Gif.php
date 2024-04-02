@@ -30,6 +30,8 @@ namespace OPNsense\Interfaces;
 
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
+use OPNsense\Firewall\Util;
+
 
 class Gif extends BaseModel
 {
@@ -39,6 +41,35 @@ class Gif extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
+        foreach ($this->gif->iterateItems() as $gif) {
+            if (!$validateFullModel && !$gif->isFieldChanged()) {
+                continue;
+            }
+            $key = $gif->__reference;
+            if (Util::isIpAddress($gif->{'local-addr'})) {
+                $proto_local = strpos($gif->{'local-addr'}, ':') === false ? "inet" : "inet6";
+                $proto_remote = strpos($gif->{'remote-addr'}, ':') === false ? "inet" : "inet6";
+                if ($proto_local != $proto_remote) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext("The remote address family has to match the one used in local."),
+                            $key . ".remote-addr"
+                        )
+                    );
+                }
+            }
+            $proto_tun_local = strpos($gif->{'tunnel-local-addr'}, ':') === false ? "inet" : "inet6";
+            $proto_tun_remote = strpos($gif->{'tunnel-remote-addr'}, ':') === false ? "inet" : "inet6";
+            if ($proto_tun_local != $proto_tun_remote) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("The remote address family has to match the one used in local."),
+                        $key . ".tunnel-remote-addr"
+                    )
+                );
+            }
+
+        }
         return $messages;
     }
 }

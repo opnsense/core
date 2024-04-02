@@ -570,8 +570,7 @@ function interfaces_gif_configure($device)
 
 function _interfaces_gif_configure($gif)
 {
-    $ifdetails = legacy_interfaces_details($gif['gifif']);
-    if (empty($ifdetails)) {
+    if (!does_interface_exist($gif['gifif'])) {
         /* Only create when not already there */
         legacy_interface_create($gif['gifif']);
     }

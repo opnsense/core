@@ -128,28 +128,16 @@ class GifSettingsController extends ApiMutableModelControllerBase
     {
         Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('gif.' . $uuid);
-        $gifif = $node != null ? (string)$node->gifif : null;
-        $uses = [];
-        $cfg = Config::getInstance()->object();
-        foreach ($cfg->interfaces->children() as $key => $value) {
-            if ((string)$value->if == $gifif) {
-                $uses['interfaces.' . $key] = !empty($value->descr) ? (string)$value->descr : $key;
-            }
-        }
-        if (isset($cfg->vlans) && isset($cfg->vlans->vlan)) {
-            foreach ($cfg->vlans->children() as $vlan) {
-                if ((string)$vlan->if == $gifif) {
-                    $uses[(string)$vlan->vlanif] = !empty($vlan->descr) ? (string)$vlan->descr : $key;
+        if ($node != null) {
+            $cfg = Config::getInstance()->object();
+            foreach ($cfg->interfaces->children() as $key => $value) {
+                if ((string)$value->if == (string)$node->gifif) {
+                    throw new \OPNsense\Base\UserException(
+                        sprintf(gettext("Cannot delete gif. Currently in use by [%s] %s"), $key, $value),
+                        gettext("gif in use")
+                    );
                 }
             }
-        }
-        if (!empty($uses)) {
-            $message = "";
-            foreach ($uses as $key => $value) {
-                $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
-            }
-            $message = sprintf(gettext("Cannot delete gif. Currently in use by %s"), $message);
-            throw new \OPNsense\Base\UserException($message, gettext("gif in use"));
         }
         $result = $this->delBase("gif", $uuid);
         if ($result['result'] != 'failed' && !empty($gifif)) {
