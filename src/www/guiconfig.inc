@@ -49,6 +49,22 @@ header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: same-origin');
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
+function html_safe($text)
+{
+    /* gettext() embedded in JavaScript can cause syntax errors */
+    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
+}
+
+function cache_safe($url)
+{
+    $info = stat('/usr/local/opnsense/www/index.php');
+    if (!empty($info['mtime'])) {
+        return "{$url}?v=" . substr(md5($info['mtime']), 0, 16);
+    }
+
+    return html_safe($url);
+}
+
 function get_current_theme()
 {
     global $config;
@@ -60,12 +76,6 @@ function get_current_theme()
     }
 
     return $theme;
-}
-
-function html_safe($text)
-{
-    /* gettext() embedded in JavaScript can cause syntax errors */
-    return str_replace("\n", '&#10;', htmlspecialchars($text ?? '', ENT_QUOTES | ENT_HTML401));
 }
 
 /**
