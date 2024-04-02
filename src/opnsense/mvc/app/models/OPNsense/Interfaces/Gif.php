@@ -32,7 +32,6 @@ use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
 
-
 class Gif extends BaseModel
 {
     /**
@@ -68,7 +67,6 @@ class Gif extends BaseModel
                     )
                 );
             }
-
         }
         return $messages;
     }
