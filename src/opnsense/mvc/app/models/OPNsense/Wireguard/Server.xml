@@ -66,7 +66,7 @@
                         </template>
                     </Model>
                     <Multiple>Y</Multiple>
-                    <ValidationMessage>Choose an Peer.</ValidationMessage>
+                    <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
             </server>
         </servers>
