@@ -361,6 +361,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GifSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GreSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LaggSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/LoopbackSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
@@ -369,6 +370,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GifController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GreController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LaggController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/LoopbackController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
@@ -377,6 +379,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGif.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGre.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLagg.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
@@ -689,6 +692,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VlanInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Gif.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Gif.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Gre.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Gre.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Lagg.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Lagg.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
@@ -828,6 +833,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/gif.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/gre.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/lagg.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/loopback.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
@@ -1047,6 +1053,7 @@
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
 /usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_gifs.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
