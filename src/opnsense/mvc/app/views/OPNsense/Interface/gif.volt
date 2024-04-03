@@ -1,6 +1,6 @@
 <script>
     $( document ).ready(function() {
-        $("#grid-vlans").UIBootgrid(
+        $("#grid").UIBootgrid(
             {   search:'/api/interfaces/gif_settings/searchItem/',
                 get:'/api/interfaces/gif_settings/getItem/',
                 set:'/api/interfaces/gif_settings/setItem/',
@@ -18,7 +18,7 @@
     });
 </script>
 <div class="tab-content content-box">
-  <table id="grid-vlans" class="table table-condensed table-hover table-striped" data-editDialog="DialogGif" data-editAlert="GifChangeMessage">
+  <table id="grid" class="table table-condensed table-hover table-striped" data-editDialog="DialogGif" data-editAlert="GifChangeMessage">
       <thead>
           <tr>
               <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
