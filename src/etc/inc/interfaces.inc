@@ -493,16 +493,20 @@ function interfaces_gre_configure($device)
 
 function _interfaces_gre_configure($gre)
 {
-    /* XXX avoid destroy/create */
-    legacy_interface_destroy($gre['greif']);
-    legacy_interface_create($gre['greif']);
+    if (!does_interface_exist($gre['greif'])) {
+        /* Only create when not already there */
+        legacy_interface_create($gre['greif']);
+    }
 
-    if (is_ipaddrv4($gre['remote-addr'])) {
+    $family = is_ipaddrv4($gre['remote-addr']) ? 'inet' : 'inet6';
+    if (!empty($gre['ipaddr'])) {
+        /* MVC splits content into if and ipaddr fields, legacy input stores the address in "if",
+           in which case get_interface_* will return an address when offered */
+        $local_addr = $gre['ipaddr'];
+    } elseif ($family == 'inet') {
         $local_addr = get_interface_ip($gre['if']);
-        $family = 'inet';
-    } elseif (is_ipaddrv6($gre['remote-addr'])) {
+    } else {
         $local_addr = get_interface_ipv6($gre['if'], null, is_linklocal($gre['remote-addr']) ? 'scoped' : 'routed');
-        $family = 'inet6';
     }
 
     /* ensured device is there, but do not configure unless system is ready */
@@ -542,6 +546,7 @@ function _interfaces_gre_configure($gre)
 
     interfaces_bring_up($gre['greif']);
 
+    /* XXX: write XXX_router file */
     mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
         $gre['greif'],
         is_ipaddrv4($gre['tunnel-remote-addr']) ? '4' : '6',
@@ -636,10 +641,12 @@ function _interfaces_gif_configure($gif)
 
     interfaces_bring_up($gif['gifif']);
 
-    /* XXX: remove below routing blocks in 24.7 */
+    /* XXX: remove below routing block in 24.7 */
     if (!empty($remote_gw)) {
         system_host_route($remote_addr, $remote_gw);
     }
+
+    /* XXX: write XXX_router file */
     mwexecf('/usr/local/sbin/ifctl -i %s -%s -rd -a %s', [
         $gif['gifif'],
         is_ipaddrv4($gif['tunnel-remote-addr']) ? '4' : '6',
