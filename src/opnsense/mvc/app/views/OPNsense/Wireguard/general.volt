@@ -114,7 +114,7 @@
         });
 
         /**
-         * Config maker tab hooks
+         * Peer generator tab hooks
          */
         $("#control_label_configbuilder\\.psk").append($("#pskgen_cb_div").detach().show());
         $("#pskgen_cb").click(function(){
@@ -239,7 +239,7 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="tab_instances" href="#instances">{{ lang._('Instances') }}</a></li>
     <li><a data-toggle="tab" id="tab_peers" href="#peers">{{ lang._('Peers') }}</a></li>
-    <li><a data-toggle="tab" id="tab_configbuilder" href="#configbuilder">{{ lang._('Peer config builder') }}</a></li>
+    <li><a data-toggle="tab" id="tab_configbuilder" href="#configbuilder">{{ lang._('Peer generator') }}</a></li>
 </ul>
 
 <div class="tab-content content-box tab-content">
@@ -326,7 +326,6 @@
                 <i class="fa fa-fw fa-check"></i>
               </button>
         </span>
-
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
 </div>
