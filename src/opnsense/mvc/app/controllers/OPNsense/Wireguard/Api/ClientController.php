@@ -138,6 +138,27 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function addClientBuilderAction()
     {
-        return $this->addBase('configbuilder', 'clients.client');
+        $uuid = null;
+        if ($this->request->isPost() && !empty($this->request->getPost('configbuilder'))) {
+            Config::getInstance()->lock();
+            $mdl = new Server();
+            $uuid = $this->getModel()->clients->generateUUID();
+            $server = $this->request->getPost('configbuilder')['server'];
+            foreach ($mdl->servers->server->iterateItems() as $key => $node) {
+                if ($key == $server) {
+                    $peers = array_filter(explode(',', (string)$node->peers));
+                    $node->peers = implode(',', array_merge($peers, [$uuid]));
+                    break;
+                }
+            }
+            /**
+             * Save to in memory model.
+             * Ignore validations as $uuid might be new or trigger an existing validation issue.
+             * Persisting the data is handled by setBase()
+             */
+            $mdl->serializeToConfig(false, true);
+        }
+
+        return $this->setBase('configbuilder', 'clients.client', $uuid);
     }
 }
