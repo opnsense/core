@@ -46,6 +46,15 @@ class DashboardController extends ApiControllerBase
             ],
             'interfaces' => [
                 'title' => gettext('Interfaces'),
+            ],
+            'systeminformation' => [
+                'title' => gettext('System Information'),
+                'name' => gettext('Name'),
+                'versions' => gettext('Versions'),
+                'updates' => gettext('Updates'),
+                'datetime' => gettext('Current date/time'),
+                'uptime' => gettext('Uptime'),
+                'config' => gettext('Last configuration change')
             ]
         ];
     }

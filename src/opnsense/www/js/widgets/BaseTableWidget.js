@@ -20,6 +20,7 @@ export default class BaseTableWidget extends BaseWidget {
                 '.flextable-row': {'padding': '0.5em 0.5em'},
                 '.header .flex-row': {'border-bottom': ''},
                 '.flex-row': {'width': this._calculateColumnWidth.bind(this)},
+                '.column .flex-row': {'width': '100%'},
                 '.column': {'width': ''},
                 '.flex-cell': {'width': ''},
             }
@@ -47,11 +48,26 @@ export default class BaseTableWidget extends BaseWidget {
         return '';
     }
 
+    _constructTable() {
+        if (this.options === null) {
+            console.error('No table options set');
+            return null;
+        }
+
+        this.$flextable = $(`<div class="flextable-container" id="${this.flextableId}" role="table"></div>`)
+
+        if (this.options.headerPosition === 'top') {
+            this.$headerContainer = $(`<div class="flextable-header"></div>`);
+            this.$flextable.append(this.$headerContainer);
+        }
+    }
+
     setTableOptions(options = {}) {
         /**
          * headerPosition: top, left or none.
          *  top: headers are on top of the table. Data layout: [{header1: value1}, {header1: value2}, ...]
-         *  left: headers are on the left of the table (key-value). Data layout: [{header1: value1, header2: value2}, ...]
+         *  left: headers are on the left of the table (key-value). Data layout: [{header1: value1}, {header2: value2}, ...].
+         *        Supports nested columns (e.g. {header1: [value1, value2...]})
          *  none: no headers. Data layout: [[value1, value2], ...]
          */
         this.options = {
@@ -60,15 +76,12 @@ export default class BaseTableWidget extends BaseWidget {
         }
     }
 
-    updateTable(data = [], clear = true) {
+    updateTable(data = []) {
         let $table = $(`#${this.flextableId}`);
 
-        if (clear) {
-            $table.children('.flextable-row').remove();
-        }
+        $table.children('.flextable-row').remove();
 
         for (const row of data) {
-            this.data.push(row);
             let rowType = Array.isArray(row) && row !== null ? 'flat' : 'nested';
             if (rowType === 'flat' && this.options.headerPosition !== 'none') {
                 console.error('Flat data is not supported with headers');
@@ -80,16 +93,17 @@ export default class BaseTableWidget extends BaseWidget {
                 return null;
             }
 
-            if (rowType === 'flat') {
-                let $row = $(`<div class="flextable-row"></div>`)
-                for (const item of row) {
-                    $row.append($(`
-                        <div class="flex-row" role="cell">${item}</div>
-                    `));
-                }
-                $table.append($row);
-            } else {
-                if (this.options.headerPosition === 'top') {
+            switch (this.options.headerPosition) {
+                case "none":
+                    let $row = $(`<div class="flextable-row"></div>`)
+                    for (const item of row) {
+                        $row.append($(`
+                            <div class="flex-row" role="cell">${item}</div>
+                        `));
+                    }
+                    $table.append($row);
+                break;
+                case "top":
                     let $flextableRow = $(`<div class="flextable-row"></div>`);
                     for (const [h, c] of Object.entries(row)) {
                         if (!this.headers.has(h)) {
@@ -115,49 +129,35 @@ export default class BaseTableWidget extends BaseWidget {
                         }
                     }
                     $table.append($flextableRow);
-                } else if (this.options.headerPosition === 'left') {
+                break;
+                case "left":
                     for (const [h, c] of Object.entries(row)) {
                         if (Array.isArray(c)) {
                             // nested column
-                            let $row = $('<div class="flextable-row" role="rowgroup"></div>');
+                            let $row = $('<div class="flextable-row"></div>');
                             $row.append($(`
-                                <div class="flex-row rowspan first" role="cell"><b>${h}</b></div>
+                                <div class="flex-row rowspan first"><b>${h}</b></div>
                             `));
                             let $column = $('<div class="column"></div>');
                             for (const item of c) {
                                 $column.append($(`
                                     <div class="flex-row">
-                                        <div class="flex-cell" role="cell">${item}</div>
+                                        <div class="flex-cell">${item}</div>
                                     </div>
                                 `));
                             }
                             $table.append($row.append($column));
                         } else {
                             $table.append($(`
-                            <div class="flextable-row" role="rowgroup">
-                                <div class="flex-row first" role="cell"><b>${h}</b></div>
-                                <div class="flex-row" role="cell">${c}</div>
+                            <div class="flextable-row">
+                                <div class="flex-row first"><b>${h}</b></div>
+                                <div class="flex-row">${c}</div>
                             </div>
-                        `));
+                            `));
                         }
                     }
-                }
+                break;
             }
-
-        }
-    }
-
-    _constructTable() {
-        if (this.options === null) {
-            console.error('No table options set');
-            return null;
-        }
-
-        this.$flextable = $(`<div class="flextable-container" id="${this.flextableId}" role="table"></div>`)
-
-        if (this.options.headerPosition === 'top') {
-            this.$headerContainer = $(`<div class="flextable-header"></div>`);
-            this.$flextable.append(this.$headerContainer);
         }
     }
 

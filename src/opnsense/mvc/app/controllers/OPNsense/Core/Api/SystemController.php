@@ -33,6 +33,7 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 
 /**
  * Class SystemController
@@ -40,6 +41,24 @@ use OPNsense\Core\Backend;
  */
 class SystemController extends ApiControllerBase
 {
+    private function formatUptime($uptime)
+    {
+        $days = floor($uptime / (3600 * 24));
+        $hours = floor(($uptime % (3600 * 24)) / 3600);
+        $minutes = floor(($uptime % 3600) / 60);
+        $seconds = $uptime % 60;
+
+        if ($days > 0) {
+            $plural = $days > 1 ? gettext("days") : gettext("day");
+            return sprintf(
+                "%d %s, %02d:%02d:%02d",
+                $days, $plural, $hours, $minutes, $seconds
+            );
+        } else {
+            return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+        }
+    }
+
     public function haltAction()
     {
         if ($this->request->isPost()) {
@@ -184,5 +203,57 @@ class SystemController extends ApiControllerBase
         }
 
         return ["status" => "failed"];
+    }
+
+    public function systemInformationAction()
+    {
+        $config = Config::getInstance()->object();
+        $backend = new Backend();
+
+        $product = json_decode($backend->configdRun('firmware product'), true);
+        $current = explode('_', $product['product_version'])[0];
+        /* information from changelog, more accurate for production release */
+        $from_changelog = strpos($product['product_id'], '-devel') === false &&
+            !empty($product['product_latest']) &&
+            $product['product_latest'] != $current;
+
+        /* update status from last check, also includes major releases */
+        $from_check = !empty($product['product_check']['upgrade_sets']) ||
+            !empty($product['product_check']['downgrade_packages']) ||
+            !empty($product['product_check']['new_packages']) ||
+            !empty($product['product_check']['reinstall_packages']) ||
+            !empty($product['product_check']['remove_packages']) ||
+            !empty($product['product_check']['upgrade_packages']);
+
+        $response = [
+            'name' => $config->system->hostname . '.' . $config->system->domain,
+            'versions' => [
+                sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']),
+                php_uname('s') . ' ' . php_uname('r'),
+                trim($backend->configdRun('system openssl version'))
+            ],
+            'updates' => ($from_changelog || $from_check)
+                ? gettext('Click to view pending updates.')
+                : gettext('Click to check for updates.'),
+        ];
+
+        return json_encode($response);
+    }
+
+    public function systemTimeAction()
+    {
+        $config = Config::getInstance()->object();
+        $boottime = json_decode((new Backend())->configdRun('system sysctl values kern.boottime'), true);
+        preg_match("/sec = (\d+)/", $boottime['kern.boottime'], $matches);
+
+        $last_change = date("D M j G:i:s T Y", !empty($config->revision->time) ? intval($config->revision->time) : 0);
+
+        $response = [
+            'uptime' => $this->formatUptime(time() - $matches[1]),
+            'datetime' => date("D M j G:i:s T Y"),
+            'config' => $last_change,
+        ];
+
+        return json_encode($response);
     }
 }

@@ -32,6 +32,8 @@
 <!-- gridstack core -->
 <script src="{{ cache_safe('/ui/js/gridstack-all.min.js') }}"></script>
 
+<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
+
 <script src="{{ cache_safe('/ui/js/opnsense_widget_manager.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
 
