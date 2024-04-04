@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/wireguard/server</mount>
     <description>WireGuard instance configuration</description>
-    <version>0.0.4</version>
+    <version>1.0.0</version>
     <items>
         <servers>
             <server type=".\ServerField">
@@ -52,7 +52,6 @@
                         </check001>
                     </Constraints>
                 </disableroutes>
-                <endpoint type="TextField"/>
                 <gateway type="NetworkField"/>
                 <carp_depend_on type="VirtualIPField">
                     <type>carp</type>
@@ -69,6 +68,9 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <!-- Peer generator storage [default values] -->
+                <endpoint type="TextField"/>
+                <peer_dns type="TextField"/>
             </server>
         </servers>
     </items>
