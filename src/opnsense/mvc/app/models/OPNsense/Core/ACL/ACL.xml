@@ -358,13 +358,13 @@
             <pattern>interfaces_bridge.php*</pattern>
         </patterns>
     </page-interfaces-bridge>
-    <page-interfaces-gif>
+    <page-interfaces-gif-edit>
         <name>Interfaces: GIF</name>
         <patterns>
             <pattern>ui/interfaces/gif</pattern>
             <pattern>ui/interfaces/gif_settings/*</pattern>
         </patterns>
-    </page-interfaces-gif>
+    </page-interfaces-gif-edit>
     <page-interfaces-gre-edit>
         <name>Interfaces: GRE</name>
         <patterns>
