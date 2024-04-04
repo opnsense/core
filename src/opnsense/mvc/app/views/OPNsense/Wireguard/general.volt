@@ -158,7 +158,7 @@
                     psk: $("#configbuilder\\.psk").val(),
                     tunneladdress: $("#configbuilder\\.tunneladdress").val(),
                     keepalive: $("#configbuilder\\.keepalive").val(),
-                    servers: instance_id,
+                    server: instance_id,
                 }
             };
             ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
