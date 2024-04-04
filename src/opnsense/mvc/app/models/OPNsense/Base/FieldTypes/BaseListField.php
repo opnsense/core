@@ -122,6 +122,20 @@ abstract class BaseListField extends BaseField
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        $items = [];
+        foreach ($this->getNodeData() as $fieldValue) {
+            if ($fieldValue['selected'] == 1) {
+                $items[] = $fieldValue['value'];
+            }
+        }
+        return implode(',',  $items);
+    }
+
 
     /**
      * {@inheritdoc}
