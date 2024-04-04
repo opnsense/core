@@ -56,7 +56,7 @@ class LinkAddressField extends BaseField
                 if (!empty((string)$node->virtual) || empty((string)$node->enable)) {
                     continue;
                 }
-                self::$known_addresses[] = $ifname;
+                self::$known_addresses[$ifname] = $descr;
                 self::$option_groups['interfaces']['items'][$ifname] = $descr;
             }
             if (isset($cfg->virtualip)) {
@@ -69,7 +69,7 @@ class LinkAddressField extends BaseField
                     } else {
                         continue;
                     }
-                    self::$known_addresses[] = $key;
+                    self::$known_addresses[$key] = $descr;
                     self::$option_groups[(string)$node->mode]['items'][$key] = $descr;
                 }
             }
@@ -96,7 +96,7 @@ class LinkAddressField extends BaseField
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 $messages = [];
-                if (in_array($data, self::$known_addresses)) {
+                if (isset(self::$known_addresses[$data])) {
                     return $messages;
                 } elseif (!Util::isIpAddress($data)) {
                     $messages[] = gettext('A valid network address is required.');
@@ -106,6 +106,17 @@ class LinkAddressField extends BaseField
         }
 
         return $validators;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        if (isset(self::$known_addresses[$this->internalValue])) {
+            return self::$known_addresses[$this->internalValue];
+        }
+        return $this->internalValue;
     }
 
     /**
