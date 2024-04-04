@@ -72,6 +72,18 @@ foreach (array_keys($gres_todo) as $greif) {
     reconfigure still existing gres,
     removal should happen first as it may free parent interfaces.
 */
+$ifdetails = legacy_interfaces_details();
 foreach ($gre_configure as $gre) {
+    $reconfigure = false;
+    if (isset($ifdetails[$gre['greif']])){
+        /* when reconfiguring, we need to remove addresses (at least for IPv6) to prevent old ones left behind */
+        $reconfigure = true;
+        interfaces_addresses_flush($gre['greif'], 4, $ifdetails);
+        interfaces_addresses_flush($gre['greif'], 6, $ifdetails);
+    }
     _interfaces_gre_configure($gre);
+    if ($reconfigure) {
+        /* re-apply additional addresses and hook routing */
+        interfaces_restart_by_device(false, [$gre['greif']]);
+    }
 }

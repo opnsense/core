@@ -113,9 +113,7 @@
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
             <GIF url="/ui/interfaces/gif"/>
-            <GRE url="/interfaces_gre.php">
-                <Edit url="/interfaces_gre_edit.php*" visibility="hidden"/>
-            </GRE>
+            <GRE url="/ui/interfaces/gre"/>
         </Types>
         <Diagnostics order="970" cssClass="fa fa-medkit fa-fw">
             <DNSLookup VisibleName="DNS Lookup" url="/ui/diagnostics/dns_diagnostics"/>

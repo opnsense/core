@@ -365,16 +365,11 @@
             <pattern>ui/interfaces/gif_settings/*</pattern>
         </patterns>
     </page-interfaces-gif>
-    <page-interfaces-gre>
+    <page-interfaces-gre-edit>
         <name>Interfaces: GRE</name>
         <patterns>
-            <pattern>interfaces_gre.php*</pattern>
-        </patterns>
-    </page-interfaces-gre>
-    <page-interfaces-gre-edit>
-        <name>Interfaces: GRE: Edit</name>
-        <patterns>
-            <pattern>interfaces_gre_edit.php*</pattern>
+            <pattern>ui/interfaces/gre</pattern>
+            <pattern>ui/interfaces/gre_settings/*</pattern>
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups-edit>

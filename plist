@@ -2099,8 +2099,6 @@
 /usr/local/www/interfaces_assign.php
 /usr/local/www/interfaces_bridge.php
 /usr/local/www/interfaces_bridge_edit.php
-/usr/local/www/interfaces_gre.php
-/usr/local/www/interfaces_gre_edit.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
 /usr/local/www/interfaces_wireless.php
