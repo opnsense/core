@@ -127,13 +127,18 @@ abstract class BaseListField extends BaseField
      */
     public function getDescription()
     {
-        $items = [];
-        foreach ($this->getNodeData() as $fieldValue) {
-            if ($fieldValue['selected'] == 1) {
-                $items[] = $fieldValue['value'];
+        $data = $this->getNodeData();
+        if (is_array($data)) {
+            $items = [];
+            foreach ($data as $fieldValue) {
+                if ($fieldValue['selected'] == 1) {
+                    $items[] = $fieldValue['value'];
+                }
             }
+            return implode(',', $items);
+        } else {
+            return $data;
         }
-        return implode(',', $items);
     }
 
 
