@@ -75,7 +75,7 @@ foreach (array_keys($gres_todo) as $greif) {
 $ifdetails = legacy_interfaces_details();
 foreach ($gre_configure as $gre) {
     $reconfigure = false;
-    if (isset($ifdetails[$gre['greif']])){
+    if (isset($ifdetails[$gre['greif']])) {
         /* when reconfiguring, we need to remove addresses (at least for IPv6) to prevent old ones left behind */
         $reconfigure = true;
         interfaces_addresses_flush($gre['greif'], 4, $ifdetails);
