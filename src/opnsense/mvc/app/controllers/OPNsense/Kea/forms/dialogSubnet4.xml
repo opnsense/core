@@ -86,4 +86,10 @@
         <type>text</type>
         <help>Boot filename to request</help>
     </field>
+    <field>
+        <id>subnet4.option_data.unifi_controller</id>
+        <label>UniFi Controller</label>
+        <type>text</type>
+        <help>IP address of your UniFi Controller</help>
+    </field>
 </form>
