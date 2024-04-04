@@ -72,6 +72,18 @@ foreach (array_keys($gifs_todo) as $gifif) {
     reconfigure still existing gifs,
     removal should happen first as it may free parent interfaces.
 */
+$ifdetails = legacy_interfaces_details();
 foreach ($gif_configure as $gif) {
+    $reconfigure = false;
+    if (isset($ifdetails[$gre['gifif']])){
+        /* when reconfiguring, we need to remove addresses (at least for IPv6) to prevent old ones left behind */
+        $reconfigure = true;
+        interfaces_addresses_flush($gre['gifif'], 4, $ifdetails);
+        interfaces_addresses_flush($gre['gifif'], 6, $ifdetails);
+    }
     _interfaces_gif_configure($gif);
+    if ($reconfigure) {
+        /* re-apply additional addresses and hook routing */
+        interfaces_restart_by_device(false, [$gre['gifif']]);
+    }
 }
