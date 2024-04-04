@@ -42,7 +42,8 @@ class CpuUsageController extends ApiControllerBase
         $sysctls = json_decode((new Backend())->configdRun('system sysctl values hw.model,kern.smp.cpus,kern.smp.cores'), true);
 
         return json_encode(
-            sprintf(gettext('%s (%s cores, %s threads)'),
+            sprintf(
+                gettext('%s (%s cores, %s threads)'),
                 $sysctls['hw.model'],
                 $sysctls['kern.smp.cpus'],
                 $sysctls['kern.smp.cores']

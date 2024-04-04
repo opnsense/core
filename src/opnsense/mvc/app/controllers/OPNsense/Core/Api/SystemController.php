@@ -52,7 +52,11 @@ class SystemController extends ApiControllerBase
             $plural = $days > 1 ? gettext("days") : gettext("day");
             return sprintf(
                 "%d %s, %02d:%02d:%02d",
-                $days, $plural, $hours, $minutes, $seconds
+                $days,
+                $plural,
+                $hours,
+                $minutes,
+                $seconds
             );
         } else {
             return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
