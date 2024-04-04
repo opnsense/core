@@ -455,7 +455,7 @@ license: debug
 
 sync: license plist-fix
 
-ARGS=	diff mfc
+ARGS=	diff feed mfc
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -484,6 +484,9 @@ diff: ensure-stable
 	else \
 		git diff --stat -p ${CORE_STABLE} ${.CURDIR}/${diff_ARGS:[1]}; \
 	fi
+
+feed: ensure-stable
+	@git log --stat -p --reverse ${CORE_STABLE}...${feed_ARGS:[1]}~1
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
