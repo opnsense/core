@@ -136,6 +136,11 @@
             ajaxGet('/api/wireguard/server/getServer/' + $(this).val(), {}, function(data, status) {
                 if (data.server) {
                     let endpoint = $("#configbuilder\\.endpoint");
+                    let peer_dns = $("#configbuilder\\.peer_dns");
+                    peer_dns
+                        .val(data.server.peer_dns)
+                        .data('org-value', data.server.peer_dns);
+
                     endpoint
                         .val(data.server.endpoint)
                         .data('org-value', data.server.endpoint)
@@ -150,6 +155,7 @@
         $("#btn_configbuilder_save").click(function(){
             let instance_id = $("#configbuilder\\.servers").val();
             let endpoint = $("#configbuilder\\.endpoint");
+            let peer_dns = $("#configbuilder\\.peer_dns");
             let peer = {
                 configbuilder: {
                     enabled: '1',
@@ -165,8 +171,13 @@
                 if (data.validations) {
                     handleFormValidation("frm_config_builder", data.validations);
                 } else {
-                    if (endpoint.val() != endpoint.data('org-value')) {
-                        let param = {'server': {'endpoint': endpoint.val()}};
+                    if (endpoint.val() != endpoint.data('org-value') || peer_dns.val() != peer_dns.data('org-value')) {
+                        let param = {
+                            'server': {
+                                'endpoint': endpoint.val(),
+                                'peer_dns': peer_dns.val()
+                            }
+                        };
                         ajaxCall('/api/wireguard/server/setServer/' + instance_id, param, function(data, status){
                             configbuilder_new();
                         });
@@ -200,6 +211,9 @@
             let rows = [];
             rows.push('[Interface]');
             rows.push('PrivateKey = ' + $("#configbuilder\\.privkey").val());
+            if ($("#configbuilder\\.peer_dns").val()) {
+                rows.push('DNS = ' + $("#configbuilder\\.peer_dns").val());
+            }
             rows.push('');
             rows.push('[Peer]');
             rows.push('PublicKey = ' + $("#configbuilder\\.endpoint").data('pubkey'));

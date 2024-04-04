@@ -48,6 +48,12 @@
         <help>Set persistent keepalive interval in seconds.</help>
     </field>
     <field>
+        <id>configbuilder.peer_dns</id>
+        <label>DNS Servers</label>
+        <type>text</type>
+        <help>Comma-separated list of DNS servers to use on the peer.</help>
+    </field>
+    <field>
         <id>configbuilder.output</id>
         <label>Config</label>
         <type>textbox</type>
