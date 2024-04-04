@@ -38,7 +38,7 @@ class DashboardController extends ApiControllerBase
     {
         return [
             'cpu' => [
-                'title' => gettext('CPU Usage'),
+                'title' => gettext('CPU'),
                 'total' => gettext('Total'),
                 'interrupt' => gettext('Interrupt'),
                 'user' => gettext('User'),

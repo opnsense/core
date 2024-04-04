@@ -62,6 +62,7 @@ export default class Cpu extends BaseWidget {
 
     getMarkup() {
         let $container = $(`
+        <div class="cpu-type"></div>
         <div class="canvas-container">
             <div class="smoothie-container">
                 <b>${this.translations.total}</b>
@@ -85,6 +86,10 @@ export default class Cpu extends BaseWidget {
     }
 
     async onMarkupRendered() {
+        ajaxGet('/api/diagnostics/cpu_usage/getcputype', {}, (data, status) => {
+            $('.cpu-type').text(data);
+        });
+
         let total_ts = new TimeSeries();
         let intr_ts = new TimeSeries();
         let user_ts = new TimeSeries();
@@ -121,5 +126,7 @@ export default class Cpu extends BaseWidget {
         } else {
             $('.canvas-container').css('flex-direction', 'column');
         }
+
+        return true;
     }
 }
