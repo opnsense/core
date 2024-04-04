@@ -652,6 +652,17 @@ abstract class BaseField
     }
 
     /**
+     * Return descriptive value of the item.
+     * For simple types this is usually the internal value, complex types may return what this value represents.
+     * (descriptions of selected items)
+     * @return null|string
+     */
+    public function getDescription()
+    {
+        return (string)$this;
+    }
+
+    /**
      * update model with data returning missing repeating tag types.
      * @param $data array structure containing new model content
      * @throws Exception

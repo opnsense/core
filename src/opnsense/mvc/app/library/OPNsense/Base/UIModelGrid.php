@@ -127,22 +127,7 @@ class UIModelGrid
                 $row['uuid'] = $record->getAttributes()['uuid'];
                 foreach ($fields as $fieldname) {
                     if ($record->$fieldname != null) {
-                        $row[$fieldname] = $record->$fieldname->getNodeData();
-                        if (is_array($row[$fieldname])) {
-                            $listItems = $row[$fieldname];
-                            $row[$fieldname] = '';
-                            foreach ($listItems as $fieldValue) {
-                                if ($fieldValue['selected'] == 1) {
-                                    if ($row[$fieldname] != "") {
-                                        $row[$fieldname] .= ',';
-                                    }
-                                    $row[$fieldname] .= $fieldValue['value'];
-                                }
-                            }
-                            if ($row[$fieldname] === null) {
-                                $row[$fieldname] = "";
-                            }
-                        }
+                        $row[$fieldname] = $record->$fieldname->getDescription();
                     }
                 }
 
