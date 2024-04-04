@@ -83,6 +83,9 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
+                    <unifi_controller type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </unifi_controller>
                 </option_data>
                 <pools type=".\KeaPoolsField">
                 </pools>
