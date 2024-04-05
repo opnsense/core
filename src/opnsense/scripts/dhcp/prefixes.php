@@ -75,7 +75,7 @@ foreach (new SplFileObject($leases_file) as $line) {
 }
 
 /* since a route requires a gateway address try to derive it from static mapping as well */
-foreach (plugins_run('static_mapping') as $map) {
+foreach (plugins_run('static_mapping:dhcpd') as $map) {
     foreach ($map as $host) {
         if (empty($host['duid'])) {
             continue;
