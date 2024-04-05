@@ -136,7 +136,7 @@ class OpenVPN extends BaseModel
             }
             if (!empty((string)$instance->cert)) {
                 $tmp = Store::getCertificate((string)$instance->cert);
-                if (empty($tmp) || !isset($tmp['ca'])) {
+                if (empty((string)$instance->ca) && (empty($tmp) || !isset($tmp['ca']))) {
                     $messages->appendMessage(new Message(
                         gettext('Unable to locate a CA for this certificate.'),
                         $key . ".cert"
