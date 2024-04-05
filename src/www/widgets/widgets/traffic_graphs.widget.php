@@ -219,8 +219,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   if (data.interfaces !== undefined) {
                       $( document ).trigger( "updateTrafficCharts", [ data ] );
                   }
+                  setTimeout(traffic_poller, 5000);
               });
-              setTimeout(traffic_poller, 5000);
           })();
         });
         // needed to display the widget settings menu

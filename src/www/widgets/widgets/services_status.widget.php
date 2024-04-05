@@ -102,8 +102,8 @@ if (isset($_POST['servicestatusfilter'])) {
                         });
                     });
                 }
+                setTimeout(fetch_services, 5000);
             });
-            setTimeout(fetch_services, 5000);
         }
         fetch_services();
     });

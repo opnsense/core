@@ -88,28 +88,28 @@ $ifvalues = array(
     /**
      * update interface statistics
      */
-    setInterval(function update_statistics() {
-      ajaxGet('/api/interfaces/overview/interfacesInfo/1', {}, function(data, status) {
-        data.rows.map(function(interface_data) {
-          let stats = interface_data['statistics'];
-          let inbytes = format_field(parseInt(stats['bytes received']));
-          let outbytes = format_field(parseInt(stats['bytes transmitted']));
-          // fill in stats, use column index to determine td location
-          var item_index = $("#interface_statistics_widget_intf_" + interface_data['identifier']).index();
-          if (item_index != -1) {
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(1)").html(parseInt(stats['packets received']).toLocaleString());
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(2)").html(parseInt(stats['packets transmitted']).toLocaleString());
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(3)").html(inbytes);
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(4)").html(outbytes);
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(5)").html(stats['input errors']);
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(6)").html(stats['output errors']);
-              $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(7)").html(stats['collisions']);
-          }
+    function update_statistics() {
+        ajaxGet('/api/interfaces/overview/interfacesInfo/1', {}, function(data, status) {
+            data.rows.map(function(interface_data) {
+                let stats = interface_data['statistics'];
+                let inbytes = format_field(parseInt(stats['bytes received']));
+                let outbytes = format_field(parseInt(stats['bytes transmitted']));
+                // fill in stats, use column index to determine td location
+                var item_index = $("#interface_statistics_widget_intf_" + interface_data['identifier']).index();
+                if (item_index != -1) {
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(1)").html(parseInt(stats['packets received']).toLocaleString());
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(2)").html(parseInt(stats['packets transmitted']).toLocaleString());
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(3)").html(inbytes);
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(4)").html(outbytes);
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(5)").html(stats['input errors']);
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(6)").html(stats['output errors']);
+                    $("#interface_statistics_widget_intf_" + interface_data['identifier'] +" > td:eq(7)").html(stats['collisions']);
+                }
+            });
+            setTimeout(update_statistics, 5000);
         });
-      });
-
-      return update_statistics;
-    }(), 5000);
+    }
+    update_statistics();
 </script>
 
 <div id="interface_statistics-settings" class="widgetconfigdiv" style="display:none;">

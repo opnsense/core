@@ -114,8 +114,8 @@ $gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
                         }
                     });
                 }
+                setTimeout(fetch_gateway_statuses, 5000);
             });
-            setTimeout(fetch_gateway_statuses, 5000);
         }
         fetch_gateway_statuses();
     });

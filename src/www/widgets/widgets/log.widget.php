@@ -183,12 +183,11 @@ $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? 
                 }).on('show.bs.popover', function() {
                     $(this).data("bs.popover").tip().css("max-width", "100%")
                 });
+                // schedule next fetch
+                var update_interval_ms = parseInt($("#filterlogentriesupdateinterval").val()) * 1000;
+                update_interval_ms = (isNaN(update_interval_ms) || update_interval_ms < 1000 || update_interval_ms > 60000) ? 5000 : update_interval_ms;
+                setTimeout(fetch_log, update_interval_ms);
             });
-
-            // schedule next fetch
-            var update_interval_ms = parseInt($("#filterlogentriesupdateinterval").val()) * 1000;
-            update_interval_ms = (isNaN(update_interval_ms) || update_interval_ms < 1000 || update_interval_ms > 60000) ? 5000 : update_interval_ms;
-            setTimeout(fetch_log, update_interval_ms);
         }
 
     });
