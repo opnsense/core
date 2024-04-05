@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -319,9 +319,14 @@ function plugins_configure($hook, $verbose = false, $args = [])
 
 function plugins_run($hook, $args = [])
 {
+    $glob = '*';
     $ret = [];
 
-    foreach (plugins_scan() as $name => $path) {
+    if (substr_count($hook, ':')) {
+        list($hook, $glob) = explode(':', $hook);
+    }
+
+    foreach (plugins_scan($glob) as $name => $path) {
         try {
             include_once $path;
         } catch (\Error $e) {
