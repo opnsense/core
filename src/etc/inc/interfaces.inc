@@ -2601,7 +2601,7 @@ function interface_6to4_configure($interface, $wancfg, $update = false)
 
     if (!is_ipaddrv4($ip4address) || is_private_ip($ip4address)) {
         log_msg("The interface IPv4 address '{$ip4address}' on interface '{$interface}' is not public, not configuring 6to4 tunnel", LOG_ERR);
-        return false;
+        return;
     }
 
     /* create the long prefix notation for math, save the prefix length */
