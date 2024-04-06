@@ -1,0 +1,17 @@
+<form>
+    <field>
+        <id>option.name</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>option.definition</id>
+        <label>Definition</label>
+        <type>dropdown</type>
+    </field>
+    <field>
+        <id>option.data</id>
+        <label>Data</label>
+        <type>text</type>
+    </field>
+</form>

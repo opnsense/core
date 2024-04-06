@@ -87,9 +87,9 @@
         <help>Boot filename to request</help>
     </field>
     <field>
-        <id>subnet4.option_data.unifi_controller</id>
-        <label>UniFi Controller</label>
-        <type>text</type>
-        <help>IP address of your UniFi Controller</help>
+        <id>subnet4.additional_options</id>
+        <label>Additional options</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
     </field>
 </form>

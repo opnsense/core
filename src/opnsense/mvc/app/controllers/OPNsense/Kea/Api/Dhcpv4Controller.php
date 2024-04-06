@@ -166,4 +166,54 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
     {
         return $this->delBase("ha_peers.peer", $uuid);
     }
+
+    public function searchOptionDefinitionAction()
+    {
+        return $this->searchBase("option_definitions.option_definition", ['name', 'code', 'space', 'type'], "name");
+    }
+
+    public function setOptionDefinitionAction($uuid)
+    {
+        return $this->setBase("option_definition", "option_definitions.option_definition", $uuid);
+    }
+
+    public function addOptionDefinitionAction()
+    {
+        return $this->addBase("option_definition", "option_definitions.option_definition");
+    }
+
+    public function getOptionDefinitionAction($uuid = null)
+    {
+        return $this->getBase("option_definition", "option_definitions.option_definition", $uuid);
+    }
+
+    public function delOptionDefinitionAction($uuid)
+    {
+        return $this->delBase("option_definitions.option_definition", $uuid);
+    }
+
+    public function searchOptionAction()
+    {
+        return $this->searchBase("options.option", ['name', 'definition', 'data'], "name");
+    }
+
+    public function setOptionAction($uuid)
+    {
+        return $this->setBase("option", "options.option", $uuid);
+    }
+
+    public function addOptionAction()
+    {
+        return $this->addBase("option", "options.option");
+    }
+
+    public function getOptionAction($uuid = null)
+    {
+        return $this->getBase("option", "options.option", $uuid);
+    }
+
+    public function delOptionAction($uuid)
+    {
+        return $this->delBase("options.option", $uuid);
+    }
 }

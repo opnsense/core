@@ -29,6 +29,114 @@
                 <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
             </this_server_name>
         </ha>
+        <option_definitions>
+          <option_definition type="ArrayField">
+            <name type="TextField">
+              <Required>Y</Required>
+              <Constraints>
+                  <check001>
+                      <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                      <type>UniqueConstraint</type>
+                  </check001>
+              </Constraints>
+            </name>
+            <code type="IntegerField">
+              <Required>Y</Required>
+            </code>
+            <space type="OptionField">
+              <Required>Y</Required>
+              <Default>dhcp4</Default>
+              <OptionValues>
+                <dhcp4>dhcp4</dhcp4>
+                <vendor_encapsulated_options_space>vendor-encapsulated-options-space</vendor_encapsulated_options_space>
+              </OptionValues>
+            </space>
+            <type type="OptionField">
+              <Required>Y</Required>
+              <OptionValues>
+                  <int8>int8</int8>
+                  <int16>int16</int16>
+                  <int32>int32</int32>
+                  <uint8>uint8</uint8>
+                  <uint16>uint16</uint16>
+                  <uint32>uint32</uint32>
+                  <ipv4_address>ipv4-adddress</ipv4_address>
+                  <string>string</string>
+                  <record>record</record>
+              </OptionValues>
+            </type>
+            <array type="BooleanField">
+              <Required>Y</Required>
+              <Default>0</Default>
+            </array>
+            <record_types type="TextField">+
+              <Default></Default>
+              <Constraints>
+                  <check001>
+                      <ValidationMessage>Record requires at least one field type.</ValidationMessage>
+                      <type>SetIfConstraint</type>
+                      <field>type</field>
+                      <check>record</check>
+                  </check001>
+              </Constraints>
+            </record_types>
+          </option_definition>
+        </option_definitions>
+        <options>
+          <option type="ArrayField">
+            <name type="TextField">
+              <Required>Y</Required>
+              <Constraints>
+                  <check001>
+                      <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                      <type>UniqueConstraint</type>
+                  </check001>
+              </Constraints>
+            </name>
+            <definition type="ModelRelationField">
+              <Model>
+                  <option_definitions>
+                      <source>OPNsense.Kea.KeaDhcpv4</source>
+                      <items>option_definitions.option_definition</items>
+                      <display>name</display>
+                  </option_definitions>
+              </Model>
+              <ValidationMessage>Related option definition not found</ValidationMessage>
+              <Required>Y</Required>
+            </definition>
+            <data type="TextField">
+              <Required>Y</Required>
+            </data>
+          </option>
+        </options>
+        <client_classes>
+          <client_class type="ArrayField">
+            <name type="TextField">
+              <Required>Y</Required>
+              <Constraints>
+                  <check001>
+                      <ValidationMessage>Duplicate entry exists</ValidationMessage>
+                      <type>UniqueConstraint</type>
+                  </check001>
+              </Constraints>
+            </name>
+            <test type="TextField"></test>
+            <option_data type="ArrayField">
+              <definition type="ModelRelationField">
+                  <Model>
+                      <subnets>
+                          <source>OPNsense.Kea.KeaDhcpv4</source>
+                          <items>option_definitions.option_definition</items>
+                          <display>option definition</display>
+                      </subnets>
+                  </Model>
+                  <ValidationMessage>Related option definition not found</ValidationMessage>
+                  <Required>Y</Required>
+              </definition>
+              <data type="TextField"></data>
+            </option_data>
+          </client_class>
+        </client_classes>
         <subnets>
             <subnet4 type="ArrayField">
                 <subnet type="NetworkField">
@@ -83,11 +191,19 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
-                    <unifi_controller type="NetworkField">
-                        <NetMaskAllowed>N</NetMaskAllowed>
-                        <AddressFamily>ipv4</AddressFamily>
-                    </unifi_controller>
                 </option_data>
+                <additional_options type="ModelRelationField">
+                  <Multiple>Y</Multiple>
+                  <Model>
+                      <subnets>
+                          <source>OPNsense.Kea.KeaDhcpv4</source>
+                          <items>options.option</items>
+                          <display>name</display>
+                      </subnets>
+                  </Model>
+                  <ValidationMessage>Related option not found</ValidationMessage>
+                  <AsList>1</AsList>
+                </additional_options>
                 <pools type=".\KeaPoolsField">
                 </pools>
             </subnet4>
