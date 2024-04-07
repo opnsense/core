@@ -29,8 +29,8 @@
                 <Mask>/^([0-9a-zA-Z.\:\-,_]){0,1024}$/u</Mask>
             </this_server_name>
         </ha>
-        <option_definitions>
-          <option_definition type="ArrayField">
+        <options>
+          <option type="ArrayField">
             <name type="TextField">
               <Required>Y</Required>
               <Constraints>
@@ -69,8 +69,7 @@
               <Required>Y</Required>
               <Default>0</Default>
             </array>
-            <record_types type="TextField">+
-              <Default></Default>
+            <record_types type="TextField">              <Default></Default>
               <Constraints>
                   <check001>
                       <ValidationMessage>Record requires at least one field type.</ValidationMessage>
@@ -80,31 +79,7 @@
                   </check001>
               </Constraints>
             </record_types>
-          </option_definition>
-        </option_definitions>
-        <options>
-          <option type="ArrayField">
-            <name type="TextField">
-              <Required>Y</Required>
-              <Constraints>
-                  <check001>
-                      <ValidationMessage>Duplicate entry exists</ValidationMessage>
-                      <type>UniqueConstraint</type>
-                  </check001>
-              </Constraints>
-            </name>
-            <definition type="ModelRelationField">
-              <Model>
-                  <option_definitions>
-                      <source>OPNsense.Kea.KeaDhcpv4</source>
-                      <items>option_definitions.option_definition</items>
-                      <display>name</display>
-                  </option_definitions>
-              </Model>
-              <ValidationMessage>Related option definition not found</ValidationMessage>
-              <Required>Y</Required>
-            </definition>
-            <data type="TextField">
+          <data type="TextField">
               <Required>Y</Required>
             </data>
           </option>
@@ -121,20 +96,19 @@
               </Constraints>
             </name>
             <test type="TextField"></test>
-            <option_data type="ArrayField">
-              <definition type="ModelRelationField">
-                  <Model>
+            <option type="ModelRelationField">
+                  <Multiple>Y</Multiple>
+                <Model>
                       <subnets>
                           <source>OPNsense.Kea.KeaDhcpv4</source>
-                          <items>option_definitions.option_definition</items>
-                          <display>option definition</display>
+                          <items>options.option</items>
+                          <display>name</display>
                       </subnets>
                   </Model>
                   <ValidationMessage>Related option definition not found</ValidationMessage>
                   <Required>Y</Required>
-              </definition>
-              <data type="TextField"></data>
-            </option_data>
+              <AsList>1</AsList>
+            </option>
           </client_class>
         </client_classes>
         <subnets>

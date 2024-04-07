@@ -5,9 +5,32 @@
         <type>text</type>
     </field>
     <field>
-        <id>option.definition</id>
-        <label>Definition</label>
+        <id>option.code</id>
+        <label>Code</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>option.space</id>
+        <label>Space</label>
         <type>dropdown</type>
+    </field>
+    <field>
+        <id>option.type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <help><![CDATA[A <a rel="help" href="https://kea.readthedocs.io/en/latest/arm/dhcp4-srv.html#dhcp-types">DHCP option type</a>.]]></help>
+    </field>
+    <field>
+        <id>option.array</id>
+        <label>Array</label>
+        <type>checkbox</type>
+        <help><![CDATA[If enabled and <b>Type</b> is <code>record</code>, the last field in <b>Record Types</b> can contain one or multiple values.]]></help>
+    </field>
+    <field>
+        <id>option.record_types</id>
+        <label>Record Types</label>
+        <type>text</type>
+        <help><![CDATA[Comma-separated list of <a rel="help" href="https://kea.readthedocs.io/en/latest/arm/dhcp4-srv.html#dhcp-types">DHCP option types</a>. Only applies if <b>Type</b> is <code>record</code>.]]></help>
     </field>
     <field>
         <id>option.data</id>

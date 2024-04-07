@@ -69,15 +69,6 @@
             }
         );
 
-        $("#grid-option-definitions").UIBootgrid(
-            {   search:'/api/kea/dhcpv4/search_option_definition',
-                get:'/api/kea/dhcpv4/get_option_definition/',
-                set:'/api/kea/dhcpv4/set_option_definition/',
-                add:'/api/kea/dhcpv4/add_option_definition/',
-                del:'/api/kea/dhcpv4/del_option_definition/'
-            }
-        );
-
         $("#grid-options").UIBootgrid(
             {   search:'/api/kea/dhcpv4/search_option',
                 get:'/api/kea/dhcpv4/get_option/',
@@ -130,8 +121,7 @@
     <li><a data-toggle="tab" href="#subnets" id="tab_pools"> {{ lang._('Subnets') }} </a></li>
     <li><a data-toggle="tab" href="#reservations" id="tab_reservations"> {{ lang._('Reservations') }} </a></li>
     <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers"> {{ lang._('HA Peers') }} </a></li>
-    <li><a data-toggle="tab" href="#option-definitions" id="tab_option-definitions"> {{ lang._('Option Definitions') }} </a></li>
-    <li><a data-toggle="tab" href="#options" id="tab_option-definitions"> {{ lang._('Options') }} </a></li>
+    <li><a data-toggle="tab" href="#options" id="tab_options"> {{ lang._('Options') }} </a></li>
 </ul>
 <div class="tab-content content-box">
     <!-- general settings  -->
@@ -220,32 +210,6 @@
         </table>
     </div>
 
-    <!-- Option Definitions -->
-    <div id="option-definitions" class="tab-pane fade in">
-        <table id="grid-option-definitions" class="table table-condensed table-hover table-striped" data-editDialog="DialogOptionDefinition">
-            <thead>
-                <tr>
-                  <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                  <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                  <th data-column-id="code" data-type="number">{{ lang._('Code') }}</th>
-                  <th data-column-id="space" data-type="string">{{ lang._('Space') }}</th>
-                  <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
-                  <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
     <!-- Options -->
     <div id="options" class="tab-pane fade in">
         <table id="grid-options" class="table table-condensed table-hover table-striped" data-editDialog="DialogOption">
@@ -253,7 +217,9 @@
                 <tr>
                   <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                   <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                  <th data-column-id="definition" data-type="string">{{ lang._('Definition') }}</th>
+                  <th data-column-id="code" data-type="number">{{ lang._('Code') }}</th>
+                  <th data-column-id="space" data-type="string">{{ lang._('Space') }}</th>
+                  <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
                   <th data-column-id="data" data-type="string">{{ lang._('Data') }}</th>
                   <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
@@ -291,5 +257,4 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':'DialogSubnet','label':lang._('Edit Subnet')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':'DialogReservation','label':lang._('Edit Reservation')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPeer,'id':'DialogPeer','label':lang._('Edit Peer')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogOptionDefinition,'id':'DialogOptionDefinition','label':lang._('Edit Option Definition')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogOption,'id':'DialogOption','label':lang._('Edit Option')])}}
