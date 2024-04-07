@@ -76,7 +76,8 @@
               <Required>Y</Required>
               <Default>0</Default>
             </array>
-            <record_types type="TextField">              <Default></Default>
+            <record_types type="TextField">
+              <Default></Default>
               <Constraints>
                   <check001>
                       <ValidationMessage>Record requires at least one field type.</ValidationMessage>
