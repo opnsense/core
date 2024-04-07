@@ -54,15 +54,22 @@
             <type type="OptionField">
               <Required>Y</Required>
               <OptionValues>
-                  <int8>int8</int8>
-                  <int16>int16</int16>
-                  <int32>int32</int32>
+                  <binary>binary</binary>
+                  <boolean>boolean</boolean>
+                  <fqdn>fqdn</fqdn>
+                  <ipv4_address>ipv4-address</ipv4_address>
+                  <ipv6_address>ipv6-address</ipv6_address>
+                  <ipv6_prefix>ipv6-prefix</ipv6_prefix>
+                  <psid>psid</psid>
+                  <record>record</record>
+                  <string>string</string>
+                  <tuple>tuple</tuple>
                   <uint8>uint8</uint8>
                   <uint16>uint16</uint16>
                   <uint32>uint32</uint32>
-                  <ipv4_address>ipv4-adddress</ipv4_address>
-                  <string>string</string>
-                  <record>record</record>
+                  <int8>int8</int8>
+                  <int16>int16</int16>
+                  <int32>int32</int32>
               </OptionValues>
             </type>
             <array type="BooleanField">
