@@ -86,6 +86,17 @@ class ClientController extends ApiMutableModelControllerBase
 
     public function delClientAction($uuid)
     {
+        if ($this->request->isPost()) {
+            Config::getInstance()->lock();
+            $mdl = new Server();
+            foreach ($mdl->servers->server->iterateItems() as $key => $node) {
+                $peers = array_filter(explode(',', (string)$node->peers));
+                if (in_array($uuid, $peers)) {
+                    $node->peers = implode(',', array_diff($peers, [$uuid]));
+                }
+            }
+            $mdl->serializeToConfig(false, true);
+        }
         return $this->delBase('clients.client', $uuid);
     }
 
