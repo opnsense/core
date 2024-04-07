@@ -5,6 +5,13 @@
         <type>text</type>
     </field>
     <field>
+        <id>option.test</id>
+        <label>Client Class Test</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help><![CDATA[Only send this option if the client matches the given <a rel="help" href="https://kea.readthedocs.io/en/kea-2.2.0/arm/classify.html?highlight=test%20expressions#using-expressions-in-classification">test expression</a>.]]></help>
+    </field>
+    <field>
         <id>option.code</id>
         <label>Code</label>
         <type>text</type>
@@ -31,6 +38,7 @@
         <label>Record Types</label>
         <type>text</type>
         <help><![CDATA[Comma-separated list of <a rel="help" href="https://kea.readthedocs.io/en/latest/arm/dhcp4-srv.html#dhcp-types">DHCP option types</a>. Only applies if <b>Type</b> is <code>record</code>.]]></help>
+        <style>record_types</style>
     </field>
     <field>
         <id>option.data</id>

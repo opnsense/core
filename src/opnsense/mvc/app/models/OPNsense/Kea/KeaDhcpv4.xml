@@ -40,6 +40,9 @@
                   </check001>
               </Constraints>
             </name>
+            <test type="TextField">
+              <Default></Default>
+            </test>
             <code type="IntegerField">
               <Required>Y</Required>
             </code>
@@ -86,39 +89,14 @@
                       <check>record</check>
                   </check001>
               </Constraints>
+              <AsList>Y</AsList>
+              <FieldSeparator>,</FieldSeparator>
             </record_types>
-          <data type="TextField">
+            <data type="TextField">
               <Required>Y</Required>
             </data>
           </option>
         </options>
-        <client_classes>
-          <client_class type="ArrayField">
-            <name type="TextField">
-              <Required>Y</Required>
-              <Constraints>
-                  <check001>
-                      <ValidationMessage>Duplicate entry exists</ValidationMessage>
-                      <type>UniqueConstraint</type>
-                  </check001>
-              </Constraints>
-            </name>
-            <test type="TextField"></test>
-            <option type="ModelRelationField">
-                  <Multiple>Y</Multiple>
-                <Model>
-                      <subnets>
-                          <source>OPNsense.Kea.KeaDhcpv4</source>
-                          <items>options.option</items>
-                          <display>name</display>
-                      </subnets>
-                  </Model>
-                  <ValidationMessage>Related option definition not found</ValidationMessage>
-                  <Required>Y</Required>
-              <AsList>1</AsList>
-            </option>
-          </client_class>
-        </client_classes>
         <subnets>
             <subnet4 type="ArrayField">
                 <subnet type="NetworkField">
