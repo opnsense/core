@@ -37,6 +37,8 @@ export default class InterfaceStatistics extends BaseWidget {
         this.labels = [];
         this.rawData = {};
         this.dataset = {};
+        this.sortedLabels = [];
+        this.sortedData = [];
     }
 
     getMarkup() {
@@ -71,6 +73,7 @@ export default class InterfaceStatistics extends BaseWidget {
 
     async onWidgetTick() {
         ajaxGet('/api/diagnostics/traffic/interface', {}, (data, status) => {
+            let sortedSet = {};
             let i = 0;
             let colors = Chart.colorschemes.tableau.Classic10;
             for (const intf in data.interfaces) {
@@ -79,8 +82,17 @@ export default class InterfaceStatistics extends BaseWidget {
                 obj.data = parseInt(obj["packets received"]) + parseInt(obj["packets transmitted"]);
                 obj.color = colors[i % colors.length]
                 this.rawData[obj.name] = obj;
+
+                sortedSet[i] = {'name': obj.name, 'data': obj.data};
                 i++;
             }
+
+            this.sortedLabels = [];
+            this.sortedData = [];
+            Object.values(sortedSet).sort((a, b) => b.data - a.data).forEach(item => {
+                this.sortedLabels.push(item.name);
+                this.sortedData.push(item.data);
+            });
 
             let formattedData = this._getIndexedData(data.interfaces);
             this.dataset = {
@@ -135,6 +147,11 @@ export default class InterfaceStatistics extends BaseWidget {
                             this.chart.setActiveElements([activeElement]);
                             this.chart.tooltip.setActiveElements([activeElement]);
                             this.chart.update();
+                        },
+                        labels: {
+                            sort: (a, b, chartData) => {
+                                return this.sortedLabels.indexOf(a.text) - this.sortedLabels.indexOf(b.text);
+                            }
                         }
                     },
                     tooltip: {
@@ -143,8 +160,8 @@ export default class InterfaceStatistics extends BaseWidget {
                                 let obj = this.rawData[tooltipItem.label];
                                 let result = [
                                     `${tooltipItem.label}`,
-                                    `${this.translations.bytesin}: ${byteFormat(obj["bytes received"])}`,
-                                    `${this.translations.bytesout}: ${byteFormat(obj["bytes transmitted"])}`,
+                                    `${this.translations.bytesin}: ${byteFormat(parseInt(obj["bytes received"]))}`,
+                                    `${this.translations.bytesout}: ${byteFormat(parseInt(obj["bytes transmitted"]))}`,
                                     `${this.translations.packetsin}: ${parseInt(obj["packets received"]).toLocaleString()}`,
                                     `${this.translations.packetsout}: ${parseInt(obj["packets transmitted"]).toLocaleString()}`,
                                     `${this.translations.errorsin}: ${parseInt(obj["input errors"]).toLocaleString()}`,
