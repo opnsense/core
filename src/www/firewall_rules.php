@@ -751,6 +751,7 @@ $( document ).ready(function() {
                     'floating' => gettext('Floating rules'),
                     'group' => gettext('Group rules'),
                     'internal2' => gettext('Automatically generated rules (end of ruleset)'),
+                    'automation'  => gettext('Rules from Automation'),
                 ];
                 foreach ($fw->iterateFilterRules() as $rule):
                     $is_selected = false;

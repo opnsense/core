@@ -415,7 +415,7 @@ abstract class Rule
         } elseif ($this->rule['#priority'] >= 300000 && $this->rule['#priority'] < 400000) {
             return 'group';
         } elseif ($this->rule['#priority'] >= 400000 && $this->rule['#priority'] < 500000) {
-            return 'interface';
+            return isset($this->rule['seq']) ? 'interface' : 'automation';
         }
         return 'internal2'; // late
     }
