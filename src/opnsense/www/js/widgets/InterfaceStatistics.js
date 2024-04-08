@@ -140,17 +140,16 @@ export default class InterfaceStatistics extends BaseWidget {
                     tooltip: {
                         callbacks: {
                            label: (tooltipItem) => {
-                                const idx = this.labels.indexOf(tooltipItem.label);
                                 let obj = this.rawData[tooltipItem.label];
                                 let result = [
                                     `${tooltipItem.label}`,
-                                    `${this.translations.bytesin}: ${obj["bytes received"]}`,
-                                    `${this.translations.bytesout}: ${obj["bytes transmitted"]}`,
-                                    `${this.translations.packetsin}: ${obj["packets received"]}`,
-                                    `${this.translations.packetsout}: ${obj["packets transmitted"]}`,
-                                    `${this.translations.errorsin}: ${obj["input errors"]}`,
-                                    `${this.translations.errorsout}: ${obj["output errors"]}`,
-                                    `${this.translations.collisions}: ${obj["collisions"]}`,
+                                    `${this.translations.bytesin}: ${byteFormat(obj["bytes received"])}`,
+                                    `${this.translations.bytesout}: ${byteFormat(obj["bytes transmitted"])}`,
+                                    `${this.translations.packetsin}: ${parseInt(obj["packets received"]).toLocaleString()}`,
+                                    `${this.translations.packetsout}: ${parseInt(obj["packets transmitted"]).toLocaleString()}`,
+                                    `${this.translations.errorsin}: ${parseInt(obj["input errors"]).toLocaleString()}`,
+                                    `${this.translations.errorsout}: ${parseInt(obj["output errors"]).toLocaleString()}`,
+                                    `${this.translations.collisions}: ${parseInt(obj["collisions"]).toLocaleString()}`,
                                 ];
                                 return result;
                             }
