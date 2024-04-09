@@ -781,18 +781,19 @@
                       </span>
                   </div>
                   <div class="pull-right">
-                    <div class="checkbox-inline">
+                    <div class="checkbox-inline __mr">
                       <label>
                         <input id="auto_refresh" type="checkbox" checked="checked">
                         <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
                       </label>
-                      <br/>
+                    </div>
+                    <div class="checkbox-inline __mr">
                       <label>
                           <input id="dolookup" type="checkbox">
                           <span class="fa fa-search"></span> {{ lang._('Lookup hostnames') }}
                       </label>
-                    </div><br/>
-                    <select id="limit" class="selectpicker" data-width="150" >
+                    </div>
+                    <select id="limit" class="selectpicker" data-width="75" >
                         <option value="25" selected="selected">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
@@ -804,14 +805,14 @@
                         <option value="10000">10000</option>
                         <option value="20000">20000</option>
                     </select>
-                    <button id="refresh" type="button" class="btn btn-default">
+                    <button id="refresh" type="button" class="btn btn-default __mr">
                         <span class="fa fa-refresh"></span>
                     </button>
                   </div>
                 </div>
             </div>
             <div  class="col-xs-12">
-                <hr/>
+                <br/>
                 <div class="table-responsive">
                     <table id="grid-log" class="table table-condensed table-responsive">
                         <thead>
