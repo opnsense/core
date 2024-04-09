@@ -786,11 +786,12 @@ class Config extends Singleton
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);
-            if ($reload && !$this->statusIsLocked) {
+            $do_reload = $reload && !$this->statusIsLocked;
+            $this->statusIsLocked = true;
+            if ($do_reload) {
                 /* Only lock when the exclusive lock wasn't ours yet. */
                 $this->load();
             }
-            $this->statusIsLocked = true;
         }
         return $this;
     }
