@@ -425,7 +425,7 @@
         function apply_filter()
         {
             let filters = [];
-            let visible_rows = 0;
+            let visible_rows = 1;
             let max_rows = parseInt($("#limit").val());
             $("#filters > span.badge").each(function(){
                 filters.push($(this).data('filter'));
