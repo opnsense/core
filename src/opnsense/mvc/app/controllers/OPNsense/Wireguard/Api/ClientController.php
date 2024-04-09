@@ -33,6 +33,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Wireguard\Server;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Util;
 
 class ClientController extends ApiMutableModelControllerBase
 {
@@ -160,5 +161,53 @@ class ClientController extends ApiMutableModelControllerBase
         }
 
         return $this->setBase('configbuilder', 'clients.client', $uuid);
+    }
+
+    public function getServerInfoAction($uuid = null)
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isGet()) {
+            $peers = [];
+            $subnets = [];
+            $used_addresses = []; /* We cleanse addresses before storing here, to allow string matching */
+
+            foreach ((new Server())->servers->server->iterateItems() as $key => $node) {
+                if ($key == $uuid) {
+                    $peers = array_filter(explode(',', (string)$node->peers));
+                    $result['endpoint'] = (string)$node->endpoint;
+                    $result['peer_dns'] = (string)$node->peer_dns;
+                    $result['pubkey'] = (string)$node->pubkey;
+                    foreach (array_filter(explode(',', (string)$node->tunneladdress)) as $addr) {
+                        $proto = str_contains($addr, ':') ? 'inet6' : 'inet';
+                        if (!isset($subnets[$proto])) {
+                            $subnets[$proto] = $addr;
+                        }
+                        $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
+                    }
+                    foreach ($peers as $peer) {
+                        $this_peer = $this->getModel()->getNodeByReference('clients.client.' . $peer);
+                        if ($this_peer != null) {
+                            foreach (array_filter(explode(',', (string)$this_peer->tunneladdress)) as $addr) {
+                                $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
+                            }
+                        }
+                    }
+                    $tunneladdress = [];
+                    foreach ($subnets as $cidr) {
+                        foreach (Util::cidrRangeIterator($cidr) as $addr) {
+                            if (!in_array($addr, $used_addresses)) {
+                                $netmask = str_contains($addr, ':') ? '128' : '32';
+                                $tunneladdress[] = $addr . '/' . $netmask;
+                                break;
+                            }
+                        }
+                    }
+                    $result['address'] = implode(',', $tunneladdress);
+                    $result['status'] = 'ok';
+                    break;
+                }
+            }
+        }
+        return $result;
     }
 }
