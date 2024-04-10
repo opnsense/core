@@ -225,6 +225,7 @@
                 <th data-column-id="src" data-type="string" data-formatter="address" data-sortable="false">{{ lang._('Source') }}</th>
                 <th data-column-id="nat" data-type="string" data-formatter="address" data-sortable="false">{{ lang._('Nat') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="address" data-sortable="false">{{ lang._('Destination') }}</th>
+                <th data-column-id="gateway" data-type="string" data-sortable="false">{{ lang._('Gateway') }}</th>
                 <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
                 <th data-column-id="descr" data-type="string" data-formatter="rule">{{ lang._('Rule') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>

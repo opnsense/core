@@ -165,6 +165,8 @@ def query_states(rule_label, filter_str):
                 # XXX: in order to kill a state, we need to pass both the id and the creator, so it seeems to make
                 #      sense to uniquely identify the state by the combined number
                 record["id"] = "%s/%s" % (parts[1], parts[3])
+                if len(parts) > 5:
+                    record['gateway'] = parts[5]
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
                 # label
                 continue
@@ -173,7 +175,7 @@ def query_states(rule_label, filter_str):
                 for filter_net in filter_net_clauses:
                     try:
                         match = False
-                        for field in ['src_addr', 'dst_addr', 'nat_addr']:
+                        for field in ['src_addr', 'dst_addr', 'nat_addr', 'gateway']:
                             port_field = "%s_port" % field[0:3]
                             if record[field] is not None and addr_parser.overlaps(filter_net[0], record[field]):
                                 if filter_net[1] is None or filter_net[1] == record[port_field]:
@@ -203,6 +205,7 @@ def query_states(rule_label, filter_str):
                 'descr': '',
                 'nat_addr': None,
                 'nat_port': None,
+                'gateway': None,
                 'iface': parts[0],
                 'proto': parts[1],
                 'ipproto': addr_parser.split_ip_port(parts[2])['ipproto']
