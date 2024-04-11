@@ -75,6 +75,10 @@ td {
 }
 
 .canvas-container {
+    position: relative;
+}
+
+.cpu-canvas-container {
     display: flex;
     flex-direction: column;
 }

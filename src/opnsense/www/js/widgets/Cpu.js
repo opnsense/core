@@ -64,7 +64,7 @@ export default class Cpu extends BaseWidget {
     getMarkup() {
         let $container = $(`
         <div class="cpu-type"></div>
-        <div class="canvas-container">
+        <div class="cpu-canvas-container">
             <div class="smoothie-container">
                 <b>${this.translations.total}</b>
                 <div><canvas id="cpu-usage" style="width: 80%; height: 50px;"></canvas></div>
@@ -124,9 +124,9 @@ export default class Cpu extends BaseWidget {
         let curWidth = document.getElementById('cpu-usage').getBoundingClientRect().width;
         let viewPort = document.getElementsByClassName('page-content-main')[0].getBoundingClientRect().width;
         if (width > (viewPort / 2)) {
-            $('.canvas-container').css('flex-direction', 'row');
+            $('.cpu-canvas-container').css('flex-direction', 'row');
         } else {
-            $('.canvas-container').css('flex-direction', 'column');
+            $('.cpu-canvas-container').css('flex-direction', 'column');
         }
 
         return true;

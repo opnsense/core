@@ -352,7 +352,6 @@ class WidgetManager  {
         await onWidgetTick();
         const interval = setInterval(async () => {
             await onWidgetTick().catch((error) => {
-                console.log('caught');
                 // The page might be closed while a tick routine was executing,
                 // in that case, the error is expected and can be ignored.
                 null;

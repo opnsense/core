@@ -44,7 +44,7 @@ export default class Traffic extends BaseWidget {
 
     getMarkup() {
         return $(`
-            <div class="traffic-chart-container">
+            <div class="traffic-charts-container">
                 <h3>${this.translations.trafficin}</h3>
                 <div class="canvas-container">
                     <canvas id="traffic-in"></canvas>
