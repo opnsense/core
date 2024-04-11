@@ -115,8 +115,8 @@ export default class Interfaces extends BaseTableWidget {
             $('.interface-info').css('text-align', 'left');
         } else {
             $('.interface-info-detail').parent().hide();
-            $('.interface-info').css('justify-content', 'center');
-            $('.interface-info').css('text-align', 'center');
+            $('.interface-info').css('justify-content', 'left');
+            $('.interface-info').css('text-align', 'left');
         }
 
         return super.onWidgetResize(elem, width, height);
