@@ -33,6 +33,7 @@ export default class Cpu extends BaseWidget {
     constructor() {
         super();
         this.resizeHandles = "e, w";
+        this.eventSource = null;
     }
 
     _createChart(selector, timeSeries) {
@@ -85,6 +86,12 @@ export default class Cpu extends BaseWidget {
         return $container;
     }
 
+    onwidgetClose() {
+        if (this.eventSource !== null) {
+            this.eventSource.close();
+        }
+    }
+
     async onMarkupRendered() {
         ajaxGet('/api/diagnostics/cpu_usage/getcputype', {}, (data, status) => {
             $('.cpu-type').text(data);
@@ -98,11 +105,11 @@ export default class Cpu extends BaseWidget {
         this._createChart('cpu-usage-intr', intr_ts);
         this._createChart('cpu-usage-user', user_ts);
         this._createChart('cpu-usage-sys', sys_ts);
-        const eventSource = new EventSource('/api/diagnostics/cpu_usage/stream');
+        this.eventSource = new EventSource('/api/diagnostics/cpu_usage/stream');
 
-        eventSource.onmessage = function(event) {
+        this.eventSource.onmessage = function(event) {
             if (!event) {
-                eventSource.close();
+                this.eventSource.close();
             }
             const data = JSON.parse(event.data);
             let date = Date.now();
@@ -110,12 +117,7 @@ export default class Cpu extends BaseWidget {
             intr_ts.append(date, data.intr);
             user_ts.append(date, data.user);
             sys_ts.append(date, data.sys);
-        }
-
-        eventSource.onerror = function(event) {
-            eventSource.close();
         };
-
     }
 
     onWidgetResize(elem, width, height) {

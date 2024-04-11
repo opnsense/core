@@ -66,6 +66,11 @@ class DashboardController extends ApiControllerBase
                 'errorsout' => gettext('Errors Out'),
                 'collisions' => gettext('Collisions'),
             ],
+            'traffic' => [
+                'title' => gettext('Traffic Graph'),
+                'trafficin' => gettext('Traffic In'),
+                'trafficout' => gettext('Traffic Out'),
+            ],
         ];
     }
 
