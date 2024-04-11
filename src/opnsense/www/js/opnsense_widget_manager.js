@@ -347,6 +347,11 @@ class WidgetManager  {
         this.widgetHTMLElements[widget.id].gridstackNode._initDD = false;
         this.grid.resizable(this.widgetHTMLElements[widget.id], true);
 
+        // trigger initial widget resize
+        let rect = $(`.widget-${widget.id}`)[0].getBoundingClientRect();
+        widget.onWidgetResize(this.widgetHTMLElements[widget.id], rect.width, rect.height);
+        this._updateGrid(this.widgetHTMLElements[widget.id]);
+
         // second: start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         await onWidgetTick();
