@@ -42,29 +42,6 @@ export default class Traffic extends BaseWidget {
         this.datasets = {inbytes: [], outbytes: []};
     }
 
-    getMarkup() {
-        return $(`
-            <div class="traffic-charts-container">
-                <h3>${this.translations.trafficin}</h3>
-                <div class="canvas-container">
-                    <canvas id="traffic-in"></canvas>
-                </div>
-                <h3>${this.translations.trafficout}</h3>
-                <div class="canvas-container">
-                    <canvas id="traffic-out"></canvas>
-                </div>
-            </div>
-        `);
-    }
-
-    onWidgetClose() {
-        this.charts.trafficIn.destroy();
-        this.charts.trafficOut.destroy();
-        if (this.eventSource !== null) {
-            this.eventSource.close();
-        }
-    }
-
     _set_alpha(color, opacity) {
         const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
         return color + op.toString(16).toUpperCase();
@@ -161,71 +138,90 @@ export default class Traffic extends BaseWidget {
         };
     }
 
-    onMessage(event) {
+    _initialize(data) {
+        for (const dir of ['inbytes', 'outbytes']) {
+            let colors = Chart.colorschemes.tableau.Classic10;
+            let i = 0;
+            Object.keys(data.interfaces).forEach((intf) => {
+                let idx = i % colors.length;
+                i++;
+                this.datasets[dir].push({
+                    label: data.interfaces[intf].name,
+                    hidden: false, // XXX
+                    borderColor: colors[idx],
+                    backgroundColor: this._set_alpha(colors[idx], 0.5),
+                    pointHoverBackgroundColor: colors[idx],
+                    pointHoverBorderColor: colors[idx],
+                    pointBackgroundColor: colors[idx],
+                    pointBorderColor: colors[idx],
+                    intf: intf,
+                    last_time: data.time,
+                    src_field: dir,
+                    data: [],
+                });
+            });
+        }
+
+        this.charts.trafficIn = new Chart($('#traffic-in')[0].getContext('2d'), this._chartConfig(this.datasets.inbytes));
+        this.charts.trafficOut = new Chart($('#traffic-out')[0].getContext('2d'), this._chartConfig(this.datasets.outbytes));
+        this.initialized = true;
+    }
+
+    _onMessage(event) {
         if (!event) {
             this.eventSource.close();
         }
+
         const data = JSON.parse(event.data);
 
         if (!this.initialized) {
-            // prepare datasets
-            for (const dir of ['inbytes', 'outbytes']) {
-                let colors = Chart.colorschemes.tableau.Classic10;
-                let i = 0;
-                Object.keys(data.interfaces).forEach((intf) => {
-                    let idx = i % colors.length;
-                    i++;
-                    this.datasets[dir].push({
-                        label: data.interfaces[intf].name,
-                        hidden: false, // XXX
-                        borderColor: colors[idx],
-                        backgroundColor: this._set_alpha(colors[idx], 0.5),
-                        pointHoverBackgroundColor: colors[idx],
-                        pointHoverBorderColor: colors[idx],
-                        pointBackgroundColor: colors[idx],
-                        pointBorderColor: colors[idx],
-                        intf: intf,
-                        last_time: data.time,
-                        src_field: dir,
-                        data: [],
-                    });
-                });
-            }
-
+            this._initialize(data);
             this.initialized = true;
-            return;
         }
 
         for (let chart of Object.values(this.charts)) {
-            if (chart !== null) {
-                Object.keys(data.interfaces).forEach((intf) => {
-                    chart.config.data.datasets.forEach((dataset) => {
-                        if (dataset.intf === intf) {
-                            let elapsed_time = data.time - dataset.last_time;
-                            dataset.data.push({
-                                x: Date.now(),
-                                y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
-                            });
-                            dataset.last_time = data.time;
-                            return;
-                        }
-                    });
+            Object.keys(data.interfaces).forEach((intf) => {
+                chart.config.data.datasets.forEach((dataset) => {
+                    if (dataset.intf === intf) {
+                        let elapsed_time = data.time - dataset.last_time;
+                        dataset.data.push({
+                            x: Date.now(),
+                            y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
+                        });
+                        dataset.last_time = data.time;
+                        return;
+                    }
                 });
-                chart.update();
-            }
+            });
+            chart.update('quiet');
         }
     }
 
+    getMarkup() {
+        return $(`
+            <div class="traffic-charts-container">
+                <h3>${this.translations.trafficin}</h3>
+                <div class="canvas-container">
+                    <canvas id="traffic-in"></canvas>
+                </div>
+                <h3>${this.translations.trafficout}</h3>
+                <div class="canvas-container">
+                    <canvas id="traffic-out"></canvas>
+                </div>
+            </div>
+        `);
+    }
+
     async onMarkupRendered() {
-        let $trafficIn = $('#traffic-in');
-        let $trafficOut = $('#traffic-out');
-        let trafficInCtx = $trafficIn[0].getContext('2d');
-        let trafficOutCtx = $trafficOut[0].getContext('2d');
-
         this.eventSource = new EventSource('/api/diagnostics/traffic/stream/1');
-        this.eventSource.onmessage = this.onMessage.bind(this);
+        this.eventSource.onmessage = this._onMessage.bind(this);
+    }
 
-        this.charts.trafficIn = new Chart(trafficInCtx, this._chartConfig(this.datasets.inbytes));
-        this.charts.trafficOut = new Chart(trafficOutCtx, this._chartConfig(this.datasets.outbytes));
+    onWidgetClose() {
+        this.charts.trafficIn.destroy();
+        this.charts.trafficOut.destroy();
+        if (this.eventSource !== null) {
+            this.eventSource.close();
+        }
     }
 }
