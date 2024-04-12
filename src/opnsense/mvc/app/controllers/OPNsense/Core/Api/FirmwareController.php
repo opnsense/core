@@ -132,7 +132,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             if (!empty($response['upgrade_packages'])) {
                 foreach ($response['upgrade_packages'] as $listing) {
                     if (!empty($listing['size'])) {
-                        $update_size += $listing['size'];
+                        $update_size += is_numeric($listing['size']) ? $listing['size'] : 0;
                     }
                 }
             }
@@ -243,7 +243,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             if (isset($response['upgrade_sets'])) {
                 foreach ($response['upgrade_sets'] as $value) {
                     if (!empty($value['size'])) {
-                        $upgrade_size += $value['size'];
+                        $upgrade_size += is_numeric($value['size']) ? $value['size'] : 0;
                     }
                     $sorted[$value['name']] = array(
                         'reason' => gettext('upgrade'),
