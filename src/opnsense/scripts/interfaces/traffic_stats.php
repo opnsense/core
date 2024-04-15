@@ -29,7 +29,8 @@
 require_once("interfaces.inc");
 require_once("config.inc");
 
-function map_ifs($ifs, $data) {
+function map_ifs($ifs, $data)
+{
     $result = ["interfaces" => []];
     $temp = gettimeofday();
     $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;

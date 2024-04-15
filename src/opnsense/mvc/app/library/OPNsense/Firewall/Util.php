@@ -520,8 +520,8 @@ class Util
             $bits = explode('/', $cidr)[1];
             $inet_start = inet_pton($range[0]);
             if (str_contains($range[0], ':')) {
-                for ($i=0; $i < pow(2, min(128 - (int)$bits, 32)); ++$i) {
-                    yield inet_ntop($inet_start | inet_pton('0000::'. dechex($i)));
+                for ($i = 0; $i < pow(2, min(128 - (int)$bits, 32)); ++$i) {
+                    yield inet_ntop($inet_start | inet_pton('0000::' . dechex($i)));
                 }
             } else {
                 /**
@@ -529,7 +529,7 @@ class Util
                  * unless size is >= 31 in which case these may be omitted acording to RFC3021
                  */
                 $range_start = (int)$bits >= 31 ? 0 : 1;
-                $range_stop =  (int)$bits >= 31 ? pow(2, 32 - (int)$bits) : pow(2, 32 - (int)$bits) - 1 ;
+                $range_stop =  (int)$bits >= 31 ? pow(2, 32 - (int)$bits) : pow(2, 32 - (int)$bits) - 1;
                 for ($i = $range_start; $i < $range_stop; ++$i) {
                     yield inet_ntop($inet_start | inet_pton(long2ip($i)));
                 }

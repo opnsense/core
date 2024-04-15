@@ -174,7 +174,7 @@ class ClientController extends ApiMutableModelControllerBase
         return $this->setBase('configbuilder', 'clients.client', $uuid);
     }
 
-    public function getServerInfoAction($uuid=null)
+    public function getServerInfoAction($uuid = null)
     {
         $result = ['status' => 'failed'];
         if ($this->request->isGet()) {
@@ -196,7 +196,7 @@ class ClientController extends ApiMutableModelControllerBase
                         $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
                     }
                     foreach ($peers as $peer) {
-                        $this_peer = $this->getModel()->getNodeByReference('clients.client.'.$peer);
+                        $this_peer = $this->getModel()->getNodeByReference('clients.client.' . $peer);
                         if ($this_peer != null) {
                             foreach (array_filter(explode(',', (string)$this_peer->tunneladdress)) as $addr) {
                                 $used_addresses[] = inet_ntop(inet_pton(explode('/', $addr)[0]));
