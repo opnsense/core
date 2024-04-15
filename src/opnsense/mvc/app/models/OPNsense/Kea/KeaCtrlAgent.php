@@ -28,8 +28,45 @@
 
 namespace OPNsense\Kea;
 
+use OPNsense\Core\File;
 use OPNsense\Base\BaseModel;
 
 class KeaCtrlAgent extends BaseModel
 {
+    public function generateConfig($target='/usr/local/etc/kea/kea-ctrl-agent.conf')
+    {
+        $cnf = [
+            'Control-agent' => [
+                'http-host' => (string)$this->general->http_host,
+                'http-port' => (int)$this->general->http_port->__toString(),
+                'control-sockets' => [
+                    'dhcp4' => [
+                        'socket-type' => 'unix',
+                        'socket-name' => '/var/run/kea4-ctrl-socket'
+                    ],
+                    'dhcp6' => [
+                        'socket-type' => 'unix',
+                        'socket-name'=> '/var/run/kea6-ctrl-socket'
+                    ],
+                    'd2' => [
+                        'socket-type' => 'unix',
+                        'socket-name' => '/var/run/kea-ddns-ctrl-socket'
+                    ]
+                ],
+                'loggers' => [
+                    [
+                        'name' => 'kea-ctrl-agent',
+                        'output_options' => [
+                            [
+                                'output' => 'syslog'
+                            ]
+                        ],
+                        'severity' => 'INFO',
+                        'debuglevel' => 0
+                    ]
+                ]
+            ]
+        ];
+        File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
+    }
 }
