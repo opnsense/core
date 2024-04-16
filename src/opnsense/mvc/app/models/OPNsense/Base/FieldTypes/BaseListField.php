@@ -135,7 +135,7 @@ abstract class BaseListField extends BaseField
                     $items[] = $fieldValue['value'];
                 }
             }
-            return implode(',', $items);
+            return implode(', ', $items);
         } else {
             return $data;
         }

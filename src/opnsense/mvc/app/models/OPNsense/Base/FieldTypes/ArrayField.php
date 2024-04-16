@@ -192,12 +192,13 @@ class ArrayField extends BaseField
             $sortKey = '';
             foreach ($fieldNames as $fieldName) {
                 if (isset($node->internalChildnodes[$fieldName])) {
-                    if (is_numeric((string)$node->$fieldName)) {
+                    $payload = $node->$fieldName->getDescription();
+                    if (is_numeric($payload)) {
                         // align numeric values right for sorting, not perfect but works for integer type values
-                        $sortKey .= sprintf("%" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%" . $MAX_KEY_LENGTH . "s,", $payload);
                     } else {
                         // normal text sorting, align left
-                        $sortKey .= sprintf("%-" . $MAX_KEY_LENGTH . "s,", $node->$fieldName);
+                        $sortKey .= sprintf("%-" . $MAX_KEY_LENGTH . "s,", $payload);
                     }
                 }
             }
