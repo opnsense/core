@@ -140,17 +140,26 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+            /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
-                if (!empty((string)$value)) {
+                $target_fieldname = str_replace('_', '-', $key);
+                if ((string)$value != '') {
                     $record['option-data'][] = [
-                        'name' => str_replace('_', '-', $key),
+                        'name' => $target_fieldname,
                         'data' => (string)$value
+                    ];
+                } elseif ($key == 'domain_name') {
+                    $record['option-data'][] = [
+                        'name' => $target_fieldname,
+                        'data' => (string)Config::getInstance()->object()->system->domain
                     ];
                 }
             }
+            /* add pools */
             foreach (array_filter(explode("\n", $subnet->pools)) as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
+            /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
                 if ($reservation->subnet != $subnet_uuid) {
                     continue;
