@@ -107,8 +107,8 @@
     <page-diagnostics-logs-dhcp>
         <name>Diagnostics: Logs: DHCP</name>
         <patterns>
-            <pattern>ui/diagnostics/log/core/dhcp/*</pattern>
-            <pattern>api/diagnostics/log/core/dhcp/*</pattern>
+            <pattern>ui/diagnostics/log/core/dhcpd/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcpd/*</pattern>
         </patterns>
     </page-diagnostics-logs-dhcp>
     <page-diagnostics-logs-gateways>
