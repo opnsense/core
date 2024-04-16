@@ -168,7 +168,7 @@ class KeaDhcpv4 extends BaseModel
         return $result;
     }
 
-    public function generateConfig($target='/usr/local/etc/kea/kea-dhcp4.conf')
+    public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp4.conf')
     {
         $cnf = [
             'Dhcp4' => [
@@ -178,7 +178,7 @@ class KeaDhcpv4 extends BaseModel
                 ],
                 'lease-database' => [
                     'type' => 'memfile',
-                    'persist' => True
+                    'persist' => true,
                 ],
                 'control-socket' => [
                     'socket-type' => 'unix',
@@ -192,10 +192,10 @@ class KeaDhcpv4 extends BaseModel
                                 'output' => 'syslog'
                             ]
                         ],
-                        'severity' => 'INFO'
+                        'severity' => 'INFO',
                     ]
                 ],
-                'subnet4' => $this->getConfigSubnets()
+                'subnet4' => $this->getConfigSubnets(),
             ]
         ];
         if (!empty((string)(new KeaCtrlAgent())->general->enabled)) {
@@ -215,7 +215,7 @@ class KeaDhcpv4 extends BaseModel
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
                                 'max-unacked-clients' => 5,
-                                'sync-timeout' => 60000
+                                'sync-timeout' => 60000,
                             ]
                         ]
                     ]

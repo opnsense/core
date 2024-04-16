@@ -33,7 +33,7 @@ use OPNsense\Base\BaseModel;
 
 class KeaCtrlAgent extends BaseModel
 {
-    public function generateConfig($target='/usr/local/etc/kea/kea-ctrl-agent.conf')
+    public function generateConfig($target = '/usr/local/etc/kea/kea-ctrl-agent.conf')
     {
         $cnf = [
             'Control-agent' => [
@@ -42,15 +42,15 @@ class KeaCtrlAgent extends BaseModel
                 'control-sockets' => [
                     'dhcp4' => [
                         'socket-type' => 'unix',
-                        'socket-name' => '/var/run/kea4-ctrl-socket'
+                        'socket-name' => '/var/run/kea4-ctrl-socket',
                     ],
                     'dhcp6' => [
                         'socket-type' => 'unix',
-                        'socket-name'=> '/var/run/kea6-ctrl-socket'
+                        'socket-name' => '/var/run/kea6-ctrl-socket',
                     ],
                     'd2' => [
                         'socket-type' => 'unix',
-                        'socket-name' => '/var/run/kea-ddns-ctrl-socket'
+                        'socket-name' => '/var/run/kea-ddns-ctrl-socket',
                     ]
                 ],
                 'loggers' => [
@@ -62,11 +62,12 @@ class KeaCtrlAgent extends BaseModel
                             ]
                         ],
                         'severity' => 'INFO',
-                        'debuglevel' => 0
+                        'debuglevel' => 0,
                     ]
                 ]
             ]
         ];
+
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
 }
