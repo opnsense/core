@@ -92,6 +92,10 @@ class KeaDhcpv4 extends BaseModel
         return $messages;
     }
 
+    public function isEnabled()
+    {
+        return (string)$this->general->enabled == '1' && !empty((string)(string)$this->general->interfaces);
+    }
 
     /**
      * should filter rules be enabled
