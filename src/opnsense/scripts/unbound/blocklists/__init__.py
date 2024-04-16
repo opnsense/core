@@ -108,39 +108,29 @@ class BaseBlocklistHandler:
         """
         req_opts = {
             'url': uri,
-            'timeout': 5,
+            'timeout': 30,
             'stream': True
         }
-        try:
-            req = requests.get(**req_opts)
-        except Exception as e:
-            syslog.syslog(syslog.LOG_ERR,'blocklist download : unable to download file from %s (error : %s)' % (uri, e))
-            return
-
+        req = requests.get(**req_opts)
         if req.status_code >= 200 and req.status_code <= 299:
             req.raw.decode_content = True
             prev_chop  = ''
             while True:
-                try:
-                    chop = req.raw.read(1024).decode()
-                    if not chop:
-                        if prev_chop:
-                            yield prev_chop
-                        break
+                chop = req.raw.read(1024).decode()
+                if not chop:
+                    if prev_chop:
+                        yield prev_chop
+                    break
+                else:
+                    parts = (prev_chop + chop).split('\n')
+                    if parts[-1] != "\n":
+                        prev_chop = parts.pop()
                     else:
-                        parts = (prev_chop + chop).split('\n')
-                        if parts[-1] != "\n":
-                            prev_chop = parts.pop()
-                        else:
-                            prev_chop = ''
-                        for part in parts:
-                            yield part
-                except Exception as e:
-                    syslog.syslog(syslog.LOG_ERR,'blocklist download : error reading file from %s (error : %s)' % (uri, e))
-                    return
-
+                        prev_chop = ''
+                    for part in parts:
+                        yield part
         else:
-            syslog.syslog(syslog.LOG_ERR,
+            raise Exception(
                 'blocklist download : unable to download file from %s (status_code: %d)' % (uri, req.status_code)
             )
 
