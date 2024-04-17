@@ -141,7 +141,6 @@ abstract class BaseListField extends BaseField
         }
     }
 
-
     /**
      * {@inheritdoc}
      */
