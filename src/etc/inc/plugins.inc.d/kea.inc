@@ -34,10 +34,10 @@ function kea_services()
         $services[] = [
             'description' => gettext('KEA DHCPv4 server'),
             'pidfile' => '/var/run/kea/kea-dhcp4.kea-dhcp4.pid',
-            'php' => [
-                'restart' => ['kea_configure_do'],
-                'start' => ['kea_configure_do'],
-                'stop' => ['kea_service_stop'],
+            'configd' => [
+                'restart' => ['kea restart'],
+                'start' => ['kea start'],
+                'stop' => ['kea stop'],
             ],
             'name' => 'kea-dhcpv4',
         ];
@@ -48,9 +48,7 @@ function kea_services()
 function kea_configure()
 {
     return [
-        'bootup' => ['kea_configure_do'],
-        'kea_start' => ['kea_configure_do'],
-        'kea_stop' => ['kea_service_stop']
+        'kea_sync' => ['kea_configure_do']
     ];
 }
 
@@ -58,20 +56,11 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     if ($keaDhcpv4->isEnabled()) {
-        service_log('Starting KEA DHCP...', $verbose);
+        service_log('Sync KEA DHCP config...', $verbose);
         $keaDhcpv4->generateConfig();
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
-        if (isvalidpid('/var/run/kea/kea-dhcp4.kea-dhcp4.pid')) {
-            mwexec("/usr/local/etc/rc.d/kea onestop", false);
-        }
-        mwexec_bg("/usr/local/etc/rc.d/kea onestart", false);
         service_log("done.\n", $verbose);
     }
-}
-
-function kea_service_stop()
-{
-    mwexec("/usr/local/etc/rc.d/kea onestop", false);
 }
 
 function kea_syslog()
