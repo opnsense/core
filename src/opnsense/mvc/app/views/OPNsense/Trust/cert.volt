@@ -141,6 +141,20 @@
                     }
                 });
             }
+            /* create new cert with predefined CN */
+            if (window.location.hash != "") {
+                let tmp = window.location.hash.split('=');
+                if (tmp.length == 2 && tmp[0] == '#new') {
+                    console.log(tmp);
+                    $("#btn_new_cert").click();
+                    // XXX: probably needs a better hook, but fill username when dialog is loaded
+                    setTimeout(function(){
+                        $("#cert\\.commonname").val(tmp[1]);
+                    }, 500);
+                    history.pushState(null, null, '#');
+                }
+            }
+
         });
         /**
          * register handler to download private key on save
@@ -225,6 +239,7 @@
                 }
             }
         });
+
     });
 
 </script>
@@ -277,7 +292,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                        <button id='btn_new_cert' data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
                         <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
                     </td>
                 </tr>
