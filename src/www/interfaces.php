@@ -420,6 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['enable'] = isset($a_interfaces[$if]['enable']);
     $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
+    $pconfig['antilockout'] = isset($a_interfaces[$if]['antilockout']);
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
     $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
@@ -596,6 +597,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (empty($pconfig['enable'])) {
         if (isset($a_interfaces[$if]['enable'])) {
             unset($a_interfaces[$if]['enable']);
+        }
+        if (!empty($pconfig['antilockout'])) {
+            $a_interfaces[$if]['antilockout'] = true;
+        } elseif (isset($a_interfaces[$if]['antilockout'])) {
+            unset($a_interfaces[$if]['antilockout']);
         }
         if (!empty($pconfig['lock'])) {
             $a_interfaces[$if]['lock'] = true;
@@ -1013,6 +1019,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $new_config['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
             $new_config['enable'] = !empty($pconfig['enable']);
             $new_config['lock'] = !empty($pconfig['lock']);
+            $new_config['antilockout'] = !empty($pconfig['antilockout']);
             $new_config['spoofmac'] = $pconfig['spoofmac'];
 
             $new_config['blockpriv'] = !empty($pconfig['blockpriv']);
@@ -1759,6 +1766,19 @@ include("head.inc");
                         <td>
                           <input id="lock" name="lock" type="checkbox" value="yes" <?=!empty($pconfig['lock']) ? 'checked="checked"' : '' ?>/>
                           <?= gettext('Prevent interface removal') ?>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_antilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Antilockout') ?></td>
+                        <td>
+                          <input id="antilockout" name="antilockout" type="checkbox" value="yes" <?=!empty($pconfig['antilockout']) ? 'checked="checked"' : '' ?>/>
+                          <?= gettext('Enable antilockout firewall rule on this interface') ?>
+                          <div class="hidden" data-for="help_for_antilockout">
+                            <?= gettext(<<<EOD
+                                When this is checked, an anti lockout rule is generated which always permits access to the web GUI and SSH on this interface,
+                                regardless of the user-defined firewall rule set, unless the anti lockout feature is disabled in the advanced firewall settings.
+                                EOD); ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
