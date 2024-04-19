@@ -164,6 +164,7 @@ class CaController extends ApiMutableModelControllerBase
         if ($response['result'] != 'failed') {
             (new Backend())->configdRun('system trust configure', true);
         }
+        return $response;
     }
 
     public function setAction($uuid = null)
