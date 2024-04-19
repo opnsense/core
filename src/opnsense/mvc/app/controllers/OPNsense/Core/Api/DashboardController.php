@@ -72,7 +72,7 @@ class DashboardController extends ApiControllerBase
                 'trafficout' => gettext('Traffic Out'),
             ],
             'memory' => [
-                'title' => gettext('Memory'),
+                'title' => gettext('Memory usage'),
                 'used' => gettext('Used'),
                 'free' => gettext('Free'),
                 'arc' => gettext('ARC'),
