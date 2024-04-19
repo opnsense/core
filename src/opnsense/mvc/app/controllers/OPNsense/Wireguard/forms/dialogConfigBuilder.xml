@@ -31,7 +31,7 @@
     </field>
     <field>
         <id>configbuilder.address</id>
-        <label>Adress</label>
+        <label>Address</label>
         <type>text</type>
         <help>List of addresses to use on the remote peer, these will be allowed (and optionally routed) from this instance.</help>
     </field>
