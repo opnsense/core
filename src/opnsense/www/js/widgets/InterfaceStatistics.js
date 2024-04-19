@@ -51,11 +51,6 @@ export default class InterfaceStatistics extends BaseWidget {
         `);
     }
 
-    _setAlpha(color, opacity) {
-        const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
-        return color + op.toString(16).toUpperCase();
-    }
-
     _getIndexedData(data) {
         let indexedData = Array(this.labels.length).fill(null);
         let indexedColors = Array(this.labels.length).fill(null);
@@ -133,6 +128,7 @@ export default class InterfaceStatistics extends BaseWidget {
                 layout: {
                     padding: 10
                 },
+                normalized: true,
                 parsing: false,
                 plugins: {
                     legend: {

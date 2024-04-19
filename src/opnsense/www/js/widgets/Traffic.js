@@ -75,6 +75,7 @@ export default class Traffic extends BaseWidget {
                 pointDot: false,
                 scaleShowGridLines: true,
                 responsive: true,
+                normalized: true,
                 elements: {
                     line: {
                         fill: true,
@@ -98,7 +99,7 @@ export default class Traffic extends BaseWidget {
                         type: 'realtime',
                         realtime: {
                             duration: 20000,
-                            delay: 1000,
+                            delay: 2000,
                         },
                     },
                     y: {
@@ -213,7 +214,7 @@ export default class Traffic extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        this.eventSource = new EventSource('/api/diagnostics/traffic/stream/1');
+        this.eventSource = new EventSource('/api/diagnostics/traffic/stream/2');
         this.eventSource.onmessage = this._onMessage.bind(this);
     }
 
