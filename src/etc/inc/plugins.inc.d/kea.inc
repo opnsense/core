@@ -60,6 +60,10 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
         $proto = (int)$proto;
     }
 
+    if ($proto == 6) {
+        return $staticmap;
+    }
+
     if (($proto ?? 4) == 4) {
         $keav4 = new \OPNsense\Kea\KeaDhcpv4();
 
@@ -106,6 +110,8 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
     }
 
     return $staticmap;
+}
+
 function kea_configure()
 {
     return [
