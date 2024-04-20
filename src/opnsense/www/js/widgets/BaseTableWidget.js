@@ -108,6 +108,8 @@ export default class BaseTableWidget extends BaseWidget {
 
         $table.children('.flextable-row').remove();
 
+        this.data = data;
+
         for (const row of data) {
             let rowType = Array.isArray(row) && row !== null ? 'flat' : 'nested';
             if (rowType === 'flat' && this.options.headerPosition !== 'none') {

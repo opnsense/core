@@ -471,4 +471,69 @@ class Util
             return 32 - $bits;
         }
     }
+
+    /**
+     * convert cidr to array containing a start and end address
+     * @param array $cidr ipv4/6 cidr range definition
+     * @return array|bool address range or false when not a valid cidr
+     */
+    public static function cidrToRange($cidr)
+    {
+        if (!self::isSubnet($cidr)) {
+            return false;
+        }
+        list ($ipaddr, $bits) = explode('/', $cidr);
+        $inet_ip = inet_pton($ipaddr);
+        if (str_contains($ipaddr, ':')) {
+            /* IPv6 */
+            $size = 128 - (int)$bits;
+            $mask = [
+                1 => (0xffffffff << max($size - 96, 0)) & 0xffffffff,
+                2 => (0xffffffff << max($size - 64, 0)) & 0xffffffff,
+                3 => (0xffffffff << max($size - 32, 0)) & 0xffffffff,
+                4 => (0xffffffff << $size) & 0xffffffff,
+            ];
+
+            $netmask_parts = [];
+            for ($pos = 1; $pos <= 4; $pos += 1) {
+                $netmask_parts = array_merge($netmask_parts, str_split(sprintf('%08x', $mask[$pos]), 4));
+            }
+            $inet_mask = inet_pton(implode(':', $netmask_parts));
+        } else {
+            /* IPv4 */
+            $size = 32 - (int)$bits;
+            $inet_mask = inet_pton(long2ip((0xffffffff << $size) & 0xffffffff));
+        }
+        $inet_start = $inet_ip & $inet_mask;
+        $inet_end = $inet_ip | ~$inet_mask;
+        return [inet_ntop($inet_start), inet_ntop($inet_end)];
+    }
+
+    /**
+     * @param array $cidr ipv4/6 cidr range definition
+     * @return Generator yielding usable addresses in cidr range (max size for ipv6 is 32 bits)
+     */
+    public static function cidrRangeIterator($cidr)
+    {
+        $range = self::cidrToRange($cidr);
+        if ($range) {
+            $bits = explode('/', $cidr)[1];
+            $inet_start = inet_pton($range[0]);
+            if (str_contains($range[0], ':')) {
+                for ($i = 0; $i < pow(2, min(128 - (int)$bits, 32)); ++$i) {
+                    yield inet_ntop($inet_start | inet_pton('0000::' . dechex($i)));
+                }
+            } else {
+                /**
+                 * For ipv4, skip network and broadcast addresses,
+                 * unless size is >= 31 in which case these may be omitted acording to RFC3021
+                 */
+                $range_start = (int)$bits >= 31 ? 0 : 1;
+                $range_stop =  (int)$bits >= 31 ? pow(2, 32 - (int)$bits) : pow(2, 32 - (int)$bits) - 1;
+                for ($i = $range_start; $i < $range_stop; ++$i) {
+                    yield inet_ntop($inet_start | inet_pton(long2ip($i)));
+                }
+            }
+        }
+    }
 }

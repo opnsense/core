@@ -30,6 +30,12 @@
         <help>Private key of this peer, not stored on this host, only used for the configuration below.</help>
     </field>
     <field>
+        <id>configbuilder.address</id>
+        <label>Address</label>
+        <type>text</type>
+        <help>List of addresses to use on the remote peer, these will be allowed (and optionally routed) from this instance.</help>
+    </field>
+    <field>
         <id>configbuilder.psk</id>
         <label>Pre-shared key</label>
         <type>text</type>
@@ -39,7 +45,7 @@
         <id>configbuilder.tunneladdress</id>
         <label>Allowed IPs</label>
         <type>text</type>
-        <help>List of networks allowed to pass trough the tunnel adapter. Use CIDR notation like 10.0.0.0/24.</help>
+        <help>List of networks allowed to pass through the tunnel adapter. Use CIDR notation like 10.0.0.0/24.</help>
     </field>
     <field>
         <id>configbuilder.keepalive</id>

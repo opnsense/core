@@ -414,7 +414,6 @@ class Config extends Singleton
     {
         $this->simplexml = null;
         $this->statusIsValid = false;
-
         // exception handling
         if (!file_exists($this->config_file)) {
             throw new ConfigException('file not found');
@@ -781,14 +780,16 @@ class Config extends Singleton
 
     /**
      * lock configuration
-     * @param boolean $reload reload config from open file handle to enforce synchronicity
+     * @param boolean $reload reload config from open file handle to enforce synchronicity, when not already locked
      */
     public function lock($reload = true)
     {
         if ($this->config_file_handle !== null) {
             flock($this->config_file_handle, LOCK_EX);
+            $do_reload = $reload && !$this->statusIsLocked;
             $this->statusIsLocked = true;
-            if ($reload) {
+            if ($do_reload) {
+                /* Only lock when the exclusive lock wasn't ours yet. */
                 $this->load();
             }
         }

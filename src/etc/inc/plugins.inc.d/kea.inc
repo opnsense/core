@@ -106,6 +106,22 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
     }
 
     return $staticmap;
+function kea_configure()
+{
+    return [
+        'kea_sync' => ['kea_configure_do']
+    ];
+}
+
+function kea_configure_do($verbose = false)
+{
+    $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
+    if ($keaDhcpv4->isEnabled()) {
+        service_log('Sync KEA DHCP config...', $verbose);
+        $keaDhcpv4->generateConfig();
+        (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
+        service_log("done.\n", $verbose);
+    }
 }
 
 function kea_syslog()

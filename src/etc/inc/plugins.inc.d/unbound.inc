@@ -123,7 +123,7 @@ function unbound_service_stop()
 
     mwexecf('/sbin/umount %s', '/var/unbound/dev', true);
     mwexecf('/sbin/umount %s', '/var/unbound/usr/local/lib/' . readlink('/usr/local/bin/python3'), true);
-    mwexecf('/sbin/umount %s', '/var/unbound/lib');
+    mwexecf('/sbin/umount %s', '/var/unbound/lib', true);
 }
 
 function unbound_generate_config()

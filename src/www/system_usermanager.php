@@ -107,6 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = htmlspecialchars($_GET['savemsg']);
     }
     if ($act == "expcert" && isset($id)) {
+        if (!(new OPNsense\Core\ACL())->isPageAccessible($_SESSION['Username'], '/api/trust/cert')) {
+            exit;
+        }
         // export certificate
         $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
 
@@ -120,6 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo $exp_data;
         exit;
     } elseif ($act == "expckey" && isset($id)) {
+        if (!(new OPNsense\Core\ACL())->isPageAccessible($_SESSION['Username'], '/api/trust/cert')) {
+            exit;
+        }
         // export private key
         $cert = &lookup_cert($a_user[$id]['cert'][$_GET['certid']]);
         $exp_name = urlencode("{$a_user[$id]['name']}-{$cert['descr']}.key");
@@ -201,15 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             header(url_safe('Location: /system_usermanager.php?savemsg=%s', array($savemsg)));
             exit;
         }
-    } elseif ($act == "delcert" && isset($id)) {
-        // remove certificate association
-        $certdeleted = lookup_cert($a_user[$id]['cert'][$pconfig['certid']]);
-        $certdeleted = $certdeleted['descr'];
-        unset($a_user[$id]['cert'][$pconfig['certid']]);
-        write_config(sprintf('The certificate association "%s" was successfully removed.', $certdeleted));
-        $savemsg = sprintf(gettext('The certificate association "%s" was successfully removed.'), $certdeleted);
-        header(url_safe('Location: /system_usermanager.php?savemsg=%s&act=edit&userid=%d', array($savemsg, $id)));
-        exit;
     } elseif ($act == "newApiKey" && isset($id)) {
         // every action is using the sequence of the user, to keep it understandable, we will use
         // the same strategy here (although we need a username to work with)
@@ -319,13 +316,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (!empty($pconfig['name'])) {
-            $ca = lookup_ca($pconfig['caref']);
-            if (!$ca) {
-                $input_errors[] = gettext("Invalid internal Certificate Authority") . "\n";
-            }
-        }
-
         if (!empty($pconfig['shell']) && !in_array($pconfig['shell'], auth_get_shells(isset($id) ? $a_user[$id]['uid'] : $config['system']['nextuid']))) {
             $input_errors[] = gettext('Invalid login shell provided.');
         }
@@ -409,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             configdp_run('auth user changed', [$userent['name']]);
 
             if (!empty($pconfig['chkNewCert'])) {
-                header(url_safe('Location: /system_certmanager.php?act=new&userid=%d', array(isset($id) ? $id : count($a_user) - 1)));
+                header(url_safe('Location: /ui/trust/cert#new=' . $userent['name']));
             } elseif (isset($pconfig['save_close'])) {
                 header(url_safe('Location: /system_usermanager.php?savemsg=%s', array(get_std_save_message(true))));
             } else {
@@ -442,28 +432,6 @@ $( document ).ready(function() {
     $('#otp_unhide').click(function () {
         $(this).hide();
         $('#otp_qrcode').show();
-    });
-    // remove certificate association
-    $(".act-del-cert").click(function(event){
-      var certid = $(this).data('certid');
-      event.preventDefault();
-      BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= html_safe(gettext('Certificate')) ?>",
-          message: "<?= html_safe(gettext('Do you really want to remove this certificate association?')) .'\n'. html_safe(gettext('(Certificate will not be deleted)')) ?>",
-          buttons: [{
-                  label: "<?= html_safe(gettext('No')) ?>",
-                  action: function(dialogRef) {
-                    dialogRef.close();
-                  }}, {
-                    label: "<?= html_safe(gettext('Yes')) ?>",
-                    action: function(dialogRef) {
-                      $("#certid").val(certid);
-                      $("#act").val("delcert");
-                      $("#iform").submit();
-                  }
-          }]
-      });
     });
 
     // remove user
@@ -592,7 +560,6 @@ $( document ).ready(function() {
                 <input type="hidden" id="userid" name="userid" value="<?=(isset($id) ? $id : '');?>" />
                 <input type="hidden" id="priv_delete" name="priv_delete" value="" /> <!-- delete priv action -->
                 <input type="hidden" id="api_delete" name="api_delete" value="" /> <!-- delete api ke action -->
-                <input type="hidden" id="certid" name="certid" value="" /> <!-- remove cert association action -->
                 <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td style="width:22%"></td>
@@ -810,6 +777,9 @@ $( document ).ready(function() {
                       </table>
                     </td>
                   </tr>
+<?php
+              /* only show user certificates if the logged in user is able to access trust */
+              if ((new OPNsense\Core\ACL())->isPageAccessible($_SESSION['Username'], '/api/trust/cert')):?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Certificates");?></td>
                     <td>
@@ -822,14 +792,20 @@ $( document ).ready(function() {
                           <td></td>
                         </tr>
 <?php
-                        $new_cert_link_suffix = "";
-                        if (isset($a_user[$id]['cert']) && is_array($a_user[$id]['cert'])) :
+                        if (isset($config['cert']) && is_array($config['cert'])):
                           $i = 0;
-                          foreach ($a_user[$id]['cert'] as $certref) :
-                            $cert = lookup_cert($certref);
+                          foreach ($config['cert'] as $cert) :
+                            if (empty($cert['crt'])) {
+                                continue;
+                            }
+                            $tmp = openssl_x509_parse(base64_decode($cert['crt']));
+                            if (!is_array($tmp) || !isset($tmp['subject']) || $tmp['subject']['CN'] != $pconfig['usernamefld']) {
+                                continue;
+                            } elseif (cert_get_purpose($cert['crt'])['server'] == 'Yes') {
+                                continue;
+                            }
                             $ca = lookup_ca($cert['caref']);
                             list($cert_validfrom, $cert_validto) = cert_get_dates($cert['crt']);
-                            $new_cert_link_suffix = "&amp;method=internal&amp;caref={$cert['caref']}";
 ?>
                         <tr>
                           <td><?=htmlspecialchars($cert['descr']);?>
@@ -849,10 +825,6 @@ $( document ).ready(function() {
                                 class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export certificate");?>">
                               <span class="fa fa-arrow-down fa-fw"></span>
                             </a>
-                            <button type="submit" data-certid="<?=$i;?>" class="btn btn-default btn-xs act-del-cert"
-                                title="<?=gettext("unlink certificate");?>" data-toggle="tooltip">
-                              <span class="fa fa-trash fa-fw"></span>
-                            </button>
                           </td>
                         </tr>
 <?php
@@ -861,8 +833,8 @@ $( document ).ready(function() {
                         endif;?>
                         <tr>
                           <td colspan="5">
-                            <a href="system_certmanager.php?act=new&amp;userid=<?=$id?><?=$new_cert_link_suffix;?>" class="btn btn-default btn-xs"
-                                title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip">
+                            <a href="/ui/trust/cert#new=<?=$pconfig['usernamefld'];?>" class="btn btn-default btn-xs"
+                                title="<?=gettext("create new user certificate");?>" data-toggle="tooltip">
                               <span class="fa fa-plus fa-fw"></span>
                             </a>
                           </td>
@@ -870,6 +842,8 @@ $( document ).ready(function() {
                       </table>
                     </td>
                   </tr>
+<?php
+              endif;?>
                   <tr>
                       <td><a id="help_for_apikeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("API keys");?> </td>
                       <td>

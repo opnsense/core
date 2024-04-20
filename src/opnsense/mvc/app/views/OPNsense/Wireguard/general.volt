@@ -133,18 +133,19 @@
         });
 
         $("#configbuilder\\.servers").change(function(){
-            ajaxGet('/api/wireguard/server/getServer/' + $(this).val(), {}, function(data, status) {
-                if (data.server) {
+            ajaxGet('/api/wireguard/client/get_server_info/' + $(this).val(), {}, function(data, status) {
+                if (data.status === 'ok') {
                     let endpoint = $("#configbuilder\\.endpoint");
                     let peer_dns = $("#configbuilder\\.peer_dns");
+                    $("#configbuilder\\.address").val(data.address);
                     peer_dns
-                        .val(data.server.peer_dns)
-                        .data('org-value', data.server.peer_dns);
+                        .val(data.peer_dns)
+                        .data('org-value', data.peer_dns);
 
                     endpoint
-                        .val(data.server.endpoint)
-                        .data('org-value', data.server.endpoint)
-                        .data('pubkey', data.server.pubkey)
+                        .val(data.endpoint)
+                        .data('org-value', data.endpoint)
+                        .data('pubkey', data.pubkey)
                         .change();
                 }
             });
@@ -162,7 +163,7 @@
                     name: $("#configbuilder\\.name").val(),
                     pubkey: $("#configbuilder\\.pubkey").val(),
                     psk: $("#configbuilder\\.psk").val(),
-                    tunneladdress: $("#configbuilder\\.tunneladdress").val(),
+                    tunneladdress: $("#configbuilder\\.address").val(),
                     keepalive: $("#configbuilder\\.keepalive").val(),
                     server: instance_id,
                 }
@@ -211,6 +212,9 @@
             let rows = [];
             rows.push('[Interface]');
             rows.push('PrivateKey = ' + $("#configbuilder\\.privkey").val());
+            if ($("#configbuilder\\.address").val()) {
+                rows.push('Address = ' + $("#configbuilder\\.address").val());
+            }
             if ($("#configbuilder\\.peer_dns").val()) {
                 rows.push('DNS = ' + $("#configbuilder\\.peer_dns").val());
             }

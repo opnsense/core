@@ -55,6 +55,27 @@ class DashboardController extends ApiControllerBase
                 'datetime' => gettext('Current date/time'),
                 'uptime' => gettext('Uptime'),
                 'config' => gettext('Last configuration change')
+            ],
+            'interfacestatistics' => [
+                'title' => gettext('Interface Statistics'),
+                'bytesin' => gettext('Bytes In'),
+                'bytesout' => gettext('Bytes Out'),
+                'packetsin' => gettext('Packets In'),
+                'packetsout' => gettext('Packets Out'),
+                'errorsin' => gettext('Errors In'),
+                'errorsout' => gettext('Errors Out'),
+                'collisions' => gettext('Collisions'),
+            ],
+            'traffic' => [
+                'title' => gettext('Traffic Graph'),
+                'trafficin' => gettext('Traffic In'),
+                'trafficout' => gettext('Traffic Out'),
+            ],
+            'memory' => [
+                'title' => gettext('Memory usage'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+                'arc' => gettext('ARC'),
             ]
         ];
     }

@@ -28,6 +28,7 @@
 class ResizeObserverWrapper {
     _lastWidths = {};
     _lastHeights = {};
+    _observer = null;
 
     _debounce(f, delay = 50, ensure = true) {
         // debounce to prevent a flood of calls in a short time
@@ -47,7 +48,7 @@ class ResizeObserverWrapper {
     }
 
     observe(elements, onSizeChanged, onInitialize) {
-        const observer = new ResizeObserver(this._debounce((entries) => {
+        this._observer = new ResizeObserver(this._debounce((entries) => {
             if (entries != undefined && entries.length > 0) {
                 for (const entry of entries) {
                     const width = entry.contentRect.width;
@@ -74,8 +75,12 @@ class ResizeObserverWrapper {
         }));
 
         elements.forEach((element) => {
-            observer.observe(element);
+            this._observer.observe(element);
         });
+    }
+
+    disconnect() {
+        this._observer.disconnect();
     }
 }
 
@@ -92,6 +97,7 @@ class WidgetManager  {
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
         this.renderDefaultDashboard = true;
+        this.resizeObserver = null;
     }
 
     async initialize() {
@@ -236,6 +242,15 @@ class WidgetManager  {
             this._onWidgetClose(widgetId);
         });
 
+        window.onbeforeunload = () => {
+            if (this.resizeObserver !== null) {
+                this.resizeObserver.disconnect();
+            }
+            for (const id of Object.keys(this.widgetClasses)) {
+                this._onWidgetClose(id);
+            }
+        };
+
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
         this.grid.cellHeight(1);
@@ -285,7 +300,8 @@ class WidgetManager  {
      */
      async _loadDynamicContent() {
         // handle dynamic resize of widgets
-        new ResizeObserverWrapper().observe(
+        this.resizeObserver = new ResizeObserverWrapper();
+        this.resizeObserver.observe(
             document.querySelectorAll('.widget'),
             (elem, width, height) => {
                 for (const subclass of elem.className.split(" ")) {
@@ -331,11 +347,20 @@ class WidgetManager  {
         this.widgetHTMLElements[widget.id].gridstackNode._initDD = false;
         this.grid.resizable(this.widgetHTMLElements[widget.id], true);
 
+        // trigger initial widget resize
+        let rect = $(`.widget-${widget.id}`)[0].getBoundingClientRect();
+        widget.onWidgetResize(this.widgetHTMLElements[widget.id], rect.width, rect.height);
+        this._updateGrid(this.widgetHTMLElements[widget.id]);
+
         // second: start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         await onWidgetTick();
         const interval = setInterval(async () => {
-            await onWidgetTick();
+            await onWidgetTick().catch((error) => {
+                // The page might be closed while a tick routine was executing,
+                // in that case, the error is expected and can be ignored.
+                null;
+            });
             this._updateGrid(this.widgetHTMLElements[widget.id]);
         }, widget.tickTimeout);
         // store the reference to the tick routine so we can clear it later on widget removal

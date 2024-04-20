@@ -75,6 +75,10 @@ td {
 }
 
 .canvas-container {
+    position: relative;
+}
+
+.cpu-canvas-container {
     display: flex;
     flex-direction: column;
 }
@@ -167,26 +171,6 @@ td {
 #chartjs-toolip {
     z-index: 20;
 }
-
-/* Gauge */
-#gauge-container {
-    width: 80%;
-    margin: 5px auto;
-    background-color: #ccc;
-    height: 10px;
-    position: relative;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-#gauge-fill {
-    height: 100%;
-    width: 0;
-    background-color: green;
-    border-radius: 5px;
-    transition: width 0.5s, background-color 0.5s;
-}
-
 
 /* Custom flex table */
 div {

@@ -108,31 +108,38 @@ class DefaultBlocklistHandler(BaseBlocklistHandler):
         needs to be downloaded. Yields (unformatted) domains either way
         """
         total_lines = 0
-        from_cache = False
+        from_cache = True
         h = hashlib.md5(uri.encode()).hexdigest()
         cache_loc = '/tmp/bl_cache/'
-        if os.path.exists(cache_loc):
-            filep = cache_loc + h
-            if os.path.exists(filep) and os.path.getsize(filep) > 0:
-                fstat = os.stat(filep).st_ctime
-                if (time.time() - fstat) < self.cache_ttl: # 20 hours, a bit under the recommended cron time
-                    from_cache = True
-                    for line in open(filep):
-                        total_lines += 1
-                        yield line
+        filep = cache_loc + h
+        if not os.path.exists(filep) or (time.time() - os.stat(filep).st_ctime >= self.cache_ttl):
+            # cache expired (20 hours) or not available yet, try to read, keep old one when failed
+            try:
+                os.makedirs(cache_loc, exist_ok=True)
+                filep_t = "%s.tmp" % filep
+                with open(filep_t, 'w') as outf:
+                    for line in self._uri_reader(uri):
+                        outf.write(line + '\n')
+                from_cache = False
+                if os.path.exists(filep): os.remove(filep)
+                os.rename(filep_t, filep)
+            except Exception as e:
+                syslog.syslog(syslog.LOG_ERR, 'blocklist download : error reading file from %s (error : %s)' % (uri, e))
+                # keep original file on failure
+                if not os.path.exists(filep) and os.path.getsize(filep_t) > 0: os.rename(filep_t, filep)
 
-        if not from_cache:
-            os.makedirs(cache_loc, exist_ok=True)
-            with open(cache_loc + h, 'w') as outf:
-                for line in self._uri_reader(uri):
-                    outf.write(line + '\n')
-                    total_lines += 1
-                    yield line
+        if os.path.exists(filep):
+            for line in open(filep):
+                total_lines += 1
+                yield line
 
-        syslog.syslog(
-            syslog.LOG_NOTICE, 'blocklist download: %d total lines %s for %s' %
-                (total_lines, 'from cache' if from_cache else 'downloaded', uri)
-        )
+            syslog.syslog(
+                syslog.LOG_NOTICE, 'blocklist download: %d total lines %s for %s' %
+                    (total_lines, 'from cache' if from_cache else 'downloaded', uri)
+            )
+        else:
+            syslog.syslog(syslog.LOG_ERR, 'unable to download blocklist from %s and no cache available' % uri)
+
 
     def _get_excludes(self):
         whitelist_pattern = re.compile('$^') # match nothing

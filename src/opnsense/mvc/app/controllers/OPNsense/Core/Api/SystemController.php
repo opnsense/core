@@ -260,4 +260,39 @@ class SystemController extends ApiControllerBase
 
         return json_encode($response);
     }
+
+    public function systemResourcesAction()
+    {
+        $result = [];
+
+        $mem = json_decode((new Backend())->configdpRun('system sysctl values', implode(',', [
+            'hw.physmem',
+            'vm.stats.vm.v_page_count',
+            'vm.stats.vm.v_inactive_count',
+            'vm.stats.vm.v_cache_count',
+            'vm.stats.vm.v_free_count',
+            'kstat.zfs.misc.arcstats.size'
+        ])), true);
+
+        if (!empty($mem['vm.stats.vm.v_page_count'])) {
+            $pc = $mem['vm.stats.vm.v_page_count'];
+            $ic = $mem['vm.stats.vm.v_inactive_count'];
+            $cc = $mem['vm.stats.vm.v_cache_count'];
+            $fc = $mem['vm.stats.vm.v_free_count'];
+            $result['memory']['total'] = $mem['hw.physmem'];
+            $result['memory']['total_frmt'] = sprintf('%d', $mem['hw.physmem'] / 1024 / 1024);
+            $result['memory']['used'] = round(((($pc - ($ic + $cc + $fc))) / $pc) * $mem['hw.physmem'], 0);
+            $result['memory']['used_frmt'] = sprintf('%d', $result['memory']['used'] / 1024 / 1024);
+            if (!empty($mem['kstat.zfs.misc.arcstats.size'])) {
+                $arc_size = $mem['kstat.zfs.misc.arcstats.size'];
+                $result['memory']['arc'] = $arc_size;
+                $result['memory']['arc_frmt'] = sprintf('%d', $arc_size / 1024 / 1024);
+                $result['memory']['arc_txt'] = sprintf(gettext('ARC size %d MB'), $arc_size / 1024 / 1024);
+            }
+        } else {
+            $result['memory']['used'] = gettext('N/A');
+        }
+
+        return json_encode($result);
+    }
 }

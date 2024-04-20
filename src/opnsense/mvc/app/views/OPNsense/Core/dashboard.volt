@@ -31,21 +31,20 @@
 <link href="{{ cache_safe('/ui/css/gridstack-extra.min.css') }}" rel="stylesheet">
 <!-- gridstack core -->
 <script src="{{ cache_safe('/ui/js/gridstack-all.min.js') }}"></script>
-
-<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
-
 <script src="{{ cache_safe('/ui/js/opnsense_widget_manager.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
-
+<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chart.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/smoothie.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
 
 <script>
 $( document ).ready(function() {
     let widgetManager = new WidgetManager({
         float: false,
-        column: 4,
+        column: 5,
         margin: 10,
         alwaysShowResizeHandle: false,
         sizeToContent: true,
