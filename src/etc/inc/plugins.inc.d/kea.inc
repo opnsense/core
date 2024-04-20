@@ -68,7 +68,6 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
 
     if (!empty((string)$keav4->general->enabled)) {
         $reservations = $keav4->reservations;
-        $reservation = $reservations->reservation;
 
         foreach ($reservations->reservation->iterateItems() as $reservation) {
             $ip_address = (string)$reservation->ip_address;
