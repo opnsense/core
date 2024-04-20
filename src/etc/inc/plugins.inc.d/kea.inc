@@ -64,45 +64,43 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
         return $staticmap;
     }
 
-    if (($proto ?? 4) == 4) {
-        $keav4 = new \OPNsense\Kea\KeaDhcpv4();
+    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
 
-        if (!empty((string)$keav4->general->enabled)) {
-            $reservations = $keav4->reservations;
-            $reservation = $reservations->reservation;
+    if (!empty((string)$keav4->general->enabled)) {
+        $reservations = $keav4->reservations;
+        $reservation = $reservations->reservation;
 
-            foreach ($reservations->reservation->iterateItems() as $reservation) {
-                $ip_address = (string)$reservation->ip_address;
-                if (empty($ip_address) && $valid_addresses) {
-                    continue;
-                }
-                $hostname = (string)$reservation->hostname;
-                if (empty($hostname)) {
-                    $hostname = null;
-                }
-                $description = (string)$reservation->description;
-                if (empty($description)) {
-                    $description = null;
-                }
-
-                $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-
-                $domain = null;
-                if ($subnet_node) {
-                    if (!empty((string)$subnet_node->option_data->domain_name)) {
-                        $domain = (string)$subnet_node->option_data->domain_name;
-                    }
-                }
-
-                $entry = [
-                    'descr' => $description,
-                    'domain' => $domain,
-                    'hostname' => $hostname,
-                    'ipaddr' => $ip_address,
-                ];
-
-                $staticmap[] = $entry;
+        foreach ($reservations->reservation->iterateItems() as $reservation) {
+            $ip_address = (string)$reservation->ip_address;
+            if (empty($ip_address) && $valid_addresses) {
+                continue;
             }
+            $hostname = (string)$reservation->hostname;
+            if (empty($hostname)) {
+                $hostname = null;
+            }
+            $description = (string)$reservation->description;
+            if (empty($description)) {
+                $description = null;
+            }
+
+            $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+
+            $domain = null;
+            if ($subnet_node) {
+                if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    $domain = (string)$subnet_node->option_data->domain_name;
+                }
+            }
+
+            $entry = [
+                'descr' => $description,
+                'domain' => $domain,
+                'hostname' => $hostname,
+                'ipaddr' => $ip_address,
+            ];
+
+            $staticmap[] = $entry;
         }
     }
 
