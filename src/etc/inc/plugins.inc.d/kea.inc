@@ -87,15 +87,12 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
 
                 $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
 
-                $domain = $domain_fallback;
+                $domain = null;
                 if ($subnet_node) {
-                    if (!empty((string)$subnet_node->option_data->domain_search)) {
-                        $domain = (string)$subnet_node->option_data->domain_search;
-                    } else if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    if (!empty((string)$subnet_node->option_data->domain_name)) {
                         $domain = (string)$subnet_node->option_data->domain_name;
                     }
                 }
-                $domain = preg_split('/[ ;]+/', $domain)[0];
 
                 $entry = [
                     'descr' => $description,
