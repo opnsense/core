@@ -66,14 +66,19 @@ foreach ($relevant_logs as $log_subject => $items)  {
         if (isset($items[1]) && preg_match('/.*_(\d){8}\.log$/', $items[0])) {
             /* Extract rotate sequence number from filename in format XXX_YYYYMMDD.log or XXX_YYYYMMDD.SEQ.log */
             $fparts = explode('_', $items[1]);
-            $parts = explode('.', $fparts[1]);
+            $parts = explode('.', $fparts[count($fparts)-1]);
             $seq = (count($parts) == 3 && ctype_digit($parts[1]) ? (int)$parts[1] : 0)  + 1;
-            /* Suffix sequence number to last filename, rename and schedule a rotate (syslog-ng reload) */
-            $new_filename = sprintf('%s.%04d.log', explode('.', $items[0])[0], $seq);
-            array_unshift($items, array_shift($items), $new_filename);
-            rename($items[0], $new_filename);
-            $rotate = true;
+        } elseif (preg_match('/.*_(\d){8}\.log$/', $items[0])) {
+            $seq = 1;
+        } else {
+            // already rotated
+            continue;
         }
+        /* Suffix sequence number to last filename, rename and schedule a rotate (syslog-ng reload) */
+        $new_filename = sprintf('%s.%04d.log', explode('.', $items[0])[0], $seq);
+        array_unshift($items, array_shift($items), $new_filename);
+        rename($items[0], $new_filename);
+        $rotate = true;
     }
     if (count($items) > $preserve_logs) {
         foreach (array_slice($items, $preserve_logs) as $filename) {
