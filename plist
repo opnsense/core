@@ -392,6 +392,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogReservation4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogSubnet4.xml
