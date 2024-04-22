@@ -338,6 +338,7 @@ function legacy_interfaces_details($intf = null)
             $tmp = [
                 'autoconf' => false,
                 'deprecated' => false,
+                'detached' => false,
                 'ipaddr' => $addr,
                 'link-local' => !!preg_match('/^fe[89ab][0-9a-f]:/i', $addr),
                 'tentative' => false,
@@ -361,6 +362,8 @@ function legacy_interfaces_details($intf = null)
                     $tmp['autoconf'] = true;
                 } elseif ($line_parts[$i] == 'deprecated') {
                     $tmp['deprecated'] = true;
+                } elseif ($line_parts[$i] == 'detached') {
+                    $tmp['detached'] = true;
                 } elseif ($line_parts[$i] == 'tentative') {
                     $tmp['tentative'] = true;
                 }

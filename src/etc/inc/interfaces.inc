@@ -4042,6 +4042,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                     'bind' => true,
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
+                    'detached' => !empty($address['detached']),
                     'tentative' => !empty($address['tentative']),
                     'family' => $proto == 'ipv4' ? 'inet' : 'inet6',
                     'interface' => !empty($ifcache[$realif]) ? $ifcache[$realif] : null,
@@ -4153,7 +4154,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
     }
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
-        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['tentative'] || $addr['alias']) {
+        if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['detached'] || $addr['tentative'] || $addr['alias']) {
             continue;
         }
 
