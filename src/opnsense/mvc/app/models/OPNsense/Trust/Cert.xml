@@ -1,10 +1,12 @@
 <model>
     <mount>/cert+</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <items>
         <cert type=".\CertificatesField">
             <refid type="TextField"/>
-            <descr type="DescriptionField"/>
+            <descr type="DescriptionField">
+                <Required>Y</Required>
+            </descr>
             <caref type="CertificateField">
                 <type>ca</type>
                 <BlankDesc>self-signed</BlankDesc>

@@ -1,10 +1,12 @@
 <model>
     <mount>/ca+</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <items>
         <ca type=".\CAsField">
             <refid type="TextField"/>
-            <descr type="DescriptionField"/>
+            <descr type="DescriptionField">
+                <Required>Y</Required>
+            </descr>
             <crt type="TextField"/>
             <prv type="TextField"/>
             <serial type="IntegerField"/>
