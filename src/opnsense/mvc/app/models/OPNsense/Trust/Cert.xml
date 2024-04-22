@@ -4,7 +4,9 @@
     <items>
         <cert type=".\CertificatesField">
             <refid type="TextField"/>
-            <descr type="DescriptionField"/>
+            <descr type="DescriptionField">
+                <Required>Y</Required>
+            </descr>
             <caref type="CertificateField">
                 <type>ca</type>
                 <BlankDesc>self-signed</BlankDesc>
