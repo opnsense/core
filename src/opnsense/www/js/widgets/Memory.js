@@ -121,7 +121,7 @@ export default class Memory extends BaseWidget {
                 let used = parseInt(data.memory.used_frmt);
                 let arc = data.memory.hasOwnProperty('arc') ? parseInt(data.memory.arc_frmt) : 0;
                 let total = parseInt(data.memory.total_frmt);
-                let result = [(used - arc), arc, total - used];    
+                let result = [(used - arc), arc, total - used];
                 this.chart.config.data.datasets[0].data = result
 
                 this.curMemUsed = used - arc;

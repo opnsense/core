@@ -106,12 +106,13 @@ class KeaDhcpv4 extends BaseModel
                                 gettext("Unable to redefine code %s, defined as %s in another option."),
                                 $option->code,
                                 $checkopt->type
-                            ), $key . ".type"
+                            ),
+                            $key . ".type"
                         ));
                     }
                     if ((string)$checkopt->array != (string)$option->array) {
                         $messages->appendMessage(new Message(
-                            sprintf(gettext("Unable to redefine code %s with different definition"),$option->code),
+                            sprintf(gettext("Unable to redefine code %s with different definition"), $option->code),
                             $key . ".array"
                         ));
                     }
