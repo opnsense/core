@@ -299,6 +299,7 @@ class CrlController extends ApiControllerBase
                     $crl->text = base64_encode((string)$payload['text']);
                 }
                 $crl->caref = (string)$caref;
+                $crl->lifetime = (string)$payload['lifetime'];
                 $crl->descr = (string)$payload['descr'];
                 $crl->serial = !empty($payload['serial']) ? $payload['serial'] : $crl->serial;
                 $crl->serial = ((int)((string)$crl->serial)) + 1;
