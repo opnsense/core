@@ -120,7 +120,7 @@
             let values = $(this).val();
             let that = $(this).attr('id');
             $("select.revoked").each(function(){
-                if ($(this).attr('id') !== that) {
+                if ($(this).attr('id') !== that && Array.isArray(values)) {
                     let target = $(this);
                     values.forEach(function(refid){
                         target.find('option[value="'+refid+'"]').prop("selected", false);
