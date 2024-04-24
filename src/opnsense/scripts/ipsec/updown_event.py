@@ -59,8 +59,10 @@ if __name__ == '__main__':
             spds = []
             vtis = []
             for section in cnf.sections():
-                if cnf.get(section, 'reqid') == cmd_args.reqid \
-                        or cnf.get(section, 'connection_child') == cmd_args.connection_child:
+                if (cnf.has_option(section, 'reqid') and cnf.get(section, 'reqid') == cmd_args.reqid) or (
+                    cnf.has_option(section, 'connection_child') and
+                    cnf.get(section, 'connection_child') == cmd_args.connection_child
+                ):
                     if section.startswith('spd_'):
                         spds.append({
                             'reqid': cmd_args.reqid,
