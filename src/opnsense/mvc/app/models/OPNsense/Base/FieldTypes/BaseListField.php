@@ -45,7 +45,7 @@ abstract class BaseListField extends BaseField
     /**
      * @var array valid options for this list
      */
-    protected $internalOptionList = array();
+    protected $internalOptionList = [];
 
     /**
      * @var string default description for empty item
@@ -149,9 +149,12 @@ abstract class BaseListField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $args = [
-                'domain' => array_map('strval', array_keys($this->internalOptionList)),
+                'domain' => [],
                 'message' => $this->getValidationMessage(),
             ];
+            foreach (array_keys($this->internalOptionList) as $key) {
+                $args['domain'][] = (string)$key;
+            }
             if ($this->internalMultiSelect) {
                 // field may contain more than one option
                 $validators[] = new CsvListValidator($args);
