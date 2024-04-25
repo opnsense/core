@@ -23,8 +23,18 @@ try {
 
     echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
 } catch (\Error | \Exception $e) {
-    if (!is_a($e, 'OPNsense\Base\UserException')) {
+    $unbuffered = strpos($e->getMessage(), 'ob_end_clean') !== false;
+
+    if (!is_a($e, 'OPNsense\Base\UserException') && !$unbuffered) {
         error_log($e);
+    }
+
+    if ($unbuffered) {
+        /**
+         * if buffer has been deleted already, we must assume the implementation
+         * has already sent headers and we cannot send them again.
+         */
+        return;
     }
 
     $response = [
