@@ -144,7 +144,7 @@ class Filter extends BaseModel
                     if (Util::isSubnet($rule->$fieldname) || Util::isIpAddress($rule->$fieldname)) {
                         $ipprotos[$fieldname] = strpos($rule->$fieldname, ':') === false ? "inet" : "inet6";
                         $subnet_default = $ipprotos[$fieldname] == 'inet' ? '32' : '128';
-                        $subnets[$fieldname] = explode('/', $rule->$fieldname . '/'.$subnet_default)[1];
+                        $subnets[$fieldname] = explode('/', $rule->$fieldname . '/' . $subnet_default)[1];
                     }
                 }
                 if (count(array_unique(array_values($ipprotos))) > 1) {

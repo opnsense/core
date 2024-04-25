@@ -47,7 +47,7 @@ class MFP1_0_4 extends BaseModelMigration
             $catmdl = new Category();
             foreach ((Config::getInstance()->object())->nat->children() as $child) {
                 if ($child->getName() == 'onetoone') {
-                    $addr = [] ;
+                    $addr = [];
                     foreach (['destination', 'source'] as $fieldname) {
                         if (!empty(((string)$child->$fieldname->any))) {
                             $addr[$fieldname] = 'any';
