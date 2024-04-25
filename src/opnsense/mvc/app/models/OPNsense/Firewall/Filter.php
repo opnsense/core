@@ -134,6 +134,44 @@ class Filter extends BaseModel
                 }
             }
         }
+        /* 1 to 1 mappings */
+        foreach ($this->onetoone->rule->iterateItems() as $rule) {
+            if ($validateFullModel || $rule->isFieldChanged()) {
+                $ipprotos = [];
+                $subnets = [];
+                foreach (['source_net', 'destination_net', 'external'] as $fieldname) {
+                    $subnets[$fieldname] = null;
+                    if (Util::isSubnet($rule->$fieldname) || Util::isIpAddress($rule->$fieldname)) {
+                        $ipprotos[$fieldname] = strpos($rule->$fieldname, ':') === false ? "inet" : "inet6";
+                        $subnet_default = $ipprotos[$fieldname] == 'inet' ? '32' : '128';
+                        $subnets[$fieldname] = explode('/', $rule->$fieldname . '/'.$subnet_default)[1];
+                    }
+                }
+                if (count(array_unique(array_values($ipprotos))) > 1) {
+                    foreach (array_keys($ipprotos) as $fieldname) {
+                        $messages->appendMessage(new Message(
+                            gettext("IP protocol families should match."),
+                            $rule->$fieldname->__reference
+                        ));
+                    }
+                }
+
+                if ($rule->type == 'binat' && !empty((string)$rule->enabled)) {
+                    /* binat rules are more strict,  when not enabled, we may skip the validations to ease migration */
+                    if (empty($ipprotos['source_net'])) {
+                        $messages->appendMessage(new Message(
+                            gettext("For BINAT rules only addresses or subnets are allowed."),
+                            $rule->source_net->__reference
+                        ));
+                    } elseif ($subnets['external'] != $subnets['source_net']) {
+                        $messages->appendMessage(new Message(
+                            gettext("External subnet should match internal subnet."),
+                            $rule->external->__reference
+                        ));
+                    }
+                }
+            }
+        }
         return $messages;
     }
 

@@ -133,9 +133,6 @@
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
                 <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
-            <OneToOne order="200" VisibleName="One-to-One" url="/firewall_nat_1to1.php">
-                <Edit url="/firewall_nat_1to1_edit.php*" visibility="hidden"/>
-            </OneToOne>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>

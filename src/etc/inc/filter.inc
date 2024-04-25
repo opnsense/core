@@ -256,12 +256,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if (!empty($config['nat']['onetoone'])) {
-        // register user 1:1 mappings
-        foreach ($config['nat']['onetoone'] as $rule) {
-            $fw->registerDNatRule(500, $rule);
-        }
-    }
     if (!empty($config['nat']['rule'])) {
         // register user forward rules
         foreach ($config['nat']['rule'] as $rule) {

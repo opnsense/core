@@ -238,18 +238,6 @@
             <pattern>api/firewall/category/*</pattern>
         </patterns>
     </page-firewall-categories>
-    <page-firewall-nat-1-1>
-        <name>Firewall: NAT: 1:1</name>
-        <patterns>
-            <pattern>firewall_nat_1to1.php*</pattern>
-        </patterns>
-    </page-firewall-nat-1-1>
-    <page-firewall-nat-1-1-edit>
-        <name>Firewall: NAT: 1:1: Edit</name>
-        <patterns>
-            <pattern>firewall_nat_1to1_edit.php*</pattern>
-        </patterns>
-    </page-firewall-nat-1-1-edit>
     <page-firewall-nat-outbound>
         <name>Firewall: NAT: Outbound</name>
         <patterns>
