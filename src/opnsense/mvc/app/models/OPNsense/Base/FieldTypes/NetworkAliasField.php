@@ -103,6 +103,18 @@ class NetworkAliasField extends BaseListField
         throw new \Exception("Unsupported feature setMultiple()");
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDescription()
+    {
+        if (isset($this->internalOptionList[(string)$this])) {
+            return $this->internalOptionList[(string)$this];
+        }
+        return (string)$this;
+    }
+
     /**
      * retrieve field validators for this field type
      * @return array
