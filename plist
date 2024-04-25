@@ -304,15 +304,18 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/FilterUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/FilterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogFilterRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogNptRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
@@ -640,6 +643,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/FieldTypes/PolicyContentField.php
@@ -2029,8 +2033,6 @@
 /usr/local/www/diag_defaults.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat.php
-/usr/local/www/firewall_nat_1to1.php
-/usr/local/www/firewall_nat_1to1_edit.php
 /usr/local/www/firewall_nat_edit.php
 /usr/local/www/firewall_nat_out.php
 /usr/local/www/firewall_nat_out_edit.php

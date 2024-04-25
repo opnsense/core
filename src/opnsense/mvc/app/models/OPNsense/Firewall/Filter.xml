@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <migration_prefix>MFP</migration_prefix>
     <description>OPNsense firewall filter rules</description>
     <items>
@@ -245,5 +245,75 @@
                 <description type="DescriptionField"/>
             </rule>
         </npt>
+        <onetoone>
+            <rule type=".\SourceNatRuleField">
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+                <log type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </log>
+                <sequence type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>99999</MaximumValue>
+                    <ValidationMessage>provide a valid sequence for sorting</ValidationMessage>
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                </sequence>
+                <interface type="InterfaceField">
+                    <Required>Y</Required>
+                    <Default>wan</Default>
+                    <AllowDynamic>Y</AllowDynamic>
+                </interface>
+                <type type="OptionField">
+                    <Default>binat</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <binat>BINAT</binat>
+                        <nat>NAT</nat>
+                    </OptionValues>
+                </type>
+                <source_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                </source_net>
+                <source_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_not>
+                <destination_net type="NetworkAliasField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                </destination_net>
+                <destination_not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </destination_not>
+                <external type="NetworkField">
+                    <Required>Y</Required>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </external>
+                <natreflection type="OptionField">
+                    <OptionValues>
+                        <default value=''>default</default>
+                        <enable>Enable</enable>
+                        <disable>Disable</disable>
+                    </OptionValues>
+                </natreflection>
+                <categories type="ModelRelationField">
+                    <Model>
+                        <rulesets>
+                            <source>OPNsense.Firewall.Category</source>
+                            <items>categories.category</items>
+                            <display>name</display>
+                        </rulesets>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                    <ValidationMessage>Related category not found.</ValidationMessage>
+                </categories>
+                <description type="DescriptionField"/>
+            </rule>
+        </onetoone>
     </items>
 </model>

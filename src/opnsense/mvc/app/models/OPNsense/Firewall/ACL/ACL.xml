@@ -20,4 +20,11 @@
             <pattern>api/firewall/npt/*</pattern>
         </patterns>
     </page-firewall-nat-npt>
+    <page-firewall-nat-1-1-edit>
+        <name>Firewall: NAT: 1:1</name>
+        <patterns>
+            <pattern>ui/firewall/one_to_one/*</pattern>
+            <pattern>api/firewall/one_to_one/*</pattern>
+        </patterns>
+    </page-firewall-nat-1-1-edit>
 </acl>

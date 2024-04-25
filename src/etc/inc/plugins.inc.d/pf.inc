@@ -180,6 +180,9 @@ function pf_firewall($fw)
     foreach ($mdlFilter->snatrules->rule->sortedBy(["sequence"]) as $key => $rule) {
          $fw->registerSNatRule(50, $rule->serialize());
     }
+    foreach ($mdlFilter->onetoone->rule->sortedBy(["sequence"]) as $key => $rule) {
+         $fw->registerDNatRule(500, $rule->serialize());
+    }
     foreach ($mdlFilter->npt->rule->sortedBy(["sequence"]) as $key => $rule) {
          $fw->registerNptRule(50, $rule->serialize());
     }
