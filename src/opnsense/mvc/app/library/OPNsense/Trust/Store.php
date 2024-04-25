@@ -419,8 +419,8 @@ class Store
             $result['valid_to'] = $crt['validTo_time_t'];
             $result['name'] = $crt['name'];
             foreach (self::$issuer_map as $key => $target) {
-                if (!empty($crt['issuer'][$key])) {
-                    $result[$target] = $crt['issuer'][$key];
+                if (!empty($crt['subject'][$key])) {
+                    $result[$target] = $crt['subject'][$key];
                 }
             }
             // OCSP URI
