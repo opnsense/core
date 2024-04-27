@@ -150,7 +150,7 @@ if __name__ == '__main__':
                     ip = ipaddress.ip_address(parts[0])
                     if ip in all_local_addresses:
                         item['tags'].append('local')
-                    if not ip.is_global:
+                    if ip.is_private:
                         item['tags'].append('private')
                 except subprocess.TimeoutExpired:
                     pass
