@@ -33,14 +33,15 @@ import subprocess
 import os
 import sys
 import ujson
-from netaddr import IPAddress, AddrFormatError
+import ipaddress
+
 
 if __name__ == '__main__':
     # IP should have been passed as a command line argument
     if len(sys.argv) >= 1:
 
         try:
-            IPAddress(sys.argv[1])
+            ipaddress.ip_address(sys.argv[1])
             result = {'status': 'ok', 'matches': []}
             tables = []
 
@@ -56,7 +57,7 @@ if __name__ == '__main__':
                    result['matches'].append(table)
             print(ujson.dumps(result))
 
-        except AddrFormatError:
+        except ValueError:
             print(ujson.dumps({'status': 'Invalid IP specified!'}))
 
     else:
