@@ -350,10 +350,11 @@ mimetype.assign             = (
 
 ## deny access the file-extensions
 #
-# ~    is for backupfiles from vi, emacs, joe, ...
-# .inc is often used for code includes which should in general not be part
-#      of the document-root
-url.access-deny             = ( "~", ".inc" )
+# ~     is for backupfiles from vi, emacs, joe, ...
+# .core is for core dumps that may be created during PHP execution
+# .inc  is often used for code includes which should in general not be part
+#       of the document-root
+url.access-deny             = ( "~", , ".core", ".inc" )
 
 
 ######### Options that are good to be but not necessary to be changed #######
