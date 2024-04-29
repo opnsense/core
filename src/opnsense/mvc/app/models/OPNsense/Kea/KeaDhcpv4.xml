@@ -49,7 +49,7 @@
                     </domain_name_servers>
                     <domain_search type="HostnameField">
                         <IpAllowed>N</IpAllowed>
-                        <FieldSeparator>;</FieldSeparator>
+                        <FieldSeparator>,</FieldSeparator>
                         <AsList>Y</AsList>
                         <ValidationMessage>Please specify a valid list of domains</ValidationMessage>
                     </domain_search>
