@@ -178,6 +178,9 @@ class ApiControllerBase extends ControllerRoot
         ],
         $poll_timeout = 2
     ) {
+        /* Never allow output compression on streams */
+        ini_set('zlib.output_compression', 'Off');
+        ob_end_clean();
         $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
         foreach ($headers as $header) {
             header($header);
