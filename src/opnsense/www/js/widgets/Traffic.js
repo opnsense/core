@@ -186,7 +186,7 @@ export default class Traffic extends BaseWidget {
                     if (dataset.intf === intf) {
                         let elapsed_time = data.time - dataset.last_time;
                         dataset.data.push({
-                            x: Date.now(),
+                            x: new Date(data.time * 1000.0),
                             y: Math.round(((data.interfaces[intf][dataset.src_field]) / elapsed_time) * 8, 0)
                         });
                         dataset.last_time = data.time;
