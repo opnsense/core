@@ -55,7 +55,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <separator>;</separator>
+        <separator>,</separator>
         <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
     </field>
     <field>
