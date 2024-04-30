@@ -191,6 +191,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			unbound \
 			wpa_supplicant \
 			zip \
+			${CORE_ADDITIONS} \
 			${CORE_DEPENDS_${CORE_ARCH}}
 
 WRKDIR?=${.CURDIR}/work
