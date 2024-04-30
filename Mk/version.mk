@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2023-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -24,6 +24,7 @@
 # SUCH DAMAGE.
 
 CORE_ABI?=	24.1
+CORE_ADDITIONS?=#empty
 CORE_MESSAGE?=	Oh, the shark has pretty teeth, dear, and he shows them pearly white
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
