@@ -58,4 +58,18 @@ export default class BaseWidget {
         const op = Math.round(Math.min(Math.max(opacity || 1, 0), 1) * 255);
         return color + op.toString(16).toUpperCase();
     }
+
+    _formatBytes(value, decimals = 2) {
+        if (!isNaN(value) && value > 0) {
+            let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+            let ndx = Math.floor(Math.log(value) / Math.log(1000) );
+            if (ndx > 0) {
+                return  (value / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+            } else {
+                return value.toFixed(2);
+            }
+        } else {
+            return "";
+        }
+    }
 }

@@ -47,20 +47,6 @@ export default class Traffic extends BaseWidget {
         return color + op.toString(16).toUpperCase();
     }
 
-    _formatField(value) {
-        if (!isNaN(value) && value > 0) {
-            let fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-            let ndx = Math.floor(Math.log(value) / Math.log(1000) );
-            if (ndx > 0) {
-                return  (value / Math.pow(1000, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
-            } else {
-                return value.toFixed(2);
-            }
-        } else {
-            return "";
-        }
-    }
-
     _chartConfig(dataset) {
         return {
             type: 'line',
@@ -105,7 +91,7 @@ export default class Traffic extends BaseWidget {
                     y: {
                         ticks: {
                             callback: (value, index, values) => {
-                                return this._formatField(value);
+                                return this._formatBytes(value);
                             }
                         }
                     }
@@ -123,7 +109,7 @@ export default class Traffic extends BaseWidget {
                         intersect: false,
                         callbacks: {
                             label: (context) => {
-                                return context.dataset.label + ": " + this._formatField(context.dataset.data[context.dataIndex].y).toString();
+                                return context.dataset.label + ": " + this._formatBytes(context.dataset.data[context.dataIndex].y).toString();
                             }
                         }
                       },
