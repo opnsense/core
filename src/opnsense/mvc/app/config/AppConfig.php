@@ -73,4 +73,25 @@ class AppConfig
         // simple conversion from array to StdClass container, current representation of self::$data.
         self::$obj = json_decode(json_encode(self::$data));
     }
+
+    /**
+     * update a property inside the container
+     * @param string $path in dot notation a.b.c
+     * @param mixed $value
+     * @return bool true when found and updated
+     */
+    public function update($path, $value)
+    {
+        $tmp = &self::$data;
+        foreach (explode('.', $path) as $key) {
+            if (isset($tmp[$key])) {
+                $tmp = &$tmp[$key];
+            } else {
+                return false;
+            }
+        }
+        $tmp = $value;
+        self::$obj = json_decode(json_encode(self::$data));
+        return true;
+    }
 }

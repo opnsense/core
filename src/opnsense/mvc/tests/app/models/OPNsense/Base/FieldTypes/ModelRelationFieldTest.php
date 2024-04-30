@@ -34,14 +34,14 @@ require_once __DIR__ . '/../BaseModel/TestModel.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\ModelRelationField;
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 class ModelRelationFieldTest extends Field_Framework_TestCase
 {
     protected function setUp(): void
     {
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/ModelRelationFieldTest/';
+        (new AppConfig())->update('globals.config_path',  __DIR__ . '/ModelRelationFieldTest/');
         Config::getInstance()->forceReload();
     }
 

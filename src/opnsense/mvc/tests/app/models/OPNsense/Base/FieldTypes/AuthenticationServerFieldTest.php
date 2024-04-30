@@ -35,7 +35,7 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\AuthenticationServerField;
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
 class AuthenticationServerFieldTest extends Field_Framework_TestCase
@@ -47,7 +47,7 @@ class AuthenticationServerFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\AuthenticationServerField', new AuthenticationServerField());
         // switch config to test set for this type
-        FactoryDefault::getDefault()->get('config')->globals->config_path = __DIR__ . '/AuthenticationServerFieldTest/';
+        (new AppConfig())->update('globals.config_path',  __DIR__ . '/AuthenticationServerFieldTest/');
         Config::getInstance()->forceReload();
     }
 
