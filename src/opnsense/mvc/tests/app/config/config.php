@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . "/../../../app/config/AppConfig.php";
 
-return new \Phalcon\Config\Config(array(
+return new OPNsense\Core\AppConfig(array(
     'application' => array(
         'controllersDir' => __DIR__ . '/../../../app/controllers/',
         'modelsDir' => __DIR__ . '/../../../app/models/',
