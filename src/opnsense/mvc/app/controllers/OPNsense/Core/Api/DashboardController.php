@@ -78,7 +78,7 @@ class DashboardController extends ApiControllerBase
                 'arc' => gettext('ARC'),
             ],
             'disk' => [
-                'title' => gettext ('Disk usage'),
+                'title' => gettext('Disk usage'),
                 'used' => gettext('Used'),
                 'free' => gettext('Free'),
             ]

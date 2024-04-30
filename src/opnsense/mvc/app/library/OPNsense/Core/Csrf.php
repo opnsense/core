@@ -34,7 +34,7 @@ class Csrf
      * Generate a random URL-safe base64 string.
      * Usable base64 characters according to https://www.ietf.org/rfc/rfc3548.txt
      */
-    public function base64Safe($len=16)
+    public function base64Safe($len = 16)
     {
         return rtrim(strtr(base64_encode(random_bytes($len)), "+/", "-_"), '=');
     }

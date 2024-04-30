@@ -244,5 +244,3 @@ export default class Disk extends BaseWidget {
     }
 
 }
-
-

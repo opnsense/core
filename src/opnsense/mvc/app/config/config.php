@@ -1,4 +1,5 @@
 <?php
+
 require_once 'AppConfig.php';
 
 return new OPNsense\Core\AppConfig(array(

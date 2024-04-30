@@ -41,7 +41,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
 {
     protected function setUp(): void
     {
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/ModelRelationFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/ModelRelationFieldTest/');
         Config::getInstance()->forceReload();
     }
 

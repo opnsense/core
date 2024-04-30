@@ -47,7 +47,7 @@ class VirtualIPFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\VirtualIPField', new VirtualIPField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/VirtualIPFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/VirtualIPFieldTest/');
         Config::getInstance()->forceReload();
     }
 

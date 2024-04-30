@@ -47,7 +47,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\CertificateField', new CertificateField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/CertificateFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/CertificateFieldTest/');
         Config::getInstance()->forceReload();
     }
 

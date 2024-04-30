@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/../../../app/config/AppConfig.php";
 
 return new OPNsense\Core\AppConfig(array(

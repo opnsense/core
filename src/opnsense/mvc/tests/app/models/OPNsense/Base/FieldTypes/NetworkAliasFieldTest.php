@@ -47,7 +47,7 @@ class NetworkAliasFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\NetworkAliasField', new NetworkAliasField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/NetworkAliasFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/NetworkAliasFieldTest/');
         Config::getInstance()->forceReload();
     }
 

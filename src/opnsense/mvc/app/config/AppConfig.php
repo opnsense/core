@@ -43,7 +43,7 @@ class AppConfig
     /**
      * construct new application config object, keep $data when not offered.
      */
-    public function __construct($new_data=null)
+    public function __construct($new_data = null)
     {
         if ($new_data != null) {
             self::$data = $new_data;

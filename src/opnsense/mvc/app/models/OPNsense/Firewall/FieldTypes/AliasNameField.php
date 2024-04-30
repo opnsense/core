@@ -73,10 +73,12 @@ class AliasNameField extends BaseField
                     "callback" => function ($value) use ($reservedwords) {
                         $result = [];
                         /* avoids single "_" and prefixes of "__" here too */
-                        if (!preg_match(
-                            '/^([a-zA-Z]|(([_a-zA-Z][a-zA-Z0-9]|[a-zA-Z][_a-zA-Z0-9])[_a-zA-Z0-9]{0,29}))$/',
-                            $value
-                        )) {
+                        if (
+                            !preg_match(
+                                '/^([a-zA-Z]|(([_a-zA-Z][a-zA-Z0-9]|[a-zA-Z][_a-zA-Z0-9])[_a-zA-Z0-9]{0,29}))$/',
+                                $value
+                            )
+                        ) {
                             $result[] = gettext('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores.');
                         }
                         if (in_array($value, $reservedwords)) {

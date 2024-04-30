@@ -47,7 +47,7 @@ class InterfaceFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\InterfaceField', new InterfaceField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/InterfaceFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/InterfaceFieldTest/');
         Config::getInstance()->forceReload();
     }
 

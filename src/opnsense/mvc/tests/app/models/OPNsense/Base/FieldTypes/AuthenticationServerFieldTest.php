@@ -47,7 +47,7 @@ class AuthenticationServerFieldTest extends Field_Framework_TestCase
     {
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\AuthenticationServerField', new AuthenticationServerField());
         // switch config to test set for this type
-        (new AppConfig())->update('globals.config_path',  __DIR__ . '/AuthenticationServerFieldTest/');
+        (new AppConfig())->update('globals.config_path', __DIR__ . '/AuthenticationServerFieldTest/');
         Config::getInstance()->forceReload();
     }
 
