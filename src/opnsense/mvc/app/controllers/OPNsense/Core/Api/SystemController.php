@@ -295,4 +295,31 @@ class SystemController extends ApiControllerBase
 
         return json_encode($result);
     }
+
+    public function systemDiskAction()
+    {
+        $result = [];
+
+        $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
+
+        if (!empty($disk_info['storage-system-information'])) {
+            foreach ($disk_info['storage-system-information']['filesystem'] as $fs) {
+                if (!in_array(trim($fs['type']), ['cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs'])) {
+                    continue;
+                }
+
+                $result['devices'][] = [
+                    'device' => $fs['name'],
+                    'type' => trim($fs['type']),
+                    'blocks' => $fs['blocks'],
+                    'used' => $fs['used'],
+                    'available' => $fs['available'],
+                    'used_pct' => $fs['used-percent'],
+                    'mountpoint' => $fs['mounted-on'],
+                ];
+            }
+        }
+
+        return json_encode($result);
+    }
 }
