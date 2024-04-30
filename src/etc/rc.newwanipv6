@@ -72,7 +72,7 @@ if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
 $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
 if ($dad_delay) {
     /* XXX this is also required but missed for IPv6 VIPs created later in the script */
-    sleep($dad_delay + 1);
+    sleep($dad_delay + 2);
 }
 
 /* this may be required to cleanse the DNS information no longer available */
