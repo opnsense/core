@@ -30,8 +30,6 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
-use Phalcon\Filter\Validation\Validator\Regex;
-use Phalcon\Filter\Validation\Validator\ExclusionIn;
 use OPNsense\Core\Config;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Firewall\Util;
