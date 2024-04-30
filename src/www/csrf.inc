@@ -69,21 +69,6 @@ class LegacyCSRF
         return $result;
     }
 
-    private function newToken()
-    {
-        $random = new \Phalcon\Encryption\Security\Random();
-        // only request new token when session has none
-        if (session_status() == PHP_SESSION_NONE) {
-            // our session is not guaranteed to be started at this point.
-            session_start();
-        }
-        if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
-            $_SESSION['$PHALCON/CSRF$'] = $random->base64Safe(16);
-            $_SESSION['$PHALCON/CSRF/KEY$'] = $random->base64Safe(16);
-        }
-        return array('token' => $_SESSION['$PHALCON/CSRF$'], 'key' => $_SESSION['$PHALCON/CSRF/KEY$']);
-    }
-
     public function csrfRewriteHandler($buffer)
     {
         // quick check if output looks like html, don't rewrite other document types
@@ -91,7 +76,7 @@ class LegacyCSRF
             $this->is_html_output = true;
         }
         if ($this->is_html_output) {
-            $csrf = $this->newToken();
+            $csrf = (new OPNsense\Core\Csrf())->getToken();
             $inputtag = "<input type=\"hidden\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\" autocomplete=\"new-password\" />";
             $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
             // csrf token for Ajax type requests
