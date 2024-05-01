@@ -197,7 +197,7 @@ class Vip extends BaseModel
     public function whereUsed($address)
     {
         $relevant_paths = [
-          'nat.outbound.rule.' => gettext('Address %s referenced by outboud nat rule "%s"'),
+          'nat.outbound.rule.' => gettext('Address %s referenced by outbound nat rule "%s"'),
           'nat.rule.' => gettext('Address %s referenced by port forward "%s"'),
         ];
         $usages = [];
