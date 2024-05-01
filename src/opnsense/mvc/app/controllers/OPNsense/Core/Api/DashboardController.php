@@ -81,6 +81,13 @@ class DashboardController extends ApiControllerBase
                 'title' => gettext('Disk usage'),
                 'used' => gettext('Used'),
                 'free' => gettext('Free'),
+            ],
+            'wireguard' => [
+                'title' => gettext('Wireguard'),
+                'instance' => gettext('Instance'),
+                'peer' => gettext('Peer'),
+                'pubkey' => gettext('Public Key'),
+                'handshake' => gettext('Latest handshake'),
             ]
         ];
     }

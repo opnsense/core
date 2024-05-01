@@ -35,7 +35,6 @@ use OPNsense\Core\Backend;
 use OPNsense\CaptivePortal\CaptivePortal;
 use OPNsense\Core\Config;
 use OPNsense\Base\UIModelGrid;
-use Phalcon\Filter\FilterFactory;
 
 /**
  * Class ServiceController
@@ -93,9 +92,8 @@ class ServiceController extends ApiControllerBase
     public function getTemplateAction($fileid = null)
     {
         // get template name
-        $paramfilter = (new FilterFactory())->newInstance();
         if ($fileid != null) {
-            $templateFileId = $paramfilter->sanitize($fileid, 'alnum');
+            $templateFileId = (new SanitizeFilter())->sanitize($fileid, 'alnum');
         } else {
             $templateFileId = 'default';
         }

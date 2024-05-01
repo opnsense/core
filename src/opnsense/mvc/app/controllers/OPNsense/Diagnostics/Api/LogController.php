@@ -30,7 +30,8 @@ namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use Phalcon\Filter\Filter;
+use OPNsense\Core\SanitizeFilter;
+
 
 /**
  * @inherit
@@ -45,11 +46,7 @@ class LogController extends ApiControllerBase
         $searchPhrase = '';
         $severities = '';
         // create filter to sanitize input data
-        $filter = new Filter([
-            'query' => function ($value) {
-                return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,_,.,\#,\:]/", "", $value);
-            }
-        ]);
+        $filter = new SanitizeFilter();
 
         $backend = new Backend();
         $this->sessionClose();

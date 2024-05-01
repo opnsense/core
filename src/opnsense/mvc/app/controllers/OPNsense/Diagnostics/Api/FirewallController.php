@@ -28,10 +28,10 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use Phalcon\Filter\Filter;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class FirewallController
@@ -159,11 +159,7 @@ class FirewallController extends ApiControllerBase
                 }
             }
 
-            $filter = new Filter([
-                'query' => function ($value) {
-                    return preg_replace("/[^0-9,a-z,A-Z,\: ,\/,*,\-,_,.,\#]/", "", $value);
-                }
-            ]);
+            $filter = new SanitizeFilter();
             $searchPhrase = '';
             $ruleId = '';
             $sortBy = '';
@@ -217,11 +213,7 @@ class FirewallController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $this->sessionClose();
-            $filter = new Filter([
-                'query' => function ($value) {
-                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
-                }
-            ]);
+            $filter = new SanitizeFilter();
             $searchPhrase = '';
             $ruleId = '';
             $sortBy = '';
@@ -269,11 +261,7 @@ class FirewallController extends ApiControllerBase
     public function delStateAction($stateid, $creatorid)
     {
         if ($this->request->isPost()) {
-            $filter = new Filter([
-                'hexval' => function ($value) {
-                    return preg_replace("/[^0-9,a-f,A-F]/", "", $value);
-                }
-            ]);
+            $filter = new SanitizeFilter();
             $response = (new Backend())->configdpRun("filter kill state", [
                 $filter->sanitize($stateid, "hexval"),
                 $filter->sanitize($creatorid, "hexval")
@@ -291,14 +279,7 @@ class FirewallController extends ApiControllerBase
     public function killStatesAction()
     {
         if ($this->request->isPost()) {
-            $filter = new Filter([
-                'query' => function ($value) {
-                    return preg_replace("/[^0-9,a-z,A-Z, ,\/,*,\-,_,.,\#]/", "", $value);
-                },
-                'hexval' => function ($value) {
-                    return preg_replace("/[^0-9,a-f,A-F]/", "", $value);
-                }
-            ]);
+            $filter = new SanitizeFilter();
             $ruleid = null;
             $filterString = null;
             if (!empty($this->request->getPost('filter'))) {
