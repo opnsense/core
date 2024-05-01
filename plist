@@ -590,6 +590,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validation.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/Email.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/InclusionIn.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php

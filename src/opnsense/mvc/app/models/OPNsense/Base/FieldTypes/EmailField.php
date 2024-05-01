@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\Email;
+use OPNsense\Base\Validators\Email;
 
 /**
  * Class EmailField
