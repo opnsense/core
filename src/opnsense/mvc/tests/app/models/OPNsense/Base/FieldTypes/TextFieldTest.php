@@ -128,7 +128,7 @@ class TextFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new TextField();
         $field->setRequired("Y");

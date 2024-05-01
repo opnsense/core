@@ -564,6 +564,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Messages/Message.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/ModelException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validation.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/ValidationException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CallbackValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/CsvListValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php

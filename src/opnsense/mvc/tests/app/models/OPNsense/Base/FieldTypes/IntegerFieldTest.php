@@ -50,7 +50,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testValueLargerThenMax()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("MinMaxValidator");
         $field = new IntegerField();
         $field->setMaximumValue(100);
@@ -64,7 +64,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testValueSmallerThenMin()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("MinMaxValidator");
         $field = new IntegerField();
         $field->setMaximumValue(100);
@@ -104,7 +104,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new IntegerField();
         $field->setRequired("Y");

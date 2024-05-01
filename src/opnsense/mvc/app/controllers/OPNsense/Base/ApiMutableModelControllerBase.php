@@ -196,7 +196,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $node reference node, to use as relative offset
      * @param string $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
      * @return array result / validation output
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
@@ -266,7 +266,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param bool $validateFullModel by default we only validate the fields we have changed
      * @param bool $disable_validation skip validation, be careful to use this!
      * @return array result / validation output
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws \OPNsense\Base\UserException when denied write access
      */
@@ -310,7 +310,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Update model settings
      * @return array status / validation errors
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
@@ -415,7 +415,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $path relative model path
      * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
@@ -455,7 +455,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $path relative model path
      * @param null|string $uuid node key
      * @return array
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
@@ -490,7 +490,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $uuid node key
      * @param array|null $overlay properties to overlay when available (call setNodes)
      * @return array
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
@@ -539,7 +539,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param string $uuid node key
      * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
-     * @throws \Phalcon\Filter\Validation\Exception on validation issues
+     * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */

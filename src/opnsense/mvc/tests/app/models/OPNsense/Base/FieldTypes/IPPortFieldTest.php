@@ -45,7 +45,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testRequiredEmpty()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $this->expectExceptionMessage("PresenceOf");
         $field = new IPPortField();
         $field->setRequired("Y");
@@ -100,7 +100,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testInvalidValueIpv4()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setValue("abcdefg");
         $this->validateThrow($field);
@@ -108,7 +108,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testInvalidValueAsListIpv4()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setAsList("Y");
         $field->setValue("127.0.0.1:2056,abcdefg");
@@ -117,7 +117,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testInvalidValueIpv6()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setValue("[::1]");
         $this->validateThrow($field);
@@ -125,7 +125,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testInvalidValueAsListIpv6()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setAsList("Y");
         $field->setValue("[::1]:2056,[fe80::]");
@@ -134,7 +134,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testAddressFamilyIpv4()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setAddressFamily("ipv4");
         $field->setValue("[::1]:2056");
@@ -143,7 +143,7 @@ class IPPortFieldTest extends Field_Framework_TestCase
 
     public function testAddressFamilyIpv6()
     {
-        $this->expectException(\Phalcon\Filter\Validation\Exception::class);
+        $this->expectException(\OPNsense\Base\ValidationException::class);
         $field = new IPPortField();
         $field->setAddressFamily("ipv6");
         $field->setValue("192.168.1.1:1111");

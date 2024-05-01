@@ -52,7 +52,7 @@ class ServiceController extends ApiMutableServiceControllerBase
      * @return array result status
      * @throws \Exception when configd action fails
      * @throws \OPNsense\Base\ModelException when unable to construct model
-     * @throws \Phalcon\Filter\Validation\Exception when one or more model validations fail
+     * @throws \OPNsense\Base\ValidationException when one or more model validations fail
      */
     public function reconfigureAction()
     {
