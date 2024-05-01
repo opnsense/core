@@ -103,7 +103,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * add new job and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException
      */
     public function addJobAction()
@@ -116,7 +116,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * delete job by uuid ( only if origin is cron)
      * @param string $uuid item unique id
      * @return array status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\ModelException when not bound to model
      */
@@ -136,7 +136,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid item unique id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleJobAction($uuid, $enabled = null)

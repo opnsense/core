@@ -645,7 +645,7 @@ abstract class BaseModel
                 $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
-                throw new \Phalcon\Filter\Validation\Exception($exception_msg);
+                throw new ValidationException($exception_msg);
             }
         }
 

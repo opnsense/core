@@ -59,7 +59,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update  pipe with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setPipeAction($uuid)
@@ -71,7 +71,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Add new pipe and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      */
     public function addPipeAction()
     {
@@ -85,7 +85,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete pipe by uuid
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delPipeAction($uuid)
@@ -99,7 +99,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function togglePipeAction($uuid, $enabled = null)
@@ -151,7 +151,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update queue with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setQueueAction($uuid)
@@ -175,7 +175,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete queue by uuid
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delQueueAction($uuid)
@@ -188,7 +188,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleQueueAction($uuid, $enabled = null)
@@ -232,7 +232,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Update rule with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function setRuleAction($uuid)
@@ -244,7 +244,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Add new rule and set with attributes from post
      * @return array save result + validation output
      * @throws \OPNsense\Base\ModelException when not bound to model
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      */
     public function addRuleAction()
     {
@@ -254,7 +254,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * Delete rule by uuid
      * @param string $uuid internal id
      * @return array save status
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function delRuleAction($uuid)
@@ -267,7 +267,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array save result
-     * @throws \Phalcon\Filter\Validation\Exception when field validations fail
+     * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      */
     public function toggleRuleAction($uuid, $enabled = null)

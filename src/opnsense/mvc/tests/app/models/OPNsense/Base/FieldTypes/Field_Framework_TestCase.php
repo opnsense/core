@@ -37,7 +37,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Validate and throw exception
      * @param string $field field type
-     * @throws \Phalcon\Filter\Validation\Exception
+     * @throws \OPNsense\Base\ValidationException
      */
     public function validateThrow($field)
     {
@@ -49,7 +49,7 @@ class Field_Framework_TestCase extends \PHPUnit\Framework\TestCase
         $messages = $validation->validate(array("testfield" => (string)$field));
         if (count($messages)) {
             foreach ($messages as $message) {
-                throw new \Phalcon\Filter\Validation\Exception($message->getType());
+                throw new \OPNsense\Base\ValidationException($message->getType());
             }
         }
         return;
