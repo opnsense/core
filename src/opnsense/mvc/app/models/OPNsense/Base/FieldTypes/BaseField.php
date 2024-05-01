@@ -31,7 +31,7 @@ namespace OPNsense\Base\FieldTypes;
 use Exception;
 use Generator;
 use InvalidArgumentException;
-use Phalcon\Filter\Validation\Validator\PresenceOf;
+use OPNsense\Base\Validators\PresenceOf;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;

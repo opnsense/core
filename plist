@@ -594,6 +594,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/IntegerValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/MinMaxValidator.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/NetworkValidator.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Validators/PresenceOf.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml

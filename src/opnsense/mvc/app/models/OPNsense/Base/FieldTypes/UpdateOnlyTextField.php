@@ -28,8 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\Regex;
-use Phalcon\Filter\Validation\Validator\PresenceOf;
 
 /**
  * Class update only TextField (can be practical for password type fields)

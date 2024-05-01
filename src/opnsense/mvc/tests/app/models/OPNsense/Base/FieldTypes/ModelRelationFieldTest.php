@@ -123,7 +123,7 @@ class ModelRelationFieldTest extends Field_Framework_TestCase
         ));
         $field->eventPostLoading();
         $field->setValue("");
-        $this->assertEquals($this->validate($field), ['Phalcon\Filter\Validation\Validator\PresenceOf']);
+        $this->assertEquals($this->validate($field), ['PresenceOf']);
     }
 
     /**

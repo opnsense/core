@@ -29,7 +29,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Filter\Validation\Validator\Regex;
-use Phalcon\Filter\Validation\Validator\PresenceOf;
+
 
 /**
  * Class TextField
