@@ -139,10 +139,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
                 </eap_id>
                 <certs type="CertificateField">
                     <Multiple>Y</Multiple>
@@ -196,10 +196,10 @@
                     </OptionValues>
                 </auth>
                 <id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
                 </id>
                 <eap_id type="TextField">
-                    <Mask>/^([0-9a-zA-Z\.\-,_\:\@\%]){0,1024}$/u</Mask>
+                    <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%]){0,1024}$/u</Mask>
                 </eap_id>
                 <groups type="AuthGroupField">
                     <Multiple>Y</Multiple>
