@@ -173,7 +173,7 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setMask('/^[a-z]{8}$/');
         $field->setValue("4bcd3fgh");
 
-        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Regex', $this->validate($field));
     }
 
     /**
@@ -243,7 +243,7 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setValue(1234);
 
         $this->assertEquals($field->getNodeData(), "1234");
-        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Regex', $this->validate($field));
     }
 
     /**
@@ -341,6 +341,6 @@ class TextFieldTest extends Field_Framework_TestCase
         $field->setChangeCase('UPPER');
         $field->setValue("ab cde fgh");
 
-        $this->assertContains('Phalcon\Filter\Validation\Validator\Regex', $this->validate($field));
+        $this->assertContains('Regex', $this->validate($field));
     }
 }
