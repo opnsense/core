@@ -28,9 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\InclusionIn;
-use OPNsense\Base\Validators\CsvListValidator;
-
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
  * @package OPNsense\Base\FieldTypes

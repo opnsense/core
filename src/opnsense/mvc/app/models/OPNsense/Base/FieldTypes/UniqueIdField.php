@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use Phalcon\Filter\Validation\Validator\InclusionIn;
 
 /**
  * Class UniqueIdField
