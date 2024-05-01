@@ -145,6 +145,7 @@
                     endpoint
                         .val(data.endpoint)
                         .data('org-value', data.endpoint)
+                        .data('mtu', data.mtu)
                         .data('pubkey', data.pubkey)
                         .change();
                 }
@@ -217,6 +218,9 @@
             }
             if ($("#configbuilder\\.peer_dns").val()) {
                 rows.push('DNS = ' + $("#configbuilder\\.peer_dns").val());
+            }
+            if ($("#configbuilder\\.endpoint").data('mtu')) {
+                rows.push('MTU = ' + $("#configbuilder\\.endpoint").data('mtu'));
             }
             rows.push('');
             rows.push('[Peer]');
