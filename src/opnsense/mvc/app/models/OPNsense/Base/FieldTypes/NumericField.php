@@ -29,7 +29,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\MinMaxValidator;
-use Phalcon\Filter\Validation\Validator\Numericality;
+use OPNsense\Base\Validators\Numericality;
 
 /**
  * Class NumericField
