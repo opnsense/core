@@ -77,8 +77,6 @@ class Alias extends BaseModel
         $sources[] = [['nat', 'outbound', 'rule'], ['destination', 'network']];
         $sources[] = [['nat', 'outbound', 'rule'], ['dstport']];
         $sources[] = [['nat', 'outbound', 'rule'], ['target']];
-        $sources[] = [['load_balancer', 'lbpool'], ['port']];
-        $sources[] = [['load_balancer', 'virtual_server'], ['port']];
         $sources[] = [['staticroutes', 'route'], ['network']];
         // os-firewall plugin paths
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_net']];
