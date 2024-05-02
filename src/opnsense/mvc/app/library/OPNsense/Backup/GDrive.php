@@ -246,7 +246,7 @@ class Gdrive extends Base implements IBackupProvider
                     }
                 }
                 if (!is_null($target_filename)) {
-                    syslog(LOG_ERR, "backup configuration as " . $target_filename);
+                    syslog(LOG_NOTICE, "backup configuration as " . $target_filename);
                     try {
                         $configfiles[$target_filename] = $client->upload(
                             (string)$config->system->remotebackup->GDriveFolderID,
@@ -269,7 +269,7 @@ class Gdrive extends Base implements IBackupProvider
                     $fcount = 0;
                     foreach ($configfiles as $filename => $file) {
                         if ($fcount >= (string)$config->system->remotebackup->GDriveBackupCount) {
-                            syslog(LOG_ERR, "remove " . $filename . " from Google Drive");
+                            syslog(LOG_NOTICE, "remove " . $filename . " from Google Drive");
                             try {
                                 $client->delete($file);
                             } catch (Google_Service_Exception $e) {
