@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-
 /**
  * Class CountryField field type to select iso3166 countries
  * @package OPNsense\Base\FieldTypes

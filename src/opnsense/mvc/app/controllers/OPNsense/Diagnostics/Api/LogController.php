@@ -32,7 +32,6 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\SanitizeFilter;
 
-
 /**
  * @inherit
  */

@@ -36,7 +36,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Core\SanitizeFilter;
 
-
 /**
  * Class NetworkinsightController
  * @package OPNsense\Netflow

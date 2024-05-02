@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-
 /**
  * Class UniqueIdField
  * @package OPNsense\Base\FieldTypes

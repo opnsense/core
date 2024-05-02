@@ -30,7 +30,6 @@ namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Base\Validators\Regex;
 
-
 /**
  * Class TextField
  * @package OPNsense\Base\FieldTypes

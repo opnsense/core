@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-
 /**
  * Class update only TextField (can be practical for password type fields)
  * @package OPNsense\Base\FieldTypes

@@ -28,12 +28,11 @@
 
 namespace OPNsense\Core;
 
-
 class SanitizeFilter
 {
     protected $filters = [];
 
-    public function __construct($callbacks=null)
+    public function __construct($callbacks = null)
     {
         if (is_array($callbacks)) {
             foreach ($callbacks as $key => $func) {

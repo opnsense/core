@@ -49,7 +49,7 @@ class Url extends BaseValidator
     {
         $value = $validator->getValue($attribute);
         $msg = $this->getOption('message');
-        if ( !filter_var($value, FILTER_VALIDATE_URL) ) {
+        if (!filter_var($value, FILTER_VALIDATE_URL)) {
             $validator->appendMessage(new Message($msg, $attribute, 'Url'));
             return false;
         }

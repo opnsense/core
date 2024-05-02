@@ -51,7 +51,7 @@ class Regex extends BaseValidator
         $pattern = $this->getOption('pattern');
         $msg = $this->getOption('message');
         $failed = true;
-        if ($value !== null && preg_match($pattern, $value, $matches) ) {
+        if ($value !== null && preg_match($pattern, $value, $matches)) {
             $failed = $matches[0] != $value;
         }
         if ($failed) {
