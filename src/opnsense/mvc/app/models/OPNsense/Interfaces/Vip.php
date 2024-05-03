@@ -42,6 +42,7 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
 
+        $unique_addrs = [];
         $carp_vhids = [];
         $vips = [];
 
