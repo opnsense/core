@@ -38,18 +38,18 @@ export default class BaseTableWidget extends BaseWidget {
         this.sizeStates = {
             0: {
                 '.flextable-row': {'padding': ''},
-                '.header .flex-row': {'border-bottom': 'solid 1px'},
-                '.flex-row': {'width': '100%'},
-                '.column': {'width': '100%'},
+                '.flextable-header .flex-cell': {'border-bottom': 'solid 1px'},
                 '.flex-cell': {'width': '100%'},
+                '.column': {'width': '100%'},
+                '.flex-subcell': {'width': '100%'},
             },
-            500: {
+            400: {
                 '.flextable-row': {'padding': '0.5em 0.5em'},
-                '.header .flex-row': {'border-bottom': ''},
-                '.flex-row': {'width': this._calculateColumnWidth.bind(this)},
-                '.column .flex-row': {'width': '100%'},
+                '.flextable-header .flex-cell': {'border-bottom': ''},
+                '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
+                '.column .flex-cell': {'width': '100%'},
                 '.column': {'width': ''},
-                '.flex-cell': {'width': ''},
+                '.flex-subcell': {'width': ''},
             }
         }
         this.widths = Object.keys(this.sizeStates).sort();
@@ -57,7 +57,6 @@ export default class BaseTableWidget extends BaseWidget {
         this.flextableId = Math.random().toString(36).substring(7);
         this.$flextable = null;
         this.$headerContainer = null;
-        this.headers = new Set();
     }
 
     _calculateColumnWidth() {
@@ -65,8 +64,6 @@ export default class BaseTableWidget extends BaseWidget {
             switch (this.options.headerPosition) {
                 case 'none':
                     return `calc(100% / ${this.data[0].length})`;
-                case 'top':
-                    return `calc(100% / ${Object.keys(this.data[0]).length})`;
                 case 'left':
                     return `calc(100% / 2)`;
             }
@@ -81,109 +78,135 @@ export default class BaseTableWidget extends BaseWidget {
             return null;
         }
 
-        this.$flextable = $(`<div class="flextable-container" id="${this.flextableId}" role="table"></div>`)
-
         if (this.options.headerPosition === 'top') {
-            this.$headerContainer = $(`<div class="flextable-header"></div>`);
+            this.$flextable = $(`<div class="grid-table" id="id_${this.flextableId}" role="table"></div>`)
+            this.$headerContainer = $(`<div id="header_${this.flextableId}" class="grid-header-container"></div>`);
+
+            for (const h of this.options.headers) {
+                this.$headerContainer.append($(`
+                    <div class="grid-item grid-header">${h}</div>
+                `));
+            }
+
             this.$flextable.append(this.$headerContainer);
+        } else {
+            this.$flextable = $(`<div class="flextable-container" id="id_${this.flextableId}" role="table"></div>`)
+        }
+    }
+
+    _rotate(arr, newElement) {
+        arr.unshift(newElement);
+        if (arr.length > this.options.rotation) {
+            arr.splice(this.options.rotation);
+        }
+
+        const divs = document.querySelectorAll(`#id_${this.flextableId} .grid-row`);
+        if (divs.length > this.options.rotation) {
+            for (let i = this.options.rotation; i < divs.length; i++) {
+                $(divs[i]).remove();
+            }
         }
     }
 
     setTableOptions(options = {}) {
         /**
          * headerPosition: top, left or none.
-         *  top: headers are on top of the table. Data layout: [{header1: value1}, {header1: value2}, ...]
-         *  left: headers are on the left of the table (key-value). Data layout: [{header1: value1}, {header2: value2}, ...].
-         *        Supports nested columns (e.g. {header1: [value1, value2...]})
-         *  none: no headers. Data layout: [[value1, value2], ...]
+         *  top: headers are on top of the table. Headers are defined in the options. Data layout: 
+         *  [
+         *      ['x', 'y', 'z'],
+         *      ['x', 'y', 'z']
+         *  ]
+         *
+         *  left: headers are on the left of the table (key-value). Data layout:
+         *  [
+         *      ['x', 'x1'],
+         *      ['y', 'y1'],
+         *      ['z', ['z1', 'z2']] <-- supports nested columns
+         *  ]
+         * 
+         *  none: no headers, same data layout as 'top', without headers set as an option.
+         * 
+         * rotation: limit table entries to a certain amount, and rotate them. Only applicable for headerPosition: top.
+         * headers: list of headers to display. Only applicable for headerPosition: top.
          */
+
         this.options = {
             headerPosition: 'top',
+            rotation: false,
             ...options // merge and override defaults
         }
     }
 
     updateTable(data = []) {
-        let $table = $(`#${this.flextableId}`);
+        let $table = $(`#id_${this.flextableId}`);
 
-        $table.children('.flextable-row').remove();
-
-        this.data = data;
+        if (!this.options.rotation) {
+            $table.children('.flextable-row').remove();
+            this.data = data;
+        }
 
         for (const row of data) {
-            let rowType = Array.isArray(row) && row !== null ? 'flat' : 'nested';
-            if (rowType === 'flat' && this.options.headerPosition !== 'none') {
-                console.error('Flat data is not supported with headers');
-                return null;
-            }
-
-            if (rowType === 'nested' && this.options.headerPosition === 'none') {
-                console.error('Nested data requires headers');
-                return null;
-            }
-
             switch (this.options.headerPosition) {
                 case "none":
                     let $row = $(`<div class="flextable-row"></div>`)
                     for (const item of row) {
                         $row.append($(`
-                            <div class="flex-row" role="cell">${item}</div>
+                            <div class="flex-cell" role="cell">${item}</div>
                         `));
                     }
                     $table.append($row);
                 break;
                 case "top":
-                    let $flextableRow = $(`<div class="flextable-row"></div>`);
-                    for (const [h, c] of Object.entries(row)) {
-                        if (!this.headers.has(h)) {
-                            this.$headerContainer.append($(`
-                                <div class="flex-row">${h}</div>
-                            `));
-                            this.headers.add(h);
-                        }
-                        if (Array.isArray(c)) {
-                            let $column = $('<div class="column"></div>');
-                            for (const item of c) {
-                                $column.append($(`
-                                    <div class="flex-row">
-                                        <div class="flex-cell">${item}</div>
-                                    </div>
-                                `));
-                            }
-                            $flextableRow.append($column);
-                        } else {
-                            $flextableRow.append($(`
-                                <div class="flex-row">${c}</div>
-                            `));
-                        }
+                    let $gridRow = $(`<div class="grid-row" style="opacity: 0.4; background-color: #f7e2d6"></div>`);
+                    for (const item of row) {
+                        $gridRow.append($(`
+                            <div class="grid-item">${item}</div>
+                        `));
                     }
-                    $table.append($flextableRow);
+
+                    $(`#header_${this.flextableId}`).after($gridRow);
+                    if (this.options.rotation) {
+                        $gridRow.animate({
+                            from: 0,
+                            to: 255,
+                            opacity: 1,
+                        }, {
+                            duration: 50,
+                            easing: 'linear',
+                            step: function(now) {
+                                $gridRow.css('background-color',`transparent`)
+                            }
+                        });
+                        this._rotate(this.data, row);
+                    }
                 break;
                 case "left":
-                    for (const [h, c] of Object.entries(row)) {
-                        if (Array.isArray(c)) {
-                            // nested column
-                            let $row = $('<div class="flextable-row"></div>');
-                            $row.append($(`
-                                <div class="flex-row rowspan first"><b>${h}</b></div>
-                            `));
-                            let $column = $('<div class="column"></div>');
-                            for (const item of c) {
-                                $column.append($(`
-                                    <div class="flex-row">
-                                        <div class="flex-cell">${item}</div>
-                                    </div>
-                                `));
-                            }
-                            $table.append($row.append($column));
-                        } else {
-                            $table.append($(`
-                            <div class="flextable-row">
-                                <div class="flex-row first"><b>${h}</b></div>
-                                <div class="flex-row">${c}</div>
-                            </div>
+                    if (row.length !== 2) {
+                        break;
+                    }
+                    const [h, c] = row;
+                    if (Array.isArray(c)) {
+                        // nested column
+                        let $row = $('<div class="flextable-row"></div>');
+                        $row.append($(`
+                            <div class="flex-cell rowspan first"><b>${h}</b></div>
+                        `));
+                        let $column = $('<div class="column"></div>');
+                        for (const item of c) {
+                            $column.append($(`
+                                <div class="flex-cell">
+                                    <div class="flex-subcell">${item}</div>
+                                </div>
                             `));
                         }
+                        $table.append($row.append($column));
+                    } else {
+                        $table.append($(`
+                        <div class="flextable-row">
+                            <div class="flex-cell first"><b>${h}</b></div>
+                            <div class="flex-cell">${c}</div>
+                        </div>
+                        `));
                     }
                 break;
             }

@@ -181,7 +181,7 @@ div {
     display: block;
     margin: 2em auto;
     width: 95%;
-    max-width: 1200px; /* XXX */
+    max-width: 1200px;
 }
 
 .flextable-header {
@@ -198,10 +198,10 @@ div {
     transition: 0.5s;
     padding: 0.5em 0.5em;
     border-top: solid 1px rgba(217, 79, 0, 0.15);
-    align-items: center
+    align-items: center;
 }
 
-.flextable-header .flex-row {
+.flextable-header .flex-cell {
     font-weight: bold;
 }
 
@@ -210,7 +210,7 @@ div {
     transition: 500ms;
 }
 
-.flex-row {
+.flex-cell {
     text-align: left;
     word-break: break-word;
 }
@@ -221,7 +221,7 @@ div {
     width: 50%;
     padding: 0;
 }
-.column .flex-row {
+.column .flex-cell {
     display: flex;
     flex-flow: row wrap;
     width: 100%;
@@ -229,20 +229,54 @@ div {
     border: 0;
     border-top: rgba(217, 79, 0, 0.15);
 }
-.column .flex-row:hover {
+.column .flex-cell:hover {
     background: #F5F5F5;
     transition: 500ms;
 }
-.flex-cell {
+.flex-subcell {
     width: 100%;
     text-align: left;
 }
 
-.column .flex-row:not(:last-child) {
+.column .flex-cell:not(:last-child) {
     border-bottom: solid 1px rgba(217, 79, 0, 0.15);
 }
+
+
+/* ----- */
 
 .cpu-type {
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
+/* CSS grid responsive table */
+.grid-table {
+    margin: 2em auto;
+    width: 95%;
+}
+
+.grid-header-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    border-top: 1px solid #f7e2d6;
+    transition: 0.5s;
+}
+
+.grid-header {
+    border-top: 1px solid #f7e2d6;
+    font-weight: bold;
+}
+
+.grid-item {
+    border: 1 px solid #ccc;
+    padding: 4px;
+    text-align: center;
+}
+
+/* ----- */

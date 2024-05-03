@@ -63,12 +63,12 @@ export default class SystemInformation extends BaseTableWidget {
                     value = $('<a>').attr('href', '/ui/core/firmware#checkupdate').text(value).prop('outerHTML');
                 }
 
-                rows.push({[this.translations[key]]: value});
+                rows.push([[this.translations[key]], value]);
             }
 
-            rows.push({[this.translations['uptime']]: $('<span id="uptime">').prop('outerHTML')});
-            rows.push({[this.translations['datetime']]: $('<span id="datetime">').prop('outerHTML')});
-            rows.push({[this.translations['config']]: $('<span id="config">').prop('outerHTML')});
+            rows.push([[this.translations['uptime']], $('<span id="uptime">').prop('outerHTML')]);
+            rows.push([[this.translations['datetime']], $('<span id="datetime">').prop('outerHTML')]);
+            rows.push([[this.translations['config']], $('<span id="config">').prop('outerHTML')]);
             super.updateTable(rows);
         });
     }
