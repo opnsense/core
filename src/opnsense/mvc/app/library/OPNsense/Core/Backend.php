@@ -28,6 +28,7 @@
 
 namespace OPNsense\Core;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Syslog;
 
 /**
@@ -68,10 +69,16 @@ class Backend
      * @return resource|null
      * @throws \Exception
      */
-    public function configdStream($event, $detach = false, $timeout = 120, $connect_timeout = 10, $poll_timeout = 2)
+    public function configdStream($event, $detach = false, $connect_timeout = 10, $poll_timeout = 2)
     {
         // wait until socket exist for a maximum of $connect_timeout
-        $timeout_wait = $connect_timeout;
+        $simulate_mode = false;
+        if (!file_exists($this->configdSocket) && (!empty((string)(new AppConfig())->globals->simulate_mode))) {
+            $timeout_wait = -1;
+            $simulate_mode = true;
+        } else {
+            $timeout_wait = $connect_timeout;
+        }
         $errorMessage = "";
         while (
             !file_exists($this->configdSocket) ||
@@ -80,10 +87,10 @@ class Backend
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                if (file_exists($this->configdSocket)) {
+                if (file_exists($this->configdSocket) && !$simulate_mode) {
                     $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
                     return null;
-                } else {
+                } elseif (!$simulate_mode) {
                     $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
                 }
                 return null;
@@ -117,14 +124,14 @@ class Backend
     {
         if (!is_array($params)) {
             /* just in case there's only one parameter */
-            $params = array($params);
+            $params = [$params];
         }
 
         foreach ($params as $param) {
             $event .= ' ' . escapeshellarg($param ?? '');
         }
 
-        return $this->configdStream($event, $detach, $timeout, $connect_timeout, $poll_timeout);
+        return $this->configdStream($event, $detach, $connect_timeout, $poll_timeout);
     }
 
 
@@ -143,7 +150,7 @@ class Backend
         $errorOfStream = 'Execute error';
         $resp = '';
 
-        $stream = $this->configdStream($event, $detach, $timeout, $connect_timeout);
+        $stream = $this->configdStream($event, $detach, $connect_timeout);
 
         // read response data
         $starttime = time();
@@ -185,11 +192,11 @@ class Backend
      * @return string
      * @throws \Exception
      */
-    public function configdpRun($event, $params = array(), $detach = false, $timeout = 120, $connect_timeout = 10)
+    public function configdpRun($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
             /* just in case there's only one parameter */
-            $params = array($params);
+            $params = [$params];
         }
 
         foreach ($params as $param) {
