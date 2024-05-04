@@ -58,27 +58,23 @@ function view_html_safe($text)
 }
 
 try {
-    /**
-     * Read the configuration
-     */
     $config = include __DIR__ . "/../mvc/app/config/config.php";
-
-    /**
-     * Read auto-loader
-     */
     include __DIR__ . "/../mvc/app/config/loader.php";
 
-    /**
-     * Read services
-     */
-    include __DIR__ . "/../mvc/app/config/services.php";
+    $router = new OPNsense\Mvc\Router('/ui/');
+    try {
+        $response = $router->routeRequest($_SERVER['REQUEST_URI'], [
+            'controller' => 'indexController',
+            'action' => 'indexAction'
+        ]);
+    } catch (\OPNsense\Mvc\Exceptions\DispatchException) {
+        // unroutable (page not found), present page not found controller
+        $response = $router->routeRequest('/ui/core/index/index');
+    }
 
-    /**
-     * Handle the request
-     */
-    $application = new \Phalcon\Mvc\Application($di);
-
-    echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
+    if (!$response->isSent()) {
+        $response->send();
+    }
 } catch (\Error | \Exception $e) {
     error_log($e);
 

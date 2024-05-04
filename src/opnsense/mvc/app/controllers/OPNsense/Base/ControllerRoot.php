@@ -30,7 +30,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
-use Phalcon\Mvc\Controller;
+use OPNsense\Mvc\Controller;
 use Phalcon\Translate\InterpolatorFactory;
 use OPNsense\Core\ACL;
 
