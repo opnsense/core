@@ -1,56 +1,37 @@
 <?php
 
-try {
-    /**
-     * Read the configuration
-     */
-    $config = include __DIR__ . "/../mvc/app/config/config.php";
-
-    /**
-     * Read auto-loader
-     */
-    include __DIR__ . "/../mvc/app/config/loader.php";
-
-    /**
-     * Read services
-     */
-    include __DIR__ . "/../mvc/app/config/services_api.php";
-
-    /**
-     * Handle the request
-     */
-    $application = new \Phalcon\Mvc\Application($di);
-
-    echo $application->handle($_SERVER['REQUEST_URI'])->getContent();
-} catch (\Error | \Exception $e) {
-    $unbuffered = strpos($e->getMessage(), 'ob_end_clean') !== false;
-
-    if (!is_a($e, 'OPNsense\Base\UserException') && !$unbuffered) {
-        error_log($e);
+function error_output($http_code, $e,  $user_message)
+{
+    $response = [];
+    if (!file_exists('/var/run/development')){
+        $response['errorMessage'] = $user_message;
+    } else {
+        $response['errorMessage'] = $e->getMessage();
+        $response['errorTrace'] = $e->getTraceAsString();
     }
-
-    if ($unbuffered) {
-        /**
-         * if buffer has been deleted already, we must assume the implementation
-         * has already sent headers and we cannot send them again.
-         */
-        return;
-    }
-
-    $response = [
-        'errorMessage' => $e->getMessage(),
-        'errorTrace' => $e->getTraceAsString(),
-    ];
-
     if (method_exists($e, 'getTitle')) {
         $response['errorTitle'] = $e->getTitle();
-    } else {
-        $response['errorTitle'] = gettext('An API exception occurred');
-        $response['errorMessage'] = $e->getFile() . ':' . $e->getLine() . ': ' . $response['errorMessage'];
     }
-
-    header('HTTP', true, 500);
+    header('HTTP', true, $http_code);
     header("Content-Type: application/json;charset=utf-8");
-
     echo json_encode($response, JSON_UNESCAPED_SLASHES);
+}
+
+
+try {
+    $config = include __DIR__ . "/../mvc/app/config/config.php";
+    include __DIR__ . "/../mvc/app/config/loader.php";
+
+    $router = new OPNsense\Mvc\Router('/api/', 'Api');
+    $response = $router->routeRequest($_SERVER['REQUEST_URI']);
+    if (!$response->isSent()) {
+        $response->send();
+    }
+} catch (\OPNsense\Base\UserException $e) {
+    error_output(500, $e, $e->getMessage());
+} catch (\OPNsense\Mvc\Exceptions\DispatchException) {
+    error_output(404, $e, gettext('Endpoint not found'));
+} catch (\Error | \Exception $e) {
+    error_output(500, $e, gettext('Unexpected error, check log for details'));
+    error_log($e);
 }

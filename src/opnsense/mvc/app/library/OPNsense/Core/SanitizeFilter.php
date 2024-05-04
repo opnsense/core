@@ -97,4 +97,9 @@ class SanitizeFilter
     {
         return preg_replace('/[^0-9a-zA-Z._-]/', '', $input);
     }
+
+    protected function filter_striptags($input)
+    {
+        return strip_tags($input);
+    }
 }

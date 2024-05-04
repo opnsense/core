@@ -31,6 +31,7 @@ namespace OPNsense\Base;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Mvc\Security;
 use OPNsense\Auth\AuthenticationFactory;
 
 /**
@@ -201,7 +202,7 @@ class ApiControllerBase extends ControllerRoot
         switch (strtolower(str_replace(' ', '', $this->request->getHeader('CONTENT_TYPE')))) {
             case 'application/json':
             case 'application/json;charset=utf-8':
-                $jsonRawBody = $this->request->getJsonRawBody(true);
+                $jsonRawBody = $this->request->getJsonRawBody();
                 if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
                     return "Invalid JSON syntax";
                 }
@@ -366,8 +367,10 @@ class ApiControllerBase extends ControllerRoot
             }
 
             // check for valid csrf on post requests
-            $csrf_token = $this->request->getHeader('X_CSRFTOKEN');
-            $csrf_valid = $this->security->checkToken(null, $csrf_token, false);
+            $csrf_valid = (new Security($this->session, $this->request))->checkToken(
+                null,
+                $this->request->getHeader('X_CSRFTOKEN')
+            );
 
             if (
                 ($this->request->isPost() ||
@@ -404,6 +407,9 @@ class ApiControllerBase extends ControllerRoot
             } else {
                 $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
             }
+        } elseif (is_string($data)) {
+            // XXX: fallback, controller returned data as string. a deprecation message might be an option here.
+            $this->response->setContent($data);
         }
 
         return $this->response->send();
