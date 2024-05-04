@@ -28,7 +28,7 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Syslog;
 
 /**
@@ -324,7 +324,7 @@ class Config extends Singleton
     protected function init()
     {
         $this->statusIsLocked = false;
-        $this->config_file = FactoryDefault::getDefault()->get('config')->globals->config_path . "config.xml";
+        $this->config_file = (new AppConfig())->globals->config_path . "config.xml";
         try {
             $this->load();
         } catch (\Exception $e) {

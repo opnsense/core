@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016 - 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-use Phalcon\Di\Di;
-use Phalcon\Di\FactoryDefault;
-
 /**
  * Read the configuration
  */
@@ -41,9 +38,3 @@ $config = include __DIR__ . "/app/config/config.php";
 include __DIR__ . "/../app/config/loader.php";
 
 
-$di = new FactoryDefault();
-Di::reset();
-
-$di->set('config', $config);
-
-Di::setDefault($di);

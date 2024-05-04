@@ -28,7 +28,7 @@
 
 namespace OPNsense\Core;
 
-use Phalcon\Di\FactoryDefault;
+use OPNsense\Core\AppConfig;
 
 /**
  * Class Shell shell/command handling routines
@@ -54,8 +54,9 @@ class Shell
     public function __construct()
     {
         // init, set simulation mode / debug autoput
-        $this->simulate = FactoryDefault::getDefault()->get('config')->globals->simulate_mode;
-        $this->debug = FactoryDefault::getDefault()->get('config')->globals->debug;
+        $appconfig = new AppConfig();
+        $this->simulate = $appconfig->globals->simulate_mode;
+        $this->debug = $appconfig->globals->debug;
     }
 
     /**

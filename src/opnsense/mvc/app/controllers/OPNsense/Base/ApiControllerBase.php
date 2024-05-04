@@ -395,19 +395,14 @@ class ApiControllerBase extends ControllerRoot
      */
     public function afterExecuteRoute($dispatcher)
     {
-        // exit when response headers are already set
-        if ($this->response->getHeaders()->get("Status") != null) {
-            return false;
-        } else {
-            // process response, serialize to json object
-            $data = $dispatcher->getReturnedValue();
-            if (is_array($data)) {
-                $this->response->setContentType('application/json', 'UTF-8');
-                if ($this->isExternalClient()) {
-                    $this->response->setContent(json_encode($data));
-                } else {
-                    $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
-                }
+        // process response, serialize to json object
+        $data = $dispatcher->getReturnedValue();
+        if (is_array($data)) {
+            $this->response->setContentType('application/json', 'UTF-8');
+            if ($this->isExternalClient()) {
+                $this->response->setContent(json_encode($data));
+            } else {
+                $this->response->setContent(htmlspecialchars(json_encode($data), ENT_NOQUOTES));
             }
         }
 
