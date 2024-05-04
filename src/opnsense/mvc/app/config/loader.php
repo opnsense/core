@@ -1,14 +1,10 @@
 <?php
 
-$loader = new \Phalcon\Autoload\Loader();
-
-/**
- * We're a registering a set of directories taken from the configuration file
- */
-$loader->setDirectories(
-    array(
-        $config->application->controllersDir,
-        $config->application->modelsDir,
-        $config->application->libraryDir
-    )
-)->register();
+require_once (__DIR__ . '/../../app/library/OPNsense/Autoload/Loader.php');
+use OPNsense\Autoload\Loader;
+$loader_paths = [
+    $config->application->controllersDir,
+    $config->application->modelsDir,
+    $config->application->libraryDir
+];
+(new Loader($loader_paths))->register();

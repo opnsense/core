@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once (__DIR__ . '/../app/library/OPNsense/Autoload/Loader.php');
-use OPNsense\Autoload\Loader;
-$phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
-$loader_paths = [
-    $phalcon_config->application->controllersDir,
-    $phalcon_config->application->modelsDir,
-    $phalcon_config->application->libraryDir
-];
-(new Loader($loader_paths))->register();
+namespace OPNsense\Autoload;
+
+class Loader
+{
+    private $probe_dirs = [];
+    private $is_registered = false;
+    private $classes_loaded = [];
+
+    public function __construct($dirs=null)
+    {
+        $this->probe_dirs = $dirs;
+    }
+
+    protected function autoload($className)
+    {
+        if (!in_array($className, $this->classes_loaded)) {
+            $class_path = str_replace("\\", DIRECTORY_SEPARATOR, $className) . '.php';
+            foreach ($this->probe_dirs as $dirname) {
+                $dirname = rtrim($dirname, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                if (is_file($dirname . $class_path)) {
+                    require_once($dirname . $class_path);
+                }
+            }
+            $this->classes_loaded[] = $className;
+        }
+    }
+
+    public function register()
+    {
+        if (!$this->is_registered) {
+            spl_autoload_register([$this, "autoload"],true);
+            $this->is_registered = true;
+        }
+    }
+}
