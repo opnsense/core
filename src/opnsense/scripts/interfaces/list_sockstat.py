@@ -29,10 +29,7 @@
     dump sockstat
 """
 import subprocess
-import os
-import sys
 import ujson
-import netaddr
 
 if __name__ == '__main__':
     netstat = dict()
