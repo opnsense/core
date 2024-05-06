@@ -81,7 +81,7 @@ function system_sysctl_defaults()
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
         'net.enc.out.ipsec_bpf_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
         'net.enc.out.ipsec_filter_mask' => [ 'default' => '1', 'required' => true ], /* before processing */
-        'net.inet.icmp.drop_redirect' => [ 'default' => '0' ],
+        'net.inet.icmp.drop_redirect' => [ 'default' => '1', 'required' => true ],
         'net.inet.icmp.icmplim' => [ 'default' => '0' ],
         'net.inet.icmp.log_redirect' => [ 'default' => '0' ],
         'net.inet.icmp.reply_from_interface' => [ 'default' => '1', 'required' => true ],

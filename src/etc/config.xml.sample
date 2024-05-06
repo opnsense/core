@@ -187,15 +187,6 @@
       <value>default</value>
     </item>
     <item>
-      <descr><![CDATA[
-        Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
-        to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
-        packets without returning a response.
-      ]]></descr>
-      <tunable>net.inet.icmp.drop_redirect</tunable>
-      <value>1</value>
-    </item>
-    <item>
       <descr><![CDATA[Maximum outgoing UDP datagram size]]></descr>
       <tunable>net.local.dgram.maxdgram</tunable>
       <value>default</value>
