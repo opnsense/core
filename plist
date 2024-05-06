@@ -499,6 +499,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Services/WebGui.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/TOTP.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Auth/Voucher.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Autoload/Loader.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/BackupFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/Base.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Backup/GDrive.php

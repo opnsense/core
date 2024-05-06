@@ -1,6 +1,6 @@
 <?php
 
-require_once (__DIR__ . '/../../app/library/OPNsense/Autoload/Loader.php');
+require_once(__DIR__ . '/../../app/library/OPNsense/Autoload/Loader.php');
 use OPNsense\Autoload\Loader;
 $loader_paths = [
     $config->application->controllersDir,

@@ -36,5 +36,3 @@ $config = include __DIR__ . "/app/config/config.php";
  * Read auto-loader
  */
 include __DIR__ . "/../app/config/loader.php";
-
-

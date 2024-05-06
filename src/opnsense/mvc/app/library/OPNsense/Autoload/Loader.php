@@ -34,7 +34,7 @@ class Loader
     private $is_registered = false;
     private $classes_loaded = [];
 
-    public function __construct($dirs=null)
+    public function __construct($dirs = null)
     {
         $this->probe_dirs = $dirs;
     }
@@ -56,7 +56,7 @@ class Loader
     public function register()
     {
         if (!$this->is_registered) {
-            spl_autoload_register([$this, "autoload"],true);
+            spl_autoload_register([$this, "autoload"], true);
             $this->is_registered = true;
         }
     }

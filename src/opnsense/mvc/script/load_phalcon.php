@@ -26,7 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once (__DIR__ . '/../app/library/OPNsense/Autoload/Loader.php');
+require_once(__DIR__ . '/../app/library/OPNsense/Autoload/Loader.php');
 use OPNsense\Autoload\Loader;
 $phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
 $loader_paths = [

@@ -111,7 +111,7 @@ export default class BaseTableWidget extends BaseWidget {
     setTableOptions(options = {}) {
         /**
          * headerPosition: top, left or none.
-         *  top: headers are on top of the table. Headers are defined in the options. Data layout: 
+         *  top: headers are on top of the table. Headers are defined in the options. Data layout:
          *  [
          *      ['x', 'y', 'z'],
          *      ['x', 'y', 'z']
@@ -123,9 +123,9 @@ export default class BaseTableWidget extends BaseWidget {
          *      ['y', 'y1'],
          *      ['z', ['z1', 'z2']] <-- supports nested columns
          *  ]
-         * 
+         *
          *  none: no headers, same data layout as 'top', without headers set as an option.
-         * 
+         *
          * rotation: limit table entries to a certain amount, and rotate them. Only applicable for headerPosition: top.
          * headers: list of headers to display. Only applicable for headerPosition: top.
          */
