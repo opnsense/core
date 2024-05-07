@@ -2075,7 +2075,7 @@ include("head.inc");
                             </select>
                             <div class="hidden" data-for="help_for_gateway">
                               <?= gettext('Select a gateway from the list to reply the incoming packets to the proper next hop on their way back and apply source NAT when configured. ' .
-                                          'This is typically disabled for LAN type connections.') ?>
+                                          'This is typically disabled for LAN type interfaces.') ?>
                             </div>
                           </td>
                         </tr>
