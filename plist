@@ -510,7 +510,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Backend.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Config.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Core/Csrf.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Routing.php

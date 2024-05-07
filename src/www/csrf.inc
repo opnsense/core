@@ -28,9 +28,6 @@
 
 class LegacyCSRF
 {
-    private $di = null;
-    private $security = null;
-    private $session = null;
     private $is_html_output = false;
     public function __construct()
     {
@@ -51,6 +48,32 @@ class LegacyCSRF
             setcookie(session_name(), session_id(), 0, '/', '', $secure, true);
         }
         ob_start(array($this,'csrfRewriteHandler'), 5242880);
+    }
+
+    /**
+     * Generate a random URL-safe base64 string.
+     * Usable base64 characters according to https://www.ietf.org/rfc/rfc3548.txt
+     */
+    public function base64Safe($len = 16)
+    {
+        return rtrim(strtr(base64_encode(random_bytes($len)), "+/", "-_"), '=');
+    }
+
+    public function getToken()
+    {
+        // only request new token when session has none
+        if (session_status() == PHP_SESSION_NONE) {
+            // our session is not guaranteed to be started at this point.
+            session_start();
+        }
+        if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
+            $_SESSION['$PHALCON/CSRF$'] = $this->base64Safe(16);
+            $_SESSION['$PHALCON/CSRF/KEY$'] = $this->base64Safe(16);
+        }
+        return [
+            'token' => $_SESSION['$PHALCON/CSRF$'],
+            'key' => $_SESSION['$PHALCON/CSRF/KEY$']
+        ];
     }
 
     public function checkToken()
@@ -76,7 +99,7 @@ class LegacyCSRF
             $this->is_html_output = true;
         }
         if ($this->is_html_output) {
-            $csrf = (new OPNsense\Core\Csrf())->getToken();
+            $csrf = $this->getToken();
             $inputtag = "<input type=\"hidden\" name=\"{$csrf['key']}\" value=\"{$csrf['token']}\" autocomplete=\"new-password\" />";
             $buffer = preg_replace('#(<form[^>]*method\s*=\s*["\']post["\'][^>]*>)#i', '$1' . $inputtag, $buffer);
             // csrf token for Ajax type requests
