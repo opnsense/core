@@ -12,7 +12,7 @@
     </field>
     <field>
         <id>option.code</id>
-        <label>Code</label>
+        <label>DHCP option</label>
         <type>text</type>
     </field>
     <field>

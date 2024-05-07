@@ -193,7 +193,7 @@
                 <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                <th data-column-id="code" data-type="number">{{ lang._('Code') }}</th>
+                <th data-column-id="code" data-type="number">{{ lang._('Option') }}</th>
                 <th data-column-id="space" data-type="string">{{ lang._('Space') }}</th>
                 <th data-column-id="type" data-type="string">{{ lang._('Type') }}</th>
                 <th data-column-id="data" data-type="string">{{ lang._('Data') }}</th>
