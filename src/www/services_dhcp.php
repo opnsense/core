@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['domainsearchlist'])) {
             $domain_array=preg_split("/[ ;]+/",$pconfig['domainsearchlist']);
             foreach ($domain_array as $curdomain) {
-                if (!is_domain($curdomain)) {
+                if (!is_domain($curdomain, true)) {
                     $input_errors[] = gettext("A valid domain search list must be specified.");
                     break;
                 }
