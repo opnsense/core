@@ -449,6 +449,13 @@ function core_xmlrpc_sync()
         'services' => ["webgui"],
     );
 
+    $result[] = array(
+        'description' => gettext('Backup - Google Drive'),
+        'section' => 'system.remotebackup',
+        'id' => 'remotebackup'
+    );
+
+
     return $result;
 }
 
