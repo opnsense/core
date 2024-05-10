@@ -339,20 +339,18 @@ function core_cron()
 
 function core_syslog()
 {
-    $logfacilities = array();
+    $logfacilities = [];
 
-    $logfacilities['audit'] = array('facility' => array('audit'));
-    $logfacilities['configd'] = array('facility' => array('configd.py'));
-    $logfacilities['dhcpd'] = array('facility' => array('dhcpd'));
-    $logfacilities['lighttpd'] = array('facility' => array('lighttpd'));
-    $logfacilities['pkg'] = array('facility' => array('pkg', 'pkg-static'));
-    $logfacilities['portalauth'] = array('facility' => array('captiveportal'));
-    $logfacilities['ppps'] = array('facility' => array('ppp'));
-    $logfacilities['resolver'] = array('facility' => array('unbound'));
-    $logfacilities['routing'] = array('facility' => array(
-          'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'
-    ));
-    $logfacilities['wireless'] = array('facility' => array('hostapd'));
+    $logfacilities['audit'] = ['facility' => ['audit']];
+    $logfacilities['configd'] = ['facility' => ['configd.py']];
+    $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
+    $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
+    $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
+    $logfacilities['portalauth'] = ['facility' => ['captiveportal']];
+    $logfacilities['ppps'] = ['facility' => ['ppp']];
+    $logfacilities['resolver'] = ['facility' => ['unbound']];
+    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd']];
+    $logfacilities['wireless'] = ['facility' => ['hostapd']];
 
     return $logfacilities;
 }
@@ -447,6 +445,11 @@ function core_xmlrpc_sync()
         'section' => 'system.webgui',
         'id' => 'webgui',
         'services' => ["webgui"],
+    );
+    $result[] = array(
+        'description' => gettext('Backup - Google Drive'),
+        'section' => 'system.remotebackup',
+        'id' => 'remotebackup'
     );
 
     return $result;
