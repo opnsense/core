@@ -168,7 +168,7 @@ class DashboardController extends ApiControllerBase
 
         $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : null;
 
-        return json_encode($result);
+        return $result;
     }
 
     public function saveWidgetsAction()
@@ -180,7 +180,7 @@ class DashboardController extends ApiControllerBase
             $dashboard = $this->request->getRawBody();
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
-                return json_encode($result);
+                return $result;
             }
 
             $encoded = base64_encode($dashboard);
@@ -196,7 +196,7 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        return json_encode($result);
+        return $result;
     }
 
     public function restoreDefaultsAction()
@@ -215,6 +215,6 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        return json_encode($result);
+        return $result;
     }
 }
