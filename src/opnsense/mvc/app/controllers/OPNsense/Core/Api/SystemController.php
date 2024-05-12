@@ -173,7 +173,7 @@ class SystemController extends ApiControllerBase
                 }
             }
 
-            $response = json_encode($statuses);
+            $response = $statuses;
         }
 
         return $response;
@@ -241,7 +241,7 @@ class SystemController extends ApiControllerBase
                 : gettext('Click to check for updates.'),
         ];
 
-        return json_encode($response);
+        return $response;
     }
 
     public function systemTimeAction()
@@ -258,7 +258,7 @@ class SystemController extends ApiControllerBase
             'config' => $last_change,
         ];
 
-        return json_encode($response);
+        return $response;
     }
 
     public function systemResourcesAction()
@@ -293,7 +293,7 @@ class SystemController extends ApiControllerBase
             $result['memory']['used'] = gettext('N/A');
         }
 
-        return json_encode($result);
+        return $result;
     }
 
     public function systemDiskAction()
@@ -320,6 +320,6 @@ class SystemController extends ApiControllerBase
             }
         }
 
-        return json_encode($result);
+        return $result;
     }
 }
