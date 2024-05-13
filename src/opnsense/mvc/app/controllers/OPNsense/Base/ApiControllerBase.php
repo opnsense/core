@@ -219,37 +219,6 @@ class ApiControllerBase extends ControllerRoot
     }
 
     /**
-     * Raise errors, warnings, notices, etc.
-     * @param $errno The first parameter, errno, contains the level of the
-     *               error raised, as an integer.
-     * @param $errstr The second parameter, errstr, contains the error
-     *                message, as a string.
-     * @param $errfile The third parameter is optional, errfile, which
-     *                 contains the filename that the error was raised in, as
-     *                 a string.
-     * @param $errline The fourth parameter is optional, errline, which
-     *                 contains the line number the error was raised at, as an
-     *                 integer.
-     * @throws \Exception
-     */
-    public function APIErrorHandler($errno, $errstr, $errfile, $errline)
-    {
-        if ($errno & error_reporting()) {
-            $msg = "Error at $errfile:$errline - $errstr (errno=$errno)";
-            throw new \Exception($msg);
-        }
-    }
-
-    /**
-     * Initialize API controller
-     */
-    public function initialize()
-    {
-        // disable view processing
-        set_error_handler(array($this, 'APIErrorHandler'));
-    }
-
-    /**
      * is external client (other then session authenticated)
      * @return bool
      */
