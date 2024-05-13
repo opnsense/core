@@ -28,11 +28,11 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Auth\AuthenticationFactory;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Mvc\Security;
-use OPNsense\Auth\AuthenticationFactory;
 
 /**
  * Class ApiControllerBase, inherit this class to implement API calls

@@ -28,12 +28,12 @@
 
 namespace OPNsense\Mvc;
 
+use OPNsense\Core\AppConfig;
 use OPNsense\Mvc\Exceptions\ClassNotFoundException;
+use OPNsense\Mvc\Exceptions\InvalidUriException;
 use OPNsense\Mvc\Exceptions\MethodNotFoundException;
 use OPNsense\Mvc\Exceptions\ParameterMismatchException;
-use OPNsense\Mvc\Exceptions\InvalidUriException;
 use ReflectionException;
-use OPNsense\Core\AppConfig;
 
 class Router
 {

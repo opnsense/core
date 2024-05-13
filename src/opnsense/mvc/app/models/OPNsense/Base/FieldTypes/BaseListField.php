@@ -28,8 +28,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\InclusionIn;
 use OPNsense\Base\Validators\CsvListValidator;
+use OPNsense\Base\Validators\InclusionIn;
 
 /**
  * Class BaseListField

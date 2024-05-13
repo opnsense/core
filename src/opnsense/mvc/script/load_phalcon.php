@@ -27,11 +27,13 @@
  */
 
 require_once(__DIR__ . '/../app/library/OPNsense/Autoload/Loader.php');
+
 use OPNsense\Autoload\Loader;
-$phalcon_config = include("/usr/local/opnsense/mvc/app/config/config.php");
-$loader_paths = [
+
+$phalcon_config = include('/usr/local/opnsense/mvc/app/config/config.php');
+
+(new Loader([
     $phalcon_config->application->controllersDir,
     $phalcon_config->application->modelsDir,
-    $phalcon_config->application->libraryDir
-];
-(new Loader($loader_paths))->register();
+    $phalcon_config->application->libraryDir,
+]))->register();

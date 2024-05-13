@@ -28,11 +28,11 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Core\Syslog;
 use OPNsense\Mvc\Controller;
 use Phalcon\Translate\InterpolatorFactory;
-use OPNsense\Core\ACL;
 
 /**
  * Class ControllerRoot wrap shared OPNsense controller features (auth, logging)

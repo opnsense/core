@@ -29,8 +29,8 @@
 
 namespace OPNsense\Base\Menu;
 
-use OPNsense\Core\Config;
 use OPNsense\Core\AppConfig;
+use OPNsense\Core\Config;
 
 /**
  * Class MenuSystem

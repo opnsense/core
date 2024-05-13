@@ -31,9 +31,9 @@ namespace OPNsense\IDS\Api;
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\SanitizeFilter;
 use OPNsense\Cron\Cron;
 use OPNsense\IDS\IDS;
-use OPNsense\Core\SanitizeFilter;
 
 /**
  * Class ServiceController

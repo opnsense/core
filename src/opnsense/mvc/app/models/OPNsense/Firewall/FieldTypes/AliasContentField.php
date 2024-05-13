@@ -29,9 +29,9 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Messages\Message;
 use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Core\Config;
-use OPNsense\Base\Messages\Message;
 use OPNsense\Firewall\Util;
 
 /**
