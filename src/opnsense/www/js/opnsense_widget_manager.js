@@ -166,6 +166,14 @@ class WidgetManager  {
     }
 
     _createGridStackWidget(id, widgetClass, config = {}) {
+        // merge persisted config with defaults
+        config = {
+            callbacks: {
+                // pre-bind the updateGrid function to the widget instance
+                updateGrid: this._updateGrid.bind(this, this.widgetHTMLElements[id]),
+            },
+            ...config,
+        }
         // instantiate widget
         const widget = new widgetClass(config);
         // make id accessible to the widget, useful for traceability (e.g. data-widget-id attribute in the DOM)

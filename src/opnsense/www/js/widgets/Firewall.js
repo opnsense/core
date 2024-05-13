@@ -31,13 +31,14 @@
 import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class Firewall extends BaseTableWidget {
-    constructor() {
+    constructor(config) {
         super();
-
+        this.config = config;
         this.eventSource = null;
         this.ifMap = {};
         this.counters = {};
         this.chart = null;
+        this.rotation = 5;
     }
 
     getMarkup() {
@@ -45,7 +46,7 @@ export default class Firewall extends BaseTableWidget {
         let $tableContainer = $(`<div id="fw-table-container"><b>${this.translations.livelog}</b></div>`);
         let $top_table = this.createTable('fw-top-table', {
             headerPosition: 'top',
-            rotation: 5,
+            rotation: this.rotation,
             headers: [
                 this.translations.action,
                 this.translations.time,
@@ -58,7 +59,7 @@ export default class Firewall extends BaseTableWidget {
 
         let $rule_table = this.createTable('fw-rule-table', {
             headerPosition: 'top',
-            rotation: 5,
+            rotation: this.rotation,
             headers: [
                 this.translations.label,
                 this.translations.count
@@ -151,6 +152,11 @@ export default class Firewall extends BaseTableWidget {
         ], data.rid);
 
         this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count);
+
+        if (Object.keys(this.counters).length < this.rotation) {
+            console.log('updating grid');
+            this.config.callbacks.updateGrid();
+        }
     }
 
     _updateChart(rid, label, count) {
