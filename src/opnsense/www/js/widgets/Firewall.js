@@ -137,19 +137,19 @@ export default class Firewall extends BaseTableWidget {
             ]
         ]);
 
+        super.updateTable('fw-rule-table', [
+            [
+                popover.html($(`<div style="text-align: left;">${this.counters[data.rid].label}</div>`)).prop('outerHTML'),
+                this.counters[data.rid].count
+            ]
+        ], data.rid);
+
         $('[data-toggle="popover"]').popover('hide');
         $('[data-toggle="popover"]').popover({
             container: 'body'
         }).on('show.bs.popover', function() {
             $(this).data("bs.popover").tip().css("max-width", "100%")
         });
-
-        super.updateTable('fw-rule-table', [
-            [
-                $('<div style="text-align: left;"></div>').text(this.counters[data.rid].label).prop('outerHTML'),
-                this.counters[data.rid].count
-            ]
-        ], data.rid);
 
         this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count);
 
