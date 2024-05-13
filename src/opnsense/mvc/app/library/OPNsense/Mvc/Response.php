@@ -33,7 +33,7 @@ use Exception;
 class Response
 {
     private Headers $headers;
-    private string $content = '';
+    private mixed $content = '';
     private bool $sent = false;
 
     public function __construct()
@@ -46,7 +46,7 @@ class Response
         return $this->headers;
     }
 
-    public function setContent(string $content): void
+    public function setContent(mixed $content): void
     {
         $this->content = $content;
     }
@@ -98,7 +98,18 @@ class Response
         }
         $this->headers->send();
 
-        echo $this->content;
+        if (is_resource($this->content)) {
+            /* Never allow output compression on streams */
+            ini_set('zlib.output_compression', 'Off');
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            fpassthru($this->content);
+            @fclose($this->content);
+        } elseif (!empty($this->content)) {
+            echo $this->content;
+        }
+
         $this->sent = true;
     }
 

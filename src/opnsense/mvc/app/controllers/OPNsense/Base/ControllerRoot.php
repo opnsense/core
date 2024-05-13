@@ -61,11 +61,12 @@ class ControllerRoot extends Controller
     protected $langcode = 'en_US';
 
     /**
+     * XXX: remove in a future version, sessions are handled via session class
      * Wrap close session, for long running operations.
      */
     protected function sessionClose()
     {
-        session_write_close();
+        return;
     }
 
     /**

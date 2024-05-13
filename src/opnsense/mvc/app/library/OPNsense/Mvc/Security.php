@@ -87,7 +87,6 @@ class Security
      */
     public function checkToken(?string $tokenKey = null, ?string $tokenValue = null): bool
     {
-
         $key = $tokenKey ?? $this->getTokenKey(false);
         if (empty($key)) {
             return false;

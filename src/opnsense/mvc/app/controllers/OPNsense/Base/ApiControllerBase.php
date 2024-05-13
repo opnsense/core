@@ -154,14 +154,12 @@ class ApiControllerBase extends ControllerRoot
         foreach ($records as $record) {
             fputcsv($stream, $record);
         }
-        fseek($stream, 0);
         foreach ($headers as $header) {
-            header($header);
+            $parts = explode(':', $header, 2);
+            $this->response->setHeader($parts[0], ltrim($parts[1]));
         }
-        ob_end_flush();
         rewind($stream);
-        fpassthru($stream);
-        fclose($stream);
+        $this->response->setContent($stream);
     }
 
     /**
@@ -179,17 +177,13 @@ class ApiControllerBase extends ControllerRoot
         ],
         $poll_timeout = 2
     ) {
-        /* Never allow output compression on streams */
-        ini_set('zlib.output_compression', 'Off');
-        ob_end_clean();
         $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
+
         foreach ($headers as $header) {
-            header($header);
+            $parts = explode(':', $header, 2);
+            $this->response->setHeader($parts[0], ltrim($parts[1]));
         }
-        while (ob_get_level() > 0) {
-            ob_end_flush();
-        }
-        fpassthru($response);
+        $this->response->setContent($response);
     }
 
     /**
