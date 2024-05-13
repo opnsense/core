@@ -204,8 +204,11 @@
 
                 /* overwrite clipboard paste behavior and trim before paste */
                 $("input").on('paste', function(e) {
-                    e.preventDefault();
-                    $(this).val(e.originalEvent.clipboardData.getData("text/plain").trim())
+                    let clipboard_data = e.originalEvent.clipboardData.getData("text/plain").trim();
+                    if (clipboard_data.length > 0) {
+                        e.preventDefault();
+                        document.execCommand('insertText', false, clipboard_data);
+                    }
                 });
 
             });
