@@ -39,7 +39,7 @@ try {
     }
 } catch (\OPNsense\Base\UserException $e) {
     error_output(500, $e, $e->getMessage());
-} catch (\OPNsense\Mvc\Exceptions\DispatchException) {
+} catch (\OPNsense\Mvc\Exceptions\DispatchException $e) {
     error_output(404, $e, gettext('Endpoint not found'));
 } catch (\Error | \Exception $e) {
     error_output(500, $e, gettext('Unexpected error, check log for details'));
