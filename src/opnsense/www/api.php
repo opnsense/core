@@ -24,7 +24,7 @@ try {
     $config = include __DIR__ . "/../mvc/app/config/config.php";
     include __DIR__ . "/../mvc/app/config/loader.php";
 
-    set_error_handler(function($errno, $errmsg, $errfile, $errline){
+    set_error_handler(function ($errno, $errmsg, $errfile, $errline) {
         if (!(error_reporting() & $errno)) {
             // not in our error reporting level, bail.
             return false;
