@@ -64,14 +64,14 @@ class Router
         $appconfig = new AppConfig();
         foreach ((array)$appconfig->application->controllersDir as $controllersDir) {
             // sort OPNsense namespace on top
-            $dirs = glob($controllersDir. "/*", GLOB_ONLYDIR);
-            usort($dirs, function($a, $b){
+            $dirs = glob($controllersDir . "/*", GLOB_ONLYDIR);
+            usort($dirs, function ($a, $b) {
                 if (basename($b) == 'OPNsense') {
                     return 1;
                 } else {
                     return strcmp(strtolower($a), strtolower($b));
                 }
-            }) ;
+            });
             foreach ($dirs as $dirname) {
                 $basename = basename($dirname);
                 $new_namespace = "$basename\\$namespace";
@@ -100,7 +100,7 @@ class Router
      * @throws InvalidUriException
      * @throws ReflectionException when invoke fails
      */
-    public function routeRequest(string $uri, array $defaults = []) : Response
+    public function routeRequest(string $uri, array $defaults = []): Response
     {
         $path = parse_url($uri)['path'];
 
@@ -134,7 +134,7 @@ class Router
      * @throws ParameterMismatchException
      * @throws ReflectionException when invoke fails
      */
-    private function performRequest(Dispatcher $dispatcher) : Response
+    private function performRequest(Dispatcher $dispatcher): Response
     {
         $session = new Session();
         $request = new Request();
@@ -150,7 +150,8 @@ class Router
      * @param array $default list of routing defaults (controller, acount)
      * @return array containing expected controller action
      */
-    private function parsePath(string $path, array $defaults) : array {
+    private function parsePath(string $path, array $defaults): array
+    {
         $pathElements = explode("/", rtrim($path, '/'));
         $result = [
             "namespace" => null,
@@ -162,13 +163,13 @@ class Router
             $result[$key] = $val;
         }
 
-        foreach($pathElements as  $idx => $element){
+        foreach ($pathElements as $idx => $element) {
             if ($idx == 0) {
-                $result["namespace"] = str_replace('_', '', ucwords($element,'_'));
+                $result["namespace"] = str_replace('_', '', ucwords($element, '_'));
             } elseif ($idx == 1) {
-                $result["controller"] = str_replace('_', '', ucwords($element,'_')) . 'Controller';
+                $result["controller"] = str_replace('_', '', ucwords($element, '_')) . 'Controller';
             } elseif ($idx == 2) {
-                $result["action"] = lcfirst(str_replace('_', '', ucwords($element,'_')))  . "Action";
+                $result["action"] = lcfirst(str_replace('_', '', ucwords($element, '_')))  . "Action";
             } else {
                 $result["parameters"][] = $element;
             }

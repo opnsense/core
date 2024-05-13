@@ -29,5 +29,6 @@ namespace OPNsense\Mvc\Exceptions;
 
 use Exception;
 
-class DispatchException extends Exception{}
-
+class DispatchException extends Exception
+{
+}

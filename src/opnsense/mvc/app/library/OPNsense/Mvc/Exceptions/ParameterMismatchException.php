@@ -27,4 +27,6 @@
  */
 namespace OPNsense\Mvc\Exceptions;
 
-class ParameterMismatchException extends DispatchException{}
+class ParameterMismatchException extends DispatchException
+{
+}

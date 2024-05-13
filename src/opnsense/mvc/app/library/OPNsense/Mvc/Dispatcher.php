@@ -36,7 +36,6 @@ use OPNsense\Mvc\Exceptions\ClassNotFoundException;
 use OPNsense\Mvc\Exceptions\MethodNotFoundException;
 use OPNsense\Mvc\Exceptions\ParameterMismatchException;
 
-
 class Dispatcher
 {
     private string $namespace;
@@ -117,12 +116,12 @@ class Dispatcher
      * test if controller action method is callable with the parameters provided
      * @return bool
      */
-    public function canExecute() : bool
+    public function canExecute(): bool
     {
         try {
             $this->resolve();
             return true;
-        } catch(Exception){
+        } catch (Exception) {
             return false;
         }
     }
@@ -138,7 +137,7 @@ class Dispatcher
      * @throws ParameterMismatchException when expected required parameters do not match offered ones
      * @throws ReflectionException when invoke fails
      */
-    public function dispatch(Request $request, Response $response, Session $session) : bool
+    public function dispatch(Request $request, Response $response, Session $session): bool
     {
         $this->resolve();
 

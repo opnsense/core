@@ -67,8 +67,7 @@ abstract class Controller
                 $volt->getCompiler()->addFunction('cache_safe', 'view_cache_safe');
                 $volt->getCompiler()->addFilter('safe', 'view_html_safe');
                 return $volt;
-            }]
-        );
+            }]);
     }
 
     /**
@@ -84,5 +83,7 @@ abstract class Controller
         $this->response->setContent($this->view->getContent());
     }
 
-    public function initialize(){}
+    public function initialize()
+    {
+    }
 }

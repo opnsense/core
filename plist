@@ -213,8 +213,6 @@
 /usr/local/opnsense/mvc/app/config/AppConfig.php
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
-/usr/local/opnsense/mvc/app/config/services.php
-/usr/local/opnsense/mvc/app/config/services_api.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableModelControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableServiceControllerBase.php
@@ -512,7 +510,6 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/File.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/FileObject.php
-/usr/local/opnsense/mvc/app/library/OPNsense/Core/Routing.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/SanitizeFilter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
@@ -526,6 +523,19 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Interface/Autoconf.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Controller.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Dispatcher.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/ClassNotFoundException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/DispatchException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/InvalidUriException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/MethodNotFoundException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/ParameterMismatchException.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Headers.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Request.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Response.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Router.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Security.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Session.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ArchiveOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php

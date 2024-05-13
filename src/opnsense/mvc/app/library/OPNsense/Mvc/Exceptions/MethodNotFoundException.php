@@ -27,4 +27,6 @@
  */
 namespace OPNsense\Mvc\Exceptions;
 
-class MethodNotFoundException extends DispatchException{}
+class MethodNotFoundException extends DispatchException
+{
+}

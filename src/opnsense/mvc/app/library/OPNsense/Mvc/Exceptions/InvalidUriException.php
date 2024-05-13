@@ -27,5 +27,6 @@
  */
 namespace OPNsense\Mvc\Exceptions;
 
-
-class InvalidUriException extends DispatchException{}
+class InvalidUriException extends DispatchException
+{
+}

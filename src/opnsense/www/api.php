@@ -1,9 +1,9 @@
 <?php
 
-function error_output($http_code, $e,  $user_message)
+function error_output($http_code, $e, $user_message)
 {
     $response = [];
-    if (!file_exists('/var/run/development')){
+    if (!file_exists('/var/run/development')) {
         $response['errorMessage'] = $user_message;
     } else {
         $response['errorMessage'] = $e->getMessage();

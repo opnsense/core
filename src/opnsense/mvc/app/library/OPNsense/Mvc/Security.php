@@ -28,7 +28,6 @@
 
 namespace OPNsense\Mvc;
 
-
 class Security
 {
     private Session $session;
@@ -57,7 +56,7 @@ class Security
      * @param bool $new when not found, create new
      * @return string|null token
      */
-    public function getToken(bool $new=true): ?string
+    public function getToken(bool $new = true): ?string
     {
         $token = $this->session->get('$PHALCON/CSRF$');
         if (empty($token) && $new) {
@@ -71,7 +70,7 @@ class Security
      * @param bool $new when not found, create new
      * @return string|null name of the token
      */
-    public function getTokenKey(bool $new=true): ?string
+    public function getTokenKey(bool $new = true): ?string
     {
         $token = $this->session->get('$PHALCON/CSRF/KEY$');
         if (empty($token) && $new) {
