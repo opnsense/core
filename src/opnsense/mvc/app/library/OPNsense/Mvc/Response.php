@@ -137,4 +137,15 @@ class Response
     {
         $this->headers->set($name, $value);
     }
+
+    /**
+     * XXX: backwards compatibility, remove in a future version
+     * @param string $header combined header
+     * @return void
+     */
+    public function setRawHeader(string $header): void
+    {
+        $parts = explode(':', $header, 2);
+        $this->setHeader($parts[0], ltrim($parts[1]));
+    }
 }
