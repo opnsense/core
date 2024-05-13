@@ -31,9 +31,7 @@ export default class BaseTableWidget extends BaseWidget {
     constructor() {
         super();
 
-        this.options = null;
-        this.data = [];
-
+        this.tables = {};
         this.curSize = null;
         this.sizeStates = {
             0: {
@@ -53,63 +51,43 @@ export default class BaseTableWidget extends BaseWidget {
             }
         }
         this.widths = Object.keys(this.sizeStates).sort();
-
-        this.flextableId = Math.random().toString(36).substring(7);
-        this.$flextable = null;
-        this.$headerContainer = null;
     }
 
     _calculateColumnWidth() {
-        if (this.options !== null && this.data !== null) {
-            switch (this.options.headerPosition) {
-                case 'none':
-                    return `calc(100% / ${this.data[0].length})`;
-                case 'left':
-                    return `calc(100% / 2)`;
+        for (const [id, tableObj] of Object.entries(this.tables)) {
+            if (tableObj.options.headerPosition === 'left') {
+                return `calc(100% / 2)`;
+            }
+
+            if (tableObj.options.headerPosition === 'top') {
+                return `calc(100% / ${tableObj.data[0].length})`;
             }
         }
 
         return '';
     }
 
-    _constructTable() {
-        if (this.options === null) {
-            console.error('No table options set');
-            return null;
+    _rotate(id, newElement) {
+        let opts = this.tables[id].options;
+        let data = this.tables[id].data;
+
+        data.unshift(newElement);
+        if (data.length > opts.rotation) {
+            data.splice(opts.rotation);
         }
 
-        if (this.options.headerPosition === 'top') {
-            this.$flextable = $(`<div class="grid-table" id="id_${this.flextableId}" role="table"></div>`)
-            this.$headerContainer = $(`<div id="header_${this.flextableId}" class="grid-header-container"></div>`);
-
-            for (const h of this.options.headers) {
-                this.$headerContainer.append($(`
-                    <div class="grid-item grid-header">${h}</div>
-                `));
-            }
-
-            this.$flextable.append(this.$headerContainer);
-        } else {
-            this.$flextable = $(`<div class="flextable-container" id="id_${this.flextableId}" role="table"></div>`)
-        }
-    }
-
-    _rotate(arr, newElement) {
-        arr.unshift(newElement);
-        if (arr.length > this.options.rotation) {
-            arr.splice(this.options.rotation);
-        }
-
-        const divs = document.querySelectorAll(`#id_${this.flextableId} .grid-row`);
-        if (divs.length > this.options.rotation) {
-            for (let i = this.options.rotation; i < divs.length; i++) {
+        const divs = document.querySelectorAll(`#${id} .grid-row`);
+        if (divs.length > opts.rotation) {
+            for (let i = opts.rotation; i < divs.length; i++) {
                 $(divs[i]).remove();
             }
         }
     }
 
-    setTableOptions(options = {}) {
+    createTable(id, options) {
         /**
+         * Options:
+         *
          * headerPosition: top, left or none.
          *  top: headers are on top of the table. Headers are defined in the options. Data layout:
          *  [
@@ -126,27 +104,66 @@ export default class BaseTableWidget extends BaseWidget {
          *
          *  none: no headers, same data layout as 'top', without headers set as an option.
          *
-         * rotation: limit table entries to a certain amount, and rotate them. Only applicable for headerPosition: top.
+         * rotation: limit table entries to a certain amount and rotate them. Only applicable for headerPosition: top.
          * headers: list of headers to display. Only applicable for headerPosition: top.
+         * sortIndex: index of the column to sort on. Only applicable for headerPosition: top.
+         * sortOrder: 'asc' or 'desc'. Only applicable for headerPosition: top.
+         *
          */
+        if (this.options === null) {
+            console.error('No table options set');
+            return null;
+        }
 
-        this.options = {
+        let mergedOpts = {
             headerPosition: 'top',
             rotation: false,
-            ...options // merge and override defaults
+            sortIndex: null,
+            sortOrder: 'desc',
+            ...options
         }
+
+        let $table = null;
+        let $headerContainer = null;
+
+        if (mergedOpts.headerPosition === 'top') {
+            /* CSS grid implementation */
+            $table = $(`<div class="grid-table" id="${id}" role="table"></div>`);
+            $headerContainer = $(`<div id="header_${id}" class="grid-header-container"></div>`);
+
+            for (const h of mergedOpts.headers) {
+                $headerContainer.append($(`
+                    <div class="grid-item grid-header">${h}</div>
+                `));
+            }
+
+            $table.append($headerContainer);
+        } else {
+            /* flextable implementation */
+            $table = $(`<div class="flextable-container" id="${id}" role="table"></div>`);
+        }
+
+        this.tables[id] = {
+            'table': $table,
+            'options': mergedOpts,
+            'headerContainer': $headerContainer,
+            'data': [],
+        };
+
+        return $table;
     }
 
-    updateTable(data = []) {
-        let $table = $(`#id_${this.flextableId}`);
+    updateTable(id, data = [], rowIdentifier = null) {
+        let $table = $(`#${id}`);
+        let options = this.tables[id].options;
 
-        if (!this.options.rotation) {
+        if (!options.rotation) {
             $table.children('.flextable-row').remove();
-            this.data = data;
+            this.tables[id].data = data;
         }
 
         for (const row of data) {
-            switch (this.options.headerPosition) {
+            switch (options.headerPosition) {
                 case "none":
                     let $row = $(`<div class="flextable-row"></div>`)
                     for (const item of row) {
@@ -157,15 +174,45 @@ export default class BaseTableWidget extends BaseWidget {
                     $table.append($row);
                 break;
                 case "top":
-                    let $gridRow = $(`<div class="grid-row" style="opacity: 0.4; background-color: #f7e2d6"></div>`);
-                    for (const item of row) {
-                        $gridRow.append($(`
-                            <div class="grid-item">${item}</div>
-                        `));
+                    let $gridRow = $(`<div class="grid-row"></div>`);
+                    let newElement = true;
+                    if (rowIdentifier !== null) {
+                        $gridRow = $(`#id_${rowIdentifier}`);
+                        if ($gridRow.length === 0) {
+                            $gridRow = $(`<div class="grid-row" id="id_${rowIdentifier}"></div>`);
+                        } else {
+                            newElement = false;
+                            $gridRow.empty();
+                        }
                     }
 
-                    $(`#header_${this.flextableId}`).after($gridRow);
-                    if (this.options.rotation) {
+                    let i = 0;
+                    for (const item of row) {
+                        $gridRow.append($(`
+                            <div class="grid-item ${(options.sortIndex !== null && options.sortIndex == i) ? 'sort' : ''}">${item}</div>
+                        `));
+                        i++;
+                    }
+
+                    if (newElement) {
+                        $(`#header_${id}`).after($gridRow);
+                    }
+
+                    if (options.sortIndex !== null) {
+                        let items = $table.children('.grid-row').toArray().sort(function(a, b) {
+                            let vA = parseInt($(a).children('.sort').first().text());
+                            let vB = parseInt($(b).children('.sort').first().text());
+
+                            if (options.sortOrder === 'asc')
+                                return (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
+                            else {
+                                return (vA > vB) ? -1 : (vA < vB) ? 1 : 0;
+                            }
+                        });
+                        $table.append(items);
+                    }
+
+                    if (options.rotation) {
                         $gridRow.animate({
                             from: 0,
                             to: 255,
@@ -174,11 +221,12 @@ export default class BaseTableWidget extends BaseWidget {
                             duration: 50,
                             easing: 'linear',
                             step: function(now) {
-                                $gridRow.css('background-color',`transparent`)
+                                $gridRow.css('background-color','initial')
                             }
                         });
-                        this._rotate(this.data, row);
+                        this._rotate(id, row);
                     }
+
                 break;
                 case "left":
                     if (row.length !== 2) {
@@ -211,15 +259,6 @@ export default class BaseTableWidget extends BaseWidget {
                 break;
             }
         }
-    }
-
-    getMarkup() {
-        this._constructTable();
-        return $(this.$flextable);
-    }
-
-    async onMarkupRendered() {
-
     }
 
     onWidgetResize(elem, width, height) {

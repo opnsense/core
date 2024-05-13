@@ -88,6 +88,21 @@ class DashboardController extends ApiControllerBase
                 'peer' => gettext('Peer'),
                 'pubkey' => gettext('Public Key'),
                 'handshake' => gettext('Latest handshake'),
+            ],
+            'firewall' => [
+                'title' => gettext('Firewall'),
+                'action' => gettext('Action'),
+                'time' => gettext('Time'),
+                'interface' => gettext('Interface'),
+                'source' => gettext('Source'),
+                'destination' => gettext('Destination'),
+                'port' => gettext('Port'),
+                'matchedrule' => gettext('Matched rule'),
+                'click' => gettext('Click to track this rule in Live View'),
+                'label' => gettext('Label'),
+                'count' => gettext('Count'),
+                'livelog' => gettext('Live Log'),
+                'events' => gettext('Events'),
             ]
         ];
     }

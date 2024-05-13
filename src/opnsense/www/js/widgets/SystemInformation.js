@@ -36,10 +36,12 @@ export default class SystemInformation extends BaseTableWidget {
     }
 
     getMarkup() {
-        super.setTableOptions({
-            headerPosition: 'left'
+        let $container = $('<div></div>');
+        let $sysinfotable = this.createTable('sysinfo-table', {
+            headerPosition: 'left',
         });
-        return super.getMarkup();
+        $container.append($sysinfotable);
+        return $container;
     }
 
     async onWidgetTick() {
@@ -69,7 +71,7 @@ export default class SystemInformation extends BaseTableWidget {
             rows.push([[this.translations['uptime']], $('<span id="uptime">').prop('outerHTML')]);
             rows.push([[this.translations['datetime']], $('<span id="datetime">').prop('outerHTML')]);
             rows.push([[this.translations['config']], $('<span id="config">').prop('outerHTML')]);
-            super.updateTable(rows);
+            super.updateTable('sysinfo-table', rows);
         });
     }
 }

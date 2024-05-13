@@ -58,6 +58,19 @@ class FirewallController extends ApiControllerBase
         }
     }
 
+    public function streamLogAction()
+    {
+        return $this->configdStream(
+            'filter stream log',
+            [],
+            [
+                'Content-Type: text/event-stream',
+                'Cache-Control: no-cache'
+            ],
+            60
+        );
+    }
+
     /**
      * retrieve firewall log filter choices
      * @return array

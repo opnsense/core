@@ -43,12 +43,13 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     getMarkup() {
-        let options = {
+        let $container = $('<div></div>');
+        let $if_table = this.createTable('if-table', {
             headerPosition: 'none'
-        }
+        });
 
-        super.setTableOptions(options);
-        return super.getMarkup();
+        $container.append($if_table);
+        return $container;
     }
 
     async onMarkupRendered() {
@@ -102,7 +103,7 @@ export default class Interfaces extends BaseTableWidget {
                 rows.push(row);
             });
 
-            super.updateTable(rows);
+            super.updateTable('if-table', rows);
 
             $('[data-toggle="tooltip"]').tooltip();
         });
