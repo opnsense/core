@@ -64,8 +64,8 @@ try {
     $router = new OPNsense\Mvc\Router('/ui/');
     try {
         $response = $router->routeRequest($_SERVER['REQUEST_URI'], [
-            'controller' => 'indexController',
-            'action' => 'indexAction'
+            'controller' => 'IndexController',
+            'action' => 'indexAction',
         ]);
     } catch (\OPNsense\Mvc\Exceptions\DispatchException) {
         // unroutable (page not found), present page not found controller
