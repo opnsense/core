@@ -117,7 +117,7 @@ export default class Firewall extends BaseTableWidget {
             </p>
         `).prop('outerHTML');
         let popover = $(`
-            <a target="_blank" href="/ui/diagnostics/firewall/log?rid=${data.rid}" type="button" 
+            <a target="_blank" href="/ui/diagnostics/firewall/log?rid=${data.rid}" type="button"
                 data-toggle="popover" data-trigger="hover" data-html="true" data-title="${this.translations.matchedrule}"
                 data-content="${popContent}">
                 ${actIcons[data.action]}
@@ -197,7 +197,7 @@ export default class Firewall extends BaseTableWidget {
                 datasets: [
                     {
                         data: [],
-                        rids: [],               
+                        rids: [],
                     }
                 ]
             },
