@@ -154,7 +154,6 @@ export default class Firewall extends BaseTableWidget {
         this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count);
 
         if (Object.keys(this.counters).length < this.rotation) {
-            console.log('updating grid');
             this.config.callbacks.updateGrid();
         }
     }

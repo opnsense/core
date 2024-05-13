@@ -145,6 +145,7 @@ export default class Disk extends BaseWidget {
             type: 'bar',
             data: {
                 labels: [],
+                types: [],
                 datasets: [
                     {
                         // used
@@ -189,6 +190,10 @@ export default class Disk extends BaseWidget {
                     },
                     tooltip: {
                         callbacks: {
+                            title: (tooltipItem) => {
+                                let type = this.detailed_chart.config.data.types[tooltipItem[0].dataIndex];
+                                return `${tooltipItem[0].label} [${type}]`;
+                            },
                             label: (tooltipItem) => {
                                 return `${tooltipItem.dataset.descr}: ${this._formatBytes(tooltipItem.raw)}`;
                             }
@@ -221,7 +226,8 @@ export default class Disk extends BaseWidget {
                     totals.push(total);
 
                     if (init) {
-                        this.detailed_chart.config.data.labels.push(device.device);
+                        this.detailed_chart.config.data.types.push(device.type);
+                        this.detailed_chart.config.data.labels.push(device.mountpoint);
                     }
                     this.detailed_chart.config.data.datasets[0].data.push(used);
                     this.detailed_chart.config.data.datasets[1].data.push(free);
