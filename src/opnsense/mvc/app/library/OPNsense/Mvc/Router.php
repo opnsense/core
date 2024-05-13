@@ -28,6 +28,7 @@
 
 namespace OPNsense\Mvc;
 
+use DirectoryIterator;
 use OPNsense\Core\AppConfig;
 use OPNsense\Mvc\Exceptions\ClassNotFoundException;
 use OPNsense\Mvc\Exceptions\InvalidUriException;
@@ -69,11 +70,23 @@ class Router
                 if (basename($b) == 'OPNsense') {
                     return 1;
                 } else {
-                    return strcmp(strtolower($a), strtolower($b));
+                    return strcasecmp($a, $b);
                 }
             });
             foreach ($dirs as $dirname) {
                 $basename = basename($dirname);
+                if (!is_dir("$dirname/$namespace")) {
+                    /* In an ideal world, our namespaces are case sensitive and follow the snake to camel convention.
+                       Since this is not always the case, try to perform a case-insensitive search if the namespace
+                       does not exist in the expected case. (Phalcon backwards compatibility)
+                     */
+                    foreach (new DirectoryIterator($dirname) as $fileinfo) {
+                        if ($fileinfo->isDir() && !strcasecmp($fileinfo->getFileName(), $namespace)) {
+                            $namespace = $fileinfo->getFileName();
+                            break;
+                        }
+                    }
+                }
                 $new_namespace = "$basename\\$namespace";
                 if (!empty($this->namespace_suffix)) {
                     $expected_filename = "$dirname/$namespace/$this->namespace_suffix/$controller.php";
