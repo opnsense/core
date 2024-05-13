@@ -257,9 +257,29 @@ export default class Firewall extends BaseTableWidget {
                                 return `${obj.label} (${obj.count})`;
                             }
                         }
+                    },
+                }
+            },
+            plugins: [
+                {
+                    // display a placeholder if no data is available
+                    id: 'nodata_placeholder',
+                    afterDraw: (chart, args, options) => {
+                        if (chart.data.datasets[0].data.length === 0) {
+                            let ctx = chart.ctx;
+                            let width = chart.width;
+                            let height = chart.height;
+
+                            chart.clear();
+                            ctx.save();
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.fillText(this.translations.nodata + '...', width / 2, height / 2);
+                            ctx.restore();
+                        }
                     }
                 }
-            }
+            ]
         }
 
         this.chart = new Chart(context, config);

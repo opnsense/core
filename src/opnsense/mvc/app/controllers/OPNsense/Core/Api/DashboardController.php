@@ -103,6 +103,7 @@ class DashboardController extends ApiControllerBase
                 'count' => gettext('Count'),
                 'livelog' => gettext('Live Log'),
                 'events' => gettext('Events'),
+                'nodata' => gettext('Waiting for data')
             ]
         ];
     }
