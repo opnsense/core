@@ -103,7 +103,6 @@ class NetworkAliasField extends BaseListField
         throw new \Exception("Unsupported feature setMultiple()");
     }
 
-
     /**
      * {@inheritdoc}
      */
