@@ -98,7 +98,9 @@ class M1_0_0 extends BaseModelMigration
                 $result = $model->performValidation();
                 if (count($result) > 0) {
                     // save details of validation error
-                    error_log(print_r($result, true));
+                    foreach ($result as $msg) {
+                        error_log(sprintf('[%s] %s', $msg->getField(), $msg->getMessage()));
+                    }
                     $logger->error(sprintf(
                         "Migration skipped gateway %s (%s). See crash reporter for details",
                         $gateway->name,
