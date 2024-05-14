@@ -338,7 +338,6 @@ $.fn.UIBootgrid = function (params) {
         return saveDlg;
     }
 
-
     /**
      * add event
      */
@@ -385,7 +384,6 @@ $.fn.UIBootgrid = function (params) {
             });
         }
     };
-
 
     /**
      * edit event
