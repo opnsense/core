@@ -4,9 +4,9 @@
         <name>VPN: IPsec: Key Pairs</name>
         <description>Allow access to the IPsec Key Pairs</description>
         <patterns>
-            <pattern>ui/ipsec/key-pairs/*</pattern>
-            <pattern>api/ipsec/key-pairs/*</pattern>
-            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+            <pattern>ui/ipsec/key_pairs/*</pattern>
+            <pattern>api/ipsec/key_pairs/*</pattern>
+            <pattern>api/ipsec/legacy_subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec-keypairs>
     <page-vpn-ipsec>
@@ -14,7 +14,7 @@
         <patterns>
             <pattern>ui/ipsec/tunnels</pattern>
             <pattern>api/ipsec/tunnel/*</pattern>
-            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+            <pattern>api/ipsec/legacy_subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec>
     <page-vpn-ipsec-connections>
@@ -25,7 +25,7 @@
             <pattern>api/ipsec/connections/*</pattern>
             <pattern>api/ipsec/pools/*</pattern>
             <pattern>api/ipsec/vti/*</pattern>
-            <pattern>api/ipsec/legacy-subsystem/*</pattern>
+            <pattern>api/ipsec/legacy_subsystem/*</pattern>
         </patterns>
     </page-vpn-ipsec-connections>
 

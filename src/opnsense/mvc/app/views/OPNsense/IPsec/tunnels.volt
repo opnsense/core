@@ -68,7 +68,7 @@
 
       // Helper method to fetch the current status of the legacy subsystem for viewing/hiding the "pending changes" alert
       function updateLegacyStatus() {
-          ajaxCall('/api/ipsec/legacy-subsystem/status', {}, function (data, status) {
+          ajaxCall('/api/ipsec/legacy_subsystem/status', {}, function (data, status) {
               $("#enable").prop('checked', data['enabled']);
               $("#enable").prop('disabled', false);
               $("#enable").removeClass("pending");
@@ -88,7 +88,7 @@
           $applyLegacyConfig.prop('disabled', true);
           $applyLegacyConfigProgress.addClass('fa fa-spinner fa-pulse');
 
-          ajaxCall('/api/ipsec/legacy-subsystem/applyConfig', {}, function (data, status) {
+          ajaxCall('/api/ipsec/legacy_subsystem/applyConfig', {}, function (data, status) {
               // Preliminarily hide the "pending changes" alert and display the response message if available
               if (data['message']) {
                 $dirtySubsystemMsg.addClass('hidden');
