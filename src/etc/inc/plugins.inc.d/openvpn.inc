@@ -526,7 +526,12 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "script-security 3\n";
     $conf .= "daemon openvpn_{$mode_id}\n";
-    $conf .= "keepalive 10 60\n";
+    if (!empty($settings['keepalive_interval']) && !empty($settings['keepalive_timeout'])) {
+        $conf .= "keepalive " . $settings['keepalive_interval'] . " " . $settings['keepalive_timeout'] . "\n";
+    } else {
+        $conf .= "keepalive 10 60\n";
+    }
+
     $conf .= "ping-timer-rem\n";
     $conf .= "persist-tun\n";
     $conf .= "persist-key\n";
@@ -984,9 +989,11 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         $conf .= "push \"register-dns\"\n";
     }
 
-    // since "keepalive 10 60\n"; is fixed added to configation in line #528
-    // the GUI based "Keep alive interval" and "Keep alive timeout" were not used??
-    $conf .= "push \"keepalive 10 60\"\n";
+    if (!empty($settings['keepalive_interval']) && !empty($settings['keepalive_timeout'])) {
+        $conf .= "push \"keepalive " . $settings['keepalive_interval'] . " " . $settings['keepalive_timeout'] . "\"\n";
+    } else {
+        $conf .= "push \"keepalive 10 60\"\n";
+    }
 
     if (!empty($settings['tunnel_network'])) {
         list($ip, $mask) = explode('/', $settings['tunnel_network']);
