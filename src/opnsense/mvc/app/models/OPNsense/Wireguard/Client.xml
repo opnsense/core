@@ -48,6 +48,9 @@
                         </check001>
                     </Constraints>
                 </serverport>
+                <endpoint type="IPPortField" volatile="true">
+                    <ValidationMessage>Please specify a valid host:port combination.</ValidationMessage>
+                </endpoint>
                 <keepalive type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>86400</MaximumValue>

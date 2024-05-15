@@ -167,6 +167,7 @@
                     tunneladdress: $("#configbuilder\\.address").val(),
                     keepalive: $("#configbuilder\\.keepalive").val(),
                     server: instance_id,
+                    endpoint: endpoint.val()
                 }
             };
             ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
