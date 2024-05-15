@@ -288,6 +288,10 @@ export default class Firewall extends BaseTableWidget {
         if (this.eventSource !== null) {
             this.eventSource.close();
         }
+
+        if (this.chart !== null) {
+            this.chart.destroy();
+        }
     }
 
     onWidgetResize(elem, width, height) {

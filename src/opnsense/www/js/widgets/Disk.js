@@ -248,4 +248,14 @@ export default class Disk extends BaseWidget {
         }
     }
 
+    onWidgetClose() {
+        if (this.simple_chart !== null) {
+            this.simple_chart.destroy();
+        }
+
+        if (this.detailed_chart !== null) {
+            this.detailed_chart.destroy();
+        }
+    }
+
 }

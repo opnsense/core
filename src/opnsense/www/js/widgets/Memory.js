@@ -129,4 +129,10 @@ export default class Memory extends BaseWidget {
             }
         });
     }
+
+    onWidgetClose() {
+        if (this.chart !== null) {
+            this.chart.destroy();
+        }
+    }
 }
