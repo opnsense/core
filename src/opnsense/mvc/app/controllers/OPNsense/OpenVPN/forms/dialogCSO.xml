@@ -102,6 +102,20 @@
         <collapse>true</collapse>
     </field>
     <field>
+        <id>cso.keepalive_interval</id>
+        <label>Keep alive interval</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Ping interval in seconds. 0 to disable keep alive</help>
+    </field>
+    <field>
+        <id>cso.keepalive_timeout</id>
+        <label>Keep alive timeout</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>Causes OpenVPN to restart after n seconds pass without reception of a ping or other packet from remote.</help>
+    </field>
+    <field>
         <id>cso.register_dns</id>
         <label>Register DNS</label>
         <type>checkbox</type>
