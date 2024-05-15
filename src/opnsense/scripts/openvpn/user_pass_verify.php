@@ -82,13 +82,17 @@ function do_auth($common_name, $serverid, $method, $auth_file)
     }
     if (strpos($password, 'SCRV1:') === 0) {
         // static-challenge https://github.com/OpenVPN/openvpn/blob/v2.4.7/doc/management-notes.txt#L1146
+        // QUICK HACK for local used Radius dependencies
         // validate and concat password into our default otp_token+password
+        // validate and concat password into our default password+otp_token
         $tmp = explode(':', $password);
         if (count($tmp) == 3) {
             $pass = base64_decode($tmp[1]);
             $otp_token = base64_decode($tmp[2]);
             if ($pass !== false && $otp_token !== false) {
-                $password = $otp_token . $pass;
+                // QUICK HACK for local used Radius dependencies
+                // $password = $otp_token . $pass;
+                $password = $pass . $otp_token;
             }
         }
     }
