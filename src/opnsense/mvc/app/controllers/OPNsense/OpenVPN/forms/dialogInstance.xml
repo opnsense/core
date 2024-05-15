@@ -98,6 +98,24 @@
         </help>
     </field>
     <field>
+        <id>instance.ifconfig_pool_start</id>
+        <label>Server Network Pool Start (IPv4)</label>
+        <type>text</type>
+        <style>role role_server_tun</style>
+        <help>
+            This directive will set up first OpenVPN server pool allocate address to clients
+        </help>
+    </field>
+    <field>
+        <id>instance.ifconfig_pool_end</id>
+        <label>Server Network Pool End (IPv4)</label>
+        <type>text</type>
+        <style>role role_server_tun</style>
+        <help>
+            This directive will set up last OpenVPN server pool allocate address to clients
+        </help>
+    </field>
+    <field>
         <id>instance.server_ipv6</id>
         <label>Server (IPv6)</label>
         <type>text</type>
@@ -105,6 +123,15 @@
         <help>
             This directive will set up an OpenVPN server which will allocate addresses to clients out of the given network/netmask.
             The server itself will take the next base address (+1) of the given network for use as the server-side endpoint of the local TUN/TAP interface
+        </help>
+    </field>
+    <field>
+        <id>instance.ifconfig_ipv6_pool_bits</id>
+        <label>Server Network Pool Range (IPv6)</label>
+        <type>text</type>
+        <style>role role_server_tun</style>
+        <help>
+            This directive will set up OpenVPN server pool allocate address to clients with IPv6 bitmask
         </help>
     </field>
     <field>
