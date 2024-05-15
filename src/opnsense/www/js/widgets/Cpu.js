@@ -120,7 +120,6 @@ export default class Cpu extends BaseWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        let curWidth = document.getElementById('cpu-usage').getBoundingClientRect().width;
         let viewPort = document.getElementsByClassName('page-content-main')[0].getBoundingClientRect().width;
         if (width > (viewPort / 2)) {
             $('.cpu-canvas-container').css('flex-direction', 'row');

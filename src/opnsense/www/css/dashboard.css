@@ -36,11 +36,6 @@
     font-size: 0.5em;
 }
 
-/* Align fa icons to middle to adjust for icon stack */
-i {
-    vertical-align: middle;
-}
-
 .close-handle {
     vertical-align: middle;
     text-align: right;

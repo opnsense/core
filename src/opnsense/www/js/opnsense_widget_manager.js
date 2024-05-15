@@ -56,7 +56,7 @@ class ResizeObserverWrapper {
                     let id = entry.target.id;
                     if (id.length === 0) {
                         // element has just rendered
-                        onInitialize(entry.target);
+                        onInitialize(entry.target, width, height);
                         // we're observing multiple elements of the same class, assign a unique id
                         entry.target.id = Math.random().toString(36).substring(7);
                         this._lastWidths[id] = width;
@@ -96,7 +96,7 @@ class WidgetManager  {
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
         this.renderDefaultDashboard = true;
-        this.resizeObserver = null;
+        this.resizeObserver = new ResizeObserverWrapper();
     }
 
     async initialize() {
@@ -107,6 +107,8 @@ class WidgetManager  {
             this._initializeWidgets();
             // render grid and append widget markup
             this._initializeGridStack();
+            // render header buttons
+            this._renderHeader();
             // load all dynamic content and start tick routines
             await this._loadDynamicContent();
         } catch (error) {
@@ -214,15 +216,6 @@ class WidgetManager  {
         }
     }
 
-
-    _onWidgetClose(id) {
-        clearInterval(this.widgetTickRoutines[id]);
-        this.widgetClasses[id].onWidgetClose();
-        this.grid.removeWidget(this.widgetHTMLElements[id]);
-        this.moduleDiff.push(id);
-        // TODO propagate updated diff to widget selection
-    }
-
     // runs only once
     _initializeGridStack() {
         this.grid = GridStack.init(this.gridStackOptions);
@@ -243,28 +236,21 @@ class WidgetManager  {
         // render to the DOM
         this.grid.load(Object.values(this.widgetConfigurations));
 
-        // click handler for widget removal.
-        $('.close-handle').click((event) => {
-            let widgetId = $(event.currentTarget).data('widget-id');
-            this._onWidgetClose(widgetId);
-        });
-
-        window.onbeforeunload = () => {
-            if (this.resizeObserver !== null) {
-                this.resizeObserver.disconnect();
-            }
-            for (const id of Object.keys(this.widgetClasses)) {
-                this._onWidgetClose(id);
-            }
-        };
-
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
         this.grid.cellHeight(1);
+    }
 
+    _renderHeader() {
         // Serialization options
         let $btn_group = $('.btn-group-container');
         $btn_group.append($(`<button class="btn btn-primary" id="save-grid">${this.gettext.save}</button>`));
+        $btn_group.append($(`
+            <button class="btn btn-default" id="add_widget">
+                <i class="fa fa-plus-circle fa-fw"></i>
+                ${this.gettext.addwidget}
+            </button>
+        `));
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
         $('#save-grid').hide();
 
@@ -289,6 +275,56 @@ class WidgetManager  {
             });
         });
 
+        $('#add_widget').click(() => {
+
+            let $content = $('<div></div>');
+            let $select = $('<select id="widget-selection" class="selectpicker" multiple="multiple"></select>');
+            for (const [id, widget] of Object.entries(this.loadedModules)) {
+                if (this.moduleDiff.includes(id)) {
+                    $select.append($(`<option value="${id}">${this.widgetTranslations[id].title}</option>`));
+                }
+            }
+            $content.append($select);
+
+            BootstrapDialog.show({
+                title: this.gettext.addwidget,
+                draggable: true,
+                message: $content,
+                buttons: [{
+                    label: this.gettext.add,
+                    hotkey: 13,
+                    action: async (dialog) => {
+                        let ids = $('select', dialog.$modalContent).val();
+                        let changed = false;
+                        for (const id of ids) {
+                            if (id in this.loadedModules) {
+                                this.moduleDiff = this.moduleDiff.filter(x => x !== id);
+                                // XXX make sure to account for the defaults here in time
+                                this._createGridStackWidget(id, this.loadedModules[id]);
+                                this.grid.addWidget(this.widgetConfigurations[id]);
+                                this._onMarkupRendered(this.widgetClasses[id]);
+                                changed = true;
+                            }
+                        }
+
+                        if (changed) {
+                            $('#save-grid').show();
+                        }
+
+                        dialog.close();
+                    },
+                }, {
+                    label: this.gettext.cancel,
+                    action: (dialog) => {
+                        dialog.close();
+                    }
+                }],
+                onshown: (dialog) => {
+                    $('#widget-selection').selectpicker();
+                }
+            });
+        });
+
         $('#restore-defaults').click(() => {
             ajaxGet("/api/core/dashboard/restoreDefaults", null, (response, status) => {
                 if (response['result'] == 'failed') {
@@ -306,25 +342,6 @@ class WidgetManager  {
      * this has the benefit of making it configurable per widget.
      */
      async _loadDynamicContent() {
-        // handle dynamic resize of widgets
-        this.resizeObserver = new ResizeObserverWrapper();
-        this.resizeObserver.observe(
-            document.querySelectorAll('.widget'),
-            (elem, width, height) => {
-                for (const subclass of elem.className.split(" ")) {
-                    let id = subclass.split('-')[1];
-                    if (id in this.widgetClasses) {
-                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
-                            this._updateGrid(elem.parentElement.parentElement);
-                        }
-                    }
-                }
-            },
-            (elem) => {
-                this._updateGrid(elem.parentElement.parentElement);
-            }
-        );
-
         // map to an array of context-bound _onMarkupRendered functions
         let fns = Object.values(this.widgetClasses).map((widget) => {
             return this._onMarkupRendered.bind(this, widget);
@@ -340,7 +357,12 @@ class WidgetManager  {
 
     // Executed for each widget; starts the widget-specific tick routine.
     async _onMarkupRendered(widget) {
-        // first: load the widget dynamic content, make sure to bind the widget context to the callback
+        // click handler for widget removal.
+        $(`#close-handle-${widget.id}`).click((event) => {
+            this._onWidgetClose(widget.id);
+        });
+
+        // load the widget dynamic content, make sure to bind the widget context to the callback
         let onMarkupRendered = widget.onMarkupRendered.bind(widget);
         // show a spinner while the widget is loading
         let $selector = $(`.widget-${widget.id} > .widget-content > .panel-divider`);
@@ -354,20 +376,30 @@ class WidgetManager  {
         this.widgetHTMLElements[widget.id].gridstackNode._initDD = false;
         this.grid.resizable(this.widgetHTMLElements[widget.id], true);
 
-        // trigger initial widget resize
-        let rect = $(`.widget-${widget.id}`)[0].getBoundingClientRect();
-        widget.onWidgetResize(this.widgetHTMLElements[widget.id], rect.width, rect.height);
-        this._updateGrid(this.widgetHTMLElements[widget.id]);
+        // trigger initial widget resize and start observing resize events
+        this.resizeObserver.observe(
+            [document.querySelector(`.widget-${widget.id}`)],
+            (elem, width, height) => {
+                for (const subclass of elem.className.split(" ")) {
+                    let id = subclass.split('-')[1];
+                    if (id in this.widgetClasses) {
+                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
+                            this._updateGrid(elem.parentElement.parentElement);
+                        }
+                    }
+                }
+            },
+            (elem, width, height) => {
+                widget.onWidgetResize(this.widgetHTMLElements[widget.id], width, height);
+                this._updateGrid(elem.parentElement.parentElement);
+            }
+        );
 
-        // second: start the widget-specific tick routine
+        // start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         await onWidgetTick();
         const interval = setInterval(async () => {
-            await onWidgetTick().catch((error) => {
-                // The page might be closed while a tick routine was executing,
-                // in that case, the error is expected and can be ignored.
-                null;
-            });
+            await onWidgetTick();
             this._updateGrid(this.widgetHTMLElements[widget.id]);
         }, widget.tickTimeout);
         // store the reference to the tick routine so we can clear it later on widget removal
@@ -393,7 +425,7 @@ class WidgetManager  {
             <div class="widget-header">
                 <div></div>
                 <div>${title}</div>
-                <div class="close-handle" data-widget-id="${identifier}">
+                <div id="close-handle-${identifier}" class="close-handle">
                     <i class="fa fa-times fa-xs"></i>
                 </div>
             </div>
@@ -405,5 +437,12 @@ class WidgetManager  {
         $panel.append($content);
 
         return $panel;
+    }
+
+    _onWidgetClose(id) {
+        clearInterval(this.widgetTickRoutines[id]);
+        this.widgetClasses[id].onWidgetClose();
+        this.grid.removeWidget(this.widgetHTMLElements[id]);
+        this.moduleDiff.push(id);
     }
 }

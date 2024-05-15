@@ -53,7 +53,10 @@ $( document ).ready(function() {
         }
     }, {
         'save': "{{ lang._('Save') }}",
-        'restore': "{{ lang._('Restore default layout') }}"
+        'restore': "{{ lang._('Restore default layout') }}",
+        'addwidget': "{{ lang._('Add Widget') }}",
+        'add': "{{ lang._('Add') }}",
+        'cancel': "{{ lang._('Cancel') }}",
     });
     widgetManager.initialize();
 });
