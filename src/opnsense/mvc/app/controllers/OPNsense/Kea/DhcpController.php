@@ -53,7 +53,6 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formDialogSubnet = $this->getForm("dialogSubnet4");
         $this->view->formDialogReservation = $this->getForm("dialogReservation4");
         $this->view->formDialogPeer = $this->getForm("dialogPeer4");
-        $this->view->formDialogOption = $this->getForm("dialogOption4");
     }
 
     public function leases4Action()
