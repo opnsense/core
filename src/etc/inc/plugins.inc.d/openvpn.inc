@@ -980,6 +980,14 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
         $conf .= "push-reset\n";
     }
 
+    if (!empty($settings['push_register_dns'])) {
+        $conf .= "push \"register-dns\"\n";
+    }
+
+    // since "keepalive 10 60\n"; is fixed added to configation in line #528
+    // the GUI based "Keep alive interval" and "Keep alive timeout" were not used??
+    $conf .= "push \"keepalive 10 60\"\n";
+
     if (!empty($settings['tunnel_network'])) {
         list($ip, $mask) = explode('/', $settings['tunnel_network']);
         if ($server['dev_mode'] == 'tun' && empty($server['topology_subnet'])) {
@@ -988,6 +996,9 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
             $clientip = long2ip32($baselong + 2);
             $conf .= "ifconfig-push {$clientip} {$serverip}\n";
         } else {
+            if (!empty($server['topology_subnet'])) {
+                $conf .= "push \"topology subnet\"\n";
+            }
             $conf .= "ifconfig-push {$ip} " . gen_subnet_mask($mask) . "\n";
         }
     }
