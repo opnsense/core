@@ -515,7 +515,12 @@ class OpenVPN extends BaseModel
                             $options['ifconfig'] = "{$ip1} {$ip2}";
                             $options['ifconfig-pool'] = "{$ip2} {$ip3}";
                         } else {
-                            $options['server'] = $parts[0] . " " . $mask;
+				if (!empty((string)$node->ifconfig_pool_start) && !empty((string)$node->ifconfig_pool_end)) {
+                                $options['server'] = $parts[0] . " " . $mask . " nopool";
+                                $options['ifconfig-pool'] = "{$node->ifconfig_pool_start} {$node->ifconfig_pool_end}";
+                            } else {
+                                $options['server'] = $parts[0] . " " . $mask;
+                            }
                         }
                     } elseif ((string)$node->dev_type == 'tap') {
                         if (!empty((string)$node->bridge_gateway)) {
@@ -531,7 +536,12 @@ class OpenVPN extends BaseModel
                         }
                     }
                     if (!empty((string)$node->server_ipv6)) {
-                        $options['server-ipv6'] = (string)$node->server_ipv6;
+                        if (!empty((string)$node->ifconfig_ipv6_pool_bits)) {
+                            $options['server-ipv6'] = (string)$node->server_ipv6 . " nopool";
+                            $options['ifconfig-ipv6-pool'] = "{$node->ifconfig_ipv6_pool_bits}";
+                        } else {
+                            $options['server-ipv6'] = (string)$node->server_ipv6;
+                        }
                     }
                     if (!empty((string)$node->username_as_common_name)) {
                         $options['username-as-common-name'] = null;
