@@ -33,7 +33,6 @@
 import sys
 import os.path
 import re
-import sre_constants
 import shlex
 import ujson
 sys.path.insert(0, "/usr/local/opnsense/site-python")
@@ -73,7 +72,7 @@ if __name__ == '__main__':
             filter_regexp = filter_regexp.lower()
             try:
                 data_filters_comp[filterField] = re.compile(filter_regexp)
-            except sre_constants.error:
+            except re.error:
                 # remove illegal expression
                 # del data_filters[filterField]
                 data_filters_comp[filterField] = re.compile('.*')

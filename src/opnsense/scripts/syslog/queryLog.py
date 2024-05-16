@@ -33,7 +33,6 @@
 import sys
 import os.path
 import re
-import sre_constants
 import ujson
 import datetime
 import glob
@@ -82,7 +81,7 @@ if __name__ == '__main__':
                 # no wildcard operator, assume partial match
                 filter = ".*%s.*" % filter
             filter_regexp = re.compile(filter)
-        except sre_constants.error:
+        except re.error:
             # remove illegal expression
             filter_regexp = re.compile('.*')
 
