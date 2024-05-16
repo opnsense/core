@@ -257,5 +257,4 @@ export default class Disk extends BaseWidget {
             this.detailed_chart.destroy();
         }
     }
-
 }
