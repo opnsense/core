@@ -521,6 +521,11 @@ rebase:
 	@git rebase -i
 	@git checkout ${CORE_DEVEL}
 
+reset:
+	@git checkout ${CORE_STABLE}
+	@git reset --hard HEAD~1
+	@git checkout ${CORE_DEVEL}
+
 log: ensure-stable
 	@git log --stat -p ${CORE_STABLE}
 
