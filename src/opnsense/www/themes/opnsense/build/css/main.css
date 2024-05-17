@@ -7403,3 +7403,7 @@ div[data-for*=help_for] {
   max-height: calc(100vh - 265px);
   overflow-y: auto;
 }
+
+.modal-footer {
+  padding: 15px;
+}

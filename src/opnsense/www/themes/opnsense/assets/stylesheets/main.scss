@@ -874,6 +874,7 @@ div[data-for*="help_for"] {
   padding: 15px;
 }
 
+
 #OPNsenseStdWaitDialog div.modal-body {
   padding: 15px;
 }
@@ -881,4 +882,8 @@ div[data-for*="help_for"] {
 .modal-body {
   max-height: calc(100vh - 265px);
   overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 15px;
 }
