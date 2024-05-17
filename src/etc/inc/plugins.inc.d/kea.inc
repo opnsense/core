@@ -45,6 +45,60 @@ function kea_services()
     return $services;
 }
 
+function kea_run()
+{
+    return [
+        'static_mapping' => 'kea_staticmap',
+    ];
+}
+
+function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback = 'not.found', $ifconfig_details = null)
+{
+    $staticmap = [];
+
+    if ($proto) {
+        $proto = (int)$proto;
+    }
+
+    if ($proto == 6) {
+        return $staticmap;
+    }
+
+    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
+
+    if (!empty((string)$keav4->general->enabled)) {
+        $reservations = $keav4->reservations;
+
+        foreach ($reservations->reservation->iterateItems() as $reservation) {
+            $ip_address = (string)$reservation->ip_address;
+            if (empty($ip_address) && $valid_addresses) {
+                continue;
+            }
+            $hostname = (string)$reservation->hostname;
+            $description = (string)$reservation->description;
+
+            $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+            $domain = $domain_fallback;
+            if ($subnet_node) {
+                if (!empty((string)$subnet_node->option_data->domain_name)) {
+                    $domain = (string)$subnet_node->option_data->domain_name;
+                }
+            }
+
+            $entry = [
+                'descr' => $description,
+                'domain' => $domain,
+                'hostname' => $hostname,
+                'ipaddr' => $ip_address,
+            ];
+
+            $staticmap[] = $entry;
+        }
+    }
+
+    return $staticmap;
+}
+
 function kea_configure()
 {
     return [
