@@ -52,7 +52,7 @@ function kea_run()
     ];
 }
 
-function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback = 'not.found', $ifconfig_details = null)
+function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
 {
     $staticmap = [];
 
@@ -73,7 +73,7 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
         $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
         $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-        $domain = $domain_fallback;
+        $domain = null;
         if ($subnet_node) {
             if (!empty((string)$subnet_node->option_data->domain_name)) {
                 $domain = (string)$subnet_node->option_data->domain_name;
