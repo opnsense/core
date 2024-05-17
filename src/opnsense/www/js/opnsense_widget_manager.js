@@ -270,7 +270,10 @@ class WidgetManager  {
 
                     if (response['result'] == 'failed') {
                         console.error('Failed to save widgets', data);
-                    }
+                    } else {
+                    // Reload the page if the save operation was successful
+                    window.location.reload();
+                    } 
                 }
             });
         });
