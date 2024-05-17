@@ -1589,7 +1589,7 @@ EOD;
     service_log("done.\n", $verbose);
 }
 
-function dhcpd_staticmap($proto = null, $valid_addresses = true, $domain_fallback = 'not.found', $ifconfig_details = null)
+function dhcpd_staticmap($proto = null, $valid_addresses = true, $ifconfig_details = null)
 {
     $staticmap = [];
     foreach (empty($proto) ? [4, 6] : [$proto] as $inet) {
@@ -1620,6 +1620,8 @@ function dhcpd_staticmap($proto = null, $valid_addresses = true, $domain_fallbac
                     $host['ipaddrv6'] = Net_IPv6::compress(Net_IPv6::uncompress($host['ipaddrv6']));
                 }
 
+                $domain = null;
+
                 // XXX: dhcpdv6 domain entries have been superseded by domainsearchlist,
                 //      for backward compatibility support both here.
                 if ($inet == 6 && !empty($host['domainsearchlist'])) {
@@ -1630,12 +1632,12 @@ function dhcpd_staticmap($proto = null, $valid_addresses = true, $domain_fallbac
                     $domain = $dhcpifconf['domainsearchlist'];
                 } elseif (!empty($dhcpifconf['domain'])) {
                     $domain = $dhcpifconf['domain'];
-                } else {
-                    $domain = $domain_fallback;
                 }
 
-                /* first entry only */
-                $domain = preg_split('/[ ;]+/', $domain)[0];
+                if ($domain !== null) {
+                    /* first entry only */
+                    $domain = preg_split('/[ ;]+/', $domain)[0];
+                }
 
                 $entry = [
                     'descr' => $host['descr'] ?? null,

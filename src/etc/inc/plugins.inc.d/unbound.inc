@@ -591,11 +591,14 @@ function unbound_add_host_entries($ifconfig_details)
     }
 
     if (!empty($general['regdhcpstatic'])) {
-        foreach (plugins_run('static_mapping', [null, true, $config['system']['domain'], $ifconfig_details]) as $map) {
+        foreach (plugins_run('static_mapping', [null, true, $ifconfig_details]) as $map) {
             foreach ($map as $host) {
                 if (empty($host['hostname'])) {
                     /* cannot register without a hostname */
                     continue;
+                }
+                if (empty($host['domain'])) {
+                    $host['domain'] = $config['system']['domain'];
                 }
                 if (isset($host['ipaddr'])) {
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";

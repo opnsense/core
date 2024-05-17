@@ -58,7 +58,7 @@
     </field>
     <field>
         <id>unbound.general.regdhcpstatic</id>
-        <label>Register ISC DHCP Static Mappings</label>
+        <label>Register DHCP Static Mappings</label>
         <type>checkbox</type>
         <help>
             <![CDATA[If this option is set, then DHCP static mappings will be registered in Unbound, so that their name can be resolved.
