@@ -69,8 +69,8 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
             continue;
         }
 
-        $hostname = (string)$reservation->hostname;
-        $description = (string)$reservation->description;
+        $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
+        $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
         $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
         $domain = $domain_fallback;
