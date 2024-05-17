@@ -89,6 +89,7 @@ class KeaDhcpv4 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
         }
+
         return $messages;
     }
 

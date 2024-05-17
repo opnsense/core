@@ -54,7 +54,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 
     public function searchSubnetAction()
     {
-        return $this->searchBase("subnets.subnet4", ['subnet'], "subnet");
+        return $this->searchBase("subnets.subnet4", null, "subnet");
     }
 
     public function setSubnetAction($uuid)
@@ -79,11 +79,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 
     public function searchReservationAction()
     {
-        return $this->searchBase(
-            "reservations.reservation",
-            ['subnet', 'ip_address', 'hw_address', 'hostname', 'description'],
-            "hw_address"
-        );
+        return $this->searchBase("reservations.reservation", null, "hw_address");
     }
 
     public function setReservationAction($uuid)
@@ -144,7 +140,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 
     public function searchPeerAction()
     {
-        return $this->searchBase("ha_peers.peer", ['name', 'role'], "name");
+        return $this->searchBase("ha_peers.peer", null, "name");
     }
 
     public function setPeerAction($uuid)
