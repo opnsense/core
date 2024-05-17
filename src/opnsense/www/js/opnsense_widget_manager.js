@@ -273,7 +273,7 @@ class WidgetManager  {
                     } else {
                     // Reload the page if the save operation was successful
                     window.location.reload();
-                    } 
+                    }
                 }
             });
         });
