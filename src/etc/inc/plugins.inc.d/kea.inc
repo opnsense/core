@@ -56,44 +56,39 @@ function kea_staticmap($proto = null, $valid_addresses = true, $domain_fallback 
 {
     $staticmap = [];
 
-    if ($proto) {
-        $proto = (int)$proto;
-    }
+    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
 
-    if ($proto == 6) {
+    if ($proto == 6 || empty((string)$keav4->general->enabled)) {
+        /* unsupported protocol or not enabled */
         return $staticmap;
     }
 
-    $keav4 = new \OPNsense\Kea\KeaDhcpv4();
-
-    if (!empty((string)$keav4->general->enabled)) {
-        $reservations = $keav4->reservations;
-
-        foreach ($reservations->reservation->iterateItems() as $reservation) {
-            $ip_address = (string)$reservation->ip_address;
-            if (empty($ip_address) && $valid_addresses) {
-                continue;
-            }
-            $hostname = (string)$reservation->hostname;
-            $description = (string)$reservation->description;
-
-            $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-            $domain = $domain_fallback;
-            if ($subnet_node) {
-                if (!empty((string)$subnet_node->option_data->domain_name)) {
-                    $domain = (string)$subnet_node->option_data->domain_name;
-                }
-            }
-
-            $entry = [
-                'descr' => $description,
-                'domain' => $domain,
-                'hostname' => $hostname,
-                'ipaddr' => $ip_address,
-            ];
-
-            $staticmap[] = $entry;
+    foreach ($keav4->reservations->reservation->iterateItems() as $reservation) {
+        $ip_address = (string)$reservation->ip_address;
+        if (empty($ip_address) && $valid_addresses) {
+            continue;
         }
+
+        $hostname = (string)$reservation->hostname;
+        $description = (string)$reservation->description;
+
+        $subnet_node = $keav4->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
+        $domain = $domain_fallback;
+        if ($subnet_node) {
+            if (!empty((string)$subnet_node->option_data->domain_name)) {
+                $domain = (string)$subnet_node->option_data->domain_name;
+            }
+        }
+
+        $entry = [
+            'descr' => $description,
+            'domain' => $domain,
+            'hostname' => $hostname,
+            'interface' => null, /* XXX reservations are bound to "floating" subnets */
+            'ipaddr' => $ip_address,
+        ];
+
+        $staticmap[] = $entry;
     }
 
     return $staticmap;
