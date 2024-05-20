@@ -641,8 +641,9 @@ abstract class BaseModel
                     $exception_msg_part .= sprintf("{%s}", $field_value);
                 }
                 $exception_msg .= "$exception_msg_part\n";
-                // always log validation errors
-                $logger->error($exception_msg_part);
+                if (!$disable_validation) {
+                    $logger->error($exception_msg_part);
+                }
             }
             if (!$disable_validation) {
                 throw new ValidationException($exception_msg);
