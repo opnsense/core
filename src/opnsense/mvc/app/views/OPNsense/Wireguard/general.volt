@@ -172,6 +172,14 @@
             };
             ajaxCall('/api/wireguard/client/addClientBuilder', peer, function(data, status) {
                 if (data.validations) {
+                    if (data.validations['configbuilder.tunneladdress']) {
+                        /*
+                            tunnel address for the client is this peers address, since we remap these
+                            in the form, we should remap the errors as well.
+                        */
+                        data.validations['configbuilder.address'] = data.validations['configbuilder.tunneladdress'];
+                        delete data.validations['configbuilder.tunneladdress'];
+                    }
                     handleFormValidation("frm_config_builder", data.validations);
                 } else {
                     if (endpoint.val() != endpoint.data('org-value') || peer_dns.val() != peer_dns.data('org-value')) {
