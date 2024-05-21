@@ -111,18 +111,26 @@ class Request
         return isset($_POST[$name]);
     }
 
-    public function getPost(string $name, ?string $filter = null, ?string $defaultValue = null)
+    public function getPost(?string $name = null, ?string $filter = null, ?string $defaultValue = null)
     {
-        $value = isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
+        if ($name === null) {
+            $value = $_POST;
+        } else {
+            $value = isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
+        }
         if ($filter !== null && $value !== null) {
             $value = (new SanitizeFilter())->sanitize($value, $filter);
         }
         return $value;
     }
 
-    public function get(string $name, ?string $filter = null, ?string $defaultValue = null)
+    public function get(?string $name = null, ?string $filter = null, ?string $defaultValue = null)
     {
-        $value = isset($_REQUEST[$name]) ? $_REQUEST[$name] : $defaultValue;
+        if ($name === null) {
+            $value = $_REQUEST;
+        } else {
+            $value = isset($_REQUEST[$name]) ? $_REQUEST[$name] : $defaultValue;
+        }
         if ($filter !== null) {
             $value = (new SanitizeFilter())->sanitize($value, $filter);
         }
