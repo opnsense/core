@@ -42,6 +42,13 @@ function dhcrelay_run()
     ];
 }
 
+function  dhcrelay_syslog()
+{
+    return [
+        'dhcrelay' => ['facility' => ['dhcrelay']]
+    ];
+}
+
 function dhcrelay_services()
 {
     $mdl = new \OPNsense\DHCRelay\DHCRelay();
@@ -132,7 +139,7 @@ function dhcrelay_configure_do($verbose = false, $id = null)
             continue;
         }
 
-        $cmd = [exec_safe('daemon -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
+        $cmd = [exec_safe('daemon -S -T dhcrelay -f -p %s', "/var/run/dhcrelay-{$relay->getAttribute('uuid')}.pid")];
         $cmd[] = sprintf('/usr/local/sbin/dhcrelay%s -d', $family == 'inet6' ? '6' : '');
         if (!empty((string)$relay->agent_info)) {
             $cmd[] = sprintf('-o%s', $family == 'inet' ? 'r' : '');

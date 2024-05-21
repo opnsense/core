@@ -1299,6 +1299,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/audit.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/configd.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcpd.conf
+/usr/local/opnsense/service/templates/OPNsense/Syslog/local/dhcrelay.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/dnsmasq.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/filter.conf
 /usr/local/opnsense/service/templates/OPNsense/Syslog/local/firewall.conf
