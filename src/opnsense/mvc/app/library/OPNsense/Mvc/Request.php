@@ -141,4 +141,9 @@ class Request
     {
         return json_decode($this->getRawBody(), true) ?? false;
     }
+
+    public function getClientAddress()
+    {
+        return explode(",", $_SERVER['REMOTE_ADDR'] ?? '')[0];
+    }
 }
