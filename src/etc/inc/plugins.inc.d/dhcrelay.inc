@@ -42,7 +42,7 @@ function dhcrelay_run()
     ];
 }
 
-function  dhcrelay_syslog()
+function dhcrelay_syslog()
 {
     return [
         'dhcrelay' => ['facility' => ['dhcrelay']]
