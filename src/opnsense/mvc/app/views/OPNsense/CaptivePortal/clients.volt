@@ -1,6 +1,6 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
+OPNsense® is Copyright © 2014 – 2024 by Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -30,115 +30,75 @@ POSSIBILITY OF SUCH DAMAGE.
 <script>
 
     $( document ).ready(function() {
-        /**
-         * update zone list
-         */
-        function updateZones() {
-            ajaxGet("/api/captiveportal/session/zones/", {}, function(data, status) {
-                if (status == "success") {
-                    $('#cp-zones').html("");
-                    $.each(data, function(key, value) {
-                        $('#cp-zones').append($("<option></option>").attr("value", key).text(value));
-                    });
-                    $('.selectpicker').selectpicker('refresh');
-                    // link on change event
-                    $('#cp-zones').on('change', function(){
-                        loadSessions();
-                    });
-                    // initial load sessions
-                    loadSessions();
-                }
-            });
-        }
-
-        /**
-         * load sessions for selected zone, hook events
-         */
-        function loadSessions() {
-            var zoneid = $('#cp-zones').find("option:selected").val();
-            var gridopt = {
-                ajax: false,
-                selection: true,
-                multiSelect: true,
-                formatters: {
-                    "commands": function (column, row) {
-                        return '<button type="button" class="btn btn-xs btn-default command-disconnect bootgrid-tooltip" title="{{ lang._('Disconnect') }}" data-row-id="' + row.sessionId + '"><span class="fa fa-trash-o fa-fw"></span></button>';
-                    }
-                }
-            };
-            if ($("#grid-clients").hasClass('bootgrid-table')) {
-                $("#grid-clients").bootgrid('clear');
-            } else {
-                let grid_clients = $("#grid-clients").bootgrid(gridopt).on("loaded.rs.jquery.bootgrid", function(){
-                    // hook disconnect button
-                    grid_clients.find(".command-disconnect").on("click", function(e) {
-                        var zoneid = $('#cp-zones').find("option:selected").val();
-                        var sessionId=$(this).data("row-id");
-                        stdDialogConfirm('{{ lang._('Confirm disconnect') }}',
-                            '{{ lang._('Do you want to disconnect the selected client?') }}',
-                            '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                            ajaxCall("/api/captiveportal/session/disconnect/" + zoneid + '/',
-                                  {'sessionId': sessionId}, function(data,status){
-                                // reload grid after delete
-                                loadSessions();
-                            });
-                        });
-                    });
-                    $(this).find(".bootgrid-tooltip").each(function (index) {
-                        $(this).tooltip();
-                    });
+        ajaxGet("/api/captiveportal/session/zones/", {}, function(data, status) {
+            if (status == "success") {
+                $('#zone-selection').empty();
+                $.each(data, function(key, value) {
+                    $('#zone-selection').append($("<option></option>").attr("value", key).text(value));
                 });
+                $('.selectpicker').selectpicker('refresh');
             }
-            ajaxGet("/api/captiveportal/session/list/"+zoneid+"/", {}, function(data, status) {
-                if (status == "success") {
-                    // format records (our bootgrid doesn't like null and expects moment for datetime)
-                    let table = [];
-                    for (var i = 0; i < data.length; i++) {
-                        let record = {};
-                        $.each(data[i], function(key, value) {
-                            record[key] = value !== null  ? value : "";
-                        });
-                        table.push(record);
-                    }
-                    $("#grid-clients").bootgrid('append', table);
-                    // hide actionBar on mobile
-                    $('.actionBar').addClass('hidden-xs hidden-sm');
-                }
-            });
-        }
+        });
 
-        // init with first selected zone
-        updateZones();
+        $("#zone-selection").on("changed.bs.select", function (e) {
+            $("#grid-clients").bootgrid('reload');
+        });
+        $("#grid-clients").UIBootgrid({
+            search:'/api/captiveportal/session/search/',
+            datakey: 'sessionId',
+            commands: {
+                disconnect: {
+                    title: "{{ lang._('Disconnect') }}",
+                    method: function() {
+                        let sessid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
+                        stdDialogConfirm(
+                            "{{ lang._('Confirm disconnect') }}",
+                            "{{ lang._('Do you want to disconnect the selected client?') }}",
+                            "{{ lang._('Yes') }}",
+                            "{{ lang._('Cancel') }}",
+                            function () {
+                                ajaxCall("/api/captiveportal/session/disconnect",{'sessionId': sessid}, function(data,status){
+                                    $("#grid-clients").bootgrid('reload');
+                                });
+                        });
+                    },
+                    classname: 'fa fa-trash-o fa-fw',
+                    sequence: 1,
+                }
+            },
+            options: {
+                selection: false,
+                multiSelect: false,
+                useRequestHandlerOnGet: true,
+                requestHandler: function(request) {
+                    request['selected_zones'] = $("#zone-selection").val();
+                    return request;
+                }
+            }
+        });
+
+        $("#zone-selection-wrapper").detach().prependTo('#grid-clients-header > .row > .actionBar > .actions');
     });
 </script>
 
-<div class="content-box">
-    <div class="content-box-main">
-        <div class="table-responsive">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <select id="cp-zones" class="selectpicker" data-width="200px"></select>
-                    <hr/>
-                </div>
-            </div>
-            <div>
-            <table id="grid-clients" class="table table-condensed table-hover table-striped table-responsive">
-                <thead>
-                <tr>
-                    <th data-column-id="sessionId" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
-                    <th data-column-id="userName" data-type="string">{{ lang._('Username') }}</th>
-                    <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
-                    <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP address') }}</th>
-                    <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
-                    <th data-column-id="commands" data-searchable="false" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                </tfoot>
-            </table>
-            </div>
-        </div>
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs"></ul>
+<div class="tab-content content-box col-xs-12 __mb">
+    <div class="btn-group" id="zone-selection-wrapper">
+        <select class="selectpicker" multiple="multiple" data-live-search="true" id="zone-selection" data-width="auto" title="{{ lang._('All Zones') }}">
+        </select>
     </div>
+    <table id="grid-clients" class="table table-condensed table-hover table-striped table-responsive">
+        <thead>
+            <tr>
+                <th data-column-id="sessionId" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
+                <th data-column-id="userName" data-type="string">{{ lang._('Username') }}</th>
+                <th data-column-id="macAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
+                <th data-column-id="ipAddress" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP address') }}</th>
+                <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
+                <th data-column-id="commands" data-searchable="false" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
