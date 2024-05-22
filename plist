@@ -1956,6 +1956,7 @@
 /usr/local/opnsense/www/js/widgets/Cpu.js
 /usr/local/opnsense/www/js/widgets/Disk.js
 /usr/local/opnsense/www/js/widgets/Firewall.js
+/usr/local/opnsense/www/js/widgets/FirewallStates.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
 /usr/local/opnsense/www/js/widgets/Memory.js

@@ -104,6 +104,11 @@ class DashboardController extends ApiControllerBase
                 'livelog' => gettext('Live Log'),
                 'events' => gettext('Events'),
                 'nodata' => gettext('Waiting for data')
+            ],
+            'firewallstates' => [
+                'title' => gettext('Firewall States'),
+                'current' => gettext('Current'),
+                'limit' => gettext('Limit'),
             ]
         ];
     }

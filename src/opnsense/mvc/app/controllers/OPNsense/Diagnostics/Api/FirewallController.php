@@ -358,4 +358,20 @@ class FirewallController extends ApiControllerBase
     {
         return json_decode((new Backend())->configdpRun('filter diag info', [$section]), true);
     }
+
+    /**
+     * retrieve pf state amount and states limit
+     */
+    public function pfStatesAction()
+    {
+        $response = trim((new Backend())->configdRun("filter diag state_size"));
+        if (!empty($response)) {
+            $response = explode(PHP_EOL, $response);
+            return [
+                'current' => explode(' ', $response[0])[1],
+                'limit' => explode(' ', $response[1])[1]
+            ];
+        }
+        return ["result" => "failed"];
+    }
 }

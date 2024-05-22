@@ -295,7 +295,7 @@ export default class Firewall extends BaseTableWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 650) {
+        if (width < 660) {
             $('#fw-chart').show();
             $('#fw-table-container').hide();
         } else {
