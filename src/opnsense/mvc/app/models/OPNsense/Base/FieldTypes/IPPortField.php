@@ -141,7 +141,8 @@ class IPPortField extends BaseField
                             continue;
                         }
                     }
-                    if ($this->internalHostnameAllowed &&
+                    if (
+                        $this->internalHostnameAllowed &&
                         count($parts) == 2 &&
                         Util::isPort($parts[1]) &&
                         filter_var($parts[0], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false
