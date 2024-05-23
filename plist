@@ -1174,6 +1174,7 @@
 /usr/local/opnsense/scripts/system/rrd_pfstate_info.py
 /usr/local/opnsense/scripts/system/ssl_ciphers.py
 /usr/local/opnsense/scripts/system/status.php
+/usr/local/opnsense/scripts/system/swapinfo.py
 /usr/local/opnsense/scripts/system/sysctl.py
 /usr/local/opnsense/scripts/system/temperature.sh
 /usr/local/opnsense/scripts/system/trigger_config_changed_events.py
@@ -1951,6 +1952,7 @@
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
+/usr/local/opnsense/www/js/widgets/BaseGaugeWidget.js
 /usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
 /usr/local/opnsense/www/js/widgets/Cpu.js
@@ -1959,7 +1961,9 @@
 /usr/local/opnsense/www/js/widgets/FirewallStates.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
+/usr/local/opnsense/www/js/widgets/Mbuf.js
 /usr/local/opnsense/www/js/widgets/Memory.js
+/usr/local/opnsense/www/js/widgets/Swap.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
 /usr/local/opnsense/www/js/widgets/Traffic.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE

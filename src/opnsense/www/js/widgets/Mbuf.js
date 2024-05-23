@@ -49,5 +49,4 @@ export default class Mbuf extends BaseGaugeWidget {
             super.updateChart([current, (limit - current)]);
         });
     }
-
 }
