@@ -244,7 +244,7 @@ class WidgetManager  {
     _renderHeader() {
         // Serialization options
         let $btn_group = $('.btn-group-container');
-    
+
         // Append Save button and directly next to it, a hidden spinner
         $btn_group.append($(`
             <button class="btn btn-primary" id="save-grid">
