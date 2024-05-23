@@ -44,7 +44,7 @@
 $( document ).ready(function() {
     let widgetManager = new WidgetManager({
         float: false,
-        column: 5,
+        column: 6,
         margin: 10,
         alwaysShowResizeHandle: false,
         sizeToContent: true,

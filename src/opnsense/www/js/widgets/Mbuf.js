@@ -1,4 +1,4 @@
-// endpoint:/api/diagnostics/firewall/pf_states
+// endpoint:/api/core/system/system_mbuf
 
 /*
  * Copyright (C) 2024 Deciso B.V.
@@ -28,7 +28,7 @@
 
 import BaseGaugeWidget from "./BaseGaugeWidget.js";
 
-export default class FirewallStates extends BaseGaugeWidget {
+export default class Mbuf extends BaseGaugeWidget {
     constructor() {
         super();
     }
@@ -43,10 +43,11 @@ export default class FirewallStates extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/diagnostics/firewall/pf_states', {}, (data, status) => {
-            let current = parseInt(data.current);
-            let limit = parseInt(data.limit);
+        ajaxGet('/api/core/system/system_mbuf', {}, (data, status) => {
+            let current = parseInt(data['mbuf-statistics']['cluster-total']);
+            let limit = parseInt(data['mbuf-statistics']['cluster-max']);
             super.updateChart([current, (limit - current)]);
         });
     }
+
 }

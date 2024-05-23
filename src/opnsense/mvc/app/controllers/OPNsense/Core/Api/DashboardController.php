@@ -107,9 +107,14 @@ class DashboardController extends ApiControllerBase
             ],
             'firewallstates' => [
                 'title' => gettext('Firewall States'),
-                'current' => gettext('Current'),
-                'limit' => gettext('Limit'),
-            ]
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ],
+            'mbuf' => [
+                'title' => gettext('MBUF Usage'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ],
         ];
     }
 

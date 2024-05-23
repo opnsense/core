@@ -322,4 +322,9 @@ class SystemController extends ApiControllerBase
 
         return $result;
     }
+
+    public function systemMbufAction()
+    {
+        return json_decode((new Backend())->configdRun('system show mbuf'), true);
+    }
 }
