@@ -244,7 +244,17 @@ class WidgetManager  {
     _renderHeader() {
         // Serialization options
         let $btn_group = $('.btn-group-container');
-        $btn_group.append($(`<button class="btn btn-primary" id="save-grid">${this.gettext.save}</button>`));
+    
+        // Append Save button and directly next to it, a hidden spinner
+        $btn_group.append($(`
+            <button class="btn btn-primary" id="save-grid">
+                <span id="save-btn-text" class="show">${this.gettext.save}</span>
+                <span id="icon-container">
+                    <i class="fa fa-spinner fa-spin hide" id="save-spinner" style="font-size: 14px;"></i>
+                    <i class="fa fa-check checkmark hide" id="save-check" style="font-size: 14px;"></i>
+                </span>
+            </button>
+        `));
         $btn_group.append($(`
             <button class="btn btn-default" id="add_widget">
                 <i class="fa fa-plus-circle fa-fw"></i>
@@ -252,9 +262,17 @@ class WidgetManager  {
             </button>
         `));
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
+
+        // Initially hide the save button
         $('#save-grid').hide();
 
+        // Click event for save button
         $('#save-grid').click(() => {
+            // Show the spinner when the save operation starts
+            $('#save-btn-text').toggleClass("show hide");
+            $('#save-spinner').addClass('show');
+            $('#save-grid').prop('disabled', true);
+
             //this.grid.cellHeight('auto', false);
             let items = this.grid.save(false);
             //this.grid.cellHeight(1, false);
@@ -265,12 +283,27 @@ class WidgetManager  {
                 dataType: "text",
                 contentType: 'text/plain',
                 data: JSON.stringify(items),
-                complete: function(data, status) {
-                    let response = JSON.parse(data.responseText);
+                complete: (data, status) => {
+                    setTimeout(() => {
+                        let response = JSON.parse(data.responseText);
 
-                    if (response['result'] == 'failed') {
-                        console.error('Failed to save widgets', data);
-                    }
+                        if (response['result'] == 'failed') {
+                            console.error('Failed to save widgets', data);
+                            $('#save-grid').prop('disabled', false);
+                            $('#save-spinner').removeClass('show').addClass('hide');
+                            $('#save-btn-text').removeClass('hide').addClass('show');
+                        } else {
+                            $('#save-spinner').removeClass('show').addClass('hide');
+                            $('#save-check').toggleClass("hide show");
+                            setTimeout(() => {
+                                // Hide the save button upon successful save
+                                $('#save-grid').hide();
+                                $('#save-check').toggleClass("show hide");
+                                $('#save-btn-text').toggleClass("hide show");
+                                $('#save-grid').prop('disabled', false);
+                            }, 500)
+                        }
+                    }, 300); // Artificial delay to give more feedback on button click
                 }
             });
         });
