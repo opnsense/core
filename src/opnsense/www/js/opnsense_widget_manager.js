@@ -336,6 +336,7 @@ class WidgetManager  {
                                 this._createGridStackWidget(id, this.loadedModules[id]);
                                 this.grid.addWidget(this.widgetConfigurations[id]);
                                 this._onMarkupRendered(this.widgetClasses[id]);
+                                this._updateGrid(this.widgetHTMLElements[id]);
                                 changed = true;
                             }
                         }
