@@ -115,6 +115,11 @@ class DashboardController extends ApiControllerBase
                 'used' => gettext('Used'),
                 'free' => gettext('Free'),
             ],
+            'swap' => [
+                'title' => gettext('SWAP Usage'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ]
         ];
     }
 

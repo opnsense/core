@@ -327,4 +327,9 @@ class SystemController extends ApiControllerBase
     {
         return json_decode((new Backend())->configdRun('system show mbuf'), true);
     }
+
+    public function systemSwapAction()
+    {
+        return json_decode((new Backend())->configdRun('system show swapinfo'), true);
+    }
 }
