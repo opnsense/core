@@ -40,7 +40,7 @@ export default class BaseTableWidget extends BaseWidget {
                 '.column': {'width': '100%'},
                 '.flex-subcell': {'width': '100%'},
             },
-            400: {
+            450: {
                 '.flextable-row': {'padding': '0.5em 0.5em'},
                 '.flextable-header .flex-cell': {'border-bottom': ''},
                 '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
@@ -58,8 +58,12 @@ export default class BaseTableWidget extends BaseWidget {
                 return `calc(100% / 2)`;
             }
 
-            if (tableObj.options.headerPosition === 'top') {
-                return `calc(100% / ${tableObj.data[0].length})`;
+            if (tableObj.options.headerPosition === 'none') {
+                let first = $(`#${tableObj.table.attr('id')} > .flextable-row`).first();
+                let count = first.children().filter(function() {
+                    return $(this).css('display') !== 'none';
+                }).length;
+                return `calc(100% / ${count})`;
             }
         }
 

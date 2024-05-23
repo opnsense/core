@@ -46,7 +46,7 @@ export default class Memory extends BaseGaugeWidget {
                 return `${(data[0] / (data[0] + data[1] + data[2]) * 100).toFixed(2)}%`;
             },
             secondaryText: (data) => {
-                return `${data[0]} / ${data[0] + data[1] + data[2]} MB`;
+                return `(${data[0]} / ${data[0] + data[1] + data[2]}) MB`;
             }
         });
     }

@@ -109,7 +109,7 @@ export default class Interfaces extends BaseTableWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width > 500) {
+        if (width > 450) {
             $('.interface-info-detail').parent().show();
             $('.interface-info').css('justify-content', 'initial');
             $('.interface-info').css('text-align', 'left');
