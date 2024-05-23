@@ -159,7 +159,7 @@ def parse_record(record, running_conf_descr):
 
 if __name__ == '__main__':
     # read parameters
-    parameters = {'limit': '0', 'digest': '', 'stream': False}
+    parameters = {'limit': '0', 'digest': '', 'stream': False, 'nlines': '5'}
     update_params(parameters)
     parameters['limit'] = int(parameters['limit'])
 
@@ -169,7 +169,7 @@ if __name__ == '__main__':
     if parameters['stream'] != False:
         # tail symlink to latest log, use -F to follow file rotation
         f = subprocess.Popen(
-            ['tail', '-n 0', '-F', '/var/log/filter/latest.log'],
+            ['tail', '-n' + parameters['nlines'], '-F', '/var/log/filter/latest.log'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             bufsize=0,
