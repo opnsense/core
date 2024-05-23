@@ -244,7 +244,14 @@ class WidgetManager  {
     _renderHeader() {
         // Serialization options
         let $btn_group = $('.btn-group-container');
-        $btn_group.append($(`<button class="btn btn-primary" id="save-grid">${this.gettext.save}</button>`));
+    
+        // Append Save button and directly next to it, a hidden spinner
+        $btn_group.append($(`
+            <button class="btn btn-primary" id="save-grid">
+                ${this.gettext.save}
+                <i class="fa fa-spinner fa-spin" id="save-spinner" style="display: none; font-size: 14px;"></i>
+            </button>
+        `));
         $btn_group.append($(`
             <button class="btn btn-default" id="add_widget">
                 <i class="fa fa-plus-circle fa-fw"></i>
@@ -252,30 +259,43 @@ class WidgetManager  {
             </button>
         `));
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
+
+        // Initially hide the save button
         $('#save-grid').hide();
 
+        // Click event for save button
         $('#save-grid').click(() => {
-            //this.grid.cellHeight('auto', false);
-            let items = this.grid.save(false);
-            //this.grid.cellHeight(1, false);
+            // Show the spinner when the save operation starts
+            $('#save-spinner').css('display', 'inline-block');
+            $('#save-grid').prop('disabled', true);
 
-            $.ajax({
-                type: "POST",
-                url: "/api/core/dashboard/saveWidgets",
-                dataType: "text",
-                contentType: 'text/plain',
-                data: JSON.stringify(items),
-                complete: function(data, status) {
-                    let response = JSON.parse(data.responseText);
+            setTimeout(() => {
+                //this.grid.cellHeight('auto', false);
+                let items = this.grid.save(false);
+                //this.grid.cellHeight(1, false);
 
-                    if (response['result'] == 'failed') {
-                        console.error('Failed to save widgets', data);
-                    } else {
-                    // Reload the page if the save operation was successful
-                    window.location.reload();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/core/dashboard/saveWidgets",
+                    dataType: "text",
+                    contentType: 'text/plain',
+                    data: JSON.stringify(items),
+                    complete: function(data, status) {
+                        let response = JSON.parse(data.responseText);
+                    
+                        if (response['result'] == 'failed') {
+                            console.error('Failed to save widgets', data);
+                            $('#save-grid').text('Save').prop('disabled', false); // Unlock the button on failure
+                            $('#save-spinner').hide(); // Hide spinner on failure
+                        } else {
+                            // Hide the save button upon successful save
+                            $('#save-grid').prop('disabled', false); // Unlock the button on success
+                            $('#save-spinner').hide(); // Hide spinner on success
+                            $('#save-grid').hide(); // Hide save button on success
+                        }
                     }
-                }
-            });
+                });
+            }, 1000); // Add artificial delay before the AJAX call starts to give more feedback on button click
         });
 
         $('#add_widget').click(() => {
