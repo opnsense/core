@@ -2,6 +2,43 @@
     font-size: 2em;
 }
 
+#save-grid {
+    width: inherit;
+    height: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    position: relative;
+    width: 50px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+#save-btn-text, #icon-container {
+    position: absolute;
+}
+
+#icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#save-spinner, #save-check {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.hide {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
 .grid-stack-item-content {
   text-align: center;
   border-style: solid;

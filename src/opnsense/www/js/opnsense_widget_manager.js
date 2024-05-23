@@ -248,8 +248,11 @@ class WidgetManager  {
         // Append Save button and directly next to it, a hidden spinner
         $btn_group.append($(`
             <button class="btn btn-primary" id="save-grid">
-                ${this.gettext.save}
-                <i class="fa fa-spinner fa-spin" id="save-spinner" style="display: none; font-size: 14px;"></i>
+                <span id="save-btn-text" class="show">${this.gettext.save}</span>
+                <span id="icon-container">
+                    <i class="fa fa-spinner fa-spin hide" id="save-spinner" style="font-size: 14px;"></i>
+                    <i class="fa fa-check checkmark hide" id="save-check" style="font-size: 14px;"></i>
+                </span>
             </button>
         `));
         $btn_group.append($(`
@@ -266,36 +269,43 @@ class WidgetManager  {
         // Click event for save button
         $('#save-grid').click(() => {
             // Show the spinner when the save operation starts
-            $('#save-spinner').css('display', 'inline-block');
+            $('#save-btn-text').toggleClass("show hide");
+            $('#save-spinner').addClass('show');
             $('#save-grid').prop('disabled', true);
 
-            setTimeout(() => {
-                //this.grid.cellHeight('auto', false);
-                let items = this.grid.save(false);
-                //this.grid.cellHeight(1, false);
+            //this.grid.cellHeight('auto', false);
+            let items = this.grid.save(false);
+            //this.grid.cellHeight(1, false);
 
-                $.ajax({
-                    type: "POST",
-                    url: "/api/core/dashboard/saveWidgets",
-                    dataType: "text",
-                    contentType: 'text/plain',
-                    data: JSON.stringify(items),
-                    complete: function(data, status) {
+            $.ajax({
+                type: "POST",
+                url: "/api/core/dashboard/saveWidgets",
+                dataType: "text",
+                contentType: 'text/plain',
+                data: JSON.stringify(items),
+                complete: (data, status) => {
+                    setTimeout(() => {
                         let response = JSON.parse(data.responseText);
-                    
+
                         if (response['result'] == 'failed') {
                             console.error('Failed to save widgets', data);
-                            $('#save-grid').text('Save').prop('disabled', false); // Unlock the button on failure
-                            $('#save-spinner').hide(); // Hide spinner on failure
+                            $('#save-grid').prop('disabled', false);
+                            $('#save-spinner').removeClass('show').addClass('hide');
+                            $('#save-btn-text').removeClass('hide').addClass('show');
                         } else {
-                            // Hide the save button upon successful save
-                            $('#save-grid').prop('disabled', false); // Unlock the button on success
-                            $('#save-spinner').hide(); // Hide spinner on success
-                            $('#save-grid').hide(); // Hide save button on success
+                            $('#save-spinner').removeClass('show').addClass('hide');
+                            $('#save-check').toggleClass("hide show");
+                            setTimeout(() => {
+                                // Hide the save button upon successful save
+                                $('#save-grid').hide();
+                                $('#save-check').toggleClass("show hide");
+                                $('#save-btn-text').toggleClass("hide show");
+                                $('#save-grid').prop('disabled', false);
+                            }, 500)
                         }
-                    }
-                });
-            }, 1000); // Add artificial delay before the AJAX call starts to give more feedback on button click
+                    }, 300); // Artificial delay to give more feedback on button click
+                }
+            });
         });
 
         $('#add_widget').click(() => {
