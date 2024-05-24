@@ -34,12 +34,23 @@ require_once('interfaces.inc');
 
 function setup_interface($instance)
 {
-    if (!file_exists("/dev/{$instance->__devnode}")) {
-        mwexecf('/sbin/ifconfig %s create', [$instance->__devnode]);
-    }
-    if (!does_interface_exist($instance->__devname)) {
-        mwexecf('/sbin/ifconfig %s name %s', [$instance->__devnode, $instance->__devname]);
-        mwexecf('/sbin/ifconfig %s group openvpn', [$instance->__devname]);
+    if (in_array($instance->dev_type, ['tun', 'tap'])) {
+        if (!file_exists("/dev/{$instance->__devnode}")) {
+            mwexecf('/sbin/ifconfig %s create', [$instance->__devnode]);
+        }
+        if (!does_interface_exist($instance->__devname)) {
+            mwexecf('/sbin/ifconfig %s name %s', [$instance->__devnode, $instance->__devname]);
+            mwexecf('/sbin/ifconfig %s group openvpn', [$instance->__devname]);
+        }
+    } elseif ($instance->dev_type == 'ovpn') {
+        if (!does_interface_exist($instance->__devname)) {
+            /**
+             * XXX: DCO uses non standard matching, normally create should use "ifconfig ovpnX create"
+             * ref: https://github.com/opnsense/src/blob/b0130349e8/sys/net/if_ovpn.c#L2392-L2400
+             */
+            mwexecf('/sbin/ifconfig %s create', [$instance->__devname]);
+            mwexecf('/sbin/ifconfig %s group openvpn', [$instance->__devname]);
+        }
     }
     /* Make sure the interface is down before handing it over to OpenVPN to prevent locking issues */
     mwexecf('/sbin/ifconfig %s down', [$instance->__devname]);
@@ -68,6 +79,7 @@ function ovpn_start($instance, $fhandle)
             'md5' => md5_file($instance->cnfFilename),
             'vpnid' => (string)$instance->vpnid,
             'devname' => (string)$instance->__devname,
+            'dev_type' => (string)$instance->dev_type,
         ];
         fseek($fhandle, 0);
         ftruncate($fhandle, 0);
@@ -75,11 +87,14 @@ function ovpn_start($instance, $fhandle)
     }
 }
 
-function ovpn_stop($instance)
+function ovpn_stop($instance, $destroy_if=false)
 {
     killbypid($instance->pidFilename);
     @unlink($instance->pidFilename);
     @unlink($instance->sockFilename);
+    if ($destroy_if) {
+        legacy_interface_destroy($instance->__devname);
+    }
 }
 
 function ovpn_instance_stats($instance, $fhandle)
@@ -87,7 +102,7 @@ function ovpn_instance_stats($instance, $fhandle)
     fseek($fhandle, 0);
     $data = json_decode(stream_get_contents($fhandle) ?? '', true) ?? [];
     $data['has_changed'] = ($data['md5'] ?? '') != @md5_file($instance->cnfFilename);
-    foreach (['vpnid', 'devname'] as $fieldname) {
+    foreach (['vpnid', 'devname', 'dev_type'] as $fieldname) {
         $data[$fieldname] = $data[$fieldname] ?? null;
     }
     return $data;
@@ -147,6 +162,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         $statHandle = fopen($node->statFilename, "a+");
         if (flock($statHandle, LOCK_EX)) {
             $instance_stats = ovpn_instance_stats($node, $statHandle);
+            $destroy_if = !empty($instance_stats['dev_type']) && $instance_stats['dev_type'] != $node->dev_type;
             switch ($action) {
                 case 'stop':
                     ovpn_stop($node);
@@ -155,7 +171,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                     ovpn_start($node, $statHandle);
                     break;
                 case 'restart':
-                    ovpn_stop($node);
+                    ovpn_stop($node, $destroy_if);
                     ovpn_start($node, $statHandle);
                     break;
                 case 'configure':
@@ -168,7 +184,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                             ovpn_stop($node);
                         }
                     } elseif ($instance_stats['has_changed'] || !isvalidpid($node->pidFilename)) {
-                        ovpn_stop($node);
+                        ovpn_stop($node, $destroy_if);
                         ovpn_start($node, $statHandle);
                     }
                     break;

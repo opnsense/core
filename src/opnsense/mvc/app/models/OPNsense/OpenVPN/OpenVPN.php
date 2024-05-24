@@ -72,7 +72,7 @@ class OpenVPN extends BaseModel
                     ));
                 }
             } elseif ($instance->role == 'server') {
-                if ($instance->dev_type == 'tun') {
+                if (in_array($instance->dev_type, ['tun', 'ovpn'])) {
                     if (empty((string)$instance->server) && empty((string)$instance->server_ipv6)) {
                         $messages->appendMessage(
                             new Message(gettext('At least one IPv4 or IPv6 tunnel network is required.'), $key . '.server')
@@ -497,7 +497,7 @@ class OpenVPN extends BaseModel
                         $options['crl-verify'] = "/var/etc/openvpn/server-{$node_uuid}.crl-verify";
                     }
                     $options['verify-client-cert'] = (string)$node->verify_client_cert;
-                    if ((string)$node->dev_type == 'tun' && !empty((string)$node->server)) {
+                    if (in_array($node->dev_type, ['tun', 'ovpn']) && !empty((string)$node->server)) {
                         $parts = explode('/', (string)$node->server);
                         $mask = Util::CIDRToMask($parts[1]);
                         if ((string)$node->topology == 'p2p' && $parts[1] > 29) {
@@ -600,7 +600,7 @@ class OpenVPN extends BaseModel
                     $options['keepalive'] = "{$node->keepalive_interval} {$node->keepalive_timeout}";
                 }
 
-                $options['dev-type'] = (string)$node->dev_type;
+                $options['dev-type'] = $node->dev_type == 'ovpn' ? 'tun' : (string)$node->dev_type;
                 $options['dev-node'] = "/dev/{$node->dev_type}{$node->vpnid}";
                 $options['script-security'] = '3';
                 $options['writepid'] = $node->pidFilename;
@@ -612,6 +612,9 @@ class OpenVPN extends BaseModel
                     $options['proto'] .= ('-'  . (string)$node->role);
                 }
                 $options['verb'] = (string)$node->verb;
+                if ($node->dev_type != 'ovpn') {
+                    $options['disable-dco'] = null; /* DCO (ovpn) not selected */
+                }
                 $options['up'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkup';
                 $options['down'] = '/usr/local/etc/inc/plugins.inc.d/openvpn/ovpn-linkdown';
 
