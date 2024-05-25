@@ -551,7 +551,7 @@ function system_interface_route($gw, $routes)
 {
     $interface = $gw['interface'];
     $gateway = $gw['gateway'] ?? 'missing';
-    $far = isset($gw['fargw']);
+    $far = !empty($gw['fargw']);
     $device = $gw['if'];
     $family = 'inet';
 
@@ -726,8 +726,8 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             }
 
             $interfacegw = $gateway['if'];
-            $gatewayip = $gateway['gateway'];
-            $fargw = isset($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
+            $gatewayip = $gateway['gateway'] ?? '';
+            $fargw = !empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6';
             $blackhole = '';
 
             switch ($rtent['gateway']) {
