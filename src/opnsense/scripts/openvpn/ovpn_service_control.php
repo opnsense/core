@@ -87,7 +87,7 @@ function ovpn_start($instance, $fhandle)
     }
 }
 
-function ovpn_stop($instance, $destroy_if=false)
+function ovpn_stop($instance, $destroy_if = false)
 {
     killbypid($instance->pidFilename);
     @unlink($instance->pidFilename);
