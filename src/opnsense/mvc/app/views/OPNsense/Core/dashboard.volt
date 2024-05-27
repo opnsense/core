@@ -42,6 +42,14 @@
 
 <script>
 $( document ).ready(function() {
+    let chartBackgroundColor = getComputedStyle(document.body).getPropertyValue('--chart-js-background-color').trim();
+    let chartBorderColor = getComputedStyle(document.body).getPropertyValue('--chart-js-border-color').trim();
+    let chartFontColor = getComputedStyle(document.body).getPropertyValue('--chart-js-font-color').trim();
+
+    if (chartBackgroundColor) Chart.defaults.backgroundColor = chartBackgroundColor;
+    if (chartBorderColor) Chart.defaults.borderColor = chartBorderColor;
+    if (chartFontColor) Chart.defaults.color = chartFontColor;
+
     let widgetManager = new WidgetManager({
         float: false,
         columnOpts: {
