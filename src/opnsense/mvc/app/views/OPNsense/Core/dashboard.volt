@@ -45,19 +45,9 @@ $( document ).ready(function() {
     let widgetManager = new WidgetManager({
         float: false,
         columnOpts: {
-            columnMax: 7,
-            breakpoints: [
-                {w:500, c:1},
-                {w:700, c:2},
-                {w:850, c:3},
-                {w:1100, c:4},
-                {w:1250, c:5},
-                {w:1600, c:5},
-                {w:1800, c:6},
-                {w:2000, c:7}
-            ]
+            columnWidth: 300
         },
-        margin: 10,
+        margin: 5,
         alwaysShowResizeHandle: false,
         sizeToContent: true,
         resizable: {

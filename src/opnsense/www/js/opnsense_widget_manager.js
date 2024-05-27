@@ -186,11 +186,10 @@ class WidgetManager  {
         }
 
         widget.setTranslations(this.widgetTranslations[id]);
-        widget.setTitle(this.widgetTranslations[id].title);
 
         // setup generic panels
         let content = widget.getMarkup();
-        let $panel = this._makeWidget(id, widget.title, content);
+        let $panel = this._makeWidget(id, this.widgetTranslations[id].title, content);
 
         if (id in this.widgetConfigurations) {
             this.widgetConfigurations[id].content = $panel.prop('outerHTML');
@@ -273,9 +272,17 @@ class WidgetManager  {
             $('#save-spinner').addClass('show');
             $('#save-grid').prop('disabled', true);
 
-            //this.grid.cellHeight('auto', false);
             let items = this.grid.save(false);
-            //this.grid.cellHeight(1, false);
+            items.forEach(({item}) => {
+                // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
+                // as the calculation will return impossible values for the x, y, w and h attributes.
+                // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
+                let elem = $(this.widgetHTMLElements[item.id]);
+                item.x = parseInt(elem.attr('gs-x')) ?? 1;
+                item.y = parseInt(elem.attr('gs-y')) ?? 1;
+                item.w = parseInt(elem.attr('gs-w')) ?? 1;
+                item.h = parseInt(elem.attr('gs-h')) ?? 1;
+            });
 
             $.ajax({
                 type: "POST",

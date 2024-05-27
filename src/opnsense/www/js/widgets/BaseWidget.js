@@ -28,7 +28,6 @@ export default class BaseWidget {
     constructor(config) {
         this.config = config;
         this.id = null;
-        this.title = "";
         this.translations = {};
         this.tickTimeout = 5000; // Default tick timeout
         this.resizeHandles = "all"
@@ -40,10 +39,6 @@ export default class BaseWidget {
 
     setId(id) {
         this.id = id;
-    }
-
-    setTitle(title) {
-        this.title = title;
     }
 
     setTranslations(translations) {
