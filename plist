@@ -1955,6 +1955,7 @@
 /usr/local/opnsense/www/js/widgets/BaseGaugeWidget.js
 /usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
+/usr/local/opnsense/www/js/widgets/Carp.js
 /usr/local/opnsense/www/js/widgets/Cpu.js
 /usr/local/opnsense/www/js/widgets/Disk.js
 /usr/local/opnsense/www/js/widgets/Firewall.js
