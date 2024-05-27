@@ -119,6 +119,12 @@ class DashboardController extends ApiControllerBase
                 'title' => gettext('SWAP Usage'),
                 'used' => gettext('Used'),
                 'free' => gettext('Free'),
+            ],
+            'carp' => [
+                'title' => gettext('CARP Status'),
+                'unconfigured' => gettext('NO CARP Interfaces configured. Click to configure CARP.'),
+                'carp' => gettext('CARP IP'),
+                'alias' => gettext('IP Alias'),
             ]
         ];
     }

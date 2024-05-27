@@ -228,6 +228,9 @@ export default class BaseTableWidget extends BaseWidget {
                             }
                         });
                         this._rotate(id, row);
+                    } else {
+                        $gridRow.css('opacity', 1);
+                        $gridRow.css('background-color','initial')
                     }
 
                 break;
