@@ -115,6 +115,7 @@ export default class BaseGaugeWidget extends BaseWidget {
                         let fontSize = (height / divisor).toFixed(2);
                         ctx.font = fontSize + "em SourceSansProSemiBold";
                         ctx.textBaseline = "middle";
+                        ctx.fillStyle = Chart.defaults.color;
 
                         let textX = Math.round((width - ctx.measureText(primaryText).width) / 2);
                         let textY = (height * 0.66);
