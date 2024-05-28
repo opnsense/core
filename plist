@@ -232,6 +232,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/BackupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/DashboardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/HasyncController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/MenuController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/Api/SystemController.php
@@ -239,10 +240,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/DashboardController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/FirmwareController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HaltController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/HasyncController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/LicenseController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/RebootController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Cron/IndexController.php
@@ -620,9 +623,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Hasync.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Hasync.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
@@ -812,6 +818,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/dashboard.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/firmware.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/halt.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/hasync.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/license.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
@@ -1080,6 +1087,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_pfsync.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh

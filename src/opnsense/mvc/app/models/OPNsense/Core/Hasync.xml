@@ -1,0 +1,42 @@
+<model>
+    <mount>//hasync</mount>
+    <migration_prefix>MHA</migration_prefix>
+    <version>1.0.0</version>
+    <description>HA sync</description>
+    <items>
+        <disablepreempt type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </disablepreempt>
+        <disconnectppps type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </disconnectppps>
+        <pfsyncenabled type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </pfsyncenabled>
+        <pfsyncinterface type="InterfaceField">
+            <Required>Y</Required>
+            <Default>lan</Default>
+            <AllowDynamic>Y</AllowDynamic>
+            <filters>
+                <virtual>/^(?!1).*$/</virtual>
+            </filters>
+        </pfsyncinterface>
+        <pfsyncpeerip type="NetworkField">
+            <NetMaskAllowed>N</NetMaskAllowed>
+        </pfsyncpeerip>
+        <synchronizetoip type="TextField"/>  <!-- XXX: accepts uri or address -->
+        <username type="TextField"/>
+        <password type="TextField"/>  <!-- XXX -->
+        <syncitems type="JsonKeyValueStoreField">
+            <Multiple>Y</Multiple>
+            <ConfigdPopulateAct>system ha options</ConfigdPopulateAct>
+            <SourceFile>/tmp/ha_options.json</SourceFile>
+            <ConfigdPopulateTTL>60</ConfigdPopulateTTL>
+            <SortByValue>Y</SortByValue>
+            <ValidationMessage>Specify valid list of applications to sync.</ValidationMessage>
+        </syncitems>
+    </items>
+</model>

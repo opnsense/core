@@ -144,11 +144,11 @@ function get_all_services($name = '', $id = '')
     return $services;
 }
 
-$opts = getopt('46cDdfghIirSs', [], $optind);
+$opts = getopt('46cDdfghIirSsX', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s] ...\n\n";
+    echo "Usage: pluginctl [-4|-c|-D|-d|-f|-g|-h|-I|-i|-r|-S|-s|-X] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
     echo "\t-D ifconfig mode, lists available devices\n";
@@ -161,6 +161,7 @@ if (isset($opts['h'])) {
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
     echo "\t-s service mode (e.g. myservice restart)\n";
+    echo "\t-X list xmlrpc sync metadata dump (add s for key/value list, eg -X s)\n";
 } elseif (isset($opts['4'])) {
     $int = $args[0] ?? null;
     $raw = interfaces_primary_address($int);
@@ -255,6 +256,17 @@ if (isset($opts['h'])) {
             echo "$key\n";
         }
     }
+} elseif (isset($opts['X'])) {
+    if (empty($args) || $args[0] != 's') {
+        $payload = plugins_xmlrpc_sync();
+    } else {
+        $payload = [];
+        foreach (plugins_xmlrpc_sync() as $key => $data) {
+            $payload[$key] = $data['description'] ?? '';
+        }
+        natcasesort($payload);
+    }
+    echo json_encode($payload, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (empty($args[0])) {
     // no arguments, list plugins of selected type
     $results = [];
