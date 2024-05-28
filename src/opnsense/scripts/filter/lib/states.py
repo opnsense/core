@@ -161,12 +161,23 @@ def query_states(rule_label, filter_str):
                         record["pkts"] = [int(s) for s in part.split()[0].split(':')]
                     elif part.endswith("bytes"):
                         record["bytes"] = [int(s) for s in part.split()[0].split(':')]
+                    elif part in [
+                        'allow-opts', 'sloppy', 'no-sync', 'psync-ack', 'no-df', 'random-id', 'reassemble-tcp'
+                    ]:
+                        record["flags"].append(part)
             elif parts[0] == "id:":
                 # XXX: in order to kill a state, we need to pass both the id and the creator, so it seeems to make
                 #      sense to uniquely identify the state by the combined number
                 record["id"] = "%s/%s" % (parts[1], parts[3])
                 if len(parts) > 5:
-                    record['gateway'] = parts[5]
+                    # gateway, route-to, dup-to, reply-to option
+                    rt = parts[4].rstrip(':')
+                    if rt in ['route-to', 'dup-to', 'reply-to', 'gateway']:
+                        record[rt] = parts[5]
+                        if len(parts) > 7 and parts[7].isdigit():
+                            record['rtable'] = int(parts[7])
+                    elif rt == 'rtable' and  parts[5].isdigit():
+                        record['rtable'] = int(parts[5])
             if rule_label != "" and record['label'].lower().find(rule_label) == -1:
                 # label
                 continue
@@ -208,7 +219,8 @@ def query_states(rule_label, filter_str):
                 'gateway': None,
                 'iface': parts[0],
                 'proto': parts[1],
-                'ipproto': addr_parser.split_ip_port(parts[2])['ipproto']
+                'ipproto': addr_parser.split_ip_port(parts[2])['ipproto'],
+                'flags': []
             }
             if parts[3].find('(') > -1:
                 # NAT enabled
