@@ -35,18 +35,7 @@ $a_hasync = &config_read_array('hasync');
 $checkbox_names = array(
     'pfsyncenabled',
     'disablepreempt',
-    'disconnectppps',
-    'synchronizealiases',
-    'synchronizeauthservers',
-    'synchronizecerts',
-    'synchronizedhcpd',
-    'synchronizenat',
-    'synchronizerules',
-    'synchronizeschedules',
-    'synchronizestaticroutes',
-    'synchronizeusers',
-    'synchronizevirtualip',
-    'synchronizewidgets',
+    'disconnectppps'
 );
 
 $syncplugins = plugins_xmlrpc_sync();
