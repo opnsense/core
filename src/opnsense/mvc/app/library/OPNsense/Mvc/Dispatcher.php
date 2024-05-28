@@ -66,7 +66,7 @@ class Dispatcher
      */
     public function getActionName()
     {
-        return substr($this->action,0, strlen($this->action)-6);
+        return substr($this->action, 0, strlen($this->action) - 6);
     }
 
     /**
