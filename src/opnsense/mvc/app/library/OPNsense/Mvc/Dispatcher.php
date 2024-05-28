@@ -60,6 +60,16 @@ class Dispatcher
     }
 
     /**
+     * XXX: rename to getMethodName when phalcon is removed and return plain $this->action,
+     *      next cleanup ApiControllerBase.
+     * @return string action name
+     */
+    public function getActionName()
+    {
+        return substr($this->action,0, strlen($this->action)-6);
+    }
+
+    /**
      * Resolve controller class and inspect method to call, except when the target controller offers a __call
      * hook in which case we expect the target to offer proper error handling
      * @throws ClassNotFoundException when controller class can not be found
