@@ -36,7 +36,7 @@
                     options:{
                         formatters:{
                             rule: function (column, row) {
-                                if (row.label !== "") {
+                                if (row.label) {
                                     return "<a target=\"_blank\" href=\"/firewall_rule_lookup.php?rid=" + row.label + "\">"+row[column.id]+"</a>";
                                 } else {
                                     return row[column.id];
