@@ -32,11 +32,11 @@ require_once("interfaces.inc");
 
 $a_hasync = &config_read_array('hasync');
 
-$checkbox_names = array(
-    'pfsyncenabled',
+$checkbox_names = [
     'disablepreempt',
-    'disconnectppps'
-);
+    'disconnectppps',
+    'pfsyncenabled',
+];
 
 $syncplugins = plugins_xmlrpc_sync();
 
@@ -45,7 +45,7 @@ foreach (array_keys($syncplugins) as $key) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
+    $pconfig = [];
     foreach ($checkbox_names as $name) {
         if (isset($a_hasync[$name])) {
             $pconfig[$name] = $a_hasync[$name];
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$name] = null;
         }
     }
-    foreach (array('pfsyncpeerip','pfsyncinterface','synchronizetoip','username','password') as $tag) {
+    foreach (['pfsyncpeerip', 'pfsyncinterface', 'synchronizetoip', 'username', 'password'] as $tag) {
         if (isset($a_hasync[$tag])) {
             $pconfig[$tag] = $a_hasync[$tag];
         } else {
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     foreach ($checkbox_names as $name) {
