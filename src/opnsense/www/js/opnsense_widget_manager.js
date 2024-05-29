@@ -273,7 +273,7 @@ class WidgetManager  {
             $('#save-grid').prop('disabled', true);
 
             let items = this.grid.save(false);
-            items.forEach(({item}) => {
+            items.forEach((item) => {
                 // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
                 // as the calculation will return impossible values for the x, y, w and h attributes.
                 // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
