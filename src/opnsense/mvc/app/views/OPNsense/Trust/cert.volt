@@ -26,6 +26,7 @@
 
 <script>
     'use strict';
+
     $( document ).ready(function () {
         let grid_cert = $("#grid-cert").UIBootgrid({
             search:'/api/trust/cert/search/',

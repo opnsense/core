@@ -27,7 +27,6 @@
 <script>
     'use strict';
 
-
     $( document ).ready(function () {
         let grid_crl = $("#grid-crl").UIBootgrid({
             search:'/api/trust/crl/search/',
