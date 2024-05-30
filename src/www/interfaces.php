@@ -432,7 +432,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
-    $pconfig['dhcp6accept_rtadv'] = !isset($a_interfaces[$if]['dhcp6deny_rtadv']);
 
     /*
      * Due to the settings being split per interface type, we need
@@ -1190,10 +1189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
-                    }
-                    /* flipped in GUI on purpose */
-                    if (empty($pconfig['dhcp6accept_rtadv'])) {
-                        $new_config['dhcp6deny_rtadv'] = true;
                     }
                     if (isset($pconfig['dhcp6-prefix-id--hex']) && ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
                         $new_config['dhcp6-prefix-id'] = intval($pconfig['dhcp6-prefix-id--hex'], 16);
@@ -2667,15 +2662,6 @@ include("head.inc");
                               <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
                             </div>
                           </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6accept_rtadv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Use SLAAC address') ?></td>
-                          <td>
-                            <input name="dhcp6accept_rtadv" type="checkbox" id="dhcp6accept_rtadv" value="yes" <?= !empty($pconfig['dhcp6accept_rtadv']) ? 'checked="checked"' : '' ?>/>
-                            <div class="hidden" data-for="help_for_dhcp6accept_rtadv">
-                              <?= gettext('Enable accepting ICMPv6 Router Advertisement messages. This is mandatory for certain Internet service proviers and defaults to enabled. ' .
-                                  'In some cases the resulting SLAAC address does not provide Internet connectivity so that may be disabled here.') ?>
-                            </div>
                         </tr>
                         <tr>
                           <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use IPv4 connectivity') ?></td>

@@ -2320,7 +2320,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     switch (isset($config['system']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
-            mwexecf('/sbin/ifconfig %s inet6 %saccept_rtadv -ifdisabled up', [$realifv6, isset($wancfg['dhcp6deny_rtadv']) ? '-' : '']);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
 
             if (!isset($wancfg['dhcp6usev4iface'])) {
                 interface_dhcpv6_prepare($interface, $wancfg);
