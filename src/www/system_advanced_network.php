@@ -171,6 +171,7 @@ $duid = read_duid();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = [];
+    $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
@@ -196,6 +197,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['sharednet'] = true;
         } elseif (isset($config['system']['sharednet'])) {
             unset($config['system']['sharednet']);
+        }
+
+        if (!empty($pconfig['ipv6allow'])) {
+            $config['system']['ipv6allow'] = true;
+        } elseif (isset($config['system']['ipv6allow'])) {
+            unset($config['system']['ipv6allow']);
         }
 
         if (!empty($pconfig['disablechecksumoffloading'])) {
@@ -248,6 +255,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         interface_dhcpv6_configure('duidonly', null); /* XXX refactor */
         system_sysctl_configure();
         interfaces_hardware();
+        /* XXX interfaces IPv6 mode is forced to disable maybe but we are not reconfiguring here */
+        filter_configure();
     }
 }
 
@@ -256,6 +265,12 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 ?>
+
+<script>
+    $( document ).ready(function () {
+        window_highlight_table_option();
+    });
+</script>
 
 <body>
 <?php include("fbegin.inc"); ?>
@@ -285,7 +300,7 @@ include("head.inc");
                 <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
                 <td>
                   <input name="disablechecksumoffloading" type="checkbox" id="disablechecksumoffloading" value="yes" <?= !empty($pconfig['disablechecksumoffloading']) ? "checked=\"checked\"" :"";?> />
-                  <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
+                  <?=gettext("Disable hardware checksum offload"); ?>
                   <div class="hidden" data-for="help_for_disablechecksumoffloading">
                     <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
                   </div>
@@ -295,7 +310,7 @@ include("head.inc");
                 <td><a id="help_for_disablesegmentationoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware TSO"); ?></td>
                 <td>
                   <input name="disablesegmentationoffloading" type="checkbox" id="disablesegmentationoffloading" value="yes" <?= !empty($pconfig['disablesegmentationoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
+                  <?=gettext("Disable hardware TCP segmentation offload"); ?>
                   <div class="hidden" data-for="help_for_disablesegmentationoffloading">
                     <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
@@ -305,7 +320,7 @@ include("head.inc");
                 <td><a id="help_for_disablelargereceiveoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware LRO"); ?></td>
                 <td>
                   <input name="disablelargereceiveoffloading" type="checkbox" id="disablelargereceiveoffloading" value="yes" <?= !empty($pconfig['disablelargereceiveoffloading']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
+                  <?=gettext("Disable hardware large receive offload"); ?>
                   <div class="hidden" data-for="help_for_disablelargereceiveoffloading">
                     <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                   </div>
@@ -333,10 +348,20 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_sharednet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("ARP Handling"); ?></td>
                 <td>
-                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? "checked=\"checked\"" :"";?>/>
-                  <strong><?=gettext("Suppress ARP messages"); ?></strong><br />
+                  <input name="sharednet" type="checkbox" id="sharednet" value="yes" <?= !empty($pconfig['sharednet']) ? 'checked="checked"' : '' ?>/>
+                  <?=gettext("Suppress ARP messages"); ?>
                   <div class="hidden" data-for="help_for_sharednet">
                     <?=gettext("This option will suppress ARP log messages when multiple interfaces reside on the same broadcast domain"); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Allow IPv6') ?></td>
+                <td>
+                  <input name="ipv6allow" id="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? 'checked="checked"' : '' ?>/>
+                  <?= gettext('Allow IPv6') ?>
+                  <div class="hidden" data-for="help_for_ipv6allow">
+                    <?= gettext('If unchecked, IPv6 interface configuration will be ignored and all forwarding traffic will be blocked. Use with care.') ?>
                   </div>
                 </td>
               </tr>

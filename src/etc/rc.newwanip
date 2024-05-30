@@ -82,7 +82,7 @@ interfaces_vips_configure($interface, 4);
 $greifs = link_interface_to_gre($interface, true, 4);
 $gififs = link_interface_to_gif($interface, true, 4);
 
-switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
+switch (isset($config['system']['ipv6allow']) ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
     case '6to4':
         interface_6to4_configure($interface, $config['interfaces'][$interface], true);
         system_routing_configure(false, $interface); /* XXX interface recreation breaks attached routes */
