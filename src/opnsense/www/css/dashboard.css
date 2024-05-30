@@ -1,3 +1,7 @@
+:root {
+    --chart-js-font-color: #000000;
+}
+
 .fa-spinner {
     font-size: 2em;
 }

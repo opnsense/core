@@ -41,7 +41,7 @@ export default class Cpu extends BaseWidget {
             millisPerPixel:50,
             tooltip: true,
             labels: {
-                fillStyle: '#000000',
+                fillStyle: Chart.defaults.color,
                 precision: 0,
                 fontSize: 11
             },
