@@ -2868,6 +2868,10 @@ if [ -z "\${1}" ]; then
     echo "Nothing to do."
     exit 0
 fi
+if grep -q "^interface \${1} " /var/etc/radvd.conf; then
+       echo "Rejecting own configuration."
+       exit 0
+fi
 if [ -n "\${2}" ]; then
     # Note that the router file can be written by ppp-linkup.sh or
     # this script so do not clear the file as it may already exist.
