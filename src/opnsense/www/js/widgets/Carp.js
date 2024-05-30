@@ -48,10 +48,8 @@ export default class Carp extends BaseTableWidget {
         return $('<div></div>').append($carp_table);
     }
 
-    async onMarkupRendered() {
+    async onWidgetTick() {
         await ajaxGet('/api/diagnostics/interface/get_vip_status', {}, (data, status) => {
-            let rows = [];
-
             if (!data.rows.length) {
                 $('#carp-table').html(`<a href="/ui/interfaces/vip">${this.translations.unconfigured}</a>`);
                 return;
@@ -71,7 +69,7 @@ export default class Carp extends BaseTableWidget {
             });
 
             Object.values(ifs).forEach(({ primary, aliases }) => {
-                let $intf = $(`<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`);
+                let $intf = `<div><a href="/ui/interfaces/vip">${primary.interface} @ VHID ${primary.vhid}</a></div>`;
                 let vips = [
                     `<div>
                         <span class="bootgrid-tooltip badge badge-pill"
@@ -98,10 +96,9 @@ export default class Carp extends BaseTableWidget {
                     `);
                 });
 
-                rows.push([$intf.prop('outerHTML'), vips]);
+                this.updateTable('carp-table', [[$intf, vips]], `carp_${primary.interface}_${primary.vhid}`);
             });
 
-            this.updateTable('carp-table', rows);
             $('[data-toggle="tooltip"]').tooltip();
         });
     }
