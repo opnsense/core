@@ -122,9 +122,16 @@ class DashboardController extends ApiControllerBase
             ],
             'carp' => [
                 'title' => gettext('CARP Status'),
-                'unconfigured' => gettext('NO CARP Interfaces configured. Click to configure CARP.'),
+                'unconfigured' => gettext('No CARP Interfaces configured. Click to configure CARP.'),
                 'carp' => gettext('CARP IP'),
                 'alias' => gettext('IP Alias'),
+            ],
+            'gateways' => [
+                'title' => gettext('Gateways'),
+                'unconfigured' => gettext('No Gateways configured. Click to configure gateways.'),
+                'rtt' => gettext('RTT'),
+                'rttd' => gettext('RTTd'),
+                'loss' => gettext('Loss'),
             ]
         ];
     }
