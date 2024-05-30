@@ -95,6 +95,9 @@
               {%    if allownew|default("false") %}
               &nbsp;&nbsp;<a href="#" class="text-danger" id="to-text_{{ id }}" ><i class="fa fa-file-text-o"></i> <small>{{ lang._('Text') }}</small> </a>
               {%    endif %}
+              {% else %}
+                &nbsp;
+                <a href="#" class="text-danger" id="select-options_{{ id }}"><i class="fa fa-check-circle"></i> <small>{{ lang._('Select All') }}</small></a>
               {% endif %}
             {% endif %}
             </div>
