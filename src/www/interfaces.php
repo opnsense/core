@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2015 Deciso B.V.
+ * Copyright (C) 2014-2022 Deciso B.V.
  * Copyright (C) 2010 Erik Fonnesbeck
  * Copyright (C) 2008-2010 Ermal Luçi
  * Copyright (C) 2004-2008 Scott Ullrich <sullrich@gmail.com>
@@ -387,6 +387,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'alias-subnet',
         'descr',
         'dhcp6-ia-pd-len',
+        'dhcp6-prefix-id',
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
@@ -429,7 +430,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
+    $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
+    $pconfig['dhcp6accept_rtadv'] = !isset($a_interfaces[$if]['dhcp6deny_rtadv']);
 
     /*
      * Due to the settings being split per interface type, we need
@@ -724,6 +727,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
                 }
+                if (isset($pconfig['dhcp6-prefix-id--hex']) && $pconfig['dhcp6-prefix-id--hex'] != '') {
+                    if (!ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
+                        $input_errors[] = gettext("You must enter a valid hexadecimal number for the IPv6 prefix ID.");
+                    } else {
+                        $ipv6_delegation_length = calculate_ipv6_delegation_length($if);
+                        if ($ipv6_delegation_length >= 0) {
+                            $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
+                            $dhcp6_prefix_id = intval($pconfig['dhcp6-prefix-id--hex'], 16);
+                            if ($dhcp6_prefix_id < 0 || $dhcp6_prefix_id >= $ipv6_num_prefix_ids) {
+                                $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+                            }
+                        }
+                        foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
+                            if ($trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
+                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                                break;
+                            }
+                        }
+                    }
+                }
                 break;
             case '6rd':
                 if (empty($pconfig['gateway-6rd']) || !is_ipaddrv4($pconfig['gateway-6rd'])) {
@@ -770,6 +793,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                             if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                                 break;
+                            }
+                        }
+                        if (isset($config['interfaces'][$pconfig['track6-interface']]['dhcp6-prefix-id'])) {
+                            if ($config['interfaces'][$pconfig['track6-interface']]['dhcp6-prefix-id'] == $track6_prefix_id) {
+                                $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                             }
                         }
                     }
@@ -1162,6 +1190,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6vlanprio']) && $pconfig['dhcp6vlanprio'] !== '') {
                         $new_config['dhcp6vlanprio'] = $pconfig['dhcp6vlanprio'];
+                    }
+                    /* flipped in GUI on purpose */
+                    if (empty($pconfig['dhcp6accept_rtadv'])) {
+                        $new_config['dhcp6deny_rtadv'] = true;
+                    }
+                    if (isset($pconfig['dhcp6-prefix-id--hex']) && ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
+                        $new_config['dhcp6-prefix-id'] = intval($pconfig['dhcp6-prefix-id--hex'], 16);
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -2618,6 +2653,40 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
+                          <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
+                          <td>
+                            <select name="dhcp6vlanprio">
+                              <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
+<?php
+                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
+                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcp6vlanprio']}" === "$pcp" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
+<?php
+                              endforeach ?>
+                            </select>
+                            <div class="hidden" data-for="help_for_dhcp6vlanprio">
+                              <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6accept_rtadv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Use SLAAC address') ?></td>
+                          <td>
+                            <input name="dhcp6accept_rtadv" type="checkbox" id="dhcp6accept_rtadv" value="yes" <?= !empty($pconfig['dhcp6accept_rtadv']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" data-for="help_for_dhcp6accept_rtadv">
+                              <?= gettext('Enable accepting ICMPv6 Router Advertisement messages. This is mandatory for certain Internet service proviers and defaults to enabled. ' .
+                                  'In some cases the resulting SLAAC address does not provide Internet connectivity so that may be disabled here.') ?>
+                            </div>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use IPv4 connectivity') ?></td>
+                          <td>
+                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
+                            <div class="hidden" data-for="help_for_dhcp6usev4iface">
+                              <?= gettext('Request the IPv6 information through the IPv4 PPP connectivity link.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td style="width:22%"><a id="help_for_dhcpv6_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
                           <td style="width:78%">
                             <div id="dhcpv6_mode" class="btn-group" data-toggle="buttons">
@@ -2638,15 +2707,6 @@ include("head.inc");
                               <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
                               <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?><br>
                               <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Request only an IPv6 prefix"); ?></td>
-                          <td>
-                            <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
-                            <div class="hidden" data-for="help_for_dhcp6prefixonly">
-                              <?= gettext('Only request an IPv6 prefix; do not request an IPv6 address.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2687,7 +2747,16 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6-ia-pd-send-hint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Send IPv6 prefix hint"); ?></td>
+                          <td><a id="help_for_dhcp6prefixonly" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Request prefix only') ?></td>
+                          <td>
+                            <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
+                            <div class="hidden" data-for="help_for_dhcp6prefixonly">
+                              <?= gettext('Only request an IPv6 prefix; do not request an IPv6 address.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6-ia-pd-send-hint" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Send prefix hint') ?></td>
                           <td>
                             <input name="dhcp6-ia-pd-send-hint" type="checkbox" id="dhcp6-ia-pd-send-hint" value="yes" <?=!empty($pconfig['dhcp6-ia-pd-send-hint']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" data-for="help_for_dhcp6-ia-pd-send-hint">
@@ -2695,28 +2764,15 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6usev4iface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use IPv4 connectivity"); ?></td>
+                        <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix ID') ?></td>
                           <td>
-                            <input name="dhcp6usev4iface" type="checkbox" id="dhcp6usev4iface" value="yes" <?=!empty($pconfig['dhcp6usev4iface']) ? "checked=\"checked\"" : ""; ?> />
-                            <div class="hidden" data-for="help_for_dhcp6usev4iface">
-                              <?= gettext('Request the IPv6 information through the IPv4 PPP connectivity link.') ?>
+                            <div class="input-group" style="max-width:348px">
+                              <div class="input-group-addon">0x</div>
+                              <input name="dhcp6-prefix-id--hex" type="text" class="form-control" id="dhcp6-prefix-id--hex" value="<?= html_safe($pconfig['dhcp6-prefix-id--hex']) ?>" />
                             </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><a id="help_for_dhcp6vlanprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Use VLAN priority') ?></td>
-                          <td>
-                            <select name="dhcp6vlanprio">
-                              <option value="" <?= "{$pconfig['dhcp6vlanprio']}" === '' ? 'selected="selected"' : '' ?>><?= gettext('Disabled') ?></option>
-<?php
-                              foreach (interfaces_vlan_priorities() as $pcp => $priority): ?>
-                              <option value="<?= html_safe($pcp) ?>" <?= "{$pconfig['dhcp6vlanprio']}" === "$pcp" ? 'selected="selected"' : '' ?>><?= htmlspecialchars($priority) ?></option>
-<?php
-                              endforeach ?>
-                            </select>
-                            <div class="hidden" data-for="help_for_dhcp6vlanprio">
-                              <?= gettext('Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.') ?>
+                            <div class="hidden" data-for="help_for_dhcp6-prefix-id">
+                              <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2931,7 +2987,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="width:22%"><a id="help_for_track6-interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Interface"); ?></td>
+                          <td style="width:22%"><a id="help_for_track6-interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Parent interface') ?></td>
                           <td style="width:78%">
                             <select name='track6-interface' class='selectpicker' data-style='btn-default' >
 <?php
@@ -2957,7 +3013,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_track6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Prefix ID"); ?></td>
+                          <td><a id="help_for_track6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Assign prefix ID') ?></td>
                           <td>
 <?php
                             if (empty($pconfig['track6-prefix-id'])) {

@@ -2323,7 +2323,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
             set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
 
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $realifv6);
+            mwexecf('/sbin/ifconfig %s inet6 %saccept_rtadv -ifdisabled up', [$realifv6, isset($wancfg['dhcp6deny_rtadv']) ? '-' : '']);
 
             if (!isset($wancfg['dhcp6usev4iface'])) {
                 interface_dhcpv6_prepare($interface, $wancfg);
@@ -2923,6 +2923,12 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
             if (isset($wancfg['dhcp6-ia-pd-send-hint'])) {
                 $preflen = 64 - $wancfg['dhcp6-ia-pd-len'];
                 $dhcp6cconf .= "  prefix ::/{$preflen} infinity;\n";
+            }
+            if (isset($wancfg['dhcp6-prefix-id']) && is_numeric($wancfg['dhcp6-prefix-id'])) {
+                    $dhcp6cconf .= "  prefix-interface {$wanif} {\n";
+                    $dhcp6cconf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
+                    $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                    $dhcp6cconf .= "  };\n";
             }
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
                 if (is_numeric($lancfg['track6-prefix-id'])) {
@@ -4116,7 +4122,8 @@ function interfaces_has_prefix_only($interface)
             $ret = empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
                 ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
                 empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
-                isset($interfaces_a[$interface]['dhcp6prefixonly']));
+                (isset($interfaces_a[$interface]['dhcp6prefixonly']) &&
+                !isset($interfaces_a[$interface]['dhcp6-prefix-id'])));
             break;
         default:
             break;
