@@ -28,7 +28,7 @@
 set -e
 
 DESTDIR="/usr/local/opnsense/changelog"
-FETCH="fetch -qT 15"
+FETCH="fetch -qT 30"
 
 changelog_remove()
 {
