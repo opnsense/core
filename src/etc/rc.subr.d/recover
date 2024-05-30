@@ -186,6 +186,7 @@ $php_ini = <<<EOF
 ; File generated via recovery
 output_buffering = "0"
 expose_php = Off
+enable_dl = Off
 implicit_flush = true
 magic_quotes_gpc = Off
 max_execution_time = 900
