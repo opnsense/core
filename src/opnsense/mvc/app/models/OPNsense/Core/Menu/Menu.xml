@@ -57,7 +57,7 @@
             <LogFile VisibleName="Log File" order="30" url="/ui/diagnostics/log/core/gateways"/>
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
-            <Settings order="100" url="/system_hasync.php"/>
+            <Settings order="100" url="/ui/core/hasync"/>
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">

@@ -642,7 +642,8 @@
     <page-system-hasync>
         <name>System: High Availability</name>
         <patterns>
-            <pattern>system_hasync.php*</pattern>
+            <pattern>ui/core/hasync</pattern>
+            <pattern>api/core/hasync/*</pattern>
         </patterns>
     </page-system-hasync>
     <page-system-license>
