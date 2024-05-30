@@ -74,8 +74,8 @@ function system_sysctl_defaults()
         'hw.ixl.enable_head_writeback' => [ 'default' => '0', 'required' => true ],
         'hw.syscons.kbd_reboot' => [ 'default' => '0' ],
         'hw.uart.console' => [ 'default' => 'io:0x3f8,br:' . system_console_speed(), 'type' => 't' ], /* XXX support comconsole_port if needed */
-        'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
         'kern.coredump' => [ 'default' => '0', 'required' => true ],
+        'kern.ipc.maxsockbuf' => [ 'default' => '4262144' ],
         'kern.randompid' => [ 'default' => '1' ],
         'net.enc.in.ipsec_bpf_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
         'net.enc.in.ipsec_filter_mask' => [ 'default' => '2', 'required' => true ], /* after processing */
@@ -103,10 +103,12 @@ function system_sysctl_defaults()
         'net.inet.udp.blackhole' => [ 'default' => '1' ],
         'net.inet.udp.checksum' => [ 'default' => 1 ],
         'net.inet.udp.maxdgram' => [ 'default' => '57344' ],
+        'net.inet6.ip6.accept_rtadv' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
         'net.inet6.ip6.forwarding' => [ 'default' => '1', 'required' => true ],
         'net.inet6.ip6.intr_queue_maxlen' => [ 'default' => '1000', 'required' => true ],
         'net.inet6.ip6.prefer_tempaddr' => [ 'default' => '0' ],
         'net.inet6.ip6.redirect' => [ 'default' => '0' ],
+        'net.inet6.ip6.rfc6204w3' => [ 'default' => isset($config['system']['ipv6allow']) ? '1' : '0', 'required' => true ],
         'net.inet6.ip6.use_tempaddr' => [ 'default' => '0' ],
         'net.link.bridge.pfil_bridge' => [ 'default' => '0' ],
         'net.link.bridge.pfil_local_phys' => [ 'default' => '0' ],

@@ -35,7 +35,6 @@ require_once("system.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
     $pconfig['state-policy'] = isset($config['system']['state-policy']) ;
@@ -149,12 +148,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['srctrack'] = $pconfig['srctrack'];
         } elseif (isset($config['system']['srctrack'])) {
             unset($config['system']['srctrack']);
-        }
-
-        if (!empty($pconfig['ipv6allow'])) {
-            $config['system']['ipv6allow'] = true;
-        } elseif (isset($config['system']['ipv6allow'])) {
-            unset($config['system']['ipv6allow']);
         }
 
         if (!empty($pconfig['disablefilter'])) {
@@ -308,29 +301,6 @@ include("head.inc");
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <td style="width:22%"><strong><?= gettext('IPv6 Options') ?></strong></td>
-                <td style="width:78%; text-align:right">
-                  <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page"></i>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
-                <td>
-                  <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
-                  <?=gettext("Allow IPv6"); ?>
-                  <div class="hidden" data-for="help_for_ipv6allow">
-                    <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
-                    <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
-                  </div>
-                </td>
-              </tr>
-<?php           if (count($config['interfaces']) > 1): ?>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
                 <td style="width:22%"><strong><?= gettext('Network Address Translation') ?></strong></td>
                 <td style="width:78%"></td>
               </tr>
@@ -363,7 +333,6 @@ include("head.inc");
                   </div>
                 </td>
               </tr>
-<?php           endif; ?>
             </table>
           </div>
           <div class="content-box tab-content table-responsive __mb">

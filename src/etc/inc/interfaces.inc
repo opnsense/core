@@ -2314,15 +2314,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      *    already does that so at this point try to be more consistent.
      */
     $interface_descr = sprintf('%s (%s)', !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface), $interface);
+    /* XXX we should maybe set "ifdisabled" but it could be dangerous for assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$realif, $interface_descr]);
 
-    switch ($wancfg['ipaddrv6'] ?? 'none') {
+    switch (isset($config['system']['ipv6allow']) ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
-            /* XXX move these to tunables maybe as they are global anyway */
-            set_single_sysctl('net.inet6.ip6.accept_rtadv', '1');
-            set_single_sysctl('net.inet6.ip6.rfc6204w3', '1');
-
             mwexecf('/sbin/ifconfig %s inet6 %saccept_rtadv -ifdisabled up', [$realifv6, isset($wancfg['dhcp6deny_rtadv']) ? '-' : '']);
 
             if (!isset($wancfg['dhcp6usev4iface'])) {
