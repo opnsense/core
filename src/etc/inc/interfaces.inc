@@ -1286,9 +1286,14 @@ function interfaces_carp_setup()
             $syncpeer = "-syncpeer";
         }
 
+        $version = '';
+        if (!empty($config['hasync']['version'])) {
+            $version = 'version ' . $config['hasync']['version'];
+        }
+
         $intf_stats = legacy_interfaces_details();
 
-        mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} up");
+        mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} {$version} up");
 
         if (!empty($intf_stats[$carp_sync_int]['mtu'])) {
             mwexec("/sbin/ifconfig pfsync0 mtu {$intf_stats[$carp_sync_int]['mtu']}");

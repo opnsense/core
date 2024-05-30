@@ -28,6 +28,15 @@
         <help>If Synchronize States is enabled, it will utilize this interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
     </field>
     <field>
+        <id>hasync.pfsyncversion</id>
+        <label>Sync compatibility</label>
+        <type>dropdown</type>
+        <help>
+            Newer versions of OPNsense offer additional attributes in the state synchronization, for compatibility reasons you can optionally choose an older version here.
+            Always make sure both nodes use the same version to avoid inconsistent state tables.
+        </help>
+    </field>
+    <field>
         <id>hasync.pfsyncpeerip</id>
         <label>Synchronize Peer IP</label>
         <type>text</type>

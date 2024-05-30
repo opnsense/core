@@ -54,6 +54,9 @@ class MHA1_0_0 extends BaseModelMigration
                 }
             }
             $model->syncitems = implode(',', $syncitems);
+            if (!empty((string)$model->pfsyncenabled)) {
+                $model->pfsyncversion = '1301'; // on upgrade keep legacy pfsync version
+            }
         }
     }
 }

@@ -43,7 +43,6 @@
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="settings"  class="tab-pane fade in active">
@@ -57,6 +56,7 @@
             <br/>
             <button class="btn btn-primary" id="reconfigureAct"
                     data-label="{{ lang._('Apply') }}"
+                    data-endpoint='/api/core/hasync/reconfigure'
                     data-error-title="{{ lang._('Error reconfiguring HAsync') }}"
                     type="button"
             ></button>
