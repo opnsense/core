@@ -185,11 +185,12 @@ EOF;
 $php_ini = <<<EOF
 ; File generated via recovery
 output_buffering = "0"
+allow_url_fopen = "0"
 expose_php = Off
 enable_dl = Off
 implicit_flush = true
 magic_quotes_gpc = Off
-max_execution_time = 900
+max_execution_time = 300
 max_input_time = 1800
 max_input_vars = 5000
 memory_limit = 1G
@@ -199,6 +200,7 @@ variables_order = "GPCS"
 file_uploads = On
 upload_tmp_dir = /tmp
 upload_max_filesize = 200M
+max_file_uploads = 1
 post_max_size = 200M
 html_errors = Off
 zlib.output_compression = Off
