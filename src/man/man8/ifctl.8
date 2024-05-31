@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2022-2023 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2022-2024 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 29, 2023
+.Dd May 31, 2023
 .Dt IFCTL 8
 .Os
 .Sh NAME
@@ -35,7 +35,7 @@
 .Op Fl i Ar device
 .Op Fl 46
 .Op Fl nprs
-.Op Fl a Ar data | Fl c | Fl d | Fl l | Fl O
+.Op Fl a Ar data | Fl c | Fl d | Fl f | Fl l | Fl O
 .Sh DESCRIPTION
 The
 .Nm
@@ -44,7 +44,8 @@ connections.
 .Pp
 If none of
 .Sq Fl c ,
-.Sq Fl d
+.Sq Fl d ,
+.Sq Fl f
 or
 .Sq Fl a
 are given the current data is returned instead of modifying it.
@@ -76,6 +77,8 @@ will be executed first when given in the same command invoke.
 Clear all registered data of the selected device.
 .It Fl d
 Delete the specified data of the selected device.
+.It Fl f
+Flush current SLAAC addressing of the selected device.
 .It Fl i Ar device
 Select the
 .Ar device
