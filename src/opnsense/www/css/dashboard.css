@@ -52,6 +52,11 @@
   border-radius: 0.5em 0.5em 0.5em 0.5em;
 }
 
+.widget-error {
+    margin: 50px;
+    color: #721c24
+}
+
 .widget-content {
     position: relative;
     width: 100%;

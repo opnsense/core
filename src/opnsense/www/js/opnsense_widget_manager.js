@@ -137,10 +137,9 @@ class WidgetManager  {
             });
 
             // Load all modules simultaneously - this shouldn't take long
-            await Promise.all(promises).catch((error) => {
-                console.error('Failed to load widgets', error);
-                null;
-            });
+            const results = await Promise.all(promises.map(p => p.catch(e => e)));
+            const errors = results.filter(result => (result instanceof Error));
+            if (errors.length > 0) console.error('Failed to load one or more widgets:', errors);
         });
     }
 
@@ -153,13 +152,21 @@ class WidgetManager  {
             // restore
             for (const [id, configuration] of Object.entries(this.widgetConfigurations)) {
                 if (id in this.loadedModules) {
-                    this._createGridStackWidget(id, this.loadedModules[id], configuration);
+                    try {
+                        this._createGridStackWidget(id, this.loadedModules[id], configuration);
+                    } catch (error) {
+                        console.error('Failed to create widget', id, error);
+                    }
                 }
             }
         } else {
             // default
             for (const [identifier, widgetClass] of Object.entries(this.loadedModules)) {
-                this._createGridStackWidget(identifier, widgetClass);
+                try {
+                    this._createGridStackWidget(identifier, widgetClass);
+                } catch (error) {
+                    console.error('Failed to create widget', identifier, error);
+                }
             }
         }
 
@@ -382,18 +389,47 @@ class WidgetManager  {
      * individual widget tick() callbacks are not bound to a master timer,
      * this has the benefit of making it configurable per widget.
      */
-     async _loadDynamicContent() {
-        // map to an array of context-bound _onMarkupRendered functions
-        let fns = Object.values(this.widgetClasses).map((widget) => {
-            return this._onMarkupRendered.bind(this, widget);
+    async _loadDynamicContent() {
+        // map to an array of context-bound _onMarkupRendered functions and their associated widget ids
+        let tasks = Object.entries(this.widgetClasses).map(([id, widget]) => {
+            return {
+                id,
+                func: this._onMarkupRendered.bind(this, widget)
+            };
         });
-        // convert each _onMarkupRendered(widget) to a promise
-        let promises = fns.map(func => new Promise(resolve => resolve(func())));
-        // fire away
-        await Promise.all(promises).catch((error) => {
-            console.error('Failed to load dynamic content', error);
-            null;
+
+        // Convert each _onMarkupRendered(widget) to a promise
+        let promises = tasks.map(({ id, func }) => ({
+            id,
+            promise: new Promise(resolve => resolve(func()))
+        }));
+
+        // Fire away and handle errors
+        const results = await Promise.all(promises.map(({ id, promise }) =>
+            promise.catch(error => ({ error, id }))
+        ));
+
+        const errors = results.filter(result => {
+            if (result && 'error' in result) {
+                return result.error instanceof Error
+            }
         });
+
+        if (errors.length > 0) {
+            errors.forEach(({ error, id }) => {
+                console.error(`Failed to load content for widget: ${id}, Error:`, error);
+
+                const widget =  $(`.widget-${id} > .widget-content > .panel-divider`);
+                widget.nextAll().remove()
+                widget.after(`
+                    <div class="widget-error">
+                        <i class="fa fa-exclamation-circle text-danger"></i>
+                        <br/>
+                        Failed to load content
+                    </div>
+                `);
+            });
+        }
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
