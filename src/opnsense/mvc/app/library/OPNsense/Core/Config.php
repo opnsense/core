@@ -463,7 +463,7 @@ class Config extends Singleton
     /**
      * @return array revision key/values
      */
-    public function getRevisionContext()
+    public function getRevisionContext($timestamp = null)
     {
         $revision = $this->revisionContext;
         if (!empty($_SESSION["Username"])) {
@@ -514,7 +514,7 @@ class Config extends Singleton
     {
         /* If revision info is not provided, create one. $revision is used for recursion */
         if (!is_array($revision)) {
-            $revision = $this->getRevisionContext();
+            $revision = $this->getRevisionContext($timestamp);
         }
         if ($node == null) {
             if (!isset($this->simplexml->revision)) {
@@ -532,7 +532,7 @@ class Config extends Singleton
         array_walk($revision, function ($value, $key) use (&$target) {
             $node = $target->addChild($key);
             if (is_array($value)) {
-                $this->updateRevision($value, $node);
+                $this->updateRevision($value, $node, $timestamp);
             } else {
                 $node[0] = $value;
             }
