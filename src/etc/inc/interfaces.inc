@@ -4059,6 +4059,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
                 $result[$key] = [
                     'address' => $address['ipaddr'],
                     'alias' => false,
+                    'autoconf' => !empty($address['autoconf']),
                     'bind' => true,
                     'bits' => $address['subnetbits'],
                     'deprecated' => !empty($address['deprecated']),
@@ -4175,6 +4176,7 @@ function _interfaces_primary_address6($interface, $ifconfig_details = null, $all
     }
 
     foreach (interfaces_addresses($interface, false, $ifconfig_details) as $addr) {
+        /* XXX consider excluding 'autoconf', but only when it's not in SLAAC mode */
         if ($addr['family'] != 'inet6' || $addr['deprecated'] || $addr['detached'] || $addr['tentative'] || $addr['alias']) {
             continue;
         }

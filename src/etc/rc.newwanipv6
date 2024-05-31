@@ -105,6 +105,8 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         plugins_configure('dhcp', false, ['inet6']);
         break;
     default:
+        /* flush SLAAC addressing in order to make any of our own addresses preferred */
+        shell_safe('/usr/local/sbin/ifctl -i %s -f', $realif);
         break;
 }
 
