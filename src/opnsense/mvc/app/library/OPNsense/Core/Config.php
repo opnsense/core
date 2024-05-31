@@ -486,7 +486,7 @@ class Config extends Singleton
                 }
             }
         }
-        $revision['time'] = empty($timestamp) ? microtime(true) : $timestamp;
+        $revision['time'] = microtime(true);
 
         return $revision;
     }
