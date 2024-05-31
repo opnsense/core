@@ -614,6 +614,9 @@ function filter_core_rules_user($fw)
     if (isset($config['filter']['rule'])) {
         // register user rules
         foreach ($config['filter']['rule'] as $idx => $rule) {
+            if (!is_array($rule)) {
+                continue;
+            }
             // calculate a hash for this area so we can track this rule, we should replace this
             // with uuid's on the rules like the new style models do eventually.
             $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);
