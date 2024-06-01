@@ -36,6 +36,9 @@
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
                 </subnet>
+                <next_server type="TextField">
+                    <Mask>/^([^\n"])*$/u</Mask>
+                </next_server>
                 <option_data_autocollect type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
