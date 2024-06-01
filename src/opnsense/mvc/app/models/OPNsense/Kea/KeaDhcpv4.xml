@@ -36,6 +36,10 @@
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
                 </subnet>
+                <next_server type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <AddressFamily>ipv4</AddressFamily>
+                </next_server>
                 <option_data_autocollect type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>

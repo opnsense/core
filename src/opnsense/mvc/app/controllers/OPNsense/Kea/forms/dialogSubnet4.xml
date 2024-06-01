@@ -81,6 +81,12 @@
         <help>Specifies a list of RFC 868 time servers available to the client.</help>
     </field>
     <field>
+        <id>subnet4.next_server</id>
+        <label>Next server</label>
+        <type>text</type>
+        <help>Next server IP address</help>
+    </field>
+    <field>
         <id>subnet4.option_data.tftp_server_name</id>
         <label>TFTP server</label>
         <type>text</type>
