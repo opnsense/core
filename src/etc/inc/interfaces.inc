@@ -1287,8 +1287,8 @@ function interfaces_carp_setup()
         }
 
         $version = '';
-        if (!empty($config['hasync']['version'])) {
-            $version = 'version ' . escapeshellarg($config['hasync']['version']);
+        if (!empty($config['hasync']['pfsyncversion'])) {
+            $version = 'version ' . escapeshellarg($config['hasync']['pfsyncversion']);
         }
 
         $intf_stats = legacy_interfaces_details();
