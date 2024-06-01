@@ -141,6 +141,7 @@ class KeaDhcpv4 extends BaseModel
             $record = [
                 'id' => $subnet_id++,
                 'subnet' => (string)$subnet->subnet,
+                'next-server' => (string)$subnet->next_server,
                 'option-data' => [],
                 'pools' => [],
                 'reservations' => []
