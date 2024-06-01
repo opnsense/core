@@ -1281,14 +1281,14 @@ function interfaces_carp_setup()
 
     if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
-            $syncpeer = "syncpeer {$config['hasync']['pfsyncpeerip']}";
+            $syncpeer = "syncpeer " . escapeshellarg($config['hasync']['pfsyncpeerip']);
         } else {
             $syncpeer = "-syncpeer";
         }
 
         $version = '';
         if (!empty($config['hasync']['version'])) {
-            $version = 'version ' . $config['hasync']['version'];
+            $version = 'version ' . escapeshellarg($config['hasync']['version']);
         }
 
         $intf_stats = legacy_interfaces_details();
@@ -1296,7 +1296,7 @@ function interfaces_carp_setup()
         mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} {$version} up");
 
         if (!empty($intf_stats[$carp_sync_int]['mtu'])) {
-            mwexec("/sbin/ifconfig pfsync0 mtu {$intf_stats[$carp_sync_int]['mtu']}");
+            mwexec("/sbin/ifconfig pfsync0 mtu " . escapeshellarg($intf_stats[$carp_sync_int]['mtu']));
         }
     } else {
         mwexec('/sbin/ifconfig pfsync0 -syncdev -syncpeer down');
