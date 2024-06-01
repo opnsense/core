@@ -1432,8 +1432,8 @@ function interface_carp_configure($vip)
 
     $realif = get_real_interface($vip['interface']);
 
-    $vip_password = $vip['password'];
-    $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip_password)));
+    $vip_password = escapeshellarg(addslashes(str_replace(" ", "", $vip['password'])));
+    $password = '';
     if ($vip['password'] != "") {
         $password = " pass {$vip_password}";
     }
@@ -1444,6 +1444,16 @@ function interface_carp_configure($vip)
     }
 
     $advskew = "advskew " . escapeshellarg($vip['advskew']);
+    if (empty($vip['peer']) || $vip['peer'] == '224.0.0.18') {
+        $peercfg = ' mcast ';
+    } else {
+        $peercfg = ' peer ' . escapeshellarg($vip['peer']) . ' ';
+    }
+    if (empty($vip['peer6']) || $vip['peer6'] == 'ff02::12') {
+        $peercfg .= ' mcast6 ';
+    } else {
+        $peercfg .= ' peer6 ' . escapeshellarg($vip['peer6']) . ' ';
+    }
 
     mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$advskew} {$advbase} {$password}");
 
@@ -1453,6 +1463,12 @@ function interface_carp_configure($vip)
     } elseif (is_ipaddrv6($vip['subnet'])) {
         mwexec("/sbin/ifconfig {$realif} inet6 " . escapeshellarg($vip['subnet']) . " prefixlen " . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
     }
+    /**
+     *  XXX this is pretty flacky.
+     *      If we configure peer[6] during setup, values won't stick, they appear to be flushed when
+     *      the initial address is set.
+     */
+    mwexec("/sbin/ifconfig {$realif} vhid " . escapeshellarg($vip['vhid']) . " {$peercfg}");
 }
 
 function _interfaces_wlan_clone($realif, $wlcfg)

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2022 Deciso B.V.
+ * Copyright (C) 2022-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,13 +47,17 @@ foreach (legacy_interfaces_details() as $ifname => $ifcnf) {
                     'if' => $ifname,
                     'vhid' => $address['vhid'] ?? '',
                     'advbase' => '',
-                    'advskew' => ''
+                    'advskew' => '',
+                    'peer' => '',
+                    'peer6' => '',
                 ];
                 if (!empty($address['vhid'])) {
                     foreach ($ifcnf['carp'] as $vhid) {
                         if ($vhid['vhid'] == $address['vhid']) {
                             $addresses[$key]['advbase'] = $vhid['advbase'];
                             $addresses[$key]['advskew'] = $vhid['advskew'];
+                            $addresses[$key]['peer'] = $vhid['peer'];
+                            $addresses[$key]['peer6'] = $vhid['peer6'];
                         }
                     }
                 }
@@ -100,6 +104,8 @@ if (!empty($config['virtualip']['vip'])) {
             $vhid = $vipent['vhid'] ?? '';
             $advbase = !empty($vipent['vhid']) ? $vipent['advbase'] : '';
             $advskew = !empty($vipent['vhid']) ? $vipent['advskew'] : '';
+            $peer = !empty($vipent['peer']) ? $vipent['peer'] : '224.0.0.18';
+            $peer6 = !empty($vipent['peer6']) ? $vipent['peer6'] : 'ff02::12';
             if ($vipent['mode'] == 'proxyarp') {
                 $anyproxyarp = true;
             }
@@ -109,12 +115,23 @@ if (!empty($config['virtualip']['vip'])) {
                 }
                 continue;
             } elseif (
+                $vipent['mode'] == 'ipalias' &&
+                isset($addresses[$subnet]) &&
+                $addresses[$subnet]['subnetbits'] == $subnet_bits &&
+                $addresses[$subnet]['if'] == $if &&
+                $addresses[$subnet]['vhid'] == $vhid
+            ) {
+                // configured and found equal
+                continue;
+            } elseif (
                 isset($addresses[$subnet]) &&
                 $addresses[$subnet]['subnetbits'] == $subnet_bits &&
                 $addresses[$subnet]['if'] == $if &&
                 $addresses[$subnet]['vhid'] == $vhid &&
                 $addresses[$subnet]['advbase'] == $advbase &&
-                $addresses[$subnet]['advskew'] == $advskew
+                $addresses[$subnet]['advskew'] == $advskew &&
+                $addresses[$subnet]['peer'] == $peer &&
+                $addresses[$subnet]['peer6'] == $peer6
             ) {
                 // configured and found equal
                 continue;
