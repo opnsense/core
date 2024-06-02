@@ -49,7 +49,7 @@ class MHA1_0_0 extends BaseModelMigration
             $src = Config::getInstance()->object()->hasync;
             $syncitems = [];
             foreach (array_keys($services) as $service) {
-                if (!empty((string)$src->{'synchronize'.$service})) {
+                if (!empty((string)$src->{'synchronize' . $service})) {
                     $syncitems[] = $service;
                 }
             }
