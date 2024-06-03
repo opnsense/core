@@ -111,7 +111,7 @@ class Request
         return isset($_POST[$name]);
     }
 
-    public function getPost(?string $name = null, ?string $filter = null, ?string $defaultValue = null)
+    public function getPost(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
     {
         if ($name === null) {
             $value = $_POST;
@@ -124,7 +124,7 @@ class Request
         return $value;
     }
 
-    public function get(?string $name = null, ?string $filter = null, ?string $defaultValue = null)
+    public function get(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
     {
         if ($name === null) {
             $value = $_REQUEST;
