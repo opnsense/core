@@ -672,6 +672,11 @@ function system_routing_configure($verbose = false, $interface = null, $monitor 
             continue;
         }
 
+        if (empty($ifdetails[$gateway['if']]['ipv4'][0])) {
+            log_msg("ROUTING: refusing to set interface route on addressless {$gateway['interface']}({$gateway['if']})", LOG_WARNING);
+            continue;
+        }
+
         system_interface_route($gateway, $routes);
     }
 
