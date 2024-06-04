@@ -2750,7 +2750,7 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
-                        <tr class="dhcpv6_basic">
+                        <tr class="dhcpv6_basic dhcpv6_advanced">
                           <td><a id="help_for_dhcp6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix ID') ?></td>
                           <td>
                             <div class="input-group" style="max-width:348px">
