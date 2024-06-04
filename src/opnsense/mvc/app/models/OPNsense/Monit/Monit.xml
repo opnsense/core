@@ -75,9 +75,35 @@
          <httpdEnabled type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
+            <Constraints>
+                <check001>
+                    <reference>httpdUsername.check001</reference>
+                </check001>
+                <check002>
+                    <reference>httpdPassword.check001</reference>
+                </check002>
+            </Constraints>
          </httpdEnabled>
-         <httpdUsername type="TextField"/>
-         <httpdPassword type="TextField"/>
+         <httpdUsername type="TextField">
+            <Constraints>
+                <check001>
+                    <ValidationMessage>A value is required.</ValidationMessage>
+                    <type>SetIfConstraint</type>
+                    <field>httpdEnabled</field>
+                    <check>1</check>
+                </check001>
+            </Constraints>
+         </httpdUsername>
+         <httpdPassword type="TextField">
+            <Constraints>
+                <check001>
+                    <ValidationMessage>A value is required.</ValidationMessage>
+                    <type>SetIfConstraint</type>
+                    <field>httpdEnabled</field>
+                    <check>1</check>
+                </check001>
+            </Constraints>
+	 </httpdPassword>
          <httpdPort type="IntegerField">
             <Default>2812</Default>
             <Required>Y</Required>
