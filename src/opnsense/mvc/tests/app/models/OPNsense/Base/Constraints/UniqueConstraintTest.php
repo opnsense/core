@@ -48,7 +48,7 @@ class UniqueTestContainer extends ArrayField
         // UniqueConstraint requires a depth of 2, so add a container node
         $container = new ContainerField();
         $idx = count($this->internalNodes);
-        $this->addChildNode('item'. $idx, $container);
+        $this->addChildNode('item' . $idx, $container);
         foreach ($nodes as $name => $value) {
             $node = new TextField(null, $name);
             $node->setRequired($this->valuesRequired ? "Y" : "N");
@@ -79,7 +79,7 @@ class UniqueTestContainer extends ArrayField
             $constraint = new UniqueConstraint();
             foreach ($nodes as $name => $value) {
                 if ($name === array_key_first($nodes)) {
-                    $constraint->setOption('node', $this->{'item'. $idx}->$name);
+                    $constraint->setOption('node', $this->{'item' . $idx}->$name);
                     $constraint->setOption('name', $name);
                     $constraint->setOption('ValidationMessage', 'Validation Failed');
                 } else {

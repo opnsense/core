@@ -89,7 +89,7 @@ class UniqueConstraint extends BaseConstraint
                         if (empty(static::$itemmap[$nodeKey][$itemValue])) {
                             static::$itemmap[$nodeKey][$itemValue] = 0;
                         }
-                        static::$itemmap[$nodeKey][$itemValue]++ ;
+                        static::$itemmap[$nodeKey][$itemValue]++;
                     }
                 }
             }
