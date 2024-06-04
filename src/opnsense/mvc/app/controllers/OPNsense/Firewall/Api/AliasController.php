@@ -405,7 +405,7 @@ class AliasController extends ApiMutableModelControllerBase
                 foreach ($data['aliases']['alias'] as $uuid => $content) {
                     $type = !empty($content['type']) ? $content['type'] : "";
                     if (is_array($content) && !empty($content['name']) && $type != 'internal') {
-                        $node = $this->getModel()->getByName($content['name']);
+                        $node = $this->getModel()->getByName($content['name'], true);
                         if ($node == null) {
                             $node = $this->getModel()->aliases->alias->Add();
                             $result['new'] += 1;

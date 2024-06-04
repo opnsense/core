@@ -92,6 +92,11 @@ abstract class BaseModel
     private $internalMissingUuids = false;
 
     /**
+     * @var int internal validation sequence (number of times validation has run)
+     */
+    private int $internalValidationSequence = 0;
+
+    /**
      * If the model needs a custom initializer, override this init() method
      * Default behaviour is to do nothing in this init.
      */
@@ -110,7 +115,7 @@ abstract class BaseModel
         if ($xmlNode->count() == 0) {
             $result = (string)$xmlNode;
         } else {
-            $result = array();
+            $result = [];
             foreach ($xmlNode->children() as $childNode) {
                 // item keys can be overwritten using value attributes
                 if (!isset($childNode->attributes()['value'])) {
@@ -467,6 +472,16 @@ abstract class BaseModel
         return str_ends_with($this->internal_mountpoint, '+') && strpos($this->internal_mountpoint, "//") !== 0;
     }
 
+    /**
+     * Return the number of times performValidation() has been called.
+     * This can be practical if validations need to cache outcomes which are consistent for the full validation
+     * sequence.
+     * @return int
+     */
+    public function getValidationSequence()
+    {
+        return $this->internalValidationSequence;
+    }
 
     /**
      * validate full model using all fields and data in a single (1 deep) array
@@ -479,6 +494,8 @@ abstract class BaseModel
         $validation = new \OPNsense\Base\Validation();
         $validation_data = array();
         $all_nodes = $this->internalData->getFlatNodes();
+
+        $this->internalValidationSequence++;
 
         foreach ($all_nodes as $key => $node) {
             if ($validateFullModel || $node->isFieldChanged()) {
