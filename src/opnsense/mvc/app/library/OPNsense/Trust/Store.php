@@ -154,6 +154,7 @@ class Store
     {
         $ca = null;
         $ca_res_crt = null;
+        $ca_res_key = $caref; /* squelch a coverity report about unreachable value check */
         if (is_string($caref)) {
             $ca = self::getCA($caref);
             if ($ca == null || empty((string)$ca->prv)) {
@@ -173,7 +174,7 @@ class Store
         $res_crt = openssl_csr_sign(
             $csr,
             $ca_res_crt,
-            $ca_res_key ?? $caref,
+            $ca_res_key,
             $lifetime,
             $options,
             $ca !== null ? (int)$ca->serial : 0
