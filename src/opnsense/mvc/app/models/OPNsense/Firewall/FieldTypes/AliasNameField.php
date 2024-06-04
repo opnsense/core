@@ -30,6 +30,7 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
 
 /**
  * Class AliasNameField
@@ -84,9 +85,7 @@ class AliasNameField extends BaseField
                         if (in_array($value, $reservedwords)) {
                             $result[] = gettext('The name cannot be the internally reserved keyword "%s".');
                         }
-                        if (
-                            getservbyname($value, 'tcp') || getservbyname($value, 'udp') || getprotobyname($value)
-                        ) {
+                        if (Util::getservbyname($value) || getprotobyname($value)) {
                             $result[] = gettext('Reserved protocol or service names may not be used');
                         }
                         return $result;

@@ -279,20 +279,20 @@ class Util
     }
 
     /**
-     * cached version of getservbyname()
+     * cached version of getservbyname() existence check
      * @param string $service service name
-     * @param string $protocol protocol name
      * @return boolean
      */
-    private static function getservbyname($service, $protocol)
+    public static function getservbyname($service)
     {
-        if (!isset(self::$servbynames[$protocol])) {
-            self::$servbynames[$protocol] = [];
+        if (empty(self::$servbynames)) {
+            foreach (explode("\n", file_get_contents('/etc/services')) as $line) {
+                if (strlen($line) > 1 && $line[0] != '#') {
+                    self::$servbynames[preg_split('/\s+/', $line)[0]] = true;
+                }
+            }
         }
-        if (!isset(self::$servbynames[$protocol][$service])) {
-            self::$servbynames[$protocol][$service] = getservbyname($service, $protocol);
-        }
-        return self::$servbynames[$protocol][$service];
+        return isset(self::$servbynames[$service]);
     }
 
     /**
@@ -308,7 +308,7 @@ class Util
             if (
                 (filter_var($port, FILTER_VALIDATE_INT, array(
                   "options" => array("min_range" => 1, "max_range" => 65535))) === false || !ctype_digit($port)) &&
-                !self::getservbyname($port, "tcp") && !self::getservbyname($port, "udp")
+                !self::getservbyname($port)
             ) {
                 return false;
             }
