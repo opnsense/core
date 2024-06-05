@@ -1279,7 +1279,7 @@ function interfaces_carp_setup()
         $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
     }
 
-    if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
+    if (!empty($carp_sync_int) && !empty($config['hasync']['pfsyncenabled'])) {
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
             $syncpeer = "syncpeer " . escapeshellarg($config['hasync']['pfsyncpeerip']);
         } else {
