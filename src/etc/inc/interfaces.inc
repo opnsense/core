@@ -4156,7 +4156,8 @@ function interfaces_has_prefix_only($interface)
         case 'dhcp6':
             $ret = empty($interfaces_a[$interface]['adv_dhcp6_config_file_override']) &&
                 ((!empty($interfaces_a[$interface]['adv_dhcp6_config_advanced']) &&
-                empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable'])) ||
+                empty($interfaces_a[$interface]['adv_dhcp6_id_assoc_statement_address_enable']) &&
+                !isset($interfaces_a[$interface]['dhcp6-prefix-id'])) ||
                 (isset($interfaces_a[$interface]['dhcp6prefixonly']) &&
                 !isset($interfaces_a[$interface]['dhcp6-prefix-id'])));
             break;
