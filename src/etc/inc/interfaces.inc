@@ -1464,7 +1464,7 @@ function interface_carp_configure($vip)
         mwexec("/sbin/ifconfig {$realif} inet6 " . escapeshellarg($vip['subnet']) . " prefixlen " . escapeshellarg($vip['subnet_bits']) . " alias vhid " . escapeshellarg($vip['vhid']));
     }
     /**
-     *  XXX this is pretty flacky.
+     *  XXX this is pretty flaky.
      *      If we configure peer[6] during setup, values won't stick, they appear to be flushed when
      *      the initial address is set.
      */
