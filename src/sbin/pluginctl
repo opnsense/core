@@ -164,15 +164,18 @@ if (isset($opts['h'])) {
     echo "\t-X XMLRPC sync metadata dump\n";
     echo "\t-x XMLRPC sync key/value list\n";
 } elseif (isset($opts['4'])) {
-    $int = $args[0] ?? null;
-    $raw = interfaces_primary_address($int);
-    $ret = [
-        'address' => $raw[0],
-        'network' => $raw[1],
-        'bits' => $raw[2],
-        'device' => $raw[3],
-        'interface' => $int,
-    ];
+    $int = $args[0] ?? '';
+    $ret = [];
+    if (!empty($config['interfaces'][$int])) {
+        $raw = interfaces_primary_address($int);
+        $ret = [
+            'address' => $raw[0],
+            'network' => $raw[1],
+            'bits' => $raw[2],
+            'device' => $raw[3],
+            'interface' => $int,
+        ];
+    }
     echo json_encode($ret, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
 } elseif (isset($opts['D'])) {
     echo json_encode(legacy_interfaces_details($args[0] ?? null), JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT) . PHP_EOL;
