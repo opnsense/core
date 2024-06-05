@@ -106,7 +106,7 @@ switch ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') {
         break;
     default:
         /* flush SLAAC addressing in order to make any of our own addresses preferred */
-        shell_safe('/usr/local/sbin/ifctl -i %s -f', $realif);
+        shell_safe('/usr/local/sbin/ifctl -i %s -f', $device);
         break;
 }
 
