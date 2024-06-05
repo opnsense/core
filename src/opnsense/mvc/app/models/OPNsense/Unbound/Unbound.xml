@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -120,6 +120,7 @@
             <numqueriesperthread type="NumericField"/>
             <outgoingrange type="NumericField"/>
             <jostletimeout type="NumericField"/>
+            <discardtimeout type="NumericField"/>
             <cachemaxttl type="NumericField"/>
             <cachemaxnegativettl type="NumericField"/>
             <cacheminttl type="NumericField"/>
