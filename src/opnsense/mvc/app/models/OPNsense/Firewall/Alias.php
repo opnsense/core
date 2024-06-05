@@ -223,9 +223,7 @@ class Alias extends BaseModel
         if (empty($this->aliasReferenceCache)) {
             // cache alias uuid references, but always validate existence before return.
             foreach ($this->aliases->alias->iterateItems() as $uuid => $alias) {
-                if ((string)$alias->name == $name) {
-                    $this->aliasReferenceCache[(string)$alias->name] = $alias;
-                }
+                $this->aliasReferenceCache[(string)$alias->name] = $alias;
             }
         }
         if (isset($this->aliasReferenceCache[$name])) {
