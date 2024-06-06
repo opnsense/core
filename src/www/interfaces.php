@@ -388,6 +388,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'descr',
         'dhcp6-ia-pd-len',
         'dhcp6-prefix-id',
+        'dhcp6_ifid',
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
@@ -744,6 +745,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                 break;
                             }
                         }
+                    }
+                }
+                if (isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '') {
+                    if (!is_numeric($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != 'random') {
+                        $input_errors[] = gettext('Optional interface ID only supports a numeric value or the string "random".');
                     }
                 }
                 break;
@@ -1192,6 +1198,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (isset($pconfig['dhcp6-prefix-id--hex']) && ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
                         $new_config['dhcp6-prefix-id'] = intval($pconfig['dhcp6-prefix-id--hex'], 16);
+                    }
+                    if (isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] !== '') {
+                        $new_config['dhcp6_ifid'] = $pconfig['dhcp6_ifid'];
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -2759,6 +2768,15 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_dhcp6-prefix-id">
                               <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcpv6_basic dhcpv6_advanced">
+                          <td><a id="help_for_dhcp6_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional interface ID') ?></td>
+                          <td>
+                            <input name="dhcp6_ifid" type="text" class="form-control" id="dhcp6_ifid" value="<?= html_safe($pconfig['dhcp6_ifid']) ?>" />
+                            <div class="hidden" data-for="help_for_dhcp6_ifid">
+                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to compute the lower part of the resulting IPv6 prefix address. Setting a numeric value will use that fixed value in its lower address part. Using "random" as a value will allow the value to be randomized, which can also fix the issue with PPPoE not working in the default EUI-64 mode.') ?>
                             </div>
                           </td>
                         </tr>
