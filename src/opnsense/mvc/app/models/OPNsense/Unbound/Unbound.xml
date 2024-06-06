@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.10</version>
+    <version>1.0.9</version>
     <items>
         <general>
             <enabled type="BooleanField">
