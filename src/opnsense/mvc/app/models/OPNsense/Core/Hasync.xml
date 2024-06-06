@@ -41,8 +41,6 @@
         <syncitems type="JsonKeyValueStoreField">
             <Multiple>Y</Multiple>
             <ConfigdPopulateAct>system ha options</ConfigdPopulateAct>
-            <SourceFile>/tmp/ha_options.json</SourceFile>
-            <ConfigdPopulateTTL>60</ConfigdPopulateTTL>
             <SortByValue>Y</SortByValue>
             <ValidationMessage>Specify valid list of applications to sync.</ValidationMessage>
         </syncitems>

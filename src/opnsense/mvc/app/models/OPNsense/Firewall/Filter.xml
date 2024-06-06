@@ -86,8 +86,6 @@
                 </destination_port>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
-                    <SourceFile>/tmp/gateway_list.json</SourceFile>
-                    <ConfigdPopulateTTL>20</ConfigdPopulateTTL>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
                 </gateway>
                 <log type="BooleanField">
