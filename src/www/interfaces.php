@@ -2776,7 +2776,7 @@ include("head.inc");
                           <td>
                             <input name="dhcp6_ifid" type="text" class="form-control" id="dhcp6_ifid" value="<?= html_safe($pconfig['dhcp6_ifid']) ?>" />
                             <div class="hidden" data-for="help_for_dhcp6_ifid">
-                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to compute the lower part of the resulting IPv6 prefix address. Setting a numeric value will use that fixed value in its lower address part. Using "random" as a value will allow the value to be randomized, which can also fix the issue with PPPoE not working in the default EUI-64 mode.') ?>
+                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to compute the lower part of the resulting IPv6 prefix address. Setting a numeric value will use that fixed value in its lower address part. Using "random" as a value will allow the lower address part to be randomized instead.') ?>
                             </div>
                           </td>
                         </tr>
