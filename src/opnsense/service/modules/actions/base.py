@@ -42,6 +42,10 @@ class BaseAction:
         self.parameters = action_parameters.get('parameters', None)
         self.message = action_parameters.get('message', None)
         self.description = action_parameters.get('description', '')
+        if action_parameters.get('cache_ttl', '').isdigit():
+            self.cache_ttl = int(action_parameters['cache_ttl'])
+        else:
+            self.cache_ttl = None
         self.allowed_groups = set()
         for item in action_parameters.get('allowed_groups', '').split(','):
             if item:
