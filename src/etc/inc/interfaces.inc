@@ -3074,7 +3074,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
                 $id_assoc_statement_prefix .= "    sla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
             }
             if (isset($wancfg['dhcp6_ifid'])) {
-                $dhcp6cconf .= "    ifid {$wancfg['dhcp6_ifid']};\n";
+                $id_assoc_statement_prefix .= "    ifid {$wancfg['dhcp6_ifid']};\n";
             }
             $id_assoc_statement_prefix .= "  };\n";
         }
