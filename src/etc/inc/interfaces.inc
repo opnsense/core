@@ -2276,7 +2276,13 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * spoof the MAC again which cycles the link again...
      */
     if (!empty($wancfg['spoofmac']) && strcasecmp($wancfg['spoofmac'], get_interface_mac($realhwif, $ifconfig_details))) {
-        mwexecf('/sbin/ifconfig %s link %s', [$realhwif, $wancfg['spoofmac']]);
+        foreach (array_keys(interfaces_addresses($realifv6, true, $ifconfig_details)) as $tmpiface) {
+            if (is_linklocal($tmpiface)) {
+                $tmpip = explode('%', $tmpiface)[0];
+                legacy_interface_deladdress($realifv6, $tmpip, 6);
+            }
+        }
+        mwexecf('/sbin/ifconfig %s link %s down', [$realhwif, $wancfg['spoofmac']]);
     }
 
     /* only try to set media properties when requested */
