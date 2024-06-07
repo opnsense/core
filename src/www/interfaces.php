@@ -416,6 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
+        'track6_ifid',
     ];
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -431,6 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
+    $pconfig['track6_ifid--hex'] = isset($pconfig['track6_ifid']) && $pconfig['track6_ifid'] != '' ? sprintf("%x", $pconfig['track6_ifid']) : '';
     $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
     $pconfig['dhcp6_ifid--hex'] = isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '' ? sprintf("%x", $pconfig['dhcp6_ifid']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
@@ -806,6 +808,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                             }
                         }
+                    }
+                }
+                if (isset($pconfig['track6_ifid--hex']) && $pconfig['track6_ifid--hex'] != '') {
+                    if (!ctype_xdigit($pconfig['track6_ifid--hex'])) {
+                        $input_errors[] = gettext('You must enter a valid hexadecimal number for the IPv6 interface ID.');
                     }
                 }
                 break;
@@ -1250,6 +1257,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['track6-prefix-id'] = 0;
                     if (ctype_xdigit($pconfig['track6-prefix-id--hex'])) {
                         $new_config['track6-prefix-id'] = intval($pconfig['track6-prefix-id--hex'], 16);
+                    }
+                    if (isset($pconfig['track6_ifid--hex']) && ctype_xdigit($pconfig['track6_ifid--hex'])) {
+                        $new_config['track6_ifid'] = intval($pconfig['track6_ifid--hex'], 16);
                     }
                     $new_config['dhcpd6track6allowoverride'] = !empty($pconfig['dhcpd6track6allowoverride']);
                     break;
@@ -3034,6 +3044,18 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_track6-prefix-id">
                               <?= gettext('The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_track6_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional interface ID') ?></td>
+                          <td>
+                            <div class="input-group" style="max-width:348px">
+                              <div class="input-group-addon">0x</div>
+                              <input name="track6_ifid--hex" type="text" class="form-control" id="track6_ifid--hex" value="<?= html_safe($pconfig['track6_ifid--hex']) ?>" />
+                            </div>
+                            <div class="hidden" data-for="help_for_track6_ifid">
+                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to construct the lower part of the resulting IPv6 prefix address. Setting a hex value will use that fixed value in its lower address part. Please note the maximum usable value is 0x7fffffffffffffff due to a PHP integer restriction.') ?>
                             </div>
                           </td>
                         </tr>

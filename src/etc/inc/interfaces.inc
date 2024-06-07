@@ -2961,6 +2961,9 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
                     $dhcp6cconf .= "  prefix-interface {$trackifv6} {\n";
                     $dhcp6cconf .= "    sla-id {$lancfg['track6-prefix-id']};\n";
                     $dhcp6cconf .= "    sla-len {$wancfg['dhcp6-ia-pd-len']};\n";
+                    if (isset($lancfg['track6_ifid'])) {
+                        $dhcp6cconf .= "    ifid {$lancfg['track6_ifid']};\n";
+                    }
                     $dhcp6cconf .= "  };\n";
                 }
             }
@@ -3089,6 +3092,9 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
                     ($wancfg['adv_dhcp6_prefix_interface_statement_sla_len'] <= 128)
                 ) {
                     $id_assoc_statement_prefix .= "    sla-len {$wancfg['adv_dhcp6_prefix_interface_statement_sla_len']};\n";
+                }
+                if (isset($lancfg['track6_ifid'])) {
+                    $id_assoc_statement_prefix .= "    ifid {$lancfg['track6_ifid']};\n";
                 }
                 $id_assoc_statement_prefix .= "  };\n";
             }
