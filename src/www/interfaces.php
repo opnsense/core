@@ -432,6 +432,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['track6-prefix-id--hex'] = sprintf("%x", empty($pconfig['track6-prefix-id']) ? 0 : $pconfig['track6-prefix-id']);
     $pconfig['dhcp6-prefix-id--hex'] = isset($pconfig['dhcp6-prefix-id']) && $pconfig['dhcp6-prefix-id'] != '' ? sprintf("%x", $pconfig['dhcp6-prefix-id']) : '';
+    $pconfig['dhcp6_ifid--hex'] = isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '' ? sprintf("%x", $pconfig['dhcp6_ifid']) : '';
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
 
     /*
@@ -747,9 +748,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
                 }
-                if (isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != '') {
-                    if (!is_numeric($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] != 'random') {
-                        $input_errors[] = gettext('Optional interface ID only supports a numeric value or the string "random".');
+                if (isset($pconfig['dhcp6_ifid--hex']) && $pconfig['dhcp6_ifid--hex'] != '') {
+                    if (!ctype_xdigit($pconfig['dhcp6_ifid--hex'])) {
+                        $input_errors[] = gettext('You must enter a valid hexadecimal number for the IPv6 interface ID.');
                     }
                 }
                 break;
@@ -1199,8 +1200,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (isset($pconfig['dhcp6-prefix-id--hex']) && ctype_xdigit($pconfig['dhcp6-prefix-id--hex'])) {
                         $new_config['dhcp6-prefix-id'] = intval($pconfig['dhcp6-prefix-id--hex'], 16);
                     }
-                    if (isset($pconfig['dhcp6_ifid']) && $pconfig['dhcp6_ifid'] !== '') {
-                        $new_config['dhcp6_ifid'] = $pconfig['dhcp6_ifid'];
+                    if (isset($pconfig['dhcp6_ifid--hex']) && ctype_xdigit($pconfig['dhcp6_ifid--hex'])) {
+                        $new_config['dhcp6_ifid'] = intval($pconfig['dhcp6_ifid--hex'], 16);
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -2774,9 +2775,12 @@ include("head.inc");
                         <tr class="dhcpv6_basic dhcpv6_advanced">
                           <td><a id="help_for_dhcp6_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional interface ID') ?></td>
                           <td>
-                            <input name="dhcp6_ifid" type="text" class="form-control" id="dhcp6_ifid" value="<?= html_safe($pconfig['dhcp6_ifid']) ?>" />
+                            <div class="input-group" style="max-width:348px">
+                              <div class="input-group-addon">0x</div>
+                              <input name="dhcp6_ifid--hex" type="text" class="form-control" id="dhcp6_ifid--hex" value="<?= html_safe($pconfig['dhcp6_ifid--hex']) ?>" />
+                            </div>
                             <div class="hidden" data-for="help_for_dhcp6_ifid">
-                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to compute the lower part of the resulting IPv6 prefix address. Setting a numeric value will use that fixed value in its lower address part. Using "random" as a value will allow the lower address part to be randomized instead.') ?>
+                              <?= gettext('The value in this field is the numeric IPv6 interface ID used to construct the lower part of the resulting IPv6 prefix address. Setting a hex value will use that fixed value in its lower address part. Please note the maximum usable value is 0x7fffffffffffffff due to a PHP integer restriction.') ?>
                             </div>
                           </td>
                         </tr>
