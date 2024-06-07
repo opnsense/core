@@ -501,7 +501,7 @@ class WidgetManager  {
         let $header = $(`
             <div class="widget-header">
                 <div></div>
-                <div><b>${title}</b></div>
+                <div id="${identifier}-title"><b>${title}</b></div>
                 <div id="close-handle-${identifier}" class="close-handle">
                     <i class="fa fa-times fa-xs"></i>
                 </div>

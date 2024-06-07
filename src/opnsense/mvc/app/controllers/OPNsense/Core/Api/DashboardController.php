@@ -132,7 +132,12 @@ class DashboardController extends ApiControllerBase
                 'rtt' => gettext('RTT'),
                 'rttd' => gettext('RTTd'),
                 'loss' => gettext('Loss'),
-            ]
+            ],
+            'thermalsensors' => [
+                'title' => gettext('Thermal Sensors'),
+                'help' => gettext('CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.'),
+                'unconfigured' => gettext('Thermal sensors not available or not configured.')
+            ],
         ];
     }
 
