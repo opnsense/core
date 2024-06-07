@@ -31,6 +31,9 @@ export default class BaseWidget {
         this.translations = {};
         this.tickTimeout = 5000; // Default tick timeout
         this.resizeHandles = "all"
+        this.eventSource = null;
+        this.eventSourceUrl = null;
+        this.eventSourceOnData = null;
     }
 
     getResizeHandles() {
@@ -67,7 +70,40 @@ export default class BaseWidget {
     }
 
     onWidgetClose() {
-        return null;
+        this.closeEventSource();
+    }
+
+    openEventSource(url, onMessage) {
+        this.closeEventSource();
+
+        this.eventSourceUrl = url;
+        this.eventSourceOnData = onMessage;
+        this.eventSource = new EventSource(url);
+        this.eventSource.onmessage = onMessage;
+        this.eventSource.onerror = (e) => {
+            if (this.eventSource.readyState == EventSource.closed) {
+                this.closeEventSource();
+            } else {
+                console.error('Unknown error occurred during streaming operation', e);
+            }
+        };
+    }
+
+    closeEventSource() {
+        if (this.eventSource !== null) {
+            this.eventSource.close();
+            this.eventSource = null;
+        }
+    }
+
+    onVisibilityChanged(visible) {
+        if (this.eventSourceUrl !== null) {
+            if (visible) {
+                this.openEventSource(this.eventSourceUrl, this.eventSourceOnData);
+            } else if (this.eventSource !== null) {
+                this.closeEventSource();
+            }
+        }
     }
 
     /* For testing purposes */

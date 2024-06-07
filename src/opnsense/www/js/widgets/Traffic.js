@@ -37,7 +37,6 @@ export default class Traffic extends BaseWidget {
             trafficOut: null
         };
         this.initialized = false;
-        this.eventSource = null;
         this.datasets = {inbytes: [], outbytes: []};
     }
 
@@ -155,7 +154,7 @@ export default class Traffic extends BaseWidget {
 
     _onMessage(event) {
         if (!event) {
-            this.eventSource.close();
+            super.closeEventSource();
         }
 
         const data = JSON.parse(event.data);
@@ -199,15 +198,12 @@ export default class Traffic extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        this.eventSource = new EventSource('/api/diagnostics/traffic/stream/2');
-        this.eventSource.onmessage = this._onMessage.bind(this);
+        super.openEventSource('/api/diagnostics/traffic/stream/1', this._onMessage.bind(this));
     }
 
     onWidgetClose() {
+        super.onWidgetClose();
         this.charts.trafficIn.destroy();
         this.charts.trafficOut.destroy();
-        if (this.eventSource !== null) {
-            this.eventSource.close();
-        }
     }
 }

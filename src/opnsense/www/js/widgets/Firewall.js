@@ -33,7 +33,6 @@ export default class Firewall extends BaseTableWidget {
     constructor(config) {
         super();
         this.config = config;
-        this.eventSource = null;
         this.ifMap = {};
         this.counters = {};
         this.chart = null;
@@ -86,7 +85,7 @@ export default class Firewall extends BaseTableWidget {
 
     _onMessage(event) {
         if (!event) {
-            this.eventSource.close();
+            super.closeEventSource();
         }
 
         let actIcons = {
@@ -190,8 +189,7 @@ export default class Firewall extends BaseTableWidget {
             return;
         }
 
-        this.eventSource = new EventSource('/api/diagnostics/firewall/streamLog');
-        this.eventSource.onmessage = this._onMessage.bind(this);
+        super.openEventSource('/api/diagnostics/firewall/streamLog', this._onMessage.bind(this));
 
         let context = document.getElementById('fw-chart').getContext('2d');
         let config = {
@@ -285,9 +283,7 @@ export default class Firewall extends BaseTableWidget {
     }
 
     onWidgetClose() {
-        if (this.eventSource !== null) {
-            this.eventSource.close();
-        }
+        super.onWidgetClose();
 
         if (this.chart !== null) {
             this.chart.destroy();

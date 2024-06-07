@@ -188,6 +188,10 @@ class WidgetManager  {
         widget.setId(id);
         this.widgetClasses[id] = widget;
 
+        document.addEventListener('visibilitychange', (e) => {
+            this.widgetClasses[id].onVisibilityChanged(!document.hidden);
+        });
+
         if (!id in this.widgetTranslations) {
             console.error('Missing translations for widget', id);
         }
