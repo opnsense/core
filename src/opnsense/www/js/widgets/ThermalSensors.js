@@ -231,4 +231,10 @@ export default class ThermalSensors extends BaseWidget {
 
         return result;
     }
+
+    onWidgetClose() {
+        if (this.chart !== null) {
+            this.chart.destroy();
+        }
+    }
 }
