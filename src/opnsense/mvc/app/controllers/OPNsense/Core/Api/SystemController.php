@@ -337,8 +337,8 @@ class SystemController extends ApiControllerBase
     {
         $result = [];
 
-        foreach (explode("\n", (new Backend())->configdRun('system temp')) as $sysctl) {
-            $parts = explode('=', $);
+        foreach (explode("\n", (new Backend())->configdRun('system temp')) as $temp) {
+            $parts = explode('=', $temp);
             if (count($parts) >= 2) {
                 $tempItem = array();
                 $tempItem['device'] = $parts[0];

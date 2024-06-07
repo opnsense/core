@@ -210,6 +210,8 @@
 /usr/local/opnsense/data/firmware/upgrade.html
 /usr/local/opnsense/data/unbound/root.min.hints
 /usr/local/opnsense/mvc/app/cache/README
+/usr/local/opnsense/mvc/app/cache/_usr_local_opnsense_mvc_app_views_opnsense_core_license.volt.php
+/usr/local/opnsense/mvc/app/cache/_usr_local_opnsense_mvc_app_views_opnsense_core_not_found.volt.php
 /usr/local/opnsense/mvc/app/config/AppConfig.php
 /usr/local/opnsense/mvc/app/config/config.php
 /usr/local/opnsense/mvc/app/config/loader.php
@@ -1974,6 +1976,7 @@
 /usr/local/opnsense/www/js/widgets/Memory.js
 /usr/local/opnsense/www/js/widgets/Swap.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
+/usr/local/opnsense/www/js/widgets/ThermalSensors.js
 /usr/local/opnsense/www/js/widgets/Traffic.js
 /usr/local/opnsense/www/themes/opnsense/LICENSE
 /usr/local/opnsense/www/themes/opnsense/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
