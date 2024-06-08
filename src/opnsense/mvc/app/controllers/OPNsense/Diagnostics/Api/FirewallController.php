@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2021 Deciso B.V.
+ * Copyright (C) 2017-2024 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\SanitizeFilter;
+use OPNsense\Firewall\Util;
 
 /**
  * Class FirewallController
@@ -226,48 +227,59 @@ class FirewallController extends ApiControllerBase
     {
         if ($this->request->isPost()) {
             $this->sessionClose();
-            $filter = new SanitizeFilter();
-            $searchPhrase = '';
-            $ruleId = '';
-            $sortBy = '';
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
+            $pftop = json_decode((new Backend())->configdpRun('filter diag top') ?? '', true) ?? [];
 
-            if ($this->request->getPost('ruleid', 'string', '') != '') {
-                $ruleId = $filter->sanitize($this->request->getPost('ruleid'), 'query');
-            }
-
-            if ($this->request->getPost('searchPhrase', 'string', '') != '') {
-                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
-            }
-            if (
-                $this->request->has('sort') &&
-                is_array($this->request->getPost("sort")) &&
-                !empty($this->request->getPost("sort"))
-            ) {
-                $tmp = array_keys($this->request->getPost("sort"));
-                $sortBy = $tmp[0] . " " . $this->request->getPost("sort")[$tmp[0]];
+            $clauses = [];
+            $networks = [];
+            foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $item) {
+                if (empty($item)) {
+                    continue;
+                } elseif (Util::isSubnet($item)) {
+                    $networks[] = $item;
+                } elseif (Util::isIpAddress($item)) {
+                    $networks[] = $item . "/". (strpos($item, ':') ? '128' : '32');
+                } else {
+                    $clauses[] = $item;
+                }
             }
 
-            $response = (new Backend())->configdpRun('filter diag top', [$searchPhrase, $itemsPerPage,
-                ($currentPage - 1) * $itemsPerPage, $ruleId, $sortBy]);
-            $response = json_decode($response, true);
-            if ($response != null) {
-                return [
-                    'rows' => $response['details'],
-                    'rowCount' => count($response['details']),
-                    'total' => $response['total_entries'],
-                    'current' => (int)$currentPage
-                ];
-            }
+            $ruleid = $this->request->getPost('ruleid', 'string', '');
+            $labels = $pftop['metadata']['labels'];
+            $filter_funct = function (&$row) use ($networks, $labels, $ruleid) {
+                /* update record */
+                if (isset($labels[$row['rule']])) {
+                    $row['label'] = $labels[$row['rule']]['rid'];
+                    $row['descr'] = $labels[$row['rule']]['descr'];
+                }
+
+                if (!empty($ruleid) && trim($row['label']) != $ruleid) {
+                    return false;
+                }
+                /* filter using network clauses*/
+                if (empty($networks)) {
+                    return true;
+                }
+                foreach (['dst_addr', 'src_addr', 'gw_addr'] as $addr) {
+                    foreach ($networks as $net) {
+                        if (Util::isIPInCIDR($row[$addr] ?? '', $net)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            return $this->searchRecordsetBase(
+                $pftop['details'],
+                null,
+                null,
+                $filter_funct,
+                SORT_NATURAL | SORT_FLAG_CASE,
+                $clauses
+            );
         }
-        return [
-            'rows' => [],
-            'rowCount' => 0,
-            'total' => 0,
-            'current' => 0
-        ];
     }
+
     /**
      * delete / drop a specific state by state+creator id
      */
