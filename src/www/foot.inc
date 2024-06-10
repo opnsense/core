@@ -21,7 +21,7 @@ $product = product::getInstance();
         return strcmp(strtolower($item1['name']), strtolower($item2['name']));
       });
     ?>
-    <div class="modal fade" id="modal_widgets" tabindex="-1" role="dialog" aria-labelledby="modal_widgets_label" aria-hidden="true">
+    <div class="modal fade" id="modal_widgets" tabindex="-1" role="dialog" aria-labelledby="modal_widgets_label" aria-hidden="false">
       <div class="modal-backdrop fade in"></div>
       <div class="modal-dialog">
         <div class="modal-content">

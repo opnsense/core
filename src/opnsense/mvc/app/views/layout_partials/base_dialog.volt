@@ -55,12 +55,12 @@
     {% endif %}
 {% endfor %}
 
-<div class="modal fade" id="{{base_dialog_id}}" tabindex="-1" role="dialog" aria-labelledby="{{base_dialog_id}}Label" aria-hidden="true">
+<div class="modal fade" id="{{base_dialog_id}}" tabindex="-1" role="dialog" aria-labelledby="{{base_dialog_id}}Label" aria-hidden="false">
     <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="false">&times;</span></button>
                 <h4 class="modal-title" id="{{base_dialog_id}}Label">{{base_dialog_label}}</h4>
             </div>
             <div class="modal-body">
