@@ -64,6 +64,14 @@
             <pattern>api/diagnostics/traffic/interface</pattern>
         </patterns>
     </page-dashboard-all>
+    <page-dashboard-base>
+        <name>Dashboard: Minimum access rights (widgets only)</name>
+        <patterns>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>ui/js/widgets/*</pattern>
+        </patterns>
+    </page-dashboard-base>
     <page-dashboard-widgets>
         <name>Dashboard (widgets only)</name>
         <patterns>
