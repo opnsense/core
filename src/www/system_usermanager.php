@@ -976,7 +976,7 @@ $( document ).ready(function() {
                       <th><?=gettext("Full name"); ?></th>
                       <th><?=gettext("Groups"); ?></th>
                       <th class="text-nowrap">
-                        <a href="system_usermanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>">
+                        <a href="system_usermanager.php?act=new" class="btn btn-primary btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Add')) ?>" aria-label="<?= html_safe(gettext('Add')) ?>">
                           <i class="fa fa-plus fa-fw"></i>
                         </a>
 <?php
