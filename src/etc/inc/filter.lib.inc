@@ -355,7 +355,7 @@ function filter_core_rules_system($fw, $defaults)
                 'to' => 'fe80::/10',
                 'to_port' => 546,
                 'from' => 'fe80::/10',
-                /* omit from_to as the server may use a different source port */
+                /* omit from_port as the server may use a different source port */
             ], $defaults['pass']);
             $dhcpv6_opts = [
                 'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
