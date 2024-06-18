@@ -138,6 +138,24 @@ class DashboardController extends ApiControllerBase
                 'help' => gettext('CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.'),
                 'unconfigured' => gettext('Thermal sensors not available or not configured.')
             ],
+            'monit' => [
+                'title' => gettext('Monit Status'),
+                'filesystem' => gettext('Filesystem'),
+                'directory' => gettext('Directory'),
+                'file' => gettext('File'),
+                'process' => gettext('Process'),
+                'host' => gettext('Host'),
+                'system' => gettext('System'),
+                'fifo' => gettext('FIFO'),
+                'custom' => gettext('Custom'),
+                'network' => gettext('Network'),
+                'ok' => gettext('OK'),
+                'failed' => gettext('Failed'),
+                'changed' => gettext('Changed'),
+                'unchanged' => gettext('Not changed'),
+                'type' => gettext('Type'),
+                'unconfigured' => gettext('Monit is disabled or not configured.'),
+            ]
         ];
     }
 
