@@ -347,29 +347,27 @@ function filter_core_rules_system($fw, $defaults)
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // allow DHCPv6 client out, before adding bogons (sequence 1, bogons @ 5)
         if (isset($config['system']['ipv6allow']) && in_array($intfinfo['ipaddrv6'], array("slaac","dhcp6"))) {
-            $fw->registerFilterRule(
-                1,
-                array('protocol' => 'udp', 'from' => 'fe80::/10', 'from_port' => 546, 'to' => 'fe80::/10',
-                    'interface' => $intf, 'to_port' => 546, 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                    '#ref' => 'system_advanced_network.php#ipv6allow'),
-                $defaults['pass']
-            );
-            $fw->registerFilterRule(
-                1,
-                array('protocol' => 'udp', 'from_port' => 547,'to_port' => 546, 'direction' => 'in',
-                    'interface' => $intf, 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
-                    '#ref' => 'system_advanced_network.php#ipv6allow'),
-                $defaults['pass']
-            );
-            $dhcpv6_opts = array(
+            $fw->registerFilterRule(1, [
                 'descr' => 'allow dhcpv6 client in ' . $intfinfo['descr'],
+                '#ref' => 'system_advanced_network.php#ipv6allow',
+                'interface' => $intf,
+                'protocol' => 'udp',
+                'to' => 'fe80::/10',
+                'to_port' => 546,
+                'from' => 'fe80::/10',
+                /* omit from_to as the server may use a different source port */
+            ], $defaults['pass']);
+            $dhcpv6_opts = [
+                'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
                 '#ref' => 'system_advanced_network.php#ipv6allow',
                 'direction' => 'out',
                 'interface' => $intf,
                 'protocol' => 'udp',
+                'from' => 'fe80::/10',
                 'from_port' => 546,
+                'to' => 'fe80::/10',
                 'to_port' => 547,
-            );
+            ];
             if (isset($intfinfo['dhcp6vlanprio'])) {
                  $dhcpv6_opts['set-prio'] = $intfinfo['dhcp6vlanprio'];
             }
