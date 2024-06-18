@@ -86,6 +86,7 @@
                 </option_data>
                 <pools type=".\KeaPoolsField">
                 </pools>
+                <description type="DescriptionField"/>
             </subnet4>
         </subnets>
         <reservations>
