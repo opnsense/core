@@ -352,10 +352,10 @@ function filter_core_rules_system($fw, $defaults)
                 '#ref' => 'system_advanced_network.php#ipv6allow',
                 'interface' => $intf,
                 'protocol' => 'udp',
-                'to' => 'fe80::/10',
-                'to_port' => 546,
                 'from' => 'fe80::/10',
                 /* omit from_port as the server may use a different source port */
+                'to' => 'fe80::/10',
+                'to_port' => 546,
             ], $defaults['pass']);
             $dhcpv6_opts = [
                 'descr' => 'allow dhcpv6 client out ' . $intfinfo['descr'],
