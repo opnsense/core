@@ -294,7 +294,7 @@
                 </external>
                 <natreflection type="OptionField">
                     <OptionValues>
-                        <default value=''>default</default>
+                        <default value="">Default</default>
                         <enable>Enable</enable>
                         <disable>Disable</disable>
                     </OptionValues>
