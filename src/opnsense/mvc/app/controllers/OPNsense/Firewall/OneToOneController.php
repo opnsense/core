@@ -44,7 +44,7 @@ class OneToOneController extends \OPNsense\Base\IndexController
                 'id' => 'interface','width' => '9em', 'heading' => gettext('Interface')
             ],
             [
-                'id' => 'target', 'heading' => gettext('External')
+                'id' => 'external', 'heading' => gettext('External')
             ],
             [
                 'id' => 'source_net', 'heading' => gettext('Internal')

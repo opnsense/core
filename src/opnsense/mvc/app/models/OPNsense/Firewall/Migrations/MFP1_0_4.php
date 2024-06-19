@@ -84,7 +84,7 @@ class MFP1_0_4 extends BaseModelMigration
                         $node->type = !empty((string)$child->type) ? (string)$child->type : 'binat';
                         $node->external = (string)$child->external;
                         $node->source_net = $addr['source'];
-                        $node->destination_net = $addr['source'];
+                        $node->destination_net = $addr['destination'];
                         $node->source_not = !empty((string)$child->source->not) ? '1' : '0';
                         $node->destination_not = !empty((string)$child->destination->not) ? '1' : '0';
                         $node->description = (string)$child->descr;
