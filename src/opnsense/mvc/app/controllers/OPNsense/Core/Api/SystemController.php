@@ -229,13 +229,19 @@ class SystemController extends ApiControllerBase
             !empty($product['product_check']['remove_packages']) ||
             !empty($product['product_check']['upgrade_packages']);
 
+        $versions = [
+            sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']),
+            php_uname('s') . ' ' . php_uname('r'),
+            trim($backend->configdRun('system openssl version')),
+        ];
+
+        if (!empty($product['product_license']['valid_to'])) {
+            $versions[] = sprintf(gettext('Licensed until %s'), $product['product_license']['valid_to']);
+        }
+
         $response = [
             'name' => $config->system->hostname . '.' . $config->system->domain,
-            'versions' => [
-                sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']),
-                php_uname('s') . ' ' . php_uname('r'),
-                trim($backend->configdRun('system openssl version'))
-            ],
+            'versions' => $versions,
             'updates' => ($from_changelog || $from_check)
                 ? gettext('Click to view pending updates.')
                 : gettext('Click to check for updates.'),

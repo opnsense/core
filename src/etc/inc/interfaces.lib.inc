@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2015-2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -304,8 +304,15 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]["options"][] = strtolower(trim($option));
             }
         } elseif (strpos($line, "\tether ") !== false) {
-            // mac address
+            // current mac address
             $result[$current_interface]["macaddr"] = $line_parts[1];
+            // fill original as well if not found
+            if (!isset($result[$current_interface]['macaddr_hw'])) {
+                $result[$current_interface]['macaddr_hw'] = $line_parts[1];
+            }
+        } elseif (strpos($line, "\thwaddr ") !== false) {
+            // original mac address
+            $result[$current_interface]['macaddr_hw'] = $line_parts[1];
         } elseif (strpos($line, "\tinet ") !== false) {
             // IPv4 information
             unset($mask);

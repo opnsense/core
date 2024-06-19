@@ -79,6 +79,7 @@
 /usr/local/etc/pkg/fingerprints/OPNsense/revoked/pkg.opnsense.org.20221213
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20230717
 /usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20240105
+/usr/local/etc/pkg/fingerprints/OPNsense/trusted/pkg.opnsense.org.20240611
 /usr/local/etc/rc
 /usr/local/etc/rc.bootup
 /usr/local/etc/rc.carp_service_status.d/.placeholder
@@ -1972,6 +1973,7 @@
 /usr/local/opnsense/www/js/widgets/Interfaces.js
 /usr/local/opnsense/www/js/widgets/Mbuf.js
 /usr/local/opnsense/www/js/widgets/Memory.js
+/usr/local/opnsense/www/js/widgets/Monit.js
 /usr/local/opnsense/www/js/widgets/Swap.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js
 /usr/local/opnsense/www/js/widgets/ThermalSensors.js
