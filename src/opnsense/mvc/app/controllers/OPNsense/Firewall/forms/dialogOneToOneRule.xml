@@ -74,6 +74,11 @@ A BINAT rule specifies a bidirectional mapping between an external and internal 
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
     </field>
     <field>
+        <id>rule.natreflection</id>
+        <label>NAT reflection</label>
+        <type>dropdown</type>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>

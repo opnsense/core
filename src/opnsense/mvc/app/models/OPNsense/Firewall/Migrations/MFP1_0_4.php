@@ -36,7 +36,7 @@ use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Util;
 
-//        <!--  external, category, descr, interface, type, src, dst, natreflection, disabled -->
+// <!--  external, category, descr, interface, type, source, destination, natreflection, disabled -->
 
 class MFP1_0_4 extends BaseModelMigration
 {
@@ -85,10 +85,12 @@ class MFP1_0_4 extends BaseModelMigration
                         $node->external = (string)$child->external;
                         $node->source_net = $addr['source'];
                         $node->destination_net = $addr['source'];
-                        $node->source_not =  !empty((string)$child->source->not) ? '1' : '0';
-                        $node->destination_not =  !empty((string)$child->destination->not) ? '1' : '0';
-
+                        $node->source_not = !empty((string)$child->source->not) ? '1' : '0';
+                        $node->destination_not = !empty((string)$child->destination->not) ? '1' : '0';
                         $node->description = (string)$child->descr;
+                        if (!empty((string)$child->natreflection)) {
+                            $node->natreflection = (string)$child->natreflection;
+                        }
                     }
                 }
             }
