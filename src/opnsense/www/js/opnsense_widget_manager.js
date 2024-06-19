@@ -272,6 +272,11 @@ class WidgetManager  {
             </button>
         `));
         $btn_group.append($(`<button class="btn btn-secondary" id="restore-defaults">${this.gettext.restore}</button>`));
+        $btn_group.append($(`
+            <button class="btn btn-secondary" id="lock-grid">
+                <i class="fa fa-lock" style="font-size: 14px;"></i>
+            </button>
+        `));
 
         // Initially hide the save button
         $('#save-grid').hide();
@@ -385,6 +390,24 @@ class WidgetManager  {
                     window.location.reload();
                 }
             });
+        });
+
+        $('#lock-grid').on('click', () => {
+            $('#lock-grid').toggleClass('btn-pressed');
+
+            if ($('#lock-grid').hasClass('btn-pressed')) {
+              this.grid.enableMove(false);
+              this.grid.enableResize(false);
+              $('.widget-content').css('cursor', 'default');
+            } else {
+              this.grid.enableMove(true);
+              this.grid.enableResize(true);
+              $('.widget-content').css('cursor', 'grab');
+            }
+        });
+
+        $('#lock-grid').mouseup(function() {
+            $(this).blur();
         });
     }
 

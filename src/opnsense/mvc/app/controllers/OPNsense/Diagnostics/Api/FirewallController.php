@@ -237,7 +237,7 @@ class FirewallController extends ApiControllerBase
                 } elseif (Util::isSubnet($item)) {
                     $networks[] = $item;
                 } elseif (Util::isIpAddress($item)) {
-                    $networks[] = $item . "/". (strpos($item, ':') ? '128' : '32');
+                    $networks[] = $item . "/" . (strpos($item, ':') ? '128' : '32');
                 } else {
                     $clauses[] = $item;
                 }
