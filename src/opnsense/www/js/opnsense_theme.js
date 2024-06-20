@@ -187,6 +187,7 @@ $(document).ready(function () {
             var win = $(this),
                 winHeight = win.height(),
 	        winWidth = win.width();
+					
             if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
