@@ -83,7 +83,9 @@ def aggregate_flowd(config, do_vacuum=False):
 
     # expire old data
     for stream_agg_object in stream_agg_objects:
-        stream_agg_object.cleanup(do_vacuum)
+        stream_agg_class_name = type(stream_agg_object).__name__
+        history = config.history[stream_agg_class_name][stream_agg_object.resolution]
+        stream_agg_object.cleanup(history, do_vacuum)
         del stream_agg_object
     del metadata
 
@@ -192,7 +194,7 @@ class Main(object):
 if __name__ == '__main__':
     # parse arguments and load config
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', help='configuration yaml', default=None)
+    parser.add_argument('--config', help='configuration yaml', default="/usr/local/etc/flowd_aggregate.yaml")
     parser.add_argument('--console', dest='console', help='run in console', action='store_true')
     parser.add_argument('--profile', dest='profile', help='enable profiler', action='store_true')
     parser.add_argument('--repair', dest='repair', help='init repair', action='store_true')
