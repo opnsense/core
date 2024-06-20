@@ -43,8 +43,8 @@ $(document).ready(function () {
     countA = $('#mainmenu > div > a').length,
     footH = $('.page-foot').height(),
     headerH = $('.navbar').height(),
-    li_itemH = $('a.list-group-item').height(),
-    navHeight = (countA * 70) + ((footH + headerH) - (li_itemH + countA)),
+    li_itemH = $('a.list-group-item').outerHeight(true),
+    navHeight = (countA * 70) + (headerH),
     events = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -61,7 +61,7 @@ $(document).ready(function () {
                 close_submenu(this);
                 if (currentHeight > (winHeight - li_itemH)) {
                     var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
-                    viewresult = that.next('div').css('margin-top', - divHeight - divPos);
+                    showdivPos = that.next('div').css('margin-top', - divHeight - divPos);
                 }
             }
         },
@@ -182,9 +182,10 @@ $(document).ready(function () {
 
         /* on resize - toggle sidebar/main navigation */
         $(window).on('resize', function () {
-            var win = $(this);
-            winHeight = win.height();
-            if ((win.height() < navHeight || win.width() < 760) && navigation.not('col-sidebar-hidden')) {
+            var win = $(this),
+            winHeight = win.height(),
+	    winWidth = win.width();
+            if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
                 toggle_btn.hide();
@@ -193,7 +194,7 @@ $(document).ready(function () {
                     mouse_events_off();
                     transition_duration(350);
                 }
-            } else if ((win.height() >= navHeight && win.width() >= 760) && navigation.hasClass('col-sidebar-hidden')) {
+            } else if ((winHeight >= navHeight && winWidth >= 760) && navigation.hasClass('col-sidebar-hidden')) {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 toggle_btn.show();
