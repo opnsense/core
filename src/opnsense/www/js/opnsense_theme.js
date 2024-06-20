@@ -32,19 +32,19 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false,
-    winHeight = $(window).height(),
-    mouse = 'mouseenter mouseleave',
-    layer1_a = $('#mainmenu > div > a'),
-    layer1_div = $('#mainmenu > div > div'),
-    layer2_a = $('#mainmenu > div > div > a'),
-    layer2_div = $('#mainmenu > div > div > div'),
-    navigation = $('#navigation'),
-    mainmenu = $('#mainmenu'),
-    countA = $('#mainmenu > div > a').length,
-    footH = $('.page-foot').height(),
-    headerH = $('.navbar').height(),
-    li_itemH = $('a.list-group-item').outerHeight(true),
-    navHeight = (countA * 70) + (headerH),
+        winHeight = $(window).height(),
+        mouse = 'mouseenter mouseleave',
+        layer1_a = $('#mainmenu > div > a'),
+        layer1_div = $('#mainmenu > div > div'),
+        layer2_a = $('#mainmenu > div > div > a'),
+        layer2_div = $('#mainmenu > div > div > div'),
+        navigation = $('#navigation'),
+        mainmenu = $('#mainmenu'),
+        countA = $('#mainmenu > div > a').length,
+        footH = $('.page-foot').height(),
+        headerH = $('.navbar').height(),
+        li_itemH = $('a.list-group-item').outerHeight(true),
+        navHeight = (countA * 70) + (headerH),
     events = {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
@@ -53,12 +53,14 @@ $(document).ready(function () {
                 /* no action needed */
             } else {
                 var offsetTop = that.offset().top,
-                winscrTop = $(window).scrollTop(),
-                divHeight = that.next('div').height(),
-                divTop = (offsetTop - winscrTop),
-                currentHeight = (divTop + divHeight),
-                thatTrigger = that.trigger('click');
+                    winscrTop = $(window).scrollTop(),
+                    divHeight = that.next('div').height(),
+                    divTop = (offsetTop - winscrTop),
+                    currentHeight = (divTop + divHeight),
+										
+                that.trigger('click');
                 close_submenu(this);
+										
                 if (currentHeight > (winHeight - li_itemH)) {
                     var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
                     showdivPos = that.next('div').css('margin-top', - divHeight - divPos);
