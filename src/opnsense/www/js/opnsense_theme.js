@@ -130,10 +130,12 @@ $(document).ready(function () {
         navigation.toggleClass('col-sidebar-left');
         $('main').toggleClass('col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12');
         $('.toggle-sidebar > i').toggleClass('fa-chevron-right fa-chevron-left');
+				
         if (navigation.hasClass('col-sidebar-left')) {
             $('.brand-logo').css('display', 'none');
             $('.brand-icon').css('display', 'inline-block');
             trigger_sidebar();
+						
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 1);
                 transition_duration(0);
@@ -142,6 +144,7 @@ $(document).ready(function () {
             $('.brand-icon').css('display', 'none');
             $('.brand-logo').css('display', 'inline-block');
             $('#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs').css('width', '');
+						
             if (store && window.localStorage) {
                 localStorage.setItem('toggle_sidebar_preset', 0);
                 mouse_events_off();
@@ -192,6 +195,7 @@ $(document).ready(function () {
                 navigation.addClass('col-sidebar-hidden');
                 mouse_events_off();
                 toggle_btn.hide();
+								
                 if (navigation.hasClass('col-sidebar-left')) {
                     opnsense_sidebar_toggle(false);
                     mouse_events_off();
@@ -201,6 +205,7 @@ $(document).ready(function () {
                 navigation.removeClass('col-sidebar-hidden');
                 transition_duration(0);
                 toggle_btn.show();
+								
                 if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
                     opnsense_sidebar_toggle(false);
                 }
