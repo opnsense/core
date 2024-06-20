@@ -34,8 +34,8 @@ $(document).ready(function () {
     var toggle_sidebar_loaded = false,
         winHeight = $(window).height(),
         mouse = 'mouseenter mouseleave',
-        layer1_a = $('#mainmenu > div > a'),
-        layer1_div = $('#mainmenu > div > div'),
+        layer_a = $('#mainmenu > div > a'),
+        layer_div = $('#mainmenu > div > div'),
         layer2_a = $('#mainmenu > div > div > a'),
         layer2_div = $('#mainmenu > div > div > div'),
         navigation = $('#navigation'),
@@ -70,7 +70,7 @@ $(document).ready(function () {
         },
         mouseleave: function () {
             $('#navigation.col-sidebar-left').css('width', '70px');
-            layer1_a.off(events).on(events);
+            layer_a.off(events).on(events);
         },
         mousedown: function () {
             $(this).trigger('click');
@@ -102,16 +102,16 @@ $(document).ready(function () {
 
     /* disable mouseevents on toggle and resize */
     function mouse_events_off() {
-        layer1_a.off(mouse);
+        layer_a.off(mouse);
         layer2_a.off(mouse);
-        layer1_div.off(mouse);
+        layer_div.off(mouse);
         layer2_div.off(mouse);
     }
 
     /* trigger mouseevents and remove opened submenus on startup */
     function trigger_sidebar() {
-        layer1_a.first().trigger('mouseenter').trigger('mouseleave');
-        layer1_div.removeClass('in');
+        layer_a.first().trigger('mouseenter').trigger('mouseleave');
+        layer_div.removeClass('in');
         layer2_div.removeClass('in');
     }
 
@@ -167,9 +167,9 @@ $(document).ready(function () {
         mainmenu.mouseenter(function () {
             if (navigation.hasClass('col-sidebar-left')) {
                 transition_duration(0);
-                layer1_a.on(events);
+                layer_a.on(events);
                 layer2_a.on(events);
-                layer1_div.on(events2);
+                layer_div.on(events2);
                 layer2_div.on(events2);
             }
         });
@@ -177,12 +177,12 @@ $(document).ready(function () {
         /* main function - sidebar mouseleave */
         mainmenu.mouseleave(function () {
             if (navigation.hasClass('col-sidebar-left')) {
-                layer1_a.attr('aria-expanded', 'false').next('div').removeClass('in');
+                layer_a.attr('aria-expanded', 'false').next('div').removeClass('in');
                 layer2_a.attr('aria-expanded', 'false').next('div').removeClass('in');
-                layer1_div.removeAttr('style');
+                layer_div.removeAttr('style');
                 layer2_div.removeAttr('style');
                 layer2_a.off(events);
-                layer1_div.off(events2);
+                layer_div.off(events2);
                 layer2_div.off(events2);
             }
         });
