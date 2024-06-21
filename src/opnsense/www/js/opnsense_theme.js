@@ -32,7 +32,6 @@
 $(document).ready(function () {
     // traverse loaded css files
     var toggle_sidebar_loaded = false,
-        winHeight = $(window).height(),
         mouse = 'mouseenter mouseleave',
         layer_a = $('#mainmenu > div > a'),
         layer_div = $('#mainmenu > div > div'),
@@ -43,8 +42,8 @@ $(document).ready(function () {
         countA = $('#mainmenu > div > a').length,
         footH = $('.page-foot').height(),
         headerH = $('.navbar').height(),
-        li_itemH = $('a.list-group-item').outerHeight(true),
-        navHeight = (countA * 70) + (headerH + footH),
+        li_itemH = $('a.list-group-item').height(),
+        navHeight = (countA * 70) + (headerH),
 				
     events = {
         mouseenter: function () {
@@ -52,7 +51,8 @@ $(document).ready(function () {
             var that = $(this);
             if (that.next('div').not('in')) {
 							
-                var offsetTop = that.offset().top,
+                var winHeight = $(window).height(),
+                    offsetTop = that.offset().top,
                     winscrTop = $(window).scrollTop(),
                     divHeight = that.next('div').height(),
                     divTop = (offsetTop - winscrTop),
@@ -188,7 +188,7 @@ $(document).ready(function () {
 
         /* on resize - toggle sidebar/main navigation */
         $(window).on('resize', function () {
-            var win = $(this),
+            var win = $(window),
                 winHeight = win.height(),
                 winWidth = win.width();
 					
