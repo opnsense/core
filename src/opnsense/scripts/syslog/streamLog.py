@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2019-2020 Ad Schellevis <ad@opnsense.org>
     Copyright (c) 2024 Deciso B.V.
     All rights reserved.
 
@@ -28,43 +27,38 @@
 
     --------------------------------------------------------------------------------------
 
-    query log files
+    stream log file
 """
 
-import os.path
 import ujson
-from log_matcher import LogMatcher
 import argparse
+from collections import deque
+from log_matcher import LogMatcher
 
 if __name__ == '__main__':
-    # handle parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument('--output', help='output type [json/text]', default='json')
     parser.add_argument('--filter', help='filter results', default='')
-    parser.add_argument('--limit', help='limit number of results', default='')
-    parser.add_argument('--offset', help='begin at row number', default='')
+    parser.add_argument('--offset', help='include last N matching lines', default='')
     parser.add_argument('--filename', help='log file name (excluding .log extension)', default='')
     parser.add_argument('--module', help='module', default='core')
     parser.add_argument('--severity', help='comma separated list of severities', default='')
     inputargs = parser.parse_args()
 
-    result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
-    if inputargs.filename != "":
-        limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
-        offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
-        severity = inputargs.severity.split(',') if inputargs.severity.strip() != '' else []
-        log_matcher = LogMatcher(inputargs.filter, inputargs.filename, inputargs.module, inputargs.severity)
-        for record in log_matcher.match_records():
-            result['total_rows'] += 1
-            if (len(result['rows']) < limit or limit == 0) and (result['total_rows'] >= offset):
-                if inputargs.output == 'json':
-                    result['rows'].append(record)
-                else:
-                    print("%(timestamp)s\t%(severity)s\t%(process_name)s\t%(line)s" % record)
-            if limit > 0 and result['total_rows'] > offset + limit:
-                # do not fetch data until end of file...
-                break
+    result = deque()
+    if inputargs.filename == "":
+        exit
 
-    # output results (when json)
-    if inputargs.output == 'json':
-        print(ujson.dumps(result))
+    offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
+
+    log_matcher = LogMatcher(inputargs.filter, inputargs.filename, inputargs.module, inputargs.severity)
+    if offset > 0:
+        for record in log_matcher.match_records():
+            if len(result) >= offset:
+                break
+            result.appendleft(f"event: message\ndata:{ujson.dumps(record)}\n\n")
+
+    for record in result:
+        print(record, flush=True)
+
+    for record in log_matcher.live_match_records():
+        print(f"event: message\ndata:{ujson.dumps(record)}\n\n")

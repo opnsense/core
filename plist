@@ -1171,9 +1171,11 @@
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
+/usr/local/opnsense/scripts/syslog/log_matcher.py
 /usr/local/opnsense/scripts/syslog/logformats/__init__.py
 /usr/local/opnsense/scripts/syslog/logformats/syslog.py
 /usr/local/opnsense/scripts/syslog/queryLog.py
+/usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
