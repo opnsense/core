@@ -162,6 +162,9 @@ class DashboardController extends ApiControllerBase
                 'severity' => gettext('Severity'),
                 'process' => gettext('Process'),
                 'message' => gettext('Message'),
+            ],
+            'ipsecleases' => [
+                'title' => gettext('IPsec Leases'),
             ]
         ];
     }
