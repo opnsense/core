@@ -54,12 +54,12 @@ $(document).ready(function () {
             navigation.css('width', '415px');
         
             if (nextDiv.not('in')) {
-                var winHeight = $(window).height();
-                var offsetTop = that.offset().top;
-                var winscrTop = $(window).scrollTop();
-                var divHeight = nextDiv.height();
-                var divTop = offsetTop - winscrTop;
-                var currentHeight = divTop + divHeight;
+                var winHeight = $(window).height(),
+                    offsetTop = that.offset().top,
+                    winscrTop = $(window).scrollTop(),
+                    divHeight = nextDiv.height(),
+                    divTop = offsetTop - winscrTop,
+                    currentHeight = divTop + divHeight;
             
             that.trigger('click');
             close_submenu(this);
