@@ -56,9 +56,9 @@ $(document).ready(function () {
                     winscrTop = $(window).scrollTop(),
                     divHeight = that.next('div').height(),
                     divTop = (offsetTop - winscrTop),
-                    currentHeight = (divTop + divHeight),
+                    currentHeight = (divTop + divHeight);
 										
-                that_trigger = that.trigger('click');
+                that.trigger('click');
                 close_submenu(this);
 										
                 if (currentHeight > (winHeight - li_itemH)) {
