@@ -134,9 +134,6 @@ export default class IpsecLeases extends BaseTableWidget {
         // Sort rows so that online users appear first
         rows.sort((a, b) => b.online - a.online);
 
-        // Add the user count summary at the beginning of the rows
-        rows.unshift(userCountsRow); // Fix to ensure this is a string, not an object
-
         // Update the HTML table with the sorted rows
         super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
 
