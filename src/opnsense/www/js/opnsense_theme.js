@@ -50,9 +50,8 @@ $(document).ready(function () {
         mouseenter: function () {
             $('#navigation.col-sidebar-left').css('width', '415px');
             var that = $(this);
-            if (that.next('div').hasClass('in')) {
-                /* no action needed */
-            } else {
+            if (that.next('div').not('in')) {
+							
                 var offsetTop = that.offset().top,
                     winscrTop = $(window).scrollTop(),
                     divHeight = that.next('div').height(),
