@@ -100,7 +100,6 @@ $(document).ready(function () {
     });
 
     /* disable mouseevents on toggle and resize */
-		
     function mouse_events_off() {
         const layers = [layer_a, layer2_a, layer_div, layer2_div];
         layers.forEach(layer => layer.off(mouse));
