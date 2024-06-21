@@ -67,7 +67,7 @@ $(document).ready(function () {
             
                 if (currentHeight > (winHeight - li_itemH)) {
 									
-                   /* check if submenu has enough space expanding down  - less space down expand submenu up */
+                   /* check if submenu has enough space expanding down  - if not expand submenu up */
                     var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
                     nextDiv.css('margin-top', -divHeight - divPos);
                 }
