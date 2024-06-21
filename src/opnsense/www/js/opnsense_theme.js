@@ -47,26 +47,30 @@ $(document).ready(function () {
 				
     events = {
         mouseenter: function () {
-            $('#navigation.col-sidebar-left').css('width', '415px');
+            var navigation = $('#navigation.col-sidebar-left');
             var that = $(this);
-            if (that.next('div').not('in')) {
-							
-                var winHeight = $(window).height(),
-                    offsetTop = that.offset().top,
-                    winscrTop = $(window).scrollTop(),
-                    divHeight = that.next('div').height(),
-                    divTop = (offsetTop - winscrTop),
-                    currentHeight = (divTop + divHeight);
-										
-                that.trigger('click');
-                close_submenu(this);
-										
+            var nextDiv = that.next('div');
+        
+            navigation.css('width', '415px');
+        
+            if (nextDiv.not('in')) {
+                var winHeight = $(window).height();
+                var offsetTop = that.offset().top;
+                var winscrTop = $(window).scrollTop();
+                var divHeight = nextDiv.height();
+                var divTop = offsetTop - winscrTop;
+                var currentHeight = divTop + divHeight;
+            
+            that.trigger('click');
+            close_submenu(this);
+            
                 if (currentHeight > (winHeight - li_itemH)) {
-                    var divPos = (divHeight > divTop) ? - ((divHeight - divTop) - li_itemH) : 3,
-                    showdivPos = that.next('div').css('margin-top', - divHeight - divPos);
+                    var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
+                    nextDiv.css('margin-top', -divHeight - divPos);
                 }
             }
         },
+				
         mouseleave: function () {
             $('#navigation.col-sidebar-left').css('width', '70px');
             layer_a.off(events).on(events);
