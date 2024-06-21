@@ -155,6 +155,13 @@ class DashboardController extends ApiControllerBase
                 'unchanged' => gettext('Not changed'),
                 'type' => gettext('Type'),
                 'unconfigured' => gettext('Monit is disabled or not configured.'),
+            ],
+            'livelog' => [
+                'title' => gettext('Live Log'),
+                'time' => gettext('Time'),
+                'severity' => gettext('Severity'),
+                'process' => gettext('Process'),
+                'message' => gettext('Message'),
             ]
         ];
     }

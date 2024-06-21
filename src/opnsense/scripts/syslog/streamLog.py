@@ -61,4 +61,4 @@ if __name__ == '__main__':
         print(record, flush=True)
 
     for record in log_matcher.live_match_records():
-        print(f"event: message\ndata:{ujson.dumps(record)}\n\n")
+        print(f"event: message\ndata:{ujson.dumps(record)}\n\n", flush=True)

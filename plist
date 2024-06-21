@@ -1973,6 +1973,7 @@
 /usr/local/opnsense/www/js/widgets/Gateways.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
+/usr/local/opnsense/www/js/widgets/LiveLog.js
 /usr/local/opnsense/www/js/widgets/Mbuf.js
 /usr/local/opnsense/www/js/widgets/Memory.js
 /usr/local/opnsense/www/js/widgets/Monit.js

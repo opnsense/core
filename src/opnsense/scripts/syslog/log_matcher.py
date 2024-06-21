@@ -57,7 +57,7 @@ class LogMatcher:
         self.row_number = 0
         latest = "/var/log/%s/latest.log" % os.path.basename(self.filename)
         if not os.path.exists(latest):
-            latest = self.log_filenames[0] if len(self.log_filenames) > 0 else None
+            latest = self.log_filenames[0] if len(self.log_filenames) > 0 else ''
         if os.path.exists(latest):
             format_container = FormatContainer(latest)
             p = subprocess.Popen(['tail', '-f', '-n 0', latest], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=0)
