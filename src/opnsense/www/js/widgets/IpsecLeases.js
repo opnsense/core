@@ -38,12 +38,11 @@ export default class IpsecLeases extends BaseTableWidget {
         return {
             // Set the widget to automatically trigger vertical scrolling after reaching 650px in height
             sizeToContent: 650
-        }
+        };
     }
 
     getMarkup() {
         let $container = $('<div></div>');
-        // Create a table for displaying IPsec leases and assign it an ID for easy access
         let $ipsecLeaseTable = this.createTable('ipsecLeaseTable', {
             headerPosition: 'none'
         });
@@ -53,78 +52,95 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        // First, check if IPsec is enabled by fetching the status from the API
-        const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
-        const isIpsecEnabled = ipsecStatusResponse.enabled; // Specifically check the "enabled" property
+        try {
+            // Fetch IPsec status to check if enabled
+            const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
+            if (!ipsecStatusResponse.enabled) {
+                this.displayError(`${this.translations.unconfigured}`);
+                return;
+            }
 
-        if (!isIpsecEnabled) {
-            // Display an error message if IPsec is not enabled
-            const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${this.translations.unconfigured}</a></div>`);
-            $('#ipsecLeaseTable').empty().append($error);  // Clear the table and show the error message
-            return;
+            // Fetch IPsec leases data
+            const data = await ajaxGet('/api/ipsec/leases/pools', {});
+            if (!data || !data.leases || data.leases.length === 0) {
+                this.displayError(`${this.translations.noleases}`);
+                return;
+            }
+
+            // Process the leases data if present
+            this.processLeases(data);
+        } catch (error) {
+            this.displayError(`${this.translations.nodata}`);
         }
+    }
 
-        // Proceed with fetching the IPsec leases data if IPsec is enabled
-        await ajaxGet('/api/ipsec/leases/pools', {}, (data, status) => {
-            let users = {}; // Initialize an object to store user data indexed by user names
+    // Utility function to display errors within the widget
+    displayError(message) {
+        const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
+        $('#ipsecLeaseTable').empty().append($error);
+    }
 
-            // Process each lease record to organize data by user
-            data.leases.forEach(lease => {
-                if (!users[lease.user]) {
-                    users[lease.user] = {
-                        ipAddresses: [], // List of IP addresses assigned to the user
-                        online: false    // Online status initially false
-                    };
-                }
-                users[lease.user].ipAddresses.push({ address: lease.address, online: lease.online });
-                // Set the user's status to online if any of their IP addresses is online
-                if (lease.online) {
-                    users[lease.user].online = true;
-                }
-            });
+    // Function to process leases data and update the UI accordingly
+    processLeases(data) {
+        let users = {}; // Initialize an object to store user data indexed by user names
 
-            // Calculate and display the number of users currently online and total users
-            let onlineUsersCount = Object.values(users).filter(user => user.online).length;
-            let totalUsersCount = Object.keys(users).length;
-            let offlineUsersCount = totalUsersCount - onlineUsersCount;
-
-            // Prepare a summary row displaying total, online, and offline user counts
-            let userCountsRow = `
-                <div>
-                    <span><b>${this.translations.users}:</b> ${totalUsersCount} - <b>${this.translations.online}:</b> ${onlineUsersCount} - <b>${this.translations.offline}:</b> ${offlineUsersCount}</span>
-                </div>`;
-
-            let rows = [];
-            // Prepare HTML content for each user showing their details and IP addresses
-            Object.keys(users).forEach(user => {
-                let userStatusClass = users[user].online ? 'text-success' : 'text-danger'; // Set class based on online status
-                let userStatusTitle = users[user].online ? '${this.translations.online}' : '${this.translations.offline}'; // Tooltip text
-
-                // Construct a detailed row for each user
-                let row = `
-                    <div>
-                        <i class="fa fa-user ${userStatusClass}" style="cursor: pointer;"
-                            data-toggle="tooltip" title="${userStatusTitle}">
-                        </i>
-                        &nbsp;
-                        <span><b>${user}</b></span>
-                        <br/>
-                        <div style="margin-top: 5px; margin-bottom: 5px;">
-                            ${users[user].ipAddresses.map(ip => `<div>${ip.address}</div>`).join('')}
-                        </div>
-                    </div>`;
-
-                rows.push({ html: row, online: users[user].online });
-            });
-
-            // Sort rows so that online users appear first
-            rows.sort((a, b) => b.online - a.online);
-            // Add the user count summary at the beginning of the rows
-            rows.unshift({ html: userCountsRow });
-            // Update the HTML table with the sorted rows
-            super.updateTable('ipsecLeaseTable', rows.map(row => [row.html]));
-            // Activate tooltips for new dynamic elements
-            $('[data-toggle="tooltip"]').tooltip();
+        // Organize leases by user
+        data.leases.forEach(lease => {
+            if (!users[lease.user]) {
+                users[lease.user] = {
+                    ipAddresses: [], // List of IP addresses assigned to the user
+                    online: false    // Online status initially false
+                };
+            }
+            users[lease.user].ipAddresses.push({ address: lease.address, online: lease.online });
+            // Set the user's status to online if any of their IP addresses is online
+            if (lease.online) {
+                users[lease.user].online = true;
+            }
         });
+
+        // Calculate and display the number of users currently online and total users
+        let onlineUsersCount = Object.values(users).filter(user => user.online).length;
+        let totalUsersCount = Object.keys(users).length;
+        let offlineUsersCount = totalUsersCount - onlineUsersCount;
+
+        // Prepare a summary row for user counts
+        let userCountsRow = `
+            <div>
+                <span><b>${this.translations.users}:</b> ${totalUsersCount} - <b>${this.translations.online}:</b> ${onlineUsersCount} - <b>${this.translations.offline}:</b> ${offlineUsersCount}</span>
+            </div>`;
+
+        let rows = [userCountsRow];
+        // Prepare HTML content for each user showing their status and IP addresses
+        Object.keys(users).forEach(user => {
+            let userStatusClass = users[user].online ? 'text-success' : 'text-danger';
+            let userStatusTitle = users[user].online ? this.translations.online : this.translations.offline;
+
+            let row = `
+                <div>
+                    <i class="fa fa-user ${userStatusClass}" style="cursor: pointer;"
+                        data-toggle="tooltip" title="${userStatusTitle}">
+                    </i>
+                    &nbsp;
+                    <span><b>${user}</b></span>
+                    <br/>
+                    <div style="margin-top: 5px; margin-bottom: 5px;">
+                        ${users[user].ipAddresses.map(ip => `<div>${ip.address}</div>`).join('')}
+                    </div>
+                </div>`;
+            rows.push(row);
+        });
+
+        // Sort rows so that online users appear first
+        rows.sort((a, b) => b.online - a.online);
+
+        // Add the user count summary at the beginning of the rows
+        rows.unshift(userCountsRow); // Fix to ensure this is a string, not an object
+
+        // Update the HTML table with the sorted rows
+        super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
+
+        // Activate tooltips for new dynamic elements
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
