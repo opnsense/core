@@ -52,7 +52,6 @@ $(document).ready(function () {
             var nextDiv = that.next('div');
         
             navigation.css('width', '415px');
-        
             if (nextDiv.not('in')) {
 							
                 /* calculate position for submenu */
