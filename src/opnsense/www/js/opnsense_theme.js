@@ -54,6 +54,8 @@ $(document).ready(function () {
             navigation.css('width', '415px');
         
             if (nextDiv.not('in')) {
+							
+                /* calculate position for submenu */
                 var winHeight = $(window).height(),
                     offsetTop = that.offset().top,
                     winscrTop = $(window).scrollTop(),
@@ -65,6 +67,8 @@ $(document).ready(function () {
             close_submenu(this);
             
                 if (currentHeight > (winHeight - li_itemH)) {
+									
+                   /* check the space up and down and decide if the submenu opens up or down */
                     var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
                     nextDiv.css('margin-top', -divHeight - divPos);
                 }
