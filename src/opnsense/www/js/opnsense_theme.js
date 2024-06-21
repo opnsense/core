@@ -44,7 +44,7 @@ $(document).ready(function () {
         footH = $('.page-foot').height(),
         headerH = $('.navbar').height(),
         li_itemH = $('a.list-group-item').outerHeight(true),
-        navHeight = (countA * 70) + (headerH),
+        navHeight = (countA * 70) + (headerH + footH),
 				
     events = {
         mouseenter: function () {
@@ -100,18 +100,17 @@ $(document).ready(function () {
     });
 
     /* disable mouseevents on toggle and resize */
+		
     function mouse_events_off() {
-        layer_a.off(mouse);
-        layer2_a.off(mouse);
-        layer_div.off(mouse);
-        layer2_div.off(mouse);
+        const layers = [layer_a, layer2_a, layer_div, layer2_div];
+        layers.forEach(layer => layer.off(mouse));
     }
 
     /* trigger mouseevents and remove opened submenus on startup */
     function trigger_sidebar() {
         layer_a.first().trigger('mouseenter').trigger('mouseleave');
-        layer_div.removeClass('in');
-        layer2_div.removeClass('in');
+        const layers = [layer_div, layer2_div];
+        layers.forEach(layer => layer.removeClass('in'));
     }
 
     /* menu delay - transition duration - time */
@@ -121,10 +120,10 @@ $(document).ready(function () {
 
     /* close all non-focused submenus */
     function close_submenu(r) {
-        $(r).nextAll('a').addClass('collapsed').attr('aria-expanded', 'false');
-        $(r).prevAll('a').addClass('collapsed').attr('aria-expanded', 'false');
-        $(r).nextAll('div').removeClass('in').attr('aria-expanded', 'false');
-        $(r).prevAll('div').removeClass('in').attr('aria-expanded', 'false');
+        ['nextAll', 'prevAll'].forEach(direction => {
+        $(r)[direction]('a').addClass('collapsed').attr('aria-expanded', 'false');
+        $(r)[direction]('div').removeClass('in').attr('aria-expanded', 'false');
+        });
     }
 
     function opnsense_sidebar_toggle(store) {
@@ -163,34 +162,35 @@ $(document).ready(function () {
         });
 
         /* main function - sidebar mouseenter */
-        mainmenu.mouseenter(function () {
-            if (navigation.hasClass('col-sidebar-left')) {
-                transition_duration(0);
-                layer_a.on(events);
-                layer2_a.on(events);
-                layer_div.on(events2);
-                layer2_div.on(events2);
-            }
-        });
+       mainmenu.mouseenter(function () {
+           if (navigation.hasClass('col-sidebar-left')) {
+               transition_duration(0);
+               const layersWithEvents = [layer_a, layer2_a];
+               const layersWithEvents2 = [layer_div, layer2_div];
+						 
+               layersWithEvents.forEach(layer => layer.on(events));
+               layersWithEvents2.forEach(layer => layer.on(events2));
+           }
+       });
 
         /* main function - sidebar mouseleave */
         mainmenu.mouseleave(function () {
             if (navigation.hasClass('col-sidebar-left')) {
-                layer_a.attr('aria-expanded', 'false').next('div').removeClass('in');
-                layer2_a.attr('aria-expanded', 'false').next('div').removeClass('in');
-                layer_div.removeAttr('style');
-                layer2_div.removeAttr('style');
-                layer2_a.off(events);
-                layer_div.off(events2);
-                layer2_div.off(events2);
-            }
+                const layersWithAria = [layer_a, layer2_a];
+                const layersToRemoveStyle = [layer_div, layer2_div];
+                const layersToOffEvents = [{ layer: layer2_a, events: events }, { layer: layer_div, events: events2 }, { layer: layer2_div, events: events2 }];
+						
+                layersWithAria.forEach(layer => layer.attr('aria-expanded', 'false').next('div').removeClass('in'));
+                layersToRemoveStyle.forEach(layer => layer.removeAttr('style'));
+                layersToOffEvents.forEach(({ layer, events }) => layer.off(events));
+           }
         });
 
         /* on resize - toggle sidebar/main navigation */
         $(window).on('resize', function () {
             var win = $(this),
                 winHeight = win.height(),
-	        winWidth = win.width();
+                winWidth = win.width();
 					
             if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
                 navigation.addClass('col-sidebar-hidden');
