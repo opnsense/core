@@ -165,6 +165,10 @@ class DashboardController extends ApiControllerBase
             ],
             'ipsecleases' => [
                 'title' => gettext('IPsec Leases'),
+                'online' => gettext('Online'),
+                'offline' => gettext('Offline'),
+                'users' => gettext('Users'),
+                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
             ]
         ];
     }

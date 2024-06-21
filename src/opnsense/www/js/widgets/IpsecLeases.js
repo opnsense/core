@@ -59,7 +59,7 @@ export default class IpsecLeases extends BaseTableWidget {
 
         if (!isIpsecEnabled) {
             // Display an error message if IPsec is not enabled
-            const $error = $('<div class="error-message">IPsec is currently disabled. Please enable it to view lease information.</div>');
+            const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${this.translations.unconfigured}</a></div>`);
             $('#ipsecLeaseTable').empty().append($error);  // Clear the table and show the error message
             return;
         }
@@ -91,14 +91,14 @@ export default class IpsecLeases extends BaseTableWidget {
             // Prepare a summary row displaying total, online, and offline user counts
             let userCountsRow = `
                 <div>
-                    <span><b>Users:</b> ${totalUsersCount} - <b>Online:</b> ${onlineUsersCount} - <b>Offline:</b> ${offlineUsersCount}</span>
+                    <span><b>${this.translations.users}:</b> ${totalUsersCount} - <b>${this.translations.online}:</b> ${onlineUsersCount} - <b>${this.translations.offline}:</b> ${offlineUsersCount}</span>
                 </div>`;
 
             let rows = [];
             // Prepare HTML content for each user showing their details and IP addresses
             Object.keys(users).forEach(user => {
                 let userStatusClass = users[user].online ? 'text-success' : 'text-danger'; // Set class based on online status
-                let userStatusTitle = users[user].online ? 'Online' : 'Offline'; // Tooltip text
+                let userStatusTitle = users[user].online ? '${this.translations.online}' : '${this.translations.offline}'; // Tooltip text
 
                 // Construct a detailed row for each user
                 let row = `
@@ -126,16 +126,5 @@ export default class IpsecLeases extends BaseTableWidget {
             // Activate tooltips for new dynamic elements
             $('[data-toggle="tooltip"]').tooltip();
         });
-    }
-
-    onWidgetResize(elem, width, height) {
-        // Adjust visibility of details based on the width of the widget
-        if (width > 450) {
-            $('.user-info-detail').show();
-        } else {
-            $('.user-info-detail').hide();
-        }
-
-        return super.onWidgetResize(elem, width, height);
     }
 }
