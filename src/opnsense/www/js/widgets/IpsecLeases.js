@@ -99,6 +99,11 @@ export default class IpsecLeases extends BaseTableWidget {
             }
         });
 
+        // Sort users by online status, placing online users first
+        let sortedUsers = Object.keys(users).sort((a, b) => {
+            return users[a].online === users[b].online ? 0 : users[a].online ? -1 : 1;
+        });
+
         // Calculate and display the number of users currently online and total users
         let onlineUsersCount = Object.values(users).filter(user => user.online).length;
         let totalUsersCount = Object.keys(users).length;
@@ -112,7 +117,7 @@ export default class IpsecLeases extends BaseTableWidget {
 
         let rows = [userCountsRow];
         // Prepare HTML content for each user showing their status and IP addresses
-        Object.keys(users).forEach(user => {
+        sortedUsers.forEach(user => { // Use sortedUsers instead of Object.keys(users)
             let userStatusClass = users[user].online ? 'text-success' : 'text-danger';
             let userStatusTitle = users[user].online ? this.translations.online : this.translations.offline;
 
@@ -130,9 +135,6 @@ export default class IpsecLeases extends BaseTableWidget {
                 </div>`;
             rows.push(row);
         });
-
-        // Sort rows so that online users appear first
-        rows.sort((a, b) => b.online - a.online);
 
         // Update the HTML table with the sorted rows
         super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
