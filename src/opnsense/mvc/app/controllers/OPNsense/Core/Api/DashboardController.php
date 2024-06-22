@@ -171,6 +171,16 @@ class DashboardController extends ApiControllerBase
                 'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
                 'noleases' => gettext('There are currently no leases.'),
                 'nodata' => gettext('Failed to load data.'),
+            ],
+            'ipsectunnels' => [
+                'title' => gettext('IPsec Tunnels'),
+                'online' => gettext('Online'),
+                'offline' => gettext('Offline'),
+                'total' => gettext('Tunnels'),
+                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
+                'notunnels' => gettext('There are currently no tunnels.'),
+                'nodata' => gettext('Failed to load data.'),
+                'notavailable' => gettext('n/a'),
             ]
         ];
     }
