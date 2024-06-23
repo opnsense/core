@@ -52,7 +52,7 @@ $(document).ready(function () {
             var nextDiv = that.next('div');
         
             navigation.css('width', '415px');
-            if (nextDiv.not('in')) {
+             if (nextDiv.not('in')) {
 							
                 /* calculate coordinates for submenu */
                 var winHeight = $(window).height(),
@@ -66,11 +66,11 @@ $(document).ready(function () {
             close_submenu(this);
             
                 /* check if submenu has enough space expanding down  - if not expand submenu up */
-		if (currentHeight > (winHeight - li_itemH)) {
+	        if (currentHeight > (winHeight - li_itemH)) {
                     var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
                     nextDiv.css('margin-top', -divHeight - divPos);
                 }
-            }
+             }
         },
 				
         mouseleave: function () {
