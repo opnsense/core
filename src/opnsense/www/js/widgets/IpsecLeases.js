@@ -34,8 +34,8 @@ export default class IpsecLeases extends BaseTableWidget {
         this.resizeHandles = "e, w";
         this.currentLeases = {};
 
-        // Only update data every 10 seconds
-        this.tickTimeout = 10000;
+        // Since we only update when dataHasChanged we can almost update in real time
+        this.tickTimeout = 2000;
     }
 
     getGridOptions() {
@@ -92,14 +92,18 @@ export default class IpsecLeases extends BaseTableWidget {
         console.log("Checking if data has changed...");
 
         const newLeasesMap = newLeases.reduce((acc, lease) => {
-            acc[`${lease.user}-${lease.address}`] = lease;
+            acc[`${lease.user}-${lease.address}`] = lease;  // Unique key per lease
             return acc;
         }, {});
 
         console.log("New leases map:", newLeasesMap);
         console.log("Current leases:", this.currentLeases);
 
-        const leasesChanged = Object.keys(newLeasesMap).some(key => {
+        // Check if the number of leases has changed (new lease added or removed)
+        const keySetChanged = Object.keys(newLeasesMap).length !== Object.keys(this.currentLeases).length;
+
+        // Check for any changes in the lease details or if new lease keys have appeared
+        const leasesChanged = keySetChanged || Object.keys(newLeasesMap).some(key => {
             const newLease = newLeasesMap[key];
             const currentLease = this.currentLeases[key];
             const hasChanged = !currentLease ||
