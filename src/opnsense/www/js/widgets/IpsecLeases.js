@@ -36,11 +36,12 @@ export default class IpsecLeases extends BaseTableWidget {
 
         // Since we only update when dataHasChanged we can almost update in real time
         this.tickTimeout = 2000;
+
     }
 
     getGridOptions() {
         return {
-            // Set the widget to automatically trigger vertical scrolling after reaching 650px in height
+            // Automatically triggers vertical scrolling after reaching 650px in height
             sizeToContent: 650
         };
     }
@@ -56,10 +57,10 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        console.log("Widget tick initiated.");
+        // console.log("Widget tick initiated.");
         try {
             const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
-            console.log("IPsec status:", ipsecStatusResponse);
+            // console.log("IPsec status:", ipsecStatusResponse);
 
             if (!ipsecStatusResponse.enabled) {
                 this.displayError(`${this.translations.unconfigured}`);
@@ -67,7 +68,7 @@ export default class IpsecLeases extends BaseTableWidget {
             }
 
             const data = await ajaxGet('/api/ipsec/leases/pools', {});
-            console.log("IPsec leases data:", data);
+            // console.log("IPsec leases data:", data);
 
             if (!data || !data.leases || data.leases.length === 0) {
                 this.displayError(`${this.translations.noleases}`);
@@ -77,7 +78,7 @@ export default class IpsecLeases extends BaseTableWidget {
             this.processLeases(data.leases);
         } catch (error) {
             this.displayError(`${this.translations.nodata}`);
-            console.error("Error fetching data:", error);
+            // console.error("Error fetching data:", error);
         }
     }
 
@@ -89,51 +90,31 @@ export default class IpsecLeases extends BaseTableWidget {
 
     // Checks if the lease data has changed to prevent unnecessary updates
     dataHasChanged(newLeases) {
-        console.log("Checking if data has changed...");
+        // console.log("Checking if data has changed...");
 
-        const newLeasesMap = newLeases.reduce((acc, lease) => {
-            acc[`${lease.user}-${lease.address}`] = lease;  // Unique key per lease
-            return acc;
-        }, {});
+        // Serialize the new and current leases to JSON strings for deep comparison
+        const newLeasesString = JSON.stringify(newLeases);
+        const currentLeasesString = JSON.stringify(this.currentLeases);
 
-        console.log("New leases map:", newLeasesMap);
-        console.log("Current leases:", this.currentLeases);
-
-        // Check if the number of leases has changed (new lease added or removed)
-        const keySetChanged = Object.keys(newLeasesMap).length !== Object.keys(this.currentLeases).length;
-
-        // Check for any changes in the lease details or if new lease keys have appeared
-        const leasesChanged = keySetChanged || Object.keys(newLeasesMap).some(key => {
-            const newLease = newLeasesMap[key];
-            const currentLease = this.currentLeases[key];
-            const hasChanged = !currentLease ||
-                newLease.pool !== currentLease.pool ||
-                newLease.address !== currentLease.address ||
-                newLease.online !== currentLease.online ||
-                newLease.user !== currentLease.user;
-
-            if (hasChanged) {
-                console.log(`Change detected for ${key}: New lease - ${JSON.stringify(newLease)}, Current lease - ${JSON.stringify(currentLease)}`);
-            }
-
-            return hasChanged;
-        });
-
-        console.log("Leases changed:", leasesChanged);
-
-        this.currentLeases = newLeasesMap; // Update the current state with the new data
-        return leasesChanged; // Return whether any changes were detected
+        if (newLeasesString !== currentLeasesString) {
+            // console.log("Changes detected, updating leases.");
+            this.currentLeases = newLeases; // Update the current state with the new data
+            return true;
+        } else {
+            // console.log("No changes detected.");
+            return false;
+        }
     }
 
     // Function to process leases data and update the UI accordingly
     processLeases(newLeases) {
-        console.log("Processing leases:", newLeases);
+        // console.log("Processing leases:", newLeases);
         if (!this.dataHasChanged(newLeases)) {
-            console.log("No data change detected.");
+            // console.log("No data change detected.");
             return; // No changes detected, do not update the UI
         }
 
-        console.log("Data change detected, updating UI...");
+        // console.log("Data change detected, updating UI...");
 
         let users = {}; // Initialize an object to store user data indexed by user names
 
@@ -190,13 +171,11 @@ export default class IpsecLeases extends BaseTableWidget {
         });
 
         // Update the HTML table with the sorted rows
-        console.log("Updating the HTML table with sorted rows.");
         super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
-        console.log("HTML table updated.");
+        // console.log("HTML table updated.");
 
         // Activate tooltips for new dynamic elements
-        console.log("Activating tooltips for new dynamic elements.");
         $('[data-toggle="tooltip"]').tooltip();
-        console.log("Tooltips activated.");
+        // console.log("Tooltips activated.");
     }
 }

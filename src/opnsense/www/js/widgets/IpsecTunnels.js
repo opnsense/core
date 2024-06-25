@@ -32,11 +32,16 @@ export default class IpsecTunnels extends BaseTableWidget {
     constructor() {
         super();
         this.resizeHandles = "e, w";
+        this.currentTunnels = {};
+
+        // Since we only update when dataHasChanged we can almost update in real time
+        this.tickTimeout = 2000;
+
     }
 
     getGridOptions() {
         return {
-            // Set the widget to automatically trigger vertical scrolling after reaching 650px in height
+            // Automatically triggers vertical scrolling after reaching 650px in height
             sizeToContent: 650
         };
     }
@@ -52,29 +57,65 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async onWidgetTick() {
+        // console.log("Widget tick initiated.");
         try {
-            // First, check if IPsec is enabled
             const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
+            // console.log("IPsec status:", ipsecStatusResponse);
+
             if (!ipsecStatusResponse.enabled) {
                 this.displayError(`${this.translations.unconfigured}`);
                 return;
             }
 
-            // Fetch the tunnel data if IPsec is enabled
             const response = await ajaxGet('/api/ipsec/Sessions/searchPhase1', {});
+            // console.log("IPsec tunnel data:", response);
+
             if (!response || !response.rows || response.rows.length === 0) {
                 this.displayError(`${this.translations.notunnels}`);
                 return;
             }
 
-            this.processTunnels(response);
+            this.processTunnels(response.rows);
         } catch (error) {
             this.displayError(`${this.translations.nodata}`);
+            // console.error("Error fetching data:", error);
         }
     }
 
-    processTunnels(data) {
-        let tunnels = data.rows.map(tunnel => ({
+    // Utility function to display errors within the widget
+    displayError(message) {
+        // console.log("Displaying error:", message);
+        const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
+        $('#ipsecTunnelTable'). empty().append($error);
+    }
+
+    dataHasChanged(newTunnels) {
+        // console.log("Checking if data has changed...");
+
+        // Convert tunnel objects to a string to perform a deep comparison
+        const newTunnelsString = JSON.stringify(newTunnels);
+        const currentTunnelsString = JSON.stringify(this.currentTunnels);
+
+        if (newTunnelsString !== currentTunnelsString) {
+            this.currentTunnels = newTunnels; // Update the current state with new data
+            // console.log("Changes detected, data updated.");
+            return true;
+        } else {
+            // console.log("No changes detected.");
+            return false;
+        }
+    }
+
+    processTunnels(newTunnels) {
+        // console.log("Processing tunnels:", newTunnels);
+        if (!this.dataHasChanged(newTunnels)) {
+            // console.log("No data change detected, skipping UI update.");
+            return; // No changes detected, do not update the UI
+        }
+
+        // console.log("Data change detected, updating UI...");
+
+        let tunnels = newTunnels.map(tunnel => ({
             localAddrs: tunnel['local-addrs'],
             remoteAddrs: tunnel['remote-addrs'],
             connected: tunnel.connected,
@@ -83,7 +124,7 @@ export default class IpsecTunnels extends BaseTableWidget {
         }));
 
         // Sort by connected status, offline first then online
-        tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? 1 : -1);
+        tunnels.sort((a, b) => a.connected === b.connected ? 0 : a.connected ? -1 : 1);
 
         let onlineCount = tunnels.filter(tunnel => tunnel.connected).length;
         let offlineCount = tunnels.length - onlineCount;
@@ -114,13 +155,10 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         // Update the HTML table with the sorted rows
         super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
+        // console.log("HTML table updated.");
 
         // Activate tooltips for new dynamic elements
         $('[data-toggle="tooltip"]').tooltip();
-    }
-
-    displayError(message) {
-        const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
-        $('#ipsecTunnelTable').empty().append($error);
+        // console.log("Tooltips activated.");
     }
 }
