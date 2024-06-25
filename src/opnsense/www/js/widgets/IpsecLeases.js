@@ -32,6 +32,10 @@ export default class IpsecLeases extends BaseTableWidget {
     constructor() {
         super();
         this.resizeHandles = "e, w";
+        this.currentLeases = {};
+
+        // Only update data every 10 seconds
+        this.tickTimeout = 10000;
     }
 
     getGridOptions() {
@@ -52,25 +56,28 @@ export default class IpsecLeases extends BaseTableWidget {
     }
 
     async onWidgetTick() {
+        console.log("Widget tick initiated.");
         try {
-            // Fetch IPsec status to check if enabled
             const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
+            console.log("IPsec status:", ipsecStatusResponse);
+
             if (!ipsecStatusResponse.enabled) {
                 this.displayError(`${this.translations.unconfigured}`);
                 return;
             }
 
-            // Fetch IPsec leases data
             const data = await ajaxGet('/api/ipsec/leases/pools', {});
+            console.log("IPsec leases data:", data);
+
             if (!data || !data.leases || data.leases.length === 0) {
                 this.displayError(`${this.translations.noleases}`);
                 return;
             }
 
-            // Process the leases data if present
-            this.processLeases(data);
+            this.processLeases(data.leases);
         } catch (error) {
             this.displayError(`${this.translations.nodata}`);
+            console.error("Error fetching data:", error);
         }
     }
 
@@ -80,12 +87,54 @@ export default class IpsecLeases extends BaseTableWidget {
         $('#ipsecLeaseTable').empty().append($error);
     }
 
+    // Checks if the lease data has changed to prevent unnecessary updates
+    dataHasChanged(newLeases) {
+        console.log("Checking if data has changed...");
+
+        const newLeasesMap = newLeases.reduce((acc, lease) => {
+            acc[`${lease.user}-${lease.address}`] = lease;
+            return acc;
+        }, {});
+
+        console.log("New leases map:", newLeasesMap);
+        console.log("Current leases:", this.currentLeases);
+
+        const leasesChanged = Object.keys(newLeasesMap).some(key => {
+            const newLease = newLeasesMap[key];
+            const currentLease = this.currentLeases[key];
+            const hasChanged = !currentLease ||
+                newLease.pool !== currentLease.pool ||
+                newLease.address !== currentLease.address ||
+                newLease.online !== currentLease.online ||
+                newLease.user !== currentLease.user;
+
+            if (hasChanged) {
+                console.log(`Change detected for ${key}: New lease - ${JSON.stringify(newLease)}, Current lease - ${JSON.stringify(currentLease)}`);
+            }
+
+            return hasChanged;
+        });
+
+        console.log("Leases changed:", leasesChanged);
+
+        this.currentLeases = newLeasesMap; // Update the current state with the new data
+        return leasesChanged; // Return whether any changes were detected
+    }
+
     // Function to process leases data and update the UI accordingly
-    processLeases(data) {
+    processLeases(newLeases) {
+        console.log("Processing leases:", newLeases);
+        if (!this.dataHasChanged(newLeases)) {
+            console.log("No data change detected.");
+            return; // No changes detected, do not update the UI
+        }
+
+        console.log("Data change detected, updating UI...");
+
         let users = {}; // Initialize an object to store user data indexed by user names
 
         // Organize leases by user
-        data.leases.forEach(lease => {
+        newLeases.forEach(lease => {
             if (!users[lease.user]) {
                 users[lease.user] = {
                     ipAddresses: [], // List of IP addresses assigned to the user
@@ -137,9 +186,13 @@ export default class IpsecLeases extends BaseTableWidget {
         });
 
         // Update the HTML table with the sorted rows
+        console.log("Updating the HTML table with sorted rows.");
         super.updateTable('ipsecLeaseTable', rows.map(row => [row]));
+        console.log("HTML table updated.");
 
         // Activate tooltips for new dynamic elements
+        console.log("Activating tooltips for new dynamic elements.");
         $('[data-toggle="tooltip"]').tooltip();
+        console.log("Tooltips activated.");
     }
 }
