@@ -79,6 +79,7 @@
                     data-size="{{size|default(10)}}"
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
+                    data-container="body"
                     {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}
                     data-width="{{width|default("346px")}}"
                     data-allownew="{{allownew|default("false")}}"
