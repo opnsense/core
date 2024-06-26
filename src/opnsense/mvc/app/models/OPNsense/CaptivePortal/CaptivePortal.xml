@@ -72,14 +72,6 @@
                 <allowedMACAddresses type="MacAddressField">
                     <asList>Y</asList>
                 </allowedMACAddresses>
-                <transparentHTTPProxy type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </transparentHTTPProxy>
-                <transparentHTTPSProxy type="BooleanField">
-                    <Default>0</Default>
-                    <Required>Y</Required>
-                </transparentHTTPSProxy>
                 <extendedPreAuthData type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
