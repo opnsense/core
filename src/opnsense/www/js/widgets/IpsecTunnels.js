@@ -57,10 +57,8 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        // console.log("Widget tick initiated.");
         try {
             const ipsecStatusResponse = await ajaxGet('/api/ipsec/Connections/isEnabled', {});
-            // console.log("IPsec status:", ipsecStatusResponse);
 
             if (!ipsecStatusResponse.enabled) {
                 this.displayError(`${this.translations.unconfigured}`);
@@ -68,7 +66,6 @@ export default class IpsecTunnels extends BaseTableWidget {
             }
 
             const response = await ajaxGet('/api/ipsec/Sessions/searchPhase1', {});
-            // console.log("IPsec tunnel data:", response);
 
             if (!response || !response.rows || response.rows.length === 0) {
                 this.displayError(`${this.translations.notunnels}`);
@@ -78,19 +75,17 @@ export default class IpsecTunnels extends BaseTableWidget {
             this.processTunnels(response.rows);
         } catch (error) {
             this.displayError(`${this.translations.nodata}`);
-            // console.error("Error fetching data:", error);
         }
     }
 
     // Utility function to display errors within the widget
     displayError(message) {
-        // console.log("Displaying error:", message);
         const $error = $(`<div class="error-message"><a href="/ui/ipsec/connections">${message}</a></div>`);
         $('#ipsecTunnelTable'). empty().append($error);
     }
 
+    // Checks if the tunnel data has changed to prevent unnecessary updates
     dataHasChanged(newTunnels) {
-        // console.log("Checking if data has changed...");
 
         // Convert tunnel objects to a string to perform a deep comparison
         const newTunnelsString = JSON.stringify(newTunnels);
@@ -98,22 +93,16 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         if (newTunnelsString !== currentTunnelsString) {
             this.currentTunnels = newTunnels; // Update the current state with new data
-            // console.log("Changes detected, data updated.");
             return true;
         } else {
-            // console.log("No changes detected.");
             return false;
         }
     }
 
     processTunnels(newTunnels) {
-        // console.log("Processing tunnels:", newTunnels);
         if (!this.dataHasChanged(newTunnels)) {
-            // console.log("No data change detected, skipping UI update.");
             return; // No changes detected, do not update the UI
         }
-
-        // console.log("Data change detected, updating UI...");
 
         let tunnels = newTunnels.map(tunnel => ({
             localAddrs: tunnel['local-addrs'],
@@ -155,10 +144,8 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         // Update the HTML table with the sorted rows
         super.updateTable('ipsecTunnelTable', rows.map(row => [row]));
-        // console.log("HTML table updated.");
 
         // Activate tooltips for new dynamic elements
         $('[data-toggle="tooltip"]').tooltip();
-        // console.log("Tooltips activated.");
     }
 }
