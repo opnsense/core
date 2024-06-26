@@ -339,7 +339,7 @@ class WidgetManager  {
         $('#add_widget').click(() => {
 
             let $content = $('<div></div>');
-            let $select = $('<select id="widget-selection" class="selectpicker" multiple="multiple"></select>');
+            let $select = $('<select id="widget-selection" data-container="body" class="selectpicker" multiple="multiple"></select>');
             for (const [id, widget] of Object.entries(this.loadedModules)) {
                 if (this.moduleDiff.includes(id)) {
                     $select.append($(`<option value="${id}">${this.widgetTranslations[id].title}</option>`));
