@@ -30,8 +30,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class LiveLog extends BaseTableWidget {
     constructor(config) {
-        super();
-        this.config = config;
+        super(config);
     }
 
     getMarkup() {

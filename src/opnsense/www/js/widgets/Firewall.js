@@ -31,8 +31,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class Firewall extends BaseTableWidget {
     constructor(config) {
-        super();
-        this.config = config;
+        super(config);
         this.ifMap = {};
         this.counters = {};
         this.chart = null;
