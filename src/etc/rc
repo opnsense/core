@@ -151,9 +151,19 @@ while [ ${attempts} -lt 3 ]; do
 done
 
 if kldstat -qm zfs; then
+
 	mount -uw /
-	zpool import -Na
+
+	# imported cached zpools
+	for cachefile in /etc/zfs/zpool.cache /boot/zfs/zpool.cache; do
+		if [ -r $cachefile ]; then
+			zpool import -c $cachefile -Na
+			break
+		fi
+	done
+
 	zfs mount -va
+
 	# maybe there is a mountpoint in fstab
 	# that requires ZFS to be fully set up
 	mount -a
