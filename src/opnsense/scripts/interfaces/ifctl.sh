@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2022-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2022-2024 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -54,10 +54,17 @@ flush_routes()
 	esac
 }
 
+flush_slaac()
+{
+	ifconfig "${IF}" | grep -e autoconf -e deprecated | while read FAMILY ADDR MORE; do
+		ifconfig "${IF}" "${FAMILY}" "${ADDR}" -alias
+	done
+}
+
 # default to IPv4 with nameserver mode
 set -- -4 -n ${@}
 
-while getopts 46a:cdi:lnOprsV OPT; do
+while getopts 46a:cdfi:lnOprsV OPT; do
 	case ${OPT} in
 	4)
 		AF=inet
@@ -76,6 +83,9 @@ while getopts 46a:cdi:lnOprsV OPT; do
 		;;
 	d)
 		DO_COMMAND="-d"
+		;;
+	f)
+		DO_COMMAND="-f"
 		;;
 	i)
 		IF=${OPTARG}
@@ -137,6 +147,15 @@ if [ "${DO_COMMAND}" = "-c" ]; then
 
         # XXX legacy behaviour originating from interface_reset()
 	/usr/sbin/arp -d -i ${IF} -a
+
+	exit 0
+elif [ "${DO_COMMAND}" = "-f" ]; then
+	if [ -z "${IF}" ]; then
+		echo "Flushing SLAAC addressing requires interface option" >&2
+		exit 1
+	fi
+
+	flush_slaac
 
 	exit 0
 elif [ "${DO_COMMAND}" = "-O" ]; then

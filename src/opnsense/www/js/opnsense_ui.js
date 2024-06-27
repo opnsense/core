@@ -98,6 +98,8 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
                 // execute callback function
                 callback_ok(data);
             }
+        } else if ( callback_fail !== undefined ) {
+            callback_fail(data);
         }
     });
 }
@@ -303,39 +305,28 @@ function addMultiSelectClearUI() {
     $('[id*="clear-options"]').each(function() {
         $(this).click(function() {
             const id = $(this).attr("id").replace(/_*clear-options_*/, '');
-            BootstrapDialog.confirm({
-                title: 'Deselect or remove all items ?',
-                message: 'Deselect or remove all items ?',
-                type: BootstrapDialog.TYPE_DANGER,
-                closable: true,
-                draggable: true,
-                btnCancelLabel: 'Cancel',
-                btnOKLabel: 'Yes',
-                btnOKClass: 'btn-primary',
-                callback: function(result) {
-                    if(result) {
-                        let element = $('select[id="' + id + '"]');
-                        if (element.hasClass("tokenize")) {
-                            // trigger close on all Tokens
-                            element.tokenize2().trigger('tokenize:clear');
-                            element.change();
-                        } else {
-                            // remove options from selection
-                            element.find('option').prop('selected',false);
-                            if (element.hasClass('selectpicker')) {
-                                element.selectpicker('refresh');
-                            }
-                        }
-                    }
-                    // In case this modal was triggered from another modal, fix focus issues
-                    $('.modal').on("hidden.bs.modal", function () {
-                        if($('.modal:visible').length)
-                        {
-                            $('body').addClass('modal-open');
-                        }
-                    });
+            let element = $('select[id="' + id + '"]');
+            if (element.hasClass("tokenize")) {
+                // trigger close on all Tokens
+                element.tokenize2().trigger('tokenize:clear');
+                element.change();
+            } else {
+                // remove options from selection
+                element.find('option').prop('selected',false);
+                if (element.hasClass('selectpicker')) {
+                    element.selectpicker('refresh');
                 }
-            });
+            }
+        });
+    });
+    $('[id*="select-options"]').each(function() {
+        const id = $(this).attr("id").replace(/_*select-options_*/, '');
+        $(this).click(function() {
+            let element = $('select[id="' + id + '"]');
+            element.find('option').prop('selected', true);
+            if (element.hasClass('selectpicker')) {
+                element.selectpicker('refresh');
+            }
         });
     });
     $('[id*="copy-options"]').each(function() {

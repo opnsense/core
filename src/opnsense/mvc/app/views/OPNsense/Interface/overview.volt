@@ -74,11 +74,15 @@
             obj.forEach(function (ip) {
                 $span = $('<span></span><br/>').text(ip['ipaddr'] + ' ');
                 if ('vhid' in ip) {
-                    $carp = $('<span></span>').text('vhid ' + ip['vhid']);
-                    $carp.attr('class', 'bootgrid-tooltip badge badge-pill');
+                    $carp = $('<span style="cursor: pointer;"></span>').text('vhid ' + ip['vhid']);
+                    $carp.attr('class', 'badge badge-pill');
                     $carp.css('background-color', ip['status'] == 'MASTER' ? 'green' : 'primary');
                     $carp.attr('data-toggle', 'tooltip');
-                    $carp.attr('title', ip['status'] + ' (freq. ' + ip['advbase'] + '/' + ip['advskew'] + ')');
+                    let title_text = ip['status'] + ' (freq. ' + ip['advbase'] + '/' + ip['advskew'] + ')';
+                    if (ip['peer']) {
+                        title_text = title_text + ' <br/> ' + ip['peer'] + ' <br/> ' + ip['peer6'];
+                    }
+                    $carp.attr('title', title_text);
                     $span.append($carp);
                 }
                 $elements.append($span);
@@ -207,7 +211,7 @@
                 }
             }
         ).on("loaded.rs.jquery.bootgrid", function (e) {
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="tooltip"]').tooltip({html:true});
 
             /* attach event handler to reload buttons */
             $('.interface-reload').each(function () {
@@ -275,7 +279,7 @@
                         }
 
                         $table.append($table_body);
-                        $('[data-toggle="tooltip"]').tooltip();
+                        $('[data-toggle="tooltip"]').tooltip({html:true});
                         BootstrapDialog.show({
                             title: data['description']['value'],
                             message: $table.prop('outerHTML'),

@@ -167,7 +167,7 @@ class DB(object):
         cur.execute(""" select  *
                         from    cp_clients
                         where   sessionid = :sessionid
-                        and     zoneid = :zoneid
+                        and     (zoneid = :zoneid or :zoneid is null)
                         and     deleted = 0
                     """, {'zoneid': zoneid, 'sessionid': sessionid})
         data = cur.fetchall()
@@ -176,15 +176,17 @@ class DB(object):
             for fields in cur.description:
                 session_info[fields[0]] = data[0][len(session_info)]
             # remove client
-            cur.execute("update cp_clients set deleted = 1 where sessionid = :sessionid and zoneid = :zoneid",
-                        {'zoneid': zoneid, 'sessionid': sessionid})
+            cur.execute(
+                "update cp_clients set deleted = 1 where sessionid = :sessionid",
+                {'zoneid': zoneid, 'sessionid': sessionid}
+            )
             self._connection.commit()
 
             return session_info
         else:
             return None
 
-    def list_clients(self, zoneid):
+    def list_clients(self, zoneid=None):
         """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
         :return: list of clients
@@ -212,7 +214,7 @@ class DB(object):
                         from    cp_clients cc
                         left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
                         left join session_restrictions sr on sr.zoneid = cc.zoneid and sr.sessionid = cc.sessionid
-                        where   cc.zoneid = :zoneid
+                        where   (cc.zoneid = :zoneid or :zoneid is null)
                         and     cc.deleted = 0
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc

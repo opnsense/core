@@ -52,10 +52,10 @@
         <id>instance.dev_type</id>
         <label>Type</label>
         <type>dropdown</type>
-        <advanced>true</advanced>
         <help>
             Choose the type of tunnel, OSI Layer 3 [tun] is the most common option to route IPv4 or IPv6 traffic,
             [tap] offers Ethernet 802.3 (OSI Layer 2) connectivity between hosts and is usually combined with a bridge.
+            DCO is a faster Layer 3 implementation, but has some additional constraints.
         </help>
     </field>
     <field>

@@ -27,8 +27,8 @@
 import BaseWidget from "./BaseWidget.js";
 
 export default class BaseTableWidget extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.tables = {};
         this.curSize = null;
@@ -40,7 +40,7 @@ export default class BaseTableWidget extends BaseWidget {
                 '.column': {'width': '100%'},
                 '.flex-subcell': {'width': '100%'},
             },
-            400: {
+            450: {
                 '.flextable-row': {'padding': '0.5em 0.5em'},
                 '.flextable-header .flex-cell': {'border-bottom': ''},
                 '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
@@ -58,29 +58,16 @@ export default class BaseTableWidget extends BaseWidget {
                 return `calc(100% / 2)`;
             }
 
-            if (tableObj.options.headerPosition === 'top') {
-                return `calc(100% / ${tableObj.data[0].length})`;
+            if (tableObj.options.headerPosition === 'none') {
+                let first = $(`#${tableObj.table.attr('id')} > .flextable-row`).first();
+                let count = first.children().filter(function() {
+                    return $(this).css('display') !== 'none';
+                }).length;
+                return `calc(100% / ${count})`;
             }
         }
 
         return '';
-    }
-
-    _rotate(id, newElement) {
-        let opts = this.tables[id].options;
-        let data = this.tables[id].data;
-
-        data.unshift(newElement);
-        if (data.length > opts.rotation) {
-            data.splice(opts.rotation);
-        }
-
-        const divs = document.querySelectorAll(`#${id} .grid-row`);
-        if (divs.length > opts.rotation) {
-            for (let i = opts.rotation; i < divs.length; i++) {
-                $(divs[i]).remove();
-            }
-        }
     }
 
     createTable(id, options) {
@@ -153,111 +140,138 @@ export default class BaseTableWidget extends BaseWidget {
     }
 
     updateTable(id, data = [], rowIdentifier = null) {
+        /**
+         * id: table id
+         * data: array of rows
+         * rowIdentifier: if set, upsert row with this identifier
+         */
         let $table = $(`#${id}`);
         let options = this.tables[id].options;
 
-        if (!options.rotation) {
+        if (!options.rotation && rowIdentifier == null) {
             $table.children('.flextable-row').remove();
             this.tables[id].data = data;
         }
 
-        for (const row of data) {
-            switch (options.headerPosition) {
-                case "none":
-                    let $row = $(`<div class="flextable-row"></div>`)
-                    for (const item of row) {
-                        $row.append($(`
-                            <div class="flex-cell" role="cell">${item}</div>
-                        `));
+        data.forEach(row => {
+            let $gridRow = options.headerPosition === 'top'
+                ? $(`<div class="grid-row"></div>`)
+                : $(`<div class="flextable-row"></div>`);
+            let newElement = true;
+
+            if (rowIdentifier !== null) {
+                let $existingRow = $(`#id_${rowIdentifier}`);
+                if ($existingRow.length === 0) {
+                    $gridRow.attr('id', `id_${rowIdentifier}`);
+                } else {
+                    $gridRow = $existingRow.empty();
+                    newElement = false;
+                }
+            }
+
+            this.populateRow($gridRow, row, options, id);
+
+            if (newElement) {
+                if (options.headerPosition === 'top') {
+                    $(`#header_${id}`).after($gridRow);
+                } else {
+                    $table.append($gridRow);
+                }
+            } else {
+                $(`#id_${rowIdentifier}`).replaceWith($gridRow);
+            }
+
+            if (options.headerPosition === 'top' && options.sortIndex !== null) {
+                this.sortTable($table, options);
+            }
+
+            if (options.rotation) {
+                $gridRow.animate({
+                    from: 0,
+                    to: 255,
+                    opacity: 1,
+                }, {
+                    duration: 50,
+                    easing: 'linear',
+                    step: function() {
+                        $gridRow.css('background-color', 'initial');
                     }
-                    $table.append($row);
+                });
+                this.rotate(id, row);
+            } else {
+                $gridRow.css({ opacity: 1, 'background-color': 'initial' });
+            }
+        });
+
+        for (const [selector, styles] of Object.entries(this.sizeStates[this.curSize ?? 0])) {
+            $table.find(selector).css(styles);
+        }
+    }
+
+    populateRow($gridRow, row, options, id) {
+        switch (options.headerPosition) {
+            case "none":
+                row.forEach(item => {
+                    $gridRow.append(`<div class="flex-cell" role="cell">${item}</div>`);
+                });
                 break;
-                case "top":
-                    let $gridRow = $(`<div class="grid-row"></div>`);
-                    let newElement = true;
-                    if (rowIdentifier !== null) {
-                        $gridRow = $(`#id_${rowIdentifier}`);
-                        if ($gridRow.length === 0) {
-                            $gridRow = $(`<div class="grid-row" id="id_${rowIdentifier}"></div>`);
-                        } else {
-                            newElement = false;
-                            $gridRow.empty();
-                        }
-                    }
-
-                    let i = 0;
-                    for (const item of row) {
-                        $gridRow.append($(`
-                            <div class="grid-item ${(options.sortIndex !== null && options.sortIndex == i) ? 'sort' : ''}">${item}</div>
-                        `));
-                        i++;
-                    }
-
-                    if (newElement) {
-                        $(`#header_${id}`).after($gridRow);
-                    }
-
-                    if (options.sortIndex !== null) {
-                        let items = $table.children('.grid-row').toArray().sort(function(a, b) {
-                            let vA = parseInt($(a).children('.sort').first().text());
-                            let vB = parseInt($(b).children('.sort').first().text());
-
-                            if (options.sortOrder === 'asc')
-                                return (vA < vB) ? -1 : (vA > vB) ? 1 : 0;
-                            else {
-                                return (vA > vB) ? -1 : (vA < vB) ? 1 : 0;
-                            }
-                        });
-                        $table.append(items);
-                    }
-
-                    if (options.rotation) {
-                        $gridRow.animate({
-                            from: 0,
-                            to: 255,
-                            opacity: 1,
-                        }, {
-                            duration: 50,
-                            easing: 'linear',
-                            step: function(now) {
-                                $gridRow.css('background-color','initial')
-                            }
-                        });
-                        this._rotate(id, row);
-                    }
-
-                break;
-                case "left":
-                    if (row.length !== 2) {
-                        break;
-                    }
-                    const [h, c] = row;
-                    if (Array.isArray(c)) {
-                        // nested column
-                        let $row = $('<div class="flextable-row"></div>');
-                        $row.append($(`
-                            <div class="flex-cell rowspan first"><b>${h}</b></div>
-                        `));
-                        let $column = $('<div class="column"></div>');
-                        for (const item of c) {
-                            $column.append($(`
-                                <div class="flex-cell">
-                                    <div class="flex-subcell">${item}</div>
-                                </div>
-                            `));
-                        }
-                        $table.append($row.append($column));
-                    } else {
-                        $table.append($(`
-                        <div class="flextable-row">
-                            <div class="flex-cell first"><b>${h}</b></div>
-                            <div class="flex-cell">${c}</div>
+            case "top":
+                row.forEach((item, i) => {
+                    $gridRow.append(`
+                        <div class="grid-item ${options.sortIndex !== null && options.sortIndex == i ? 'sort' : ''}">
+                            ${item}
                         </div>
-                        `));
-                    }
+                    `);
+                });
                 break;
+            case "left":
+                if (row.length !== 2) return;
+                const [h, c] = row;
+                if (Array.isArray(c)) {
+                    $gridRow.append(`<div class="flex-cell rowspan first"><b>${h}</b></div>`);
+                    let $column = $('<div class="column"></div>');
+                    c.forEach(item => {
+                        $column.append(`
+                            <div class="flex-cell">
+                                <div class="flex-subcell">${item}</div>
+                            </div>
+                        `);
+                    });
+                    $gridRow.append($column);
+                } else {
+                    $gridRow.append(`
+                        <div class="flex-cell first"><b>${h}</b></div>
+                        <div class="flex-cell">${c}</div>
+                    `);
+                }
+                break;
+        }
+    }
+
+    rotate(id, newElement) {
+        let opts = this.tables[id].options;
+        let data = this.tables[id].data;
+
+        data.unshift(newElement);
+        if (data.length > opts.rotation) {
+            data.splice(opts.rotation);
+        }
+
+        const divs = document.querySelectorAll(`#${id} .grid-row`);
+        if (divs.length > opts.rotation) {
+            for (let i = opts.rotation; i < divs.length; i++) {
+                $(divs[i]).remove();
             }
         }
+    }
+
+    sortTable($table, options) {
+        let items = $table.children('.grid-row').toArray().sort((a, b) => {
+            let vA = parseInt($(a).children('.sort').first().text());
+            let vB = parseInt($(b).children('.sort').first().text());
+            return options.sortOrder === 'asc' ? (vA - vB) : (vB - vA);
+        });
+        $table.append(items);
     }
 
     onWidgetResize(elem, width, height) {

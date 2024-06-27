@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2024 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -50,18 +50,28 @@ class SessionController extends ApiControllerBase
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null) {
-            $backend = new Backend();
-            $allClientsRaw = $backend->configdpRun(
-                "captiveportal list_clients",
-                array($cpZone->zoneid, 'json')
-            );
-            $allClients = json_decode($allClientsRaw ?? '', true);
-
-            return $allClients;
+            $allClientsRaw = (new Backend())->configdpRun("captiveportal list_clients", [$cpZone->zoneid]);
+            return json_decode($allClientsRaw ?? '', true);
         } else {
             // illegal zone, return empty response
-            return array();
+            return [];
         }
+    }
+
+    /**
+     * search through connected clients
+     */
+    public function searchAction()
+    {
+        $this->sessionClose();
+        $selected_zones = $this->request->get('selected_zones');
+        $records = json_decode((new Backend())->configdRun("captiveportal list_clients") ?? '', true);
+
+        $response = $this->searchRecordsetBase($records, null, 'userName', function ($key) use ($selected_zones) {
+            return empty($selected_zones) || in_array($key['zoneid'], $selected_zones);
+        });
+
+        return $response;
     }
 
     /**
@@ -70,7 +80,7 @@ class SessionController extends ApiControllerBase
      */
     public function zonesAction()
     {
-        $response = array();
+        $response = [];
         $mdlCP = new CaptivePortal();
         foreach ($mdlCP->zones->zone->iterateItems() as $zone) {
             $response[(string)$zone->zoneid] = (string)$zone->description;
@@ -81,25 +91,24 @@ class SessionController extends ApiControllerBase
 
     /**
      * disconnect a client
-     * @param string|int $zoneid zoneid
+     * @param string|int $zoneid zoneid (deprecated)
      * @return array|mixed
      */
-    public function disconnectAction($zoneid = 0)
+    public function disconnectAction($zoneid = '')
     {
         if ($this->request->isPost() && $this->request->hasPost('sessionId')) {
-            $backend = new Backend();
-            $statusRAW = $backend->configdpRun(
+            $statusRAW = (new Backend())->configdpRun(
                 "captiveportal disconnect",
-                array($zoneid, $this->request->getPost('sessionId'), 'json')
+                [$this->request->getPost('sessionId')]
             );
-            $status = json_decode($statusRAW, true);
+            $status = json_decode($statusRAW ?? '', true);
             if ($status != null) {
                 return $status;
             } else {
-                return array("status" => "Illegal response");
+                return ["status" => "Illegal response"];
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -109,7 +118,7 @@ class SessionController extends ApiControllerBase
      */
     public function connectAction($zoneid = 0)
     {
-        $response = array();
+        $response = [];
 
         if ($this->request->isPost()) {
             // Get details from POST request
@@ -136,13 +145,12 @@ class SessionController extends ApiControllerBase
                     $backend = new Backend();
                     $CPsession = $backend->configdpRun(
                         "captiveportal allow",
-                        array(
+                        [
                             (string)$cpZone->zoneid,
                             $userName,
                             $clientIp,
-                            'API',
-                            'json'
-                        )
+                            'API'
+                        ]
                     );
 
                     // Only return session if configd returned a valid json response

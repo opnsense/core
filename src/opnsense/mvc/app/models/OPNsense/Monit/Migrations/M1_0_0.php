@@ -40,16 +40,8 @@ class M1_0_0 extends BaseModelMigration
         $cfgObj = $cfg->object();
         $shellObj = new Shell();
 
-        srand();
-        $model->general->httpdUsername = 'root';
-        $model->general->httpdPassword = substr(
-            str_shuffle(str_repeat('0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz', 32)),
-            rand(0, 16),
-            rand(17, 32)
-        );
-
         /* get number of cpus and calculate load average limits */
-        $nCPU = array();
+        $nCPU = [];
         $shellObj->exec('/sbin/sysctl -n kern.smp.cpus', false, $nCPU);
         $LoadAvg1 = $nCPU[0] * 2;
         $LoadAvg5 = $nCPU[0] + ($nCPU[0] / 2);
@@ -75,7 +67,7 @@ class M1_0_0 extends BaseModelMigration
             $model->general->ssl = 1;
         }
 
-        $alertSettings = array();
+        $alertSettings = [];
         if (!empty($cfgObj->notifications->smtp->notifyemailaddress)) {
             $alertSettings['recipient'] = $cfgObj->notifications->smtp->notifyemailaddress;
         }
@@ -86,34 +78,34 @@ class M1_0_0 extends BaseModelMigration
         $alertNode->setNodes($alertSettings);
 
         /* define some tests */
-        $defaultTests = array(
-            array("name" => "Ping", "condition" => "failed ping", "action" => "alert", "type" => "NetworkPing"),
-            array("name" => "NetworkLink", "condition" => "failed link", "action" => "alert", "type" => "NetworkInterface"),
-            array("name" => "NetworkSaturation", "condition" => "saturation is greater than 75%", "action" => "alert", "type" => "NetworkInterface"),
-            array("name" => "MemoryUsage", "condition" => "memory usage is greater than 75%", "action" => "alert", "type" => "SystemResource"),
-            array("name" => "CPUUsage", "condition" => "cpu usage is greater than 75%", "action" => "alert", "type" => "SystemResource"),
-            array("name" => "LoadAvg1", "condition" => "loadavg (1min) is greater than $LoadAvg1", "action" => "alert", "type" => "SystemResource"),
-            array("name" => "LoadAvg5", "condition" => "loadavg (5min) is greater than $LoadAvg5", "action" => "alert", "type" => "SystemResource"),
-            array("name" => "LoadAvg15", "condition" => "loadavg (15min) is greater than $LoadAvg15", "action" => "alert", "type" => "SystemResource"),
-            array("name" => "SpaceUsage", "condition" => "space usage is greater than 75%", "action" => "alert", "type" => "SpaceUsage")
-        );
+        $defaultTests = [
+            ["name" => "Ping", "condition" => "failed ping", "action" => "alert", "type" => "NetworkPing"],
+            ["name" => "NetworkLink", "condition" => "failed link", "action" => "alert", "type" => "NetworkInterface"],
+            ["name" => "NetworkSaturation", "condition" => "saturation is greater than 75%", "action" => "alert", "type" => "NetworkInterface"],
+            ["name" => "MemoryUsage", "condition" => "memory usage is greater than 75%", "action" => "alert", "type" => "SystemResource"],
+            ["name" => "CPUUsage", "condition" => "cpu usage is greater than 75%", "action" => "alert", "type" => "SystemResource"],
+            ["name" => "LoadAvg1", "condition" => "loadavg (1min) is greater than $LoadAvg1", "action" => "alert", "type" => "SystemResource"],
+            ["name" => "LoadAvg5", "condition" => "loadavg (5min) is greater than $LoadAvg5", "action" => "alert", "type" => "SystemResource"],
+            ["name" => "LoadAvg15", "condition" => "loadavg (15min) is greater than $LoadAvg15", "action" => "alert", "type" => "SystemResource"],
+            ["name" => "SpaceUsage", "condition" => "space usage is greater than 75%", "action" => "alert", "type" => "SpaceUsage"],
+        ];
 
         /* define system service */
-        $systemService = array(
+        $systemService = [
             'enabled' => 1,
             'name' => '$HOST',
             'type' => 'system',
-            'tests' => ''
-        );
+            'tests' => '',
+        ];
 
         /* define root filesystem service */
-        $rootFsService = array(
+        $rootFsService = [
             'enabled' => 1,
             'name' => 'RootFs',
             'type' => 'filesystem',
             'path' => '/',
-            'tests' => ''
-        );
+            'tests' => '',
+        ];
 
         foreach ($defaultTests as $defaultTest) {
             $testNode = $model->test->add();

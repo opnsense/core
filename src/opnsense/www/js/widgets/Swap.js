@@ -1,5 +1,4 @@
-#!/usr/local/bin/php
-<?php
+// endpoint:/api/core/system/system_swap
 
 /*
  * Copyright (C) 2024 Deciso B.V.
@@ -27,8 +26,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'auth.inc';
-require_once 'system.inc';
+import BaseGaugeWidget from "./BaseGaugeWidget.js";
 
-system_trust_configure();
+export default class Swap extends BaseGaugeWidget {
+    constructor() {
+        super();
+        this.tickTimeout = 15000;
+    }
+
+    async onMarkupRendered() {
+        super.createGaugeChart({
+            labels: [this.translations.used, this.translations.free],
+            secondaryText: (data) => {
+                return `(${data[0]} / ${data[0] + data[1]}) MB`;
+            }
+        });
+    }
+
+    async onWidgetTick() {
+        ajaxGet('/api/core/system/system_swap', {}, (data, status) => {
+            let total = 0;
+            let used = 0;
+            for (const swapDevice of data['swap']) {
+                total += parseInt(swapDevice.total);
+                used += parseInt(swapDevice.used);
+            }
+
+            super.updateChart([(used / 1024), (total - used) / 1024]);
+        });
+    }
+}

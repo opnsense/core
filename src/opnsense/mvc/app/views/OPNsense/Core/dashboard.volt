@@ -12,7 +12,7 @@
  #    this list of conditions and the following disclaimer in the documentation
  #    and/or other materials provided with the distribution.
  #
- # THIS SOFTWARE IS PROVIDED “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
  # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
  # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
  # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
@@ -42,10 +42,20 @@
 
 <script>
 $( document ).ready(function() {
+    let chartBackgroundColor = getComputedStyle(document.body).getPropertyValue('--chart-js-background-color').trim();
+    let chartBorderColor = getComputedStyle(document.body).getPropertyValue('--chart-js-border-color').trim();
+    let chartFontColor = getComputedStyle(document.body).getPropertyValue('--chart-js-font-color').trim();
+
+    if (chartBackgroundColor) Chart.defaults.backgroundColor = chartBackgroundColor;
+    if (chartBorderColor) Chart.defaults.borderColor = chartBorderColor;
+    if (chartFontColor) Chart.defaults.color = chartFontColor;
+
     let widgetManager = new WidgetManager({
         float: false,
-        column: 5,
-        margin: 10,
+        columnOpts: {
+            columnWidth: 300
+        },
+        margin: 5,
         alwaysShowResizeHandle: false,
         sizeToContent: true,
         resizable: {
@@ -53,7 +63,10 @@ $( document ).ready(function() {
         }
     }, {
         'save': "{{ lang._('Save') }}",
-        'restore': "{{ lang._('Restore default layout') }}"
+        'restore': "{{ lang._('Restore default layout') }}",
+        'addwidget': "{{ lang._('Add Widget') }}",
+        'add': "{{ lang._('Add') }}",
+        'cancel': "{{ lang._('Cancel') }}",
     });
     widgetManager.initialize();
 });

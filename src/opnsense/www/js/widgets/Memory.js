@@ -26,92 +26,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
+import BaseGaugeWidget from "./BaseGaugeWidget.js";
 
-export default class Memory extends BaseWidget {
+export default class Memory extends BaseGaugeWidget {
     constructor() {
         super();
-        this.tickTimeout = 15000;
-
-        this.chart = null;
-        this.curMemUsed = null;
-        this.curMemTotal = null;
-    }
-
-    getMarkup() {
-        return $(`
-            <div class="memory-chart-container">
-                <div class="canvas-container">
-                    <canvas id="memory-chart"></canvas>
-                </div>
-            </div>
-        `);
     }
 
     async onMarkupRendered() {
-        let context = document.getElementById("memory-chart").getContext("2d");
         let colorMap = ['#D94F00', '#A8C49B', '#E5E5E5'];
 
-        let config = {
-            type: 'doughnut',
-            data: {
-                labels: [this.translations.used, this.translations.arc, this.translations.free],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: colorMap,
-                        hoverBackgroundColor: colorMap.map((color) => this._setAlpha(color, 0.5)),
-                        hoveroffset: 50,
-                        fill: true
-                    },
-              ]
+        super.createGaugeChart({
+            colorMap: colorMap,
+            labels: [this.translations.used, this.translations.arc, this.translations.free],
+            tooltipLabelCallback: (tooltipItem) => {
+                return `${tooltipItem.label}: ${tooltipItem.parsed} MB`;
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
-                layout: {
-                    padding: 10
-                },
-                cutout: '64%',
-                rotation: 270,
-                circumference: 180,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                return `${tooltipItem.label}: ${tooltipItem.parsed} MB`;
-                            }
-                        }
-                    }
-                }
+            primaryText: (data) => {
+                return `${(data[0] / (data[0] + data[1] + data[2]) * 100).toFixed(2)}%`;
             },
-            plugins: [{
-                id: 'custom_positioned_text',
-                beforeDatasetsDraw: (chart, args, options) => {
-                    // custom plugin: draw text at 2/3 y position of chart
-                    if (chart.config.data.datasets[0].data.length !== 0) {
-                        let width = chart.width;
-                        let height = chart.height;
-                        let ctx = chart.ctx;
-                        ctx.restore();
-                        let fontSize = (height / 114).toFixed(2);
-                        ctx.font = fontSize + "em SourceSansProSemibold";
-                        ctx.textBaseline = "middle";
-                        let text = (this.curMemUsed / this.curMemTotal * 100).toFixed(2) + "%";
-                        let textX = Math.round((width - ctx.measureText(text).width) / 2);
-                        let textY = (height / 3) * 2;
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
-                    }
-                }
-            }]
-        }
-
-        this.chart = new Chart(context, config);
+            secondaryText: (data) => {
+                return `(${data[0]} / ${data[0] + data[1] + data[2]}) MB`;
+            }
+        });
     }
 
     async onWidgetTick() {
@@ -120,12 +57,7 @@ export default class Memory extends BaseWidget {
                 let used = parseInt(data.memory.used_frmt);
                 let arc = data.memory.hasOwnProperty('arc') ? parseInt(data.memory.arc_frmt) : 0;
                 let total = parseInt(data.memory.total_frmt);
-                let result = [(used - arc), arc, total - used];
-                this.chart.config.data.datasets[0].data = result
-
-                this.curMemUsed = used - arc;
-                this.curMemTotal = total;
-                this.chart.update();
+                super.updateChart([(used - arc), arc, total - used]);
             }
         });
     }

@@ -90,36 +90,6 @@ class KeaDhcpv4 extends BaseModel
             }
         }
 
-        foreach ($this->custom_options->option->iterateItems() as $option) {
-            if (!$option && !$option->isFieldChanged()) {
-                continue;
-            }
-            $key = $option->__reference;
-            foreach ($this->custom_options->option->iterateItems() as $checkopt) {
-                if (
-                    (string)$checkopt->code == (string)$option->code &&
-                    (string)$checkopt->space == (string)$option->space
-                ) {
-                    if ((string)$checkopt->type != (string)$option->type) {
-                        $messages->appendMessage(new Message(
-                            sprintf(
-                                gettext("Unable to redefine code %s, defined as %s in another option."),
-                                $option->code,
-                                $checkopt->type
-                            ),
-                            $key . ".type"
-                        ));
-                    }
-                    if ((string)$checkopt->array != (string)$option->array) {
-                        $messages->appendMessage(new Message(
-                            sprintf(gettext("Unable to redefine code %s with different definition"), $option->code),
-                            $key . ".array"
-                        ));
-                    }
-                }
-            }
-        }
-
         return $messages;
     }
 
@@ -171,6 +141,7 @@ class KeaDhcpv4 extends BaseModel
             $record = [
                 'id' => $subnet_id++,
                 'subnet' => (string)$subnet->subnet,
+                'next-server' => (string)$subnet->next_server,
                 'option-data' => [],
                 'pools' => [],
                 'reservations' => []
@@ -187,17 +158,6 @@ class KeaDhcpv4 extends BaseModel
                     $record['option-data'][] = [
                         'name' => $target_fieldname,
                         'data' => (string)Config::getInstance()->object()->system->domain
-                    ];
-                }
-            }
-            /* custom dhcp options */
-            foreach ($this->custom_options->option->iterateItems() as $option) {
-                if (in_array($subnet_uuid, explode(',', $option->subnet))) {
-                    $record['option-data'][] = [
-                        "name" => sprintf("%s_%s", $option->space, $option->code),
-                        "code" => (int)((string)$option->code),
-                        "space" => (string)$option->space,
-                        "data"  => (string)$option->data
                     ];
                 }
             }
@@ -253,21 +213,6 @@ class KeaDhcpv4 extends BaseModel
                 'subnet4' => $this->getConfigSubnets(),
             ]
         ];
-        $option_def = [];
-        foreach ($this->custom_options->option->iterateItems() as $option) {
-            $option_def[sprintf("%s_%s", $option->space, $option->code)] = [
-                "name" => sprintf("%s_%s", $option->space, $option->code),
-                "code" => (int)((string)$option->code),
-                "type" => (string)$option->type,
-                "array" => !empty((string)$option->array),
-                "record-types" => "",
-                "space" => (string)$option->space,
-                "encapsulate" => ""
-            ];
-        }
-        if (!empty($option_def)) {
-            $cnf['Dhcp4']['option-def'] = array_values($option_def);
-        }
         if (!empty((string)(new KeaCtrlAgent())->general->enabled)) {
             $cnf['Dhcp4']['hooks-libraries'] = [];
             $cnf['Dhcp4']['hooks-libraries'][] = [

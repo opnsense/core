@@ -202,7 +202,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     ) {
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
-                $fw->registerSNatRule(100, $rule);
+                if (is_array($rule)) {
+                    $fw->registerSNatRule(100, $rule);
+                }
             }
         }
     }
@@ -259,7 +261,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     if (!empty($config['nat']['rule'])) {
         // register user forward rules
         foreach ($config['nat']['rule'] as $rule) {
-            $fw->registerForwardRule(600, $rule);
+            if (is_array($rule)) {
+                $fw->registerForwardRule(600, $rule);
+            }
         }
     }
 

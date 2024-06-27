@@ -232,7 +232,7 @@
                 var $tr = $("<tr/>");
                 $tr.append($("<td/>").text(item));
                 var geo_select = $("<td/>");
-                geo_select.append($("<select class='selectpicker geoip_select' multiple='multiple' data-id='"+'geoip_region_'+item+"'/>"));
+                geo_select.append($("<select class='selectpicker geoip_select' multiple='multiple' data-size='10' data-live-search='true' data-container='body' data-id='"+'geoip_region_'+item+"'/>"));
                 geo_select.append($("<i class=\"fa fa-fw geo_area_check fa-check-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
                 geo_select.append($("<i class=\"fa fa-fw geo_area_uncheck fa-square-o\" aria-hidden=\"true\" data-id='"+'geoip_region_'+item+"'></i>"));
                 geo_select.append($("<label class='geo_label' data-id='geoip_region_"+item+"_label'/>"));
@@ -621,7 +621,7 @@
                     <div class="hidden">
                         <!-- filter per type container -->
                         <div id="type_filter_container" class="btn-group">
-                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker"  data-live-search="true" multiple="multiple" data-width="200px">
+                            <select id="type_filter"  data-title="{{ lang._('Filter type') }}" class="selectpicker" data-size="10" data-live-search="true" multiple="multiple" data-width="200px">
                                 <option value="host">{{ lang._('Host(s)') }}</option>
                                 <option value="network">{{ lang._('Network(s)') }}</option>
                                 <option value="port">{{ lang._('Port(s)') }}</option>
@@ -636,7 +636,7 @@
                                 <option value="internal">{{ lang._('Internal (automatic)') }}</option>
                                 <option value="external">{{ lang._('External (advanced)') }}</option>
                             </select>
-                            <select id="category_filter"  data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="5"  multiple data-width="200px">
+                            <select id="category_filter"  data-title="{{ lang._('Categories') }}" class="selectpicker" data-size="10" data-live-search="true" data-size="5"  multiple data-width="200px">
                             </select>
                         </div>
                     </div>
@@ -772,8 +772,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.type" class="selectpicker" data-width="245px"></select>
-                                        <select id="alias.proto" multiple="multiple" title="IPv4, IPv6" class="selectpicker" data-width="100px"></select>
+                                        <select id="alias.type" class="selectpicker" data-container="body" data-width="245px"></select>
+                                        <select id="alias.proto" multiple="multiple" title="IPv4, IPv6" class="selectpicker" data-container="body" data-width="100px"></select>
                                     </td>
                                     <td>
                                         <span class="help-block" id="help_block_alias.type"></span>
@@ -787,7 +787,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select id="alias.categories" multiple="multiple" class="tokenize" data-width="348px"></select>
+                                        <select id="alias.categories" multiple="multiple" class="tokenize" data-container="body" data-width="348px"></select>
                                         <span class="hidden" data-for="help_for_alias.categories">
                                             {{lang._('For grouping purposes you may select multiple groups here to organize items.')}}
                                         </span>
@@ -845,11 +845,12 @@
                                                     data-allownew="true"
                                                     data-nbdropdownelements="10"
                                                     data-live-search="true"
+                                                    data-container="body"
                                                     data-separator="#10">
                                             </select>
                                         </div>
                                         <div class="alias_type" id="alias_type_networkgroup">
-                                            <select multiple="multiple" class="selectpicker" id="network_content" data-live-search="true">
+                                            <select multiple="multiple" class="selectpicker" id="network_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
                                         </div>
                                         <table class="table table-condensed alias_table alias_type" id="alias_type_geoip" style="display: none;">
@@ -863,7 +864,7 @@
                                             </tbody>
                                         </table>
                                         <div class="alias_type" id="alias_type_authgroup" style="display: none;">
-                                            <select multiple="multiple" class="selectpicker" id="authgroup_content" data-live-search="true">
+                                            <select multiple="multiple" class="selectpicker" id="authgroup_content" data-container="body" data-size="10" data-live-search="true">
                                             </select>
                                         </div>
 
@@ -886,7 +887,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <select  class="selectpicker" id="alias.interface" data-width="200px"></select>
+                                        <select  class="selectpicker" id="alias.interface" data-container="body" data-width="200px"></select>
                                         <div class="hidden" data-for="help_for_alias.interface">
                                             <small>{{lang._('Select the interface for the V6 dynamic IP')}}</small>
                                         </div>

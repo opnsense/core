@@ -249,8 +249,9 @@
                         <forward>Forward</forward>
                     </OptionValues>
                 </type>
-                <domain type="TextField">
-                    <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                <domain type="HostnameField">
+                    <IsDNSName>Y</IsDNSName>
+                    <IpAllowed>N</IpAllowed>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 </domain>
                 <server type="NetworkField">

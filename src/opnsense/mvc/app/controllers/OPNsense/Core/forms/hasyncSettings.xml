@@ -1,0 +1,81 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>hasync.disablepreempt</id>
+        <label>Disable preempt</label>
+        <type>checkbox</type>
+        <help>When this device is configured as CARP master it will try to switch to master when powering up, this option will keep this one slave if there already is a master on the network. A reboot is required to take effect.</help>
+    </field>
+    <field>
+        <id>hasync.disconnectppps</id>
+        <label>Disconnect dialup interfaces</label>
+        <type>checkbox</type>
+        <help>When this device is configured as CARP backup it will disconnect all PPP type interfaces and try to reconnect them when becoming master again.</help>
+    </field>
+    <field>
+        <id>hasync.pfsyncenabled</id>
+        <label>Synchronize States</label>
+        <type>checkbox</type>
+        <help>pfsync transfers state insertion, update, and deletion messages between firewalls.</help>
+    </field>
+    <field>
+        <id>hasync.pfsyncinterface</id>
+        <label>Synchronize Interface</label>
+        <type>dropdown</type>
+        <help>If Synchronize States is enabled, it will utilize this interface for communication. Best choose a dedicated interface for this type of communication to prevent manipulation of states causing security issues.</help>
+    </field>
+    <field>
+        <id>hasync.pfsyncversion</id>
+        <label>Sync compatibility</label>
+        <type>dropdown</type>
+        <help>
+            Newer versions of OPNsense offer additional attributes in the state synchronization, for compatibility reasons you can optionally choose an older version here.
+            Always make sure both nodes use the same version to avoid inconsistent state tables.
+        </help>
+    </field>
+    <field>
+        <id>hasync.pfsyncpeerip</id>
+        <label>Synchronize Peer IP</label>
+        <type>text</type>
+        <hint>224.0.0.240</hint>
+        <help>Setting this option will force pfsync to synchronize its state table to this IP address. The default is directed multicast.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label><![CDATA[Configuration Synchronization Settings (XMLRPC Sync) <a href="/status_habackup.php">Perform synchronization </a>]]></label>
+    </field>
+    <field>
+        <id>hasync.synchronizetoip</id>
+        <label>Synchronize Config</label>
+        <type>text</type>
+        <help>
+            Enter the IP address of the firewall to which the selected configuration sections should be synchronized.
+            This should be empty on the backup machine, when only an address is offered, but webui configurions should be equal (port and protocol)
+        </help>
+    </field>
+    <field>
+        <id>hasync.username</id>
+        <label>Remote System Username</label>
+        <type>text</type>
+        <help>Enter the web GUI username of the system entered above for synchronizing your configuration.</help>
+    </field>
+    <field>
+        <id>hasync.password</id>
+        <label>Remote System Password</label>
+        <type>password</type>
+        <help>Enter the web GUI password of the system entered above for synchronizing your configuration.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Services to synchronize (XMLRPC Sync)</label>
+    </field>
+    <field>
+        <id>hasync.syncitems</id>
+        <label>Services</label>
+        <type>select_multiple</type>
+        <help>Select the services that should be send to the other host.</help>
+    </field>
+</form>

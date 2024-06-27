@@ -28,27 +28,37 @@ export default class BaseWidget {
     constructor(config) {
         this.config = config;
         this.id = null;
-        this.title = "";
         this.translations = {};
         this.tickTimeout = 5000; // Default tick timeout
         this.resizeHandles = "all"
+        this.eventSource = null;
+        this.eventSourceUrl = null;
+        this.eventSourceOnData = null;
     }
+
+    /* Public functions */
 
     getResizeHandles() {
         return this.resizeHandles;
+    }
+
+    getWidgetConfig() {
+        if (this.config !== undefined && 'widget' in this.config) {
+            return this.config['widget'];
+        }
+
+        return false;
     }
 
     setId(id) {
         this.id = id;
     }
 
-    setTitle(title) {
-        this.title = title;
-    }
-
     setTranslations(translations) {
         this.translations = translations;
     }
+
+    /* Public virtual functions */
 
     getGridOptions() {
         // per-widget gridstack options override
@@ -72,7 +82,51 @@ export default class BaseWidget {
     }
 
     onWidgetClose() {
-        return null;
+        this.closeEventSource();
+    }
+
+    onVisibilityChanged(visible) {
+        if (this.eventSourceUrl !== null) {
+            if (visible) {
+                this.openEventSource(this.eventSourceUrl, this.eventSourceOnData);
+            } else if (this.eventSource !== null) {
+                this.closeEventSource();
+            }
+        }
+    }
+
+    /* Utility/protected functions */
+
+    setWidgetConfig(config) {
+        this.config['widget'] = config;
+    }
+
+    openEventSource(url, onMessage) {
+        this.closeEventSource();
+
+        this.eventSourceUrl = url;
+        this.eventSourceOnData = onMessage;
+        this.eventSource = new EventSource(url);
+        this.eventSource.onmessage = onMessage;
+        this.eventSource.onerror = (e) => {
+            if (this.eventSource.readyState == EventSource.CONNECTING) {
+                /* Backend closed connection due to timeout, reconnect issued by browser */
+                return;
+            }
+
+            if (this.eventSource.readyState == EventSource.CLOSED) {
+                this.closeEventSource();
+            } else {
+                console.error('Unknown error occurred during streaming operation', e);
+            }
+        };
+    }
+
+    closeEventSource() {
+        if (this.eventSource !== null) {
+            this.eventSource.close();
+            this.eventSource = null;
+        }
     }
 
     /* For testing purposes */

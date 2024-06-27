@@ -58,6 +58,11 @@ class IPPortField extends BaseField
     protected $internalAddressFamily = null;
 
     /**
+     * @var bool hostname allowed
+     */
+    protected $internalHostnameAllowed = false;
+
+    /**
      * trim IP-Port combination
      * @param string $value
      */
@@ -95,6 +100,15 @@ class IPPortField extends BaseField
     }
 
     /**
+     * select if a hostname may be provided instead of an address (without addressfamily validation)
+     * @param $value string value Y/N
+     */
+    public function setHostnameAllowed($value)
+    {
+        $this->internalHostnameAllowed = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
      * select if multiple IP-Port combinations may be selected at once
      * @param $value string value Y/N
      */
@@ -102,7 +116,6 @@ class IPPortField extends BaseField
     {
         $this->internalAsList = trim(strtoupper($value)) == "Y";
     }
-
 
     /**
      * {@inheritdoc}
@@ -122,11 +135,19 @@ class IPPortField extends BaseField
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 foreach ($this->internalAsList ? explode($this->internalFieldSeparator, $data) : [$data] as $value) {
+                    $parts = explode(':', $value);
                     if ($this->internalAddressFamily == 'ipv4' || $this->internalAddressFamily == null) {
-                        $parts = explode(':', $value);
                         if (count($parts) == 2 && Util::isIpv4Address($parts[0]) && Util::isPort($parts[1])) {
                             continue;
                         }
+                    }
+                    if (
+                        $this->internalHostnameAllowed &&
+                        count($parts) == 2 &&
+                        Util::isPort($parts[1]) &&
+                        filter_var($parts[0], FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false
+                    ) {
+                        continue;
                     }
 
                     if ($this->internalAddressFamily == 'ipv6' || $this->internalAddressFamily == null) {

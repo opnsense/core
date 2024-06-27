@@ -72,21 +72,8 @@
          ShowHideGeneralFields();
       });
 
-      // show/hide httpd/mmonit options
+      // show/hide options
       function ShowHideGeneralFields(){
-         if ($('#monit\\.general\\.httpdEnabled')[0].checked) {
-            $('tr[id="row_monit.general.httpdPort"]').removeClass('hidden');
-            $('tr[id="row_monit.general.httpdAllow"]').removeClass('hidden');
-            $('tr[id="row_monit.general.mmonitUrl"]').removeClass('hidden');
-            $('tr[id="row_monit.general.mmonitTimeout"]').removeClass('hidden');
-            $('tr[id="row_monit.general.mmonitRegisterCredentials"]').removeClass('hidden');
-         } else {
-            $('tr[id="row_monit.general.httpdPort"]').addClass('hidden');
-            $('tr[id="row_monit.general.httpdAllow"]').addClass('hidden');
-            $('tr[id="row_monit.general.mmonitUrl"]').addClass('hidden');
-            $('tr[id="row_monit.general.mmonitTimeout"]').addClass('hidden');
-            $('tr[id="row_monit.general.mmonitRegisterCredentials"]').addClass('hidden');
-         }
          if ($('#monit\\.general\\.ssl')[0].checked) {
             $('tr[id="row_monit.general.sslversion"]').removeClass('hidden');
             $('tr[id="row_monit.general.sslverify"]').removeClass('hidden');
@@ -95,9 +82,6 @@
             $('tr[id="row_monit.general.sslverify"]').addClass('hidden');
          }
       };
-      $('#monit\\.general\\.httpdEnabled').unbind('click').click(function(){
-         ShowHideGeneralFields();
-      });
       $('#monit\\.general\\.ssl').unbind('click').click(function(){
          ShowHideGeneralFields();
       });

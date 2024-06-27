@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['domainsearchlist'])) {
             $domain_array=preg_split("/[ ;]+/",$pconfig['domainsearchlist']);
             foreach ($domain_array as $curdomain) {
-                if (!is_domain($curdomain)) {
+                if (!is_domain($curdomain, true)) {
                     $input_errors[] = gettext("A valid domain search list must be specified.");
                     break;
                 }
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ((!empty($pconfig['ntp1']) && !is_ipaddrv4($pconfig['ntp1'])) || (!empty($pconfig['ntp2']) && !is_ipaddrv4($pconfig['ntp2']))) {
             $input_errors[] = gettext("A valid IP address must be specified for the primary/secondary NTP servers.");
         }
-        if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'])) {
+        if (!empty($pconfig['domain']) && !is_domain($pconfig['domain'], true)) {
             $input_errors[] = gettext("A valid domain name must be specified for the DNS domain.");
         }
         if (!empty($pconfig['tftp']) && !is_ipaddrv4($pconfig['tftp']) && !is_domain($pconfig['tftp']) && !is_URL($pconfig['tftp'])) {

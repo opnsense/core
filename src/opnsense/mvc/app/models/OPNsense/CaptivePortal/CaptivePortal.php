@@ -31,6 +31,7 @@
 namespace OPNsense\CaptivePortal;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class CaptivePortal
@@ -83,5 +84,36 @@ class CaptivePortal extends BaseModel
         $newItem->name = $name;
         $newItem->fileid = uniqid();
         return $newItem;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        // validate changed instances
+        foreach ($this->zones->zone->iterateItems() as $zone) {
+            if (!$validateFullModel && !$zone->isFieldChanged()) {
+                continue;
+            }
+            $key = $zone->__reference;
+            if (!empty((string)$zone->interfaces_inbound) && !empty((string)$zone->interfaces)) {
+                $ifs_inbound = array_filter(explode(',', $zone->interfaces_inbound));
+                $ifs = array_filter(explode(',', $zone->interfaces));
+                $overlap = array_intersect($ifs_inbound, $ifs);
+                if (!empty($overlap)) {
+                    $messages->appendMessage(
+                        new Message(
+                            sprintf(
+                                gettext("Inbound interfaces may not overlap with zone interfaces (%s)"),
+                                implode(',', $overlap)
+                            ),
+                            $key . ".interfaces_inbound"
+                        )
+                    );
+                }
+            }
+        }
+        return $messages;
     }
 }

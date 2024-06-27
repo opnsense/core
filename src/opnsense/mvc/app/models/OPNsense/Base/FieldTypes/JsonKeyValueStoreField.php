@@ -117,6 +117,7 @@ class JsonKeyValueStoreField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
+        $data = null;
         if ($this->internalSourceFile != null) {
             if ($this->internalSourceField != null) {
                 $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
@@ -135,8 +136,7 @@ class JsonKeyValueStoreField extends BaseListField
                     $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
                     if (time() - $muttime > $this->internalConfigdPopulateTTL) {
                         $act = $this->internalConfigdPopulateAct;
-                        $backend = new Backend();
-                        $response = $backend->configdRun($act, false, 20);
+                        $response = (new Backend())->configdRun($act, false, 20);
                         if (!empty($response) && json_decode($response) !== null) {
                             // only store parsable results
                             fseek($sourcehandle, 0);
@@ -151,12 +151,14 @@ class JsonKeyValueStoreField extends BaseListField
             }
             if (is_file($sourcefile)) {
                 $data = json_decode(file_get_contents($sourcefile), true);
-                if ($data != null) {
-                    $this->internalOptionList = $data;
-                    if ($this->internalSelectAll && $this->internalValue == "") {
-                        $this->internalValue = implode(',', array_keys($this->internalOptionList));
-                    }
-                }
+            }
+        } elseif (!empty($this->internalConfigdPopulateAct)) {
+            $data = json_decode((new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20) ?? '', true);
+        }
+        if ($data != null) {
+            $this->internalOptionList = $data;
+            if ($this->internalSelectAll && $this->internalValue == "") {
+                $this->internalValue = implode(',', array_keys($this->internalOptionList));
             }
         }
     }

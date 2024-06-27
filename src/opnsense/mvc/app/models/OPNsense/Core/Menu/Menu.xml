@@ -5,8 +5,7 @@
             <Root url="/" visibility="hidden"/>
             <RootArgs url="/?*" visibility="hidden"/>
         </Dashboard>
-        <Dashboard_new order="1" VisibleName="Dashboard [new]" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw">
-        </Dashboard_new>
+        <Dashboard_new order="1" VisibleName="Dashboard [new]" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw"/>
         <License order="2" url="/ui/core/license" cssClass="fa fa-balance-scale fa-fw"/>
         <Password order="3" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw">
             <Edit url="/system_usermanager_passwordmg.php*" visibility="hidden"/>
@@ -57,7 +56,7 @@
             <LogFile VisibleName="Log File" order="30" url="/ui/diagnostics/log/core/gateways"/>
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
-            <Settings order="100" url="/system_hasync.php"/>
+            <Settings order="100" url="/ui/core/hasync"/>
             <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes cssClass="fa fa-map-signs fa-fw">

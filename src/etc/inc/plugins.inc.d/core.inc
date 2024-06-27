@@ -463,6 +463,7 @@ function core_configure()
         'firmware_reload' => ['system_firmware_configure'],
         'route_reload' => ['core_routing_batch:2'],
         'syslog_reset' => ['system_syslog_reset'],
+        'trust_reload' => ['system_trust_configure'],
         'user_changed' => ['core_user_changed_groups:2'],
     ];
 }

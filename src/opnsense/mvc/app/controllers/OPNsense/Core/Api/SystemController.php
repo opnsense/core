@@ -229,13 +229,19 @@ class SystemController extends ApiControllerBase
             !empty($product['product_check']['remove_packages']) ||
             !empty($product['product_check']['upgrade_packages']);
 
+        $versions = [
+            sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']),
+            php_uname('s') . ' ' . php_uname('r'),
+            trim($backend->configdRun('system openssl version')),
+        ];
+
+        if (!empty($product['product_license']['valid_to'])) {
+            $versions[] = sprintf(gettext('Licensed until %s'), $product['product_license']['valid_to']);
+        }
+
         $response = [
             'name' => $config->system->hostname . '.' . $config->system->domain,
-            'versions' => [
-                sprintf('%s %s-%s', $product['product_name'], $product['product_version'], $product['product_arch']),
-                php_uname('s') . ' ' . php_uname('r'),
-                trim($backend->configdRun('system openssl version'))
-            ],
+            'versions' => $versions,
             'updates' => ($from_changelog || $from_check)
                 ? gettext('Click to view pending updates.')
                 : gettext('Click to check for updates.'),
@@ -317,6 +323,36 @@ class SystemController extends ApiControllerBase
                     'used_pct' => $fs['used-percent'],
                     'mountpoint' => $fs['mounted-on'],
                 ];
+            }
+        }
+
+        return $result;
+    }
+
+    public function systemMbufAction()
+    {
+        return json_decode((new Backend())->configdRun('system show mbuf'), true);
+    }
+
+    public function systemSwapAction()
+    {
+        return json_decode((new Backend())->configdRun('system show swapinfo'), true);
+    }
+
+    public function systemTemperatureAction()
+    {
+        $result = [];
+
+        foreach (explode("\n", (new Backend())->configdRun('system temp')) as $temp) {
+            $parts = explode('=', $temp);
+            if (count($parts) >= 2) {
+                $tempItem = array();
+                $tempItem['device'] = $parts[0];
+                $tempItem['device_seq'] = filter_var($tempItem['device'], FILTER_SANITIZE_NUMBER_INT);
+                $tempItem['temperature'] = trim(str_replace('C', '', $parts[1]));
+                $tempItem['type'] = strpos($tempItem['device'], 'hw.acpi') !== false ? "zone" : "core";
+                $tempItem['type_translated'] = $tempItem['type'] == "zone" ? gettext("Zone") : gettext("Core");
+                $result[] = $tempItem;
             }
         }
 

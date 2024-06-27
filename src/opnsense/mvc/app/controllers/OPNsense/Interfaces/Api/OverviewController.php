@@ -209,6 +209,8 @@ class OverviewController extends ApiControllerBase
                                             $entry['status'] = $carp['status'];
                                             $entry['advbase'] = $carp['advbase'];
                                             $entry['advskew'] = $carp['advskew'];
+                                            $entry['peer'] = $carp['peer'];
+                                            $entry['peer6'] = $carp['peer6'];
                                         }
                                     }
                                 }

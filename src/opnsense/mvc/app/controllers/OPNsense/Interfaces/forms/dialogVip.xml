@@ -24,6 +24,28 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>vip.peer</id>
+        <label>Peer (ipv4)</label>
+        <type>text</type>
+        <style>mode mode_carp</style>
+        <hint>224.0.0.18</hint>
+        <help>
+            Destination address to use when announcing, defaults to multicast,
+            but can be configured as unicast address when multicast can not be used (for example with cloud providers)
+        </help>
+    </field>
+    <field>
+        <id>vip.peer6</id>
+        <label>Peer (ipv6)</label>
+        <type>text</type>
+        <style>mode mode_carp</style>
+        <hint>ff02::12</hint>
+        <help>
+            Destination address to use when announcing, defaults to multicast,
+            but can be configured as unicast address when multicast can not be used (for example with cloud providers)
+        </help>
+    </field>
+    <field>
       <id>vip.noexpand</id>
       <label>Disable Expansion</label>
       <type>checkbox</type>

@@ -1,6 +1,6 @@
 <model>
    <mount>//OPNsense/monit</mount>
-   <version>1.0.12</version>
+   <version>1.0.13</version>
    <description>Monit settings</description>
    <items>
       <general>
@@ -75,9 +75,26 @@
          <httpdEnabled type="BooleanField">
             <Default>0</Default>
             <Required>Y</Required>
+            <Constraints>
+                <check002>
+                    <reference>httpdPassword.check001</reference>
+                </check002>
+            </Constraints>
          </httpdEnabled>
-         <httpdUsername type="TextField"/>
-         <httpdPassword type="TextField"/>
+         <httpdUsername type="TextField">
+            <Default>root</Default>
+            <Required>Y</Required>
+         </httpdUsername>
+         <httpdPassword type="TextField">
+            <Constraints>
+                <check001>
+                    <ValidationMessage>A value is required.</ValidationMessage>
+                    <type>SetIfConstraint</type>
+                    <field>httpdEnabled</field>
+                    <check>1</check>
+                </check001>
+            </Constraints>
+	 </httpdPassword>
          <httpdPort type="IntegerField">
             <Default>2812</Default>
             <Required>Y</Required>

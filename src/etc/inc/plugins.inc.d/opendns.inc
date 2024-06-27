@@ -49,6 +49,15 @@ function opendns_configure_do($verbose = false)
     }
 }
 
+function opendns_xmlrpc_sync()
+{
+    return [[
+        'description' => gettext('OpenDNS'),
+        'section' => 'opendns',
+        'id' => 'opendns',
+    ]];
+}
+
 function opendns_register($pconfig)
 {
     $ch = curl_init();

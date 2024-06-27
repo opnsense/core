@@ -101,8 +101,9 @@
                     <Required>Y</Required>
                     <Default>tun</Default>
                     <OptionValues>
-                        <tun>tun</tun>
-                        <tap>tap</tap>
+                        <tun>TUN</tun>
+                        <tap>TAP</tap>
+                        <ovpn>DCO (experimental)</ovpn>
                     </OptionValues>
                 </dev_type>
                 <verb type="OptionField">

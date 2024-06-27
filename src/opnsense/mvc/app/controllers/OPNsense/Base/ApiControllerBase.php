@@ -47,6 +47,7 @@ class ApiControllerBase extends ControllerRoot
      * @param string|null $defaultSort default sort field name
      * @param null|function $filter_funct additional filter callable
      * @param int $sort_flags sorting behavior
+     * @param array|null $search_clauses optional overwrite to pass clauses to search instead of using searchPhrase
      * @return array
      */
     protected function searchRecordsetBase(
@@ -54,7 +55,8 @@ class ApiControllerBase extends ControllerRoot
         $fields = null,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE,
+        $search_clauses = null
     ) {
         $records = is_array($records) ? $records : []; // safeguard input, we are only able to search arrays.
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
@@ -62,7 +64,11 @@ class ApiControllerBase extends ControllerRoot
         $currentPage = intval($this->request->getPost('current', 'int', 1));
         $offset = ($currentPage - 1) * $itemsPerPage;
         $entry_keys = array_keys($records);
-        $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
+        if (!is_array($search_clauses)) {
+            /* default behavior, extract clauses to search from post */
+            $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
+            $search_clauses = preg_split('/\s+/', $searchPhrase);
+        }
 
         $sortOrder = SORT_ASC;
         $sortKey = $defaultSort;
@@ -86,8 +92,8 @@ class ApiControllerBase extends ControllerRoot
             array_multisort($keys, $sortOrder, $sort_flags, $records);
         }
 
-        $search_clauses = preg_split('/\s+/', $searchPhrase);
-        $entry_keys = array_filter($entry_keys, function ($key) use ($search_clauses, $filter_funct, $fields, $records) {
+
+        $entry_keys = array_filter($entry_keys, function ($key) use ($search_clauses, $filter_funct, $fields, &$records) {
             if (is_callable($filter_funct) && !$filter_funct($records[$key])) {
                 // not applicable according to $filter_funct()
                 return false;

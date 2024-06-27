@@ -18,6 +18,15 @@
         <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
     </field>
     <field>
+        <id>zone.interfaces_inbound</id>
+        <label>Allow inbound</label>
+        <type>select_multiple</type>
+        <help><![CDATA[
+            Select interfaces from which to allow inbound (stateful) traffic. This can be convenient if the zone in question
+            contains machines/servers which should be accessible from other networks attached to this firewall.
+        ]]></help>
+    </field>
+    <field>
         <id>zone.authservers</id>
         <label>Authenticate using</label>
         <type>select_multiple</type>
@@ -82,20 +91,6 @@
         <help><![CDATA[Avoid authentication for physical addresses in this list]]></help>
         <allownew>true</allownew>
         <advanced>true</advanced>
-    </field>
-    <field>
-        <id>zone.transparentHTTPProxy</id>
-        <label>Transparent proxy (HTTP)</label>
-        <type>checkbox</type>
-        <help><![CDATA[Forward HTTP traffic to transparent proxy]]></help>
-        <allownew>true</allownew>
-    </field>
-    <field>
-        <id>zone.transparentHTTPSProxy</id>
-        <label>Transparent proxy (HTTPS)</label>
-        <type>checkbox</type>
-        <help><![CDATA[Forward HTTPS traffic to transparent proxy]]></help>
-        <allownew>true</allownew>
     </field>
     <field>
         <id>zone.extendedPreAuthData</id>

@@ -477,11 +477,19 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     }
 
     if (!does_interface_exist($devname)) {
-        if (!file_exists("/dev/{$devnode}")) {
-            mwexecf('/sbin/ifconfig %s create', array($devnode));
+        if (in_array($settings['dev_mode'], ['tun', 'tap'])) {
+            if (!file_exists("/dev/{$devnode}")) {
+                mwexecf('/sbin/ifconfig %s create', array($devnode));
+            }
+            mwexecf('/sbin/ifconfig %s name %s', array($devnode, $devname));
+        } else {
+            /**
+             * XXX: DCO uses non standard matching, normally create should use "ifconfig ovpnX create"
+             * ref: https://github.com/opnsense/src/blob/b0130349e8/sys/net/if_ovpn.c#L2392-L2400
+             */
+            mwexecf('/sbin/ifconfig %s create', array($devname));
         }
 
-        mwexecf('/sbin/ifconfig %s name %s', array($devnode, $devname));
         mwexecf('/sbin/ifconfig %s group openvpn', array($devname));
     }
 

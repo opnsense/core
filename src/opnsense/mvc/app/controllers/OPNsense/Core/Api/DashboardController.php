@@ -104,6 +104,83 @@ class DashboardController extends ApiControllerBase
                 'livelog' => gettext('Live Log'),
                 'events' => gettext('Events'),
                 'nodata' => gettext('Waiting for data')
+            ],
+            'firewallstates' => [
+                'title' => gettext('Firewall States'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ],
+            'mbuf' => [
+                'title' => gettext('MBUF Usage'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ],
+            'swap' => [
+                'title' => gettext('SWAP Usage'),
+                'used' => gettext('Used'),
+                'free' => gettext('Free'),
+            ],
+            'carp' => [
+                'title' => gettext('CARP Status'),
+                'unconfigured' => gettext('No CARP Interfaces configured. Click to configure CARP.'),
+                'carp' => gettext('CARP IP'),
+                'alias' => gettext('IP Alias'),
+            ],
+            'gateways' => [
+                'title' => gettext('Gateways'),
+                'unconfigured' => gettext('No Gateways configured. Click to configure gateways.'),
+                'rtt' => gettext('RTT'),
+                'rttd' => gettext('RTTd'),
+                'loss' => gettext('Loss'),
+            ],
+            'thermalsensors' => [
+                'title' => gettext('Thermal Sensors'),
+                'help' => gettext('CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.'),
+                'unconfigured' => gettext('Thermal sensors not available or not configured.')
+            ],
+            'monit' => [
+                'title' => gettext('Monit Status'),
+                'filesystem' => gettext('Filesystem'),
+                'directory' => gettext('Directory'),
+                'file' => gettext('File'),
+                'process' => gettext('Process'),
+                'host' => gettext('Host'),
+                'system' => gettext('System'),
+                'fifo' => gettext('FIFO'),
+                'custom' => gettext('Custom'),
+                'network' => gettext('Network'),
+                'ok' => gettext('OK'),
+                'failed' => gettext('Failed'),
+                'changed' => gettext('Changed'),
+                'unchanged' => gettext('Not changed'),
+                'type' => gettext('Type'),
+                'unconfigured' => gettext('Monit is disabled or not configured.'),
+            ],
+            'livelog' => [
+                'title' => gettext('Live Log'),
+                'time' => gettext('Time'),
+                'severity' => gettext('Severity'),
+                'process' => gettext('Process'),
+                'message' => gettext('Message'),
+            ],
+            'ipsecleases' => [
+                'title' => gettext('IPsec Leases'),
+                'online' => gettext('Online'),
+                'offline' => gettext('Offline'),
+                'users' => gettext('Users'),
+                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
+                'noleases' => gettext('There are currently no leases.'),
+                'nodata' => gettext('Failed to load data.'),
+            ],
+            'ipsectunnels' => [
+                'title' => gettext('IPsec Tunnels'),
+                'online' => gettext('Online'),
+                'offline' => gettext('Offline'),
+                'total' => gettext('Tunnels'),
+                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
+                'notunnels' => gettext('There are currently no tunnels.'),
+                'nodata' => gettext('Failed to load data.'),
+                'notavailable' => gettext('n/a'),
             ]
         ];
     }

@@ -47,7 +47,7 @@ class Vip extends BaseModel
         $vips = [];
 
         // collect changed VIP entries
-        $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface'];
+        $vip_fields = ['mode', 'subnet', 'subnet_bits', 'password', 'vhid', 'interface', 'peer', 'peer6'];
         foreach ($this->getFlatNodes() as $key => $node) {
             $tagName = $node->getInternalXMLTagName();
             $parentNode = $node->getParentNode();
@@ -157,6 +157,23 @@ class Vip extends BaseModel
                         new Message(
                             sprintf($errmsg, (string)$node->vhid, (string)$carp_vhids[$vhid_key]->interface),
                             $key . ".vhid"
+                        )
+                    );
+                }
+                /* XXX: ideally we shouldn't need the validations below, but when using the same vhid for
+                 *      ipv4 and ipv6 one will always flip back to multicast */
+                if (strpos($subnet, ':') === false && !empty((string)$node->peer6)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('An (unicast) address can only be configured for the same protocol family.'),
+                            $key . ".peer6"
+                        )
+                    );
+                } elseif (strpos($subnet, ':') !== false && !empty((string)$node->peer)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('An (unicast) address can only be configured for the same protocol family.'),
+                            $key . ".peer"
                         )
                     );
                 }

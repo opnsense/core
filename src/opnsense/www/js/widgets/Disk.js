@@ -26,13 +26,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseWidget from "./BaseWidget.js";
+import BaseGaugeWidget from "./BaseGaugeWidget.js";
 
-export default class Disk extends BaseWidget {
+export default class Disk extends BaseGaugeWidget {
     constructor() {
         super();
 
-        this.simple_chart = null;
         this.detailed_chart = null;
     }
 
@@ -63,12 +62,12 @@ export default class Disk extends BaseWidget {
 
     getMarkup() {
         return $(`
-            <div class="disk-chart-container">
+            <div class="${this.id}-chart-container">
                 <div class="canvas-container">
-                    <canvas id="disk-chart"></canvas>
+                    <canvas id="${this.id}-chart"></canvas>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="disk-detailed-chart"></canvas>
+                    <canvas id="${this.id}-detailed-chart"></canvas>
                 </div>
                 </div>
             </div>
@@ -76,69 +75,18 @@ export default class Disk extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        let context_simple = document.getElementById("disk-chart").getContext("2d");
-        let colorMap = ['#D94F00', '#E5E5E5'];
-        let config_simple = {
-            type: 'doughnut',
-            data: {
-                labels: [this.translations.used, this.translations.free],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: colorMap,
-                        hoverBackgroundColor: colorMap.map((color) => this._setAlpha(color, 0.5)),
-                        hoveroffset: 50,
-                        fill: true
-                    },
-              ]
+        super.createGaugeChart({
+            colorMap: ['#D94F00', '#E5E5E5'],
+            labels: [this.translations.used, this.translations.free],
+            tooltipLabelCallback: (tooltipItem) => {
+                let pct = tooltipItem.dataset.pct[tooltipItem.dataIndex];
+                return `${tooltipItem.label}: ${pct}%`;
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
-                layout: {
-                    padding: 10
-                },
-                cutout: '64%',
-                rotation: 270,
-                circumference: 180,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (tooltipItem) => {
-                                let pct = tooltipItem.dataset.pct[tooltipItem.dataIndex];
-                                return `${tooltipItem.label}: ${pct}%`;
-                            }
-                        }
-                    }
-                }
+            primaryText: (data, chart) => {
+                return chart.config.data.datasets[0].pct[0] + '%';
             },
-            plugins: [{
-                id: 'custom_positioned_text',
-                beforeDatasetsDraw: (chart, args, options) => {
-                    // custom plugin: draw text at 2/3 y position of chart
-                    if (chart.config.data.datasets[0].data.length !== 0) {
-                        let width = chart.width;
-                        let height = chart.height;
-                        let ctx = chart.ctx;
-                        ctx.restore();
-                        let fontSize = (height / 114).toFixed(2);
-                        ctx.font = fontSize + "em SourceSansProSemibold";
-                        ctx.textBaseline = "middle";
-                        let text = this.simple_chart.config.data.datasets[0].pct[0] + '%';
-                        let textX = Math.round((width - ctx.measureText(text).width) / 2);
-                        let textY = (height / 3) * 2;
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
-                    }
-                }
-            }]
-        }
+        })
 
-        this.simple_chart = new Chart(context_simple, config_simple);
         let context_detailed = document.getElementById("disk-detailed-chart").getContext("2d");
         let config = {
             type: 'bar',
@@ -218,9 +166,8 @@ export default class Disk extends BaseWidget {
                     let total = this._convertToBytes(device.blocks);
                     let free = total - used;
                     if (device.mountpoint === '/') {
-                        this.simple_chart.config.data.datasets[0].data = [used, free];
-                        this.simple_chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
-                        this.simple_chart.update();
+                        this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
+                        super.updateChart([used, free]);
                     }
                     totals.push(total);
 
@@ -248,4 +195,11 @@ export default class Disk extends BaseWidget {
         }
     }
 
+    onWidgetClose() {
+        if (this.detailed_chart !== null) {
+            this.detailed_chart.destroy();
+        }
+
+        super.onWidgetClose();
+    }
 }

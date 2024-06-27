@@ -185,4 +185,9 @@ export default class InterfaceStatistics extends BaseWidget {
         return true;
     }
 
+    onWidgetClose() {
+        if (this.chart !== null) {
+            this.chart.destroy();
+        }
+    }
 }

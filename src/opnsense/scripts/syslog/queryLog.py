@@ -2,6 +2,7 @@
 
 """
     Copyright (c) 2019-2020 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2024 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -30,16 +31,9 @@
     query log files
 """
 
-import sys
 import os.path
-import re
-import sre_constants
 import ujson
-import datetime
-import glob
-from logformats import FormatContainer, BaseLogFormat
-sys.path.insert(0, "/usr/local/opnsense/site-python")
-from log_helper import reverse_log_reader
+from log_matcher import LogMatcher
 import argparse
 
 if __name__ == '__main__':
@@ -56,81 +50,19 @@ if __name__ == '__main__':
 
     result = {'filters': inputargs.filter, 'rows': [], 'total_rows': 0, 'origin': os.path.basename(inputargs.filename)}
     if inputargs.filename != "":
-        log_filenames = list()
-        if inputargs.module == 'core':
-            log_basename = "/var/log/%s" % os.path.basename(inputargs.filename)
-        else:
-            log_basename = "/var/log/%s/%s" % (
-                os.path.basename(inputargs.module), os.path.basename(inputargs.filename)
-            )
-        if os.path.isdir(log_basename):
-            # new syslog-ng local targets use an extra directory level
-            filenames = glob.glob("%s/%s_*.log" % (log_basename, log_basename.split('/')[-1].split('.')[0]))
-            for filename in sorted(filenames, reverse=True):
-                log_filenames.append(filename)
-        # legacy log output is always stashed last
-        log_filenames.append("%s.log" % log_basename)
-        if inputargs.module != 'core':
-            log_filenames.append("/var/log/%s_%s.log" % (inputargs.module, os.path.basename(inputargs.filename)))
-
         limit = int(inputargs.limit) if inputargs.limit.isdigit()  else 0
         offset = int(inputargs.offset) if inputargs.offset.isdigit() else 0
         severity = inputargs.severity.split(',') if inputargs.severity.strip() != '' else []
-        try:
-            filter = inputargs.filter.replace('*', '.*').lower()
-            if filter.find('*') == -1:
-                # no wildcard operator, assume partial match
-                filter = ".*%s.*" % filter
-            filter_regexp = re.compile(filter)
-        except sre_constants.error:
-            # remove illegal expression
-            filter_regexp = re.compile('.*')
-
-        row_number = 0
-        for filename in log_filenames:
-            if os.path.exists(filename):
-                format_container = FormatContainer(filename)
-                for rec in reverse_log_reader(filename):
-                    row_number += 1
-                    if rec['line'] != "" and filter_regexp.match(('%s' % rec['line']).lower()):
-                        frmt = format_container.get_format(rec['line'])
-                        record = {
-                            'timestamp': None,
-                            'parser': None,
-                            'facility': 1,
-                            'severity': None,
-                            'process_name': '',
-                            'pid': None,
-                            'rnum': row_number
-                        }
-                        if frmt:
-                            if issubclass(frmt.__class__, BaseLogFormat):
-                                # backwards compatibility, old style log handler
-                                record['timestamp'] = frmt.timestamp(rec['line'])
-                                record['process_name'] = frmt.process_name(rec['line'])
-                                record['line'] = frmt.line(rec['line'])
-                                record['parser'] = frmt.name
-                            else:
-                                record['timestamp'] = frmt.timestamp
-                                record['process_name'] = frmt.process_name
-                                record['pid'] = frmt.pid
-                                record['facility'] = frmt.facility
-                                record['severity'] = frmt.severity_str
-                                record['line'] = frmt.line
-                                record['parser'] = frmt.name
-                        else:
-                            record['line'] = rec['line']
-                        if len(severity) == 0 or record['severity'] is None or record['severity'] in severity:
-                            result['total_rows'] += 1
-                            if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
-                                if inputargs.output == 'json':
-                                    result['rows'].append(record)
-                                else:
-                                    print("%(timestamp)s\t%(severity)s\t%(process_name)s\t%(line)s" % record)
-                            elif limit > 0 and result['total_rows'] > offset + limit:
-                                # do not fetch data until end of file...
-                                break
+        log_matcher = LogMatcher(inputargs.filter, inputargs.filename, inputargs.module, inputargs.severity)
+        for record in log_matcher.match_records():
+            result['total_rows'] += 1
+            if (len(result['rows']) < limit or limit == 0) and (result['total_rows'] >= offset):
+                if inputargs.output == 'json':
+                    result['rows'].append(record)
+                else:
+                    print("%(timestamp)s\t%(severity)s\t%(process_name)s\t%(line)s" % record)
             if limit > 0 and result['total_rows'] > offset + limit:
+                # do not fetch data until end of file...
                 break
 
     # output results (when json)
