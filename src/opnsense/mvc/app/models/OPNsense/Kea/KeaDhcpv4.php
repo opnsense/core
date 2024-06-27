@@ -176,6 +176,15 @@ class KeaDhcpv4 extends BaseModel
                         $res[str_replace('_', '-', $key)] = (string)$reservation->$key;
                     }
                 }
+                foreach ($reservation->option_data->iterateItems() as $key => $value) {
+                    $target_fieldname = str_replace('_', '-', $key);
+                    if ((string)$value != '') {
+                        $res['option-data'][] = [
+                            'name' => $target_fieldname,
+                            'data' => (string)$value
+                        ];
+                    }
+                }
                 $record['reservations'][] = $res;
             }
             $result[] = $record;
