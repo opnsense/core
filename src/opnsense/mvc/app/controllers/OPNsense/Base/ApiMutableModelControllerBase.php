@@ -629,7 +629,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $record = [];
                 foreach ($line as $idx => $content) {
                     if (isset($heading[$idx])) {
-                        $record[$heading[$idx]] = $content;
+                        $tmp = explode('.', $heading[$idx]);
+                        if (count($tmp) > 1) {
+                            $record[$tmp[0]][$tmp[1]] = $content;
+                        } else {
+                            $record[$heading[$idx]] = $content;
+                        }
                     }
                 }
                 $data[] = $record;
