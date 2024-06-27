@@ -289,7 +289,15 @@ class ArrayField extends BaseField
             $record = [];
             foreach ($anode->iterateItems() as $tag => $node) {
                 if (!in_array($tag, $exclude)) {
-                    $record[$tag] = (string)$node;
+                    // if (is_array($node)) {
+                    // if (is_iterable($node)) {
+                    if (in_array($tag, ['option-data'])) {
+                        foreach ($node->iterateItems() as $btag => $bnode) {
+                            $record[$tag.".".$btag] = (string)$bnode;
+                        }
+                    } else {
+                        $record[$tag] = (string)$node;
+                    }
                 }
             }
             $records[] = $record;
