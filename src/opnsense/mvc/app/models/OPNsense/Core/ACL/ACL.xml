@@ -12,6 +12,9 @@
         <name>Lobby: Login / Logout / Dashboard</name>
         <patterns>
             <pattern>index.php*</pattern>
+            <pattern>ui/core/dashboard</pattern>
+            <pattern>api/core/dashboard/*</pattern>
+            <pattern>api/core/system/systemInformation</pattern>
         </patterns>
     </page-system-login-logout>
     <page-getserviceproviders>
@@ -78,7 +81,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/systemInformation</pattern>
         </patterns>
     </page-dashboard-widget-system-information>
@@ -87,7 +89,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/cpu_usage/getcputype</pattern>
             <pattern>api/diagnostics/cpu_usage/*</pattern>
         </patterns>
@@ -97,7 +98,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/interface/get_vip_status</pattern>
         </patterns>
     </page-dashboard-widget-carp>
@@ -106,7 +106,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/systemDisk</pattern>
         </patterns>
     </page-dashboard-widget-disk>
@@ -115,7 +114,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/firewall/streamLog</pattern>
             <pattern>api/diagnostics/interface/getInterfaceNames</pattern>
         </patterns>
@@ -125,7 +123,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/firewall/pf_states</pattern>
         </patterns>
     </page-dashboard-widget-firewallstates>
@@ -134,7 +131,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/routes/gateway/status</pattern>
         </patterns>
     </page-dashboard-widget-gateways>
@@ -143,7 +139,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/interfaces/overview/interfacesInfo</pattern>
         </patterns>
     </page-dashboard-widget-interfaces>
@@ -152,7 +147,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/traffic/interface</pattern>
         </patterns>
     </page-dashboard-widget-interface-statistics>
@@ -161,7 +155,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/system_mbuf</pattern>
         </patterns>
     </page-dashboard-widget-mbuf>
@@ -170,7 +163,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/systemResources</pattern>
         </patterns>
     </page-dashboard-widget-memory>
@@ -179,7 +171,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/system_swap</pattern>
         </patterns>
     </page-dashboard-widget-swap>
@@ -188,7 +179,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/core/system/systemTemperature</pattern>
         </patterns>
     </page-dashboard-widget-thermal-sensors>
@@ -197,7 +187,6 @@
         <patterns>
             <pattern>ui/core/dashboard</pattern>
             <pattern>api/core/dashboard/*</pattern>
-            <pattern>ui/js/widgets/*</pattern>
             <pattern>api/diagnostics/traffic/*</pattern>
         </patterns>
     </page-dashboard-widget-traffic>
