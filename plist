@@ -1276,7 +1276,6 @@
 /usr/local/opnsense/service/templates/OPNsense/IDS/suricata.yaml
 /usr/local/opnsense/service/templates/OPNsense/IPFW/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.conf
-/usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw_rule_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rules.macro
