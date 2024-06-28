@@ -1,0 +1,249 @@
+<metadata>
+    <systeminformation>
+        <filename>SystemInformation.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/systemInformation</endpoint>
+        </endpoints>
+        <translations>
+            <title>System Information</title>
+            <name>name</name>
+            <versions>Versions</versions>
+            <updates>Updates</updates>
+            <datetime>Current date/time</datetime>
+            <uptime>Uptime</uptime>
+            <config>Last configuration change</config>
+        </translations>
+    </systeminformation>
+    <interfaces>
+        <filename>Interfaces.js</filename>
+        <endpoints>
+            <endpoint>/api/interfaces/overview/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Interfaces</title>
+        </translations>
+    </interfaces>
+    <cpu>
+        <filename>Cpu.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/cpu_usage/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>CPU</title>
+            <total>Total</total>
+            <user>User</user>
+            <system>System</system>
+            <interrupt>Interrupt</interrupt>
+        </translations>
+    </cpu>
+    <interfacestatistics>
+        <filename>InterfaceStatistics.js</filename>
+        <endpoints>
+            <endpoint>/api/interfaces/statistics/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Interface Statistics</title>
+            <bytesin>Bytes In</bytesin>
+            <bytesout>Bytes Out</bytesout>
+            <packetsin>Packets In</packetsin>
+            <packetsout>Packets Out</packetsout>
+            <errorsin>Errors In</errorsin>
+            <errorsout>Errors Out</errorsout>
+            <collisions>Collisions</collisions>
+        </translations>
+    </interfacestatistics>
+    <traffic>
+        <filename>Traffic.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/traffic/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Traffic Graph</title>
+            <trafficin>Traffic In</trafficin>
+            <trafficout>Traffic Out</trafficout>
+        </translations>
+    </traffic>
+    <memory>
+        <filename>Memory.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/systemResources</endpoint>
+        </endpoints>
+        <translations>
+            <title>Memory usage</title>
+            <used>Used</used>
+            <free>Free</free>
+            <arc>ARC</arc>
+        </translations>
+    </memory>
+    <disk>
+        <filename>Disk.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/systemDisk</endpoint>
+        </endpoints>
+        <translations>
+            <title>Disk usage</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </disk>
+    <firewall>
+        <filename>Firewall.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/firewall/streamLog</endpoint>
+            <endpoint>/api/diagnostics/interface/getInterfaceNames</endpoint>
+        </endpoints>
+        <translations>
+            <title>Firewall</title>
+            <action>Action</action>
+            <time>Time</time>
+            <interface>Interface</interface>
+            <source>Source</source>
+            <destination>Destination</destination>
+            <port>Port</port>
+            <matchedrule>Matched rule</matchedrule>
+            <click>Click to track this rule in Live View</click>
+            <label>Label</label>
+            <count>Count</count>
+            <livelog>Live Log</livelog>
+            <events>Events</events>
+            <nodata>Waiting for data</nodata>
+        </translations>
+    </firewall>
+    <firewallstates>
+        <filename>FirewallStates.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/firewall/pf_states</endpoint>
+        </endpoints>
+        <translations>
+            <title>Firewall States</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </firewallstates>
+    <mbuf>
+        <filename>Mbuf.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/system_mbuf</endpoint>
+        </endpoints>
+        <translations>
+            <title>Mbuf Usage</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </mbuf>
+    <swap>
+        <filename>Swap.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/system_swap</endpoint>
+        </endpoints>
+        <translations>
+            <title>Swap Usage</title>
+            <used>Used</used>
+            <free>Free</free>
+        </translations>
+    </swap>
+    <carp>
+        <filename>CARP Status</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/interface/get_vip_status</endpoint>
+        </endpoints>
+        <translations>
+            <title>CARP Status</title>
+            <unconfigured>No CARP Interfaces configured. Click to configure CARP.</unconfigured>
+            <carp>CARP IP</carp>
+            <alias>IP Alias</alias>
+        </translations>
+    </carp>
+    <gateways>
+        <filename>Gateways.js</filename>
+        <endpoints>
+            <endpoint>/api/routes/gateway/status</endpoint>
+        </endpoints>
+        <translations>
+            <title>Gateways</title>
+            <unconfigured>No Gateways configured. Click to configure gateways.</unconfigured>
+            <rtt>RTT</rtt>
+            <rttd>RTTd</rttd>
+            <loss>Loss</loss>
+        </translations>
+    </gateways>
+    <thermalsensors>
+        <filename>ThermalSensors.js</filename>
+        <endpoints>
+            <endpoint>/api/core/system/systemTemperature</endpoint>
+        </endpoints>
+        <translations>
+            <title>Thermal Sensors</title>
+            <help>CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.</help>
+            <unconfigured>Thermal sensors not available or not configured.</unconfigured>
+        </translations>
+    </thermalsensors>
+    <monit>
+        <filename>Monit.js</filename>
+        <endpoints>
+            <endpoint>/api/monit/status/get/xml</endpoint>
+        </endpoints>
+        <translations>
+            <title>Monit Status</title>
+            <filesystem>Filesystem</filesystem>
+            <directory>Directory</directory>
+            <file>File</file>
+            <process>Process</process>
+            <host>Host</host>
+            <system>System</system>
+            <fifo>FIFO</fifo>
+            <custom>Custom</custom>
+            <network>Network</network>
+            <ok>OK</ok>
+            <failed>Failed</failed>
+            <changed>Changed</changed>
+            <unchanged>Not changed</unchanged>
+            <type>Type</type>
+            <unconfigured>Monit is disabled or not configured.</unconfigured>
+        </translations>
+    </monit>
+    <livelog>
+        <filename>LiveLog.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/log/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Live Log</title>
+            <time>Time</time>
+            <severity>Severity</severity>
+            <process>Process</process>
+            <message>Message</message>
+        </translations>
+    </livelog>
+    <ipsecleases>
+        <filename>IpsecLeases.js</filename>
+        <endpoints>
+            <endpoint>/api/ipsec/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>IPsec Leases</title>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <users>Users</users>
+            <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
+            <noleases>There are currently no leases.</noleases>
+            <nodata>Failed to load data.</nodata>
+        </translations>
+    </ipsecleases>
+    <ipsectunnels>
+        <filename>IpsecTunnels.js</filename>
+        <endpoints>
+            <endpoint>/api/ipsec/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>IPsec Tunnels</title>
+            <online>Online</online>
+            <offline>Offline</offline>
+            <total>Tunnels</total>
+            <unconfigured>IPsec is currently disabled. Click to configure IPsec.</unconfigured>
+            <notunnels>There are currently no tunnels.</notunnels>
+            <nodata>Failed to load data.</nodata>
+            <notavailable>N/A</notavailable>
+        </translations>
+    </ipsectunnels>
+</metadata>

@@ -31,193 +31,77 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
+use SimpleXMLElement;
 
 class DashboardController extends ApiControllerBase
 {
-    private function getTranslations()
+    private $metadataCacheFileName = null;
+    private $metadataFileLocation = "/usr/local/opnsense/www/js/widgets/Metadata";
+    private $metadataCacheTTL = 3600;
+    private $acl = null;
+
+    public function __construct()
     {
-        return [
-            'cpu' => [
-                'title' => gettext('CPU'),
-                'total' => gettext('Total'),
-                'interrupt' => gettext('Interrupt'),
-                'user' => gettext('User'),
-                'system' => gettext('System'),
-            ],
-            'interfaces' => [
-                'title' => gettext('Interfaces'),
-            ],
-            'systeminformation' => [
-                'title' => gettext('System Information'),
-                'name' => gettext('Name'),
-                'versions' => gettext('Versions'),
-                'updates' => gettext('Updates'),
-                'datetime' => gettext('Current date/time'),
-                'uptime' => gettext('Uptime'),
-                'config' => gettext('Last configuration change')
-            ],
-            'interfacestatistics' => [
-                'title' => gettext('Interface Statistics'),
-                'bytesin' => gettext('Bytes In'),
-                'bytesout' => gettext('Bytes Out'),
-                'packetsin' => gettext('Packets In'),
-                'packetsout' => gettext('Packets Out'),
-                'errorsin' => gettext('Errors In'),
-                'errorsout' => gettext('Errors Out'),
-                'collisions' => gettext('Collisions'),
-            ],
-            'traffic' => [
-                'title' => gettext('Traffic Graph'),
-                'trafficin' => gettext('Traffic In'),
-                'trafficout' => gettext('Traffic Out'),
-            ],
-            'memory' => [
-                'title' => gettext('Memory usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-                'arc' => gettext('ARC'),
-            ],
-            'disk' => [
-                'title' => gettext('Disk usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'wireguard' => [
-                'title' => gettext('Wireguard'),
-                'instance' => gettext('Instance'),
-                'peer' => gettext('Peer'),
-                'pubkey' => gettext('Public Key'),
-                'handshake' => gettext('Latest handshake'),
-            ],
-            'firewall' => [
-                'title' => gettext('Firewall'),
-                'action' => gettext('Action'),
-                'time' => gettext('Time'),
-                'interface' => gettext('Interface'),
-                'source' => gettext('Source'),
-                'destination' => gettext('Destination'),
-                'port' => gettext('Port'),
-                'matchedrule' => gettext('Matched rule'),
-                'click' => gettext('Click to track this rule in Live View'),
-                'label' => gettext('Label'),
-                'count' => gettext('Count'),
-                'livelog' => gettext('Live Log'),
-                'events' => gettext('Events'),
-                'nodata' => gettext('Waiting for data')
-            ],
-            'firewallstates' => [
-                'title' => gettext('Firewall States'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'mbuf' => [
-                'title' => gettext('MBUF Usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'swap' => [
-                'title' => gettext('SWAP Usage'),
-                'used' => gettext('Used'),
-                'free' => gettext('Free'),
-            ],
-            'carp' => [
-                'title' => gettext('CARP Status'),
-                'unconfigured' => gettext('No CARP Interfaces configured. Click to configure CARP.'),
-                'carp' => gettext('CARP IP'),
-                'alias' => gettext('IP Alias'),
-            ],
-            'gateways' => [
-                'title' => gettext('Gateways'),
-                'unconfigured' => gettext('No Gateways configured. Click to configure gateways.'),
-                'rtt' => gettext('RTT'),
-                'rttd' => gettext('RTTd'),
-                'loss' => gettext('Loss'),
-            ],
-            'thermalsensors' => [
-                'title' => gettext('Thermal Sensors'),
-                'help' => gettext('CPU thermal sensors often measure the same temperature for each core. If this is the case, only the first core is shown.'),
-                'unconfigured' => gettext('Thermal sensors not available or not configured.')
-            ],
-            'monit' => [
-                'title' => gettext('Monit Status'),
-                'filesystem' => gettext('Filesystem'),
-                'directory' => gettext('Directory'),
-                'file' => gettext('File'),
-                'process' => gettext('Process'),
-                'host' => gettext('Host'),
-                'system' => gettext('System'),
-                'fifo' => gettext('FIFO'),
-                'custom' => gettext('Custom'),
-                'network' => gettext('Network'),
-                'ok' => gettext('OK'),
-                'failed' => gettext('Failed'),
-                'changed' => gettext('Changed'),
-                'unchanged' => gettext('Not changed'),
-                'type' => gettext('Type'),
-                'unconfigured' => gettext('Monit is disabled or not configured.'),
-            ],
-            'livelog' => [
-                'title' => gettext('Live Log'),
-                'time' => gettext('Time'),
-                'severity' => gettext('Severity'),
-                'process' => gettext('Process'),
-                'message' => gettext('Message'),
-            ],
-            'ipsecleases' => [
-                'title' => gettext('IPsec Leases'),
-                'online' => gettext('Online'),
-                'offline' => gettext('Offline'),
-                'users' => gettext('Users'),
-                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
-                'noleases' => gettext('There are currently no leases.'),
-                'nodata' => gettext('Failed to load data.'),
-            ],
-            'ipsectunnels' => [
-                'title' => gettext('IPsec Tunnels'),
-                'online' => gettext('Online'),
-                'offline' => gettext('Offline'),
-                'total' => gettext('Tunnels'),
-                'unconfigured' => gettext('IPsec is currently disabled. Click to configure IPsec.'),
-                'notunnels' => gettext('There are currently no tunnels.'),
-                'nodata' => gettext('Failed to load data.'),
-                'notavailable' => gettext('n/a'),
-            ]
-        ];
+        $this->metadataCacheFileName = sys_get_temp_dir() . "/opnsense_dashboard_metadata_cache.xml";
+        $this->acl = new ACL();
     }
 
-    private function canAccessEndpoints($fname)
+    private function canAccessEndpoints($endpoints)
     {
-        if (!file_exists($fname)) {
-            return false;
-        }
-
-        $handle = fopen($fname, "r");
-
-        if ($handle) {
-            $lines = [];
-            while (($line = fgets($handle)) !== false) {
-                if (strpos($line, "// endpoint:") === 0) {
-                    $endpoint = explode(':', trim($line))[1] ?? null;
-                    if (!empty($endpoint)) {
-                        $endpoint = strstr($endpoint, ' ', true) ?: $endpoint;
-                        $lines[] = $endpoint;
-                    }
-                    continue;
-                }
-                break;
-            }
-
-            fclose($handle);
-
-            $acl = new ACL();
-            foreach ($lines as $line) {
-                if (!$acl->isPageAccessible($this->getUserName(), $line)) {
-                    return false;
-                }
+        foreach ($endpoints as $endpoint) {
+            if (!$this->acl->isPageAccessible($this->getUserName(), $endpoint)) {
+                return false;
             }
         }
 
         return true;
+    }
+
+    private function getMetadata()
+    {
+        $cacheExpired = true;
+        if (file_exists($this->metadataCacheFileName)) {
+            $fstat = stat($this->metadataCacheFileName);
+            $cacheExpired = $this->metadataCacheTTL < (time() - $fstat['mtime']);
+        }
+
+        if ($cacheExpired) {
+            $combinedXml = new \DOMDocument('1.0');
+            $root = $combinedXml->createElement('metadata');
+            $combinedXml->appendChild($root);
+            foreach (glob($this->metadataFileLocation . '/*.xml') as $file) {
+                $metadataXml = simplexml_load_file($file);
+                if ($metadataXml === false) {
+                    // not a valid xml file
+                    continue;
+                }
+
+                if ($metadataXml->getName() !== "metadata") {
+                    // wrong type
+                    continue;
+                }
+
+                $node = dom_import_simplexml($metadataXml);
+                $node = $root->ownerDocument->importNode($node, true);
+                $root->appendChild($node);
+            }
+
+            $fp = fopen($this->metadataCacheFileName, file_exists($this->metadataCacheFileName) ? 'r+' : 'w+');
+            if (flock($fp, LOCK_EX | LOCK_NB)) {
+                ftruncate($fp, 0);
+                fwrite($fp, $combinedXml->saveXML());
+                fflush($fp);
+                flock($fp, LOCK_UN);
+                fclose($fp);
+                chmod($this->metadataCacheFileName, 0660);
+            }
+
+            $combinedXml = simplexml_import_dom($combinedXml);
+        } else {
+            $combinedXml = @simplexml_load_file($this->metadataCacheFileName);
+        }
+
+        return $combinedXml;
     }
 
     public function getDashboardAction()
@@ -233,30 +117,35 @@ class DashboardController extends ApiControllerBase
             }
         }
 
-        $widgetModules = array_filter(
-            glob('/usr/local/opnsense/www/js/widgets/*.js'),
-            function ($element) {
-                $base = basename($element);
-                if (str_contains($base, '.js') && !str_contains($base, 'Base')) {
-                    return $this->canAccessEndpoints($element);
+        $result['modules'] = [];
+        $metadata = $this->getMetadata();
+        foreach ($metadata as $md) {
+            foreach($md as $widgetId => $metadataAttributes) {
+                $widgetId = (string)$widgetId;
+                $fname = (string)$metadataAttributes->filename;
+                $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
+                $translations = (array)($metadataAttributes->translations ?? []);
+
+                error_log(print_r($translations, true));
+
+                if(!$this->canAccessEndpoints($endpoints)) {
+                    continue;
                 }
 
-                return false;
+                if (!file_exists('/usr/local/opnsense/www/js/widgets/' . $fname)) {
+                    continue;
+                }
+
+                foreach($translations as $key => $value) {
+                    $translations[$key] = gettext($value);
+                }
+
+                $result['modules'][] = [
+                    'id' => $widgetId,
+                    'module' => $fname,
+                    'translations' => $translations
+                ];
             }
-        );
-
-        $widgetModules = array_map(function ($element) {
-            return basename($element);
-        }, $widgetModules);
-
-        $result['modules'] = [];
-        foreach ($widgetModules as $module) {
-            $id = strtolower(basename($module, '.js'));
-            $result['modules'][] = [
-                'id' => $id,
-                'module' => basename($module),
-                'translations' => $this->getTranslations()[$id] ?? []
-            ];
         }
 
         $result['dashboard'] = !empty($dashboard) ? base64_decode($dashboard) : null;
@@ -266,7 +155,6 @@ class DashboardController extends ApiControllerBase
 
     public function saveWidgetsAction()
     {
-
         $result = ['result' => 'failed'];
 
         if ($this->request->isPost() && !empty($this->request->getRawBody())) {
