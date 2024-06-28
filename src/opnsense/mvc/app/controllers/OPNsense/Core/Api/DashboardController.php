@@ -126,8 +126,6 @@ class DashboardController extends ApiControllerBase
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
-                error_log(print_r($translations, true));
-
                 if(!$this->canAccessEndpoints($endpoints)) {
                     continue;
                 }
