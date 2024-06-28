@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/cpu_usage/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.

@@ -1,5 +1,3 @@
-// endpoint:/api/interfaces/overview/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.

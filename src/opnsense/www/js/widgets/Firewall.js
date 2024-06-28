@@ -1,6 +1,3 @@
-// endpoint:/api/diagnostics/firewall/streamLog
-// endpoint:/api/diagnostics/interface/getInterfaceNames
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.

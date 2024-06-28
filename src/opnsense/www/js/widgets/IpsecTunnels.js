@@ -1,5 +1,3 @@
-// endpoint:/api/ipsec/*
-
 /*
  * Copyright (C) 2024 Cedrik Pischem
  * All rights reserved.

@@ -1,5 +1,3 @@
-// endpoint:/api/diagnostics/firewall/pf_states
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
