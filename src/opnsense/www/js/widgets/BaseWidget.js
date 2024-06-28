@@ -36,8 +36,18 @@ export default class BaseWidget {
         this.eventSourceOnData = null;
     }
 
+    /* Public functions */
+
     getResizeHandles() {
         return this.resizeHandles;
+    }
+
+    getWidgetConfig() {
+        if (this.config !== undefined && 'widget' in this.config) {
+            return this.config['widget'];
+        }
+
+        return false;
     }
 
     setId(id) {
@@ -47,6 +57,8 @@ export default class BaseWidget {
     setTranslations(translations) {
         this.translations = translations;
     }
+
+    /* Public virtual functions */
 
     getGridOptions() {
         // per-widget gridstack options override
@@ -73,6 +85,22 @@ export default class BaseWidget {
         this.closeEventSource();
     }
 
+    onVisibilityChanged(visible) {
+        if (this.eventSourceUrl !== null) {
+            if (visible) {
+                this.openEventSource(this.eventSourceUrl, this.eventSourceOnData);
+            } else if (this.eventSource !== null) {
+                this.closeEventSource();
+            }
+        }
+    }
+
+    /* Utility/protected functions */
+
+    setWidgetConfig(config) {
+        this.config['widget'] = config;
+    }
+
     openEventSource(url, onMessage) {
         this.closeEventSource();
 
@@ -81,7 +109,12 @@ export default class BaseWidget {
         this.eventSource = new EventSource(url);
         this.eventSource.onmessage = onMessage;
         this.eventSource.onerror = (e) => {
-            if (this.eventSource.readyState == EventSource.closed) {
+            if (this.eventSource.readyState == EventSource.CONNECTING) {
+                /* Backend closed connection due to timeout, reconnect issued by browser */
+                return;
+            }
+
+            if (this.eventSource.readyState == EventSource.CLOSED) {
                 this.closeEventSource();
             } else {
                 console.error('Unknown error occurred during streaming operation', e);
@@ -93,16 +126,6 @@ export default class BaseWidget {
         if (this.eventSource !== null) {
             this.eventSource.close();
             this.eventSource = null;
-        }
-    }
-
-    onVisibilityChanged(visible) {
-        if (this.eventSourceUrl !== null) {
-            if (visible) {
-                this.openEventSource(this.eventSourceUrl, this.eventSourceOnData);
-            } else if (this.eventSource !== null) {
-                this.closeEventSource();
-            }
         }
     }
 

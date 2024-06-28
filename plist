@@ -1171,9 +1171,11 @@
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
+/usr/local/opnsense/scripts/syslog/log_matcher.py
 /usr/local/opnsense/scripts/syslog/logformats/__init__.py
 /usr/local/opnsense/scripts/syslog/logformats/syslog.py
 /usr/local/opnsense/scripts/syslog/queryLog.py
+/usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
@@ -1971,6 +1973,9 @@
 /usr/local/opnsense/www/js/widgets/Gateways.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
+/usr/local/opnsense/www/js/widgets/IpsecLeases.js
+/usr/local/opnsense/www/js/widgets/IpsecTunnels.js
+/usr/local/opnsense/www/js/widgets/LiveLog.js
 /usr/local/opnsense/www/js/widgets/Mbuf.js
 /usr/local/opnsense/www/js/widgets/Memory.js
 /usr/local/opnsense/www/js/widgets/Monit.js

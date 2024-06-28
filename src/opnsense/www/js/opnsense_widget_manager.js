@@ -290,14 +290,11 @@ class WidgetManager  {
 
             let items = this.grid.save(false);
             items.forEach((item) => {
-                // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
-                // as the calculation will return impossible values for the x, y, w and h attributes.
-                // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
-                let elem = $(this.widgetHTMLElements[item.id]);
-                item.x = parseInt(elem.attr('gs-x')) ?? 1;
-                item.y = parseInt(elem.attr('gs-y')) ?? 1;
-                item.w = parseInt(elem.attr('gs-w')) ?? 1;
-                item.h = parseInt(elem.attr('gs-h')) ?? 1;
+                // Store widget-specific configuration
+                let widgetConfig = this.widgetClasses[item.id].getWidgetConfig();
+                if (widgetConfig) {
+                    item['widget'] = widgetConfig;
+                }
             });
 
             $.ajax({
@@ -334,7 +331,7 @@ class WidgetManager  {
         $('#add_widget').click(() => {
 
             let $content = $('<div></div>');
-            let $select = $('<select id="widget-selection" class="selectpicker" multiple="multiple"></select>');
+            let $select = $('<select id="widget-selection" data-container="body" class="selectpicker" multiple="multiple"></select>');
             for (const [id, widget] of Object.entries(this.loadedModules)) {
                 if (this.moduleDiff.includes(id)) {
                     $select.append($(`<option value="${id}">${this.widgetTranslations[id].title}</option>`));

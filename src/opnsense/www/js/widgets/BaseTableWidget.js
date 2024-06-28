@@ -27,8 +27,8 @@
 import BaseWidget from "./BaseWidget.js";
 
 export default class BaseTableWidget extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.tables = {};
         this.curSize = null;
