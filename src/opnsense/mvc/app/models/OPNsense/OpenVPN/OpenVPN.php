@@ -515,7 +515,7 @@ class OpenVPN extends BaseModel
                             $options['ifconfig'] = "{$ip1} {$ip2}";
                             $options['ifconfig-pool'] = "{$ip2} {$ip3}";
                         } else {
-				if (!empty((string)$node->ifconfig_pool_start) && !empty((string)$node->ifconfig_pool_end)) {
+                            if (!empty((string)$node->ifconfig_pool_start) && !empty((string)$node->ifconfig_pool_end)) {
                                 $options['server'] = $parts[0] . " " . $mask . " nopool";
                                 $options['ifconfig-pool'] = "{$node->ifconfig_pool_start} {$node->ifconfig_pool_end}";
                             } else {
