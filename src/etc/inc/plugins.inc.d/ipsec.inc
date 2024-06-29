@@ -270,6 +270,10 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 
                     // find gateway
                     $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');
+                    if ((strpos($rgip, ':') === false ? 'inet' : 'inet6') != $ph1ent['protocol']) {
+                        // XXX: prevent route-to when gateway and remote address family mismatch
+                        $enable_routeto = false;
+                    }
                     // register rules
                     $fw->registerFilterRule(
                         500000,
