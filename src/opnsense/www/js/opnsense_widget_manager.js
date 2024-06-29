@@ -131,7 +131,7 @@ class WidgetManager  {
             }
 
             const promises = data.modules.map(async (item) => {
-                const mod = await import('/ui/js/widgets/' + item.module);
+                const mod = await import('/ui/js/widgets/' + item.module + '?t='+Date.now());
                 this.loadedModules[item.id] = mod.default;
                 this.widgetTranslations[item.id] = item.translations;
             });
