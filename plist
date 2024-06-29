@@ -1961,6 +1961,7 @@
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
+/usr/local/opnsense/www/js/widgets/Announcements.js
 /usr/local/opnsense/www/js/widgets/BaseGaugeWidget.js
 /usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
