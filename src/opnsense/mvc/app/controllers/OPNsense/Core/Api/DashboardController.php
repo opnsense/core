@@ -196,4 +196,27 @@ class DashboardController extends ApiControllerBase
 
         return $result;
     }
+
+    public function productInfoFeedAction()
+    {
+        $result = ['items' => []];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=5;type=rss2');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $payload = simplexml_load_string($output);
+        foreach ($payload->channel->children() as $key => $node) {
+            if ($key == 'item') {
+                $result['items'][] = [
+                    'title' => (string)$node->title,
+                    'description' => (string)$node->description,
+                    'link' => (string)$node->link,
+                    'pubDate' => (string)$node->pubDate,
+                    'guid' => (string)$node->guid
+                ];
+            }
+        }
+        return $result;
+    }
 }

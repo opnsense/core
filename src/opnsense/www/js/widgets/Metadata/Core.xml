@@ -1,4 +1,14 @@
 <metadata>
+    <announcements>
+        <filename>Announcements.js</filename>
+        <endpoints>
+            <endpoint>/api/core/dashboard/product_info_feed</endpoint>
+        </endpoints>
+        <translations>
+            <title>Announcements</title>
+            <no_feed>Unable to contact information feed.</no_feed>
+        </translations>
+    </announcements>
     <systeminformation>
         <filename>SystemInformation.js</filename>
         <endpoints>
