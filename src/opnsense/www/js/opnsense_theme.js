@@ -42,7 +42,7 @@ $(document).ready(function () {
         countA = layer_a.length,
         footH = $('.page-foot').height(),
         headerH = $('.navbar').height(),
-        li_itemH = $('a.list-group-item').outerHeight(),
+        li_itemH = $('a.list-group-item').height(),
         navHeight = (countA * 70) + (headerH),
 				
     events = {
