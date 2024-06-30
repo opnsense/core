@@ -43,7 +43,7 @@ $(document).ready(function () {
         footH = $('.page-foot').height(),
         headerH = $('.navbar').height(),
         li_itemH = $('a.list-group-item').height(),
-        navHeight = (countA * 70) + (headerH),
+        navHeight = (countA * 70) + (headerH - li_itemH),
 				
     events = {
         mouseenter: function () {
