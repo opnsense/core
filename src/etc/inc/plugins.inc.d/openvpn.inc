@@ -534,7 +534,12 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
     $conf .= "writepid /var/run/openvpn_{$mode_id}.pid\n";
     $conf .= "script-security 3\n";
     $conf .= "daemon openvpn_{$mode_id}\n";
-    $conf .= "keepalive 10 60\n";
+    if (!empty($settings['keepalive_interval']) && !empty($settings['keepalive_timeout'])) {
+        $conf .= "keepalive " . $settings['keepalive_interval'] . " " . $settings['keepalive_timeout'] . "\n";
+    } else {
+        $conf .= "keepalive 10 60\n";
+    }
+
     $conf .= "ping-timer-rem\n";
     $conf .= "persist-tun\n";
     $conf .= "persist-key\n";
@@ -986,6 +991,16 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
     }
     if (!empty($settings['push_reset'])) {
         $conf .= "push-reset\n";
+    }
+
+    if (!empty($settings['push_register_dns'])) {
+        $conf .= "push \"register-dns\"\n";
+    }
+
+    if (!empty($settings['keepalive_interval']) && !empty($settings['keepalive_timeout'])) {
+        $conf .= "push \"keepalive " . $settings['keepalive_interval'] . " " . $settings['keepalive_timeout'] . "\"\n";
+    } else {
+        $conf .= "push \"keepalive 10 60\"\n";
     }
 
     if (!empty($settings['tunnel_network'])) {
