@@ -410,6 +410,8 @@ class Radius extends Base implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
+        global $remote_address;
+
         $this->lastAuthProperties = array();// reset auth properties
         $radius = radius_auth_open();
 
@@ -432,6 +434,8 @@ class Radius extends Base implements IAuthConnector
         } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_LOGIN)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
+            $error = radius_strerror($radius);
+        } elseif (!radius_put_string($radius, RADIUS_CALLING_STATION_ID, $remote_address)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
             $error = radius_strerror($radius);
