@@ -130,7 +130,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
         }
     } elseif (!empty((string)$server->gateway)) {
         /* Only bind the gateway ip to the tunnel */
-        $ipprefix = strpos($tunneladdress, ":") === false ? "-4" :  "-6";
+        $ipprefix = strpos($server->gateway, ":") === false ? "-4" :  "-6";
         mwexecf('/sbin/route -q -n add %s %s -iface %s', [$ipprefix, $server->gateway, $server->interface]);
     }
 
