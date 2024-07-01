@@ -56,7 +56,6 @@ export default class Announcements extends BaseTableWidget {
             let rows = [];
             data.items.forEach(({ title, description, link, pubDate, guid }) => {
                 description = $('<div/>').html(description).text();
-                console.log(description);
                 rows.push(`
                         <div>
                             <a href="${link}" target='_new'">${title}</a>
