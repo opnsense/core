@@ -367,7 +367,6 @@ $( document ).ready(function() {
                     $("#iform").submit()
                 }
               }]
-        
     });
     } else {
       // delete selected
@@ -387,7 +386,6 @@ $( document ).ready(function() {
                     $("#iform").submit()
                 }
               }]
-
       });
     }
   });
