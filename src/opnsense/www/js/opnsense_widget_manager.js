@@ -449,11 +449,13 @@ class WidgetManager  {
                     <div class="widget-error">
                         <i class="fa fa-exclamation-circle text-danger"></i>
                         <br/>
-                        Failed to load content
+                        ${this.gettext.failed}
                     </div>
                 `);
             });
         }
+
+        this._updateGrid();
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
@@ -492,7 +494,6 @@ class WidgetManager  {
             },
             (elem, width, height) => {
                 widget.onWidgetResize(this.widgetHTMLElements[widget.id], width, height);
-                this._updateGrid(elem.parentElement.parentElement);
             }
         );
 
@@ -501,7 +502,6 @@ class WidgetManager  {
         await onWidgetTick();
         const interval = setInterval(async () => {
             await onWidgetTick();
-            this._updateGrid(this.widgetHTMLElements[widget.id]);
         }, widget.tickTimeout);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
