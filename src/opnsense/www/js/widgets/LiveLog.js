@@ -1,5 +1,3 @@
-<?php
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -25,38 +23,52 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
 
-class OneToOneController extends \OPNsense\Base\IndexController
-{
-    public function indexAction()
-    {
-        $this->view->pick('OPNsense/Firewall/filter');
-        $this->view->ruleController = "one_to_one";
-        $this->view->gridFields = [
-            [
-                'id' => 'enabled', 'formatter' => 'rowtoggle' ,'width' => '6em', 'heading' => gettext('Enabled')
-            ],
-            [
-                'id' => 'sequence','width' => '9em', 'heading' => gettext('Sequence')
-            ],
-            [
-                'id' => 'interface','width' => '9em', 'heading' => gettext('Interface')
-            ],
-            [
-                'id' => 'external', 'heading' => gettext('External')
-            ],
-            [
-                'id' => 'source_net', 'heading' => gettext('Internal')
-            ],
-            [
-                'id' => 'destination_net', 'heading' => gettext('Destination')
-            ],
-            [
-                'id' => 'description', 'heading' => gettext('Description')
+import BaseTableWidget from "./BaseTableWidget.js";
+
+export default class LiveLog extends BaseTableWidget {
+    constructor(config) {
+        super(config);
+    }
+
+    getMarkup() {
+        let $container = $('<div></div>');
+        let $table = this.createTable('live-log-table', {
+            headerPosition: 'top',
+            rotation: 5,
+            headers: [
+                this.translations.time,
+                this.translations.severity,
+                this.translations.process,
+                this.translations.message
             ]
-        ];
+        });
 
-        $this->view->formDialogFilterRule = $this->getForm("dialogOneToOneRule");
+        $container.append($table);
+        return $container;
+    }
+
+    async onMarkupRendered() {
+        const params = new URLSearchParams({
+            offset: 10,
+            searchPhrase: '',
+            severity: ''
+        });
+
+        super.openEventSource(`/api/diagnostics/log/core/system/live?${params.toString()}`, (event) => {
+            if (!event) {
+                super.closeEventSource();
+            }
+
+            const data = JSON.parse(event.data);
+            super.updateTable('live-log-table', [
+                [
+                    data.timestamp,
+                    data.severity,
+                    data.process_name,
+                    data.line
+                ]
+            ]);
+        });
     }
 }

@@ -1,5 +1,3 @@
-// endpoint:/api/core/system/systemResources
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.

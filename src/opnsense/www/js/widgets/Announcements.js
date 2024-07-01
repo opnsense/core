@@ -24,27 +24,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BaseGaugeWidget from "./BaseGaugeWidget.js";
+import BaseTableWidget from "./BaseTableWidget.js";
 
-export default class FirewallStates extends BaseGaugeWidget {
+export default class Announcements extends BaseTableWidget {
     constructor() {
         super();
+        this.tickTimeout = 3600000;
     }
 
-    async onMarkupRendered() {
-        super.createGaugeChart({
-            labels: [this.translations.used, this.translations.free],
-            secondaryText: (data) => {
-                return `(${data[0]} / ${data[0] + data[1]})`;
-            }
+    getGridOptions() {
+        return {
+            // trigger overflow-y:scroll after 650px height
+            sizeToContent: 650
+        }
+    }
+
+    getMarkup() {
+        let $announcements_table = this.createTable('announcements-table', {
+            headerPosition: 'none',
         });
+
+        return $('<div></div>').append($announcements_table);
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/diagnostics/firewall/pf_states', {}, (data, status) => {
-            let current = parseInt(data.current);
-            let limit = parseInt(data.limit);
-            super.updateChart([current, (limit - current)]);
+        await ajaxGet('/api/core/dashboard/product_info_feed', {}, (data, status) => {
+            if (!data.items.length) {
+                $('#announcements-table').html(`${this.translations.no_feed}`);
+                return;
+            }
+            let rows = [];
+            data.items.forEach(({ title, description, link, pubDate, guid }) => {
+                description = $('<div/>').html(description).text();
+                rows.push(`
+                        <div>
+                            <a href="${link}" target='_new'">${title}</a>
+                        </div>
+                        <div>
+                            ${description}
+                        </div>
+                    `);
+            });
+            this.updateTable('announcements-table', rows.map(row => [row]));
         });
     }
 }

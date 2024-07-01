@@ -1,6 +1,3 @@
-// endpoint:/api/diagnostics/firewall/streamLog
-// endpoint:/api/diagnostics/interface/getInterfaceNames
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -31,8 +28,7 @@ import BaseTableWidget from "./BaseTableWidget.js";
 
 export default class Firewall extends BaseTableWidget {
     constructor(config) {
-        super();
-        this.config = config;
+        super(config);
         this.ifMap = {};
         this.counters = {};
         this.chart = null;

@@ -208,7 +208,7 @@ select.selectpicker {
   padding: 0 !important;
 }
 .bootstrap-select.bs-container .dropdown-menu {
-  z-index: 1060;
+  z-index: 9998;
 }
 .bootstrap-select .dropdown-toggle .filter-option {
   position: static;
@@ -377,7 +377,7 @@ select.selectpicker {
 }
 .bootstrap-select.show-menu-arrow.open > .dropdown-toggle,
 .bootstrap-select.show-menu-arrow.show > .dropdown-toggle {
-  z-index: 1061;
+  z-index: 9999;
 }
 .bootstrap-select.show-menu-arrow .dropdown-toggle .filter-option:before {
   content: '';

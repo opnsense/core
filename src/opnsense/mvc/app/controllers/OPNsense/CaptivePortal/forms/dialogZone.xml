@@ -93,20 +93,6 @@
         <advanced>true</advanced>
     </field>
     <field>
-        <id>zone.transparentHTTPProxy</id>
-        <label>Transparent proxy (HTTP)</label>
-        <type>checkbox</type>
-        <help><![CDATA[Forward HTTP traffic to transparent proxy]]></help>
-        <allownew>true</allownew>
-    </field>
-    <field>
-        <id>zone.transparentHTTPSProxy</id>
-        <label>Transparent proxy (HTTPS)</label>
-        <type>checkbox</type>
-        <help><![CDATA[Forward HTTPS traffic to transparent proxy]]></help>
-        <allownew>true</allownew>
-    </field>
-    <field>
         <id>zone.extendedPreAuthData</id>
         <type>checkbox</type>
         <label>Extended pre auth data</label>

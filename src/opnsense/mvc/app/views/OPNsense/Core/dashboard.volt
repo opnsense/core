@@ -67,6 +67,7 @@ $( document ).ready(function() {
         'addwidget': "{{ lang._('Add Widget') }}",
         'add': "{{ lang._('Add') }}",
         'cancel': "{{ lang._('Cancel') }}",
+        'failed': "{{ lang._('Failed to load widget') }}",
     });
     widgetManager.initialize();
 });

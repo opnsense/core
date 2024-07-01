@@ -1171,9 +1171,11 @@
 /usr/local/opnsense/scripts/syslog/list_applications.php
 /usr/local/opnsense/scripts/syslog/lockout_handler
 /usr/local/opnsense/scripts/syslog/log_archive
+/usr/local/opnsense/scripts/syslog/log_matcher.py
 /usr/local/opnsense/scripts/syslog/logformats/__init__.py
 /usr/local/opnsense/scripts/syslog/logformats/syslog.py
 /usr/local/opnsense/scripts/syslog/queryLog.py
+/usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
@@ -1274,7 +1276,6 @@
 /usr/local/opnsense/service/templates/OPNsense/IDS/suricata.yaml
 /usr/local/opnsense/service/templates/OPNsense/IPFW/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.conf
-/usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw_rule_tables.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rules.macro
@@ -1960,6 +1961,7 @@
 /usr/local/opnsense/www/js/tinycolor-1.4.1.min.js
 /usr/local/opnsense/www/js/tokenize2.js
 /usr/local/opnsense/www/js/tree.jquery.min.js
+/usr/local/opnsense/www/js/widgets/Announcements.js
 /usr/local/opnsense/www/js/widgets/BaseGaugeWidget.js
 /usr/local/opnsense/www/js/widgets/BaseTableWidget.js
 /usr/local/opnsense/www/js/widgets/BaseWidget.js
@@ -1971,8 +1973,12 @@
 /usr/local/opnsense/www/js/widgets/Gateways.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
+/usr/local/opnsense/www/js/widgets/IpsecLeases.js
+/usr/local/opnsense/www/js/widgets/IpsecTunnels.js
+/usr/local/opnsense/www/js/widgets/LiveLog.js
 /usr/local/opnsense/www/js/widgets/Mbuf.js
 /usr/local/opnsense/www/js/widgets/Memory.js
+/usr/local/opnsense/www/js/widgets/Metadata/Core.xml
 /usr/local/opnsense/www/js/widgets/Monit.js
 /usr/local/opnsense/www/js/widgets/Swap.js
 /usr/local/opnsense/www/js/widgets/SystemInformation.js

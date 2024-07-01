@@ -1,5 +1,3 @@
-// endpoint:/api/interfaces/overview/*
-
 /*
  * Copyright (C) 2024 Deciso B.V.
  * All rights reserved.
@@ -51,7 +49,7 @@ export default class Interfaces extends BaseTableWidget {
         return $container;
     }
 
-    async onMarkupRendered() {
+    async onWidgetTick() {
         await ajaxGet('/api/interfaces/overview/interfacesInfo', {}, (data, status) => {
             let rows = [];
             data.rows.map((intf_data) => {

@@ -797,7 +797,7 @@ class FirmwareController extends ApiMutableModelControllerBase
         $response = array();
 
         if ($this->request->isPost()) {
-            $package = (new SanitizeFilter())->sanitize($package, 'scrub');
+            $package = (new SanitizeFilter())->sanitize($package, 'pkgname');
             $text = trim($backend->configdRun(sprintf('firmware details %s', $package)));
             if (!empty($text)) {
                 $response['details'] = $text;

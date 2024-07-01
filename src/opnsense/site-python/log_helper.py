@@ -25,10 +25,6 @@
 """
 
 import os
-import mmap
-from io import StringIO
-import struct
-
 
 def reverse_log_reader(filename, block_size=81920, start_pos=None):
     """ read log file in reverse order
