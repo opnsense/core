@@ -182,15 +182,17 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
 
-        $config = Config::getInstance()->object();
-        $name = $this->getUserName();
+        if ($this->request->isPost()) {
+            $config = Config::getInstance()->object();
+            $name = $this->getUserName();
 
-        foreach ($config->system->user as $node) {
-            if ($name === (string)$node->name) {
-                $node->dashboard = null;
-                Config::getInstance()->save();
-                $result = ['result' => 'saved'];
-                break;
+            foreach ($config->system->user as $node) {
+                if ($name === (string)$node->name) {
+                    $node->dashboard = null;
+                    Config::getInstance()->save();
+                    $result = ['result' => 'saved'];
+                    break;
+                }
             }
         }
 

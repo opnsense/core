@@ -380,7 +380,7 @@ class WidgetManager  {
         });
 
         $('#restore-defaults').click(() => {
-            ajaxGet("/api/core/dashboard/restoreDefaults", null, (response, status) => {
+            $.ajax({type: "POST", url: "/api/core/dashboard/restoreDefaults"}).done((response) => {
                 if (response['result'] == 'failed') {
                     console.error('Failed to restore default widgets');
                 } else {
