@@ -366,11 +366,7 @@ $( document ).ready(function() {
                     $("#action").val("del");
                     $("#iform").submit()
                 }
-              }],
-              // remove aria-hidden
-              onshown: function(dialogRef){
-                  dialogRef.getModal().removeAttr('aria-hidden');
-              }
+              }]
         
     });
     } else {
@@ -390,11 +386,7 @@ $( document ).ready(function() {
                     $("#action").val("del_x");
                     $("#iform").submit()
                 }
-              }],
-              // remove aria-hidden
-              onshown: function(dialogRef){
-                  dialogRef.getModal().removeAttr('aria-hidden');
-              }
+              }]
 
       });
     }
@@ -418,11 +410,7 @@ $( document ).ready(function() {
                   $("#action").val("toggle_enable");
                   $("#iform").submit()
               }
-            }],
-            // remove aria-hidden
-            onshown: function(dialogRef){
-                dialogRef.getModal().removeAttr('aria-hidden');
-            }
+            }]
     });
   });
   $(".act_toggle_disable").click(function(event){
@@ -442,11 +430,7 @@ $( document ).ready(function() {
                   $("#action").val("toggle_disable");
                   $("#iform").submit()
               }
-            }],
-            // remove aria-hidden
-            onshown: function(dialogRef){
-                dialogRef.getModal().removeAttr('aria-hidden');
-            }
+            }]
     });
   });
 
