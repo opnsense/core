@@ -35,14 +35,11 @@ use SimpleXMLElement;
 
 class DashboardController extends ApiControllerBase
 {
-    private $metadataCacheFileName = null;
     private $metadataFileLocation = "/usr/local/opnsense/www/js/widgets/Metadata";
-    private $metadataCacheTTL = 3600;
     private $acl = null;
 
     public function __construct()
     {
-        $this->metadataCacheFileName = sys_get_temp_dir() . "/opnsense_dashboard_metadata_cache.xml";
         $this->acl = new ACL();
     }
 
@@ -59,49 +56,27 @@ class DashboardController extends ApiControllerBase
 
     private function getMetadata()
     {
-        $cacheExpired = true;
-        if (file_exists($this->metadataCacheFileName)) {
-            $fstat = stat($this->metadataCacheFileName);
-            $cacheExpired = $this->metadataCacheTTL < (time() - $fstat['mtime']);
-        }
-
-        if ($cacheExpired) {
-            $combinedXml = new \DOMDocument('1.0');
-            $root = $combinedXml->createElement('metadata');
-            $combinedXml->appendChild($root);
-            foreach (glob($this->metadataFileLocation . '/*.xml') as $file) {
-                $metadataXml = simplexml_load_file($file);
-                if ($metadataXml === false) {
-                    // not a valid xml file
-                    continue;
-                }
-
-                if ($metadataXml->getName() !== "metadata") {
-                    // wrong type
-                    continue;
-                }
-
-                $node = dom_import_simplexml($metadataXml);
-                $node = $root->ownerDocument->importNode($node, true);
-                $root->appendChild($node);
+        $combinedXml = new \DOMDocument('1.0');
+        $root = $combinedXml->createElement('metadata');
+        $combinedXml->appendChild($root);
+        foreach (glob($this->metadataFileLocation . '/*.xml') as $file) {
+            $metadataXml = simplexml_load_file($file);
+            if ($metadataXml === false) {
+                // not a valid xml file
+                continue;
             }
 
-            $fp = fopen($this->metadataCacheFileName, file_exists($this->metadataCacheFileName) ? 'r+' : 'w+');
-            if (flock($fp, LOCK_EX | LOCK_NB)) {
-                ftruncate($fp, 0);
-                fwrite($fp, $combinedXml->saveXML());
-                fflush($fp);
-                flock($fp, LOCK_UN);
-                fclose($fp);
-                chmod($this->metadataCacheFileName, 0660);
+            if ($metadataXml->getName() !== "metadata") {
+                // wrong type
+                continue;
             }
 
-            $combinedXml = simplexml_import_dom($combinedXml);
-        } else {
-            $combinedXml = @simplexml_load_file($this->metadataCacheFileName);
+            $node = dom_import_simplexml($metadataXml);
+            $node = $root->ownerDocument->importNode($node, true);
+            $root->appendChild($node);
         }
 
-        return $combinedXml;
+        return simplexml_import_dom($combinedXml);
     }
 
     public function getDashboardAction()
