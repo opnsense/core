@@ -41,6 +41,8 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/local/sbin
 REQUESTS_CA_BUNDLE=/etc/ssl/cert.pem
 export HOME PATH REQUESTS_CA_BUNDLE
 
+ZPOOL_CACHE_PATH="/etc/zfs/zpool.cache /boot/zfs/zpool.cache"
+
 echo "Mounting filesystems..."
 
 grow_partition()
@@ -155,7 +157,7 @@ if kldstat -qm zfs; then
 	mount -uw /
 
 	# imported cached zpools
-	for cachefile in /etc/zfs/zpool.cache /boot/zfs/zpool.cache; do
+	for cachefile in $ZPOOL_CACHE_PATH; do
 		if [ -r $cachefile ]; then
 			zpool import -c $cachefile -Na
 			break
