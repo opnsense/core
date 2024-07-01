@@ -41,7 +41,7 @@ export default class Mbuf extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/core/system/system_mbuf', {}, (data, status) => {
+        ajaxGet('/api/diagnostics/system/system_mbuf', {}, (data, status) => {
             let current = parseInt(data['mbuf-statistics']['cluster-total']);
             let limit = parseInt(data['mbuf-statistics']['cluster-max']);
             super.updateChart([current, (limit - current)]);

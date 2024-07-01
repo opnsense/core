@@ -152,7 +152,7 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     async onWidgetTick() {
-        ajaxGet('/api/core/system/systemDisk', {}, (data, status) => {
+        ajaxGet('/api/diagnostics/system/systemDisk', {}, (data, status) => {
             if (data.devices !== undefined) {
                 let set = this.detailed_chart.config.data;
                 let init = set.labels.length === 0;
