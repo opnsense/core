@@ -1,5 +1,5 @@
 <!-- Static Modal "Processing request", prevent user input while busy -->
-<div class="modal modal-static fade" id="processing-dialog" role="dialog" aria-hidden="true">
+<div class="modal modal-static fade" id="processing-dialog" role="dialog">
     <div class="modal-backdrop fade in"></div>
     <div class="modal-dialog">
         <div class="modal-content">
