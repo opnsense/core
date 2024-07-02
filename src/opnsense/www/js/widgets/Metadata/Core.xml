@@ -12,7 +12,7 @@
     <systeminformation>
         <filename>SystemInformation.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/systemInformation</endpoint>
+            <endpoint>/api/diagnostics/system/systemInformation</endpoint>
         </endpoints>
         <translations>
             <title>System Information</title>
@@ -27,7 +27,7 @@
     <interfaces>
         <filename>Interfaces.js</filename>
         <endpoints>
-            <endpoint>/api/interfaces/overview/*</endpoint>
+            <endpoint>/api/interfaces/overview/interfacesInfo</endpoint>
         </endpoints>
         <translations>
             <title>Interfaces</title>
@@ -49,7 +49,7 @@
     <interfacestatistics>
         <filename>InterfaceStatistics.js</filename>
         <endpoints>
-            <endpoint>/api/interfaces/statistics/*</endpoint>
+            <endpoint>/api/diagnostics/traffic/interface</endpoint>
         </endpoints>
         <translations>
             <title>Interface Statistics</title>
@@ -76,7 +76,7 @@
     <memory>
         <filename>Memory.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/systemResources</endpoint>
+            <endpoint>/api/diagnostics/system/systemResources</endpoint>
         </endpoints>
         <translations>
             <title>Memory usage</title>
@@ -88,7 +88,7 @@
     <disk>
         <filename>Disk.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/systemDisk</endpoint>
+            <endpoint>/api/diagnostics/system/systemDisk</endpoint>
         </endpoints>
         <translations>
             <title>Disk usage</title>
@@ -133,7 +133,7 @@
     <mbuf>
         <filename>Mbuf.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/system_mbuf</endpoint>
+            <endpoint>/api/diagnostics/system/system_mbuf</endpoint>
         </endpoints>
         <translations>
             <title>Mbuf Usage</title>
@@ -144,7 +144,7 @@
     <swap>
         <filename>Swap.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/system_swap</endpoint>
+            <endpoint>/api/diagnostics/system/system_swap</endpoint>
         </endpoints>
         <translations>
             <title>Swap Usage</title>
@@ -180,7 +180,7 @@
     <thermalsensors>
         <filename>ThermalSensors.js</filename>
         <endpoints>
-            <endpoint>/api/core/system/systemTemperature</endpoint>
+            <endpoint>/api/diagnostics/system/systemTemperature</endpoint>
         </endpoints>
         <translations>
             <title>Thermal Sensors</title>
@@ -215,7 +215,7 @@
     <livelog>
         <filename>LiveLog.js</filename>
         <endpoints>
-            <endpoint>/api/diagnostics/log/*</endpoint>
+            <endpoint>/api/diagnostics/log/core/*</endpoint>
         </endpoints>
         <translations>
             <title>Live Log</title>
@@ -228,7 +228,8 @@
     <ipsecleases>
         <filename>IpsecLeases.js</filename>
         <endpoints>
-            <endpoint>/api/ipsec/*</endpoint>
+            <endpoint>/api/ipsec/connections/*</endpoint>
+            <endpoint>/api/ipsec/leases/*</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Leases</title>
@@ -243,7 +244,8 @@
     <ipsectunnels>
         <filename>IpsecTunnels.js</filename>
         <endpoints>
-            <endpoint>/api/ipsec/*</endpoint>
+            <endpoint>/api/ipsec/connections/*</endpoint>
+            <endpoint>/api/ipsec/sessions/*</endpoint>
         </endpoints>
         <translations>
             <title>IPsec Tunnels</title>
