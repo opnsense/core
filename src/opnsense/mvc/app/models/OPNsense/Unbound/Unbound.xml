@@ -120,6 +120,7 @@
             <numqueriesperthread type="NumericField"/>
             <outgoingrange type="NumericField"/>
             <jostletimeout type="NumericField"/>
+            <discardtimeout type="NumericField"/>
             <cachemaxttl type="NumericField"/>
             <cachemaxnegativettl type="NumericField"/>
             <cacheminttl type="NumericField"/>

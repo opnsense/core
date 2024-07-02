@@ -106,6 +106,18 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.discardtimeout</id>
+        <label>Discard Timeout</label>
+        <type>text</type>
+        <help>
+	    The wait time in msec where recursion requests are dropped. This is to stop a large number of replies
+            from accumulating.
+            If 'Serve Expired Responses' is enabled it should be set greater than 'Client Expired Response Timeout'.
+            Otherwise, a value of 1900 msec is suggested.
+            The value 0 disables it. Default 1900 msec.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.privatedomain</id>
         <label>Private Domains</label>
         <type>select_multiple</type>
