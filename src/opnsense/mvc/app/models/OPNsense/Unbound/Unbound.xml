@@ -226,11 +226,19 @@
                 <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                 <MaskPerItem>Y</MaskPerItem>
             </wildcards>
+            <rcode type="OptionField">
+                <Default>1</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="REFUSED">REFUSED</opt1>
+                    <opt2 value="NXDOMAIN">NXDOMAIN</opt2>
+                    <opt3 value="NOERROR">A</opt3>
+                </OptionValues>
+            </rcode>
             <address type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
             </address>
-            <nxdomain type="BooleanField"/>
         </dnsbl>
         <forwarding>
             <enabled type="BooleanField"/>

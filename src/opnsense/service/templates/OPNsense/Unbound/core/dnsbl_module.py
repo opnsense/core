@@ -57,7 +57,9 @@ SOURCE_LOCALDATA = 2
 SOURCE_CACHE = 3
 
 RCODE_NOERROR = 0
+RCODE_SERVFAIL = 2
 RCODE_NXDOMAIN = 3
+RCODE_REFUSED = 5
 
 def obj_path_exists(obj, path):
     if obj and isinstance(path, str):
@@ -369,7 +371,12 @@ class ModuleContext:
         """
         self.config = config
         self.dst_addr = self.config.get('dst_addr', '0.0.0.0')
-        self.rcode = RCODE_NXDOMAIN if self.config.get('rcode') == 'NXDOMAIN' else RCODE_NOERROR
+        if self.config.get('rcode') == 'NOERROR':
+            self.rcode = RCODE_NOERROR
+        elif self.config.get('rcode') == 'NXDOMAIN':
+            self.rcode = RCODE_NXDOMAIN
+        else:
+            self.rcode = RCODE_REFUSED
 
 def time_diff_ms(start):
     return round((time.time() - start) * 1000)
@@ -452,9 +459,9 @@ def set_answer_block(qstate, qdata, query, bl=None):
     dnssec_status = sec_status_secure if ctx.dnssec_enabled else sec_status_unchecked
     logger = mod_env['logger']
 
-    if ctx.rcode == RCODE_NXDOMAIN:
+    if ctx.rcode == RCODE_NXDOMAIN or ctx.rcode == RCODE_REFUSED:
         # exit early
-        qstate.return_rcode = RCODE_NXDOMAIN
+        qstate.return_rcode = RCODE_REFUSED if ctx.rcode == RCODE_REFUSED else RCODE_NXDOMAIN
         if logger.stats_enabled:
             query.set_response(ACTION_BLOCK, SOURCE_LOCAL, bl, ctx.rcode,
                         time_diff_ms(qdata['start_time']), dnssec_status, 0)
