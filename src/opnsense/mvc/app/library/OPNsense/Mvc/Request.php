@@ -111,12 +111,12 @@ class Request
         return isset($_POST[$name]);
     }
 
-    public function getPost(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
+    private function getHelper(array $source, ?string $name = null, ?string $filter = null, mixed $defaultValue = null)
     {
         if ($name === null) {
-            $value = $_POST;
+            $value = $source;
         } else {
-            $value = isset($_POST[$name]) ? $_POST[$name] : $defaultValue;
+            $value = isset($source[$name]) ? $source[$name] : $defaultValue;
         }
         if ($filter !== null && $value !== null) {
             $value = (new SanitizeFilter())->sanitize($value, $filter);
@@ -124,17 +124,19 @@ class Request
         return $value;
     }
 
+    public function getPost(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
+    {
+        return $this->getHelper($_POST, $name, $filter, $defaultValue);
+    }
+
     public function get(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
     {
-        if ($name === null) {
-            $value = $_REQUEST;
-        } else {
-            $value = isset($_REQUEST[$name]) ? $_REQUEST[$name] : $defaultValue;
-        }
-        if ($filter !== null) {
-            $value = (new SanitizeFilter())->sanitize($value, $filter);
-        }
-        return $value;
+        return $this->getHelper($_REQUEST, $name, $filter, $defaultValue);
+    }
+
+    public function getQuery(?string $name = null, ?string $filter = null, mixed $defaultValue = null)
+    {
+        return $this->getHelper($_GET, $name, $filter, $defaultValue);
     }
 
     public function getJsonRawBody(): stdClass| array| bool
