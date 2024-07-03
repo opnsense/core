@@ -454,8 +454,6 @@ class WidgetManager  {
                 `);
             });
         }
-
-        this._updateGrid();
     }
 
     // Executed for each widget; starts the widget-specific tick routine.
@@ -500,8 +498,10 @@ class WidgetManager  {
         // start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         await onWidgetTick();
+        this._updateGrid(this.widgetHTMLElements[widget.id]);
         const interval = setInterval(async () => {
             await onWidgetTick();
+            this._updateGrid();
         }, widget.tickTimeout);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
