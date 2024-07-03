@@ -137,7 +137,20 @@ class Request
         return $value;
     }
 
-    public function getJsonRawBody(): stdClass| array| bool
+    public function getQuery(?string $name = null, ?string $filter = null, ?string $defaultValue = null)
+    {
+        if ($name === null) {
+            $value = $_GET;
+        } else {
+            $value = isset($_GET[$name]) ? $_GET[$name] : $defaultValue;
+        }
+        if ($filter !== null) {
+            $value = (new SanitizeFilter())->sanitize($value, $filter);
+        }
+        return $value;
+    }
+
+    public function getJsonRawBody(): stdClass | array | bool
     {
         return json_decode($this->getRawBody(), true) ?? false;
     }

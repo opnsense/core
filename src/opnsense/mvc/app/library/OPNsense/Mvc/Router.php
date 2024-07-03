@@ -57,13 +57,13 @@ class Router
      * @param string $controller controller class name
      * @return string|null namespace with vendor when found
      */
-    private function resolveNamespace(?string $namespace, ?string $controller): string|null
+    private function resolveNamespace(?string $namespace, ?string $controller): string | null
     {
         if (empty($namespace) || empty($controller)) {
             return null;
         }
         $appconfig = new AppConfig();
-        foreach ((array)$appconfig->application->controllersDir as $controllersDir) {
+        foreach ((array) $appconfig->application->controllersDir as $controllersDir) {
             // sort OPNsense namespace on top
             $dirs = glob($controllersDir . "/*", GLOB_ONLYDIR);
             usort($dirs, function ($a, $b) {
@@ -77,8 +77,8 @@ class Router
                 $basename = basename($dirname);
                 if (!is_dir("$dirname/$namespace")) {
                     /* In an ideal world, our namespaces are case sensitive and follow the snake to camel convention.
-                       Since this is not always the case, try to perform a case-insensitive search if the namespace
-                       does not exist in the expected case. (Phalcon backwards compatibility)
+                    Since this is not always the case, try to perform a case-insensitive search if the namespace
+                    does not exist in the expected case. (Phalcon backwards compatibility)
                      */
                     foreach (new DirectoryIterator($dirname) as $fileinfo) {
                         if ($fileinfo->isDir() && !strcasecmp($fileinfo->getFileName(), $namespace)) {
@@ -95,7 +95,7 @@ class Router
                     $expected_filename = "$dirname/$namespace/$controller.php";
                 }
                 if (is_file($expected_filename)) {
-                    return  $new_namespace;
+                    return $new_namespace;
                 }
             }
         }
@@ -129,7 +129,10 @@ class Router
         $namespace = $this->resolveNamespace($targetAndParameters['namespace'], $controller);
         $action = $targetAndParameters['action'];
         $parameters = $targetAndParameters['parameters'];
-
+        #forwarding xxx/ to indexAction
+        if ($action === null) {
+            $action = "indexAction";
+        }
         if ($action === null || $controller === null || $namespace === null) {
             throw new InvalidUriException("Invalid route path, no action, controller, and / or namespace: " . $uri);
         }
@@ -157,7 +160,6 @@ class Router
         return $response;
     }
 
-
     /**
      * @param string $path path to extract
      * @param array $default list of routing defaults (controller, acount)
@@ -170,7 +172,7 @@ class Router
             "namespace" => null,
             "controller" => null,
             "action" => null,
-            "parameters" => []
+            "parameters" => [],
         ];
         foreach ($defaults as $key => $val) {
             $result[$key] = $val;
@@ -182,7 +184,7 @@ class Router
             } elseif ($idx == 1) {
                 $result["controller"] = str_replace('_', '', ucwords($element, '_')) . 'Controller';
             } elseif ($idx == 2) {
-                $result["action"] = lcfirst(str_replace('_', '', ucwords($element, '_')))  . "Action";
+                $result["action"] = lcfirst(str_replace(['_', '-'], '', ucwords($element, '_-'))) . "Action";
             } else {
                 $result["parameters"][] = $element;
             }
