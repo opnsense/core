@@ -1027,13 +1027,15 @@ $( document ).ready(function() {
                       <td><?= implode(', ', local_user_get_groups($userent)) ?></td>
                       <td class="text-nowrap">
                         <a href="system_usermanager.php?act=edit&userid=<?=$i?>"
-                            class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
+                            class="btn btn-default btn-xs" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>"
+                            aria-label="<?= html_safe(gettext('Edit')) ?>">
                           <span class="fa fa-pencil fa-fw"></span>
                         </a>
 <?php if ($userent['scope'] != 'system'): ?>
                         <button type="button" class="btn btn-default btn-xs act-del-user"
                             data-username="<?=$userent['name'];?>"
-                            data-userid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip">
+                            data-userid="<?=$i?>" title="<?= html_safe(gettext('Delete')) ?>" data-toggle="tooltip"
+                            aria-label="<?= html_safe(gettext('Delete')) ?>">
                           <span class="fa fa-trash fa-fw"></span>
                         </button>
 <?php endif ?>

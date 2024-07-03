@@ -31,6 +31,7 @@ import glob
 import re
 import sys
 import subprocess
+import select
 from logformats import FormatContainer, BaseLogFormat
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
@@ -60,10 +61,20 @@ class LogMatcher:
             latest = self.log_filenames[0] if len(self.log_filenames) > 0 else ''
         if os.path.exists(latest):
             format_container = FormatContainer(latest)
-            p = subprocess.Popen(['tail', '-f', '-n 0', latest], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=0)
+            p = subprocess.Popen(
+                ['tail', '-f', '-n 0', latest],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                bufsize=0,
+                text=True
+            )
             try:
-                for line in iter(p.stdout.readline, b''):
-                    line = line.decode()
+                while True:
+                    ready, _, _ = select.select([p.stdout], [], [], 1)
+                    if not ready:
+                        yield None
+                        continue
+                    line = p.stdout.readline()
                     if line != "" and self.filter_regexp.match(('%s' % line).lower()):
                         record = self.parse_line(line, format_container)
                         if len(self.severity) == 0 or record['severity'] is None or record['severity'] in self.severity:

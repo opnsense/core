@@ -37,6 +37,7 @@ import argparse
 import ujson
 import subprocess
 import time
+import select
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
 from params import update_params
@@ -173,12 +174,18 @@ if __name__ == '__main__':
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             bufsize=0,
+            text=True
         )
 
         last_t = time.time()
         try:
             while True:
-                line = f.stdout.readline().decode('utf-8')
+                ready, _, _ = select.select([f.stdout], [], [], 1)
+                if not ready:
+                    # timeout, send keepalive
+                    print("event: keepalive\ndata:\n\n", flush=True)
+                    continue
+                line = f.stdout.readline()
                 if line and line.find('filterlog') > -1:
                     t = time.time()
                     if (t - last_t) > 30:
